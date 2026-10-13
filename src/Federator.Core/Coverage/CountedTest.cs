@@ -45,10 +45,10 @@ namespace Federator.Core.Coverage
         /// <summary>Whether the client's sheet carries one test of this name.</summary>
         public bool InWorkbook { get; private set; }
 
-        /// <summary>The clash rows under its block, or minus one.</summary>
+        /// <summary>The clash rows under its block, nought where it has no block since F153, or minus one where not read.</summary>
         public int WorkbookRows { get; private set; }
 
-        /// <summary>Its Clashes cell, or minus one.</summary>
+        /// <summary>Its Clashes cell, nought where it has no block since F153, or minus one where not read.</summary>
         public int WorkbookClashes { get; private set; }
 
         /// <summary>Why it failed where that is known, or why it was not compared.</summary>

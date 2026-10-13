@@ -9,11 +9,10 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// FR-035. The WORKBOOK CHECK counted a test only where its block held clashes, so every
-    /// group said its workbook was short of the matrix while it held all the tests, and the
-    /// check could not see a missing one row test. A test with no clash is one row since Q73,
-    /// and it is a block of its own for the count, as the oracle read-out of a workbook counts
-    /// it, 5 full blocks and 1825 of one row.
+    /// The workbook check counts the blocks, one per test with a clash, F153, Bader's decision of
+    /// 2026-10-13, which retires the one row Q73 gave a test with no clash and the count of FR-035
+    /// that read one block per test of the file. A row of a test with no clash is a problem, and a
+    /// workbook where no test found a clash holds its title alone and passes.
     /// </summary>
     [TestFixture]
     public class WorkbookTestCountTests
@@ -91,54 +90,85 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TwoTestsWithClashesAndThreeWithNoneAreFiveTests()
+        public void TwoTestsWithClashesAndThreeWithNoneAreTwoBlocksAndNothingElse()
         {
             WorkbookCheck check = WorkbookCheck.Of(TwoWithClashesAndThreeWithNone());
 
-            Assert.That(check.Blocks, Is.EqualTo(5));
+            Assert.That(check.Blocks, Is.EqualTo(2));
+            Assert.That(check.NoClashRows, Is.EqualTo(0));
             Assert.That(check.Rows, Is.EqualTo(3));
             Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
-            Assert.That(check.Summary(), Does.Contain("one sheet, 5 tests, 3 rows"));
-            Assert.That(string.Join("\n", check.Lines()), Does.Contain("5 test blocks (2 with clashes and 3 of one row), 3 clash rows."));
-            Assert.That(CreationPlan.BlockCountLine(check.Blocks, 5), Is.EqualTo(
-                "BLOCKS   5 in the workbook, one for every test in the file"));
-        }
-
-        [Test]
-        public void TheLineSaysHowManyAreFullAndHowManyAreOneRow()
-        {
-            WorkbookCheck check = WorkbookCheck.Of(TwoWithClashesAndThreeWithNone());
-
-            Assert.That(check.FullBlocks, Is.EqualTo(2));
-            Assert.That(check.OneRowTests, Is.EqualTo(3));
-        }
-
-        [Test]
-        public void AWorkbookOfTestsWithNoClashAtAllIsNotCalledEmpty()
-        {
-            WorkbookCheck check = WorkbookCheck.Of(Written(T("BLD-A-vs-BLD-B", 0), T("BLD-A-vs-BLD-C", 0), T("BLD-A-vs-BLD-D", 0)));
-
-            Assert.That(check.Blocks, Is.EqualTo(3));
-            Assert.That(check.Rows, Is.EqualTo(0));
-            Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
-            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("no clash table at all"));
+            Assert.That(check.Summary(), Does.Contain("one sheet, 2 tests with clashes, 3 rows"));
+            Assert.That(string.Join("\n", check.Lines()), Does.Contain("2 test blocks with clashes, 3 clash rows. A test with no clash writes no row here since F153."));
+            Assert.That(CreationPlan.BlockCountLine(check.Blocks, 2, 5, 0), Does.StartWith(
+                "BLOCKS   2 in the workbook, one for every test with a clash. The other 3 of the 5 tests"));
         }
 
         /// <summary>
-        /// A workbook of one row tests has no heading row, so no block layout can be compared, and it
-        /// must not say it matched. It still reads row 1 and the widths, which hold without a block.
+        /// THE BREAK BADER ASKED FOR, F153: a workbook that still holds the one row Q73 gave a test with no clash fails
+        /// the check, which names the first such row and counts them. The rows are written in the old shape, the name in
+        /// A and the tolerance where the test header starts, below the last block, and a third at row 4 before the first.
+        /// The break of the break: the workbook the writer made holds none and passes.
         /// </summary>
         [Test]
-        public void AWorkbookOfOneRowTestsSaysItComparedNoBlockLayout()
+        public void AWorkbookThatStillHoldsANoClashRowFailsTheCheck()
         {
-            WorkbookCheck check = WorkbookCheck.Of(Written(T("BLD-A-vs-BLD-B", 0), T("BLD-A-vs-BLD-C", 0)));
+            string path = TwoWithClashesAndThreeWithNone();
+
+            Assert.That(WorkbookCheck.Of(path).Passed, Is.True);
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                int last = sheet.LastRowUsed().RowNumber();
+                sheet.Cell(last + 4, 1).Value = "BLD-A-vs-BLD-D";
+                sheet.Cell(last + 4, WorkbookWriter.ColumnTestHeader).Value = "0.025m";
+                sheet.Cell(last + 5, 1).Value = "BLD-A-vs-BLD-E";
+                sheet.Cell(last + 5, WorkbookWriter.ColumnTestHeader).Value = "0.025m";
+                workbook.SaveAs(path);
+            }
+
+            WorkbookCheck two = WorkbookCheck.Of(path);
+            string lines = string.Join("\n", two.Lines());
+
+            Assert.That(two.Passed, Is.False);
+            Assert.That(two.NoClashRows, Is.EqualTo(2));
+            Assert.That(two.Blocks, Is.EqualTo(2), "the rows are no blocks");
+            Assert.That(lines, Does.Contain("2 rows outside every block hold a test with no clash, the first at row "));
+            Assert.That(lines, Does.Contain("\"BLD-A-vs-BLD-D\". A test with no clash writes nothing in the workbook since F153"));
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                sheet.Row(4).InsertRowsAbove(1);
+                sheet.Cell(4, WorkbookWriter.ColumnTestHeader).Value = "0.025m";
+                workbook.SaveAs(path);
+            }
+
+            WorkbookCheck three = WorkbookCheck.Of(path);
+
+            Assert.That(three.NoClashRows, Is.EqualTo(3));
+            Assert.That(string.Join("\n", three.Lines()), Does.Contain("the first at row 4, with no name."),
+                "a row with no name still shows by its tolerance");
+        }
+
+        /// <summary>
+        /// Where no test found a clash the workbook holds its title alone, which is right since F153 and never called
+        /// an empty sheet. Row 1 and the widths are still read, and the line says no block was compared.
+        /// </summary>
+        [Test]
+        public void AWorkbookWhereNoTestFoundAClashHoldsTheTitleAloneAndPasses()
+        {
+            WorkbookCheck check = WorkbookCheck.Of(Written(T("BLD-A-vs-BLD-B", 0), T("BLD-A-vs-BLD-C", 0), T("BLD-A-vs-BLD-D", 0)));
             string lines = string.Join("\n", check.Lines());
 
+            Assert.That(check.Blocks, Is.EqualTo(0));
+            Assert.That(check.NoClashRows, Is.EqualTo(0));
             Assert.That(check.Passed, Is.True, lines);
+            Assert.That(lines, Does.Contain("The sheet holds no block, so no heading, cell, fill or border of a block was compared"));
             Assert.That(lines, Does.Not.Contain("Every column, value shape, fill, border, row height"));
-            Assert.That(lines, Does.Contain("No test holds a clash, so no heading, cell, fill or border of a block was compared"));
-            Assert.That(check.Summary(), Does.Contain("no test holds a clash, so the layout of a block was not compared"));
-            Assert.That(check.Summary(), Does.Not.Contain("matching the client's layout"));
+            Assert.That(check.Summary(), Is.EqualTo("Workbook: one sheet, no test with a clash, so the layout of a block was not compared."));
+            Assert.That(CreationPlan.BlockCountLine(check.Blocks, 0, 3, 0), Does.Not.Contain("MUST"));
         }
 
         /// <summary>A workbook of a group row standing for ten clashes before three single rows, as the writer sorts it.</summary>
@@ -245,54 +275,16 @@ namespace Federator.Core.Tests
 
             Assert.That(check.Passed, Is.True, lines);
             Assert.That(lines, Does.Contain("The column headings of every block with clashes match the client's report, and so do the fill, border and row height of every cell of the first block, five values of its first clash row"));
-            Assert.That(lines, Does.Contain("The blocks with clashes are in their order, and no test with no clash stands before one with clashes. The values of the other blocks and clash rows were not read."));
+            Assert.That(lines, Does.Contain("The blocks are in their order, and no row of a test with no clash is on the sheet. The values of the other blocks and clash rows were not read."));
             Assert.That(lines, Does.Not.Contain("Every column, value shape, fill, border, row height"));
         }
 
         /// <summary>
-        /// The order check read the full blocks alone, so a test with no clash placed before a test with clashes was
-        /// never named. A copy of the one row test is put in front of the first block, and the check names it once.
-        /// The break: the workbook the writer made, with every one row test last, says nothing of the kind.
+        /// A result group with nothing under it is a clash row, so its test is a block, whatever its Clashes cell says,
+        /// while a test with no row at all writes nothing. The check counts the one block and passes.
         /// </summary>
         [Test]
-        public void AOneRowTestBeforeATestWithClashesIsNamedAsOutOfOrder()
-        {
-            string path = TwoWithClashesAndThreeWithNone();
-
-            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Not.Contain("stands before the test with clashes"));
-
-            int lastRow;
-
-            using (XLWorkbook workbook = new XLWorkbook(path))
-            {
-                IXLWorksheet sheet = workbook.Worksheet(1);
-                lastRow = sheet.LastRowUsed().RowNumber();
-                string name = sheet.Cell(lastRow, 1).GetString();
-                string tolerance = sheet.Cell(lastRow, WorkbookWriter.ColumnTestHeader).GetString();
-
-                Assert.That(name, Is.Not.Empty, "the last row is the one row of a test that found nothing");
-
-                sheet.Row(4).InsertRowsAbove(1);
-                sheet.Cell(4, 1).Value = name;
-                sheet.Cell(4, WorkbookWriter.ColumnTestHeader).Value = tolerance;
-                workbook.SaveAs(path);
-            }
-
-            WorkbookCheck told = WorkbookCheck.Of(path);
-            string lines = string.Join("\n", told.Lines());
-
-            Assert.That(told.Passed, Is.False);
-            Assert.That(lines, Does.Contain("The tests are in the wrong order. The test with no clash at row 4 stands before the test with clashes at row 5."));
-            Assert.That(lines.Split(new[] { "stands before the test with clashes" }, StringSplitOptions.None).Length, Is.EqualTo(2), "said once for two blocks it stands before");
-        }
-
-        /// <summary>
-        /// A block whose Clashes cell is nought holds as many clashes as a test of one row, and ties keep the order they were
-        /// created in, so the writer may put such a block after a one row test, a result group with nothing under it. The
-        /// check lets it stand, as the order check lets a tie.
-        /// </summary>
-        [Test]
-        public void ABlockHoldingNoClashMayFollowAOneRowTest()
+        public void ABlockOfAnEmptyResultGroupIsABlockAndATestWithNoRowWritesNothing()
         {
             ClashReport report = new ClashReport("1C07BC", OutputName);
             report.DocumentUnits = "m";
@@ -305,15 +297,15 @@ namespace Federator.Core.Tests
             new WorkbookWriter().Write(report, path);
             WorkbookCheck check = WorkbookCheck.Of(path);
 
-            Assert.That(check.FullBlocks, Is.EqualTo(1));
-            Assert.That(check.OneRowTests, Is.EqualTo(1));
-            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("stands before the test with clashes"));
+            Assert.That(check.Blocks, Is.EqualTo(1));
+            Assert.That(check.NoClashRows, Is.EqualTo(0));
+            Assert.That(report.TestsWithAClash, Is.EqualTo(1));
             Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
         }
 
-        /// <summary>The sheet wide things a one row workbook can still be wrong in are still read.</summary>
+        /// <summary>The sheet wide things a workbook with no block can still be wrong in are still read.</summary>
         [Test]
-        public void AWorkbookOfOneRowTestsStillNamesAWrongTitleAndAWrongWidth()
+        public void AWorkbookWithNoBlockStillNamesAWrongTitleAndAWrongWidth()
         {
             string title = Written(T("BLD-A-vs-BLD-B", 0));
 
@@ -343,13 +335,11 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Tests of one row and full blocks together, with a priority file picked. Since FR-199 the blocks keep the
-        /// measured order, most clashes first, so the tests of one row come last and the check, which names a one row
-        /// test before a block with clashes, says nothing of the workbook the writer made. Each is counted once and
-        /// no clash row is counted as a test.
+        /// Tests with no clash and tests with clashes together, with a priority file picked. The blocks keep the measured
+        /// order, FR-199, the tests with no clash write nothing, and no clash row is counted as a test.
         /// </summary>
         [Test]
-        public void OneRowTestsBeforeAndBetweenFullBlocksAreCountedOnce()
+        public void WithAPriorityFileTheTestsWithNoClashWriteNothingEither()
         {
             ClashReport report = new ClashReport("1C07BC", OutputName);
             report.DocumentUnits = "m";
@@ -371,45 +361,59 @@ namespace Federator.Core.Tests
             new WorkbookWriter().Write(report, path);
             WorkbookCheck check = WorkbookCheck.Of(path);
 
-            Assert.That(check.Blocks, Is.EqualTo(5));
-            Assert.That(check.FullBlocks, Is.EqualTo(2));
-            Assert.That(check.OneRowTests, Is.EqualTo(3));
-            Assert.That(check.Rows, Is.EqualTo(5));
-
-            WorkbookCheck picked = WorkbookCheck.Of(path, true);
-
-            Assert.That(string.Join("\n", picked.Lines()), Does.Not.Contain("wrong order"));
-            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("wrong order"));
-        }
-
-        [Test]
-        public void AWorkbookMissingAOneRowTestNamesTheShortfall()
-        {
-            string path = TwoWithClashesAndThreeWithNone();
-            int lastUsed;
-
-            using (XLWorkbook book = new XLWorkbook(path))
-            {
-                IXLWorksheet sheet = book.Worksheet(1);
-                lastUsed = sheet.LastRowUsed().RowNumber();
-                sheet.Row(lastUsed).Delete();
-                book.Save();
-            }
-
-            WorkbookCheck check = WorkbookCheck.Of(path);
-
-            Assert.That(check.Blocks, Is.EqualTo(4), "the last one row test was deleted");
-            Assert.That(CreationPlan.BlockCountLine(check.Blocks, 5), Does.StartWith("BLOCKS   4 in the workbook against 5 tests in the file."));
-        }
-
-        [Test]
-        public void ATestWithNoNameIsStillCounted()
-        {
-            WorkbookCheck check = WorkbookCheck.Of(Written(T("BLD-A-vs-BLD-B", 1), T(string.Empty, 0)));
-
             Assert.That(check.Blocks, Is.EqualTo(2));
+            Assert.That(check.NoClashRows, Is.EqualTo(0));
+            Assert.That(check.Rows, Is.EqualTo(5));
+            Assert.That(string.Join("\n", WorkbookCheck.Of(path, true).Lines()), Does.Not.Contain("wrong order"));
+            Assert.That(WorkbookCheck.Of(path, true).Passed, Is.True, string.Join(" | ", WorkbookCheck.Of(path, true).Lines()));
         }
 
+        /// <summary>A workbook short of a block of a test with a clash is said in capitals by the BLOCKS line.</summary>
+        [Test]
+        public void AWorkbookShortOfABlockOfATestWithAClashNamesTheShortfall()
+        {
+            WorkbookCheck check = WorkbookCheck.Of(TwoWithClashesAndThreeWithNone());
+
+            Assert.That(CreationPlan.BlockCountLine(check.Blocks, 3, 5, 0), Does.StartWith(
+                "BLOCKS   2 in the workbook against 3 tests with a clash of the 5 tests of the report. THE WORKBOOK MUST"));
+        }
+
+        [Test]
+        public void ATestWithNoNameIsStillCountedAndOneWithNoClashAndNoNameWritesNothing()
+        {
+            Assert.That(WorkbookCheck.Of(Written(T("BLD-A-vs-BLD-B", 1), T(string.Empty, 1))).Blocks, Is.EqualTo(2));
+
+            WorkbookCheck none = WorkbookCheck.Of(Written(T("BLD-A-vs-BLD-B", 1), T(string.Empty, 0)));
+
+            Assert.That(none.Blocks, Is.EqualTo(1));
+            Assert.That(none.NoClashRows, Is.EqualTo(0));
+        }
+
+
+        /// <summary>
+        /// The page keeps every test while the workbook writes the tests with a clash alone, F153: the clash XML the
+        /// page is drawn from carries a clashtest for each of the five tests, the three that found none among them, and
+        /// the workbook beside it two blocks. The page is then rendered by Autodesk's stylesheet, which only a run shows.
+        /// </summary>
+        [Test]
+        public void ThePageKeepsEveryTestWhileTheWorkbookWritesTheTestsWithAClash()
+        {
+            ClashReport report = new ClashReport("1C07BC", OutputName);
+            report.DocumentUnits = "m";
+            AddTest(report, "BLD-A-vs-BLD-B", 2);
+            AddTest(report, "BLD-A-vs-BLD-C", 1);
+            AddTest(report, "BLD-A-vs-BLD-D", 0);
+            AddTest(report, "BLD-A-vs-BLD-E", 0);
+            AddTest(report, "BLD-A-vs-BLD-F", 0);
+
+            System.Xml.Linq.XDocument page = new ClashReportXml().Build(report);
+            string path = Path.Combine(folder, OutputName + ".xlsx");
+            new WorkbookWriter().Write(report, path);
+
+            Assert.That(new List<System.Xml.Linq.XElement>(page.Descendants("clashtest")).Count, Is.EqualTo(5));
+            Assert.That(WorkbookCheck.Of(path).Blocks, Is.EqualTo(2));
+            Assert.That(report.TestsWithAClash, Is.EqualTo(2));
+        }
         [Test]
         public void AClashRowIsNeverCountedAsATest()
         {

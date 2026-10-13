@@ -120,10 +120,10 @@ namespace Federator.Core.Tests
             return FirstClashRow(sheet, name) - 5;
         }
 
-        // ---------- both shapes ----------
+        // ---------- one shape, F153 ----------
 
         [Test]
-        public void EveryTestIsReadInBothShapesWithItsRowsAndItsClashesCell()
+        public void EveryTestWithAClashIsReadAndATestWithNoneIsNotOnTheSheet()
         {
             ClashReport report = Report();
             AddTest(report, "Walls-vs-Floors", 3, 0);
@@ -132,23 +132,48 @@ namespace Federator.Core.Tests
 
             WorkbookTests read = ReadBack(Write(report, folder));
 
-            Assert.That(read.Tests.Count, Is.EqualTo(3));
+            Assert.That(read.Tests.Count, Is.EqualTo(2));
             Assert.That(read.Doubts, Is.Empty);
 
             WorkbookTest full = Only(read, "Walls-vs-Floors");
-            Assert.That(full.FullBlock, Is.True);
             Assert.That(full.Rows, Is.EqualTo(3));
             Assert.That(full.Clashes, Is.EqualTo(3));
 
-            WorkbookTest oneRow = Only(read, "Doors-vs-Walls");
-            Assert.That(oneRow.FullBlock, Is.False, "a test that found nothing is one row since Q73");
-            Assert.That(oneRow.Rows, Is.EqualTo(0));
-            Assert.That(oneRow.Clashes, Is.EqualTo(0));
+            Assert.That(read.Named("Doors-vs-Walls"), Is.Empty, "a test with no clash writes nothing since F153");
 
             // A group is one row standing for the clashes under it.
             WorkbookTest grouped = Only(read, "Site-vs-Doors");
             Assert.That(grouped.Rows, Is.EqualTo(2));
             Assert.That(grouped.Clashes, Is.EqualTo(6));
+        }
+
+        /// <summary>
+        /// The one row Q73 gave a test with no clash is never read as a test since F153, written by hand below the last
+        /// block in its old shape, the name in A and the tolerance where the test header starts. The workbook check names
+        /// it as a problem, WorkbookTestCountTests.
+        /// </summary>
+        [Test]
+        public void ANoClashRowInTheOldShapeIsNeverReadAsATest()
+        {
+            ClashReport report = Report();
+            AddTest(report, "A", 1, 0);
+            string path = Write(report, folder);
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                int last = sheet.LastRowUsed().RowNumber();
+                sheet.Cell(last + 4, 1).Value = "B";
+                sheet.Cell(last + 4, WorkbookWriter.ColumnTestHeader).Value = "0.025m";
+                sheet.Cell(last + 4, WorkbookWriter.ColumnTestHeader + 1).Value = 0;
+                workbook.Save();
+            }
+
+            WorkbookTests read = ReadBack(path);
+
+            Assert.That(read.Tests.Count, Is.EqualTo(1));
+            Assert.That(read.Named("B"), Is.Empty);
+            Assert.That(read.Doubts, Is.Empty);
         }
 
         // The break the design names: one clash row taken out of a real file reads one fewer.
@@ -180,7 +205,7 @@ namespace Federator.Core.Tests
         {
             ClashReport report = Report();
             AddTest(report, "T", 2, 0);
-            AddTest(report, "T", 0, 0);
+            AddTest(report, "T", 1, 0);
 
             WorkbookTests read = ReadBack(Write(report, folder));
 
@@ -188,31 +213,6 @@ namespace Federator.Core.Tests
             Assert.That(read.Doubts.Count, Is.EqualTo(1));
             Assert.That(read.Doubts[0], Does.Contain("\"T\""));
             Assert.That(read.Doubts[0], Does.Contain("2 tests"));
-        }
-
-        [Test]
-        public void ATestRowWithNoNameIsADoubtAndNoTest()
-        {
-            ClashReport report = Report();
-            AddTest(report, "A", 0, 0);
-            AddTest(report, "B", 0, 0);
-            string path = Write(report, folder);
-            int row;
-
-            using (XLWorkbook workbook = new XLWorkbook(path))
-            {
-                IXLWorksheet sheet = workbook.Worksheet(1);
-                row = RowOf(sheet, "B");
-                sheet.Cell(row, 1).Clear(XLClearOptions.Contents);
-                workbook.Save();
-            }
-
-            WorkbookTests read = ReadBack(path);
-
-            Assert.That(read.Tests.Count, Is.EqualTo(1));
-            Assert.That(read.Doubts.Count, Is.EqualTo(1));
-            Assert.That(read.Doubts[0], Does.Contain("row " + row));
-            Assert.That(read.Doubts[0], Does.Contain("no name"));
         }
 
         [Test]
@@ -240,14 +240,14 @@ namespace Federator.Core.Tests
         public void AClashesCellThatIsNoWholeNumberReadsMinusOneAndIsADoubt()
         {
             ClashReport report = Report();
-            AddTest(report, "A", 0, 0);
+            AddTest(report, "A", 1, 0);
             AddTest(report, "B", 2, 0);
             string path = Write(report, folder);
 
             using (XLWorkbook workbook = new XLWorkbook(path))
             {
                 IXLWorksheet sheet = workbook.Worksheet(1);
-                sheet.Cell(RowOf(sheet, "A"), WorkbookWriter.ColumnTestHeader + 1).Value = "none";
+                sheet.Cell(RowOf(sheet, "A") + 1, WorkbookWriter.ColumnTestHeader + 1).Value = "none";
                 sheet.Cell(RowOf(sheet, "B") + 1, WorkbookWriter.ColumnTestHeader + 1).Value = 2.5;
                 workbook.Save();
             }

@@ -105,12 +105,9 @@ namespace Federator.Core.Tests
                 .Write(report, Path.Combine(folder, OutputName + ".xlsx"));
         }
 
-        /// <summary>The row each test block's column headings sit on, in order.</summary>
         /// <summary>
-        /// THE ROW EACH BLOCK STARTS ON, whatever shape the block is. Since Q73 a test
-        /// that found nothing is ONE ROW with no column headings under it, so finding
-        /// blocks by their headings row finds only the ones that found something. The
-        /// test NAME in column A is what every block carries either way.
+        /// THE ROW EACH BLOCK STARTS ON, read by the test NAME in column A. Since F153 a test that
+        /// found nothing writes nothing, so every name in A below the title is a block's.
         /// </summary>
         private static IList<int> BlockRows(IXLWorksheet sheet)
         {
@@ -128,6 +125,20 @@ namespace Federator.Core.Tests
             }
 
             return rows;
+        }
+
+        /// <summary>Whether any cell of the sheet holds the text.</summary>
+        private static bool Anywhere(IXLWorksheet sheet, string text)
+        {
+            foreach (IXLCell cell in sheet.CellsUsed())
+            {
+                if (cell.GetString().IndexOf(text, StringComparison.Ordinal) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static IList<int> HeaderRows(IXLWorksheet sheet)
@@ -178,7 +189,7 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void EveryTestIsOnThatOneSheetOneAfterAnother()
+        public void EveryTestWithAClashIsOnThatOneSheetOneAfterAnother()
         {
             ClashReport report = Report();
             AddTest(report, "first", 3);
@@ -189,8 +200,8 @@ namespace Federator.Core.Tests
             {
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
 
-                Assert.That(BlockRows(sheet).Count, Is.EqualTo(3),
-                    "one block per test, including the one that found nothing, which is one row since Q73");
+                Assert.That(BlockRows(sheet).Count, Is.EqualTo(2),
+                    "one block per test with a clash, the one that found nothing writes nothing since F153");
             }
         }
 
@@ -328,7 +339,7 @@ namespace Federator.Core.Tests
 
         // The one the brief asks for by name.
         [Test]
-        public void TheMostClashesComeFirstAndTheEmptyTestsLast()
+        public void TheMostClashesComeFirstAndTheEmptyTestsWriteNothing()
         {
             ClashReport report = Report();
             AddTest(report, "empty one", 0);
@@ -349,7 +360,7 @@ namespace Federator.Core.Tests
 
                 Assert.That(names, Is.EqualTo(new[]
                 {
-                    "twelve clashes", "six clashes", "two clashes", "empty one", "empty two"
+                    "twelve clashes", "six clashes", "two clashes"
                 }));
             }
         }
@@ -565,16 +576,15 @@ namespace Federator.Core.Tests
             }
         }
 
-        // ---------- Q73, the empty block becomes one row ----------
+        // ---------- F153, a test with no clash writes nothing ----------
 
         /// <summary>
-        /// A TEST THAT FOUND NOTHING IS ONE ROW CARRYING THE SAME FIVE FACTS. Not a
-        /// deleted block, because the client's report is the whole matrix and a missing
-        /// test reads as a test nobody ran. Not eight rows either, because 93 per cent of
-        /// his 1A02MM workbook was headings for nothing.
+        /// A TEST THAT FOUND NOTHING WRITES NOTHING IN THE WORKBOOK, F153, Bader's decision of 2026-10-13, which
+        /// retires the one row Q73 gave it. His run of that day held 1700 such rows after 130 blocks. The test is
+        /// still on the page and on the Coverage sheet. The break: a test with a clash beside it keeps its block.
         /// </summary>
         [Test]
-        public void AnEmptyTestIsOneRowCarryingTheFiveFacts()
+        public void ATestThatFoundNothingWritesNothing()
         {
             ClashReport report = Report();
             AddTest(report, "found nothing", 0);
@@ -582,34 +592,30 @@ namespace Federator.Core.Tests
             using (XLWorkbook workbook = new XLWorkbook(Write(report)))
             {
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
-                IList<int> blocks = BlockRows(sheet);
 
-                Assert.That(blocks.Count, Is.EqualTo(1));
+                Assert.That(BlockRows(sheet), Is.Empty);
+                Assert.That(Anywhere(sheet, "found nothing"), Is.False, "no row names it");
+                Assert.That(sheet.LastRowUsed().RowNumber(), Is.EqualTo(1), "the title alone");
+            }
 
-                int row = blocks[0];
-                int column = WorkbookWriter.ColumnTestHeader;
+            AddTest(report, "found three", 3);
 
-                Assert.That(sheet.Cell(row, 1).GetString(), Is.EqualTo("found nothing"));
-                Assert.That(sheet.Cell(row, column).GetString(), Is.EqualTo("0.025m"), "the tolerance");
-                Assert.That(sheet.Cell(row, column + 1).GetString(), Is.EqualTo("0"), "the raw clash count");
-                Assert.That(sheet.Cell(row, column + 7).GetString(), Is.EqualTo("Hard (Conservative)"), "the type");
-                Assert.That(sheet.Cell(row, column + 8).GetString(), Is.EqualTo("OK"), "the status");
+            using (XLWorkbook workbook = new XLWorkbook(Write(report)))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
 
-                // AND NOTHING UNDER IT. The next row is the next block or the end.
-                Assert.That(sheet.Cell(row + 1, WorkbookWriter.ColumnClashName).GetString(),
-                    Is.Not.EqualTo("Clash Name"), "an empty test has no column headings under it");
+                Assert.That(BlockRows(sheet).Count, Is.EqualTo(1));
+                Assert.That(sheet.Cell(BlockRows(sheet)[0], 1).GetString(), Is.EqualTo("found three"));
+                Assert.That(Anywhere(sheet, "found nothing"), Is.False);
             }
         }
 
         /// <summary>
-        /// The one row of a test that found nothing paints its own row and no more. It borrowed the painter of the
-        /// two row header, so the row under it came out grey and boxed, and after the last block of the sheet,
-        /// which in the default order is a test that found nothing on almost every workbook, nothing repainted it,
-        /// FR-038. The break: the row below the last block carries no fill and no border, and the row itself
-        /// keeps both.
+        /// The rows after the last block carry no fill and no border, FR-038's break, which held for the one row of
+        /// a test that found nothing and holds now for the block of the last test with a clash.
         /// </summary>
         [Test]
-        public void TheRowUnderTheLastEmptyTestCarriesNoFillAndNoBorder()
+        public void TheRowsUnderTheLastBlockCarryNoFillAndNoBorder()
         {
             ClashReport report = Report();
             AddTest(report, "found three", 3);
@@ -618,23 +624,14 @@ namespace Federator.Core.Tests
             using (XLWorkbook workbook = new XLWorkbook(Write(report)))
             {
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
-                IList<int> blocks = BlockRows(sheet);
-                int row = blocks[blocks.Count - 1];
+                int last = sheet.LastRowUsed().RowNumber();
 
-                Assert.That(sheet.Cell(row, 1).GetString(), Is.EqualTo("found nothing"), "the last block is the empty one");
-
-                for (int column = 1; column <= WorkbookWriter.LastTestHeaderColumn; column++)
+                for (int column = 1; column <= WorkbookWriter.LastColumn; column++)
                 {
-                    IXLStyle own = sheet.Cell(row, column).Style;
-                    IXLStyle below = sheet.Cell(row + 1, column).Style;
+                    IXLStyle below = sheet.Cell(last + 1, column).Style;
 
-                    string at = ", column " + column;
-
-                    Assert.That(own.Fill.PatternType, Is.Not.EqualTo(XLFillPatternValues.None), "the row itself is grey" + at);
-                    Assert.That(own.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and ruled thick on top" + at);
-                    Assert.That(own.Border.BottomBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and closed below, name included" + at);
-                    Assert.That(below.Fill.PatternType, Is.EqualTo(XLFillPatternValues.None), "no fill under it" + at);
-                    Assert.That(below.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.None), "no border under it" + at);
+                    Assert.That(below.Fill.PatternType, Is.EqualTo(XLFillPatternValues.None), "column " + column);
+                    Assert.That(below.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
                     Assert.That(below.Border.BottomBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
                     Assert.That(below.Border.LeftBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
                     Assert.That(below.Border.RightBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
@@ -642,15 +639,11 @@ namespace Federator.Core.Tests
             }
         }
 
-        /// <summary>
-        /// The nine values of a test are written by one routine for both shapes, so a test that found nothing and a
-        /// test that found something read the same nine facts off the same model, T1-N84.
-        /// </summary>
+        /// <summary>The nine values of a test are the ones the model holds, T1-N84, under its heading row.</summary>
         [Test]
-        public void BothShapesOfATestWriteTheNineValuesTheModelHolds()
+        public void ATestWritesTheNineValuesTheModelHolds()
         {
             ClashReport report = Report();
-            TestReport none = AddTest(report, "found nothing", 0);
             TestReport some = AddTest(report, "found three", 3);
 
             some.Tolerance = 0.125;
@@ -661,9 +654,8 @@ namespace Federator.Core.Tests
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
                 IList<int> blocks = BlockRows(sheet);
 
-                Assert.That(blocks.Count, Is.EqualTo(2));
+                Assert.That(blocks.Count, Is.EqualTo(1));
                 ValuesAre(sheet, blocks[0] + 1, some);
-                ValuesAre(sheet, blocks[1], none);
             }
         }
 
@@ -726,13 +718,11 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// THE BLOCK COUNT IS UNCHANGED AND THE ROW COUNT COLLAPSES. This is the
-        /// arithmetic the round predicted before the change: the fixture's workbook holds
-        /// 1,830 blocks in 14,667 rows and should become 1,916, which is three title rows
-        /// plus one row per empty test plus the full blocks.
+        /// A WORKBOOK WHERE NO TEST FOUND A CLASH HOLDS ITS TITLE ALONE, F153. Under Q73 fifty tests that found
+        /// nothing were fifty rows, and before Q73 four hundred. Every one is still on the page and the Coverage sheet.
         /// </summary>
         [Test]
-        public void AWorkbookOfEmptyTestsHoldsOneRowEachAndKeepsItsBlockCount()
+        public void AWorkbookOfTestsWithNoClashHoldsTheTitleAlone()
         {
             ClashReport report = Report();
 
@@ -745,9 +735,8 @@ namespace Federator.Core.Tests
             {
                 IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
 
-                Assert.That(BlockRows(sheet).Count, Is.EqualTo(50), "every test still appears");
-                Assert.That(sheet.LastRowUsed().RowNumber(), Is.EqualTo(3 + 50),
-                    "three title rows and one row each, where the old shape cost 400");
+                Assert.That(BlockRows(sheet), Is.Empty);
+                Assert.That(sheet.LastRowUsed().RowNumber(), Is.EqualTo(1), "the title row alone");
             }
         }
     }

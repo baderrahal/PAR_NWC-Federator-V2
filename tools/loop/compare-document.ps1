@@ -49,8 +49,10 @@
            inside every workbook test New to Resolved add up to Clashes
 
     A test in the workbook only whose every number is zero is one F77 did not create, and is
-    counted, not judged. In the workbook only with a number above zero, or in the document
-    only, is a line. A name on two tests on one side is a doubt and neither copy is compared.
+    counted, not judged. A test in the document only holding no clash is counted, not judged,
+    since F153 writes nothing in the workbook for a test with no clash. In the workbook only
+    with a number above zero, or in the document only with a clash or a count not read, is a
+    line. A name on two tests on one side is a doubt and neither copy is compared.
 
     Shown and never judged: the test type and the test status, because the workbook carries
     the client's words and judging them would need a second copy of that wording rule, and
@@ -473,6 +475,7 @@ function Get-Information($t) {
 }
 
 $zeroOnly = 0
+$noClashOnly = 0
 $wbBase = [IO.Path]::GetFileNameWithoutExtension($wb.Path)
 $wbFolder = $null
 if ([IO.Path]::IsPathRooted($wb.Path)) { $f = Split-Path -Parent $wb.Path; if (Test-Path -LiteralPath $f -PathType Container) { $wbFolder = $f } }
@@ -633,6 +636,13 @@ foreach ($t in $wb.Tests) {
 if ($docTestsWalked) {
     foreach ($t in $doc.Tests) {
         if ($docByName[$t.Name].Count -gt 1 -or $wbByName.ContainsKey($t.Name)) { continue }
+        # F153, Bader's decision of 2026-10-13: a test with no clash writes nothing in the workbook,
+        # so a document test holding none and no block is the rule and is counted, not judged.
+        if ($t.Known -and $t.Leaves -eq 0 -and $t.TopLevel -eq 0) {
+            $noClashOnly++
+            $lines.Add("DOCUMENT ONLY, NO CLASH [$($t.Name)]  a test with no clash writes nothing in the workbook since F153, counted and not judged")
+            continue
+        }
         $lines.Add("DOCUMENT ONLY [$($t.Name)]")
         $lines.Add("DIFFERS [$($t.Name)]  in the document only, " + $(if ($t.Known) { "$($t.Leaves) clashes" } else { "clashes UNKNOWN, counted as -1" }))
         foreach ($i in (Get-Information $t)) { $lines.Add($i) }
@@ -695,6 +705,7 @@ if (-not $pictureWords.Count) { $wholeLines.Add("NOT COMPARED which rows should 
 $lines.Add("")
 $lines.Add("-- the whole workbook")
 $lines.Add("workbook tests with every number zero and no document test, counted and not judged: $zeroOnly")
+$lines.Add("document tests with no clash and no workbook block, counted and not judged since F153: $noClashOnly")
 foreach ($w in $wholeLines) { $lines.Add($w) }
 $lines.Add("")
 $lines.Add("-- doubts")

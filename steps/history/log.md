@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F153 a test with no clash writes nothing in the workbook, item 3 of Bader's message of 2026-10-13, Q162-3
+
+Branch fix-F153 off main 145ce73. His run of 2026-10-13 held 130 tests with clashes and 1700 one row tests after them.
+He decided a test with no clash writes nothing in the workbook, the page and the Coverage sheet keep every test.
+
+What was done:
+- The writer writes nothing for a test with no clash row. WriteEmptyTestRow and the one row form of
+  ClientStyle.TestHeader are gone
+- The workbook check counts the blocks with clashes, names any row of a test with no clash as a problem, and no
+  longer calls a sheet with no block empty. FullBlocks, OneRowTests and the one row order check are gone
+- The BLOCKS line expects one block for every test of the report with a clash, ClashReport.TestsWithAClash, and
+  is written on every run, a run with no XML included
+- The coverage read back reads full blocks alone, and the count check reads a test with no block as nought and
+  nought, so a test that ran and found none agrees. The Coverage sheet shows those noughts
+- PageCheck reads the page, which keeps every test, and is unchanged. A test pins the clash XML the page is drawn
+  from keeping every test while the workbook holds the blocks with clashes
+- toolsoopmpare-document.ps1 counts a document test with no clash and no block and does not judge it,
+  under Q143 limit 5, and prove-compare.ps1 cases 10 and 21 follow, 26 of 26 right
+- core.md, four bullets, and the history entry, so Q73's answer b is not left behind
+- One reviewer, six points fixed: compare-document, a stale comment of CreationPlan, the loop's two notes on the
+  one row shape, a merged mirror's Coverage cells kept UNKNOWN, two border asserts kept and a test comment
+- Core tests before 3103 passed, 0 failed, 0 skipped, after 3103 passed, 0 failed, 0 skipped. The solution builds
+  in Release with 0 warnings and 0 errors
+
+What remains: not run on Navisworks, steps 1450 to 1462, and the page as Autodesk's stylesheet renders it.
+
+Known bugs: none new.
+
+What comes next: F154, the priority and by design files built in.
+
 ## 2026-10-13 F152 the workbook's pictures are linked pictures, item 2 of Bader's message of 2026-10-13, Q162-2
 
 Branch fix-F152 off main 36edef0. His run of 2026-10-13 read 0 pictures and 4160 cell links in the workbook. He decided

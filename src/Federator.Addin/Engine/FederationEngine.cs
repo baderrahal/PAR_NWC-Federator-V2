@@ -3744,20 +3744,20 @@ namespace Federator.Addin.Engine
         /// This is the check that would have caught Source File and Discipline coming out
         /// empty on every row, without anyone opening the file to find out.
         /// </summary>
-        private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile, int mirrorsMerged)
+        private void CheckTheWorkbook(FederationJob job, string path, ClashReport report)
         {
             WorkbookCheck check = WorkbookCheck.Of(path, ThePriorities().Picked);
 
             log.Block("WORKBOOK CHECK " + job.Building, check.Lines());
 
-            // F77. The workbook carries a block for every test in the file whether or not
-            // the test was created, and a count that differs is said in capitals. Only
-            // where the tests came from a file, because that is what the count is of.
-            // F132. Less the mirrors merged into their kept tests, ClashReport.MirrorsMerged,
-            // each counted inside its kept test's block, which the line says.
-            if (check.Ran && testsInTheFile >= 0)
+            // F153. The workbook carries a block for every test of the report with a clash and
+            // none for a test that found none, Bader's decision of 2026-10-13, read off the
+            // report itself, so it is checked whether the tests came from a file or were saved
+            // in the NWF. A mirror merged into its kept test is in that test's block, F132.
+            if (check.Ran && report != null)
             {
-                log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile, mirrorsMerged));
+                log.Line(CreationPlan.BlockCountLine(
+                    check.Blocks, report.TestsWithAClash, report.Tests.Count, report.MirrorsMerged));
             }
 
             Say(job.Building + ". " + check.Summary());
@@ -4131,11 +4131,7 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            CheckTheWorkbook(
-                job,
-                path,
-                outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile,
-                report == null ? 0 : report.MirrorsMerged);
+            CheckTheWorkbook(job, path, report);
         }
 
         /// <summary>

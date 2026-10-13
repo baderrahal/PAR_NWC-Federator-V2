@@ -78,7 +78,7 @@ picture link, the totals, the pictures stored in the workbook and those in the s
 point at a file outside it, and every doubt it had. It
 shares no code with the tool that wrote the workbook. It opens the xlsx as a zip, reads
 the XML, and knows a test by column A in both shapes a workbook holds, the full block and
-the one row test this tool writes for a test that found nothing, and by its numbers in C
+the one row test this tool wrote for a test that found nothing until F153, which writes nothing for it, and by its numbers in C
 to K when A is empty. A test or a clash row with no name, a sheet with no test and a
 workbook with no sheet are each written down as a doubt, so an empty read-out never
 looks like a clean one.

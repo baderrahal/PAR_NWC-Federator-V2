@@ -219,30 +219,16 @@ namespace Federator.Core.Report
         /// </summary>
         private int WriteBlock(IXLWorksheet sheet, int start, TestReport test, bool priority)
         {
-            // Q73 ANSWERED b. A TEST THAT FOUND NOTHING IS ONE ROW, not eight.
-            //
-            // EVERY TEST STILL APPEARS, and that rule does not change. The client's report
-            // is the whole matrix and a test missing from it reads as a test nobody ran
-            // rather than as a test that could not clash, which is what CreationPlan says
-            // in as many words. So the block count is unchanged and only its SHAPE moves.
-            //
-            // WHAT HIS FILES LOOK LIKE. 1A02MM holds 1,830 blocks in 15,182 rows, of which
-            // 1,773 found nothing and cost 14,184 rows of headings for nothing, which is
-            // 93 per cent of the file. A person scrolls two hundred screens of empty
-            // blocks to reach the 542 rows that say something.
-            //
-            // THE ROW IS STILL EVIDENCE THE PAIR WAS CHECKED, which is the whole reason
-            // the block is kept at all: it carries the test name, the tolerance, the zero
-            // counts, the type and the status, the same five things the header table
-            // carries, on one line instead of five.
-            //
-            // THIS IS A DEPARTURE FROM THE CLIENT'S OWN FORMAT and it is the only one in
-            // this tool. Their export writes the full block whatever the test found. The
-            // round report says so in one line so Bader can tell NMDC.
+            // F153, Bader's decision of 2026-10-13, which retires Q73's answer b. A TEST WITH NO
+            // CLASH WRITES NOTHING IN THE WORKBOOK. His run of that day held 130 tests with
+            // clashes and then rows 5204 to 6903, 1700 tests of one row each with nothing in
+            // them. Every test is still on the page, which keeps all of its blocks, and on the
+            // Coverage sheet of the internal workbook, which lists every test, so no test goes
+            // unreported. The workbook check expects a block for each test with a clash alone,
+            // CreationPlan.BlockCountLine, and names any row of a test with no clash.
             if (test.Rows.Count == 0)
             {
-                WriteEmptyTestRow(sheet, start, test, priority);
-                return start + 1;
+                return start;
             }
 
             WriteTestHeader(sheet, start, test);
@@ -278,34 +264,6 @@ namespace Federator.Core.Report
             }
 
             return row + RowsBetweenBlocks;
-        }
-
-        /// <summary>
-        /// ONE ROW FOR A TEST THAT FOUND NOTHING, Q73. It carries the same five facts the
-        /// header table carries, in the same columns, so a person reading down the sheet
-        /// reads one shape and not two: the test name in A, then the tolerance, the raw
-        /// clash count, the five status counts, the type and the status, starting at the
-        /// column the header table starts at.
-        ///
-        /// IT IS GREY LIKE A TEST HEADER AND NOT WHITE LIKE A CLASH ROW, because that is
-        /// what it is: a test header with nothing under it.
-        /// </summary>
-        private static void WriteEmptyTestRow(IXLWorksheet sheet, int row, TestReport test, bool priority)
-        {
-            ClientStyle.TestHeader(sheet, row, ColumnTestHeader - 1, LastTestHeaderColumn, 1);
-            sheet.Row(row).Height = ClientStyle.TestValuesRowHeight;
-
-            IXLCell name = sheet.Cell(row, 1);
-            name.Value = test.Name;
-            name.Style.Font.Bold = true;
-            sheet.Range(row, 1, row, 2).Merge();
-
-            WriteTestValues(sheet, row, test);
-
-            if (priority)
-            {
-                sheet.Cell(row, ColumnPriority).Value = Priorities.Cell(test.Priority);
-            }
         }
 
         private static void WriteTestHeader(IXLWorksheet sheet, int start, TestReport test)

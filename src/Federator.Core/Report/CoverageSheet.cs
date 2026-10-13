@@ -115,8 +115,8 @@ namespace Federator.Core.Report
                     test.Ran ? "yes" : "no",
                     count == null || !count.InDocument ? Unknown : Number(count.DocumentTopLevel),
                     count == null || !count.InDocument ? Unknown : Number(count.DocumentLeaves),
-                    count == null || !count.InWorkbook ? Unknown : Number(count.WorkbookRows),
-                    count == null || !count.InWorkbook ? Unknown : Number(count.WorkbookClashes),
+                    count == null || count.WorkbookRows < 0 ? Unknown : Number(count.WorkbookRows),
+                    count == null || count.WorkbookClashes < 0 ? Unknown : Number(count.WorkbookClashes),
                     count == null ? (data.Check == null ? "NOT COMPARED, the count check was not taken" : "NOT COMPARED, the check holds no one test of this name") : Verdict(count),
                     CoverageWords.For(test.Reason),
                     test.Detail

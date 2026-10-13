@@ -137,7 +137,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F77's tests not created: not in the document, and one row reading nought. Neither side
+        /// F77's tests not created: not in the document and no block in the workbook, F153. Neither side
         /// holds the test, so nothing was set beside Clash Detective and it is not counted as agreeing,
         /// the breaker's reading of lane B's first attempt, since such tests under a headline of
         /// all agree read as a verification that never happened. Set 03's log line 297 says, for
@@ -329,6 +329,27 @@ namespace Federator.Core.Tests
             Assert.That(CountCheck.FailedLine("100000", test), Does.Contain("the workbook holds no block for it"));
         }
 
+
+        /// <summary>
+        /// F153. A test with no clash writes no block, so a test that ran and found none reads nought rows and Clashes
+        /// nought and agrees with a document holding none, never a FAILED line for the block it does not have. One that
+        /// did not run this run is not compared, as any test that did not run. The break: the same missing block for a
+        /// test the document holds clashes of is FAILED, NoBlockForATestTheDocumentHoldsIsFailed.
+        /// </summary>
+        [Test]
+        public void ATestThatRanAndFoundNoneHasNoBlockAndAgreesWithADocumentHoldingNone()
+        {
+            CountCheck check = Judge(Tests(Ran("T"), NotRun("V")), Document(InDocument("T", 0, 0), InDocument("V", 0, 0)),
+                Workbook("U", 1, 0));
+            CountedTest test = Judged(check, "T");
+
+            Assert.That(test.Verdict, Is.EqualTo(CountVerdict.Agree));
+            Assert.That(test.InWorkbook, Is.False);
+            Assert.That(test.WorkbookRows, Is.EqualTo(0));
+            Assert.That(test.WorkbookClashes, Is.EqualTo(0));
+            Assert.That(Judged(check, "V").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(check.FailedLines("100000"), Is.Empty);
+        }
         [Test]
         public void ABlockWithNumbersForATestTheDocumentDoesNotHoldIsFailed()
         {
@@ -542,7 +563,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ANameOnTwoTestsOfTheWorkbookIsNotCompared()
         {
-            CountCheck check = Judge(Tests(Ran("T")), Document(InDocument("T", 2, 2)), Workbook("T", 2, 0, "T", 0, 0));
+            CountCheck check = Judge(Tests(Ran("T")), Document(InDocument("T", 2, 2)), Workbook("T", 2, 0, "T", 1, 0));
 
             Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.NotCompared));
             Assert.That(Judged(check, "T").Why, Does.Contain("2 tests of the workbook"));

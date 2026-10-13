@@ -981,11 +981,32 @@ namespace Federator.Core.Report
         /// <summary>
         /// How many tests of the file this report holds no block for because each is a mirror
         /// merged into its kept test, F132, counted by TakeOut, the one place a test leaves the
-        /// report. The workbook check reads this number, CreationPlan.BlockCountLine, so the
-        /// block it expects for every test in the file counts each merged mirror inside its
-        /// kept test's block, the same rule the report followed.
+        /// report. The workbook check's line, CreationPlan.BlockCountLine, says how many are
+        /// carried inside their kept tests' blocks.
         /// </summary>
         public int MirrorsMerged { get; private set; }
+
+        /// <summary>
+        /// The tests of this report holding a clash row, each a block of the workbook. Since F153 a test with
+        /// no clash writes nothing there, so this is the count the workbook check expects, BlockCountLine.
+        /// </summary>
+        public int TestsWithAClash
+        {
+            get
+            {
+                int count = 0;
+
+                foreach (TestReport test in tests)
+                {
+                    if (test.Rows.Count > 0)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
 
         public int CountOf(TestState state)
         {

@@ -1210,8 +1210,8 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(report.MirrorsMerged, Is.EqualTo(1));
-            Assert.That(CreationPlan.BlockCountLine(report.Tests.Count, 2, report.MirrorsMerged), Is.EqualTo(
-                "BLOCKS   1 in the workbook, one for every test in the file, 2 less the 1 mirror merged into its kept test"));
+            Assert.That(CreationPlan.BlockCountLine(report.TestsWithAClash, report.TestsWithAClash, report.Tests.Count, report.MirrorsMerged),
+                Does.EndWith(", and 1 mirror is merged into its kept test's block"));
         }
 
         // A mirror that did not run keeps its place in the report and is not counted as merged.
@@ -1225,8 +1225,8 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(report.MirrorsMerged, Is.EqualTo(0));
-            Assert.That(CreationPlan.BlockCountLine(report.Tests.Count, 2, report.MirrorsMerged),
-                Is.EqualTo(CreationPlan.BlockCountLine(2, 2)));
+            Assert.That(CreationPlan.BlockCountLine(report.TestsWithAClash, report.TestsWithAClash, report.Tests.Count, report.MirrorsMerged),
+                Does.Not.Contain("merged"));
         }
 
         // ---------- what the coverage's count check is told, F127b, the breaker's first finding ----------
