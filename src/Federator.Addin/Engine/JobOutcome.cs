@@ -252,12 +252,17 @@ namespace Federator.Addin.Engine
         /// <summary>What the clash step did for this group, or null when it did not run.</summary>
         public ClashRunOutcome Clash { get; set; }
 
-        /// <summary>The workbook model for this group, or null when no report was wanted.</summary>
+        /// <summary>
+        /// The workbook model for this group, or null when no report was wanted. Null once the
+        /// group has ended, F147, FederationEngine.LetGoOfTheRows, so nothing after the group
+        /// may read it.
+        /// </summary>
         public ClashReport Report { get; set; }
 
         /// <summary>
         /// Where each row of the report came from in the document, F132 attempt 2, handed
-        /// from the clash step to the views, or null when the clash step did not run.
+        /// from the clash step to the views, or null when the clash step did not run. Null once
+        /// the VIEWS step has returned and once the group has ended, F147.
         /// </summary>
         public IDictionary<ClashRow, RowAddress> RowAddresses { get; set; }
 

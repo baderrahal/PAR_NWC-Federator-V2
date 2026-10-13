@@ -909,6 +909,31 @@ well as to pass.
   throw lost. A result is found again by its name read through ClashRow.NameOf, the rule the harvest
   names a row by. A result or a group with no display name is found again only at its recorded index and
   only where nothing can have moved it, the pictures, which run before Compact, and the views refuse it
+- LONG RUNS KEPT FROM SLOWING, F147, Bader's order of 2026-10-11, Q152 item 2. RenderThePicturesWaiting
+  switches the undo off for the whole PICTURES step by Document.StartDisableUndo and, in its finally, on
+  again by the matched EndDisableUndo, a counter by the install's Autodesk.Navisworks.Api.xml read on
+  2026-10-12. The matching call is made only where the switch off returned, or where it threw and the
+  undo reads off by IsUndoDisabled where it read on before, since the call then took the counter. One
+  IMAGES line reads IsUndoDisabled and the name of the step Undo would take next before, during and
+  after the pictures, a name and not the depth of the stack, so it says what it read, and an undo that
+  reads off after where it read on before gets a line of its own, THE UNDO IS LEFT OFF. A put back
+  retried by modelsShown.Dispose in Run's finally runs after the undo is on again. Core's
+  TextureCacheWatch watches the folder ogs under Path.GetTempPath across the pass, built inside the
+  step's try, a temp folder that cannot be read or joined said and the cache left unchecked, and it is
+  checked between two stretches, core.md, THE TEXTURE CACHE. Every picture is already disposed as its
+  save returns, and the pass moves no camera, so there is no camera change for a jump cut. Every call of
+  the pass is on the main thread. The views step keeps the undo on
+- WHAT EACH STEP HOLDS IS RELEASED AS IT ENDS, F147, Bader's answer to Q155 on 2026-10-12, item 2,
+  read off every reader in src, no speculative rewrite. ClashRunner's picturesWaiting, one entry a row,
+  is read by the PICTURES step alone and emptied in its finally. JobOutcome.RowAddresses, where every row
+  came from, is read by the VIEWS step alone and set to null in FinishTheGroup as BuildViewpoints
+  returns. JobOutcome.Report, the group's report model with every row, is read last by the GAPS block
+  and released with RowAddresses by LetGoOfTheRows in the finally of RunOne and RunAnOpenFile, whichever
+  way the group ended, since the run keeps every outcome for RESULT and each group's rows stayed until
+  the run ended. A new reader of either after the group must move that release. Every Navisworks wrapper
+  of the clash step was already disposed where it was read, and the sets index in Run's finally. The
+  engine sets RunLog.MemoryReader to ProcessMemory.Read beside the census reader, core.md, THE MEMORY
+  AROUND EACH STEP
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and

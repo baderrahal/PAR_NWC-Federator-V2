@@ -173,7 +173,8 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Every row read while pictures are written, by the row, with where its result sits, F149,
         /// kept whichever way its harvest ended, so the picture pass takes each by its address once
-        /// every test has run and every merge is made, walking the report's order, PictureWalk.
+        /// every test has run and every merge is made, walking the report's order, PictureWalk, and
+        /// emptied as the pass ends, F147.
         /// </summary>
         private readonly Dictionary<ClashRow, RowAddress> picturesWaiting = new Dictionary<ClashRow, RowAddress>();
 
@@ -611,11 +612,11 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception)
                 {
-                    RenderThePicturesAfterTheMergeThrew(clashTests);
+                    RenderThePicturesAfterTheMergeThrew(document, clashTests);
                     throw;
                 }
 
-                RenderThePicturesWaiting(clashTests);
+                RenderThePicturesWaiting(document, clashTests);
 
                 // FR-076. Every picture is taken above, so this is where the pictures' guard can
                 // stop the run, once every test of the group has run, F149.
@@ -2545,8 +2546,19 @@ namespace Federator.Addin.Engine
         /// and one count of PROGRESS lines runs across the whole pass. A throw out of the pass outside
         /// a stretch marks the step and goes on up, as InStep's does, except after a merge that threw,
         /// RenderThePicturesAfterTheMergeThrew.
+        ///
+        /// LONG RUNS KEPT FROM SLOWING, F147, Bader's order of 2026-10-11, Q152 item 2. The undo is
+        /// switched off for the whole pass by Document.StartDisableUndo and its matched EndDisableUndo,
+        /// a counter by the install's API reference, so the hiding and the putting back of F145 inside
+        /// the pass are not meant to add to it. Whether they did before is UNKNOWN. A put back retried by
+        /// modelsShown.Dispose in Run's finally runs after the undo is on again. One line reads
+        /// IsUndoDisabled and the name of the step Undo would take next before and after the pass, a
+        /// name and not the depth of the stack. The texture cache is watched across the pass by Core's
+        /// TextureCacheWatch. Every picture is already disposed as its save returns, and the pass moves
+        /// no camera, TestsImageForResult taking none, so there is no camera change to make a jump cut.
+        /// Every call here is on the main thread.
         /// </summary>
-        private void RenderThePicturesWaiting(DocumentClashTests clashTests)
+        private void RenderThePicturesWaiting(Document document, DocumentClashTests clashTests)
         {
             if (picturesWaiting.Count == 0 || Images == null || Report == null)
             {
@@ -2557,9 +2569,23 @@ namespace Federator.Addin.Engine
             {
                 StepStarted(RunSteps.Pictures);
 
+                TextureCacheWatch textures = null;
+                bool? offBefore = UndoReadsOff(document);
+                string undoBefore = UndoState(document);
+                bool undoOff = KeepTheUndoOff(document, offBefore);
+                string undoDuring = UndoState(document);
+
                 try
                 {
-                    picturing.Changed(TakeThePictures(clashTests));
+                    textures = new TextureCacheWatch(
+                        CacheFolder(),
+                        Images.TextureCacheLimitBytes,
+                        Images.TextureCacheCheckEverySeconds,
+                        () => log.ElapsedSeconds,
+                        line => log.Line("IMAGES   " + line));
+
+                    textures.AtTheStart();
+                    picturing.Changed(TakeThePictures(clashTests, textures));
                 }
                 catch (Exception)
                 {
@@ -2568,6 +2594,15 @@ namespace Federator.Addin.Engine
                 }
                 finally
                 {
+                    PutTheUndoBack(document, undoOff, offBefore, undoBefore, undoDuring);
+
+                    if (textures != null)
+                    {
+                        log.Line("IMAGES   " + textures.AtTheEnd());
+                    }
+
+                    // F147, Bader's answer to Q155. Read by this pass alone, so released as it ends.
+                    picturesWaiting.Clear();
                     StepEnded();
                 }
             }
@@ -2578,11 +2613,11 @@ namespace Federator.Addin.Engine
         /// on attempt 1, and a throw out of them written as a failure line, the second reading, so
         /// the merge's own error is the one that goes on up and is never lost behind the pass's.
         /// </summary>
-        private void RenderThePicturesAfterTheMergeThrew(DocumentClashTests clashTests)
+        private void RenderThePicturesAfterTheMergeThrew(Document document, DocumentClashTests clashTests)
         {
             try
             {
-                RenderThePicturesWaiting(clashTests);
+                RenderThePicturesWaiting(document, clashTests);
             }
             catch (Exception error)
             {
@@ -2593,8 +2628,120 @@ namespace Federator.Addin.Engine
             }
         }
 
-        /// <summary>The pass inside its step: Core's walk, then each stretch in turn until the guard fires. Hands back the step's phrase.</summary>
-        private string TakeThePictures(DocumentClashTests clashTests)
+        /// <summary>The folder ogs under the user's temp folder, where Navisworks keeps its texture cache, or null, said, where it cannot be made.</summary>
+        private string CacheFolder()
+        {
+            try
+            {
+                return TextureCacheWatch.FolderIn(System.IO.Path.GetTempPath());
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the temp folder for the texture cache",
+                    error,
+                    "kept going, the texture cache is not checked in this pass");
+                return null;
+            }
+        }
+
+        /// <summary>Whether the undo reads off by IsUndoDisabled, null where it cannot be read.</summary>
+        private static bool? UndoReadsOff(Document document)
+        {
+            try
+            {
+                return document.IsUndoDisabled;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Whether the undo reads off, by IsUndoDisabled, and the name of the step Undo would take next,
+        /// a name and not the depth of the stack, nothing where there is none, each UNKNOWN where it
+        /// cannot be read.
+        /// </summary>
+        private static string UndoState(Document document)
+        {
+            bool? off = UndoReadsOff(document);
+            string next;
+
+            try
+            {
+                next = Words.Or(document.NextUndo, "nothing");
+            }
+            catch (Exception error)
+            {
+                next = "UNKNOWN, " + error.GetType().Name;
+            }
+
+            return (off == null ? "UNKNOWN" : off.Value ? "off" : "on") + " with " + next + " as the step Undo would take next";
+        }
+
+        /// <summary>
+        /// The undo switched off for the pictures, F147. Where the call threw, false and said, unless the
+        /// undo now reads off where it read on before, since then the call took the counter before it
+        /// threw and its matching call must still be made.
+        /// </summary>
+        private bool KeepTheUndoOff(Document document, bool? offBefore)
+        {
+            try
+            {
+                document.StartDisableUndo();
+                return true;
+            }
+            catch (Exception error)
+            {
+                bool tookIt = offBefore == false && UndoReadsOff(document) == true;
+
+                log.Failure(
+                    "switching the undo off for the pictures",
+                    error,
+                    tookIt
+                        ? "kept going, the undo reads off now where it read on before, so it is switched on again after the pictures"
+                        : "kept going with the undo on, so each hiding and putting back of the models may add to it");
+                return tookIt;
+            }
+        }
+
+        /// <summary>
+        /// The undo switched on again after the pictures by the call matching the one that switched it
+        /// off, F147, and its state as read before, during and after the pictures on one line, so the
+        /// line says what was read. An undo that reads off after where it read on before is said on a
+        /// line of its own, since Undo then does nothing in that session.
+        /// </summary>
+        private void PutTheUndoBack(Document document, bool undoOff, bool? offBefore, string undoBefore, string undoDuring)
+        {
+            if (!undoOff)
+            {
+                return;
+            }
+
+            try
+            {
+                document.EndDisableUndo();
+                log.Line("IMAGES   the undo for the pictures read " + undoBefore + " before them, " + undoDuring
+                    + " during them, and " + UndoState(document) + " after");
+
+                if (offBefore == false && UndoReadsOff(document) == true)
+                {
+                    log.Line("IMAGES   THE UNDO IS LEFT OFF after the pictures where it read on before them, so Undo does nothing in this "
+                        + "Navisworks until it is restarted");
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "switching the undo on again after the pictures",
+                    error,
+                    "kept going, the undo may stay off in Navisworks until it is restarted");
+            }
+        }
+
+        /// <summary>The pass inside its step: Core's walk, then each stretch in turn until the guard fires, the texture cache checked between two. Hands back the step's phrase.</summary>
+        private string TakeThePictures(DocumentClashTests clashTests, TextureCacheWatch textures)
         {
             PictureWalkOutcome walk = PictureWalk.Of(Report, ReadFrom);
 
@@ -2625,6 +2772,7 @@ namespace Federator.Addin.Engine
 
                 TakeTheStretch(clashTests, harvest, stretch, done, walk.Rows);
                 done += stretch.Rows.Count;
+                textures.BetweenTests();
             }
 
             return Words.Counted(walk.Rows, "row", "rows") + " in report order in "
