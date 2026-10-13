@@ -946,3 +946,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     Everything else stays as it is.
 
     Answer: Bader, 2026-10-12, as written above. The lead's notes. No questions numbered Q1 to Q5 were put to him, so each answer is written here and under the row it settles: Q1 under F150's row, the API test run as scan.md 5z-zf, Q2 under Q155. Q3, Q4 and Q5 are rules of the round.
+
+158. From the loop, 2026-10-13, row F114-K32 of steps\tracker.csv, put to Bader in the entry of fix-F114d of steps\history\log.md. A person's own view named like a test's view, in the folder where the tool would put that view, cannot be told from the one the tool is about to make. Today the tool writes none there and counts the view FAILED, which costs the group DONE. A, keep it, the group is not DONE. B, skip it, the group stays DONE and the VIEWS block names the view skipped. The tool never removes or rewrites a view that was a person's either way.
+
+    Answer: Bader, 2026-10-13, his message headed BADER, 13 OCT 2026: HIS ANSWERS, THE CSV AND THREE SMALL CHANGES, in his words: "F114-K32: B. A person's own view named like a tool view does not fail the group. The group stays DONE and the VIEWS block says the view was skipped and names it." The lead's notes. Built by fix-F114-K32: ViewpointBuildOutcome.AddSkipped, and the VIEWS BUILT block names the view as SKIPPED and counts it apart from created and failed. A person's view is never removed or rewritten.

@@ -129,6 +129,51 @@ namespace Federator.Core.Tests
             Assert.That(lines[lines.Count - 1], Is.EqualTo("put into the document: 2 created"));
         }
 
+        /// <summary>
+        /// F114-K32, Bader's answer B. A person's own view of a test's name is SKIPPED and named,
+        /// never failed, so the group stays DONE: it is neither created nor failed and the block
+        /// names it and counts it apart.
+        /// </summary>
+        [Test]
+        public void ASkippedViewIsNamedAndIsNeitherCreatedNorFailed()
+        {
+            ViewpointBuildOutcome outcome = new ViewpointBuildOutcome();
+
+            outcome.AddCreated("A/Pair/One", "AR", 1);
+            ViewResult skipped = outcome.AddSkipped("A/Pair/Mine", "AR", "a person's view of its name sits there");
+
+            Assert.That(skipped.Failed, Is.False);
+            Assert.That(skipped.WasSkipped, Is.True);
+            Assert.That(skipped.Line(), Is.EqualTo("VIEW     A/Pair/Mine  SKIPPED, a person's view of its name sits there"));
+            Assert.That(outcome.CreatedCount, Is.EqualTo(1));
+            Assert.That(outcome.FailedCount, Is.EqualTo(0));
+            Assert.That(outcome.SkippedCount, Is.EqualTo(1));
+            Assert.That(outcome.Summary(), Is.EqualTo("1 created, 1 skipped."));
+
+            IList<string> lines = outcome.Lines();
+
+            Assert.That(lines, Does.Contain("VIEW     A/Pair/Mine  SKIPPED, a person's view of its name sits there"));
+            Assert.That(lines, Does.Contain("views created     : 1"));
+            Assert.That(lines, Does.Contain("views skipped, a person's own view of that name is in their place : 1"));
+            Assert.That(lines, Does.Contain("put into the document: 1 created"));
+
+            foreach (string line in lines)
+            {
+                Assert.That(line, Does.Not.Contain("views that failed"));
+            }
+        }
+
+        [Test]
+        public void ASkippedViewWithNoReasonGetsOneAndOnlyASkippedGroupPutsNothingIn()
+        {
+            ViewpointBuildOutcome outcome = new ViewpointBuildOutcome();
+            ViewResult skipped = outcome.AddSkipped("A/Pair/Mine", "AR", null);
+
+            Assert.That(skipped.Skipped, Does.StartWith("UNKNOWN"));
+            Assert.That(outcome.PutAnythingIn, Is.False);
+            Assert.That(outcome.FailedCount, Is.EqualTo(0));
+        }
+
         [Test]
         public void NothingFailedMeansNoFailedLineInTheBlock()
         {

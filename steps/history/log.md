@@ -2,6 +2,28 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F114-K32 a person's view named like a tool view is skipped, Bader's answer B, Q158
+
+Branch fix-F114-K32 off main 99c7f288, Bader's message of 2026-10-13 headed BADER, 13 OCT 2026: HIS ANSWERS, THE CSV AND
+THREE SMALL CHANGES, written on the desktop PC by the developer.
+
+What was done:
+- ViewpointBuildOutcome gained AddSkipped, SkippedCount and ViewResult.Skipped. A skipped view is neither created nor
+  failed, so FailedCount, which GroupJudgement reads, does not move and the group stays DONE
+- ViewpointBuilder, where CountUnmarked found a view of the test's name with no mark of this tool in its folder, now
+  calls AddSkipped and not AddFailed, with the same words. The VIEWS BUILT block names it as SKIPPED and a line
+  "views skipped" counts it. The inventory keeps a person's unmarked view as before, KeepNotOurs, and the tool's
+  own earlier view of that test is kept as before, KeepReplacementFailed
+- The rule stands: a view that was a person's is never removed or rewritten by the tool
+- Core tests before 3091 passed, after 3093 passed, 0 failed, 0 skipped. The solution builds in Release, 0 warnings,
+  0 errors. check-locals and check-imports read clean
+
+What remains: nothing for K32. A run that meets a person's view of a test's name has not been made on Navisworks.
+
+Known bugs: none new.
+
+What comes next: fix-F114-K29, then fix-F114-K36, Bader's answers of the same message.
+
 ## 2026-10-13 F123 wave 5, FR-058, FR-059, FR-060, FR-062, FR-063, FR-167 and FR-169, written by the developer as the lead's delegate
 
 Branch fix-F123b off main 402a8155, Bader's order of 2026-10-12 headed BADER SAYS GO, item 7: waves 3, 4 and 5,

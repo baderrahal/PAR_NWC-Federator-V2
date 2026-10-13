@@ -779,9 +779,11 @@ namespace Federator.Addin.Engine
 
             // A person's unmarked view of this name in this folder cannot be told from the
             // one about to be made, P12 and P22 unrun, so none is made and the person's stays.
+            // F114-K32, Bader's answer B: it is SKIPPED and named, never FAILED, so it does not
+            // cost the group DONE.
             if (SavedViewpoints.CountUnmarked(document, view.Folders, view.Name, false, views) > 0)
             {
-                outcome.AddFailed(view.ToString(), showsWords,
+                outcome.AddSkipped(view.ToString(), showsWords,
                     "a view of its name with no mark of this tool sits in " + ViewPlace.FolderPath(view.Folders)
                     + ", a person's or one an earlier run could not mark, so none was written there and that one is left as it is");
                 return;
