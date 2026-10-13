@@ -29,17 +29,12 @@ namespace Federator.Core.Report
     /// </summary>
     public sealed class WorkbookWriter
     {
-        private readonly ReportOptions options;
-
-        /// <summary>The defaults, which is images on.</summary>
+        /// <summary>
+        /// The writer takes no options. The one it read, whether to paste a thumbnail into the Image cell,
+        /// went with F152, since the pictures are linked in the client's form and never pasted.
+        /// </summary>
         public WorkbookWriter()
-            : this(null)
         {
-        }
-
-        public WorkbookWriter(ReportOptions options)
-        {
-            this.options = options ?? new ReportOptions();
         }
 
         // ---------- where every cell of a block sits, measured off theirs ----------
@@ -128,6 +123,9 @@ namespace Federator.Core.Report
                 Directory.CreateDirectory(folder);
             }
 
+            pictures.Clear();
+            PicturesLinked = 0;
+
             using (XLWorkbook workbook = new XLWorkbook())
             {
                 IXLWorksheet sheet = workbook.Worksheets.Add(SheetNames.ForReport(report.OutputName));
@@ -157,8 +155,21 @@ namespace Federator.Core.Report
                 workbook.SaveAs(path);
             }
 
+            // F152. ClosedXML writes no linked picture, so they go in after the save, by
+            // editing the package, in the form of the client's own file.
+            PicturesLinked = LinkedPictures.AddTo(path, pictures);
+
             return path;
         }
+
+        /// <summary>
+        /// How many linked pictures the last Write put in the workbook, one per clash row with a picture,
+        /// F152. Each shows only while the _files folder beside the workbook stays where it was written.
+        /// </summary>
+        public int PicturesLinked { get; private set; }
+
+        /// <summary>The clash rows of the workbook being written that carry a picture, each with its sheet row.</summary>
+        private readonly List<LinkedPicture> pictures = new List<LinkedPicture>();
 
         // ---------- the title row ----------
 
@@ -248,10 +259,8 @@ namespace Federator.Core.Report
 
             foreach (ClashRow clash in test.Rows)
             {
-                // Before the row is written and not after, because a pasted thumbnail sets the row to its own
-                // height while the row is written, and the height set after it took the picture's away, FR-039.
-                // Measured off every clash row of theirs, so a picture fits rather than being squashed into a
-                // default row.
+                // Measured off every clash row of theirs. Their linked picture is taller than the row and
+                // runs into the row below it, and ours, F152, does the same.
                 sheet.Row(row).Height = ClashRowHeight;
 
                 WriteClashRow(sheet, row, clash);
@@ -516,7 +525,7 @@ namespace Federator.Core.Report
             ClientStyle.Fill(sheet, row, ColumnItem2, LastColumn, ClientStyle.Item2Body);
             BoxTheRuns(sheet, row);
 
-            WriteImageCell(sheet, sheet.Cell(row, ColumnImage), clash);
+            WriteImageCell(sheet.Cell(row, ColumnImage), clash);
             sheet.Range(row, ColumnImage, row, ColumnImage + 1).Merge();
 
             sheet.Cell(row, ColumnClashName).Value = clash.WrittenName();
@@ -557,13 +566,15 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The Image cell. A link to the jpg beside the workbook, and the picture itself
-        /// only when that was asked for.
+        /// The Image cell. A link to the jpg beside the workbook, and the row handed to the linked
+        /// pictures, F152, Bader's decision of 2026-10-13 that pictures stay links in the form of the
+        /// client's own file.
         ///
-        /// Neither their workbook nor ours embeds a picture. The native export never does.
-        /// The page and its _files folder together is what gets sent.
+        /// Neither their workbook nor ours embeds a picture. Theirs holds a drawing of linked pictures
+        /// with no media of its own, measured on 2026-10-13, and ours now does too, so a picture shows
+        /// only while the _files folder stays where it was written.
         /// </summary>
-        private void WriteImageCell(IXLWorksheet sheet, IXLCell cell, ClashRow clash)
+        private void WriteImageCell(IXLCell cell, ClashRow clash)
         {
             if (!clash.HasImage)
             {
@@ -582,35 +593,11 @@ namespace Federator.Core.Report
                 cell.SetHyperlink(new XLHyperlink(new Uri(clash.ImageLink, UriKind.Relative)));
             }
 
-            if (!options.Images.EmbedThumbnail || string.IsNullOrEmpty(clash.ImagePath))
+            if (!string.IsNullOrEmpty(clash.ImagePath))
             {
-                return;
-            }
-
-            try
-            {
-                if (!File.Exists(clash.ImagePath))
-                {
-                    return;
-                }
-
-                sheet.AddPicture(clash.ImagePath)
-                    .MoveTo(cell)
-                    .WithSize(ThumbnailPixels, ThumbnailPixels);
-
-                sheet.Row(cell.Address.RowNumber).Height = ThumbnailPoints;
-            }
-            catch (Exception)
-            {
-                // A picture that will not embed must not lose the workbook. The link is
-                // already on the cell, so the row still reaches its image.
+                pictures.Add(new LinkedPicture(cell.Address.RowNumber, clash.ImagePath));
             }
         }
-
-        /// <summary>The size a pasted thumbnail is drawn at, matching their 95 pixel one.</summary>
-        private const int ThumbnailPixels = 95;
-
-        internal const double ThumbnailPoints = 72.0;
 
         /// <summary>
         /// Their column widths, read out of the sheet XML of

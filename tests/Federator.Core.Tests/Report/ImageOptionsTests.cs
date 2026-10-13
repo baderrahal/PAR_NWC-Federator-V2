@@ -46,9 +46,10 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void ThumbnailsAreOffBecauseTheAcceptedReportLinksRatherThanPasting()
+        public void ThePicturesAreLinkedBecauseTheAcceptedReportLinksRatherThanPasting()
         {
-            Assert.That(new ImageOptions().EmbedThumbnail, Is.False);
+            Assert.That(typeof(ImageOptions).GetProperty("EmbedThumbnail"), Is.Null);
+            Assert.That(new ImageOptions().Describe(), Does.Contain("linked rather than pasted in"));
         }
 
         [Test]

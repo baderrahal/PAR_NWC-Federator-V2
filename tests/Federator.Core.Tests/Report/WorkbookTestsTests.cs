@@ -81,7 +81,7 @@ namespace Federator.Core.Tests
 
         internal static string Write(ClashReport report, string folder)
         {
-            return new WorkbookWriter(new ReportOptions()).Write(report, Path.Combine(folder, OutputName + ".xlsx"));
+            return new WorkbookWriter().Write(report, Path.Combine(folder, OutputName + ".xlsx"));
         }
 
         internal static WorkbookTests ReadBack(string path)

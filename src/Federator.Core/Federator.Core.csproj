@@ -19,6 +19,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- F152. The linked pictures go into the saved xlsx by editing it as the zip it is,
+         since ClosedXML writes no linked picture. Both are part of .NET Framework 4.8, so
+         nothing new ships in the bundle. -->
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- F84's list of every category the client's Revit models really carry. EMBEDDED
          and not loose, because the bundle copies what install.ps1 names and a loose file
          beside the assembly is a file that arrives on 26 machines and not on the 27th.

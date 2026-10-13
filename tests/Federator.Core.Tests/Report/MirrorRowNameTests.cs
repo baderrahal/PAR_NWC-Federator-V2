@@ -91,7 +91,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheWorkbookShowsTheStatusTheRuleGivesAClashBothFound()
         {
-            string path = new WorkbookWriter(new ReportOptions()).Write(Merged(), Path.Combine(folder, "status.xlsx"));
+            string path = new WorkbookWriter().Write(Merged(), Path.Combine(folder, "status.xlsx"));
             string ownRow = null;
             string mirrorsRow = null;
 
@@ -175,7 +175,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheWorkbookNamesAClashOnlyTheMirrorFound()
         {
-            string path = new WorkbookWriter(new ReportOptions()).Write(Merged(), Path.Combine(folder, "merged.xlsx"));
+            string path = new WorkbookWriter().Write(Merged(), Path.Combine(folder, "merged.xlsx"));
             int found = 0;
 
             using (XLWorkbook workbook = new XLWorkbook(path))

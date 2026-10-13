@@ -84,7 +84,7 @@ namespace Federator.Core.Tests
         private string Write(bool picked)
         {
             string path = Path.Combine(folder, "book.xlsx");
-            return new WorkbookWriter(new ReportOptions()).Write(Report(picked), path);
+            return new WorkbookWriter().Write(Report(picked), path);
         }
 
         [Test]

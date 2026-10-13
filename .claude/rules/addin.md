@@ -609,8 +609,8 @@ well as to pass.
   every field had to be typed by hand. That is where MOD-00001 came from instead of
   MOD-000001. The defaults were always six digits in the code and never reached the window
 - Every default the window shows is read from the Core object that holds it, in the
-  constructor, and is never typed into the XAML as well. The photo size, the cap, the paste
-  into cells tick and the five status ticks are read from ImageOptions, which is where the
+  constructor, and is never typed into the XAML as well. The photo size, the cap and the five
+  status ticks are read from ImageOptions, the paste into cells tick gone with F152, which is where the
   1024 measured off the accepted report lives. Two copies of a default drift, and the XAML
   copy is the one nothing can test. The tick box that skips the clash for models off the
   shared coordinates starts from AlignmentCheck.DefaultSkipClashOffCoordinates beside its
@@ -757,8 +757,9 @@ well as to pass.
 - A tick box has to earn being a decision. How many there are and how many sit up front is
   counted once, in What a tick box says below. Republishing the NWD, writing the client page and rendering the
   photos are fixed ON, because a weekly run wants all three every time. Client columns only
-  is gone outright, dead since the workbook became one sheet with none of ours on it.
-  Dating the NWD, the clash XML, the thumbnails and the five image status boxes are
+  is gone outright, dead since the workbook became one sheet with none of ours on it, and so
+  is the thumbnail box, F152, since the pictures are linked in the client's form and never
+  pasted. Dating the NWD, the clash XML, the ghosted look and the five image status boxes are
   collapsed under More, rarely changed. The two that destroy data are collapsed on their
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
@@ -1032,16 +1033,18 @@ and they explained the off state as well as the on state, so nothing stood out.
   because when every label shouted, none of them did
 
 The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
-each and 213 took 17 seconds. Pasting them takes the workbook from 0.3 MB to 52 MB.
+each and 213 took 17 seconds.
 
 There were fifteen, then eleven, and F72 made twelve, of which two were visible without
-opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash step, so
-src\Federator.Addin\Ui\FederatorWindow.xaml holds SIXTEEN, of which SIX sit under no
-expander, by x:Name IncludeSubfolders on the Source step and MarkPenetrations,
+opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash step, F150
+added GhostOtherItems under More and F152 took EmbedThumbnails out of it, so
+src\Federator.Addin\Ui\FederatorWindow.xaml holds SIXTEEN named tick boxes, of which SIX sit
+under no expander, by x:Name IncludeSubfolders on the Source step and MarkPenetrations,
 MarkByDesign, RebuildDriftedSets, SkipClashOffCoordinates and MakeViewpoints on the Clash
-step. The
-other ten are eight under More, rarely changed and two under Things that destroy data. Read
-off the XAML on 2026-10-05 by its CheckBox and Expander lines. probe-window-labels.ps1 was
+step. The other ten are eight under More, rarely changed, DateTheNwd, WriteClashXml,
+GhostOtherItems and the five Photo of boxes, and two under Things that destroy data,
+ApplyFileSettings and CompactResolved. Read off the XAML on 2026-10-13 by its CheckBox
+elements with an x:Name, where main before F152 held seventeen. probe-window-labels.ps1 was
 not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
 Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only
 record of what has been fixed, so a run has to be told to do that rather than told not to. Everything else became a

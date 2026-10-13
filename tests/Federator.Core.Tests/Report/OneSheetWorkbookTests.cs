@@ -101,7 +101,7 @@ namespace Federator.Core.Tests
 
         private string Write(ClashReport report, ReportOptions options)
         {
-            return new WorkbookWriter(options)
+            return new WorkbookWriter()
                 .Write(report, Path.Combine(folder, OutputName + ".xlsx"));
         }
 
