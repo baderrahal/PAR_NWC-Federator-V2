@@ -8,12 +8,13 @@ namespace Federator.Core.Views
     /// <summary>One view, as it turned out.</summary>
     public sealed class ViewResult
     {
-        internal ViewResult(string path, string shows, int hidden, string error)
+        internal ViewResult(string path, string shows, int hidden, string error, string skipped)
         {
             Path = path;
             Shows = shows;
             Hidden = hidden;
             Error = error;
+            Skipped = skipped;
         }
 
         public string Path { get; private set; }
@@ -32,12 +33,28 @@ namespace Federator.Core.Views
             get { return Error != null; }
         }
 
+        /// <summary>
+        /// Why no view was written where a person's own view of this name sits in its place, F114-K32,
+        /// or null where the view was not skipped. A skipped view is neither created nor failed.
+        /// </summary>
+        public string Skipped { get; private set; }
+
+        public bool WasSkipped
+        {
+            get { return Skipped != null; }
+        }
+
         /// <summary>The one line the VIEWS BUILT block carries for this view.</summary>
         public string Line()
         {
             if (Failed)
             {
                 return "VIEW     " + Path + "  FAILED, " + Error;
+            }
+
+            if (WasSkipped)
+            {
+                return "VIEW     " + Path + "  SKIPPED, " + Skipped;
             }
 
             return "VIEW     " + Path + "  created, shows " + Shows
@@ -66,7 +83,7 @@ namespace Federator.Core.Views
         /// <summary>Made by this run, marked and read back.</summary>
         public ViewResult AddCreated(string path, string shows, int hidden)
         {
-            ViewResult result = new ViewResult(path, shows, hidden, null);
+            ViewResult result = new ViewResult(path, shows, hidden, null, null);
             results.Add(result);
             return result;
         }
@@ -80,7 +97,23 @@ namespace Federator.Core.Views
         {
             ViewResult result = new ViewResult(
                 path, shows, 0,
-                string.IsNullOrEmpty(error) ? "UNKNOWN, it failed and no reason was given" : error);
+                string.IsNullOrEmpty(error) ? "UNKNOWN, it failed and no reason was given" : error,
+                null);
+
+            results.Add(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Not written because a person's own view of its name sits in its place, F114-K32, Bader's
+        /// answer B: the group stays DONE and the block names the view skipped, with why. A reason
+        /// is required for the same cause AddFailed's is.
+        /// </summary>
+        public ViewResult AddSkipped(string path, string shows, string why)
+        {
+            ViewResult result = new ViewResult(
+                path, shows, 0, null,
+                string.IsNullOrEmpty(why) ? "UNKNOWN, it was skipped and no reason was given" : why);
 
             results.Add(result);
             return result;
@@ -88,7 +121,39 @@ namespace Federator.Core.Views
 
         public int CreatedCount
         {
-            get { return CountWhere(false); }
+            get
+            {
+                int count = 0;
+
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (!results[i].Failed && !results[i].WasSkipped)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
+        /// <summary>The views not written because a person's own view of that name sits in its place, never counted failed.</summary>
+        public int SkippedCount
+        {
+            get
+            {
+                int count = 0;
+
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (results[i].WasSkipped)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
         }
 
         public int FailedCount
@@ -130,6 +195,7 @@ namespace Federator.Core.Views
             }
 
             return CreatedCount + " created"
+                + (SkippedCount > 0 ? ", " + SkippedCount + " skipped" : string.Empty)
                 + (FailedCount > 0 ? ", " + FailedCount + " failed" : string.Empty)
                 + ".";
         }
@@ -148,7 +214,7 @@ namespace Federator.Core.Views
 
             for (int i = 0; i < results.Count; i++)
             {
-                if (results[i].Failed)
+                if (results[i].Failed || results[i].WasSkipped)
                 {
                     lines.Add(results[i].Line());
                     continue;
@@ -171,6 +237,11 @@ namespace Federator.Core.Views
 
             lines.Add(string.Empty);
             lines.Add("views created     : " + CreatedCount);
+
+            if (SkippedCount > 0)
+            {
+                lines.Add("views skipped, a person's own view of that name is in their place : " + SkippedCount);
+            }
 
             if (FailedCount > 0)
             {
