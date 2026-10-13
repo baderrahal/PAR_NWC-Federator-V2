@@ -170,6 +170,24 @@ namespace Federator.Core.Views
             return teams[0];
         }
 
+        /// <summary>
+        /// Whether a team is one the team map names, F114-K29, Bader's answer of 2026-10-13: only
+        /// the teams named in the map get view pair folders, so a team the map does not name, or
+        /// one named UNKNOWN, has none. With no map read, or a map holding no team, nothing is
+        /// outside it and every team is taken as named, so a run with no map is as it was.
+        /// </summary>
+        public bool NamedByTheMap(string team)
+        {
+            if (!Map.IsRead || Map.Teams.Count == 0)
+            {
+                return true;
+            }
+
+            return !string.IsNullOrEmpty(team)
+                && !string.Equals(team, Map.UnknownTeam, StringComparison.Ordinal)
+                && Map.Teams.Contains(team);
+        }
+
         /// <summary>The team pair of a test's two sides, each its locator or a set name, in the map's one order.</summary>
         public TeamPair PairOf(string leftSide, string rightSide)
         {

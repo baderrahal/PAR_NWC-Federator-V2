@@ -18,6 +18,9 @@ namespace Federator.Core.Views
         private readonly List<string> mirrorWords = new List<string>();
         private readonly List<string> mirrorRule = new List<string>();
         private int mirrorsOpen;
+        private readonly List<string> unmapped = new List<string>();
+        private readonly List<string> unmappedWords = new List<string>();
+        private int unmappedOpen;
 
         internal TestViewPlanOutcome(IList<ClashStatus> inScope, ICollection<string> mirrorRule)
         {
@@ -143,6 +146,30 @@ namespace Federator.Core.Views
             LeftOutAsMirrors = LeftOutAsMirrors + open + atAnotherStatus;
         }
 
+        /// <summary>
+        /// A test with a side on a team the team map does not name, or on UNKNOWN, F114-K29: no view,
+        /// its open clashes counted apart from the rest and the test named with the two teams read.
+        /// </summary>
+        internal void LeaveOutUnmapped(string testName, int open, int atAnotherStatus, string leftTeam, string rightTeam)
+        {
+            unmapped.Add(testName);
+            unmappedWords.Add(testName + " : " + open + " open and in no view, " + atAnotherStatus
+                + " at a status no view shows, its sides read as the teams " + leftTeam + " and " + rightTeam);
+            unmappedOpen = unmappedOpen + open;
+        }
+
+        /// <summary>Each test left without a view because a side is on a team the map does not name or on UNKNOWN, once.</summary>
+        public ReadOnlyCollection<string> OutsideTheMap
+        {
+            get { return new ReadOnlyCollection<string>(unmapped); }
+        }
+
+        /// <summary>The open clashes of those tests, in no view.</summary>
+        public int OpenOutsideTheMap
+        {
+            get { return unmappedOpen; }
+        }
+
         internal void Pair(string testName, TeamPair pair)
         {
             if (!pairOfTest.ContainsKey(testName))
@@ -208,6 +235,10 @@ namespace Federator.Core.Views
             {
                 lines.Add("mirrored tests : UNKNOWN, no mirror rule was handed to the plan, so a mirrored test gets a view as any test does");
             }
+
+            lines.Add("tests with a side on a team the team map does not name, or on UNKNOWN, so no view : " + unmapped.Count
+                + ", their " + unmappedOpen + " open clashes in no view, and nothing deleted from the NWF, the clashes, the sets or the report");
+            Named(lines, unmappedWords, null);
 
             lines.Add("size could not be read, in a pair with a size folder : " + sizeUnknown.Count
                 + ", every one in its pair view and none dropped");
