@@ -26,6 +26,7 @@ paths:
 - steps\02_questions.md holds every question put to Bader, numbered once and never
   renumbered, with his answer under it and the fix that carried it out. A new question
   goes after the last one
+- When Bader answers a question, the same round writes the Answer: line, the row's status in steps\tracker.csv and the remade counts, and tells him in the tab which rows changed, his rule of 13 Oct 2026
 - steps\03_bader_next.md is what Bader does on the local machine, numbered, one
   action per step, in the order that proves the most with one build, one install and
   one Navisworks session. It names which proof comes first and why. It is rewritten,
