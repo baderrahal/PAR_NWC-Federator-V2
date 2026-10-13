@@ -268,9 +268,10 @@ well as to pass.
   needed. A test the clash step skipped as FAILED is never read whole, and nor is the kept test
   of a merged mirror it failed on, `TestsRead.ClashStepFailed` handed the clash record's skipped
   tests and `ClashRunner.KeptOfMirror`, row F114-K38, since its harvest may have thrown after
-  reading only closed rows, so its old views stay and it is counted failed with why. A test whose open rows are ALL result groups gets no view, keeps its old views and
-  is named on one VIEWS line, never counted failed, `TestsRead.OnlyGroups`, F3, the lead's
-  decision that a person's grouping must not cost the group DONE. A test not read whole hands the
+  reading only closed rows, so its old views stay and it is counted failed with why. A result group row is always read and the clashes INSIDE it are planned each at its own
+  status and name in its test's view, `ReportClash.ToViewOfMember`, F114-K36, Bader's answer B of
+  2026-10-13, which retired the lead's F3. A test of groups alone is whole when its groups were
+  read whole. A test not read whole hands the
   plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is
   not DONE on it, and keeps its views of earlier runs, since the inventory is handed
   `TestsRead.WholeNames` as the tests read and never the tests the clash step ran, which

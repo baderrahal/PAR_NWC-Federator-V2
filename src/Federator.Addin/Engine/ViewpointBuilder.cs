@@ -200,13 +200,6 @@ namespace Federator.Addin.Engine
                     outcome.AddFailed(notWhole.Key, "UNKNOWN", notWhole.Value);
                 }
 
-                // F3, the lead's decision: a person's grouping must not cost the group DONE.
-                foreach (string grouped in testsRead.OnlyGroups)
-                {
-                    log.Line("VIEWS    " + grouped + " gets no view: its open clashes are all result groups, which carry no items to show, "
-                        + "so its views of earlier runs are kept and it is not counted as failed");
-                }
-
                 if (Plan.Views.Count > 0)
                 {
                     WriteTheViews(document, clashTests, groupModels, outcome, written, hiddenReadBack, paintedReadBack);
@@ -299,7 +292,9 @@ namespace Federator.Addin.Engine
                 // C1. A row outside the views' statuses needs nothing read: it goes to the plan,
                 // which counts it as left out, and nothing about its result can make its test
                 // not read, so a Resolved row Compact removed stays harmless.
-                if (!testsRead.NeedsReading(clash.Status))
+                // F114-K36: a result group row is always read, whatever its own status, since the
+                // clashes inside it stand at statuses of their own and are what the views show.
+                if (!clash.Row.IsGroup && !testsRead.NeedsReading(clash.Status))
                 {
                     collected.Add(new CollectedRow(clash.ToView(null, null, null, null, null, null), null, clash.TestName));
                     continue;
@@ -310,7 +305,7 @@ namespace Federator.Addin.Engine
                 if (addresses == null || !addresses.TryGetValue(clash.Row, out where))
                 {
                     noAddress++;
-                    testsRead.RowWithNoAddress(clash.TestName, clash.Status);
+                    testsRead.RowWithNoAddress(clash.TestName, clash.Status, clash.Row.IsGroup);
                     continue;
                 }
 
@@ -382,7 +377,7 @@ namespace Federator.Addin.Engine
                             if (item == null)
                             {
                                 counts.NotFound++;
-                                testsRead.RowNotFound(clash.TestName, clash.Status);
+                                testsRead.RowNotFound(clash.TestName, clash.Status, clash.Row.IsGroup);
 
                                 if (counts.FirstNotFound == null)
                                 {
@@ -400,6 +395,22 @@ namespace Federator.Addin.Engine
                             using (item)
                             {
                                 ClashResult leaf = item as ClashResult;
+                                ClashResultGroup resultGroup = leaf == null ? item as ClashResultGroup : null;
+
+                                // F114-K36, Bader's answer B of 2026-10-13: the clashes inside a result group
+                                // are read and planned each at its own status, in their test's view, and the
+                                // group row itself is in none, so no clash is in a view twice. The camera of
+                                // such a view is Clash Detective's for the group, by the group's address.
+                                if (resultGroup != null)
+                                {
+                                    counts.GroupsRead++;
+                                    ReadTheClashesInside(
+                                        document, clash, resultGroup, inScope, carriesSize, unitEnumName,
+                                        counts, addresses[clash.Row], collected);
+                                    testsRead.RowRead(clash.TestName, true);
+                                    continue;
+                                }
+
                                 ViewClash read = CollectOne(
                                     document, clash, leaf, inScope, carriesSize, unitEnumName, counts);
                                 collected.Add(new CollectedRow(read, addresses[clash.Row], clash.TestName));
@@ -474,11 +485,18 @@ namespace Federator.Addin.Engine
             IList<ClashStatus> inScope,
             bool carriesSize,
             string unitEnumName,
-            Counts counts)
+            Counts counts,
+            string memberName = null,
+            ClashStatus? memberStatus = null)
         {
-            if (!inScope.Contains(clash.Status))
+            // A clash inside a result group, F114-K36, stands at its own status and under its own name.
+            ClashStatus status = memberStatus.HasValue ? memberStatus.Value : clash.Status;
+
+            if (!inScope.Contains(status))
             {
-                return clash.ToView(null, null, null, null, null, null);
+                return memberStatus.HasValue
+                    ? clash.ToViewOfMember(memberName, status, null, null, null, null, null, null)
+                    : clash.ToView(null, null, null, null, null, null);
             }
 
             if (leaf == null)
@@ -550,7 +568,72 @@ namespace Federator.Addin.Engine
                 counts.NoCentre++;
             }
 
-            return clash.ToView(serviceSize, firstItem, secondItem, centre, firstHome, secondHome);
+            return memberStatus.HasValue
+                ? clash.ToViewOfMember(memberName, status, serviceSize, firstItem, secondItem, centre, firstHome, secondHome)
+                : clash.ToView(serviceSize, firstItem, secondItem, centre, firstHome, secondHome);
+        }
+
+        /// <summary>
+        /// F114-K36, the clashes inside a result group, however deep, each read as a clash of the
+        /// group row's test at its own status and name, with its two items, size and centre read
+        /// as for a row of one clash. A clash at a status no view shows is kept as a row so the
+        /// plan counts it left out. Every one is recorded at the group's address, which is how
+        /// the camera of a view that opens with it is found. A throw goes to the caller's catch
+        /// and leaves the test not read, as for any row.
+        /// </summary>
+        private void ReadTheClashesInside(
+            Document document,
+            ReportClash group,
+            ClashResultGroup node,
+            IList<ClashStatus> inScope,
+            bool carriesSize,
+            string unitEnumName,
+            Counts counts,
+            RowAddress address,
+            List<CollectedRow> collected)
+        {
+            SavedItemCollection children = node.Children;
+
+            if (children == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    ClashResultGroup inner = child as ClashResultGroup;
+
+                    if (inner != null)
+                    {
+                        ReadTheClashesInside(document, group, inner, inScope, carriesSize, unitEnumName, counts, address, collected);
+                        continue;
+                    }
+
+                    ClashResult member = child as ClashResult;
+
+                    if (member == null)
+                    {
+                        continue;
+                    }
+
+                    ClashStatus status = (ClashStatus)(int)member.Status;
+                    string name = ClashRow.NameOf(member.DisplayName, false);
+                    counts.MembersRead++;
+
+                    if (!inScope.Contains(status))
+                    {
+                        collected.Add(new CollectedRow(
+                            group.ToViewOfMember(name, status, null, null, null, null, null, null), null, group.TestName));
+                        continue;
+                    }
+
+                    counts.MembersInScope++;
+                    ViewClash read = CollectOne(document, group, member, inScope, carriesSize, unitEnumName, counts, name, status);
+                    collected.Add(new CollectedRow(read, address, group.TestName));
+                }
+            }
         }
 
         /// <summary>
@@ -1363,6 +1446,9 @@ namespace Federator.Addin.Engine
             public string FirstNotFound;
             public int Moved;
             public int GroupRows;
+            public int GroupsRead;
+            public int MembersRead;
+            public int MembersInScope;
             public int SizeRead;
             public int SideWalkThrew;
             public int HomesUnread;
@@ -1390,10 +1476,17 @@ namespace Federator.Addin.Engine
                         + "so their tests are not read for the views, the first: " + FirstNotFound);
                 }
 
+                if (GroupsRead > 0)
+                {
+                    log.Line("VIEWS    " + GroupsRead + " result group(s) read for the views, F114-K36: " + MembersRead
+                        + " clash(es) inside them, " + MembersInScope + " at a status a view shows, each in its test's view at its own "
+                        + "status and the group row itself in none");
+                }
+
                 if (GroupRows > 0)
                 {
-                    log.Line("VIEWS    " + GroupRows + " row(s) in scope are a result group, in their test's view framed on the "
-                        + "group as the workbook holds them, with no items to paint and no size read, because a group has no two items");
+                    log.Line("VIEWS    " + GroupRows + " row(s) in scope are neither a clash nor a result group the walk could open, "
+                        + "in their test's view with no items to paint and no size read");
                 }
 
                 if (HomesUnread > 0)

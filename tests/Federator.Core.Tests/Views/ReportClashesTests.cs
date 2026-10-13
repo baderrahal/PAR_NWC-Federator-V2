@@ -121,6 +121,29 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// F114-K36, Bader's answer B. A clash inside a result group is viewed under the group row's
+        /// test, with the sides and priority of that test and its OWN name and status, which can
+        /// differ from the group row's.
+        /// </summary>
+        [Test]
+        public void AClashInsideAResultGroupIsViewedUnderTheGroupsTestAtItsOwnNameAndStatus()
+        {
+            ReportClashesOutcome read = ReportClashes.Of(MergedReport());
+            ReportClash group = read.Clashes[1];
+
+            ViewClash member = group.ToViewOfMember("Clash9", ClashStatus.Active, null, null, null, null, null, null);
+
+            Assert.That(member.TestName, Is.EqualTo(Kept));
+            Assert.That(member.ClashName, Is.EqualTo("Clash9"));
+            Assert.That(member.Status, Is.EqualTo(ClashStatus.Active));
+            Assert.That(member.Status, Is.Not.EqualTo(group.Status));
+            Assert.That(member.LeftSide, Is.EqualTo(group.LeftSide));
+            Assert.That(member.Priority, Is.EqualTo(ClashPriority.A));
+            Assert.That(member.Key, Is.EqualTo(Kept + "\n" + "Clash9"));
+            Assert.That(group.ToViewOfMember(null, ClashStatus.New, null, null, null, null, null, null).ClashName, Is.EqualTo("clash"));
+        }
+
+        /// <summary>
         /// Q138 B. The kept test's copy is Resolved in the document and the mirror finds it
         /// live, so the report shows Active and the view reads the row, not the document.
         /// </summary>
