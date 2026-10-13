@@ -229,7 +229,7 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception error)
                 {
-                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrew(error));
+                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrewWriting(error, path));
                     return false;
                 }
             }

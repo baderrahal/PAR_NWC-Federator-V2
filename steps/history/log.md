@@ -2,6 +2,64 @@
 
 Newest entry at the top.
 
+## 2026-10-12 F120 the harvest and the pictures' guard, FR-198 and F120-R1, wave 3a, branch fix-F120c
+
+Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.
+The open rows of area F120 in steps\tracker.csv, FR-198 and F120-R1, read against main 80314b9.
+
+What was done:
+- FR-198, his answers to Q35 to Q40 and Q76. Family, Type Name and Material are deleted with their reads and
+  their names settings, and the per item discipline with its read and the name settings ClashRunner carried for
+  it alone. ClashItem holds none of the four. The discipline read off part 5 of the NWC name is untouched
+- FR-198, measured first as the item asks. The per item source file is NOT deleted: ClashItem.MergeKey reads it
+  for the mirror merge, F132's add-in half, merged after the item was measured on 2eda020. It is read for the
+  key alone and in no output. Id From is kept as the ITEM IDS block counts it, Q40. So the GAP block reads two,
+  Source File and Id From
+- FR-198, Q76. A property read on every item and empty on every one is said with its count, `read on N item
+  cells and empty on every one`, where GapRule left it out. Set 09's 1A02MM block,
+  steps\runs\09\item1-C02\run-20261012-011513.log lines 1184 to 1190, names no Source File line, so on that
+  run no item carried one and the merge key's file part was empty on every item: row F120-R2, area F132
+- F120-R1. A render or a save that threw is `ImageFailure.BecauseItThrewWriting`, the reason saying the
+  picture's path and the picture's folder where the message named them, in any capitals, and the path beside
+  it on the line, so fifty throws of access denied each naming its own file are one reason for the guard.
+  ClashImages' catch calls it, one line. ClashRunner.RenderThePicturesWaiting is not touched
+- Tests, each seen failing first: `APropertyReadOnEveryItemAndEmptyEveryTimeIsSaidWithItsCount` and
+  `TheFourDeletedPropertiesAreNotOnTheItem` failed on main, turn6\f120c-fr198-before-fail.txt, 2 failed. The
+  path in the reason failed on main through today's call, turn6\f120c-r1-before-fail.txt, 1 failed, and its
+  three tests in ImageFailureTests name the new call. GapRuleTests are rewritten to the two properties left.
+  `APropertyNothingCarriedIsNotAGap` became `AReportWithNoItemHasNoGap`, Q76 reversing its rule.
+  `OneGapReadsInTheSingular` became `OneItemCellReadAndEmptyReadsInTheSingular`, since both properties are read
+  off every item and a block of one gap can no longer be made. ClientFormatTests'
+  `TheTwoTypeColumnsAreDifferentThings` is deleted with the Type property it read. Five test files lost the
+  lines that set the four deleted properties
+- Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f120c-build-before.txt and
+  f120c-build-after.txt. Core tests 2921 passed, 0 failed, 0 skipped before, turn6\f120c-tests-before.txt, and
+  2925 passed, 0 failed, 0 skipped after, f120c-tests-after.txt. check-locals and check-imports over src clean,
+  f120c-checks.txt. Navisworks was not started and no probe was run
+
+What remains: the merge, and steps 760 to 768 of steps\03_bader_next.md on 1A02MM, the GAP and ITEM IDS blocks
+against set 09's. F120-R1 has no step a person can take on a real run, since it needs fifty renders that throw
+naming their path, so its proof is the Core tests.
+
+Known bugs: row F120-R2, the merge key's empty file part, open for F132. The category is still read off every
+item and reaches no output, outside Bader's answers and not in the GAP block, as before. The one line changed in
+ClashRunner.TakeThePictures, the harvest built without the name settings, sits beside F150's work on the
+picture pass. The proof step numbers follow main's 691, F118's merged as 210 and taken in here, so the lead
+renumbers at the merge where another branch takes them first.
+
+What comes next: F129 and F130 of the same order.
+
+ATTEMPT 2, the reviewer's first reading of pull request 215 on 2026-10-13, which found the code sound:
+- The proof steps hold one action each, 760 to 768, numbered after the steps main took in
+- GapRule.Lines no longer carries a singular nothing reaches, since For gives both properties or none
+- The failure line of the source file read says the merge key's file part is left empty, not columns
+- The rules lose their stale words: core.md on our extra columns, the five item properties and the 132 gaps, now
+  44 as GapTally says, and addin.md on the discipline read last
+- Item 157 of steps\02_questions.md, which this entry cites, reaches main with pull request 214, which records it
+- Q38 said delete the per item harvest. The source file is still read since the mirror merge key reads it, which is
+  put to Bader in the tab rather than decided here
+- Main 082ae86 merged in with no code conflict. Built in Release with 0 warnings and 0 errors, Core tests 2974
+
 ## 2026-10-12 The loop, turn 6, F147 long runs kept from slowing, attempt 3 under Q155, written by the developer as the lead's delegate
 
 Bader's order of 2026-10-11, Q152 item 2, and his answer to Q155 on 2026-10-12, "Q2 yes: build F147", with

@@ -98,12 +98,10 @@ namespace Federator.Core.Tests
             row.Left.IdLabel = "Element ID";
             row.Left.Name = "Concrete, Cast In Situ Fc' 35MPa";
             row.Left.ItemType = "Solid";
-            row.Left.Family = "Basic Wall";
             row.Right.ElementId = "814542";
             row.Right.IdLabel = "Element ID";
             row.Right.Name = "TRENCH";
             row.Right.ItemType = "Solid";
-            row.Right.Family = "Floor";
             return row;
         }
 
@@ -222,7 +220,6 @@ namespace Federator.Core.Tests
         public void EveryItemCarriesTheSameQuickProperties()
         {
             ClashReport report = Report();
-            report.Tests[0].Rows[0].Right.Family = string.Empty;
             report.Tests[0].Rows[0].Right.ItemType = string.Empty;
 
             XDocument x = new ClashReportXml().Build(report);

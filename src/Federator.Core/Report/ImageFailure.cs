@@ -57,6 +57,49 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
+        /// A render or a save that threw while its picture was written to path, F120-R1. A
+        /// framework message such as access denied names the file, which made one reason per
+        /// path, so fifty such throws never stopped the run. The reason says the picture's path
+        /// and the picture's folder where the message named them, in any capitals, and the
+        /// path is said beside it on the line.
+        /// </summary>
+        public static ImageFailure BecauseItThrewWriting(Exception error, string path)
+        {
+            ImageFailure thrown = BecauseItThrew(error);
+
+            if (string.IsNullOrEmpty(path))
+            {
+                return thrown;
+            }
+
+            string reason = WithoutThe(thrown.Reason, path, "the picture's path");
+            int slash = path.LastIndexOfAny(new[] { '\\', '/' });
+            string folder = slash > 0 ? path.Substring(0, slash) : null;
+            reason = WithoutThe(reason, folder, "the picture's folder");
+            return new ImageFailure(reason, "at " + path);
+        }
+
+        private static string WithoutThe(string text, string what, string instead)
+        {
+            if (string.IsNullOrEmpty(what))
+            {
+                return text;
+            }
+
+            System.Text.StringBuilder kept = new System.Text.StringBuilder();
+            int from = 0;
+            int at;
+
+            while ((at = text.IndexOf(what, from, StringComparison.OrdinalIgnoreCase)) >= 0)
+            {
+                kept.Append(text, from, at - from).Append(instead);
+                from = at + what.Length;
+            }
+
+            return kept.Append(text, from, text.Length - from).ToString();
+        }
+
+        /// <summary>
         /// A picture whose test was not found again once every test had run, F149, the breaker's
         /// first point on attempt 1, which left its cell empty and counted it nowhere. Where it was
         /// looked for is said beside the reason.

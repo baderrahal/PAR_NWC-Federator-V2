@@ -39,6 +39,61 @@ namespace Federator.Core.Tests
             Assert.That(failure.Line(), Is.EqualTo(failure.Reason));
         }
 
+        /// <summary>
+        /// F120-R1, the developer's finding on FR-076. A render that threw with the picture's
+        /// path inside the exception's message, such as access denied naming the file, was one
+        /// reason per path, so fifty such throws never stopped the run. The reason now says the
+        /// picture's path where the message named it, and the line still says the path.
+        /// </summary>
+        [Test]
+        public void ARenderThatThrewNamingItsPathHasOneReasonWhateverThePath()
+        {
+            string one = @"C:\Clash Reports\1A02MM_files\cd000001.jpg";
+            string two = @"C:\Clash Reports\1A02MM_files\cd000002.jpg";
+            ImageFailure first = ImageFailure.BecauseItThrewWriting(
+                new System.UnauthorizedAccessException("Access to the path '" + one + "' is denied."), one);
+            ImageFailure second = ImageFailure.BecauseItThrewWriting(
+                new System.UnauthorizedAccessException("Access to the path '" + two + "' is denied."), two);
+
+            Assert.That(first.Reason, Is.EqualTo(second.Reason));
+            Assert.That(first.Reason, Is.EqualTo(
+                "UnauthorizedAccessException: Access to the path 'the picture's path' is denied."));
+            Assert.That(first.Line(), Does.Contain(one), "the path is said on the line beside the reason");
+            Assert.That(second.Line(), Does.Contain(two));
+        }
+
+        /// <summary>
+        /// The folder made for the pictures can be what the message names, when making it threw,
+        /// and a path written in other capitals is the same path on Windows.
+        /// </summary>
+        [Test]
+        public void AThrowNamingThePicturesFolderInOtherCapitalsHasOneReasonToo()
+        {
+            string one = @"C:\Clash Reports\1A02MM_files\cd000001.jpg";
+            string two = @"C:\Clash Reports\1A04PK_files\cd000001.jpg";
+            ImageFailure first = ImageFailure.BecauseItThrewWriting(
+                new System.UnauthorizedAccessException(@"Access to the path 'c:\clash reports\1a02mm_files' is denied."), one);
+            ImageFailure second = ImageFailure.BecauseItThrewWriting(
+                new System.UnauthorizedAccessException(@"Access to the path 'C:\Clash Reports\1A04PK_files' is denied."), two);
+
+            Assert.That(first.Reason, Is.EqualTo(second.Reason));
+            Assert.That(first.Reason, Does.Contain("the picture's folder"));
+        }
+
+        /// <summary>The break: two different throws stay two reasons, so the guard counts a streak of one fault only.</summary>
+        [Test]
+        public void TwoDifferentThrowsWritingStayTwoReasons()
+        {
+            string path = @"C:\Clash Reports\1A02MM_files\cd000001.jpg";
+            ImageFailure denied = ImageFailure.BecauseItThrewWriting(
+                new System.UnauthorizedAccessException("Access to the path '" + path + "' is denied."), path);
+            ImageFailure full = ImageFailure.BecauseItThrewWriting(
+                new System.IO.IOException("There is not enough space on the disk."), path);
+
+            Assert.That(denied.Reason, Is.Not.EqualTo(full.Reason));
+            Assert.That(full.Reason, Is.EqualTo("IOException: There is not enough space on the disk."));
+        }
+
         [Test]
         public void TheRunStoppedWordsSayImagesAndCarryTheReason()
         {

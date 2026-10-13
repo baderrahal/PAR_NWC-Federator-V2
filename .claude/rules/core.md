@@ -1271,7 +1271,8 @@ and 6 does not read as broken.
   C off the client's clash matrix. Status is the Navisworks word, New, Active, Reviewed,
   Approved or Resolved, and lives on a clash. Nothing in ClashPriority names a status and
   nothing in ClashStatus names a priority
-- Our extra columns, family, type name, material, source file and discipline, come AFTER
+- Our extra columns, none since FR-198 deleted family, type name, material and the per item
+  discipline and left the source file reaching no output, would come AFTER
   theirs and never in place of any of them, on the CLASH XML and nowhere else. THE ONE
   EXCEPTION IS THE PRIORITY COLUMN ABOVE, which goes on the workbook and not on the clash
   XML, and only when a file is picked. The Client
@@ -1413,7 +1414,7 @@ and 6 does not read as broken.
 - Every clashobject carries the SAME list of smarttags, empty values included. The
   stylesheet counts them once off the first clashobject and uses that count for every row,
   so one item with fewer of them slides every column after it sideways
-- Date Found and our five extra item properties are ours, not theirs. Their report has
+- Date Found and the item properties this tool reads and they do not, two since FR-198, are ours, not theirs. Their report has
   neither, and there is no longer a choice about it: the workbook is their one sheet with
   none of ours on it, so both are left out everywhere and neither is written at all
 - The logo is DATA, read by the stylesheet from //logo/@href, not part of the layout, and
@@ -1550,8 +1551,12 @@ and 6 does not read as broken.
   reason is one key for one fault: a render that finished with no file says
   `Federator.Core.Report.ImageFailure.NoFileArrived` and the path beside it on the line,
   because with the path inside the reason fifty of them were fifty reasons and the guard
-  never fired. The stop words are ImageFailure's, worded for images, and the label's plain
-  words carry the count alone
+  never fired. A render or a save that threw is `ImageFailure.BecauseItThrewWriting`, the
+  type and the message with the picture's path and the picture's folder said as those words
+  wherever the message named them, in any capitals, and the path beside it on the line, so
+  fifty throws of access denied, each naming its own file, are one reason, F120-R1. The stop
+  words are ImageFailure's, worded for images, and the label's plain words carry the count
+  alone
 - What the pictures cost is MEASURED and logged per group: seconds per image, total
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. They are in the log and nowhere else,
@@ -2375,21 +2380,30 @@ is exactly it, found by an audit of every file under src. The run says it itself
 - a gap names three things: what is missing, what it came to on this group, and where
   it would belong. A gap with no value is a complaint and one with no place to go is a
   shrug
-- a property NOTHING carried is not a gap. Reporting it would say the run is holding
-  back something it never read
+- a property read on every item and empty on every one is SAID, with its count, `read on N
+  item cells and empty on every one`, Bader's Q76 in FR-198. It was left out, so the block
+  could not tell an output carrying it from the run reading nothing. A report with no item
+  read nothing and has no gap
 - the block is written even when it is empty, saying nothing was held back, because a
   missing block reads as a check that did not run
 - nothing acts on it. A gap does not fail a group, does not stop a run and does not
   change an output. It is information in the log, which is the rule this tool is built
   on
 - the run line counts gaps by NAME and not by line. The same ones are held back on
-  every group, so a run of twenty two groups would report 132 and say nothing except
+  every group, so a run of twenty two groups would report 44 and say nothing except
   how many groups there were. The number that means something is how many distinct
   things this tool knows and does not show
 - the six were MEASURED on 2026-09-19 by reading all three writers. WorkbookWriter,
   HtmlTabularWriter and ClientReportColumns name none of Family, Type, Material,
   SourceFile, Discipline or IdFrom anywhere, and ClashReportXml writes two quick
   properties and says in its own comment that the five used to be written and are not
+- TWO ARE LEFT SINCE FR-198. Bader deleted Family, Type Name, Material and the per item
+  discipline with their harvest and their names settings on 2026-10-06, Q35, Q36, Q37 and
+  Q39, so ClashItem holds none of them and the harvest reads none. The discipline read off
+  part 5 of the NWC name is untouched. The source file is still read off every item, since
+  `ClashItem.MergeKey` reads it for the mirror merge, F132, which came after Q38 was
+  measured, and the id's property is kept as the ITEM IDS block counts it, Q40. Each is in
+  no output and the block names both
 
 ### The run against the session, F80
 

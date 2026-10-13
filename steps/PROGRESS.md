@@ -8,15 +8,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 57 | 0 | 0 | 0 | 8 | 8 | 73 |
+| 2a | 57 | 0 | 0 | 0 | 9 | 8 | 74 |
 | 2b | 32 | 1 | 0 | 1 | 6 | 1 | 41 |
 | 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
-| 3a | 19 | 0 | 0 | 0 | 2 | 1 | 22 |
+| 3a | 21 | 0 | 0 | 0 | 0 | 1 | 22 |
 | 3b | 14 | 1 | 0 | 0 | 6 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 176 | 16 | 0 | 2 | 59 | 6 | 259 |
-| total | 350 | 25 | 0 | 3 | 182 | 17 | 577 |
+| total | 352 | 25 | 0 | 3 | 181 | 17 | 578 |
 <!-- the end of the counts -->
 
 ## Now

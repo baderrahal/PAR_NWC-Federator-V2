@@ -7,7 +7,6 @@ using Autodesk.Navisworks.Api.DocumentParts;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
-using Federator.Core.Naming;
 using Federator.Core.Report;
 using Federator.Core.Sets;
 using Federator.Core.Units;
@@ -295,9 +294,6 @@ namespace Federator.Addin.Engine
                 return names;
             }
         }
-
-        /// <summary>How the discipline is read off a source file name. A setting.</summary>
-        public ContainerNameSettings NameSettings { get; set; }
 
         /// <summary>
         /// True when this group holds fewer than two disciplines. None of its tests is run,
@@ -1201,7 +1197,7 @@ namespace Federator.Addin.Engine
                         summary.Tolerance = after.Tolerance;
                         summary.ToleranceFrom = ToleranceOrigin.Document;
 
-                        ClashHarvest harvest = new ClashHarvest(log, NameSettings);
+                        ClashHarvest harvest = new ClashHarvest(log);
                         HandTheProgress(harvest, planned.Name);
 
                         // F132. A test in a merge hands every clash to it as the rows are
@@ -2753,7 +2749,7 @@ namespace Federator.Addin.Engine
             // One harvest and one count of pieces for the whole pass, so a PROGRESS line comes at
             // least every 30 s across it, the breaker's third point on attempt 1, where a count per
             // stretch left a test of fewer than about sixteen pictures with no line at all.
-            ClashHarvest harvest = new ClashHarvest(log, NameSettings);
+            ClashHarvest harvest = new ClashHarvest(log);
             harvest.Images = Images;
             harvest.WorkbookPath = WorkbookPath;
             HandTheProgress(harvest, string.Empty);

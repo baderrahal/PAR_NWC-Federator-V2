@@ -102,16 +102,13 @@ namespace Federator.Core.Tests
             row.ImageFile = "cd000001.jpg";
             row.ImageLink = "1104-PAR-1C07BC-ZZZ-BM-RPT-000001_files/cd000001.jpg";
 
-            // The element id that was empty on the real run, and the four properties that
-            // followed it and were lost with it.
+            // The element id that was empty on the real run, and the source file that
+            // followed it and was lost with it.
             row.Left.ElementId = "702888";
             row.Left.IdLabel = "Element ID";
             row.Left.Name = "PAR-CONC-FOUNDATION";
             row.Left.ItemType = "Solid";
-            row.Left.Family = "Basic Wall";
-            row.Left.Material = "Concrete";
             row.Left.SourceFile = @"C:\in\1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc";
-            row.Left.Discipline = "AR";
             row.Right.ElementId = "707077";
             row.Right.IdLabel = "Element ID";
             row.Right.Name = "Mx_Exterior_EW6_ Alum Sheet (Dark)";
@@ -173,8 +170,9 @@ namespace Federator.Core.Tests
                 Is.EqualTo(new[] { "Item Name", "Item Type" }));
         }
 
-        // Family, Material, Source File and Discipline are all filled on the report above,
-        // and not one of them reaches the XML. They reach no output at all, which is Q25.
+        // Source File is filled on the report above and does not reach the XML. It reaches
+        // no output at all, and the family, the type name, the material and the discipline
+        // of an item are read nowhere since FR-198, so none of their names is in it either.
         [Test]
         public void OurItemPropertiesAreNowhereInTheXmlEvenWhenTheyAreFilled()
         {

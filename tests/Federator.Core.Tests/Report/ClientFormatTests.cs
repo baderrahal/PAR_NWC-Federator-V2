@@ -240,15 +240,5 @@ namespace Federator.Core.Tests
                 Assert.That(ClientFormat.ClashColumns, Does.Not.Contain(ours), ours);
             }
         }
-
-        [Test]
-        public void TheTwoTypeColumnsAreDifferentThings()
-        {
-            ClashItem item = new ClashItem();
-            item.ItemType = "Solid";
-            item.Type = "Generic 200mm";
-
-            Assert.That(item.ItemType, Is.Not.EqualTo(item.Type));
-        }
     }
 }
