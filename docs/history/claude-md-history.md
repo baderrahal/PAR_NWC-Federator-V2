@@ -1020,6 +1020,23 @@ a gap. Never report a check that did not run.
 Each entry names the rule as it stood, the date it changed, who decided and why, and where
 the rule lives now. The snapshot above stays as it was.
 
+## 2026-10-13, F153, a test with no clash writes nothing in the workbook
+
+The rule was Q73's answer b, built in the workbook writer: a test that found nothing is one row
+carrying its name and its five facts, not a deleted block, "because the client's report is the
+whole matrix and a test missing from it reads as a test nobody ran". With it went F77's "the
+workbook carries a block for every test in the file" and FR-035's count of the BLOCKS line, one
+block for every test in the file, the one row tests counted as blocks. Bader's run of 2026-10-13 on
+1A02MM held 130 tests with clashes and then rows 5204 to 6903, 1700 one row tests with no clash. He
+decided the same day that a test with no clash writes nothing in the workbook, the page keeps all
+1830 blocks and the internal workbook's Coverage sheet keeps listing every test. So the writer
+writes nothing for a test with no clash row, the workbook check counts the blocks with clashes and
+names any row of a test with no clash as a problem, the BLOCKS line expects one block for every
+test of the report with a clash, the count check reads a test with no block as nought rows and
+Clashes nought, and the coverage read back reads full blocks alone. Q73's answer b is retired by
+this decision and is not the rule any more. The rules live in core.md, the F77 bullet, the WORKBOOK
+CHECK bullet EVERY TEST WITH A CLASH IS A BLOCK, the count check bullet and the read back bullet.
+
 ## 2026-10-13, F152, the workbook's pictures are linked pictures
 
 The rules were "The workbook links to them and does not paste them in. A thumbnail in the cell is

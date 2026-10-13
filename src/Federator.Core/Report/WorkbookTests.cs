@@ -10,13 +10,11 @@ namespace Federator.Core.Report
     /// The client's sheet read back test by test, by the name in column A, F127, so the rows
     /// under each test and its Clashes cell can be set beside what Clash Detective holds.
     ///
-    /// BOTH SHAPES. A full block is the name over two rows with Tolerance and Clashes over
-    /// its values, then the item labels, the column headings with Clash Name in C, and one
-    /// row per clash until C is empty, the rule WorkbookCheck counts rows by. A test that
-    /// found nothing is ONE ROW since Q73: the name in A, then its tolerance and its Clashes
-    /// cell in the columns the header table starts at. The workbook check counts a block
-    /// only where it finds Clash Name, so it sees full blocks alone, and the BLOCKS line read
-    /// five against 1830 on every group of set 03 while every read-out held all 1830.
+    /// ONE SHAPE. A full block is the name over two rows with Tolerance and Clashes over its
+    /// values, then the item labels, the column headings with Clash Name in C, and one row
+    /// per clash until C is empty, the rule WorkbookCheck counts rows by. Since F153, Bader's
+    /// decision of 2026-10-13, a test that found nothing writes nothing in the workbook, so
+    /// the one row Q73 gave it is never read as a test, and the workbook check names it.
     ///
     /// IT TAKES A SHEET OF A WORKBOOK ALREADY OPEN, so the file is loaded once for every
     /// check that reads it.
@@ -129,25 +127,9 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                // A one row test carries its tolerance in C. The column headings carry Clash
-                // Name there under Image in A, and a clash row leaves A empty, so a name in A
-                // beside a value in C that is not that heading is a test. With A empty, a whole
-                // number in the Clashes cell is a test row whose name is missing.
-                string inC = sheet.Cell(row, WorkbookWriter.ColumnTestHeader).GetString();
-                IXLCell clashes = sheet.Cell(row, clashesColumn);
-
-                if (inC.Length > 0 && inC != ClashNameHeading)
-                {
-                    if (name.Length > 0)
-                    {
-                        Add(name, row, 0, Whole(clashes, row));
-                    }
-                    else if (clashes.DataType == XLDataType.Number)
-                    {
-                        Add(name, row, 0, -1);
-                    }
-                }
-
+                // F153. A test with no clash writes nothing in the workbook, so only a full block is a
+                // test here. The one row Q73 gave such a test is a problem of the workbook check's and is
+                // never read as a test, so a test with no block reads as one that found none, CountCheck.
                 row++;
             }
         }
@@ -179,16 +161,11 @@ namespace Federator.Core.Report
                 at++;
             }
 
-            Add(name, start, rows, clashes, true);
+            Add(name, start, rows, clashes);
             return at;
         }
 
         private void Add(string name, int row, int rows, int clashes)
-        {
-            Add(name, row, rows, clashes, false);
-        }
-
-        private void Add(string name, int row, int rows, int clashes, bool fullBlock)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -197,7 +174,7 @@ namespace Federator.Core.Report
                 return;
             }
 
-            tests.Add(new WorkbookTest(name, row, rows, clashes, fullBlock));
+            tests.Add(new WorkbookTest(name, row, rows, clashes));
         }
 
         /// <summary>The cell as a whole number, or minus one and a doubt.</summary>

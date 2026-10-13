@@ -25,10 +25,13 @@ namespace Federator.Core.Coverage
     ///
     /// AGREE only when both numbers equal on both sides and the test ran this run, a test that did not
     /// run with equal counts being NOT COMPARED. A test the run did not create, F77 kept it
-    /// out or the plan dropped it, that is not in the document, whose block reads no row and Clashes
-    /// nought, is HELD BY NEITHER side, counted apart from Agree. One the run left no record of is
-    /// NOT COMPARED instead. FAILED for every other difference, a test the document
-    /// holds with no block, and a block with numbers for a test the document does not hold.
+    /// out or the plan dropped it, that is not in the document and has no block, is HELD BY NEITHER
+    /// side, counted apart from Agree. One the run left no record of is NOT COMPARED instead. SINCE
+    /// F153 A TEST WITH NO BLOCK READS NOUGHT ROWS AND CLASHES NOUGHT, since a test with no clash
+    /// writes nothing in the workbook, Bader's decision of 2026-10-13, so a test that ran and found
+    /// none agrees with a document holding none. FAILED for every other difference, a test the
+    /// document holds clashes of with no block among them, and a block with numbers for a test the
+    /// document does not hold.
     /// Where the run knows why, the line says it, and only what the record proves: a test
     /// the plan dropped that the document holds all the same was there before this run, a test
     /// already in the NWF and not run this run still holds an earlier run's results,
@@ -36,7 +39,7 @@ namespace Federator.Core.Coverage
     /// Detective holds results for ran and then threw before its rows or count were taken,
     /// and Compact removed Resolved clashes after the rows were read where its count is at
     /// least the gap. NOT COMPARED, never Agree, where a count on either side is minus one, a
-    /// name is on two tests of one side, a test is in neither, a side was not read, or a test
+    /// name is on two tests of one side, a side was not read, or a test
     /// the run holds as in the document, or left no record of, was not returned by the read of it,
     /// with the reason.
     ///
@@ -248,38 +251,47 @@ namespace Federator.Core.Coverage
 
             DocumentTestCount d = held.Count == 1 ? held[0] : null;
             WorkbookTest w = written.Count == 1 ? written[0] : null;
+            bool inWorkbook = w != null;
+
+            // F153, Bader's decision of 2026-10-13. A test with no clash writes nothing in the workbook, so
+            // a test with no block is one the workbook says found none, nought rows and Clashes nought,
+            // set beside Clash Detective like any other. Before F153 it was the one row of Q73, and a test
+            // with no block at all was a FAILED line whatever the document held.
+            if (w == null)
+            {
+                w = new WorkbookTest(test.Name, 0, 0, 0);
+            }
+
             int top = d == null ? -1 : d.TopLevel;
             int leaves = d == null ? -1 : d.Leaves;
-            int rows = w == null ? -1 : w.Rows;
-            int clashes = w == null ? -1 : w.Clashes;
+            int rows = w.Rows;
+            int clashes = w.Clashes;
 
             if (inAMerge != null && inAMerge.Contains(test.Name))
             {
-                return new CountedTest(test.Name, CountVerdict.NotCompared, d != null, top, leaves, w != null, rows, clashes, InAMergeWhy);
+                // A mirror merged into its kept test has its clashes in that block, so a missing block of its own
+                // is not a count of nought, the reviewer's point on F153, and its cells read UNKNOWN.
+                return new CountedTest(test.Name, CountVerdict.NotCompared, d != null, top, leaves, inWorkbook,
+                    inWorkbook ? rows : -1, inWorkbook ? clashes : -1, InAMergeWhy);
             }
 
             if (d != null && !d.Counted)
             {
-                return new CountedTest(test.Name, CountVerdict.NotCompared, true, top, leaves, w != null, rows, clashes,
+                return new CountedTest(test.Name, CountVerdict.NotCompared, true, top, leaves, inWorkbook, rows, clashes,
                     "Clash Detective's count of it could not be taken");
             }
 
-            if (w != null && (w.Rows < 0 || w.Clashes < 0))
+            if (w.Rows < 0 || w.Clashes < 0)
             {
-                return new CountedTest(test.Name, CountVerdict.NotCompared, d != null, top, leaves, true, rows, clashes,
+                return new CountedTest(test.Name, CountVerdict.NotCompared, d != null, top, leaves, inWorkbook, rows, clashes,
                     "its block could not be read whole");
-            }
-
-            if (d == null && w == null)
-            {
-                return NotCompared(test.Name, "it is in neither the document nor the workbook");
             }
 
             if (d == null)
             {
                 if (w.Rows != 0 || w.Clashes != 0)
                 {
-                    return new CountedTest(test.Name, CountVerdict.Failed, false, -1, -1, true, rows, clashes, string.Empty);
+                    return new CountedTest(test.Name, CountVerdict.Failed, false, -1, -1, inWorkbook, rows, clashes, string.Empty);
                 }
 
                 // A test the runner created or found already there that the read did not
@@ -287,7 +299,7 @@ namespace Federator.Core.Coverage
                 // Navisworks changed, and a block of nought matches nothing.
                 if (test.Presence == TestPresence.CreatedThisRun || test.Presence == TestPresence.AlreadyThere)
                 {
-                    return new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, true, rows, clashes,
+                    return new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, inWorkbook, rows, clashes,
                         "the run holds it as " + CoverageWords.For(test.Presence)
                             + " and the read of Clash Detective did not return it");
                 }
@@ -297,16 +309,11 @@ namespace Federator.Core.Coverage
                 // may be in the document and not returned, so it is not compared.
                 if (test.Presence == TestPresence.Unknown && !RunDidNotCreate(test))
                 {
-                    return new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, true, rows, clashes,
+                    return new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, inWorkbook, rows, clashes,
                         "the run left no record of whether it is in the document, and the read of Clash Detective did not return it");
                 }
 
-                return new CountedTest(test.Name, CountVerdict.HeldByNeither, false, -1, -1, true, rows, clashes, string.Empty);
-            }
-
-            if (w == null)
-            {
-                return new CountedTest(test.Name, CountVerdict.Failed, true, top, leaves, false, -1, -1, string.Empty);
+                return new CountedTest(test.Name, CountVerdict.HeldByNeither, false, -1, -1, inWorkbook, rows, clashes, string.Empty);
             }
 
             if (w.Rows == d.TopLevel && w.Clashes == d.Leaves)
@@ -314,11 +321,11 @@ namespace Federator.Core.Coverage
                 // AGREE ONLY FOR A TEST THAT RAN, the breaker's third finding on F127b. Equal counts of a
                 // test that did not run this run, nought and nought most often, check nothing this run did.
                 return test.Ran
-                    ? new CountedTest(test.Name, CountVerdict.Agree, true, top, leaves, true, rows, clashes, string.Empty)
-                    : new CountedTest(test.Name, CountVerdict.NotCompared, true, top, leaves, true, rows, clashes, DidNotRunWhy);
+                    ? new CountedTest(test.Name, CountVerdict.Agree, true, top, leaves, inWorkbook, rows, clashes, string.Empty)
+                    : new CountedTest(test.Name, CountVerdict.NotCompared, true, top, leaves, inWorkbook, rows, clashes, DidNotRunWhy);
             }
 
-            return new CountedTest(test.Name, CountVerdict.Failed, true, top, leaves, true, rows, clashes,
+            return new CountedTest(test.Name, CountVerdict.Failed, true, top, leaves, inWorkbook, rows, clashes,
                 WhyItDiffers(test, d, w, compacted));
         }
 

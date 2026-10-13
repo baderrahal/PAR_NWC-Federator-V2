@@ -29,10 +29,10 @@ namespace Federator.Core.Clash
     /// to create the test and let the run-time check answer. The unsafe one is to leave a
     /// real test out of the NWF because a count was not taken.
     ///
-    /// THE WORKBOOK STILL CARRIES A BLOCK FOR EVERY TEST IN THE FILE. Not creating a test
-    /// changes what goes in the document, never what goes in the report, because the
-    /// client's report is the whole matrix and a test missing from it reads as a test
-    /// nobody ran rather than as a test that could not clash. A mirror merged into its kept
+    /// Not creating a test changes what goes in the document, never what goes in the report:
+    /// the page carries a block for every test and the Coverage sheet lists every test of the
+    /// file. The clash workbook carries a block for every test with a clash and nothing for a
+    /// test that found none since F153, BlockCountLine below. A mirror merged into its kept
     /// test, F132, is carried in that test's block, and the check counts it there.
     /// </summary>
     public sealed class CreationPlan
@@ -134,50 +134,36 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// Whether the workbook carries a block for every test in the file, F77. Not
-        /// creating a test changes what goes in the DOCUMENT and never what goes in the
-        /// report, so a count that differs is a fault in the report and is said in capitals
-        /// the way the ROWS line says its own.
+        /// Whether the workbook carries a block for every test with a clash and for no other, F153, Bader's
+        /// decision of 2026-10-13, which retires the rule of F77 and Q73 that it carried one for every test in
+        /// the file. A test with no clash writes nothing in the workbook and is on the page and the Coverage
+        /// sheet alone. The counts are the report's own, after every mirror merged into its kept test was taken
+        /// out of it, F132, so a merged mirror is in its kept test's block and is said. A count that differs is
+        /// a fault in the report and is said in capitals the way the ROWS line says its own.
         /// </summary>
-        public static string BlockCountLine(int blocksInTheWorkbook, int testsInTheFile)
+        public static string BlockCountLine(int blocksInTheWorkbook, int testsWithAClash, int testsInTheReport, int mirrorsMerged)
         {
-            return BlockCountLine(blocksInTheWorkbook, testsInTheFile, 0);
-        }
-
-        /// <summary>
-        /// The same check where mirrors were merged, F132, Bader's answer D to Q133: a mirror
-        /// merged into its kept test is carried inside that test's block and has no block of
-        /// its own, so the block expected for every test in the file is one fewer for each.
-        /// The number is the report's own, ClashReport.MirrorsMerged, counted where the report
-        /// takes each mirror out, so the check and the report read one rule. With none merged
-        /// the line is word for word the one above.
-        /// </summary>
-        public static string BlockCountLine(int blocksInTheWorkbook, int testsInTheFile, int mirrorsMerged)
-        {
-            if (mirrorsMerged < 0)
+            if (testsWithAClash < 0 || testsInTheReport < testsWithAClash || mirrorsMerged < 0)
             {
-                throw new ArgumentOutOfRangeException("mirrorsMerged", "A count of mirrors merged cannot be below zero.");
+                throw new ArgumentOutOfRangeException("testsWithAClash", "The counts of the report cannot be below zero, and the tests with a clash are some of the tests.");
             }
 
-            int expected = testsInTheFile - mirrorsMerged;
             string merged = mirrorsMerged == 0
                 ? string.Empty
-                : mirrorsMerged + (mirrorsMerged == 1 ? " mirror" : " mirrors") + " merged into "
-                    + (mirrorsMerged == 1 ? "its kept test" : "their kept tests");
+                : ", and " + mirrorsMerged + (mirrorsMerged == 1 ? " mirror is" : " mirrors are")
+                    + " merged into " + (mirrorsMerged == 1 ? "its kept test's block" : "their kept tests' blocks");
+            int none = testsInTheReport - testsWithAClash;
 
-            if (blocksInTheWorkbook == expected)
+            if (blocksInTheWorkbook == testsWithAClash)
             {
-                return "BLOCKS   " + blocksInTheWorkbook + " in the workbook, one for every test in the file"
-                    + (mirrorsMerged == 0 ? string.Empty : ", " + testsInTheFile + " less the " + merged);
+                return "BLOCKS   " + blocksInTheWorkbook + " in the workbook, one for every test with a clash. The other "
+                    + none + " of the " + testsInTheReport + " tests of the report found none and are on the page and the "
+                    + "Coverage sheet alone" + merged;
             }
 
-            return "BLOCKS   " + blocksInTheWorkbook + " in the workbook against "
-                + (mirrorsMerged == 0
-                    ? testsInTheFile + " tests in the file"
-                    : expected + ", the " + testsInTheFile + " tests in the file less the " + merged)
-                + ". THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST IN THE FILE, whether or not the test was "
-                + "created, because the client's report is the whole matrix"
-                + (mirrorsMerged == 0 ? string.Empty : ", and a mirror merged into its kept test is in that test's block");
+            return "BLOCKS   " + blocksInTheWorkbook + " in the workbook against " + testsWithAClash
+                + " tests with a clash of the " + testsInTheReport + " tests of the report" + merged
+                + ". THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST WITH A CLASH AND NONE FOR A TEST THAT FOUND NONE, F153";
         }
     }
 }

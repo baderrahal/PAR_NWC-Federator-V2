@@ -259,8 +259,9 @@ Test-Case "08 a tolerance off by 0.001" { Edit-Row $goodWb $wbTests "test" $A -S
 Test-Case "09 a distance left in feet" { Edit-Row $goodWb $wbRows "clash name" "Clash1" -Set @{ distance = "-0.164" } } $null @(
     "DIFFERS [$A]  row 1 [Clash1] distance: workbook -0.164 m, document -0.05 m") "DISAGREE"
 
-Test-Case "10 a test line removed from the workbook" { Edit-Row $goodWb $wbTests "test" $E -Remove } $null @(
-    "DIFFERS [$E]  in the document only, 0 clashes") "DISAGREE"
+Test-Case "10 the test with no clash taken out of the workbook, which F153 writes nothing for, is counted and not judged" { Edit-Row $goodWb $wbTests "test" $E -Remove } $null @() "NOT PROVED" 0 $pictures @(
+    "DOCUMENT ONLY, NO CLASH [$E]  a test with no clash writes nothing in the workbook since F153, counted and not judged",
+    "document tests with no clash and no workbook block, counted and not judged since F153: 1")
 
 Test-Case "11 a trailing space dropped from a test name, both sides named" { Rename-Everywhere $goodWb $M $M.TrimEnd() } $null @(
     "DIFFERS [$($M.TrimEnd())]  in the workbook only, Clashes 3, New 0, Active 0, Reviewed 2, Approved 1, Resolved 0, 2 rows",
@@ -318,7 +319,6 @@ Test-Case "21 a test name on two blocks, and the picture numbering after it" {
     $w = Edit-Row $w $wbRows "clash name" "Group1" -Set @{ "picture link" = "proof-group_files/cd010001.jpg" }
     Edit-Row $w $wbRows "clash name" "Clash5" -Set @{ "picture link" = "proof-group_files/cd010003.jpg" } } $null @(
     "DOUBT [$A] is the name of 2 workbook tests, and no copy is compared",
-    "DIFFERS [$E]  in the document only, 0 clashes",
     "NOT COMPARED picture numbering of [$A], the name is on 2 workbook blocks and which of them its 2 picture links belong to cannot be known, so those 2 tests are not checked",
     "NOT COMPARED [$M]  the test number in its picture links, 1, can only be held to 0 to 1 after a test name on more than one block, and its clash numbers are checked",
     "DIFFERS [$M]  row 2 [Clash5] picture link: workbook proof-group_files/cd010003.jpg, the export's numbering gives proof-group_files/cd010002.jpg") "DISAGREE" 0 @{ PictureStatuses = @("New", "Active", "Reviewed", "Approved") }

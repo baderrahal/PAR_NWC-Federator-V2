@@ -170,64 +170,52 @@ namespace Federator.Core.Tests
                 Is.EqualTo("CLASH 1830 in the file, 211 created, 1619 not created, a side finds nothing"));
         }
 
-        // ---------- the mirrors merged, F132 attempt 6 item 2 ----------
+        // ---------- the blocks of the workbook, F153 ----------
 
-        // The breaker's blocking finding on attempt 5. On the picked matrix 59 mirrors are
-        // merged into their kept tests, so 1771 blocks are one for every test in the file, and
-        // the line says why it is fewer than 1830 and never calls it a fault.
+        // Bader's decision of 2026-10-13, which retires F77's rule that the workbook carries a block
+        // for every test in the file: a test with no clash writes nothing there. His run of that day
+        // read 130 tests with clashes and 1700 one row tests, which the line now reads as 130 blocks.
         [Test]
-        public void AMirrorMergedIntoItsKeptTestIsNotABlockMissing()
+        public void ABlockForEveryTestWithAClashIsTheWholeWorkbook()
         {
-            string line = CreationPlan.BlockCountLine(1771, 1830, 59);
+            string line = CreationPlan.BlockCountLine(130, 130, 1830, 0);
 
             Assert.That(line, Is.EqualTo(
-                "BLOCKS   1771 in the workbook, one for every test in the file, 1830 less the 59 mirrors merged "
-                    + "into their kept tests"));
+                "BLOCKS   130 in the workbook, one for every test with a clash. The other 1700 of the 1830 tests of "
+                    + "the report found none and are on the page and the Coverage sheet alone"));
             Assert.That(line, Does.Not.Contain("MUST"));
         }
 
-        // A block missing beside the mirrors merged is still a fault and still said in capitals.
+        // The break: the workbook of before F153, a block or a row for every test of the file, is a fault
+        // said in capitals, and so is a block missing.
         [Test]
-        public void ABlockMissingBesideTheMirrorsMergedIsStillSaid()
+        public void ABlockForATestThatFoundNoneOrABlockMissingIsSaidInCapitals()
         {
-            string line = CreationPlan.BlockCountLine(1770, 1830, 59);
-
-            Assert.That(line, Does.StartWith(
-                "BLOCKS   1770 in the workbook against 1771, the 1830 tests in the file less the 59 mirrors merged "
-                    + "into their kept tests. THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST IN THE FILE"));
-            Assert.That(line, Does.EndWith("and a mirror merged into its kept test is in that test's block"));
+            Assert.That(CreationPlan.BlockCountLine(1830, 130, 1830, 0), Is.EqualTo(
+                "BLOCKS   1830 in the workbook against 130 tests with a clash of the 1830 tests of the report. "
+                    + "THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST WITH A CLASH AND NONE FOR A TEST THAT FOUND NONE, F153"));
+            Assert.That(CreationPlan.BlockCountLine(129, 130, 1830, 0), Does.StartWith(
+                "BLOCKS   129 in the workbook against 130 tests with a clash"));
+            Assert.That(CreationPlan.BlockCountLine(129, 130, 1830, 0), Does.Contain("MUST"));
         }
 
-        // With no mirror merged the line is word for word the line before F132.
+        // F132. A mirror merged into its kept test is in that test's block, and the line says how many.
         [Test]
-        public void WithNoMirrorMergedTheBlockLineIsTheOneBefore()
+        public void AMirrorMergedIntoItsKeptTestIsSaidAndIsNotABlockMissing()
         {
-            Assert.That(CreationPlan.BlockCountLine(1830, 1830, 0), Is.EqualTo(
-                "BLOCKS   1830 in the workbook, one for every test in the file"));
-            Assert.That(CreationPlan.BlockCountLine(211, 1830, 0), Is.EqualTo(
-                "BLOCKS   211 in the workbook against 1830 tests in the file. THE WORKBOOK MUST CARRY A BLOCK FOR "
-                    + "EVERY TEST IN THE FILE, whether or not the test was created, because the client's report is the "
-                    + "whole matrix"));
-            Assert.Throws<ArgumentOutOfRangeException>(() => CreationPlan.BlockCountLine(1830, 1830, -1));
+            string line = CreationPlan.BlockCountLine(130, 130, 1771, 59);
+
+            Assert.That(line, Does.EndWith(", and 59 mirrors are merged into their kept tests' blocks"));
+            Assert.That(line, Does.Not.Contain("MUST"));
+            Assert.That(CreationPlan.BlockCountLine(1, 1, 1, 1), Does.EndWith(", and 1 mirror is merged into its kept test's block"));
         }
 
-        // ---------- what does NOT change ----------
-
-        /// <summary>
-        /// Not creating a test changes what goes in the DOCUMENT and never what goes in the
-        /// report. The client's report is the whole matrix, so a test missing from it reads
-        /// as a test nobody ran rather than as a test that could not clash.
-        /// </summary>
         [Test]
-        public void TheWorkbookStillCarriesABlockForEveryTestInTheFile()
+        public void CountsThatCannotBeAreRefused()
         {
-            Assert.That(CreationPlan.BlockCountLine(1830, 1830),
-                Does.Contain("one for every test in the file"));
-
-            string short1 = CreationPlan.BlockCountLine(211, 1830);
-
-            Assert.That(short1, Does.Contain("211 in the workbook against 1830 tests in the file"));
-            Assert.That(short1, Does.Contain("THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST IN THE FILE"));
+            Assert.Throws<ArgumentOutOfRangeException>(() => CreationPlan.BlockCountLine(1, -1, 1, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => CreationPlan.BlockCountLine(1, 2, 1, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => CreationPlan.BlockCountLine(1, 1, 1, -1));
         }
 
         /// <summary>

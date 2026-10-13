@@ -1974,3 +1974,19 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 1444. Close Excel and answer Do not save
 1445. In Explorer rename the `_files` folder to `moved`, open the workbook again and look for: the pictures no longer show, which is what the client's own file does. Close Excel without saving and rename the folder back
 1446. Send the log, the seconds of step 1436 and the words of any question from step 1437
+
+### F153, no workbook rows for tests with no clash
+
+1450. Install main once fix-F153 has merged, steps 7 to 12
+1451. Make a new folder on the desktop named `F153 out`
+1452. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F153 out` picked for the NWF, NWD and Excel folders
+1453. Look for, in the `WORKBOOK CHECK 1A02MM` block of the log: `CHECK    1 sheet,` then a number of test blocks `with clashes`, and no line saying a row holds a test with no clash
+1454. Look for, under it: `BLOCKS   ` and the same number, `in the workbook, one for every test with a clash. The other` and how many found none
+1455. Look for, in the `COVERAGE` block of 1A02MM: no `COVERAGE FAILED` line for a test that found no clash
+1456. Open `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.xlsx` in `F153 out` in Excel
+1457. Press Ctrl+End
+1458. Look for: the last row used is a clash row of the last block, and no row below it names a test
+1459. Close Excel and answer Do not save
+1460. Open `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.html` in `F153 out` in a browser and look for: a block for every test, 1830, the tests with no clash among them
+1461. Open the internal workbook, the one whose name ends `Internal`, in Excel, and look for: the Coverage sheet lists every test of the file, one row each
+1462. Send the log

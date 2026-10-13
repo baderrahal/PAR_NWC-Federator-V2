@@ -117,19 +117,15 @@ namespace Federator.Core.Report
         /// The two rows of the test header, ruled thick on the outside and medium within,
         /// which is exactly what theirs carries. The name sits in a cell merged over both
         /// rows, so its bottom edge is on the second row and never on the first.
-        ///
-        /// rows is 1 for the one row form of a test that found nothing, which paints the first row of the
-        /// header and no more. Painting both left the row under it grey and boxed, and after the last block
-        /// of a sheet nothing repainted it, FR-038.
         /// </summary>
-        public static void TestHeader(IXLWorksheet sheet, int top, int nameLast, int last, int rows = 2)
+        public static void TestHeader(IXLWorksheet sheet, int top, int nameLast, int last)
         {
-            for (int painted = top; painted < top + rows; painted++)
+            for (int painted = top; painted < top + 2; painted++)
             {
                 Fill(sheet, painted, 1, last, HeaderGrey);
             }
 
-            for (int row = top; row < top + rows; row++)
+            for (int row = top; row < top + 2; row++)
             {
                 for (int column = 1; column <= last; column++)
                 {
@@ -160,12 +156,7 @@ namespace Federator.Core.Report
                     if (row == top)
                     {
                         style.Border.TopBorder = XLBorderStyleValues.Thick;
-
-                        // The one row form is also the last row, so it closes the box itself, name included.
-                        // The stray second row used to, and after the last block of a sheet nothing else does.
-                        style.Border.BottomBorder = rows == 1
-                            ? XLBorderStyleValues.Thick
-                            : (inTheName ? XLBorderStyleValues.None : XLBorderStyleValues.Medium);
+                        style.Border.BottomBorder = inTheName ? XLBorderStyleValues.None : XLBorderStyleValues.Medium;
                     }
                     else
                     {

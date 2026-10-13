@@ -11,8 +11,8 @@
     A TEST IS KNOWN BY COLUMN A OR BY ITS NUMBERS, in both shapes a workbook can hold. The
     full block, which the client's export writes for every test, has the name in A beside
     the headings Tolerance to Status, its numbers on the row below, and its clash rows under
-    a heading row whose A reads Image. The one row test, which this tool writes for a test
-    that found nothing since Q73, has the name in A and its numbers on the same row, in the
+    a heading row whose A reads Image. The one row test, which this tool wrote for a test
+    that found nothing from Q73 until F153, which writes nothing for it, has the name in A and its numbers on the same row, in the
     columns the headings use, C to K. Read off samples\client-report and off
     src\Federator.Core\Report\WorkbookWriter.cs on 2026-09-27. A row with A empty that
     still carries a tolerance in C and six whole numbers in D to I is a test whose name is

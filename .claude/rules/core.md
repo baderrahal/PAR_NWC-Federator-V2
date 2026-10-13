@@ -583,10 +583,12 @@ and 6 does not read as broken.
   `ClashTestPlan.PlanLine`, is written before the sides are counted, so for a picked file it
   never says how many are to be created, only how many are left after the file's own
   checks and that the count created is said once the sets are counted, FR-058. It read
-  1830 to create eight lines above 36 created on set 03. THE WORKBOOK STILL CARRIES A BLOCK FOR EVERY
-  TEST IN THE FILE. Not creating a test changes what goes in the DOCUMENT and never what
-  goes in the report, because the client's report is the whole matrix and a test missing
-  from it reads as a test nobody ran rather than as a test that could not clash
+  1830 to create eight lines above 36 created on set 03. Not creating a test changes what goes
+  in the DOCUMENT and never what goes in the report: THE PAGE CARRIES A BLOCK FOR EVERY TEST
+  OF THE REPORT and the Coverage sheet of the internal workbook lists every test of the file.
+  THE CLASH WORKBOOK CARRIES A BLOCK FOR EVERY TEST WITH A CLASH AND NOTHING FOR A TEST THAT
+  FOUND NONE, F153, Bader's decision of 2026-10-13, which retires the rule that it carried
+  one for every test in the file, the one row of Q73's answer b among them
 - BOTH TESTS OF A MIRRORED PAIR ARE CREATED AND RUN, AND THEIR CLASHES ARE MERGED INTO THE
   ONE KEPT, F132, Bader's Q114 points 4 to 6 and 8, his answer B to Q121 and his answer D to
   Q133, a rule of the code for any project. A MIRROR is a test that asks another test's
@@ -764,9 +766,9 @@ and 6 does not read as broken.
   REPORTED A SECOND TIME: AddTo takes each mirror that ran out of the group's report,
   `ClashReport.TakeOut`, so every writer and every count over `ClashReport.Tests` holds each
   clash once. TakeOut counts each mirror it takes out, `ClashReport.MirrorsMerged`, and the
-  workbook check `CreationPlan.BlockCountLine` takes that count, so it expects one block for
-  every test in the file less the mirrors merged and says why, and with none merged its line
-  is word for word the line before F132. The counts of a merge are refused before AddTo has
+  workbook check `CreationPlan.BlockCountLine` takes that count and says how many mirrors are
+  in their kept tests' blocks. Since F153 it expects one block for every test of the report
+  with a clash, `ClashReport.TestsWithAClash`, counted after the mirrors were taken out. The counts of a merge are refused before AddTo has
   run, and its lines then say UNKNOWN, never 0. After it `FoundByBoth` is
   null, UNKNOWN, where nothing was merged or a mirror was not merged,
   since its clashes were never compared, and `AddedToTheKeptTest` is the rows the merge added, a
@@ -1448,14 +1450,19 @@ and 6 does not read as broken.
   check reports the sheets and their names, the blocks, the rows, the clash count of each
   block, and the first thing that differs from the client's layout with both sides printed.
   It counts no column of ours, because since the workbook became their one sheet there is
-  no column of ours on it to count. EVERY TEST IS COUNTED, FR-035, F118: the full blocks
-  with a heading and clashes, and the tests of one row that found nothing, Q73, each said
-  apart, `WorkbookCheck.FullBlocks` and `OneRowTests`, so the BLOCKS line reads one for
-  every test in the file and a missing one row test is a shortfall. It counted a block only
-  where it found the Clash Name heading, so every group of a 1830 test run read 5 blocks
-  against 1830 and said in capitals the workbook was short. A workbook of one row tests
-  alone has no block layout to compare, so its row 1 and widths are read and the check
-  says no block was compared
+  no column of ours on it to count. EVERY TEST WITH A CLASH IS A BLOCK AND A TEST WITH NONE
+  WRITES NOTHING, F153, Bader's decision of 2026-10-13, which RETIRES Q73's answer b, the one
+  row of a test that found nothing, and FR-035's count of one block for every test in the file.
+  His run of that day held 130 blocks and then rows 5204 to 6903, 1700 tests of one row. The
+  check counts the blocks with the Clash Name heading, `WorkbookCheck.Blocks`, and the BLOCKS
+  line sets them beside the report's tests with a clash, `ClashReport.TestsWithAClash`, so a
+  block missing or one too many is said in capitals. A ROW OUTSIDE EVERY BLOCK HOLDING A NAME
+  OR A VALUE WHERE THE TEST HEADER STARTS IS THE OLD ONE ROW SHAPE AND A PROBLEM,
+  `WorkbookCheck.NoClashRows`, named by its first row, so a workbook that still holds one fails
+  the check. A workbook where no test found a clash holds its title alone, has no block layout
+  to compare, so its row 1 and widths are read and the check says no block was compared. The
+  page keeps a block for every test and the Coverage sheet lists every test, so no test goes
+  unreported
 - A report check NEVER fails a group. It is a warning on its own list, apart from the
   errors, because the NWF, the NWD and the workbook were all still written. Judging a group
   on it would repeat the fault that once reported a clean 22 group run as FAILED
@@ -2709,11 +2716,14 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   and not judged there, where here it is a test F77 did not create and is held by neither
   side, counted apart from agree since PR 145. Agree only where both equal AND THE TEST RAN THIS
   RUN, the breaker's third finding on F127b: a test that did not run with equal counts, nought
-  and nought most often, is NOT COMPARED, `CountCheck.DidNotRunWhy`. Failed for any
-  other difference, for a test the document holds with no block, and for a block with
-  numbers that the document does not hold. NOT COMPARED, NEVER AGREE, where a count on
+  and nought most often, is NOT COMPARED, `CountCheck.DidNotRunWhy`. SINCE F153 A TEST WITH NO
+  BLOCK READS NOUGHT ROWS AND CLASHES NOUGHT, since a test with no clash writes nothing in the
+  workbook, so a test that ran and found none agrees with a document holding none, and its
+  Coverage sheet cells read 0 and not UNKNOWN. Failed for any other difference, for a test the
+  document holds clashes of with no block, and for a block with numbers that the document does
+  not hold. NOT COMPARED, NEVER AGREE, where a count on
   either side is minus one, the workbook's included, so a block that could not be read whole
-  is never a FAILED line, a name is on two tests of one side, a test is in neither, a test
+  is never a FAILED line, a name is on two tests of one side, a test
   the run holds as created or already there was not returned by the read of the document, or
   the workbook or the document's counts were not read, with the reason. The tests the
   document holds and the file does not are named and not judged. compare-document.ps1 stays
@@ -2749,9 +2759,9 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   threw, since last week's file at the same path would be read as this week's, and the reason
   says so
 - THE CLIENT'S SHEET IS READ BACK TEST BY TEST, `Federator.Core.Report.WorkbookTests.Read`, by
-  the name in column A, in both shapes: a full block gives the clash rows under it, counted
-  the way WorkbookCheck counts them, and its Clashes cell, and the one row of a test that
-  found nothing, Q73, gives no rows and its Clashes cell. It takes a sheet of a workbook
+  the name in column A, one shape since F153: a full block gives the clash rows under it,
+  counted the way WorkbookCheck counts them, and its Clashes cell. The one row Q73 gave a test
+  that found nothing is never read as a test, the workbook check names it. It takes a sheet of a workbook
   already open, so the file is loaded once. A name on two tests of the sheet, a test row with
   no name, a Clashes cell that is no whole number and a block with no clash table under it
   are each a doubt, the last two read as minus one. Names are read exactly and never trimmed

@@ -78,17 +78,17 @@ namespace Federator.Core.Report
         public string SheetName { get; private set; }
 
         /// <summary>
-        /// Every test the sheet carries, the full blocks and the tests of one row together, FR-035.
-        /// A test with no clash is one row since Q73 and is a block of its own for the count, so
-        /// this is the number to set beside the tests in the file.
+        /// The tests the sheet carries, each a full block with a heading row. Since F153, Bader's
+        /// decision of 2026-10-13, a test with no clash writes nothing in the workbook, so this is
+        /// the number to set beside the tests of the report that hold a clash, CreationPlan.BlockCountLine.
         /// </summary>
         public int Blocks { get; private set; }
 
-        /// <summary>The tests that hold clashes, each a full block with a heading row.</summary>
-        public int FullBlocks { get; private set; }
-
-        /// <summary>The tests that found nothing, each one row under no heading, Q73.</summary>
-        public int OneRowTests { get; private set; }
+        /// <summary>
+        /// Rows outside every block that carry a test's name or its values, the one row Q73 gave a test
+        /// with no clash until F153. Each is a problem, since such a test writes nothing in the workbook.
+        /// </summary>
+        public int NoClashRows { get; private set; }
 
         /// <summary>Clash rows across every block.</summary>
         public int Rows { get; private set; }
@@ -273,11 +273,14 @@ namespace Federator.Core.Report
                 clashes.Add(WorkbookTests.ClashesOfBlock(sheet, row - 4));
             }
 
-            // FR-035. A test that found nothing is one row with no heading, so the loop above never
-            // saw it. It is a row below the title, outside every full block, holding a name or its
-            // tolerance, and the one place a test with no name still shows is the tolerance.
-            int oneRow = 0;
-            int firstOneRow = 0;
+            // F153, Bader's decision of 2026-10-13, which retires Q73's answer b. A test with no clash
+            // writes nothing in the workbook, so a row below the title, outside every block, holding a
+            // name or a value where the test header starts, is the one row Q73 gave such a test, and
+            // a problem. It is the shape the check found under FR-035, a test with no name showing
+            // only by its tolerance.
+            int noClash = 0;
+            int firstNoClash = 0;
+            string firstName = string.Empty;
 
             for (int row = 4; row <= lastRow; row++)
             {
@@ -289,37 +292,38 @@ namespace Federator.Core.Report
                 if (sheet.Cell(row, 1).GetString().Length > 0
                     || sheet.Cell(row, WorkbookWriter.ColumnTestHeader).GetString().Length > 0)
                 {
-                    oneRow++;
+                    noClash++;
 
-                    if (firstOneRow == 0)
+                    if (firstNoClash == 0)
                     {
-                        firstOneRow = row;
+                        firstNoClash = row;
+                        firstName = sheet.Cell(row, 1).GetString();
                     }
                 }
             }
 
-            CheckOneRowTestsComeLast(spans, clashes, firstOneRow);
+            if (noClash > 0)
+            {
+                Say((noClash == 1 ? "One row outside every block holds" : noClash + " rows outside every block hold")
+                    + " a test with no clash, the first at row " + firstNoClash
+                    + (firstName.Length > 0 ? ", " + Quote(firstName) : ", with no name")
+                    + ". A test with no clash writes nothing in the workbook since F153, and is on the page"
+                    + " and the Coverage sheet alone.");
+            }
 
-            // A sheet of one row tests has no heading row, so the block layout cannot be compared,
-            // and the check says so. Row 1 and the column widths hold without a block, so those two
-            // are still read.
-            if (full == 0 && oneRow > 0)
+            // A sheet with no block has no heading row, so the block layout cannot be compared, and
+            // the check says so. Row 1 and the column widths hold without a block, so those two are
+            // still read. Since F153 that is the sheet of a group where no test found a clash.
+            if (full == 0)
             {
                 CheckWidths(sheet);
                 CheckTitle(sheet);
             }
 
-            FullBlocks = full;
-            OneRowTests = oneRow;
-            Blocks = full + oneRow;
+            NoClashRows = noClash;
+            Blocks = full;
             BlockCounts = counts;
             CheckOrder(counts, clashes);
-
-            if (Blocks == 0)
-            {
-                problems.Add("The sheet has no clash table at all, so nothing on it could "
-                    + "be compared with the client's report.");
-            }
         }
 
         private static bool InAnySpan(IList<int[]> spans, int row)
@@ -708,43 +712,6 @@ namespace Federator.Core.Report
         // ---------- in what order ----------
 
         /// <summary>
-        /// A test that found nothing holds no clash and goes after every test that holds some. The order check reads
-        /// the full blocks alone, so a one row test placed before a block with clashes was never named, F118's reader.
-        /// Said once, with the first such test and the first block it stands before.
-        /// </summary>
-        private void CheckOneRowTestsComeLast(IList<int[]> spans, IList<int> clashes, int firstOneRow)
-        {
-            if (firstOneRow == 0)
-            {
-                return;
-            }
-
-            for (int i = 0; i < spans.Count; i++)
-            {
-                int[] span = spans[i];
-
-                // A block whose Clashes cell is nought holds none, which a test of one row also holds, and ties
-                // keep the order they were created in, as the order check lets them. Such a block is written by
-                // the writer for a result group with nothing under it, so it may follow a one row test.
-                if (clashes[i] == 0)
-                {
-                    continue;
-                }
-
-                // A block starts four rows above its headings, the start the span carries, so its first row is
-                // the span's first.
-                if (span[0] > firstOneRow)
-                {
-                    Say("The tests are in the wrong order. The test with no clash at row " + firstOneRow
-                        + " stands before the test with clashes at row " + span[0]
-                        + ". The client's report puts the most clashes first, so a reader is "
-                        + "not scrolling past empty tests.");
-                    return;
-                }
-            }
-        }
-
-        /// <summary>
         /// Most clashes first, whether or not a priority file was picked, FR-199, Bader's answer to
         /// Q49: the blocks keep the measured order and the priority is a column, so the order is
         /// checked on every run. It was skipped for a workbook with a file picked, which left
@@ -807,9 +774,8 @@ namespace Federator.Core.Report
 
             lines.Add("CHECK    " + Sheets + (Sheets == 1 ? " sheet, " : " sheets, ")
                 + Quote(SheetName) + ", " + Blocks + " test "
-                + (Blocks == 1 ? "block" : "blocks") + " (" + FullBlocks + " with clashes and "
-                + OneRowTests + " of one row), " + Rows + " clash "
-                + (Rows == 1 ? "row" : "rows") + ".");
+                + (Blocks == 1 ? "block" : "blocks") + " with clashes, " + Rows + " clash "
+                + (Rows == 1 ? "row" : "rows") + ". A test with no clash writes no row here since F153.");
 
             if (BlockCounts.Count > 0)
             {
@@ -829,10 +795,10 @@ namespace Federator.Core.Report
                 lines.Add("         " + problem);
             }
 
-            if (problems.Count == 0 && FullBlocks == 0 && Blocks > 0)
+            if (problems.Count == 0 && Blocks == 0)
             {
-                lines.Add("         Row 1 and the column widths match the client's report. No test holds a clash, so no "
-                    + "heading, cell, fill or border of a block was compared.");
+                lines.Add("         Row 1 and the column widths match the client's report. The sheet holds no block, "
+                    + "so no heading, cell, fill or border of a block was compared.");
             }
             else if (problems.Count == 0)
             {
@@ -841,8 +807,8 @@ namespace Federator.Core.Report
                 // every column of every row matched.
                 lines.Add("         The column headings of every block with clashes match the client's report, and so do the "
                     + "fill, border and row height of every cell of the first block, five values of its first clash row, "
-                    + "the column widths and the title row. The blocks with clashes are in their order, and no test with no "
-                    + "clash stands before one with clashes. The values of the other blocks and clash rows were not read.");
+                    + "the column widths and the title row. The blocks are in their order, and no row of a test with no "
+                    + "clash is on the sheet. The values of the other blocks and clash rows were not read.");
                 lines.Add("         Not compared: the font, the sheet name, freeze panes, "
                     + "print setup, merged ranges, and whether a value is true. See "
                     + "docs\\history\\scan.md 4q.");
@@ -865,13 +831,12 @@ namespace Federator.Core.Report
                 return "Workbook: " + FirstDivergence;
             }
 
-            if (FullBlocks == 0 && Blocks > 0)
+            if (Blocks == 0)
             {
-                return "Workbook: one sheet, " + Blocks + " tests, " + Rows
-                    + " rows, no test holds a clash, so the layout of a block was not compared.";
+                return "Workbook: one sheet, no test with a clash, so the layout of a block was not compared.";
             }
 
-            return "Workbook: one sheet, " + Blocks + " tests, " + Rows
+            return "Workbook: one sheet, " + Blocks + " tests with clashes, " + Rows
                 + " rows, matching the client's layout.";
         }
     }
