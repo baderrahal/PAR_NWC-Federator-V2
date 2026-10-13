@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 180 | 16 | 3 | 0 | 60 | 6 | 265 |
-| total | 380 | 27 | 3 | 0 | 160 | 17 | 587 |
+| outside the waves | 180 | 16 | 4 | 0 | 59 | 7 | 266 |
+| total | 380 | 27 | 4 | 0 | 159 | 18 | 588 |
 <!-- the end of the counts -->
 
 ## Now
@@ -36,13 +36,13 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 
 ## Next
 1. A zip of main with 222 to 225 when Bader asks, and his run of steps 800 to 867, 1100 to 1158, 1200 to 1244 and 1300 to 1310
-2. Wave 4 and 5 rows the team sees that are left: FR-161 the date format control, F114-K32 and K36 once Bader answers
-3. The register rows of today: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30, F150-R2
+2. Merge the three branches fix-F114-K32, fix-F114-K29, fix-F114-K36 and fix-F150-R2-dropped in that order, the connector could not open pull requests (403), then run 1A02MM once with the viewpoints box ticked
+3. Wave 4 and 5 rows the team sees that are left: FR-161 the date format control
+4. The register rows of today: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
 
 ## Waiting for Bader
-- F114-K32: a person's own view named as a test, fail the group or a VIEWS line. F114-K36: A keep F3, B view inside groups, C no view
+- Nothing waits on a question. Bader answered F114-K32 B, F114-K36 B, F150-R2 B and gave his words on F114-K29, read as only the map's teams get pair folders, which he may correct
 - Whether a Scan of the same folder keeps typed names and unticked groups. Q38: the source file read is kept for the merge key
-- F150-R2: Hide Other put back as off writes "3 0" where his PC held "0". His run on his PC from the team zip
 
 ## Blockers and known bugs
 - The WORKBOOK step leaves the window not answering for about 30 s on 1A02MM
