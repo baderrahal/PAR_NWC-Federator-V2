@@ -657,7 +657,11 @@ well as to pass.
   reads them as faults. Since F109 that walk, the file list and the stamp read the
   INSTALLED bundle, never the staging copy, each assembly read from its bytes so the
   script holds no file of it open, and the installed Federator.Addin.dll must read the
-  stamp the build wrote
+  stamp the build wrote. SINCE F156 A REFERENCE IS ALSO READ BY ITS NAME AFTER BINDING POLICY,
+  `AppDomain.ApplyPolicy`, because the reflection only context applies none. Core asks for
+  System.IO.Compression 4.2.0.0 since F152, the version the .NET 4.8 reference assemblies
+  carry, and the runtime loads the framework's 4.0.0.0 for it, so without it every install
+  from F152 on stopped with Federator.Core needs System.IO.Compression, read on 2026-10-14
 - install.ps1 ends one of four ways, each an exit code and a last line written once at
   the top of the script and copied word for word into INSTALL.md: 0 and the line telling
   a person to start Navisworks, 1 FAILED, 2 REFUSED, 3 LEFT, installed and checked with
