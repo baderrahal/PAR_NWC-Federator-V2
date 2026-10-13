@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 
 namespace Federator.Core.Clash
@@ -112,13 +112,8 @@ namespace Federator.Core.Clash
         /// </summary>
         public string DescribeTolerance()
         {
-            return Format(ToleranceInFileUnits) + " " + FileUnits
-                + " is " + Format(Tolerance) + " " + DocumentUnits;
-        }
-
-        private static string Format(double value)
-        {
-            return value.ToString("0.##########", CultureInfo.InvariantCulture);
+            return EventRow.Tolerance(ToleranceInFileUnits) + " " + FileUnits
+                + " is " + EventRow.Tolerance(Tolerance) + " " + DocumentUnits;
         }
 
         public override string ToString()

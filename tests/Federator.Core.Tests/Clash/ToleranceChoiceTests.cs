@@ -103,10 +103,23 @@ namespace Federator.Core.Tests
 
         // ---------- what the log says ----------
 
+        /// <summary>The saved tests of one group, each counted by what happened to its tolerance.</summary>
+        private static SavedTestTolerances Saved(SavedTestTolerance what, int howMany)
+        {
+            SavedTestTolerances saved = new SavedTestTolerances();
+
+            for (int i = 0; i < howMany; i++)
+            {
+                saved.Record(what);
+            }
+
+            return saved;
+        }
+
         [Test]
         public void TheChosenLineSaysWhatItBeatAndBothCounts()
         {
-            string line = ToleranceChoice.Of(25.0).LogLine(211, 1619, "ft");
+            string line = ToleranceChoice.Of(25.0).LogLine(211, Saved(SavedTestTolerance.Set, 1619), "ft");
 
             Assert.That(line, Does.StartWith("TOLERANCE 25 mm chosen in the tool"));
             Assert.That(line, Does.Contain("beats both the XML and the document"));
@@ -114,16 +127,70 @@ namespace Federator.Core.Tests
             Assert.That(line, Does.Contain("211 created fresh"));
             Assert.That(line, Does.Contain("1619 already in the document"));
             Assert.That(line, Does.Contain("0.082021 ft"));
+            Assert.That(line, Does.Not.Contain("Not set on"),
+                "a line where every saved test was set has nothing to say apart");
         }
 
         [Test]
         public void TheDefaultLineSaysTheDocumentWasLeftAlone()
         {
-            string line = ToleranceChoice.FromTheFile().LogLine(211, 1619, "ft");
+            string line = ToleranceChoice.FromTheFile()
+                .LogLine(211, Saved(SavedTestTolerance.LeftAsTheDocumentHasIt, 1619), "ft");
 
             Assert.That(line, Does.Contain("read per test out of the XML"));
             Assert.That(line, Does.Contain("1619 left as the document has them"));
             Assert.That(line, Does.Not.Contain("beats"));
+        }
+
+        /// <summary>
+        /// FR-053. The count went up before the test was resolved, so a saved test that was
+        /// not found, would not copy as a clash test, threw, or was already at the value was
+        /// counted under Set on. Only a test whose tolerance this run changed is set, and
+        /// every other one is named by what happened to it.
+        /// </summary>
+        [Test]
+        public void OnlyASavedTestWhoseToleranceWasChangedIsCountedAsSet()
+        {
+            SavedTestTolerances saved = Saved(SavedTestTolerance.Set, 2);
+            saved.Record(SavedTestTolerance.AlreadyAtTheValue);
+            saved.Record(SavedTestTolerance.AlreadyAtTheValue);
+            saved.Record(SavedTestTolerance.AlreadyAtTheValue);
+            saved.Record(SavedTestTolerance.NotFound);
+            saved.Record(SavedTestTolerance.WouldNotCopy);
+            saved.Record(SavedTestTolerance.Threw);
+
+            string line = ToleranceChoice.Of(25.0).LogLine(10, saved, "ft");
+
+            Assert.That(line, Does.Contain("Set on 12 tests, 10 created fresh and 2 already in the document"));
+            Assert.That(line, Does.Contain("Not set on 6 saved tests"));
+            Assert.That(line, Does.Contain("3 already at the value"));
+            Assert.That(line, Does.Contain("1 not found"));
+            Assert.That(line, Does.Contain("1 would not copy as a clash test"));
+            Assert.That(line, Does.Contain("1 threw"));
+            Assert.That(line, Does.Not.Contain("Set on 18"));
+        }
+
+        /// <summary>The break: one kind only, a test never found, and it is never counted as set.</summary>
+        [Test]
+        public void ASavedTestNeverFoundIsNotCountedAsSet()
+        {
+            string line = ToleranceChoice.Of(25.0).LogLine(10, Saved(SavedTestTolerance.NotFound, 4), "ft");
+
+            Assert.That(line, Does.Contain("Set on 10 tests, 10 created fresh and 0 already in the document"));
+            Assert.That(line, Does.Contain("Not set on 4 saved tests: 4 not found"));
+            Assert.That(line, Does.Not.Contain("already at the value"));
+        }
+
+        [Test]
+        public void TheTallyCountsEachKindApartAndAddsThemUp()
+        {
+            SavedTestTolerances saved = Saved(SavedTestTolerance.Set, 2);
+            saved.Record(SavedTestTolerance.Threw);
+
+            Assert.That(saved.Of(SavedTestTolerance.Set), Is.EqualTo(2));
+            Assert.That(saved.Of(SavedTestTolerance.Threw), Is.EqualTo(1));
+            Assert.That(saved.Of(SavedTestTolerance.NotFound), Is.EqualTo(0));
+            Assert.That(saved.Total, Is.EqualTo(3));
         }
 
         /// <summary>
@@ -133,7 +200,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AUnitTheTableDoesNotKnowStillWritesALine()
         {
-            string line = ToleranceChoice.Of(25.0).LogLine(1, 0, "furlongs");
+            string line = ToleranceChoice.Of(25.0).LogLine(1, new SavedTestTolerances(), "furlongs");
 
             Assert.That(line, Does.Contain("UNKNOWN"));
             Assert.That(line, Does.Contain("furlongs"));

@@ -618,7 +618,7 @@ namespace Federator.Addin.Engine
                 sizes.Count,
                 GroupSize.BytesOf(sizes),
                 outcome.ElementCount,
-                outcome.Clash == null ? GroupSize.Unknown : outcome.Clash.TotalClashes,
+                GroupSize.ClashesIn(outcome.Clash),
                 outcome.ViewpointsCreated));
         }
 
@@ -1043,15 +1043,10 @@ namespace Federator.Addin.Engine
                         return outcome;
                     }
 
-                    // 5-M2. THE CHANGED BRANCH NEVER SET THIS AND THE GROUP WAS JUDGED
-                    // FAILED FOR IT, with the sentence "the NWF is not on disk", about a
-                    // file that IS on disk and that this run opened. Only the OPENED
-                    // branch and SaveTheNwf set it, and the reshape deliberately does not
-                    // save, so a reshaped group that found no clashes reached the
-                    // judgement with it still false. It is read off the file the run
-                    // opened, the same way the OPENED branch reads it.
-                    outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
-                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
+                    // 5-M2 found this branch judged FAILED with "the NWF is not on disk"
+                    // when the reshape did not save. Since FR-043 the reshape and the clear
+                    // and rebuild both save through WriteNwf, which sets the size and
+                    // whether the NWF is on disk off the disk itself.
                 }
                 else if (comparison.Decision == RerunDecision.Build)
                 {
@@ -1932,7 +1927,7 @@ namespace Federator.Addin.Engine
             // counts off this already modified document, finds everything present,
             // reports everything kept and SAVES THE NWF OVER, while the message here said
             // the file was left exactly as it was. They return TRUE now, which stops the
-            // fallback, and nothing on this path saves.
+            // fallback, and nothing on these two paths saves.
             if (!tally.EverythingKept)
             {
                 outcome.AddError(DamagedDocument.TheDocumentIsDamaged(
@@ -1966,6 +1961,13 @@ namespace Federator.Addin.Engine
             }
 
             outcome.AppendedCount = document.Models.Count;
+
+            // FR-043. Every one of the four came back and the file list is right, so the NWF
+            // is saved over here, as the clear and rebuild saves it at the same point. With
+            // no save here a group whose clash step and views put nothing in published an
+            // NWD with the new file list beside an NWF still holding the old one, and was
+            // judged DONE.
+            WriteNwf(document, job, outcome);
 
             // THE GROUP IS REBUILT, AND SAYING SO IS NOT COSMETIC. Without this line
             // `outcome.Decision` keeps the value `Changed` it was given before the work,
@@ -2436,6 +2438,8 @@ namespace Federator.Addin.Engine
         {
             Say("Saving NWF for " + job.Building);
             log.WriteAttempted("NWF", job.NwfPath);
+            outcome.NwfSavesAsked++;
+            bool saved = false;
 
             try
             {
@@ -2443,23 +2447,34 @@ namespace Federator.Addin.Engine
 
                 // This also runs on a rebuild, where an NWF IS already at the path, so
                 // the bool is what says the save happened rather than the file being
-                // there. It says more in the log than an absent file does either way.
-                if (!document.TrySaveFile(job.NwfPath))
+                // there. FR-044: it goes on the outcome, where the judgement reads it, and
+                // to WriteFinished, which lists the file as written only when it is true.
+                saved = document.TrySaveFile(job.NwfPath);
+
+                if (!saved)
                 {
                     log.Line("NWF      the save returned false for " + job.Building);
                 }
             }
             catch (Exception error)
             {
+                saved = false;
                 log.Failure(
                     "saving the NWF for " + job.Building,
                     error,
                     "kept going, the disk is checked next to see whether anything landed");
             }
 
+            if (!saved)
+            {
+                outcome.NwfSavesThatFailed++;
+            }
+
+            outcome.LastNwfSaveFailed = !saved;
+
             // Never report a file as written without looking for it. WriteFinished reads
             // the size back off the disk itself.
-            outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
+            outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath, saved);
             outcome.NwfOnDisk = outcome.NwfSize >= 0;
         }
 
@@ -4409,18 +4424,25 @@ namespace Federator.Addin.Engine
         {
             Say("Saving the NWF for " + job.Building + " with its sets and results");
             log.WriteAttempted("NWF", job.NwfPath);
+            outcome.NwfSavesAsked++;
+            bool saved = false;
 
             try
             {
                 EnsureFolder(job.NwfPath);
 
-                if (!document.TrySaveFile(job.NwfPath))
+                // FR-045. A false return added nothing to the outcome, so the group could
+                // be DONE with its sets, tests and views in the NWD and not in the NWF.
+                saved = document.TrySaveFile(job.NwfPath);
+
+                if (!saved)
                 {
                     log.Line("NWF      the save after the clash work returned false for " + job.Building);
                 }
             }
             catch (Exception error)
             {
+                saved = false;
                 outcome.AddError(
                     "saving the NWF after the clash work threw " + error.GetType().Name + ": " + error.Message);
                 log.Failure(
@@ -4429,7 +4451,14 @@ namespace Federator.Addin.Engine
                     "kept going, the disk is checked next to see whether anything landed");
             }
 
-            outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath);
+            if (!saved)
+            {
+                outcome.NwfSavesThatFailed++;
+            }
+
+            outcome.LastNwfSaveFailed = !saved;
+
+            outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath, saved);
             outcome.NwfOnDisk = outcome.NwfSize >= 0;
         }
 
@@ -4736,7 +4765,9 @@ namespace Federator.Addin.Engine
 
             outcome.NwdPublishReportedSuccess = published;
 
-            outcome.NwdSize = log.WriteFinished("NWD", job.NwdPath);
+            // FR-189. A publish that did not report success leaves last week's NWD at the
+            // path, and it is said on a NOT WRITTEN line and kept off the files written list.
+            outcome.NwdSize = log.WriteFinished("NWD", job.NwdPath, published);
             outcome.NwdOnDisk = outcome.NwdSize >= 0;
         }
 

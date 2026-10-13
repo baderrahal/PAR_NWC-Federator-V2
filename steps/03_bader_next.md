@@ -376,6 +376,41 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F119 the NWF saves, the files written list and the tolerance rows, added 2026-10-12
+
+The reshape comes first, because it is the one item a plain run shows: a group whose file list changed and whose clash step and views put nothing in. The read only files come after it, since they are what makes a save or a publish fail on purpose, and they are put back at the end.
+
+720. Install main with F119's last six merged
+721. In Explorer find a group of one discipline and two or more NWC files that already has an NWF from an earlier run of this tool. One discipline runs no clash test
+722. Copy its NWC folder to a new folder on the desktop, with its NWF beside it where the run writes it
+723. Move one of the NWC files out of the copy, so the group reads CHANGED
+724. Write down the NWF's size in bytes off its Properties
+725. In the tool on 1. Source pick the copy and press Scan
+726. On 4. Clash leave the clash XML empty
+727. Untick Make viewpoints
+728. On 2. Grouping tick that group alone
+729. Press Run and wait for it to finish
+730. Look for, in the group's lines: a `RESHAPE` line, then `NWF      attempt` and `NWF      written` with a size different from the one written down, then the group DONE on its `GROUP` finished line, as Rebuilt in the RESULT block
+731. Open that NWF in Navisworks
+732. Look for, in the Selection Tree: no model of the NWC moved out of the copy, where before this fix the NWF on disk kept it
+733. Run 1A02MM with the corrected 25 mm XML, `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`
+734. Open the `.tsv` beside its log in Excel
+735. Look for, on every `test created` row: the tolerance with all its decimals in the number column, 0.0820209974 where the document measures in feet, where set 03 read 0.082, or 0.025 where it measures in metres, the text column saying which
+736. On 4. Clash choose 25 mm in the Clash tolerance list
+737. Run 1A02MM again on the NWF the last run wrote
+738. Look for, on the `TOLERANCE` line: `Set on N tests, 0 created fresh and N already in the document` where the saved tests were at another value, or `Not set on N saved tests: N already at the value` where they were at 25 mm, and no saved test counted twice
+739. In Explorer tick Read-only in the Properties of the NWF of 1A02MM
+740. Run 1A02MM with its XML
+741. Look for: `NWF      NOT WRITTEN` with `the call that writes it did not report success`, and the group FAILED with the reason `the NWF save did not report success` or `of 2 saves of the NWF did not report success, the last among them`, naming the NWF's path
+742. Write down whether a `the save after the clash work returned false` line or a failure line came before it
+743. Clear the Read-only box of the NWF
+744. Tick Read-only in the Properties of the NWD of 1A02MM
+745. Run 1A02MM with its XML
+746. Look for: `NWD      NOT WRITTEN` with `are not from this run`, no NWD of 1A02MM under `files written` in the RESULT block, and the group FAILED with the reason that the NWD publish did not report success
+747. Clear the Read-only box of the NWD
+748. Run 1A02MM with `Skip clash when models sit off shared coordinates` ticked, as it starts
+749. Look for, in TIMING BESIDE SIZE: the row of 1A02MM reading `UNKNOWN clashes`, where set 05 read `0 clashes`, while RESULT reads `clashes found  : UNKNOWN`
+750. Send the logs and the `.tsv` files beside them
 ## Proof F120 the GAP block after FR-198, added 2026-10-12
 
 Core is proved by its tests. These steps read the GAP and ITEM IDS blocks of one run against set 09's, `steps\runs\09\item1-C02`. F120-R1, the pictures' guard on throws naming their path, has no step, since no run a person makes throws fifty times that way, and its proof is the Core tests.

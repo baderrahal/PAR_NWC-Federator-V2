@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 578 rows: open 181, in progress 25, in review 0, merged 323, proven by a run 29, waiting for Bader 3, dropped 17
+- By status, of 578 rows: open 174, in progress 24, in review 0, merged 331, proven by a run 29, waiting for Bader 3, dropped 17
 - By wave: 1 19, 2a 73, 2a and 2b 1, 2b 40, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 111, outside the waves 2, right after F133 merges 6
-- In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
+- In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 3 rows: F114-K29, Q155, F150
 
 ## Wave 1
@@ -100,12 +100,12 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F127-R3 | the coverage reads the run's codes off the ticked groups, not every NWC the scan found, so a category only an unticked building carries is not named, the breaker's point, dropped on 2026-10-12 under Q143 since the row reads UNKNOWN and never a wrong word | F127 | register row | dropped | none | none | 2026-10-12 |
 | F127-R4 | a mirrored test's coverage row is named by its run name, not the name the XML gives it, so the row is found by the name Clash Detective shows, dropped on 2026-10-12 under Q143 since the row carries the name the panel and the workbook show | F127 | register row | dropped | none | none | 2026-10-12 |
 | F127-R5 | an internal workbook can take the path of another group's clash workbook, a group named X Internal beside a group X with the suffix Internal, one written over the other with no line, the breaker's point 6 | F127 | register row | merged | 209 | none | 2026-10-12 |
+| F132-R7 | a status can be carried onto the wrong clash where one kept test has two mirrors and the first holds two copies of one pair with mixed statuses, since the twin check reads each mirror alone, the breaker's re-read of attempt 2 on pull request 211 | F132 | register row | open | none | none | 2026-10-12 |
 | F120-R2 | the source file of every clash item reads empty on real runs, set 09's GAP block of 1A02MM naming no Source File line since no item carried one, so the file part of ClashItem.MergeKey is empty on every item and the mirror merge cannot tell two models' items of one id and one geometry name apart, found by FR-198's pass, which keeps the read for the key and says it read and empty | F132 | register row | open | none | none | 2026-10-12 |
 | F115-R25 | the leftover walk clears the keys of a set whose search will not read and says nothing of why, SetBuilder.WalkForLeftovers, older than F115 | F115 | register row | open | none | none | 2026-10-12 |
 | F115-R26 | the twin of a leftover is paired by set name and not by folder, so removing the twin can take the set at the path the file names while the leftover is renamed elsewhere, and the file's tests lose their side, older than PR 212 | F115 | register row | open | none | none | 2026-10-12 |
 | F115-R27 | two sets at one path in the document are not said, the drift read, the rebuild, the finds count and the EMPTY SETS judgement describe the last copy and the other stays, older than PR 212 | F115 | register row | open | none | none | 2026-10-12 |
 | F115-R28 | the leftover decision counts sides only off tests already saved in the document, so a set the picked XML's own tests point at but the XML does not define can be removed before those tests are made, older than PR 212 | F115 | register row | open | none | none | 2026-10-12 |
-| F132-R7 | a status can be carried onto the wrong clash where one kept test has two mirrors and the first holds two copies of one pair with mixed statuses, since the twin check reads each mirror alone, the breaker's re-read of attempt 2 on pull request 211 | F132 | register row | open | none | none | 2026-10-12 |
 | F115-R29 | a set's planned twin is found by name and not in the leftover's folder, so a file that moved a set between folders can leave one set name in two folders, the breaker's re-read of attempt 2 on pull request 212 | F115 | register row | open | none | none | 2026-10-13 |
 | F115-R30 | a side whose selection sources read null makes the side count null and refuses every leftover with a FAILURE line, whether Navisworks returns null there is UNKNOWN until a run, the breaker's re-read of attempt 2 on pull request 212 | F115 | register row | open | none | none | 2026-10-13 |
 
@@ -214,24 +214,24 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| FR-043 | reshaped group done but nwf never saved | F119 | silent wrong number | open | none | none | 2026-10-04 |
-| FR-044 | nwf save false return ignored after rebuild | F119 | silent wrong number | open | none | none | 2026-10-04 |
-| FR-045 | nwf save after clash work false return ignored | F119 | silent wrong number | open | none | none | 2026-10-04 |
+| FR-043 | reshaped group done but nwf never saved | F119 | silent wrong number | merged | 219 | none | 2026-10-13 |
+| FR-044 | nwf save false return ignored after rebuild | F119 | silent wrong number | merged | 219 | none | 2026-10-13 |
+| FR-045 | nwf save after clash work false return ignored | F119 | silent wrong number | merged | 219 | none | 2026-10-13 |
 | FR-046 | result file sizes wrong for the two open logs | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
-| FR-047 | tsv number column rounds a tolerance | F119 | silent wrong number | open | none | none | 2026-10-04 |
+| FR-047 | tsv number column rounds a tolerance | F119 | silent wrong number | merged | 219 | none | 2026-10-13 |
 | FR-048 | tsv size zero for nwc not on disk | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
 | FR-049 | second run in window result covers both runs | F119 | silent wrong number | merged | 179 | none | 2026-10-08 |
 | FR-050 | run started but not finished reads as no run marked | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
 | FR-051 | result states zero waiting when no run marked | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
 | FR-052 | notolerance skip missing from skip reasons | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
-| FR-053 | tolerance set on count counts tests not edited | F119 | silent wrong number | open | none | none | 2026-10-04 |
+| FR-053 | tolerance set on count counts tests not edited | F119 | silent wrong number | merged | 219 | none | 2026-10-13 |
 | FR-054 | log prune in temp fallback deletes other programs logs | F119 | broken feature | merged | 148 | none | 2026-10-07 |
 | FR-055 | tsv files never pruned | F119 | broken feature | merged | 148 | none | 2026-10-07 |
 | FR-056 | live line slower compares one test with whole group | F119 | broken feature | merged | 148 | none | 2026-10-07 |
 | FR-057 | run log write has no try | F119 | loud failure | merged | 148 the listener half, 169 the disk half | none | 2026-10-08 |
 | FR-179 | shift range tick in the group list | F130 | Bader's request | merged | 192 | none | 2026-10-11 |
-| FR-189 | nwd listed as written when its publish failed | F119 | silent wrong number | open | none | none | 2026-10-05 |
-| F119 | run log and RESULT | F119 | fix | in progress | 148 nine items, 168, 169 and 179 merged, the rest on the laptop | none | 2026-10-08 |
+| FR-189 | nwd listed as written when its publish failed | F119 | silent wrong number | merged | 219 | none | 2026-10-13 |
+| F119 | run log and RESULT | F119 | fix | merged | 148 nine items, 168, 169 and 179, and 219 the last six | none | 2026-10-13 |
 | F130 | the Shift range in the group list | F130 | fix | merged | 192, 218 F130-R1 | none | 2026-10-12 |
 | Q112-5 | Shift range tick in the group list (FR-179) | F130 | Bader's request | merged | 192 | none | 2026-10-11 |
 | F130-R1 | a person who arrows onto the Run cell and presses Space no longer toggles it since the column is read only, the box itself still taking Space, the reviewer's point, UNKNOWN whether anyone ticks that way | F130 | register row | merged | 218 | none | 2026-10-12 |
@@ -641,7 +641,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q149-1 | no release runs, the full runs of C06 and C07 and the ACC check dropped, the proof runs of 1A02MM and 1A04PK the last | none | Bader's request | merged | 194 | none | 2026-10-11 |
 | Q149-2 | the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks | F140 | Bader's request | in progress | none | none | 2026-10-11 |
 | F140 | the team package, prepared and no team zip made until Bader writes make the team package | F140 | fix | merged | 208 | none | 2026-10-12 |
-| T6-R-ZEROCLASHES | TIMING BESIDE SIZE writes 0 clashes for a group whose clash was skipped, while RESULT reads clashes found UNKNOWN and the block's own legend says UNKNOWN is never a zero, set 05 item1-C02 line 625 and item1-C04 line 684 | F119 | register row | open | none | none | 2026-10-11 |
+| T6-R-ZEROCLASHES | TIMING BESIDE SIZE writes 0 clashes for a group whose clash was skipped, while RESULT reads clashes found UNKNOWN and the block's own legend says UNKNOWN is never a zero, set 05 item1-C02 line 625 and item1-C04 line 684 | F119 | register row | merged | 219 | none | 2026-10-13 |
 | T6-R-MIRRORWORDS | the MIRROR block says both tests of each pair are run over a group whose clash the coordinates rule skipped, set 05 item1-C02 line 263 and item1-C04 line 322 | F132 | register row | open | none | none | 2026-10-11 |
 | T6-R-TREEREMOVED | the VIEWS TREE after line reads removed 0 at once where the inventory removed 14 views at once with their folder in one RemoveAt, so the views written and removed read as never removed, set 06 item1-C02 lines 1504 to 1520 against 1745 | F114 | register row | open | none | none | 2026-10-11 |
 | F141 | the framed views that threw | F141 | fix | proven by a run | 196 the first form of attempt 1, 197 the readers' points and the records, and 201 attempt 2 | steps\runs\08\item1-C02 | 2026-10-11 |

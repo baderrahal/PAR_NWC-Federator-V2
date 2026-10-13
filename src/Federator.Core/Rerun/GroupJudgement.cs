@@ -30,6 +30,27 @@ namespace Federator.Core.Rerun
         public bool NwfOnDisk { get; set; }
 
         /// <summary>
+        /// How many times this run asked Navisworks to save the NWF, FR-043. A rebuilt group
+        /// that saved it none of them carries the new file list in its NWD and the old one in
+        /// its NWF.
+        /// </summary>
+        public int NwfSavesAsked { get; set; }
+
+        /// <summary>
+        /// How many of those saves returned false or threw, FR-044 and FR-045, the NWF's twin
+        /// of NwdPublishReportedSuccess. The file at the path was there before the save, so
+        /// File.Exists alone cannot tell a save that wrote from one that did not.
+        /// </summary>
+        public int NwfSavesThatFailed { get; set; }
+
+        /// <summary>
+        /// Whether the LAST save of the NWF this run asked for returned false or threw. Each save
+        /// writes the whole document, so a save that reported success after one that failed left
+        /// the file holding everything, and only a failed last save leaves it short.
+        /// </summary>
+        public bool LastNwfSaveFailed { get; set; }
+
+        /// <summary>
         /// Whether this run was asked to republish the NWD. With the tick box off the NWD
         /// is not a requested step, so its absence is not a failure.
         /// </summary>
@@ -248,6 +269,30 @@ namespace Federator.Core.Rerun
             if (facts.Decision == RerunDecision.Rebuilt && facts.AppendedCount == 0)
             {
                 reason = "nothing appended, so the rebuild produced nothing";
+                return GroupOutcome.Failed;
+            }
+
+            // FR-044 and FR-045. A save of the NWF that returned false or threw left the file
+            // at the path as it was, so what this run put in reached the NWD and not the NWF.
+            // Only the last save decides, since a later one that reported success wrote the whole
+            // document over it.
+            if (facts.NwfSavesThatFailed > 0 && facts.LastNwfSaveFailed)
+            {
+                reason = (facts.NwfSavesAsked > 1
+                        ? facts.NwfSavesThatFailed + " of " + facts.NwfSavesAsked + " saves of the NWF did not report success, the last among them"
+                        : "the NWF save did not report success")
+                    + ", so the file at " + Words.Or(facts.NwfPath, "an unknown path")
+                    + " does not hold what this run put in";
+                return GroupOutcome.Failed;
+            }
+
+            // FR-043. A rebuilt group took files out and put files in, and only a save puts
+            // that into the NWF. With none the NWD carries the new file list and the NWF
+            // keeps the old one, and the next run reads the group as changed again.
+            if (facts.Decision == RerunDecision.Rebuilt && facts.NwfSavesAsked == 0)
+            {
+                reason = "the group was rebuilt and nothing saved its NWF, so the NWF at "
+                    + Words.Or(facts.NwfPath, "an unknown path") + " keeps the old file list";
                 return GroupOutcome.Failed;
             }
 

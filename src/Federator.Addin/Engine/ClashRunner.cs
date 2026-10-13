@@ -93,13 +93,14 @@ namespace Federator.Addin.Engine
         private string documentUnits;
 
         /// <summary>
-        /// How many tests this group set a tolerance on, created fresh and already in
-        /// the document. Both are counted under the default too, because the one
-        /// TOLERANCE line per group carries both numbers whichever way it reads.
+        /// How many tests this group set a tolerance on, created fresh, and what happened to
+        /// the tolerance of each test already in the document, FR-053. Both are counted under
+        /// the default too, because the one TOLERANCE line per group carries both whichever
+        /// way it reads.
         /// </summary>
         private int toleranceOnCreated;
 
-        private int toleranceOnExisting;
+        private SavedTestTolerances toleranceOnExisting = new SavedTestTolerances();
 
         /// <summary>
         /// The guard is handed in so it can live for the whole run rather than for one
@@ -436,7 +437,7 @@ namespace Federator.Addin.Engine
             Compared = 0;
             SidesNotCompared = 0;
             toleranceOnCreated = 0;
-            toleranceOnExisting = 0;
+            toleranceOnExisting = new SavedTestTolerances();
             documentUnits = null;
             merges = new List<MirrorMerge>();
             mergeOfKept.Clear();
@@ -1531,21 +1532,26 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// Puts the chosen tolerance onto a test already in the document, F76, and counts
-        /// the test either way. Nothing is touched under the default, and a test already
-        /// at the chosen value is left exactly as it is, because an edit resets its
-        /// results and there would be nothing to change. The copy is the test's OWN,
-        /// through SavedItem.CreateCopy, so only the tolerance moves and the file's other
-        /// settings never ride in on it, which is what ApplyFileSettings is for.
+        /// the test by what happened to it, FR-053, where it was counted as set before it
+        /// was even found. Nothing is touched under the default, and a test already at the
+        /// chosen value is left exactly as it is, because an edit resets its results and
+        /// there would be nothing to change. The copy is the test's OWN, through
+        /// SavedItem.CreateCopy, so only the tolerance moves and the file's other settings
+        /// never ride in on it, which is what ApplyFileSettings is for.
         /// </summary>
         private void ApplyChosenTolerance(DocumentClashTests clashTests, TestAddress address, PlannedClashTest planned)
         {
             string name = planned.Name;
-            toleranceOnExisting++;
 
             if (!Tolerance.ChosenInTheTool)
             {
+                toleranceOnExisting.Record(SavedTestTolerance.LeftAsTheDocumentHasIt);
                 return;
             }
+
+            // Threw until a line below says otherwise, so a test is counted once whichever
+            // way it leaves, and one whose edit went through before a log line threw is set.
+            SavedTestTolerance what = SavedTestTolerance.Threw;
 
             try
             {
@@ -1555,6 +1561,7 @@ namespace Federator.Addin.Engine
                 {
                     if (existing == null)
                     {
+                        what = SavedTestTolerance.NotFound;
                         return;
                     }
 
@@ -1562,6 +1569,8 @@ namespace Federator.Addin.Engine
 
                     if (Math.Abs(already - wanted) <= TestDrift.ToleranceEpsilon)
                     {
+                        what = SavedTestTolerance.AlreadyAtTheValue;
+
                         // FR-036. Already at the chosen value, so a row that does not run says it.
                         Tolerance.PutOn(ReportFor(planned), documentUnits);
                         return;
@@ -1573,6 +1582,7 @@ namespace Federator.Addin.Engine
 
                         if (copy == null)
                         {
+                            what = SavedTestTolerance.WouldNotCopy;
                             log.Line("CLASH    " + name + "  the test would not copy as a clash test, so "
                                 + "its tolerance stays at " + Plain(already) + " and not the chosen "
                                 + Plain(wanted));
@@ -1583,6 +1593,7 @@ namespace Federator.Addin.Engine
                         clashTests.TestsEditTestFromCopy(existing, copy);
                     }
 
+                    what = SavedTestTolerance.Set;
                     changedTheDocument = true;
 
                     // FR-036. The row was given the plan's value, the old one read off the
@@ -1597,7 +1608,7 @@ namespace Federator.Addin.Engine
                             + ", chosen in the tool. Its results and its statuses are KEPT, measured 5y",
                         "tolerance set on a saved test",
                         name,
-                        EventRow.Exact(wanted),
+                        EventRow.Tolerance(wanted),
                         "was " + Plain(already));
                 }
             }
@@ -1607,6 +1618,10 @@ namespace Federator.Addin.Engine
                     "setting the chosen tolerance on " + name,
                     error,
                     "kept going, that test keeps the tolerance it had");
+            }
+            finally
+            {
+                toleranceOnExisting.Record(what);
             }
         }
 
@@ -1628,7 +1643,7 @@ namespace Federator.Addin.Engine
                     "writing the tolerance line",
                     error,
                     "kept going, the counts are " + toleranceOnCreated + " created and "
-                        + toleranceOnExisting + " already in the document");
+                        + toleranceOnExisting.Total + " already in the document");
             }
         }
 
@@ -1723,7 +1738,7 @@ namespace Federator.Addin.Engine
                     + "  merge composites " + (planned.MergeComposites ? "on" : "off"),
                 "test created",
                 planned.Name,
-                EventRow.Exact(set),
+                EventRow.Tolerance(set),
                 planned.TestTypeName + ", " + DescribeSetTolerance(planned, set));
 
             int after = clashTests.Tests.Count;

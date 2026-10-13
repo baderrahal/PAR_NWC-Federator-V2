@@ -2,6 +2,62 @@
 
 Newest entry at the top.
 
+## 2026-10-12 F119 the run log and RESULT, the six items left, written by the developer as the lead's delegate
+
+Branch fix-F119c off main 80314b9, Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3b under
+his Q143 limits. The rows of steps\tracker.csv with area F119 still open: FR-043, FR-044, FR-045, FR-047, FR-053 and
+FR-189, and the register row T6-R-ZEROCLASHES. Each changes what the team sees in the log, the .tsv, the NWF or the
+NWD, so none was dropped.
+
+What was done:
+- FR-043, a reshaped group judged DONE with its NWF never saved. The reshape now saves the NWF through WriteNwf once
+  every one of the four came back, as the clear and rebuild does, and a Rebuilt group that saved its NWF none of the
+  times is FAILED with the reason that its NWF keeps the old file list
+- FR-044 and FR-045, a save of the NWF that returned false, after the rebuild or after the clash work, judged DONE.
+  Both saves count on the outcome, a false return and a throw alike, and any failed save is FAILED with the reason
+  that the NWF does not hold what this run put in, and how many of how many saves where there were two
+- FR-189, an NWD whose publish did not report success listed as written. RunLog.WriteFinished takes the write's own
+  result. A file there after a call that did not report success is said on a NOT WRITTEN line with its .tsv row and
+  kept off the files written list, and an NWF the first save of this run wrote keeps its entry with the size read
+  now. The NWF's two saves hand their result the same way
+- FR-047, the .tsv number column rounding a tolerance to three decimals. EventRow.Tolerance keeps the ten decimals
+  the clash file gives and is the one formatter of a tolerance as a number, read by the two rows of ClashRunner and
+  by the plan, the drift and the created line, where three private copies of the same format sat
+- FR-053, the TOLERANCE line counting a saved test as set before it was found. Each saved test is recorded once by
+  what happened to its tolerance, SavedTestTolerances, and the line counts under Set on only a test whose tolerance
+  changed and names the rest apart, already at the value, not found, would not copy as a clash test or threw
+- T6-R-ZEROCLASHES, TIMING BESIDE SIZE writing 0 clashes for a group whose clash was skipped. GroupSize.ClashesIn
+  is UNKNOWN there, as RESULT says, and a test that ran and found nothing stays a real zero
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md and steps 720 to 750 of
+  steps\03_bader_next.md
+- Proved here: Core tests 2921 passed, 0 failed, 0 skipped on main 80314b9. The 14 new tests did not build there,
+  and against the new members written first with the old behaviour 9 of them failed, 2935 run. After the fix 2935
+  passed, 0 failed, 0 skipped. The solution builds in Release with 0 warnings and 0 errors, the add-in included.
+  check-locals and check-imports read clean
+
+What remains: the merge, and the run of steps 720 to 750 of steps\03_bader_next.md. Nothing of it has run on
+Navisworks.
+
+Known bugs: whether TrySaveFile and TryPublishFile return false or throw on a read only file is UNKNOWN, and either
+way the group now names the failed save. A save that returned false and wrote the file anyway would now fail its
+group, a case no run has shown. The reshape of a group whose clash step or views put something in now saves the NWF
+twice, as the clear and rebuild always did.
+
+What comes next: the lead's reviewer, then the run.
+
+ATTEMPT 2, the reviewer's first reading of pull request 219 on 2026-10-13:
+- FIXED, the one fault the team would see. A built or rebuilt group saves its NWF twice, and the count of failed saves
+  only went up, so a first save that failed and a second that reported success judged the group FAILED with a reason
+  saying the file was short, though the second save wrote the whole document. GroupFacts.LastNwfSaveFailed is set by
+  both saves and the judgement fails the group only when the last save failed. Test
+  AGroupWhoseFirstSaveFailedAndWhoseLastReportedSuccessIsNotFailedOnItsNwf fails before and passes after
+- The test of a group saving twice now uses a built group, since an opened group saves once
+- The proof steps hold one action each and are numbered 720 to 750 after the steps main took in
+- Main 6e0b57c merged in, with one conflict in ClashRunner.ApplyChosenTolerance: the counter of this branch kept and
+  FR-036's PutOn of main kept in the case already at the value. Built in Release with 0 warnings and 0 errors, Core
+  tests 2960 after the merge and 2961 after attempt 2, 0 failed, 0 skipped
+
+
 ## 2026-10-12 F120 the harvest and the pictures' guard, FR-198 and F120-R1, wave 3a, branch fix-F120c
 
 Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.

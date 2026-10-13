@@ -1769,9 +1769,25 @@ namespace Federator.Core.Diagnostics
         /// <summary>
         /// Checks the file is really there, reads its real size, records it for the result
         /// block and logs it. Returns minus one when the file is not on disk, and in that
-        /// case nothing is recorded as written.
+        /// case nothing is recorded as written. For a write whose own call reports nothing,
+        /// a workbook, a note or a page this tool writes itself.
         /// </summary>
         public long WriteFinished(string kind, string path)
+        {
+            return WriteFinished(kind, path, true);
+        }
+
+        /// <summary>
+        /// The same, for a write whose own call says whether it wrote, the save of the NWF and
+        /// the publish of the NWD, FR-189 and FR-044. Outputs overwrite with no date suffix, so
+        /// where the call did not report success last week's file still sits at the path,
+        /// and it was listed as written by this run with its size. Now such a file is read
+        /// and said on a NOT WRITTEN line and never added to the files written list. A file
+        /// an earlier write of this run put there, the NWF of its first save, stays listed
+        /// with the size read now, since this run did write it. Returns the size read either
+        /// way, so the caller can still tell a file there from no file.
+        /// </summary>
+        public long WriteFinished(string kind, string path, bool reportedSuccess)
         {
             long size = SizeOnDisk(path);
 
@@ -1779,6 +1795,27 @@ namespace Federator.Core.Diagnostics
             {
                 Line(kind.PadRight(8) + " MISSING  " + path + "  not on disk after the write");
                 return -1;
+            }
+
+            if (!reportedSuccess)
+            {
+                bool earlier;
+
+                lock (gate)
+                {
+                    earlier = SizeOfAFileWritten(kind, path, size);
+                }
+
+                Numbered(
+                    kind.PadRight(8) + " NOT WRITTEN  " + path + "  the call that writes it did not report success, so the "
+                        + DescribeSize(size) + " on disk "
+                        + (earlier ? "are what an earlier write of this run left" : "are not from this run"),
+                    "not written",
+                    kind,
+                    EventRow.Count(size),
+                    path);
+
+                return size;
             }
 
             lock (gate)
@@ -1794,20 +1831,7 @@ namespace Federator.Core.Diagnostics
                 // and printed it four minutes earlier. Nothing had shrunk. The entry was
                 // simply never updated, which reads exactly like an NWF that lost every
                 // clash result it held.
-                bool already = false;
-
-                foreach (WrittenFile seen in written)
-                {
-                    if (string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(seen.Kind, kind, StringComparison.Ordinal))
-                    {
-                        seen.SizeInBytes = size;
-                        already = true;
-                        break;
-                    }
-                }
-
-                if (!already)
+                if (!SizeOfAFileWritten(kind, path, size))
                 {
                     written.Add(new WrittenFile(kind, path, size));
                 }
@@ -1821,6 +1845,25 @@ namespace Federator.Core.Diagnostics
                 path);
 
             return size;
+        }
+
+        /// <summary>
+        /// Puts the size read now on the entry of a file this run already wrote, and says
+        /// whether there was one. Called under the gate.
+        /// </summary>
+        private bool SizeOfAFileWritten(string kind, string path, long size)
+        {
+            foreach (WrittenFile seen in written)
+            {
+                if (string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(seen.Kind, kind, StringComparison.Ordinal))
+                {
+                    seen.SizeInBytes = size;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
