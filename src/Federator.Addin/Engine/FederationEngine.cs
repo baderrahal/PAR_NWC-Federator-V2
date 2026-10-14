@@ -1038,7 +1038,7 @@ namespace Federator.Addin.Engine
                 }
 
                 outcome.AddError("the NWF links " + missing.Count + (missing.Count == 1 ? " file" : " files")
-                    + " that Navisworks could not resolve, so nothing was refreshed and no model was removed from the tree: "
+                    + " that Navisworks could not resolve, so nothing was refreshed, nothing was saved and the NWF on disk is as it was. No model was removed from it: "
                     + string.Join(", ", new List<string>(missing).ToArray())
                     + ". Put the file back where the NWF links it, or open the NWF in Navisworks and point the model at the new file, then run again");
                 return false;
@@ -1055,19 +1055,16 @@ namespace Federator.Addin.Engine
 
             if (!refresh.UpdateTheFiles(document))
             {
-                if (comparison.ChangedCount == 0)
-                {
-                    // Measured on 14 Oct 2026, run B of F187: with no linked file changed UpdateFiles returned
-                    // False in no time and changed nothing, so with nothing to bring up to date a False is read as
-                    // that. What it returns where a file did change is what the next run with one shows.
-                    log.Line("REFRESH  UpdateFiles returned False with no linked file changed since the last manifest, "
-                        + "which is read as nothing to bring up to date. UNKNOWN whether False ever means a failure");
-                }
-                else
-                {
-                    outcome.AddError("Document.UpdateFiles did not bring every linked file up to date, so the clash results of this "
-                        + "run may be those of the files as they were. Nothing was removed from the tree");
-                }
+                // Measured on 14 Oct 2026, runs B and C of F187. UpdateFiles returned False in 0.0 s with no linked
+                // file changed and again with one changed, a changed file having been read when the NWF opened,
+                // since an NWF reloads its linked files as it opens. The results moved all the same: 443 new
+                // clashes and 1498 statuses moved. So a False is read as nothing left out of date, never as a failure.
+                // What it returns for a file written after the NWF is open is UNKNOWN, nothing has asked yet.
+                log.Line("NOTICE   Document.UpdateFiles returned False, which is read as nothing left out of date: the NWF "
+                    + "reads its linked files as it opens, so " + (comparison.ChangedCount == 0
+                        ? "none of them had changed since the last manifest"
+                        : comparison.ChangedCount + " changed since the last manifest were read then")
+                    + ". UNKNOWN whether False ever means a failure");
             }
 
             return true;

@@ -1,5 +1,48 @@
 # 03 Bader next
 
+## Round 4, second set, F187 the refresh and the overwrite, Task 7
+
+Written for Bader. Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. The runs were on a COPY of C04 under C:\NWC-PC-Test\work. Your files in NM fed were not changed. Evidence: C:\NWC-PC-Test\evidence\2026-10-14-f187-refresh.
+
+### What was built, on the route of a picked NWF, which is the NWF page's run
+
+1. Before anything opens, the NWF is copied into a Backup folder beside the Log folder, named with the moment, never over an older copy. PROVEN: three runs made three copies, none overwrote another
+2. The linked files are listened for while the NWF opens. A file Navisworks cannot find is named and the run stops with nothing saved. No model is removed. PROVEN by a run with one NWC renamed away: FileInteractiveResolving fired, the file was named, the group FAILED with that reason, and the NWF on disk was byte for byte as it was
+3. The manifest. Each linked NWC: path, size, last write time, and a SHA-256 only where the size or the time differs from the last manifest. It is `nwc-manifest.tsv`, one fixed name in the Log folder beside the NWF's folder, overwritten by the tool on each run. A file written again with the same content is called touched, not changed. PROVEN: with nothing changed it said 10 unchanged, and with one file written over it listed exactly that file as changed
+4. Document.UpdateFiles is asked once, then TryCloseFileHandles. It returned False in 0.0 s each time. A changed file had been read when the NWF opened, so a False is read as nothing left out of date, a NOTICE and never a failure. What it returns for a file written after the NWF is open is UNKNOWN
+5. Every clash result is read before the tests run again in place and after: status, assigned to, comments, approver, group. Then a table per test of New, Active, Reviewed, Approved and Resolved before and after, and a WARNING with the test name where a test dropped clashes. The tests are run in place with TestsRunTest. Nothing is reset, compacted, removed or replaced, and a test says so
+6. Tests the NWF lacks are added by TestsAddCopy only, and a tolerance is changed only by an edit from a copy. Same as F185
+
+### What the runs showed
+
+- Kept. I made a coordinator's edits in Clash Detective's own calls on 3 tests of the copy: a Reviewed clash with an assignee and a comment, an Approved one with an approver, a New one with an assignee and a comment. After the refresh all 6 Reviewed or Approved kept their status, and every assignee, approver and comment was as it was. All 10170 results were matched by Guid. PROVEN
+- Changed NWC. I wrote one NWC over with another file's content. 443 new clashes were New and 1498 moved status, the ones that were gone from their test Resolved, 0 removed, so gone clashes become Resolved. PROVEN
+- Units and origin. Document units and every model's origin were identical before and after the changed file was read. PROVEN for this case
+- A New clash that is found again becomes Active, Navisworks's own rule. The table counts it and does not list it as a thing a coordinator wrote
+- A refresh with a changed file of the same size and time but other content would be called touched only if the hash is the same, so it is called changed. TEST
+- The run order, the memory stop, the 750 caps and F177's leftover removal apply on this route, since it runs the same group steps. The memory stop fired at picture 3331 in two of the runs. PROVEN
+
+### Close NWC/NWD files on load
+
+The option is `LcOpPerformanceProps.GetCloseFileAfterLoad` and `SetCloseFileAfterLoad`. No public member of the managed API returns that object, and `Application.Options` holds only Grids. So the add-in cannot read or set it. Whether the COM API reaches it is UNKNOWN. The NWF page tells the user to set it by hand, Options, Model, Performance. TryCloseFileHandles, which the tool calls after the refresh, releases the handles for that session, PROVEN to return True
+
+### Things you should know
+
+1. The route's Log folder and NWD folder are the open file's own, since F158: the Log folder beside the NWF's folder, and the NWD written beside the NWF, replacing the NWD there. A group built by the NWC page with the NWF in NWF\C04 and the NWD in NWD\C04 keeps its Log in NM fed\Log, so the first refresh of that NWF finds no manifest and writes one in NM fed\NWF\Log. F188 has to make the NWF page use the group's own Log, Backup and NWD folders
+2. The build of a group still appends file by file with TryAppendFile, so a bad file is named one by one. Your order named AppendFiles, which gives one call and no name for the file that failed. I kept the one by one. Say if you want AppendFiles
+3. Search sets only: the matrix builds search sets and no selection set is made, F155 and F168
+
+### UNKNOWN
+
+- What UpdateFiles returns for a file written after the NWF is open
+- Whether the close-on-load option can be reached from the add-in
+- Whether an NWF opened on another PC finds its NWC at the same path
+- The refresh with viewpoints on. These runs had the viewpoints off to be short, so the folder rebuild of F186 is not shown on the route yet. The final run does it
+
+### Numbers
+
+Core tests 3176, 0 failed. The Release build has 0 warnings and 0 errors.
+
 ## Round 4, second set, F186 the viewpoint tree, Task 6
 
 Written for Bader. Simple words. PROVEN means a run showed it. TEST means only a test showed it. UNKNOWN means nothing showed it yet.
