@@ -76,7 +76,9 @@
             </DockPanel>
         </Border>
 
-        <TabControl x:Name="Steps" SelectionChanged="OnStepShown">
+        <TabControl x:Name="Pages" SelectionChanged="OnPageShown">
+            <TabItem Header="NWC">
+            <TabControl x:Name="Steps" SelectionChanged="OnStepShown">
 
             <!-- Step 1 -->
             <TabItem Header="1. Source">
@@ -98,32 +100,8 @@
                                   IsChecked="True" VerticalAlignment="Center" Margin="12,0,0,0" />
                         <Button Grid.Column="4" Content="Scan" Click="OnScan" FontWeight="Bold" />
                     </Grid>
-                    <!-- F129. The third choice beside the NWC folder: one NWF or a folder of
-                         them, each run where it sits the way the open file run runs it. The
-                         label and the grey line are Core's, NwfPick, set in the constructor. -->
-                    <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Label Grid.Column="0" x:Name="PickedNwfLabel" />
-                        <TextBox Grid.Column="1" x:Name="PickedNwfBox" VerticalAlignment="Center" />
-                        <Button Grid.Column="2" Content="File" Click="OnBrowsePickedNwfFile" />
-                        <Button Grid.Column="3" Content="Folder" Click="OnBrowsePickedNwfFolder" />
-                        <Button Grid.Column="4" x:Name="RunPickedNwfsButton" Content="Run NWFs"
-                                Click="OnRunPickedNwfs" FontWeight="Bold" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" x:Name="PickedNwfHelp"
-                                   Style="{StaticResource FindingLine}" Margin="0,2,0,0" />
-                    </Grid>
-                    <TextBlock DockPanel.Dock="Bottom" x:Name="SourceSummary" Margin="0,6,0,0" />
 
+                    <TextBlock DockPanel.Dock="Bottom" x:Name="SourceSummary" Margin="0,6,0,0" />
                     <!-- The scan and its checks in one place. None of this blocks a run. -->
                     <Border DockPanel.Dock="Bottom" x:Name="FindingsPanel"
                             BorderBrush="#D0D0D0" BorderThickness="1" Background="#FFFDF5"
@@ -192,6 +170,10 @@
                         <Label Content="Make" VerticalAlignment="Center" />
                         <ComboBox x:Name="GroupingModeBox" MinWidth="320" VerticalAlignment="Center"
                                   SelectionChanged="OnGroupingModeChanged" />
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                        <CheckBox x:Name="RebuildExisting" Click="OnRebuildToggled" />
+                        <TextBlock x:Name="RebuildHelp" Style="{StaticResource TickHelp}" />
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="GroupingSummary" Margin="0,6,0,0" />
 
@@ -660,6 +642,97 @@
                 </DockPanel>
             </TabItem>
 
+            </TabControl>
+            </TabItem>
+
+            <!-- F188, Bader's answer 3 of Q174. The NWF page: the weekly work on an NWF that is built. Its
+                 words, its tick boxes and what each needs are Core's, Federator.Core.Rerun.NwfPageSteps and
+                 RefreshConfirm, read in the constructor and never typed here. -->
+            <TabItem Header="NWF">
+                <DockPanel Margin="8">
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" x:Name="NwfPageHeading" />
+
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" x:Name="PickedNwfLabel" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="PickedNwfBox" VerticalAlignment="Center"
+                                 LostFocus="OnPickedNwfLostFocus" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="File" Click="OnBrowsePickedNwfFile" />
+                        <Button Grid.Row="0" Grid.Column="3" Content="Folder" Click="OnBrowsePickedNwfFolder" />
+                        <Label Grid.Row="1" Grid.Column="0" x:Name="RecentNwfLabel" />
+                        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="RecentNwfBox" Margin="0,4,0,0"
+                                  SelectionChanged="OnRecentNwfChosen" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" x:Name="PickedNwfHelp"
+                                   Style="{StaticResource FindingLine}" Margin="0,2,0,0" />
+                    </Grid>
+
+                    <TextBlock DockPanel.Dock="Top" x:Name="NwfChangedHeading" FontWeight="Bold" Margin="0,6,0,2" />
+                    <TextBox DockPanel.Dock="Top" x:Name="NwfChangedBox" IsReadOnly="True" Height="84"
+                             TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="11" />
+
+                    <Grid DockPanel.Dock="Top" Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" x:Name="NwfToleranceLabel" />
+                        <ComboBox Grid.Column="1" x:Name="NwfToleranceBox" MinWidth="200"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="2" x:Name="NwfToleranceHelp" Style="{StaticResource TickHelp}"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+
+                    <StackPanel DockPanel.Dock="Top" Margin="0,8,0,0">
+                        <TextBlock x:Name="NwfStepsHeading" FontWeight="Bold" Margin="0,0,0,2" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox x:Name="NwfStepRefresh" IsChecked="True" Margin="0,0,16,0"
+                                      Click="OnNwfStepChanged" />
+                            <CheckBox x:Name="NwfStepTests" IsChecked="True" Margin="0,0,16,0"
+                                      Click="OnNwfStepChanged" />
+                            <CheckBox x:Name="NwfStepPictures" IsChecked="True" Margin="0,0,16,0"
+                                      Click="OnNwfStepChanged" />
+                            <CheckBox x:Name="NwfStepViewpoints" IsChecked="True" Margin="0,0,16,0"
+                                      Click="OnNwfStepChanged" />
+                            <CheckBox x:Name="NwfStepReports" IsChecked="True" Margin="0,0,16,0"
+                                      Click="OnNwfStepChanged" />
+                        </StackPanel>
+                        <TextBlock x:Name="NwfStepsHelp" Style="{StaticResource FindingLine}" />
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button x:Name="RunPickedNwfsButton" Content="Run" Click="OnRunPickedNwfs"
+                                MinWidth="120" FontWeight="Bold" Margin="0,0,8,0" />
+                    </StackPanel>
+
+                    <TextBlock DockPanel.Dock="Top" x:Name="NwfSummary" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <TextBlock DockPanel.Dock="Top" x:Name="NwfRulesLine" Style="{StaticResource FindingLine}" />
+
+                    <TextBlock DockPanel.Dock="Top" x:Name="NwfTableHeading" FontWeight="Bold" Margin="0,8,0,2" />
+                    <DataGrid x:Name="NwfTable" AutoGenerateColumns="False" CanUserAddRows="False"
+                              IsReadOnly="True" HeadersVisibility="Column" MinHeight="90">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Test" Binding="{Binding Test}" Width="*" />
+                            <DataGridTextColumn Header="New" Binding="{Binding New}" Width="70" />
+                            <DataGridTextColumn Header="Active" Binding="{Binding Active}" Width="70" />
+                            <DataGridTextColumn Header="Reviewed" Binding="{Binding Reviewed}" Width="80" />
+                            <DataGridTextColumn Header="Approved" Binding="{Binding Approved}" Width="80" />
+                            <DataGridTextColumn Header="Resolved" Binding="{Binding Resolved}" Width="80" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
         </TabControl>
     </DockPanel>
 </Window>

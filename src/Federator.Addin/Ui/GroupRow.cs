@@ -140,9 +140,18 @@ namespace Federator.Addin.Ui
             get { return BlockedReason != null; }
         }
 
+        /// <summary>
+        /// F188. The NWF of this group is already there, so the NWC page does not run it, the NWF page does. Only the
+        /// Rebuild tick box lets it be built again, into a new dated folder, and the clash history is not carried.
+        /// </summary>
+        public bool NwfExists { get; set; }
+
+        /// <summary>F188. The Rebuild tick box of the NWC page, set on every row, confirmed with the history named.</summary>
+        public bool RebuildAllowed { get; set; }
+
         public bool CanInclude
         {
-            get { return !IsBlocked; }
+            get { return NwcPageRule.CanRun(IsBlocked, NwfExists, RebuildAllowed); }
         }
 
         /// <summary>
@@ -164,7 +173,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                include = value && !IsBlocked;
+                include = value && CanInclude;
                 Raise("Include");
             }
         }

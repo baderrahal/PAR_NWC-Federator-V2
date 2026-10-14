@@ -46,6 +46,22 @@ namespace Federator.Core.Tests
         }
 
         [Test]
+        public void TheNumbersARunKnewAreKeptInTheManifestForTheNextPage()
+        {
+            NwcManifest manifest = Last();
+            manifest.SetFact("toolviews", 204);
+            manifest.SetFact("tests", 741);
+
+            NwcManifest read = NwcManifest.Parse(manifest.ToLines());
+
+            Assert.That(read, Is.Not.Null);
+            Assert.That(read.Entries.Count, Is.EqualTo(3));
+            Assert.That(read.Fact("toolviews"), Is.EqualTo(204));
+            Assert.That(read.Fact("tests"), Is.EqualTo(741));
+            Assert.That(read.Fact("nothing"), Is.EqualTo(-1));
+        }
+
+        [Test]
         public void AFileThatIsNotAManifestIsNoManifestAndNeverGuessedAt()
         {
             Assert.That(NwcManifest.Parse(null), Is.Null);

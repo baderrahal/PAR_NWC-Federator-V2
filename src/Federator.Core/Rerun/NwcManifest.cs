@@ -26,6 +26,7 @@ namespace Federator.Core.Rerun
         private const char Tab = '\t';
 
         private readonly List<ManifestEntry> entries = new List<ManifestEntry>();
+        private readonly Dictionary<string, long> facts = new Dictionary<string, long>(StringComparer.Ordinal);
 
         public NwcManifest()
         {
@@ -35,6 +36,23 @@ namespace Federator.Core.Rerun
         public ReadOnlyCollection<ManifestEntry> Entries
         {
             get { return new ReadOnlyCollection<ManifestEntry>(entries); }
+        }
+
+        /// <summary>
+        /// A number the run knew when it wrote the manifest, such as the viewpoints under the tool folder or the
+        /// tests, kept in the same file so the next run's page can say them before it opens anything. Each is one
+        /// line after the files, #fact, a tab, the name, a tab and the number.
+        /// </summary>
+        public void SetFact(string name, long value)
+        {
+            facts[name] = value;
+        }
+
+        /// <summary>The fact, or minus one where this manifest holds none by that name.</summary>
+        public long Fact(string name)
+        {
+            long value;
+            return facts.TryGetValue(name, out value) ? value : -1;
         }
 
         public void Add(ManifestEntry entry)
@@ -74,6 +92,11 @@ namespace Federator.Core.Rerun
                     + (entry.Sha256 ?? string.Empty));
             }
 
+            foreach (KeyValuePair<string, long> fact in facts)
+            {
+                lines.Add("#fact" + Tab + fact.Key + Tab + fact.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
             return lines;
         }
 
@@ -95,6 +118,20 @@ namespace Federator.Core.Rerun
             {
                 if (string.IsNullOrEmpty(lines[i]))
                 {
+                    continue;
+                }
+
+                if (lines[i].StartsWith("#fact" + Tab, StringComparison.Ordinal))
+                {
+                    string[] factParts = lines[i].Split(Tab);
+                    long factValue;
+
+                    if (factParts.Length == 3
+                        && long.TryParse(factParts[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out factValue))
+                    {
+                        manifest.SetFact(factParts[1], factValue);
+                    }
+
                     continue;
                 }
 

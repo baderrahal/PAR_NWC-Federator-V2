@@ -949,11 +949,28 @@ namespace Federator.Addin.Engine
                         outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
                         outcome.NwfOnDisk = outcome.NwfSize >= 0;
 
-                        FinishTheGroup(document, job, outcome);
-
-                        if (refresh != null)
+                        if (!reports.RunTests)
                         {
-                            SayWhatTheRefreshKept(refresh, document, outcome, snapshotBefore);
+                            // F188, the NWF page's Run tests tick box off. The run is the refresh alone: nothing is
+                            // built from tests that were not run, and the NWF and NWD are not written.
+                            outcome.NwdSize = SizeOnDiskOrMinusOne(job.NwdPath);
+                            outcome.NwdOnDisk = outcome.NwdSize >= 0;
+                            log.Line("OPEN     Run tests is off, so this run is the refresh alone. The tests, the viewpoints, the "
+                                + "pictures and the reports were not asked for, and the NWF and the NWD were not written");
+
+                            if (refresh != null)
+                            {
+                                refresh.WriteManifest(document, reportFolder, outcome.RefreshedFiles == null ? null : outcome.RefreshedFiles.Next);
+                            }
+                        }
+                        else
+                        {
+                            FinishTheGroup(document, job, outcome);
+
+                            if (refresh != null)
+                            {
+                                SayWhatTheRefreshKept(refresh, document, outcome, snapshotBefore);
+                            }
                         }
                     }
                 }
@@ -1212,6 +1229,40 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// F188, Bader's answer 3 of Q174, the NWC page's Rebuild. A group whose NWF or NWD is already there is
+        /// built again only where the person ticked Rebuild and confirmed, and then into a new dated folder beside
+        /// the old files, so nothing of his is overwritten and the clash history of the old NWF stays where it is.
+        /// Without Rebuild the group is run as it always was, which opens the NWF there.
+        /// </summary>
+        private FederationJob TheDatedJobWhereTheNwfIsThere(FederationJob job)
+        {
+            if (!reports.RebuildExisting || string.IsNullOrEmpty(job.NwfPath) || string.IsNullOrEmpty(job.NwdPath)
+                || (!File.Exists(job.NwfPath) && !File.Exists(job.NwdPath)))
+            {
+                return job;
+            }
+
+            string nwfFolder = Path.GetDirectoryName(job.NwfPath);
+            string nwdFolder = Path.GetDirectoryName(job.NwdPath);
+            string name = RebuildFolder.Name(DateTime.Now);
+            string nwf = Path.Combine(nwfFolder, name, Path.GetFileName(job.NwfPath));
+            string nwd = Path.Combine(nwdFolder, name, Path.GetFileName(job.NwdPath));
+
+            for (int counter = 2; (File.Exists(nwf) || File.Exists(nwd)) && counter < 100; counter++)
+            {
+                string again = name + " (" + counter + ")";
+                nwf = Path.Combine(nwfFolder, again, Path.GetFileName(job.NwfPath));
+                nwd = Path.Combine(nwdFolder, again, Path.GetFileName(job.NwdPath));
+            }
+
+            log.Line("REBUILD  " + job.Building + " has an NWF or an NWD already, so it is built again into " + Path.GetDirectoryName(nwf)
+                + " and " + Path.GetDirectoryName(nwd) + ", and the files there are not touched. The clash history of the old NWF is not in the new one");
+
+            return new FederationJob(
+                job.Building, job.OutputName, nwf, nwd, job.Files, job.WorkbookName, job.DisciplineCount, job.Disciplines);
+        }
+
+        /// <summary>
         /// F170, Bader's answer to Q169. The HTML and its _files folder of pictures go in the Clash report
         /// folder beside the Log folder, so the picture links of the page work. This is the path the Excel
         /// would have there under the group's plain name, the one the pictures folder and the page are named
@@ -1224,6 +1275,7 @@ namespace Federator.Addin.Engine
 
         private JobOutcome RunOne(FederationJob job)
         {
+            job = TheDatedJobWhereTheNwfIsThere(job);
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;

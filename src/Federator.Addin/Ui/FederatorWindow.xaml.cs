@@ -114,6 +114,7 @@ namespace Federator.Addin.Ui
             FillUnits();
             ShowOpenDocument();
             ShowPickedNwfWording();
+            StartTheNwfPage();
             FillGroupingModes();
 
             log.Block("FOLDERS REMEMBERED", folders.Lines());
@@ -310,7 +311,7 @@ namespace Federator.Addin.Ui
 
             if (plan != null)
             {
-                SourceSummary.Text = plan.Describe();
+                NwfSummary.Text = plan.Describe();
             }
         }
 
@@ -327,7 +328,7 @@ namespace Federator.Addin.Ui
             catch (Exception error)
             {
                 log.Failure("reading the picked NWFs", error, "nothing was run");
-                SourceSummary.Text = "The picked NWFs could not be read. " + RunLog.TheLogSaysWhy();
+                NwfSummary.Text = "The picked NWFs could not be read. " + RunLog.TheLogSaysWhy();
                 return null;
             }
         }
@@ -349,7 +350,7 @@ namespace Federator.Addin.Ui
 
             // F76. A tolerance that is not one is refused here, in Core's words, as the scanned
             // run refuses it, before anything is opened.
-            ToleranceChoice tolerance = ToleranceOrSayWhyNot("the run of picked NWFs");
+            ToleranceChoice tolerance = NwfToleranceOrSayWhyNot("the run of picked NWFs");
 
             if (tolerance == null)
             {
@@ -357,6 +358,8 @@ namespace Federator.Addin.Ui
             }
 
             ReportOptions options = ReportsWanted(tolerance);
+            NwfPageSteps nwfSteps = TheNwfSteps();
+            nwfSteps.Apply(options);
             NwfPickPlan plan = PlanThePickedNwfs();
 
             if (plan == null)
@@ -364,7 +367,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            SourceSummary.Text = plan.Describe();
+            NwfSummary.Text = plan.Describe();
 
             if (!plan.CanStart)
             {
@@ -378,6 +381,17 @@ namespace Federator.Addin.Ui
                 Log("Run cancelled before anything was opened.");
                 return;
             }
+
+            // F188. The confirmation of the NWF page, Cancel the default: the changed NWC files, the tests, the tool
+            // viewpoint folder made again and the old jpg files. Nothing is opened or changed before OK.
+            if (!ConfirmTheRefresh(plan, nwfSteps))
+            {
+                Log("Run cancelled before anything was opened.");
+                return;
+            }
+
+            RememberTheNwfs(plan.Paths());
+            nwfTable.Clear();
 
             List<KeyValuePair<string, IList<string>>> pickedGroups = new List<KeyValuePair<string, IList<string>>>();
 
@@ -411,7 +425,8 @@ namespace Federator.Addin.Ui
 
                 engine = new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.UsePack(chosenPack);
-                engine.RunPickedNwfs(plan.Paths());
+                IList<JobOutcome> pickedOutcomes = engine.RunPickedNwfs(plan.Paths());
+                ShowTheNwfTable(pickedOutcomes);
 
                 SayWhatAnOpenFileRunAddedUp(engine);
 
@@ -1056,6 +1071,15 @@ namespace Federator.Addin.Ui
                 }
 
                 group.RunAs = RunPath.Expected(nwfOnDisk, xmlPicked);
+
+                // F188. A group whose NWF is there is run from the NWF page, unless Rebuild is ticked.
+                group.NwfExists = nwfOnDisk;
+                group.RebuildAllowed = RebuildExisting.IsChecked == true;
+
+                if (nwfOnDisk && !group.RebuildAllowed)
+                {
+                    group.Include = false;
+                }
 
                 // Only where the group is about to BUILD one. A group whose NWF is
                 // already there is opened, so a second file with a similar name beside it
@@ -1804,6 +1828,7 @@ namespace Federator.Addin.Ui
             // in C:\00_NM\NWC Fed\NWC\test001, which is where its own input lives.
             options.SourceFolder = Trimmed(SourceFolderBox.Text);
             options.WriteXml = WriteClashXml.IsChecked == true;
+            options.RebuildExisting = RebuildExisting.IsChecked == true;
 
             // The page, the units and the photos are fixed on in the options themselves,
             // so nothing here sets them. A weekly run wants all three every time.
