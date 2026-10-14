@@ -2,6 +2,26 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F180 the full run on C04 with F175 to F179 stopped its pictures and then hung at the NWD
+
+Branch fix-F180 off main 8e647af. Bader's order of 14 Oct, round 4, task 5.
+
+The run was made. Navisworks was not open, the Core tests passed 3124, the Release build had 0 warnings and 0 errors, and
+build\install.ps1 installed build 8e647af8. A launcher started one Navisworks Manage 2025 through the Automation API with
+Auto-Save switched off in the registry and put back after, and a driver typed the C04 folder and pressed Scan and Run, 25 mm,
+viewpoints on. Started 16:15, ended 17:02.
+
+What the run showed: the 9000 stop fired at picture 7905 with 9001 GDI objects and no crash. One test, priority A, 1556
+clashes, got 150 pictures. The GDI split lines say the GDI object is made inside TestsImageForResult and none in our save.
+Navisworks's private memory grew about 3.3 MB for each picture to 26 GB. The views, workbook, HTML and Internal workbook
+were written, the NWD step made a 0 byte file and then used no CPU and no disk for 8 minutes with Windows at 53.4 of 55.2 GB
+of commit. The adopted Roamer was closed with Stop-Process at 17:02:39. No Windows crash entry was written.
+
+Not made because the run did not end: the RESULT block, the txt files, the TSV and the run log copy in Log. Part 2 was not
+started, as the order says. The report is at the top of steps\03_bader_next.md, with Q175 for the next step.
+
+Proved here: nothing in code changed. Every link in the HTML and the Excel resolved. Waits for Bader: Q175.
+
 ## 2026-10-14 F179 the research note on NWC and NWF logic saved
 
 Branch fix-F179 off main e0f23d6. Bader's order of 14 Oct, round 4, task 6. A note and no code.
