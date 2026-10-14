@@ -2,6 +2,26 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F184 the full run on C04 with F181 and F182 ended
+
+Branch fix-F184 off main 0947159. Bader's order of 14 Oct, round 4 of the second set, task 4.
+
+Core tests 3143 pass, the Release build had 0 warnings and 0 errors, build\install.ps1 installed 0947159a. No Roamer was
+running. A launcher started one Navisworks Manage 2025 with Auto-Save switched off in the registry and put back after, a
+driver typed the C04 folder and pressed Scan and Run, 25 mm, viewpoints on, with a watchdog of 5 minutes of no processor
+time, no disk write and no log growth. Started 18:26, ended 19:17, 50 minutes.
+
+What the run showed: the NWF, 12.4 MB, was saved and the NWD, 137 MB, was published in 13.8 s at 2.6 GB before the
+pictures. The memory stop fired at picture 3043 at 12.0 GB with the GDI count near 4100. 3042 pictures were written, 3042
+overwritten and 4862 leftover jpgs removed, every other file in NM fed unchanged. Every link in the HTML and the Excel
+resolved. The group was DONE, with the NOTICE for the model on Internal and no FAILED. The RESULT block, the txt file, the
+TSV and the run log copy were written. The views took 2586 s, longer than before, and the run is over the 45 minute target.
+
+Proved here by the run: the order, the memory stop, the 750 trigger on an A test of 800 clashes, the overwrite and the
+removal of the leftovers, the links, the NOTICE. Proved only by a test: the B and C caps, the first stop of two ending the
+pass, a failed picture step removing nothing. UNKNOWN: why the views were slow, and how Excel shows the new workbook.
+Part 2 follows, F185 to F189.
+
 ## 2026-10-14 F183 the answers to Q175 and Q176 recorded
 
 Branch fix-F183 off main a314d52. Bader's order of 14 Oct, round 4 of the second set, task 3. A record and no code.

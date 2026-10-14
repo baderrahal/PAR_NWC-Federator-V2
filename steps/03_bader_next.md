@@ -1,5 +1,73 @@
 # 03 Bader next
 
+## Round 4, second set, Part 1 built and the run on C04 that ENDED
+
+Written for Bader. Simple words. PROVEN means the run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet.
+
+### The short version
+
+Part 1 is built and merged, F181 to F183. The full run on C04 was made with that build, 25 mm, viewpoints on. It ended. No crash and no hang. The NWF and the NWD were written first, the NWD is 137 MB and not 0 bytes, and the pictures stopped by themselves at the 12 GB memory limit. The RESULT block, the txt files, the TSV and the run log copy were all written. The run took 50 minutes, and the target is 45. Part 2 is started because this run ended clean.
+
+### What was done, one pull request each
+
+- F181, PR 261, Task 1. A test with more than 750 clashes gets pictures for its first 150 at priority A, 100 at B, 50 at C. 750 is one named constant. The label of the box, the rules and the tests say 750
+- F182, PR 262, Task 2. The picture step reads Navisworks's private bytes after each picture. Past 12 GB, one named constant, it stops, says the picture number, the memory and the skipped count, and goes on. The order of a group is now: tests, viewpoints, NWF saved, NWD published, NWF confirmed, then the pictures, then the Excel, HTML and XML, the coverage and the internal Excel. ORDER lines in the log say which step ended last
+- F183, PR 263, Task 3. Q175 C and Q176 750 are in steps\02_questions.md and the tracker. The Part 2 notes now name F186 to F188
+- This report is F184, Task 4
+
+### What the checks of Task 2 found
+
+1. Steps that need the pictures: the Excel, the HTML and the XML, because they carry the jpg names and links. So they stay after the pictures. The coverage and the internal Excel read the Excel back, so they follow it
+2. The viewpoints need nothing from the picture step. They read the rows and where each row sits. So they moved before the NWD
+3. The NWF is NOT saved again after the pictures. The picture step writes nothing into the document and puts the hiding back. Whether TestsImageForResult leaves the open document marked as changed is UNKNOWN, nothing read it
+4. One step keeps its place and says why. With Compact resolved ticked, the pictures are taken inside the clash step as before, because a compact moves the index a picture is found by. The log says so. It is off by default
+5. F177 is kept. A stop is a normal end of the picture step. This run's stop removed the leftovers, and a step that throws removes none
+
+### The run on C04, PROVEN by the run
+
+Evidence folder, outside the repo: C:\NWC-PC-Test\evidence\2026-10-14-run-c04-r5. Build 0947159a, started 18:26, ended 19:17, 1 group 1A04PK, 10 NWC files, 741 tests created, 10170 clashes.
+
+1. THE ORDER. NWF saved at 19:12:33, 12.4 MB. NWD published at 19:12:47 in 13.8 s at 2.6 GB of private memory, 137,275,619 bytes. The NWF was confirmed whole. Only then did the pictures start at 19:12:47. The ORDER line says both files are written before the pictures
+2. THE MEMORY STOP. Private memory rose from 2.6 GB to 12.0 GB, about 3.1 MB for each picture. The stop fired at picture 3043 with 12.0 GB. The GDI count was about 4100 then, so the GDI stop at 9000 did not fire. 3042 pictures were written in 218 s, 0.07 s each. The NOTICE says 4264 pictures were skipped, and the log has it with the picture number and the memory
+3. THE 750 RULE. BLD-ST-Floors-vs-BLD-AR-Walls, priority A, has 800 clashes. It got 150 pictures and 650 were skipped, and the log line says A. That test has 750 to 1000 clashes, so the new trigger is shown by the run. BLD-AR-Walls-vs-BLD-AR-Floors, A, 1556 clashes, got 150. BLD-ST-Floors-vs-BLD-ST-Columns, A, 958 clashes, got 150
+4. THE FOLDERS. The NWF folder holds only the NWF, the NWD folder holds only the NWD. The Log folder got 5 new files: the Excel, the internal Excel, the txt of models off the coordinates, the run log copy and the TSV, 4702 rows. The two older Excel files in Log did not change. The Clash report folder holds the HTML and its _files folder
+5. THE OVERWRITE. This was the second run into the same Clash report folder. Before: 7904 cd jpgs. After: 3042 overwritten, 4862 leftover removed, 0 left that this run did not write. The log line says removed 4862. logo.jpg did not change. The NM fed listing before and after shows every missing file is one of those 4862 jpgs, and every changed file is one of the 3042 jpgs or the HTML. No other file was touched. AutoSave listing is the same before and after, and the switch is back to 0
+6. THE LINKS. Every picture link in the HTML resolves, 6086 of 6086. In the Excel every linked picture resolves, 3042 of 3042, and every click and cell link, 6084 of 6084
+7. THE NOTICE. A model on Internal, ST-MOD-000002, gave the NOTICE in the run log and the group line, and 8 models are not on the shared coordinates. No FAILED. Groups done 1, partial 0, failed 0. The coverage compared 741 and 741 agree
+8. Windows wrote no Application error for Roamer.exe in the last 2 hours. Navisworks was closed through the launcher and read gone with exit code 0. The texture cache folder is empty after
+
+### PROVEN ONLY BY A TEST
+
+- The priority B and C caps at 800 clashes, and a priority A test of exactly 750 giving 750. Only A met the rule in this run. PictureLimitsTests
+- That the first of the two stops ends the pass, with the GDI stop firing first. The run's memory stop fired first
+- That a picture step which throws leaves the leftover pictures alone. The run did not throw
+- That the NWD step is before any picture in the engine's own code. A test reads the source for it
+
+### UNKNOWN
+
+- Why the views took 43 minutes, 2586 s, where the last run took 25. They ran at about 25 s a view and then about 75 s a view. Nothing in the log says why. The total of 50 minutes is over the 45 minute target
+- Whether the NWD still publishes quickly if a run holds many more clashes before the pictures. Here it was at 2.6 GB
+- Whether Excel shows the pictures when a person opens the new workbook, and whether its click link that goes up one folder opens the jpg. Only a person can click
+- An older Excel in Log, the one of 16:15, links 7904 jpgs and 4862 of them are now removed. Its links to them no longer resolve. The code and the order say this
+- Whether TestsImageForResult marks the document changed, as above
+
+### What I started and what I wrote outside the repo
+
+Started, and each one has ended: dotnet build and dotnet test, git and gh, build\install.ps1, reg.exe for two exports, one launcher powershell, one driver powershell, one Navisworks Manage 2025 Roamer.exe pid 29424 that I closed through the launcher. Your own Navisworks was not open and I touched none.
+
+Written outside the repo:
+- the install, %APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle
+- the registry value enable of GlobalOptions\general\autosave, written to "3 0" and put back to "0", read back as 0
+- in NM fed: NWF\C04\run 2026-10-14 1826 with the NWF, NWD\C04\run 2026-10-14 1826 with the NWD, five files in Log, the HTML and 3042 jpgs overwritten in Clash report, and 4862 leftover jpgs removed from it, by your order
+- %LOCALAPPDATA%\ParsonsNwcFederator\logs\run-20261014-182641.log and .tsv, made by the tool
+- the evidence folder above, and scratch files under the session scratchpad
+- Windows itself changed the Navisworks counters in the registry
+- I did not delete the 0 byte NWD in NWD\C04\run 2026-10-14 1615. It is still there for you
+
+### Next step
+
+Part 2 follows, F185 to F189, in the order of your message.
+
 ## Round 4 of 14 Oct, Part 1 built, and the run on C04 that did NOT end
 
 Written for Bader. Simple words. PROVEN means the run or a test showed it and I saw the result. UNKNOWN means nothing showed it yet.
