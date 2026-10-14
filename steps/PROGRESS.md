@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 01:20, round 5, task 1 of 7 in review, F190 the picture caps always apply, nothing waits on an answer
+STATE OPEN, 2026-10-15 01:30, round 5, task 1 of 7 merged, F190 the picture caps always apply, nothing waits on an answer
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 244 | 16 | 1 | 0 | 60 | 7 | 328 |
-| total | 447 | 24 | 1 | 0 | 161 | 18 | 651 |
+| outside the waves | 245 | 16 | 0 | 0 | 60 | 7 | 328 |
+| total | 448 | 24 | 0 | 0 | 161 | 18 | 651 |
 <!-- the end of the counts -->
 
 ## Now
