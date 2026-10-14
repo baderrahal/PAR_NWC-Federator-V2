@@ -1808,7 +1808,6 @@ namespace Federator.Addin.Ui
             // The page, the units and the photos are fixed on in the options themselves,
             // so nothing here sets them. A weekly run wants all three every time.
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
-            options.CompactResolved = CompactResolved.IsChecked == true;
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
             options.Tolerance = tolerance;
             options.MarkByDesign = MarkByDesign.IsChecked == true;
@@ -2112,10 +2111,6 @@ namespace Federator.Addin.Ui
                 + (ApplyFileSettings.IsChecked == true
                     ? "YES, which changes WHICH CLASHES every test it changes will find next time it runs. It resets nothing by itself, measured 5y"
                     : "no, differences are reported and nothing is changed"));
-            log.Line("compact resolved : "
-                + (CompactResolved.IsChecked == true
-                    ? "YES, which permanently removes every Resolved clash"
-                    : "no"));
             log.Line("penetrations     : "
                 + (MarkPenetrations.IsChecked == true
                     ? "YES, a small service through a wall, floor, roof or structural foundation becomes Reviewed"

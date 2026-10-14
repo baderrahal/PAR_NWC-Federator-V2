@@ -3409,7 +3409,6 @@ namespace Federator.Addin.Engine
                 runner.SingleDisciplineGroup = job.IsSingleDiscipline;
 
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
-                runner.CompactResolved = reports.CompactResolved;
 
                 // F182, Bader's answer B to Q175. The group's pictures wait until the NWF is saved and the NWD
                 // published. The hand button has neither, so it takes them where it always did.
@@ -3602,13 +3601,6 @@ namespace Federator.Addin.Engine
                 }
                 else
                 {
-                    if (deferPictures && reports.CompactResolved && runner.Images != null)
-                    {
-                        log.Line("ORDER    " + job.Building + ": Compact resolved is on, and a compact moves the index a picture is "
-                            + "found by, so the pictures are taken here, before the NWF is saved and the NWD published, as they "
-                            + "always were");
-                    }
-
                     AfterThePictures(job, outcome, runner, clash);
                 }
 

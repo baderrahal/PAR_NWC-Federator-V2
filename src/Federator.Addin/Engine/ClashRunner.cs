@@ -312,8 +312,6 @@ namespace Federator.Addin.Engine
         /// </summary>
         public bool SingleDisciplineGroup { get; set; }
 
-
-
         /// <summary>
         /// Apply the file settings to tests already in the document. Off by default,
         /// because it changes WHICH CLASHES the test finds when it next runs, and a clash
@@ -350,13 +348,6 @@ namespace Federator.Addin.Engine
         /// </summary>
         public string WorkbookPath { get; set; }
 
-        /// <summary>
-        /// Remove Resolved clashes after the tests have run. Off by default, and never
-        /// done silently, because it destroys the record of what was resolved.
-        /// </summary>
-        public bool CompactResolved { get; set; }
-
-        /// <summary>
         /// Which clashes to move to which status, F54. Empty on every run while Q33 is
         /// open, because how the tool learns which clashes cannot be solved is not decided
         /// and guessing it would write a rule nobody agreed to into the only file that
@@ -670,7 +661,7 @@ namespace Federator.Addin.Engine
                         TestDrift.Lines(drift, Compared, ApplyFileSettings, SidesNotCompared));
                 }
 
-                Compact(clashTests, outcome);
+                SayTheResolvedStay(outcome);
             }
             finally
             {
@@ -715,13 +706,13 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Whether Run leaves the picture pass to TakeTheDeferredPictures. Never where Compact resolved is on: a
-        /// compact moves the index of every result under a test, a picture is found by that index, so the
-        /// pictures are taken before it as they always were, and the NWD is then published after them as before.
+        /// Whether Run leaves the picture pass to TakeTheDeferredPictures, which the engine calls after the NWF is
+        /// saved and the NWD published. No clash result is removed by this tool, so no result moves between Run and
+        /// the pictures, and a picture is found again by its test address and the index path of its result.
         /// </summary>
         public bool PicturesDeferred
         {
-            get { return DeferPictures && !CompactResolved && Images != null; }
+            get { return DeferPictures && Images != null; }
         }
 
         /// <summary>Whether rows are waiting for a picture that TakeTheDeferredPictures would take.</summary>
@@ -844,63 +835,19 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Removes Resolved clashes, which stay in the file and keep counting until
-        /// something takes them out. Never silent, and never on unless it was asked for,
-        /// because it destroys the record of what was resolved.
-        ///
-        /// TestsCompactAllTests and TestsCompactTest are both on DocumentClashTests, read
-        /// off the installed DLL on 2026-08-31, so this is reachable rather than guessed.
+        /// Says the Resolved clashes stay in the file and keep counting. F185, Bader's order of 14 Oct 2026, task 5.2:
+        /// nothing in this tool removes a clash result. The Compact resolved option and its call of
+        /// TestsCompactAllTests are gone, because a compact deletes every Resolved clash of every test and with it
+        /// the history a coordinator keeps. A clash that is gone from a test turns Resolved and stays Resolved.
         /// </summary>
-        private void Compact(DocumentClashTests clashTests, ClashRunOutcome outcome)
+        private void SayTheResolvedStay(ClashRunOutcome outcome)
         {
             int before = outcome.Totals.Of(CoreClashStatus.Resolved);
 
-            if (!CompactResolved)
+            if (before > 0)
             {
-                if (before > 0)
-                {
-                    log.Line("CLASH    " + before
-                        + " clashes are Resolved and stay in the file, counting, until they are "
-                        + "compacted. Compacting is off, so nothing was removed.");
-                }
-
-                return;
-            }
-
-            log.Line("CLASH    COMPACTING. This removes Resolved clashes from every test in this "
-                + "document. It destroys the record of what was resolved and cannot be undone.");
-            log.Line("CLASH    " + before + " Resolved before compacting.");
-
-            try
-            {
-                clashTests.TestsCompactAllTests();
-
-                // Read again after the call. Reporting the count that was there before as
-                // the count removed says a number nothing measured, and zero removed is a
-                // real answer that the before count can never give.
-                int after = ResolvedInTheDocument(clashTests);
-                int removed = before - after;
-
-                if (removed < 0)
-                {
-                    log.Line("CLASH    compacted, and the document now holds " + after
-                        + " Resolved clashes against " + before
-                        + " before, which is more rather than fewer. Nothing is reported as removed.");
-                    outcome.Compacted = 0;
-                    return;
-                }
-
-                outcome.Compacted = removed;
-                log.Line("CLASH    compacted. " + removed
-                    + (removed == 1 ? " Resolved clash was removed, " : " Resolved clashes were removed, ")
-                    + before + " before and " + after + " after.");
-            }
-            catch (Exception error)
-            {
-                log.Failure(
-                    "compacting the clash tests",
-                    error,
-                    "kept going, nothing was removed and every Resolved clash is still there");
+                log.Line("CLASH    " + before
+                    + " clashes are Resolved and stay in the file, counting. This tool never removes a clash result.");
             }
         }
 
@@ -1600,8 +1547,8 @@ namespace Federator.Addin.Engine
                 // test is then skipped and nothing runs.
                 outcome.AddApplied();
                 log.Line("CLASH    APPLIED  " + planned.Name
-                    + "  the file's settings were put onto the test in the document, which reset "
-                    + "its results");
+                    + "  the file's settings were put onto the test in the document, whose "
+                    + "results and statuses are kept, measured 5y");
             }
             catch (Exception error)
             {
@@ -1978,56 +1925,6 @@ namespace Federator.Addin.Engine
             }
 
             return viaSet;
-        }
-
-        /// <summary>
-        /// How many Resolved clashes the document holds right now, over every test in it.
-        ///
-        /// Walked once, descending folders, and each test's results counted where they sit.
-        /// Nothing looks a test up by name and nothing walks the whole collection per test,
-        /// which is the shape that once built 1.7 million handles a group.
-        /// </summary>
-        private int ResolvedInTheDocument(DocumentClashTests clashTests)
-        {
-            ClashTally tally = new ClashTally();
-            int groups = 0;
-
-            CountEveryTestInto(clashTests.Tests, tally, ref groups);
-            return tally.Of(CoreClashStatus.Resolved);
-        }
-
-        /// <summary>
-        /// Every test under this collection, folders included. A ClashTest is itself a
-        /// GroupItem holding its results, so it is tested for before a folder is, or the
-        /// walk would descend into the results and count them twice.
-        /// </summary>
-        private void CountEveryTestInto(SavedItemCollection items, ClashTally tally, ref int groups)
-        {
-            if (items == null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < items.Count; i++)
-            {
-                using (SavedItem item = items[i])
-                {
-                    ClashTest test = item as ClashTest;
-
-                    if (test != null)
-                    {
-                        CountInto(test.Children, tally, ref groups);
-                        continue;
-                    }
-
-                    GroupItem folder = item as GroupItem;
-
-                    if (folder != null)
-                    {
-                        CountEveryTestInto(folder.Children, tally, ref groups);
-                    }
-                }
-            }
         }
 
         /// <summary>
