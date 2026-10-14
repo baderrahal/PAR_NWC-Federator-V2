@@ -14,11 +14,11 @@ namespace Federator.Core.Tests
     public class RunStepsTests
     {
         [Test]
-        public void TheNineteenStepsAreThereInTheOrderAGroupMeetsThem()
+        public void TheTwentyStepsAreThereInTheOrderAGroupMeetsThem()
         {
             IList<string> all = RunSteps.All;
 
-            Assert.That(all.Count, Is.EqualTo(19));
+            Assert.That(all.Count, Is.EqualTo(20));
 
             // F182, Bader's answer B to Q175: the viewpoints, then the NWF saved and the NWD published,
             // then the pictures and the reports that link them. VIEWS is F85's, built after the clash step
@@ -28,10 +28,10 @@ namespace Federator.Core.Tests
             // IMAGES visit nesting inside it, then RENUMBER, FR-077, which checks every picture carries its
             // row's number. WORKBOOK, HTML and XML link the jpgs, so they come after. COVERAGE is F127's
             // add-in half and reads the clash workbook back. INTERNAL follows it, Bader's answer B to Q146.
-            // Nineteen steps.
+            // F187 adds REFRESH after DECIDE, the NWF page's refresh. Twenty steps.
             string[] expected =
             {
-                "DECIDE", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
+                "DECIDE", "REFRESH", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
                 "HARVEST", "VIEWS", "NWD", "CONFIRM", "PICTURES", "IMAGES", "RENUMBER",
                 "WORKBOOK", "HTML", "XML", "COVERAGE", "INTERNAL"
             };
@@ -87,7 +87,7 @@ namespace Federator.Core.Tests
         public void TheOrderIsThePositionOnTheList()
         {
             Assert.That(RunSteps.OrderOf(RunSteps.Decide), Is.EqualTo(0));
-            Assert.That(RunSteps.OrderOf(RunSteps.InternalWorkbook), Is.EqualTo(18));
+            Assert.That(RunSteps.OrderOf(RunSteps.InternalWorkbook), Is.EqualTo(19));
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Views),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),

@@ -881,11 +881,54 @@ namespace Federator.Addin.Engine
                     // F129. The open is timed as DECIDE, the step the weekly run's open of an
                     // NWF is timed in, so the timing block reads the two alike, and the one
                     // step the census lets move every count, which an open does.
-                    bool ready = !openItHere || InStepReturning(
-                        RunSteps.Decide,
-                        () => OpenThePickedNwf(document, job, outcome),
-                        () => NwfPick.DecidePhrase(
-                            outcome.Decision == RerunDecision.Refused, outcome.HasErrors, exchange != null));
+                    //
+                    // F187, task 7. The NWF page's run first copies the NWF into the Backup folder, then
+                    // opens it with the linked files' resolving listened for, then compares the linked
+                    // files with the last manifest and asks Navisworks once to bring them up to date.
+                    RefreshRun refresh = openItHere && reports.RefreshOnOpen ? new RefreshRun(log) : null;
+                    bool ready = true;
+
+                    if (refresh != null)
+                    {
+                        string backup = refresh.BackupTheNwf(job.NwfPath, reportFolder);
+
+                        if (backup == null && File.Exists(job.NwfPath))
+                        {
+                            outcome.AddError("the NWF was not copied into the Backup folder, so it was not refreshed. "
+                                + "Nothing was opened and nothing was changed");
+                            ready = false;
+                        }
+                        else
+                        {
+                            refresh.WatchTheLinks();
+                        }
+                    }
+
+                    try
+                    {
+                        ready = ready && (!openItHere || InStepReturning(
+                            RunSteps.Decide,
+                            () => OpenThePickedNwf(document, job, outcome),
+                            () => NwfPick.DecidePhrase(
+                                outcome.Decision == RerunDecision.Refused, outcome.HasErrors, exchange != null)));
+                    }
+                    finally
+                    {
+                        if (refresh != null)
+                        {
+                            refresh.StopWatching();
+                        }
+                    }
+
+                    if (ready && refresh != null)
+                    {
+                        ready = InStepReturning(
+                            RunSteps.Refresh,
+                            () => RefreshTheLinkedFiles(refresh, document, outcome),
+                            () => outcome.HasErrors ? "stopped, said above" : "the linked files compared and brought up to date");
+                    }
+
+                    ResultSnapshot snapshotBefore = ready && refresh != null ? refresh.Snapshot(document) : null;
 
                     if (ready)
                     {
@@ -907,6 +950,11 @@ namespace Federator.Addin.Engine
                         outcome.NwfOnDisk = outcome.NwfSize >= 0;
 
                         FinishTheGroup(document, job, outcome);
+
+                        if (refresh != null)
+                        {
+                            SayWhatTheRefreshKept(refresh, document, outcome, snapshotBefore);
+                        }
                     }
                 }
                 catch (Exception error)
@@ -969,6 +1017,87 @@ namespace Federator.Addin.Engine
                     openItHere));
 
                 LetGoOfTheRows(outcome);
+            }
+        }
+
+        /// <summary>
+        /// F187, Bader's order of 14 Oct 2026, task 7. After the picked NWF is open: the linked files that are not
+        /// there stop the run and are named, and no model is taken out of the tree. Otherwise the linked files are
+        /// compared with the last manifest, the changed ones listed, and Navisworks is asked once to bring every
+        /// linked file up to date with the file on disk. Nothing is appended again and nothing is removed.
+        /// </summary>
+        private bool RefreshTheLinkedFiles(RefreshRun refresh, Document document, JobOutcome outcome)
+        {
+            IList<string> missing = refresh.MissingFiles(document);
+
+            if (missing.Count > 0)
+            {
+                foreach (string path in missing)
+                {
+                    log.Line("REFRESH  MISSING  " + path);
+                }
+
+                outcome.AddError("the NWF links " + missing.Count + (missing.Count == 1 ? " file" : " files")
+                    + " that Navisworks could not resolve, so nothing was refreshed and no model was removed from the tree: "
+                    + string.Join(", ", new List<string>(missing).ToArray())
+                    + ". Put the file back where the NWF links it, or open the NWF in Navisworks and point the model at the new file, then run again");
+                return false;
+            }
+
+            NwcManifest last = refresh.ReadLastManifest(reportFolder);
+            ManifestComparison comparison = NwcManifest.Compare(last, RefreshRun.LinkedFiles(document), RefreshRun.Sha256Of);
+            outcome.RefreshedFiles = comparison;
+
+            foreach (string line in comparison.Lines())
+            {
+                log.Line("REFRESH  " + line);
+            }
+
+            if (!refresh.UpdateTheFiles(document))
+            {
+                outcome.AddError("Document.UpdateFiles did not bring every linked file up to date, so the clash results of this run "
+                    + "may be those of the files as they were. Nothing was removed from the tree");
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// F187. What the run left of what coordinators wrote: the clash results read again, compared with the ones
+        /// read before the tests ran, per test and as totals, and a warning for each test that dropped clashes. Kept
+        /// on the outcome for the table of the NWF page. A snapshot that read nothing says so and compares nothing.
+        /// </summary>
+        private void SayWhatTheRefreshKept(RefreshRun refresh, Document document, JobOutcome outcome, ResultSnapshot before)
+        {
+            try
+            {
+                refresh.WriteManifest(document, reportFolder, outcome.RefreshedFiles == null ? null : outcome.RefreshedFiles.Next);
+
+                if (before == null || before.Records.Count == 0)
+                {
+                    log.Line("REFRESH  the clash results were not read before the run, so what it kept is UNKNOWN");
+                    return;
+                }
+
+                ResultSnapshot after = refresh.Snapshot(document);
+                RefreshComparison comparison = RefreshComparison.Compare(before, after);
+                outcome.RefreshResults = comparison;
+
+                log.Line(comparison.Summary());
+
+                foreach (string line in comparison.TableLines())
+                {
+                    log.Line(line);
+                }
+
+                foreach (string line in comparison.Warnings())
+                {
+                    log.Line(line);
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure("comparing the clash results before and after the refresh", error, "kept going, the run's own results are as written");
             }
         }
 
@@ -1195,6 +1324,9 @@ namespace Federator.Addin.Engine
                 }
 
                 FinishTheGroup(document, job, outcome);
+
+                // F187. The manifest of the files the NWF links, written for the next refresh to compare with.
+                new RefreshRun(log).WriteManifest(document, reportFolder, null);
             }
             catch (Exception error)
             {
