@@ -181,6 +181,13 @@ namespace Federator.Addin.Engine
                     emptyBefore = ViewNode.EmptyFolderKeys(before.Nodes);
                 }
 
+                // F186, Bader's answer 1 of Q174. The tool's one top folder of an earlier run is deleted with
+                // everything in it before this run's views are made, found by its name and its marker.
+                using (seconds.In(ViewsPart.Removing))
+                {
+                    DeleteTheToolFolder(document);
+                }
+
                 using (seconds.In(ViewsPart.ReadingTheClashes))
                 {
                     List<ViewClash> clashes = Collect(document, clashTests, report, addresses, teams);
@@ -210,7 +217,7 @@ namespace Federator.Addin.Engine
                     TreeWalk after = SavedViewpoints.ReadTree(document, emptyBefore);
                     SayWalk("after this run's views were written", after);
                     inventory = ViewsInventory.Plan(
-                        after.Nodes, Plan, testsRead.WholeNames, written, stamp, clashStepSound,
+                        ToolViewFolder.NodesUnder(after.Nodes), Plan, testsRead.WholeNames, written, stamp, clashStepSound,
                         teams.Map.KnownCodes(CodesOf(groupModels)), testNames, views);
                 }
 
@@ -219,6 +226,10 @@ namespace Federator.Addin.Engine
                 using (seconds.In(ViewsPart.Removing))
                 {
                     Remove(document, inventory);
+
+                    // F186, task 6.3. The one time clean up of the root folders an earlier version wrote, each
+                    // deleted only where every item inside is the tool's own naming.
+                    CleanUpTheLegacyTree(document, group, teams, groupModels, testNames);
                 }
             }
             finally
@@ -244,6 +255,113 @@ namespace Federator.Addin.Engine
             }
 
             return outcome;
+        }
+
+        // ---------- the tool folder, F186 ----------
+
+        /// <summary>
+        /// F186, Bader's answer 1 of Q174. The tool's one top folder of an earlier run is found by its name and its
+        /// marker comment and deleted with everything in it, BEFORE this run writes its own. Nothing outside it is
+        /// read for removal, changed or deleted. A viewpoint a coordinator moved into it by hand goes with it, which
+        /// the NWF page says before the run. A throw is logged and the run goes on, the new views are then
+        /// written beside the old folder and the check of the tree says so.
+        /// </summary>
+        private void DeleteTheToolFolder(Document document)
+        {
+            try
+            {
+                DocumentCensus before = DocumentCensusReader.Read(document);
+                ToolFolderRemoval removal = SavedViewpoints.RemoveToolFolder(document);
+                DocumentCensus after = DocumentCensusReader.Read(document);
+
+                RemovedCount += removal.ItemsUnder;
+                log.Line("VIEWS    the tool folder " + ToolViewFolder.Name + " of the earlier run: "
+                    + (removal.FoldersRemoved == 0
+                        ? "none found by its name and its marker, nothing was deleted"
+                        : removal.FoldersRemoved + " found by its name and its marker and deleted with its "
+                            + removal.ItemsUnder + " items, so every view of this run is made new")
+                    + (removal.LeftWithoutAMarker > 0
+                        ? ", " + removal.LeftWithoutAMarker + " folder(s) of that name with no marker left as a person's"
+                        : string.Empty)
+                    + (removal.WhyNot != null ? ", " + removal.WhyNot : string.Empty));
+
+                log.Line(ToolViewFolder.DeletedWithoutChangingTheResultsLine(
+                    before.Of(CensusCount.Tests), before.Of(CensusCount.Results), after.Of(CensusCount.Tests), after.Of(CensusCount.Results)));
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "deleting the tool folder " + ToolViewFolder.Name + " of the earlier run",
+                    error,
+                    "kept going, the views of this run are written and the earlier folder, if it is there, stays");
+            }
+        }
+
+        /// <summary>
+        /// F186, task 6.3. The one time clean up of the root folders an NWF written before this version holds:
+        /// A, B, C and the no priority folder, each deleted only where EVERY item inside is the tool's own naming,
+        /// LegacyViewCleanup's rule, and left with its name and the first item that kept it where not. Nothing is
+        /// changed inside a folder it leaves. The counts go on one line each in the log.
+        /// </summary>
+        private void CleanUpTheLegacyTree(Document document, string group, ViewTeams teams, IList<ModelTeam> models, ICollection<string> testNames)
+        {
+            try
+            {
+                TreeWalk now = SavedViewpoints.ReadTree(document, null);
+                List<string> known = new List<string>(teams.Map.Teams);
+
+                if (!string.IsNullOrEmpty(teams.Map.UnknownTeam) && !known.Contains(teams.Map.UnknownTeam))
+                {
+                    known.Add(teams.Map.UnknownTeam);
+                }
+
+                foreach (string code in teams.Map.KnownCodes(CodesOf(models)))
+                {
+                    if (!known.Contains(code))
+                    {
+                        known.Add(code);
+                    }
+                }
+
+                LegacyViewCleanup plan = LegacyViewCleanup.Plan(now.Nodes, testNames, known, views);
+                int deleted = 0;
+                int kept = 0;
+
+                foreach (LegacyRoot root in plan.Roots)
+                {
+                    if (!root.Delete)
+                    {
+                        kept++;
+                        log.Line("VIEWS    LEGACY " + group + " " + root.Line());
+                        continue;
+                    }
+
+                    RemovalReadBack answer = SavedViewpoints.RemoveRootFolder(document, root.Node.Name, root.Node.IndexInParent);
+
+                    if (answer.Removed)
+                    {
+                        deleted++;
+                        RemovedCount += root.Views + root.Folders + 1;
+                        log.Line("VIEWS    LEGACY " + group + " " + root.Line());
+                    }
+                    else
+                    {
+                        kept++;
+                        log.Line("VIEWS    LEGACY " + group + " root folder " + root.Node.Name + " was judged the tool's and was not deleted, "
+                            + answer.WhyNot);
+                    }
+                }
+
+                log.Line("VIEWS    LEGACY " + group + " the clean up of an earlier version's tree: " + plan.Roots.Count
+                    + " root folder(s) read, " + deleted + " deleted, " + kept + " left as they are");
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "the clean up of an earlier version's viewpoint tree for " + group,
+                    error,
+                    "kept going, nothing more was deleted and every root folder is as it was");
+            }
         }
 
         // ---------- walk one ----------
@@ -1012,7 +1130,7 @@ namespace Federator.Addin.Engine
                             string whyNotMarked;
                             int at = SavedViewpoints.Mark(
                                 document, above, view.Folders[depth], true,
-                                ToolViewMark.Body(stamp, above, view.Folders[depth], null, null, views),
+                                depth == 0 ? ToolViewFolder.MarkerBody(stamp) : ToolViewMark.Body(stamp, above, view.Folders[depth], null, null, views),
                                 views.MarkAuthor, views, out whyNotMarked);
 
                             if (at >= 0)
@@ -1308,7 +1426,7 @@ namespace Federator.Addin.Engine
                     Inventory = inventory,
                     Written = written,
                     Removals = removals,
-                    After = after.Nodes,
+                    After = ToolViewFolder.NodesUnder(after.Nodes),
                     RunStamp = stamp,
                     HiddenReadBack = hiddenReadBack,
                     PaintedReadBack = paintedReadBack,

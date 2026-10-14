@@ -1682,6 +1682,19 @@ and 6 does not read as broken.
   no longer carried into the NWF and the NWD. F185 removed the Compact resolved option and its call of
   TestsCompactAllTests, so no result moves between the clash step and the pictures. `GroupOrder` writes the ORDER lines. A
   stop of the hand button's Run tests is unchanged, it takes its pictures inside the clash step.
+- THE VIEWPOINT TREE, F186, Bader's answer 1 of Q174, `ToolViewFolder`, `LegacyViewCleanup`. Everything the tool
+  makes goes in ONE root folder named NWC Federator (auto), carrying the comment NWCF-AUTO run=<stamp>. Under it A, B
+  and C, the letter of the test's priority, a test with none being C, then one view for each test, directly. The team
+  pair level and the Over 150mm folder are gone, and every open clash of a test is in its one view. The team pair still
+  decides which models a view shows. On every run the top folder of the last run is found by its name AND its marker and
+  deleted with all it holds, `SavedViewpoints.RemoveToolFolder`, before the new views are made, and a folder of that
+  name with no marker is a person's and is left. Nothing outside the folder is read for removal: the inventory and the
+  seven tree checks are handed `ToolViewFolder.NodesUnder` and nothing else. A view a person moved into the folder goes
+  with it, and the NWF page says so. THE ONE TIME CLEAN UP: a root folder named A, B, C or No priority is deleted with
+  all it holds only where EVERY item inside is the old tree's own naming, a team pair folder of two team names, the size
+  folder, a view named as a test or as F85's per clash viewpoint. One item that is not leaves the whole folder, and the
+  log names the folder and the item. A root folder that holds nothing is left. A PROOF line reads the count of tests
+  and results before and after the delete. Statuses are not compared by it, UNKNOWN until the weekly run's snapshot.
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR

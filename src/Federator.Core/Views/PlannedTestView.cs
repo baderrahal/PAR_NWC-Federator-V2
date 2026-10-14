@@ -5,9 +5,9 @@ using Federator.Core.Clash;
 namespace Federator.Core.Views
 {
     /// <summary>
-    /// One view this run means to write, F114: one clash test's open clashes, or the half of
-    /// them over the size threshold in a pair that carries the size folder, Q114 points 9, 13
-    /// and 14.
+    /// One view this run means to write, F114: one clash test's open clashes, all of them since F186,
+    /// in the folder of its priority letter under the tool's one top folder, Bader's answer 1 of Q174. The
+    /// team pair still decides which models the view shows and no longer decides where it sits.
     /// </summary>
     public sealed class PlannedTestView
     {
@@ -17,28 +17,23 @@ namespace Federator.Core.Views
             ClashPriority priority,
             string priorityFolder,
             TeamPair pair,
-            string sizeFolder,
             string name,
             IList<ViewClash> clashes)
         {
             Priority = priority;
             PriorityFolder = priorityFolder;
             Pair = pair;
-            SizeFolder = sizeFolder;
             Name = name;
             this.clashes = new List<ViewClash>(clashes);
         }
 
         public ClashPriority Priority { get; private set; }
 
-        /// <summary>A, B, C or No priority. Always there, point 9.</summary>
+        /// <summary>A, B or C, the letter folder under the tool folder. A test with no priority is C.</summary>
         public string PriorityFolder { get; private set; }
 
-        /// <summary>The team pair whose folder the view sits in.</summary>
+        /// <summary>The team pair of the test, which decides the models the view shows and nothing of where it sits.</summary>
         public TeamPair Pair { get; private set; }
-
-        /// <summary>Over 150mm for the view of the large services, or null.</summary>
-        public string SizeFolder { get; private set; }
 
         /// <summary>The view's name, exactly the test's name and never trimmed.</summary>
         public string Name { get; private set; }
@@ -81,14 +76,7 @@ namespace Federator.Core.Views
         {
             get
             {
-                List<string> folders = new List<string> { PriorityFolder, Pair.Folder };
-
-                if (SizeFolder != null)
-                {
-                    folders.Add(SizeFolder);
-                }
-
-                return folders;
+                return new List<string> { ToolViewFolder.Name, PriorityFolder };
             }
         }
 

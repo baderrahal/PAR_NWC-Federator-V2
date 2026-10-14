@@ -1477,6 +1477,157 @@ namespace Federator.Addin.Engine
             return null;
         }
 
+        /// <summary>
+        /// F186, Bader's answer 1 of Q174. Deletes the tool's one top folder of an earlier run, with everything in
+        /// it, in one RemoveAt call each. A root folder is the tool's only where its name is the tool folder's
+        /// AND one of its own comments is the marker, so a coordinator's folder of the same name with no marker, and
+        /// every other root folder, is never touched. Looked up fresh before each removal, since a removal moves
+        /// the indexes, and stopped after a few rounds so a folder that will not go cannot hold the run.
+        /// </summary>
+        public static ToolFolderRemoval RemoveToolFolder(Document document)
+        {
+            ToolFolderRemoval removal = new ToolFolderRemoval();
+
+            if (document == null)
+            {
+                removal.WhyNot = "no document was handed in";
+                return removal;
+            }
+
+            for (int round = 0; round < 10; round++)
+            {
+                int at = -1;
+                int under = 0;
+
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    SavedItemCollection children = root.Children;
+
+                    for (int i = 0; i < children.Count && at < 0; i++)
+                    {
+                        using (SavedItem child = children[i])
+                        {
+                            GroupItem group = child as GroupItem;
+
+                            if (group == null || !string.Equals(child.DisplayName, ToolViewFolder.Name, StringComparison.Ordinal))
+                            {
+                                continue;
+                            }
+
+                            IList<string> comments = CommentBodies(child);
+                            bool marked = false;
+
+                            if (comments != null)
+                            {
+                                foreach (string body in comments)
+                                {
+                                    if (ToolViewFolder.IsMarker(body))
+                                    {
+                                        marked = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!marked)
+                            {
+                                if (round == 0)
+                                {
+                                    removal.LeftWithoutAMarker++;
+                                }
+
+                                continue;
+                            }
+
+                            at = i;
+                            under = CountUnder(group);
+                        }
+                    }
+
+                    if (at >= 0)
+                    {
+                        document.SavedViewpoints.RemoveAt(root, at);
+                    }
+                }
+
+                if (at < 0)
+                {
+                    break;
+                }
+
+                removal.FoldersRemoved++;
+                removal.ItemsUnder += under;
+            }
+
+            return removal;
+        }
+
+        /// <summary>
+        /// F186. Puts the marker comment on the tool's top folder, the folder just made, found by its name among the
+        /// root's children, once and only once. Returns the index, or minus one with why.
+        /// </summary>
+        public static int MarkToolFolder(Document document, string runId, string author, ViewpointSettings settings, out string whyNot)
+        {
+            return Mark(
+                document, new string[0], ToolViewFolder.Name, true, ToolViewFolder.MarkerBody(runId), author, settings, out whyNot);
+        }
+
+        /// <summary>
+        /// F186. Deletes one ROOT folder of an earlier version's tree with everything in it, by its name and kind
+        /// at the index the walk read it at or once among the root's children, RemoveAt on the root. The caller has
+        /// judged every item inside by LegacyViewCleanup. Nothing is removed where it is not found once and once only.
+        /// </summary>
+        public static RemovalReadBack RemoveRootFolder(Document document, string name, int indexInRoot)
+        {
+            RemovalReadBack answer = new RemovalReadBack();
+
+            if (document == null || string.IsNullOrEmpty(name))
+            {
+                answer.WhyNot = "nothing to remove was named";
+                return answer;
+            }
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection children = root.Children;
+                answer.CountBefore = children.Count;
+                int at = -1;
+                int matches = 0;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        if (child is GroupItem && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                        {
+                            matches++;
+
+                            if (at < 0 || i == indexInRoot)
+                            {
+                                at = i;
+                            }
+                        }
+                    }
+                }
+
+                if (matches != 1)
+                {
+                    answer.WhyNot = matches + " root folders are named " + name + ", so which one was judged is UNKNOWN";
+                    return answer;
+                }
+
+                document.SavedViewpoints.RemoveAt(root, at);
+                answer.Removed = true;
+            }
+
+            using (GroupItem again = document.SavedViewpoints.RootItem)
+            {
+                answer.CountAfter = again.Children.Count;
+            }
+
+            return answer;
+        }
+
         private static int CountUnder(GroupItem parent)
         {
             if (parent == null)
@@ -1609,6 +1760,22 @@ namespace Federator.Addin.Engine
 
         /// <summary>How many could not be read either way.</summary>
         public int ColoursNotRead { get; set; }
+    }
+
+    /// <summary>What deleting the tool's top folder of an earlier run came to, F186.</summary>
+    public sealed class ToolFolderRemoval
+    {
+        /// <summary>How many top folders were removed, each with all it held.</summary>
+        public int FoldersRemoved { get; set; }
+
+        /// <summary>The views and folders that were under the folders removed, counted before.</summary>
+        public int ItemsUnder { get; set; }
+
+        /// <summary>Root folders of the tool folder's name that carry no marker comment, and so were left as a person's.</summary>
+        public int LeftWithoutAMarker { get; set; }
+
+        /// <summary>Why nothing was looked for, or null.</summary>
+        public string WhyNot { get; set; }
     }
 
     /// <summary>What one removal came to, P13.</summary>

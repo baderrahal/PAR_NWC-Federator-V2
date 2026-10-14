@@ -113,8 +113,8 @@ namespace Federator.Core.Views
 
             return new List<ViewsTreeCheck>
             {
-                NoTestInAnotherPair(read),
-                NoSizeFolderOutsideItsPair(read),
+                NoTestOutsideItsLetterFolder(read),
+                NoFolderButALetterUnderTheToolFolder(read),
                 NoThirdTeamShown(read),
                 NoClashInTwoViews(read),
                 NoMirrorViewed(read),
@@ -174,9 +174,9 @@ namespace Federator.Core.Views
             return true;
         }
 
-        private static ViewsTreeCheck NoTestInAnotherPair(Read read)
+        private static ViewsTreeCheck NoTestOutsideItsLetterFolder(Read read)
         {
-            ViewsTreeCheck check = new ViewsTreeCheck(1, "no team pair folder holds a test of another pair");
+            ViewsTreeCheck check = new ViewsTreeCheck(1, "every view of this run sits in the tool folder under the letter of its test's priority");
 
             if (check.CouldNotRun(read.WhyThisRunsViewsCannotBeRead()))
             {
@@ -193,15 +193,24 @@ namespace Federator.Core.Views
                 }
 
                 looked++;
-                TeamPair pair = read.Plan.PairOfTest(node.Name);
+                PlannedTestView planned = null;
 
-                if (pair == null)
+                foreach (PlannedTestView view in read.Plan.Views)
+                {
+                    if (string.Equals(view.Name, node.Name, StringComparison.Ordinal))
+                    {
+                        planned = view;
+                        break;
+                    }
+                }
+
+                if (planned == null)
                 {
                     check.Fail(node + " is a view of a test this run's plan never made");
                 }
-                else if (node.Folders.Count < 2 || !string.Equals(node.Folders[1], pair.Folder, StringComparison.Ordinal))
+                else if (!string.Equals(node.FolderPath, ViewPlace.FolderPath(planned.Folders), StringComparison.Ordinal))
                 {
-                    check.Fail(node.Name + " sits in " + node.FolderPath + " and its pair is " + pair.Folder);
+                    check.Fail(node.Name + " sits in " + node.FolderPath + " and its place is " + ViewPlace.FolderPath(planned.Folders));
                 }
             }
 
@@ -210,55 +219,43 @@ namespace Federator.Core.Views
             return check;
         }
 
-        private static ViewsTreeCheck NoSizeFolderOutsideItsPair(Read read)
+        private static ViewsTreeCheck NoFolderButALetterUnderTheToolFolder(Read read)
         {
-            ViewsTreeCheck check = new ViewsTreeCheck(2, "no Over 150mm folder sits outside its own pair");
+            ViewsTreeCheck check = new ViewsTreeCheck(2, "no folder under the tool folder is anything but A, B or C, and no team pair or size folder is made");
 
             if (check.CouldNotRun(read.WhyThisRunsViewsCannotBeRead()))
             {
                 return check;
             }
 
-            string size = read.Settings.SubGroupFolderName();
             int looked = 0;
+            List<string> letters = new List<string>(ToolViewFolder.Letters);
 
             foreach (ViewNode node in read.Mine)
             {
-                for (int i = 0; i < node.Folders.Count; i++)
+                if (!node.IsFolder)
                 {
-                    if (i != 2 && string.Equals(node.Folders[i], size, StringComparison.Ordinal))
-                    {
-                        check.Fail(node + " sits under a " + size + " folder that is not directly in a pair folder");
-                    }
+                    continue;
                 }
 
-                if (node.IsFolder && string.Equals(node.Name, size, StringComparison.Ordinal))
-                {
-                    looked++;
+                looked++;
 
-                    if (node.Folders.Count != 2)
-                    {
-                        check.Fail(node + " sits outside a pair folder");
-                    }
-                    else if (!read.PairCarriesSizeFolder(node.Folders[1]))
-                    {
-                        check.Fail(node + " sits in a pair that carries no size folder");
-                    }
+
+                // The tool's own top folder is the root of this tree and is not a letter folder.
+                if (node.Folders.Count == 0 && string.Equals(node.Name, ToolViewFolder.Name, StringComparison.Ordinal))
+                {
+                    continue;
                 }
 
-                if (!node.IsFolder && node.Folders.Count == 3 && string.Equals(node.Folders[2], size, StringComparison.Ordinal))
+                if (node.Folders.Count != 1 || !string.Equals(node.Folders[0], ToolViewFolder.Name, StringComparison.Ordinal)
+                    || !letters.Contains(node.Name))
                 {
-                    TeamPair pair = read.Plan.PairOfTest(node.Name);
-
-                    if (pair == null || !pair.CarriesSizeFolder || !string.Equals(node.Folders[1], pair.Folder, StringComparison.Ordinal))
-                    {
-                        check.Fail(node + " sits under the " + size + " folder of a pair that is not its own");
-                    }
+                    check.Fail(node + " is a folder of this tool that is not A, B or C directly under " + ToolViewFolder.Name);
                 }
             }
 
             read.NamePlannedNotFound(check);
-            check.Basis = looked + " size folders of this run, off the document";
+            check.Basis = looked + " folders of this run, off the document";
             return check;
         }
 

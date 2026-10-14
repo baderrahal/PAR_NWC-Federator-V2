@@ -4696,7 +4696,7 @@ namespace Federator.Addin.Engine
 
             if (builder.Plan != null)
             {
-                log.Block("VIEWS " + job.Building, builder.Plan.Lines(reports.Sizes));
+                log.Block("VIEWS " + job.Building, builder.Plan.Lines());
             }
 
             if (built != null)

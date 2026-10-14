@@ -631,7 +631,7 @@ F177,"the HTML and pictures in the Clash report folder keep the plain name and a
 Q172,"whether a model naming no shared site is a NOTICE like a model on Internal and the clash always runs, F171 and F176",none,none,question,merged,258,none,2026-10-14
 Q173-1,"the Clash report folder overwrites a file of the same name and never dates it, the Log folder keeps its dated names, F177",none,none,Bader's request,merged,257,none,2026-10-14
 Q173-2,"the leftover cd jpg files a run did not write are removed from that group's NAME_files folder, a failed run removes nothing, F177",none,none,Bader's request,merged,257,none,2026-10-14
-Q174-1,"viewpoints, both, one tool folder A B C then the tests, the earlier tool viewpoints deleted each run, F186",none,none,Bader's request,open,none,none,2026-10-14
+Q174-1,"viewpoints, both, one tool folder A B C then the tests, the earlier tool viewpoints deleted each run, F186",none,none,Bader's request,in review,none,none,2026-10-14
 Q174-2,"the NWF page keeps status, assigned to and comments of clashes still there, re-runs the tests, F187",none,none,Bader's request,open,none,none,2026-10-14
 Q174-3,"two pages, NWC once and NWF every week, F188",none,none,Bader's request,open,none,none,2026-10-14
 F178,"the answers of Q169 to Q172, the Clash report orders and the Part 2 answers recorded in steps\02_questions.md and the tracker",F178,none,fix,merged,258,none,2026-10-14
@@ -645,3 +645,4 @@ Q176-1,"the number of clashes past which a test's pictures are capped by its pri
 F183,"the answers Q175 C and Q176 750 recorded in steps\02_questions.md and the tracker, the Part 2 notes renumbered to F186 to F188",F183,none,fix,merged,263,none,2026-10-14
 F184,"the full run on C04 with F181 and F182 ended in 50 minutes, the NWD before the pictures, the memory stop at picture 3043, 4862 leftover jpgs removed, the report is at the top of 03_bader_next",F184,none,fix,merged,264,none,2026-10-14
 F185,"the checks of Part 2 read again, the Compact resolved option and its call of TestsCompactAllTests removed, tests that fail on any call that resets compacts removes or replaces a clash test",F185,none,fix,merged,265,none,2026-10-14
+F186,"the viewpoint tree is one tool folder NWC Federator (auto) found by name and marker and deleted on each run, A B C then the tests, the one time clean up of old root folders, Q174-1",F186,none,fix,in review,none,none,2026-10-14

@@ -1,5 +1,25 @@
 # 03 Bader next
 
+## Round 4, second set, F186 the viewpoint tree, Task 6
+
+Written for Bader. Simple words. PROVEN means a run showed it. TEST means only a test showed it. UNKNOWN means nothing showed it yet.
+
+### What is built
+
+1. One top folder, NWC Federator (auto), at the root of the saved viewpoints, with the comment NWCF-AUTO run=<stamp>. Under it A, B, C by the priority of the test. A test with no priority goes in C. Then one view for each test, directly, named as the test. There is no team pair level and no Over 150mm folder any more. Every open clash of a test is in its one view, whatever its size. The team pair still decides which models a view shows. TEST
+2. On each run the tool finds the top folder by its name AND its marker and deletes it with everything in it. Then it builds it again. A folder with that name and no marker is left as a coordinator's. The inventory and the seven checks are given only what is inside the top folder, so nothing outside it is read for removal, changed or deleted. TEST, by the source and by the rule that picks the nodes
+3. The one time clean up. A root folder named A, B, C or No priority is deleted with all it holds only if every item inside is the old tree's own naming: a team pair folder of two team names, the size folder, a view named as a test or as the first version's per clash viewpoint. One item that is not leaves the whole folder and the log names the folder and that item. A root folder with nothing in it is left. The log gives the counts: root folders read, deleted, left. TEST
+4. The NWF page text, that a viewpoint moved by hand into the tool folder is deleted, is written with the NWF page, F188. The tool folder rule is in place now
+5. Does deleting saved viewpoints change the clash results. The log now has a PROOF line that reads the tests and results before and after the delete. A test checks its words. On a real NWF it is UNKNOWN until a run, and the PROOF line then says it. It compares counts, not statuses. Statuses are compared by the snapshot of the weekly run, F187
+
+### What old NWFs hold
+
+Still UNKNOWN. The clean up reads them when it runs and says what it found, folder by folder.
+
+### Numbers
+
+Core tests 3146 before and 3159 after, 0 failed. The Release build has 0 warnings and 0 errors.
+
 ## Round 4, second set, Part 2 begins, F185 the checks before anything is built
 
 Written for Bader. Simple words. I read the code of main after PR 264 again and did not rely on last round's notes. PROVEN means code or a test showed it. UNKNOWN means nothing showed it yet.
