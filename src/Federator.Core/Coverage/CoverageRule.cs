@@ -212,8 +212,6 @@ namespace Federator.Core.Coverage
             {
                 case ClashSkipReason.UnknownTestType:
                 case ClashSkipReason.NoLocator:
-                case ClashSkipReason.UnknownUnits:
-                case ClashSkipReason.NoTolerance:
                 case ClashSkipReason.MissingSetting:
                 case ClashSkipReason.NoName:
                 case ClashSkipReason.LocatorNotResolved:

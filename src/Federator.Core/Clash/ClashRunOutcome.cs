@@ -587,8 +587,6 @@ namespace Federator.Core.Clash
                     ClashSkipReason.LocatorNotResolved,
                     ClashSkipReason.UnknownTestType,
                     ClashSkipReason.NoLocator,
-                    ClashSkipReason.UnknownUnits,
-                    ClashSkipReason.NoTolerance,
                     ClashSkipReason.MissingSetting,
                     ClashSkipReason.NoName,
                     ClashSkipReason.Failed

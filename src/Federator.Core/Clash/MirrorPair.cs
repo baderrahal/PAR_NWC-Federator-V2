@@ -213,8 +213,7 @@ namespace Federator.Core.Clash
 
             foreach (TestDifference difference in TestDrift.Compare(first.Name, firstSettings, otherSettings))
             {
-                found.Add(difference.Field + " " + Valued(difference, difference.InFile, first) + " and "
-                    + Valued(difference, difference.InDocument, other));
+                found.Add(difference.Field + " " + difference.InFile + " and " + difference.InDocument);
             }
 
             return found;
@@ -238,12 +237,6 @@ namespace Federator.Core.Clash
             return other;
         }
 
-        /// <summary>A tolerance carries its test's units, because Bader reads the two side by side.</summary>
-        private static string Valued(TestDifference difference, string value, PlannedClashTest test)
-        {
-            return string.Equals(difference.Field, TestDrift.ToleranceField, StringComparison.Ordinal)
-                ? value + " " + test.DocumentUnits
-                : value;
-        }
+
     }
 }

@@ -63,161 +63,95 @@ namespace Federator.Core.Tests
             return Plan(xml, "m");
         }
 
-        // ---------- the tolerance, converted from the file units ----------
+        // ---------- the tolerance is the drop down's alone, F167 ----------
 
-        // 0.2460629921 ft is the 75 mm .claude\rules\core.md records. Into a metric
-        // document that has to come out as 0.075 m, not as 0.246 of anything.
+        /// <summary>
+        /// Bader's answer A to Q167 of 14 Oct 2026. A test is planned whatever tolerance its file
+        /// gives, and the plan carries none. The value of the drop down is the one set on every test.
+        /// </summary>
         [Test]
-        public void TheToleranceIsConvertedFromTheFileUnitsIntoTheDocumentUnits()
+        public void ATestIsPlannedWhateverToleranceTheFileGivesAndThePlanCarriesNone()
         {
-            ClashTestPlan plan = Plan(Xml(units: "ft"), "m");
+            ClashTestPlan plan = Plan(Xml(units: "mm", tolerance: "100"), "m");
 
+            Assert.That(plan.Skipped.Count, Is.EqualTo(0));
             Assert.That(plan.Buildable.Count, Is.EqualTo(1));
 
-            PlannedClashTest test = plan.Buildable[0];
-
-            Assert.That(test.ToleranceInFileUnits, Is.EqualTo(0.2460629921).Within(0.0000000001));
-            Assert.That(test.FileUnits, Is.EqualTo("ft"));
-            Assert.That(test.DocumentUnits, Is.EqualTo("m"));
-            Assert.That(test.Tolerance, Is.EqualTo(0.075).Within(0.0000001),
-                "the file tolerance reached the document without being converted");
-        }
-
-        [Test]
-        public void TheSameToleranceInAMillimetreDocumentIsSeventyFive()
-        {
-            Assert.That(Plan(Xml(units: "ft"), "mm").Buildable[0].Tolerance,
-                Is.EqualTo(75.0).Within(0.0001));
-        }
-
-        // A document in the same units as the file must not be nudged by a round trip.
-        [Test]
-        public void MatchingUnitsLeaveTheNumberExactlyAsWritten()
-        {
-            Assert.That(Plan(Xml(units: "ft"), "ft").Buildable[0].Tolerance,
-                Is.EqualTo(0.2460629921).Within(0.0000000001));
-        }
-
-        [Test]
-        public void EveryUnitThePlanAcceptsConvertsBothWays()
-        {
-            foreach (string units in new[] { "mm", "cm", "m", "km", "in", "ft", "yd", "mi" })
+            foreach (System.Reflection.PropertyInfo property in typeof(PlannedClashTest).GetProperties())
             {
-                ClashTestPlan plan = Plan(Xml(units: "mm", tolerance: "75"), units);
-
-                Assert.That(plan.Buildable.Count, Is.EqualTo(1), units);
-                Assert.That(ExchangeUnits.Convert(plan.Buildable[0].Tolerance, units, "mm"),
-                    Is.EqualTo(75.0).Within(0.000001), units);
+                Assert.That(property.Name, Does.Not.Contain("Tolerance"), "the plan carries a tolerance of the file");
+                Assert.That(property.Name, Does.Not.Contain("Units"), "the plan carries the units of the file");
             }
         }
 
+        /// <summary>
+        /// A matrix test at 100 mm with the drop down at 25 mm runs at 25 mm: the value set is the drop
+        /// down's converted into the document units, and the file's 100 reaches nothing.
+        /// </summary>
         [Test]
-        public void AFileWithNoUnitsIsSkippedRatherThanHavingUnitsAssumed()
+        public void AMatrixTestAt100MmWithTheDropDownAt25MmIsSetTo25Mm()
+        {
+            ClashTestPlan big = Plan(Xml(units: "mm", tolerance: "100"), "m");
+            ClashTestPlan small = Plan(Xml(units: "mm", tolerance: "1"), "m");
+            ToleranceChoice chosen = ToleranceChoice.Of(25.0);
+
+            Assert.That(big.Buildable.Count, Is.EqualTo(1));
+            Assert.That(small.Buildable.Count, Is.EqualTo(1));
+            Assert.That(chosen.InDocumentUnits("m"), Is.EqualTo(0.025).Within(0.0000001));
+            Assert.That(chosen.InDocumentUnits("mm"), Is.EqualTo(25.0).Within(0.0000001));
+            Assert.That(chosen.InDocumentUnits("ft"), Is.EqualTo(0.0820209974).Within(0.0000001));
+        }
+
+        [Test]
+        public void ATestWithNoToleranceAttributeIsPlannedLikeAnyOther()
+        {
+            ClashTestPlan plan = Plan(Xml().Replace(" tolerance=\"0.2460629921\"", string.Empty), "m");
+
+            Assert.That(plan.Skipped.Count, Is.EqualTo(0));
+            Assert.That(plan.Buildable.Count, Is.EqualTo(1));
+            Assert.That(plan.Buildable[0].Name, Is.EqualTo("AR-Floors v ME-Air Terminals"));
+        }
+
+        [Test]
+        public void AnEmptyOrZeroToleranceIsPlannedToo()
+        {
+            Assert.That(Plan(Xml(tolerance: string.Empty), "m").Buildable.Count, Is.EqualTo(1));
+            Assert.That(Plan(Xml(tolerance: "0"), "m").Buildable.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void AFileWithNoUnitsIsPlannedLikeAnyOther()
         {
             ClashTestPlan plan = ClashTestPlan.From(
                 new ExchangeReader().ReadText(
                     "<exchange><batchtest name=\"b\"><clashtest name=\"T\" test_type=\"hard\""
-                    + " tolerance=\"0.25\" merge_composites=\"1\">"
-                    + "<left><clashselection><locator>" + LeftPath + "</locator></clashselection></left>"
-                    + "<right><clashselection><locator>" + RightPath + "</locator></clashselection></right>"
+                    + " tolerance=\"0.25\" merge_composites=\"1\" status=\"new\">"
+                    + "<left><clashselection selfintersect=\"0\" primtypes=\"1\"><locator>" + LeftPath + "</locator></clashselection></left>"
+                    + "<right><clashselection selfintersect=\"0\" primtypes=\"1\"><locator>" + RightPath + "</locator></clashselection></right>"
                     + "</clashtest></batchtest></exchange>"),
                 "m");
 
-            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
-            Assert.That(plan.Skipped.Count, Is.EqualTo(1));
-            Assert.That(plan.Skipped[0].Name, Is.EqualTo("T"), "the test has to be reported by name");
-            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.UnknownUnits));
-            Assert.That(plan.Skipped[0].Reason, Does.Contain("no units"));
-        }
-
-        // ---------- a tolerance that is not in the file ----------
-
-        /// <summary>
-        /// Everything about a test comes from the file and never from a constant. A test
-        /// with no tolerance attribute used to become a test with a tolerance of zero,
-        /// which reads as a real one, so it is skipped by name the way an unknown test
-        /// type is.
-        /// </summary>
-        [Test]
-        public void ATestWithNoToleranceAttributeIsSkippedByName()
-        {
-            ClashTestPlan plan = Plan(Xml().Replace(" tolerance=\"0.2460629921\"", string.Empty), "m");
-
-            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
-            Assert.That(plan.Skipped.Count, Is.EqualTo(1));
-            Assert.That(plan.Skipped[0].Name, Is.EqualTo("AR-Floors v ME-Air Terminals"));
-            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.NoTolerance));
-            Assert.That(plan.Skipped[0].Reason, Does.Contain("no tolerance"));
-        }
-
-        [Test]
-        public void AnEmptyToleranceAttributeIsNoToleranceEither()
-        {
-            ClashTestPlan plan = Plan(Xml(tolerance: string.Empty), "m");
-
-            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
-            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.NoTolerance));
-        }
-
-        /// <summary>
-        /// Zero is a real tolerance, written by somebody who meant it, and it is planned.
-        /// Only an absent attribute is the skip.
-        /// </summary>
-        [Test]
-        public void AToleranceOfZeroIsARealOneAndIsPlanned()
-        {
-            ClashTestPlan plan = Plan(Xml(tolerance: "0"), "m");
-
             Assert.That(plan.Skipped.Count, Is.EqualTo(0));
             Assert.That(plan.Buildable.Count, Is.EqualTo(1));
-            Assert.That(plan.Buildable[0].Tolerance, Is.EqualTo(0.0));
         }
 
         [Test]
-        public void TheSkipReadsOnItsOwnInTheLog()
+        public void AUnitTheToolDoesNotKnowInTheFileOrTheDocumentStopsNothing()
         {
-            Assert.That(
-                ClashTestPlan.Describe(ClashSkipReason.NoTolerance),
-                Does.Contain("no tolerance"));
-        }
-
-        /// <summary>
-        /// The unknown file unit line in Convert. It could not be reached before F33,
-        /// because the reader converted the tolerance itself and threw on the whole file
-        /// first. Now the file reads and each test is skipped here, by name.
-        /// </summary>
-        [Test]
-        public void AFileUnitTheToolDoesNotKnowSkipsEveryTestByNameRatherThanThrowing()
-        {
-            ClashTestPlan plan = Plan(Xml(units: "cubits"), "m");
-
-            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
-            Assert.That(plan.Skipped.Count, Is.EqualTo(1));
-            Assert.That(plan.Skipped[0].Name, Is.EqualTo("AR-Floors v ME-Air Terminals"));
-            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.UnknownUnits));
-            Assert.That(plan.Skipped[0].Reason, Does.Contain("cubits"));
-            Assert.That(plan.Skipped[0].Reason, Does.Contain("not one this tool converts"));
+            Assert.That(Plan(Xml(units: "cubits"), "m").Buildable.Count, Is.EqualTo(1));
+            Assert.That(Plan(Xml(), "cubits").Buildable.Count, Is.EqualTo(1));
+            Assert.That(Plan(Xml(), null).Buildable.Count, Is.EqualTo(1));
         }
 
         [Test]
-        public void AnUnknownDocumentUnitSkipsRatherThanGuessingAFactor()
+        public void TheTwoOldSkipReasonsAreGone()
         {
-            ClashTestPlan plan = Plan(Xml(), "cubits");
-
-            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
-            Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.UnknownUnits));
-            Assert.That(plan.Skipped[0].Reason, Does.Contain("cubits"));
+            foreach (string name in Enum.GetNames(typeof(ClashSkipReason)))
+            {
+                Assert.That(name, Is.Not.EqualTo("NoTolerance"));
+                Assert.That(name, Is.Not.EqualTo("UnknownUnits"));
+            }
         }
-
-        [Test]
-        public void UnknownDocumentUnitsAtAllSkipsRatherThanUsingTheFileNumberRaw()
-        {
-            ClashTestPlan plan = Plan(Xml(), null);
-
-            Assert.That(plan.Buildable.Count, Is.EqualTo(0));
-            Assert.That(plan.Skipped[0].Reason, Does.Contain("UNKNOWN"));
-        }
-
         // ---------- an unknown test type is skipped, never approximated ----------
 
         [Test]

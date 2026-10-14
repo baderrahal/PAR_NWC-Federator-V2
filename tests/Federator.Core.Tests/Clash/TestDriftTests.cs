@@ -286,7 +286,7 @@ namespace Federator.Core.Tests
         // ---------- reading the file's settings off the plan ----------
 
         [Test]
-        public void TheFilesSettingsComeStraightOffThePlan()
+        public void TheFilesSettingsComeStraightOffThePlanAndItsToleranceIsNotOne()
         {
             string xml = "<exchange units=\"ft\"><batchtest name=\"b\">"
                 + "<clashtest name=\"T\" test_type=\"hard_conservative\" tolerance=\"0.2460629921\""
@@ -302,7 +302,7 @@ namespace Federator.Core.Tests
 
             TestSettings settings = TestSettings.FromFile(planned);
 
-            Assert.That(settings.Tolerance, Is.EqualTo(0.075).Within(0.0000001));
+            Assert.That(settings.Tolerance, Is.EqualTo(0.0), "the file's tolerance is not read, the runner sets the drop down's, F167");
             Assert.That(settings.TestType, Is.EqualTo(ClashTestKind.HardConservative));
             Assert.That(settings.MergeComposites, Is.True);
             Assert.That(settings.LeftLocator, Is.EqualTo(Left));

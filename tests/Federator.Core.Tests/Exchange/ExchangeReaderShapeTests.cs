@@ -69,8 +69,6 @@ namespace Federator.Core.Tests
             Assert.That(document.Tests.Count, Is.EqualTo(1));
             Assert.That(document.Sets.Count, Is.EqualTo(0));
             Assert.That(document.HasSets, Is.False);
-            Assert.That(document.Tests[0].ToleranceInFileUnits, Is.EqualTo(0.2460629921).Within(1e-10));
-            Assert.That(document.Tests[0].FileUnits, Is.EqualTo("ft"));
             Assert.That(document.Tests[0].Right.SelfIntersect, Is.True);
             Assert.That(document.Tests[0].Right.PrimitiveTypes, Is.EqualTo(3));
         }
@@ -142,18 +140,22 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheToleranceIsReadInTheFileUnitsAndNotConverted()
+        public void TheToleranceAndTheUnitsOfATestAreNotReadAtAll()
         {
-            // The reader reads. Converting is ClashTestPlan.Convert's job, F33, so a
-            // file in metres carries 0.075 and m, and nothing derived from either.
+            // F167. They come from the drop down alone, so the definition of a test holds neither.
             string inMetres = TestsOnly
                 .Replace("units=\"ft\"", "units=\"m\"")
                 .Replace("tolerance=\"0.2460629921\"", "tolerance=\"0.075\"");
 
             ExchangeDocument document = new ExchangeReader().ReadText(inMetres);
 
-            Assert.That(document.Tests[0].FileUnits, Is.EqualTo("m"));
-            Assert.That(document.Tests[0].ToleranceInFileUnits, Is.EqualTo(0.075).Within(1e-12));
+            Assert.That(document.Tests.Count, Is.EqualTo(1));
+
+            foreach (System.Reflection.PropertyInfo property in typeof(ClashTestDefinition).GetProperties())
+            {
+                Assert.That(property.Name, Does.Not.Contain("Tolerance"));
+                Assert.That(property.Name, Does.Not.Contain("Units"));
+            }
         }
 
         [Test]
@@ -166,8 +168,7 @@ namespace Federator.Core.Tests
             ExchangeDocument document = new ExchangeReader().ReadText(inCubits);
 
             Assert.That(document.Tests.Count, Is.EqualTo(1));
-            Assert.That(document.Tests[0].FileUnits, Is.EqualTo("cubits"));
-            Assert.That(document.Tests[0].ToleranceInFileUnits, Is.EqualTo(0.2460629921).Within(1e-10));
+
         }
 
         [Test]

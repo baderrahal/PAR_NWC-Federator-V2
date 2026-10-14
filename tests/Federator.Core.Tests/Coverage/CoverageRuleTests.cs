@@ -180,7 +180,7 @@ namespace Federator.Core.Tests
         {
             ClashTestPlan plan = Plan(
                 Test("unknown type", ArWalls, ArFloors, "bogus", true),
-                Test("no tolerance", ArWalls, ArFloors, "hard_conservative", false));
+                Test("unknown type two", ArWalls, ArFloors, "bogus2", true));
 
             IList<TestCoverage> rows = Coverage(plan, RunAsTheRunnerDoes(plan, Counts()));
 
@@ -188,7 +188,7 @@ namespace Federator.Core.Tests
             Assert.That(rows[0].Detail, Does.Contain(ClashTestPlan.Describe(ClashSkipReason.UnknownTestType)));
             Assert.That(rows[0].Detail, Does.Contain("bogus"));
             Assert.That(rows[1].Reason, Is.EqualTo(CoverageReason.NotCreated));
-            Assert.That(rows[1].Detail, Does.Contain(ClashTestPlan.Describe(ClashSkipReason.NoTolerance)));
+            Assert.That(rows[1].Detail, Does.Contain(ClashTestPlan.Describe(ClashSkipReason.UnknownTestType)));
 
             // The runner never looked for these in the document.
             Assert.That(rows[0].Presence, Is.EqualTo(TestPresence.Unknown));
@@ -521,11 +521,11 @@ namespace Federator.Core.Tests
         [Test]
         public void ASavedTestThePlanDropsIsAlreadyThereAndNotRunNeverNotCreated()
         {
-            SavedClashTest odd = new SavedClashTest("Odd", 9, 0.08, true,
+            SavedClashTest odd = new SavedClashTest("Odd", 9, true,
                 false, 1, ArWalls, false, 1, ArFloors, new[] { 0 });
-            SavedClashTest nameless = new SavedClashTest(string.Empty, (int)ClashTestKind.HardConservative, 0.08, true,
+            SavedClashTest nameless = new SavedClashTest(string.Empty, (int)ClashTestKind.HardConservative, true,
                 false, 1, ArWalls, false, 1, ArFloors, new[] { 1 });
-            SavedClashTest kept = new SavedClashTest("T", (int)ClashTestKind.HardConservative, 0.08, true,
+            SavedClashTest kept = new SavedClashTest("T", (int)ClashTestKind.HardConservative, true,
                 false, 1, ArWalls, false, 1, ArFloors, new[] { 2 });
             ClashTestPlan plan = ClashTestPlan.FromDocument(new[] { odd, nameless, kept }, "ft");
             Assert.That(plan.Skipped.Count, Is.EqualTo(2), "the plan drops the odd type and the nameless test");
@@ -587,7 +587,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheSavedTestsWithNoXmlReadTheirSidesOffTheRunTimeCheck()
         {
-            SavedClashTest saved = new SavedClashTest("T", (int)ClashTestKind.HardConservative, 0.08, true,
+            SavedClashTest saved = new SavedClashTest("T", (int)ClashTestKind.HardConservative, true,
                 false, 1, ArStairs, false, 1, ArFloors, new[] { 0 });
             ClashTestPlan plan = ClashTestPlan.FromDocument(new[] { saved }, "ft");
             ClashRunOutcome outcome = new ClashRunOutcome();

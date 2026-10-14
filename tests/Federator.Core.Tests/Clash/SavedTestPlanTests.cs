@@ -16,7 +16,7 @@ namespace Federator.Core.Tests
         private static SavedClashTest Saved(string name, params int[] address)
         {
             return new SavedClashTest(
-                name, 1, 0.075, true, false, 1, SavedClashTest.LeftAsSaved,
+                name, 1, true, false, 1, SavedClashTest.LeftAsSaved,
                 false, 1, SavedClashTest.RightAsSaved, address);
         }
 
@@ -67,17 +67,15 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheToleranceStaysInTheDocumentUnitsBecauseItCameOutOfTheDocument()
+        public void ASavedTestIsPlannedAsTheTestTypeItIsAndCarriesNoTolerance()
         {
             ClashTestPlan plan = ClashTestPlan.FromDocument(
                 new List<SavedClashTest> { Saved("AR v ST", 0) }, "m");
 
             PlannedClashTest test = plan.Buildable[0];
 
-            Assert.That(test.Tolerance, Is.EqualTo(0.075));
-            Assert.That(test.ToleranceInFileUnits, Is.EqualTo(0.075));
-            Assert.That(test.FileUnits, Is.EqualTo("m"));
-            Assert.That(test.DocumentUnits, Is.EqualTo("m"));
+            // F167. The value set on a saved test is the drop down's, ClashRunner.ApplyChosenTolerance, and
+            // the tolerance the test already holds is not read into the plan.
             Assert.That(test.TestType, Is.EqualTo(ClashTestKind.HardConservative));
         }
 
@@ -87,7 +85,7 @@ namespace Federator.Core.Tests
             List<SavedClashTest> saved = new List<SavedClashTest>
             {
                 Saved(string.Empty, 0),
-                new SavedClashTest("Odd", 9, 0.1, true, false, 1, "a", false, 1, "b", new[] { 1 }),
+                new SavedClashTest("Odd", 9, true, false, 1, "a", false, 1, "b", new[] { 1 }),
                 Saved("Fine", 2)
             };
 
@@ -105,7 +103,7 @@ namespace Federator.Core.Tests
         public void ASavedTestNeedsItsAddress()
         {
             Assert.That(
-                () => new SavedClashTest("T", 1, 0.1, true, false, 1, "a", false, 1, "b", new int[0]),
+                () => new SavedClashTest("T", 1, true, false, 1, "a", false, 1, "b", new int[0]),
                 Throws.ArgumentException);
         }
 

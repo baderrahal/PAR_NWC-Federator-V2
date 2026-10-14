@@ -113,7 +113,7 @@ namespace Federator.Core.Tests
             {
                 ClashTestPlan saved = Holding(
                     MirrorRuleTests.Saved(Kept, Ducts, Columns, 0),
-                    new SavedClashTest(SwapMirror, 1, tolerance, true, false, 1, Columns, false, 1, Ducts, new[] { 1 }));
+                    new SavedClashTest(SwapMirror, 1, true, false, 1, Columns, false, 1, Ducts, new[] { 1 }));
                 MirrorRule rule = MirrorRule.Of(
                     saved.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null, null);
 

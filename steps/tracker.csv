@@ -617,3 +617,4 @@ F163,"tools\loop and tools\probes\drive-window-run.ps1 still type into the Excel
 F164,"the Run as label Weekly run plus XML renamed Weekly run plus matrix in the window, the confirm and the log, Q166 A",F164,none,fix,merged,244,none,2026-10-14
 F165,"MatrixCorrections.ReadPicked and cut-xml.ps1 kept for the coming clash test round, the mirror check recorded in 01_next, Q165",F165,none,fix,merged,245,none,2026-10-14
 F166,"the matrix pack chosen by the project code of the NWC file names, a run with no pack, two packs or mixed codes stopped before anything is opened, Q164 B",F166,none,fix,merged,246,none,2026-10-14
+F167,"the tolerance comes only from the drop down, the no tolerance and the UNKNOWN UNITS checks and every read of a matrix or XML tolerance removed, Q167 A",F167,none,fix,merged,247,none,2026-10-14

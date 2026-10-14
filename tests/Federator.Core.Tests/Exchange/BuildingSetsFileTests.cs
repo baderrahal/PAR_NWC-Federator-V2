@@ -41,14 +41,11 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void EveryToleranceIsFiftyMillimetresAndSelfIntersectIsOn()
+        public void SelfIntersectIsOnOnEverySide()
         {
             foreach (ClashTestDefinition test in document.Tests)
             {
-                Assert.That(test.ToleranceInFileUnits, Is.EqualTo(0.1640419948).Within(1e-10), test.Name);
-                Assert.That(test.FileUnits, Is.EqualTo("ft"), test.Name);
-                Assert.That(ExchangeUnits.Convert(test.ToleranceInFileUnits, test.FileUnits, "mm"),
-                    Is.EqualTo(50.0).Within(1e-6), test.Name);
+
                 Assert.That(test.Left.SelfIntersect, Is.True, test.Name);
                 Assert.That(test.Right.SelfIntersect, Is.True, test.Name);
             }

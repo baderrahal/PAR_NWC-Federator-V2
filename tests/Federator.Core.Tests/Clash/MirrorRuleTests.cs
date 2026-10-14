@@ -222,7 +222,7 @@ namespace Federator.Core.Tests
 
         internal static SavedClashTest Saved(string name, string left, string right, int address)
         {
-            return new SavedClashTest(name, 1, 0.025, true, false, 1, left, false, 1, right, new[] { address });
+            return new SavedClashTest(name, 1, true, false, 1, left, false, 1, right, new[] { address });
         }
 
         /// <summary>
@@ -1352,10 +1352,6 @@ namespace Federator.Core.Tests
                 "BLD-ME-Ducts-vs-BLD-AR-Walls",
                 first.TestType,
                 first.TestTypeName,
-                first.ToleranceInFileUnits,
-                first.FileUnits,
-                first.Tolerance,
-                first.DocumentUnits,
                 first.MergeComposites,
                 first.Left,
                 new PlannedClashSide(false, 1, TestSettings.UnknownLocator),
@@ -1592,10 +1588,6 @@ namespace Federator.Core.Tests
                 "the swap of the first test",
                 first.TestType,
                 first.TestTypeName,
-                first.ToleranceInFileUnits,
-                first.FileUnits,
-                first.Tolerance,
-                first.DocumentUnits,
                 first.MergeComposites,
                 first.Right,
                 first.Left,

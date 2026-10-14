@@ -280,7 +280,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// FR-052. A test skipped for having no tolerance attribute was counted in tests skipped and
+        /// FR-052. A test skipped for a missing setting was counted in tests skipped and
         /// named in no reason row, so the rows added up to less than the total. Every reason there is
         /// is put through, and the reason rows of the block and the SKIPPED lines each add up to the
         /// skipped count.
@@ -324,7 +324,7 @@ namespace Federator.Core.Tests
             Assert.That(rows, Is.EqualTo(outcome.SkippedCount), string.Join("\n", new List<string>(outcome.Lines()).ToArray()));
             Assert.That(
                 string.Join("\n", new List<string>(outcome.SkipLines()).ToArray()),
-                Does.Contain(ClashTestPlan.Describe(ClashSkipReason.NoTolerance)));
+                Does.Contain(ClashTestPlan.Describe(ClashSkipReason.MissingSetting)));
         }
 
         /// <summary>

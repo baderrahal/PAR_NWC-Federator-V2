@@ -15,20 +15,9 @@ namespace Federator.Core.Clash
         /// <summary>A side carried no locator, so it names no set.</summary>
         NoLocator,
 
-        /// <summary>The units are missing or not ones this tool converts.</summary>
-        UnknownUnits,
-
-        /// <summary>
-        /// The file carried no tolerance attribute for this test. Everything about a test
-        /// comes from the file and never from a constant, and a zero tolerance reads as a
-        /// real one, so the test is skipped by name the way an unknown test type is.
-        /// </summary>
-        NoTolerance,
-
         /// <summary>
         /// The file left out merge_composites, or a side's selfintersect or primtypes, FR-155.
-        /// Each read as 0 or false, a setting nobody wrote, so the test is skipped by name the
-        /// way a test with no tolerance is.
+        /// Each read as 0 or false, a setting nobody wrote, so the test is skipped by name.
         /// </summary>
         MissingSetting,
 
