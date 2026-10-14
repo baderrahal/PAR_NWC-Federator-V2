@@ -131,6 +131,13 @@ namespace Federator.Addin.Engine
         public PriorityMap Priorities { get; set; }
 
         /// <summary>
+        /// F177. True only once the picture pass has run to its end without a throw and without the
+        /// pictures' guard stopping the run. False where the pass was never reached, so nothing earlier
+        /// is removed on a run that did not take its pictures.
+        /// </summary>
+        public bool PicturesFinished { get; private set; }
+
+        /// <summary>
         /// The clash matrix's sets, ExchangeDocument.Sets, whose whole questions pair two tests
         /// of two sets alike, F132, or null with no XML, when only the same two sets swapped
         /// pair, which the MIRROR lines say.
@@ -2606,6 +2613,11 @@ namespace Federator.Addin.Engine
                     {
                         picturing.Changed(TakeThePictures(clashTests, textures, hideOther));
                     }
+
+                    // F177. The pass came to its end without a throw and the pictures' guard did not stop
+                    // the run, so the leftover pictures of earlier runs may be removed. The GDI backstop
+                    // ending the pictures early is not a failure and does not clear this.
+                    PicturesFinished = Images != null && !Images.ShouldStopTheRun;
                 }
                 catch (Exception)
                 {

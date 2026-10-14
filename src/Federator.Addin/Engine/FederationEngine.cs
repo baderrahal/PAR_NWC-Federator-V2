@@ -1047,9 +1047,11 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// F158. Nothing in the Log folder is overwritten. Where this group's report names are already
-        /// there, from an earlier run, the group's reports take the same name with the moment of the
-        /// run after it, said on one line, and the HTML, the Excel and the _files folder keep one name.
+        /// F158, narrowed by F177. Nothing in the Log folder is overwritten. Where this group's file names
+        /// are already there, from an earlier run, the group's Excel, Internal workbook and XML take the
+        /// same name with the moment of the run after it, said on one line. The Clash report folder is not
+        /// looked at: the HTML and the _files folder there keep the plain name and are overwritten, by
+        /// Bader's order of 14 Oct 2026.
         /// </summary>
         private void NameTheReportsSoNothingIsOverwritten(FederationJob job)
         {
@@ -1060,14 +1062,14 @@ namespace Federator.Addin.Engine
 
             string internalSuffix = reports.GenericModels == null ? null : reports.GenericModels.WorkbookSuffix;
             string free = ReportPaths.NameThatOverwritesNothing(
-                reportFolder, ReportPaths.ClashReportFolder(reportFolder), job.WorkbookName, internalSuffix,
-                DateTime.Now, null);
+                reportFolder, job.WorkbookName, internalSuffix, DateTime.Now, null);
 
             if (!string.Equals(free, job.WorkbookName, StringComparison.Ordinal))
             {
-                log.Line("REPORT   " + job.WorkbookName + " is already in " + reportFolder + " or in "
-                    + ReportPaths.ClashReportFolder(reportFolder)
-                    + ", so this run writes its reports as " + free + " and leaves the earlier files as they are");
+                log.Line("REPORT   " + job.WorkbookName + " is already in " + reportFolder
+                    + ", so this run writes its Excel and XML there as " + free + " and leaves the earlier files as they are."
+                    + " The HTML and its pictures in " + ReportPaths.ClashReportFolder(reportFolder)
+                    + " keep the name " + job.ClashReportName + " and overwrite the earlier ones");
                 job.NameTheReports(free);
             }
         }
@@ -1075,11 +1077,12 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// F170, Bader's answer to Q169. The HTML and its _files folder of pictures go in the Clash report
         /// folder beside the Log folder, so the picture links of the page work. This is the path the Excel
-        /// would have there under the group's name, the one the pictures folder and the page are named by.
+        /// would have there under the group's plain name, the one the pictures folder and the page are named
+        /// by. F177: the plain name and never a dated one, so a later run overwrites the same files.
         /// </summary>
         private string ThePagePath(FederationJob job)
         {
-            return ReportPaths.Workbook(ReportPaths.ClashReportFolder(reportFolder), job.WorkbookName);
+            return ReportPaths.Workbook(ReportPaths.ClashReportFolder(reportFolder), job.ClashReportName);
         }
 
         private JobOutcome RunOne(FederationJob job)
@@ -3567,6 +3570,8 @@ namespace Federator.Addin.Engine
                         RunSteps.Renumber,
                         () => RenumberThePictures(job, outcome, runner.WorkbookPath, runner.Progress),
                         () => "the pictures of " + job.Building);
+
+                    RemoveTheLeftoverPictures(job, outcome, runner, clash);
                 }
 
                 if (outcome.Report != null && runner.Images != null)
@@ -3617,6 +3622,57 @@ namespace Federator.Addin.Engine
                     error,
                     "kept going, whatever was already created and run is kept in the NWF");
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// F177, Bader's order of 14 Oct 2026. Once the group's pictures are written, the tool's own picture
+        /// files left in its NAME_files folder by an earlier run and not written by this one are removed,
+        /// and one line says how many. Nothing is removed where the run did not reach the end of its
+        /// picture step, the pictures' guard stopped it, or the group already holds an error. The rule and
+        /// its safety are Federator.Core.Report.LeftoverPictures, which touches only top level files named
+        /// cd and digits.jpg in a folder ending _files and never throws.
+        /// </summary>
+        private void RemoveTheLeftoverPictures(
+            FederationJob job, JobOutcome outcome, ClashRunner runner, ClashRunOutcome clash)
+        {
+            try
+            {
+                string failed = null;
+
+                if (clash != null && clash.StopTheRun)
+                {
+                    failed = clash.StopTheRunReason;
+                }
+                else if (outcome.Errors.Count > 0)
+                {
+                    failed = "this group already holds an error: " + outcome.Errors[0];
+                }
+
+                List<string> written = new List<string>();
+
+                foreach (TestReport test in outcome.Report.Tests)
+                {
+                    foreach (ClashRow row in test.Rows)
+                    {
+                        if (row.HasImage)
+                        {
+                            written.Add(row.ImageFile);
+                        }
+                    }
+                }
+
+                LeftoverPicturesOutcome removal = LeftoverPictures.Remove(
+                    ImageNaming.FolderFor(runner.WorkbookPath), written, runner.PicturesFinished, failed);
+
+                log.Line("IMAGES   " + removal.Line());
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "removing the leftover pictures of " + job.Building,
+                    error,
+                    "kept going, nothing more was removed and the pictures of this run are as written");
             }
         }
 

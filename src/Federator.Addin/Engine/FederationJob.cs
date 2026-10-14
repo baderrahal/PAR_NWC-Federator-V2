@@ -43,6 +43,7 @@ namespace Federator.Addin.Engine
             NwdPath = nwdPath;
             Files = files;
             WorkbookName = string.IsNullOrEmpty(workbookName) ? outputName : workbookName;
+            ClashReportName = WorkbookName;
             DisciplineCount = disciplineCount;
             Disciplines = disciplines ?? new List<string>();
         }
@@ -62,10 +63,17 @@ namespace Federator.Addin.Engine
         public string WorkbookName { get; private set; }
 
         /// <summary>
-        /// The name the reports of this group are written under, set once at the top of the group by
-        /// the engine, F158, where a report already in the Log folder would otherwise be overwritten.
-        /// The Excel, the Internal workbook, the HTML, the XML and the _files folder all read it, so
-        /// they keep one name and the page's and the workbook's picture links keep working.
+        /// The plain name of the HTML and of its _files folder of pictures in the Clash report folder,
+        /// F177, Bader's order of 14 Oct 2026. It is never dated: a file there under this name is
+        /// overwritten. It is the name the group was given and NameTheReports never changes it.
+        /// </summary>
+        public string ClashReportName { get; private set; }
+
+        /// <summary>
+        /// The name the files of this group in the Log folder are written under, set once at the top of the
+        /// group by the engine, F158, where a file already in the Log folder would otherwise be overwritten.
+        /// The Excel, the Internal workbook and the XML read it. The HTML and the pictures folder do not,
+        /// F177, they keep ClashReportName, and the links are made from each picture's own path.
         /// </summary>
         internal void NameTheReports(string name)
         {
