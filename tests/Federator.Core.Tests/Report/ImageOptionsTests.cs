@@ -152,7 +152,8 @@ namespace Federator.Core.Tests
 
             Assert.That(said, Does.Contain("1024 by 1024"));
             Assert.That(said, Does.Contain("New, Active, Reviewed"));
-            Assert.That(said, Does.Contain("no cap per test"));
+            Assert.That(said, Does.Contain("no cap of your own per test"));
+            Assert.That(said, Does.Contain("the first 100 of a test with more than 1000 clashes"));
             Assert.That(said, Does.Contain("linked rather than pasted in"));
         }
 

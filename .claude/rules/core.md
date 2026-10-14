@@ -1637,6 +1637,16 @@ and 6 does not read as broken.
   aside and renamed with its count, so the engine lets the window answer and writes a PROGRESS
   line, and a said that throws is named once in the outcome and the renaming goes on. A holding name an
   earlier, cut off renaming left is taken out before the move onto it and said
+- THE PICTURE LIMITS, F172, Bader's answer to Q171, `PictureLimits` and `GdiBackstop`. A test with more
+  than 1000 clashes gets pictures for its first 100 and the rest are skipped, per test and not for the run,
+  one log line per such test with its name, its clashes, the pictures made and the skipped. The clashes
+  stay in the HTML, the Excel and the viewpoints. The "At most per test" box keeps its own job, a cap of the
+  user's choosing for every test, and the least of the box and the fixed rule holds,
+  `ImageOptions.RoomFor(test, written)`. A backstop reads the GDI objects of the process before every
+  picture, `ClashImages.Write`, and past 9000 no more are made: a NOTICE with the picture number and the
+  count, the pass stops asking for rows, and the run goes on to the NWD, the HTML, the Excel and the
+  viewpoints. It is not the pictures' guard, which stops the run. The GDI split line, the MEMORY line and
+  the RATE line of F157 and F161 are kept.
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR

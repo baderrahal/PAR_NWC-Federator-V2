@@ -622,3 +622,4 @@ F168,"a test saved in the NWF that the matrix does not name is run too where it 
 F169,"each picture in the Excel carries a click link to its jpg, relative and forward slashed with no stray %20, Q163 A",F169,none,fix,merged,249,none,2026-10-14
 F170,"the HTML and its _files pictures in a Clash report folder beside Log, the Excel links up one folder, LinkedPictures summaries fixed, Q169",F170,none,fix,merged,250,none,2026-10-14
 F171,"a model on Internal no longer ends a group FAILED, a NOTICE naming it in the run log, the shared coordinates txt, the RESULT lines and the group result line, Q170",F171,none,fix,merged,251,none,2026-10-14
+F172,"a test over 1000 clashes gets pictures for its first 100, a backstop at 9000 GDI objects stops the pictures with a NOTICE and the run goes on, the At most per test box kept, Q171",F172,none,fix,merged,252,none,2026-10-14

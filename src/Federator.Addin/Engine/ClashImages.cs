@@ -159,7 +159,62 @@ namespace Federator.Addin.Engine
         /// </summary>
         public bool Wanted(ClashReport report, TestReport test, ClashRow row, string workbookPath)
         {
-            return !string.IsNullOrEmpty(workbookPath) && options.TakesAPictureOf(report, test, row, guard);
+            return !backstop.Fired && !string.IsNullOrEmpty(workbookPath)
+                && options.TakesAPictureOf(report, test, row, guard);
+        }
+
+        /// <summary>
+        /// F172. Whether the GDI backstop has fired: no picture is made after it, the run goes on, and the
+        /// picture pass stops asking for rows. Not the guard's stop, which ends the run.
+        /// </summary>
+        public bool GdiBackstopFired
+        {
+            get { return backstop.Fired; }
+        }
+
+        private readonly GdiBackstop backstop = new GdiBackstop();
+
+        private int picturesMade;
+
+        /// <summary>How many of this test's clashes have a status that gets a picture.</summary>
+        public int RowsThatWantAPicture(TestReport test)
+        {
+            int count = 0;
+
+            foreach (ClashRow row in test.Rows)
+            {
+                if (options.Wants(row.Status))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>The most pictures this test may have, the fixed rule of F172 and the box's cap, the least of the two.</summary>
+        public int PictureLimitOf(TestReport test)
+        {
+            return PictureLimits.LimitFor(test.Rows.Count, options.CapPerTest);
+        }
+
+        /// <summary>The clashes of the whole report with a status that gets a picture and no picture, said once the pass ends.</summary>
+        public int RowsLeftWithoutAPicture(ClashReport report)
+        {
+            int count = 0;
+
+            foreach (TestReport test in report.Tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    if (!row.HasImage && options.Wants(row.Status))
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
         }
 
         /// <summary>Where this group's IMAGES seconds went, call by call, FR-077.</summary>
@@ -221,6 +276,15 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
+                // F172, Bader's answer to Q171. The GDI objects of the process are read before every
+                // picture. Past the limit no more pictures are made, the NOTICE is said once and the run
+                // goes on, so it never reaches the 10000 a process may hold and crashes on.
+                if (backstop.Check(ProcessMemory.GdiObjectsNow(), picturesMade + 1))
+                {
+                    log.Line("IMAGES   " + backstop.Notice());
+                    return false;
+                }
+
                 PictureNumber number = report.NextPictureOf(test, row);
                 string path = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
 
@@ -263,6 +327,7 @@ namespace Federator.Addin.Engine
                     }
 
                     names.Wrote(path, Name(row));
+                    picturesMade++;
                     report.Images.Wrote(visit.Elapsed, length);
                     number.PointTheRow(workbookPath);
 

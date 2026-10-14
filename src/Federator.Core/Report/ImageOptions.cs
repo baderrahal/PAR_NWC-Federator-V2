@@ -137,7 +137,7 @@ namespace Federator.Core.Report
                 return false;
             }
 
-            if (!RoomFor(test.ImageCount))
+            if (!RoomFor(test, test.ImageCount))
             {
                 report.Images.CappedOne();
                 return false;
@@ -187,7 +187,7 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                if (!RoomFor(taken))
+                if (!RoomFor(test, taken))
                 {
                     report.Images.CappedOne();
                     counted.OnTheCap();
@@ -215,6 +215,18 @@ namespace Federator.Core.Report
         public bool RoomFor(int alreadyWritten)
         {
             return CapPerTest <= 0 || alreadyWritten < CapPerTest;
+        }
+
+        /// <summary>
+        /// F172, Bader's answer to Q171. Is there room for one more picture on this test: under the box's
+        /// cap where it is not zero, and under the fixed rule of PictureLimits where the test holds more
+        /// than 1000 clashes, which gives its first 100 a picture and skips the rest. The least of the two
+        /// holds. The box keeps its own job, a cap of the user's choosing for every test, and the fixed
+        /// rule is there whatever the box says.
+        /// </summary>
+        public bool RoomFor(TestReport test, int alreadyWritten)
+        {
+            return alreadyWritten < PictureLimits.LimitFor(test.Rows.Count, CapPerTest);
         }
 
         /// <summary>Only the statuses asked for, in the order the tally reports them.</summary>
@@ -268,9 +280,12 @@ namespace Federator.Core.Report
             }
 
             string statusList = string.Join(", ", Names(ChosenStatuses()));
-            string cap = CapPerTest > 0
-                ? "at most " + CapPerTest + " per test"
-                : "no cap per test";
+            // F172. The box's cap and the fixed rule are both said, the rule being there whatever the box says.
+            string cap = (CapPerTest > 0
+                    ? "at most " + CapPerTest + " per test"
+                    : "no cap of your own per test")
+                + ", and the first " + PictureLimits.PicturesForAManyClashTest + " of a test with more than "
+                + PictureLimits.ManyClashes + " clashes";
 
             return "Images on, " + Width + " by " + Height + " pixels, " + statusList
                 + " only, " + cap + ", "

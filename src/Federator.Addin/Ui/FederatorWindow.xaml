@@ -369,7 +369,7 @@
                                 <TextBox Grid.Row="3" Grid.Column="1" x:Name="ImagePixelsBox"
                                          MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
                                          TextChanged="OnImageSettingChanged" />
-                                <Label Grid.Row="3" Grid.Column="2" Content="At most per test, 0 for no cap"
+                                <Label Grid.Row="3" Grid.Column="2" Content="At most per test, 0 for none. A test over 1000 clashes gets 100"
                                        VerticalAlignment="Center" />
                                 <TextBox Grid.Row="3" Grid.Column="3" x:Name="ImageCapBox"
                                          MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
