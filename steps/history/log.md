@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F158 the logs and the reports in one Log folder beside the NWF and NWD folders
+
+Branch fix-F158 off main 0a78f51. Bader's request of 2026-10-14, task B.
+
+What was read first: the run log and its .tsv are written in the logs folder under the local data, and the NWF and NWD
+folders held the NWF, the NWD and, where a clash was skipped, a note beside the NWD. The reports went in the Excel folder
+picked, or in a Clash Reports folder beside the NWF folder. F151 had taken the copy of the log out of the NWF folder.
+
+What changed:
+- every log and report goes in ONE folder called Log, ReportPaths.LogFolder: the deepest folder holding both the NWF and
+  the NWD folder, one level up where the two are one folder or one holds the other. Made if it is not there
+- the Excel folder box, its Browse button, its picker kind, ReportOptions.ExcelFolder and the Choose, ChooseFor and
+  FolderFor code are gone. The line under the Outputs step names the Log folder
+- the run log and its .tsv are copied into the Log folder when the run ends, LogCopy, with the original left in the logs
+  folder. This replaces F151's rule that no copy is written anywhere else. Q169 asks him
+- nothing in Log is overwritten or deleted: ReportPaths.NameThatOverwritesNothing gives a group's reports, the Excel,
+  the Internal workbook, the HTML, the XML and the _files folder, one dated name where any of them is there, and
+  FreeFilePath does the same for the notes and the list. The code that deleted an earlier note, and RunLog.WriteRemoved,
+  are gone with their tests
+- the note beside the NWD is gone, the note goes in Log only
+- NwfPick no longer refuses two NWFs of one name for their workbooks, since Log never overwrites. It still refuses two
+  that would write one NWD. PickedNwf.WorkbookPath and InternalWorkbookPath went, nothing called them
+- LogFolderLinksTests writes the Excel, the _files folder and the page into a Log folder and follows every link, the
+  Excel's file:/// targets and the page's relative links, to a jpg on the disk inside Log and in neither the NWF nor the NWD
+  folder
+
+Core tests: 3110 passed before, 3110 passed after, 0 failed. Release build 0 warnings, 0 errors. Not run in Navisworks in
+this entry.
+
 ## 2026-10-14 F157 the picture pass leaves a trail for a run that dies
 
 Branch fix-F157 off main 49c69e3. Run 20261014-020323 of 1A04PK ended inside PICTURES at picture 8775 of 10206 with no

@@ -22,7 +22,7 @@ namespace Federator.Core.Rerun
     ///   D:\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf
     /// gives
     ///   D:\Federations\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd
-    ///   D:\Federations\Clash Reports\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.xlsx
+    ///   D:\Federations\Log\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.xlsx
     ///
     /// which is exactly where the scanned path puts them, so a building run this way and a
     /// building run the other way write the same files. No pattern is applied and no field
@@ -198,33 +198,28 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// Where the reports go for the open file. ONE rule for both ways of running:
-        /// the same <see cref="ReportPaths.Choose"/> the scanned run uses, handed the
-        /// open file's own folder where the scanned run hands the NWF folder. A picked
-        /// Excel folder wins, and with none picked the reports go in the Clash Reports
-        /// subfolder beside the file.
-        ///
-        /// WHY THIS REPLACED ReportFolderBeside. That method built the Clash Reports
-        /// folder here, and the window then handed that folder to the engine as if it
-        /// were the NWF folder, so the engine built Clash Reports beside it again and
-        /// wrote to Clash Reports\Clash Reports. The folder is now decided once, here,
-        /// and nothing downstream adds to it.
+        /// Where the logs and the reports go for the open file, F158. ONE rule for both ways of
+        /// running: the same <see cref="ReportPaths.LogFolder"/> the scanned run uses, handed the
+        /// open file's own folder where the scanned run hands the NWF folder, and the same folder
+        /// again for the NWD, which is written beside the open file. So the Log folder is the one
+        /// beside the open file's folder. The folder is decided once, here, and nothing downstream
+        /// adds to it.
         ///
         /// No source folder goes in, because nothing was scanned. The refusal to write
         /// inside the folder being scanned guards a scan, and an open file has none. The
         /// scan's folder box may still hold last time's folder, and applying it here once
         /// refused a run for a scan that never happened.
         /// </summary>
-        public static ReportFolderChoice ReportFolder(string openPath, string pickedExcelFolder)
+        public static string ReportFolder(string openPath)
         {
             string folder = FolderOf(openPath);
 
             if (folder.Length == 0)
             {
-                return new ReportFolderChoice(string.Empty, null);
+                return string.Empty;
             }
 
-            return ReportPaths.Choose(pickedExcelFolder, folder, null);
+            return ReportPaths.LogFolder(folder, folder, null);
         }
 
         private static string Beside(string openPath, string extension)
@@ -241,8 +236,8 @@ namespace Federator.Core.Rerun
 
         /// <summary>
         /// The open file's own folder, or empty where the path has none. This is where the
-        /// NWD goes, where the Clash Reports folder goes, and where the second copy of the
-        /// log goes, the same as the NWF folder on a scanned run.
+        /// NWD goes and the folder the Log folder sits beside, the same as the NWF folder on a
+        /// scanned run.
         /// </summary>
         public static string FolderOf(string openPath)
         {
@@ -309,9 +304,9 @@ namespace Federator.Core.Rerun
         /// What the window says the run will do, in one line, so a person can read it
         /// before pressing anything.
         /// </summary>
-        internal static string Describe(string openPath, string pickedExcelFolder)
+        internal static string Describe(string openPath)
         {
-            return Describe(openPath, pickedExcelFolder, false);
+            return Describe(openPath, false);
         }
 
         /// <summary>
@@ -319,7 +314,7 @@ namespace Federator.Core.Rerun
         /// run, because the NWF already exists and is the document, and there is no First
         /// run on this path. A matrix read, the built in one since F155, makes it a Weekly run plus XML.
         /// </summary>
-        public static string Describe(string openPath, string pickedExcelFolder, bool xmlPicked)
+        public static string Describe(string openPath, bool xmlPicked)
         {
             if (!CanRun(openPath))
             {
@@ -328,8 +323,8 @@ namespace Federator.Core.Rerun
 
             return RunPath.Label(RerunDecision.Open, xmlPicked) + ". Runs on " + NameFrom(openPath)
                 + ", writes " + NwdBeside(openPath)
-                + " and the report in "
-                + ReportFolder(openPath, pickedExcelFolder).Folder + ".";
+                + " and the logs and the report in "
+                + ReportFolder(openPath) + ".";
         }
     }
 }

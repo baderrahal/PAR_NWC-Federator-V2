@@ -57,7 +57,25 @@ namespace Federator.Addin.Engine
         /// NWF folder, and in RunOpenDocument for the open file, from the file itself.
         /// </summary>
         private string reportFolder;
+        private readonly List<string> logFolders = new List<string>();
         private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
+
+        /// <summary>
+        /// Every Log folder this run wrote into, F158: one for a scanned run, and one for each
+        /// folder an open file or a picked NWF sat in. The window copies the run log into each.
+        /// </summary>
+        public IList<string> LogFolders
+        {
+            get { return logFolders; }
+        }
+
+        private void NoteTheLogFolder(string folder)
+        {
+            if (!string.IsNullOrEmpty(folder) && !logFolders.Contains(folder))
+            {
+                logFolders.Add(folder);
+            }
+        }
 
         /// <summary>
         /// One guard for the whole run, not one per group. Every group of that nine hour
@@ -194,9 +212,9 @@ namespace Federator.Addin.Engine
         /// For a scanned run. The exchange document is whatever was picked in the Clash
         /// step, read once. It can hold sets, tests, or both, and any of the three is a
         /// normal case. Null when nothing was picked, and then no set is built and no test
-        /// is created. The report folder is worked out once, from the picked folder or
-        /// from beside the NWF folder, so every group in the run writes into the same
-        /// place. The team map is the run's, TeamMapMemory.ForRun.
+        /// is created. The Log folder, where the logs and the reports go, is worked out once,
+        /// from the NWF and the NWD folders, ReportPaths.LogFolder, so every group in the run
+        /// writes into the same place. The team map is the run's, TeamMapMemory.ForRun.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
@@ -204,13 +222,14 @@ namespace Federator.Addin.Engine
             ExchangeDocument exchange,
             TeamMap teams,
             ReportOptions reports,
-            string nwfFolder)
+            string nwfFolder,
+            string nwdFolder)
             : this(progress, log, exchange, teams, reports)
         {
             this.reportFolder = string.IsNullOrEmpty(nwfFolder)
-                    && string.IsNullOrEmpty(this.reports.ExcelFolder)
                 ? null
-                : this.reports.ChooseFor(nwfFolder).Folder;
+                : this.reports.LogFolderFor(nwfFolder, nwdFolder);
+            NoteTheLogFolder(this.reportFolder);
         }
 
         /// <summary>
@@ -823,16 +842,15 @@ namespace Federator.Addin.Engine
                 // The one rule for where the reports go, shared with the window's line.
                 // The open file's own folder stands where the NWF folder stands on a
                 // scanned run, and no scan folder is applied because there was no scan.
-                ReportFolderChoice where = OpenDocumentJob.ReportFolder(open, reports.ExcelFolder);
-                reportFolder = where.Folder;
+                reportFolder = OpenDocumentJob.ReportFolder(open);
+                NoteTheLogFolder(reportFolder);
+                NameTheReportsSoNothingIsOverwritten(job);
 
                 log.Line(openItHere ? NwfPick.RunningLine : "OPEN     running the document that is already open, no scan");
                 log.Line("OPEN     file     " + open);
                 log.Line("OPEN     NWD      " + job.NwdPath);
                 log.Line("OPEN     report   " + reportFolder
-                    + (string.IsNullOrEmpty(reports.ExcelFolder)
-                        ? "  (beside the file, no Excel folder picked)"
-                        : "  (the Excel folder picked on the Outputs step)"));
+                    + "  (the Log folder, beside the folder of the file)");
 
                 try
                 {
@@ -1004,11 +1022,36 @@ namespace Federator.Addin.Engine
                 null);
         }
 
+        /// <summary>
+        /// F158. Nothing in the Log folder is overwritten. Where this group's report names are already
+        /// there, from an earlier run, the group's reports take the same name with the moment of the
+        /// run after it, said on one line, and the HTML, the Excel and the _files folder keep one name.
+        /// </summary>
+        private void NameTheReportsSoNothingIsOverwritten(FederationJob job)
+        {
+            if (reportFolder == null || reportFolder.Length == 0 || string.IsNullOrEmpty(job.WorkbookName))
+            {
+                return;
+            }
+
+            string internalSuffix = reports.GenericModels == null ? null : reports.GenericModels.WorkbookSuffix;
+            string free = ReportPaths.NameThatOverwritesNothing(
+                reportFolder, job.WorkbookName, internalSuffix, DateTime.Now, null);
+
+            if (!string.Equals(free, job.WorkbookName, StringComparison.Ordinal))
+            {
+                log.Line("REPORT   " + job.WorkbookName + " is already in " + reportFolder
+                    + ", so this run writes its reports as " + free + " and leaves the earlier files as they are");
+                job.NameTheReports(free);
+            }
+        }
+
         private JobOutcome RunOne(FederationJob job)
         {
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
+            NameTheReportsSoNothingIsOverwritten(job);
 
             try
             {
@@ -2742,16 +2785,13 @@ namespace Federator.Addin.Engine
 
             try
             {
-                string nwdFolder = string.IsNullOrEmpty(job.NwdPath) ? null : Path.GetDirectoryName(job.NwdPath);
-
-                if (!string.IsNullOrEmpty(nwdFolder))
-                {
-                    paths.Add(ReportPaths.For(nwdFolder, Path.GetFileNameWithoutExtension(job.NwdPath), OffCoordinates.NoteEnding));
-                }
-
+                // F158. The note is written in the Log folder alone, never beside the NWD, so the
+                // NWF and NWD folders hold the NWF and the NWD and nothing else. A name already
+                // there is not replaced, the note takes a dated name.
                 if (reportFolder != null)
                 {
-                    paths.Add(ReportPaths.For(reportFolder, job.WorkbookName, OffCoordinates.NoteEnding));
+                    paths.Add(ReportPaths.FreeFilePath(
+                        reportFolder, job.WorkbookName + OffCoordinates.NoteEnding, DateTime.Now, null));
                 }
             }
             catch (Exception error)
@@ -2802,32 +2842,17 @@ namespace Federator.Addin.Engine
                 }
             }
 
+            // F158. Nothing in the Log folder is deleted or replaced, so a note an earlier run left
+            // stays where it is and a run that skips nothing writes none.
+            if (!skipped)
+            {
+                return;
+            }
+
             foreach (string path in paths)
             {
                 try
                 {
-                    if (!skipped)
-                    {
-                        if (!File.Exists(path))
-                        {
-                            continue;
-                        }
-
-                        string keptBecause = OffCoordinates.EarlierNoteKeptBecause(
-                            outcome.Coordinates, reports.SkipClashOffCoordinates, runsATest);
-
-                        if (keptBecause != null)
-                        {
-                            log.Line("NOTE     kept     " + path + ", left by an earlier run, because " + keptBecause);
-                            continue;
-                        }
-
-                        File.Delete(path);
-                        log.WriteRemoved("NOTE", path, "left by an earlier run, because this run judged every model of"
-                            + " the group and did not skip its clash");
-                        continue;
-                    }
-
                     log.WriteAttempted("NOTE", path);
                     EnsureFolder(path);
                     File.WriteAllLines(path, note);
@@ -2860,7 +2885,7 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            string path = Path.Combine(reportFolder, CoordinatesAcrossTheRun.ListName);
+            string path = ReportPaths.FreeFilePath(reportFolder, CoordinatesAcrossTheRun.ListName, DateTime.Now, null);
 
             try
             {
@@ -4340,7 +4365,7 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// The internal workbook of the group, Bader's answer B to Q146 of 11 Oct 2026, beside the clash
-        /// workbook in the Clash Reports folder, named by GenericModelsSettings.WorkbookNameFor: the Generic
+        /// workbook in the Log folder, named by GenericModelsSettings.WorkbookNameFor: the Generic
         /// Models sheet of F128 and the Coverage sheet of F127 in one save, written with what the group has.
         /// The clash workbook goes to the client and keeps the Navisworks export's layout. Written whether or
         /// not the clash step ran, since the count does not depend on it, and only where a workbook is wanted

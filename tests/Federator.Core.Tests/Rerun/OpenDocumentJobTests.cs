@@ -57,8 +57,8 @@ namespace Federator.Core.Tests
             string folder = Path.GetDirectoryName(Open);
 
             Assert.That(
-                OpenDocumentJob.ReportFolder(Open, string.Empty).Folder,
-                Is.EqualTo(Path.Combine(folder, ReportPaths.DefaultSubfolder)),
+                OpenDocumentJob.ReportFolder(Open),
+                Is.EqualTo(Path.Combine(Path.GetDirectoryName(folder), ReportPaths.DefaultSubfolder)),
                 "the same building run either way has to write to one place");
         }
 
@@ -69,12 +69,12 @@ namespace Federator.Core.Tests
         /// in it fails here.
         /// </summary>
         [Test]
-        public void TheReportFolderHoldsClashReportsOnceAndNotTwice()
+        public void TheReportFolderIsTheLogFolderBesideTheFilesFolderAndHoldsItsNameOnce()
         {
             string folder = Path.GetDirectoryName(OpenHere);
-            string report = OpenDocumentJob.ReportFolder(OpenHere, string.Empty).Folder;
+            string report = OpenDocumentJob.ReportFolder(OpenHere);
 
-            Assert.That(report, Is.EqualTo(Path.Combine(folder, ReportPaths.DefaultSubfolder)));
+            Assert.That(report, Is.EqualTo(Path.Combine(Path.GetDirectoryName(folder), ReportPaths.DefaultSubfolder)));
             Assert.That(Count(report, ReportPaths.DefaultSubfolder), Is.EqualTo(1),
                 "the subfolder appears once: " + report);
             Assert.That(report, Does.Not.Contain(
@@ -82,29 +82,17 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The trap itself, pinned so it is not walked into again: hand the report folder
-        /// back into the scanned run's rule as if it were the NWF folder and the subfolder
-        /// doubles. That is what the old code did across two files.
+        /// Handing the Log folder back into the rule as if it were the NWF folder gives the same
+        /// folder and never one inside it, so the engine and the window cannot double it, F158.
         /// </summary>
         [Test]
-        public void HandingTheReportFolderBackInAsTheNwfFolderDoublesIt()
+        public void HandingTheLogFolderBackInAsTheNwfFolderGivesTheSameFolder()
         {
-            string report = OpenDocumentJob.ReportFolder(OpenHere, string.Empty).Folder;
-            string doubled = ReportPaths.Choose(string.Empty, report, null).Folder;
+            string report = OpenDocumentJob.ReportFolder(OpenHere);
+            string again = ReportPaths.LogFolder(report, report, null);
 
-            Assert.That(Count(doubled, ReportPaths.DefaultSubfolder), Is.EqualTo(2));
-            Assert.That(doubled, Is.Not.EqualTo(report));
-        }
-
-        [Test]
-        public void APickedExcelFolderWinsForTheOpenFileToo()
-        {
-            // The scanned run honours the Excel folder on the Outputs step, so the open
-            // file does the same, or the same building written both ways lands in two
-            // places.
-            string picked = Path.Combine(Path.GetTempPath(), "picked-reports");
-
-            Assert.That(OpenDocumentJob.ReportFolder(OpenHere, picked).Folder, Is.EqualTo(picked));
+            Assert.That(again, Is.EqualTo(report));
+            Assert.That(Count(again, ReportPaths.DefaultSubfolder), Is.EqualTo(1));
         }
 
         [Test]
@@ -114,10 +102,10 @@ namespace Federator.Core.Tests
             // still run beside itself. There was no scan behind this run, so the refusal
             // that guards a scan does not apply and nothing throws.
             string open = Path.Combine(Path.GetTempPath(), "NWC", "fed.nwf");
-            string report = OpenDocumentJob.ReportFolder(open, string.Empty).Folder;
+            string report = OpenDocumentJob.ReportFolder(open);
 
             Assert.That(report, Is.EqualTo(
-                Path.Combine(Path.GetTempPath(), "NWC", ReportPaths.DefaultSubfolder)));
+                Path.Combine(Path.GetTempPath(), ReportPaths.DefaultSubfolder)));
         }
 
         [Test]
@@ -142,7 +130,7 @@ namespace Federator.Core.Tests
                 OpenHere,
                 Path.Combine(Path.GetTempPath(), "tests.xml"),
                 OpenDocumentJob.NwdBeside(OpenHere),
-                OpenDocumentJob.ReportFolder(OpenHere, string.Empty).Folder,
+                OpenDocumentJob.ReportFolder(OpenHere),
                 "1830 created, 48 with clashes",
                 GroupOutcome.Done,
                 null,
@@ -155,7 +143,7 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("tests.xml"));
             Assert.That(all, Does.Contain("1830 created, 48 with clashes"));
             Assert.That(all, Does.Contain(OpenDocumentJob.NwdBeside(OpenHere)));
-            Assert.That(all, Does.Contain(OpenDocumentJob.ReportFolder(OpenHere, string.Empty).Folder));
+            Assert.That(all, Does.Contain(OpenDocumentJob.ReportFolder(OpenHere)));
             Assert.That(all, Does.Contain("outcome       : DONE"));
         }
 
@@ -216,8 +204,8 @@ namespace Federator.Core.Tests
             try
             {
                 string open = Path.Combine(folder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf");
-                string noXml = OpenDocumentJob.Describe(open, string.Empty, false);
-                string withXml = OpenDocumentJob.Describe(open, string.Empty, true);
+                string noXml = OpenDocumentJob.Describe(open, false);
+                string withXml = OpenDocumentJob.Describe(open, true);
 
                 Assert.That(noXml, Does.StartWith(RunPath.WeeklyRun + "."));
                 Assert.That(noXml, Does.Not.Contain(RunPath.WeeklyRunPlusXml));
@@ -358,7 +346,7 @@ namespace Federator.Core.Tests
                 Assert.That(why, Does.Contain("does not allow in a path"), opens[i]);
                 Assert.That(why, Does.Contain(named[i]), opens[i]);
                 Assert.That(why, Does.Not.Contain("no folder"), opens[i]);
-                Assert.That(OpenDocumentJob.Describe(opens[i], string.Empty), Is.EqualTo(OpenDocumentJob.WhyNot(opens[i])), opens[i]);
+                Assert.That(OpenDocumentJob.Describe(opens[i]), Is.EqualTo(OpenDocumentJob.WhyNot(opens[i])), opens[i]);
             }
         }
 
@@ -518,12 +506,12 @@ namespace Federator.Core.Tests
             try
             {
                 string open = Path.Combine(folder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf");
-                string said = OpenDocumentJob.Describe(open, string.Empty);
+                string said = OpenDocumentJob.Describe(open);
 
                 Assert.That(said, Does.Contain("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
                 Assert.That(said, Does.Contain(
                     Path.Combine(folder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd")));
-                Assert.That(said, Does.Contain(Path.Combine(folder, ReportPaths.DefaultSubfolder)));
+                Assert.That(said, Does.Contain(Path.Combine(Path.GetDirectoryName(folder), ReportPaths.DefaultSubfolder)));
             }
             finally
             {
@@ -534,7 +522,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AnUnsavedDocumentDescribesTheRefusalRatherThanAPath()
         {
-            string said = OpenDocumentJob.Describe(string.Empty, string.Empty);
+            string said = OpenDocumentJob.Describe(string.Empty);
 
             Assert.That(said, Is.EqualTo(OpenDocumentJob.WhyNot(string.Empty)));
         }
@@ -546,7 +534,7 @@ namespace Federator.Core.Tests
             // in whatever directory the process happened to start in.
             Assert.That(OpenDocumentJob.NwdBeside("model.nwf"), Is.Empty);
             Assert.That(
-                OpenDocumentJob.ReportFolder("model.nwf", string.Empty).Folder,
+                OpenDocumentJob.ReportFolder("model.nwf"),
                 Is.Empty);
         }
 
@@ -561,8 +549,8 @@ namespace Federator.Core.Tests
             Assert.That(OpenDocumentJob.NwdBeside(Open),
                 Is.EqualTo(Path.Combine(folder, name + ".nwd")));
             Assert.That(
-                OpenDocumentJob.ReportFolder(Open, string.Empty).Folder,
-                Is.EqualTo(Path.Combine(folder, ReportPaths.DefaultSubfolder)));
+                OpenDocumentJob.ReportFolder(Open),
+                Is.EqualTo(Path.Combine(Path.GetDirectoryName(folder), ReportPaths.DefaultSubfolder)));
         }
     }
 }

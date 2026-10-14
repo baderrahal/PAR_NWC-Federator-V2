@@ -10,7 +10,7 @@ namespace Federator.Core.Report
 {
     /// <summary>
     /// The internal workbook of one group, Bader's answer B to Q146 of 11 Oct 2026: a workbook of its own
-    /// beside the clash workbook in the Clash Reports folder, named by GenericModelsSettings.WorkbookNameFor,
+    /// beside the clash workbook in the Log folder, named by GenericModelsSettings.WorkbookNameFor,
     /// holding the Generic Models sheet of F128 and the Coverage sheet of F127, in one save. The clash
     /// workbook goes to the client and keeps the Navisworks export's layout, so nothing of ours goes in it.
     ///

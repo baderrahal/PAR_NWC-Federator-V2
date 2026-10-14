@@ -393,7 +393,7 @@ namespace Federator.Core.Naming
         /// <summary>
         /// One sentence for each group whose internal workbook, named after its workbook by
         /// GenericModelsSettings.WorkbookNameFor, would be written as another group's workbook, X Internal
-        /// beside X, F127-R5. Both sit in the Clash Reports folder, so one would overwrite the other with no
+        /// beside X, F127-R5. Both sit in the Log folder, so one would overwrite the other with no
         /// line. Read as the three kinds are, ignoring case, and a name that cannot be used is told as
         /// unusable and never here.
         /// </summary>

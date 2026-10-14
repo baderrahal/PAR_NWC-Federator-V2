@@ -19,7 +19,6 @@ namespace Federator.Core.Report
         {
             WriteWorkbook = true;
             WriteXml = false;
-            ExcelFolder = string.Empty;
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
             Tolerance = ToleranceChoice.Default();
@@ -98,12 +97,6 @@ namespace Federator.Core.Report
         /// the other.
         /// </summary>
         public bool WriteXml { get; set; }
-
-        /// <summary>
-        /// Where the workbooks go. Empty means beside the NWF folder, in a subfolder named
-        /// by <see cref="ReportPaths.DefaultSubfolder"/>.
-        /// </summary>
-        public string ExcelFolder { get; set; }
 
         /// <summary>
         /// The folder being scanned. The reports never go inside it, whether it was
@@ -269,19 +262,14 @@ namespace Federator.Core.Report
         /// </summary>
         public CoverageSettings Coverage { get; set; }
 
-        /// <summary>The folder for this run, given where the NWF files are going.</summary>
-        internal string FolderFor(string nwfFolder)
-        {
-            return ChooseFor(nwfFolder).Folder;
-        }
-
         /// <summary>
-        /// The folder and, when a picked one had to be refused for being inside the folder
-        /// being scanned, the reason why.
+        /// The Log folder for this run, given where the NWF and the NWD files are going, F158. It
+        /// throws where the NWF folder is empty or the Log folder would be inside the folder
+        /// being scanned, ReportPaths.LogFolder.
         /// </summary>
-        public ReportFolderChoice ChooseFor(string nwfFolder)
+        public string LogFolderFor(string nwfFolder, string nwdFolder)
         {
-            return ReportPaths.Choose(ExcelFolder, nwfFolder, SourceFolder);
+            return ReportPaths.LogFolder(nwfFolder, nwdFolder, SourceFolder);
         }
     }
 }

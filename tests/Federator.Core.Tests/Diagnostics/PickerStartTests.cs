@@ -85,12 +85,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheExcelPickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.Excel, "reports");
-        }
-
-        [Test]
         public void TheLogoPickerRemembersItsOwnFolder()
         {
             ProveOnePicker(PickerKind.Logo, "branding");
@@ -110,11 +104,11 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Six kinds and six tests above, since F154 and F155 took out the priority, by design and clash XML
+            // Five kinds and five tests above, since F154, F155 and F158 took out the priority, by design, clash XML and Excel folder
             // pickers. The existing NWF picker has two
             // Browse buttons on one kind. If another kind is added this fails until it is
             // proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(6));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(5));
         }
 
         // ---------- the one that was actually broken ----------

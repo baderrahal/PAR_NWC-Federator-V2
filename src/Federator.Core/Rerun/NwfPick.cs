@@ -76,15 +76,13 @@ namespace Federator.Core.Rerun
     /// <summary>One NWF the pick gave, with what it writes and whether it can run.</summary>
     public sealed class PickedNwf
     {
-        internal PickedNwf(string path, string whyNot, string pickedExcelFolder, GenericModelsSettings internalWorkbook)
+        internal PickedNwf(string path, string whyNot)
         {
             Path = path;
             WhyNot = whyNot ?? string.Empty;
             Name = string.Empty;
             NwdPath = string.Empty;
             ReportFolder = string.Empty;
-            WorkbookPath = string.Empty;
-            InternalWorkbookPath = string.Empty;
 
             // Only where the checks pass, because a path they refuse can hold a character the
             // path methods of .NET Framework throw on, FR-173, and a refused NWF writes nothing.
@@ -92,11 +90,7 @@ namespace Federator.Core.Rerun
             {
                 Name = OpenDocumentJob.NameFrom(path);
                 NwdPath = OpenDocumentJob.NwdBeside(path);
-                ReportFolder = OpenDocumentJob.ReportFolder(path, pickedExcelFolder).Folder;
-                WorkbookPath = ReportFolder.Length == 0 ? string.Empty : ReportPaths.Workbook(ReportFolder, Name);
-                InternalWorkbookPath = ReportFolder.Length == 0 || Name.Length == 0
-                    ? string.Empty
-                    : ReportPaths.Workbook(ReportFolder, internalWorkbook.WorkbookNameFor(Name));
+                ReportFolder = OpenDocumentJob.ReportFolder(path);
             }
         }
 
@@ -108,17 +102,8 @@ namespace Federator.Core.Rerun
         /// <summary>Beside the NWF with the extension swapped, OpenDocumentJob.NwdBeside. Empty where it cannot run.</summary>
         public string NwdPath { get; private set; }
 
-        /// <summary>Clash Reports beside the NWF, or the Excel folder picked, OpenDocumentJob.ReportFolder. Empty where it cannot run.</summary>
+        /// <summary>The Log folder beside the NWF's folder, OpenDocumentJob.ReportFolder. Empty where it cannot run.</summary>
         public string ReportFolder { get; private set; }
-
-        /// <summary>The workbook it writes. Empty where it cannot run.</summary>
-        public string WorkbookPath { get; private set; }
-
-        /// <summary>
-        /// The internal workbook it writes beside the workbook, named by GenericModelsSettings.WorkbookNameFor
-        /// as the engine names it, F127-R5. Empty where it cannot run.
-        /// </summary>
-        public string InternalWorkbookPath { get; private set; }
 
         /// <summary>Why the open file run's checks refuse it, in their words. Empty where it can run.</summary>
         public string WhyNot { get; private set; }
@@ -275,11 +260,8 @@ namespace Federator.Core.Rerun
             {
                 if (nwf.CanRun && nwf.ReportFolder.Length > 0)
                 {
-                    string beside = Path.Combine(OpenDocumentJob.FolderOf(nwf.Path), ReportPaths.Subfolder);
-
-                    return string.Equals(nwf.ReportFolder, beside, StringComparison.OrdinalIgnoreCase)
-                        ? "in " + ReportPaths.Subfolder + " beside each NWF"
-                        : "in the Excel folder picked, " + nwf.ReportFolder;
+                    return "in the " + ReportPaths.Subfolder + " folder beside the folder of each NWF, "
+                        + "the first at " + nwf.ReportFolder;
                 }
             }
 
@@ -397,9 +379,9 @@ namespace Federator.Core.Rerun
 
         /// <summary>What the pick gives, read off the disk itself.</summary>
         public static NwfPickPlan From(
-            string picked, bool subfolders, string pickedExcelFolder, GenericModelsSettings internalWorkbook)
+            string picked, bool subfolders)
         {
-            return From(picked, subfolders, pickedExcelFolder, internalWorkbook, NwfPickDisk.Real);
+            return From(picked, subfolders, NwfPickDisk.Real);
         }
 
         /// <summary>
@@ -409,13 +391,8 @@ namespace Federator.Core.Rerun
         /// applies is the reason the run cannot start.
         /// </summary>
         public static NwfPickPlan From(
-            string picked, bool subfolders, string pickedExcelFolder, GenericModelsSettings internalWorkbook, NwfPickDisk disk)
+            string picked, bool subfolders, NwfPickDisk disk)
         {
-            if (internalWorkbook == null)
-            {
-                throw new ArgumentNullException("internalWorkbook");
-            }
-
             if (disk == null)
             {
                 throw new ArgumentNullException("disk");
@@ -468,7 +445,7 @@ namespace Federator.Core.Rerun
 
             foreach (string nwf in found)
             {
-                plan.Add(new PickedNwf(nwf, OpenDocumentJob.WhyNot(nwf, f => disk.IsFolder(f)), pickedExcelFolder, internalWorkbook));
+                plan.Add(new PickedNwf(nwf, OpenDocumentJob.WhyNot(nwf, f => disk.IsFolder(f))));
             }
 
             if (plan.Runnable == 0)
@@ -539,18 +516,16 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// Two NWFs whose NWDs or workbooks land on one path, read case blind as Windows reads a
-        /// name, one sentence each. The second would write over the first and nothing would say
-        /// so, which is why the scanned run refuses a shared name before anything is written, and
-        /// this is the same refusal for picked NWFs. An internal workbook landing on another NWF's
-        /// workbook, A.nwf beside A Internal.nwf, is refused the same way, F127-R5. Null where none
-        /// collide.
+        /// Two NWFs whose NWDs land on one path, read case blind as Windows reads a name, one sentence
+        /// each. The second would write over the first and nothing would say so, which is why the
+        /// scanned run refuses a shared name before anything is written, and this is the same refusal
+        /// for picked NWFs. The reports are not checked, since F158: they go in the Log folder, where
+        /// nothing is overwritten, and a name already there takes a dated name. Null where none collide.
         /// </summary>
         private static string Collisions(IList<PickedNwf> nwfs)
         {
             List<string> sentences = new List<string>();
             Dictionary<string, PickedNwf> nwds = new Dictionary<string, PickedNwf>(StringComparer.OrdinalIgnoreCase);
-            Dictionary<string, PickedNwf> workbooks = new Dictionary<string, PickedNwf>(StringComparer.OrdinalIgnoreCase);
 
             foreach (PickedNwf nwf in nwfs)
             {
@@ -560,22 +535,6 @@ namespace Federator.Core.Rerun
                 }
 
                 Collide(nwds, nwf.NwdPath, nwf, sentences);
-                Collide(workbooks, nwf.WorkbookPath, nwf, sentences);
-            }
-
-            foreach (PickedNwf nwf in nwfs)
-            {
-                PickedNwf other;
-
-                if (!nwf.CanRun || nwf.InternalWorkbookPath.Length == 0
-                    || !workbooks.TryGetValue(nwf.InternalWorkbookPath, out other))
-                {
-                    continue;
-                }
-
-                sentences.Add("The internal workbook of " + nwf.Path + " and the workbook of " + other.Path
-                    + " would both be written as " + nwf.InternalWorkbookPath + ", so one would write over the other. "
-                    + "Pick them apart, or rename one of the two NWFs.");
             }
 
             return sentences.Count == 0
@@ -600,8 +559,7 @@ namespace Federator.Core.Rerun
             }
 
             sentences.Add(first.Path + " and " + nwf.Path + " would both write " + output
-                + ", so the second would write over the first. Pick them apart, or clear the "
-                + "Excel folder on the Outputs step so each report goes beside its own NWF.");
+                + ", so the second would write over the first. Pick them apart.");
         }
 
         /// <summary>The reason a picked NWF that would not open stops its group.</summary>

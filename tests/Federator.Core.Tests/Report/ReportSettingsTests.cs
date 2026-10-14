@@ -25,7 +25,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheSubfolderStartsAtTheMeasuredDefault()
         {
-            Assert.That(ReportPaths.Subfolder, Is.EqualTo("Clash Reports"));
+            Assert.That(ReportPaths.Subfolder, Is.EqualTo("Log"));
         }
 
         [Test]
@@ -33,10 +33,10 @@ namespace Federator.Core.Tests
         {
             ReportPaths.Subfolder = "Weekly Clash";
 
-            string folder = ReportPaths.Choose(null, "C:\\out\\NWF", null).Folder;
+            string folder = ReportPaths.LogFolder(TestPaths.At("out", "NWF"), null, null);
 
             Assert.That(folder, Does.EndWith("Weekly Clash"));
-            Assert.That(folder, Does.Not.Contain("Clash Reports"));
+            Assert.That(folder, Does.Not.Contain("Log"));
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Federator.Core.Tests
             ReportPaths.Subfolder = "Weekly Clash";
 
             Assert.That(
-                ReportPaths.WhereTheyGo(null, "C:\\out\\NWF", null),
+                ReportPaths.WhereTheyGo(TestPaths.At("out", "NWF"), null, null),
                 Does.Contain("Weekly Clash"));
         }
 
@@ -54,7 +54,7 @@ namespace Federator.Core.Tests
         {
             Assert.Throws<ArgumentException>(delegate { ReportPaths.Subfolder = null; });
             Assert.Throws<ArgumentException>(delegate { ReportPaths.Subfolder = "   "; });
-            Assert.That(ReportPaths.Subfolder, Is.EqualTo("Clash Reports"));
+            Assert.That(ReportPaths.Subfolder, Is.EqualTo("Log"));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Federator.Core.Tests
                 delegate { ReportPaths.Subfolder = "Reports\\Weekly"; });
 
             Assert.That(refused.Message, Does.Contain("one folder name"));
-            Assert.That(ReportPaths.Subfolder, Is.EqualTo("Clash Reports"));
+            Assert.That(ReportPaths.Subfolder, Is.EqualTo("Log"));
         }
 
         [Test]

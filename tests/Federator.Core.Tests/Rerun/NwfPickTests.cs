@@ -20,7 +20,6 @@ namespace Federator.Core.Tests
     public class NwfPickTests
     {
         private const string Name = "1104-PAR-1A02MM-ZZZ-BM-MOD-000001";
-        private static readonly GenericModelsSettings Internal = new GenericModelsSettings();
 
         /// <summary>
         /// A disk held in memory, so every reason can be proved without folders on the machine
@@ -98,7 +97,7 @@ namespace Federator.Core.Tests
         [Test]
         public void NothingPickedRefusesTheRunAndSaysWhatToPick()
         {
-            NwfPickPlan plan = NwfPick.From("  ", false, string.Empty, Internal, new FakeDisk().Disk());
+            NwfPickPlan plan = NwfPick.From("  ", false, new FakeDisk().Disk());
 
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.WhyNoRun, Does.Contain("Pick one NWF or a folder of NWFs"));
@@ -109,7 +108,7 @@ namespace Federator.Core.Tests
         public void APickThatIsNotThereIsNamedAndRefused()
         {
             string gone = TestPaths.At("Feds", "gone");
-            NwfPickPlan plan = NwfPick.From(gone, false, string.Empty, Internal, new FakeDisk().Disk());
+            NwfPickPlan plan = NwfPick.From(gone, false, new FakeDisk().Disk());
 
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.WhyNoRun, Does.Contain(gone));
@@ -126,37 +125,23 @@ namespace Federator.Core.Tests
             FakeDisk disk = new FakeDisk();
             string nwf = disk.File("Feds", Name + ".nwf");
 
-            NwfPickPlan plan = NwfPick.From(nwf, false, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(nwf, false, disk.Disk());
 
             Assert.That(plan.CanStart, Is.True, plan.WhyNoRun);
             Assert.That(plan.PickedAFolder, Is.False);
             Assert.That(plan.Nwfs.Count, Is.EqualTo(1));
 
             PickedNwf one = plan.Nwfs[0];
-            string reports = Path.Combine(TestPaths.At("Feds"), ReportPaths.Subfolder);
+            string reports = Path.Combine(Path.GetDirectoryName(TestPaths.At("Feds")), ReportPaths.Subfolder);
 
             Assert.That(one.Path, Is.EqualTo(nwf));
             Assert.That(one.Name, Is.EqualTo(Name));
             Assert.That(one.NwdPath, Is.EqualTo(TestPaths.At("Feds", Name + ".nwd")));
             Assert.That(one.NwdPath, Is.EqualTo(OpenDocumentJob.NwdBeside(nwf)));
             Assert.That(one.ReportFolder, Is.EqualTo(reports));
-            Assert.That(one.ReportFolder, Is.EqualTo(OpenDocumentJob.ReportFolder(nwf, string.Empty).Folder));
-            Assert.That(one.WorkbookPath, Is.EqualTo(ReportPaths.Workbook(reports, Name)));
+            Assert.That(one.ReportFolder, Is.EqualTo(OpenDocumentJob.ReportFolder(nwf)));
             Assert.That(one.CanRun, Is.True);
             Assert.That(plan.Paths(), Is.EqualTo(new[] { nwf }));
-        }
-
-        [Test]
-        public void APickedExcelFolderTakesTheReportsAsItDoesForTheOpenFileRun()
-        {
-            FakeDisk disk = new FakeDisk();
-            string nwf = disk.File("Feds", Name + ".nwf");
-            string excel = TestPaths.At("Reports");
-
-            PickedNwf one = NwfPick.From(nwf, false, excel, Internal, disk.Disk()).Nwfs[0];
-
-            Assert.That(one.ReportFolder, Is.EqualTo(excel));
-            Assert.That(one.WorkbookPath, Is.EqualTo(ReportPaths.Workbook(excel, Name)));
         }
 
         /// <summary>
@@ -169,7 +154,7 @@ namespace Federator.Core.Tests
             FakeDisk disk = new FakeDisk();
             string nwd = disk.File("Feds", Name + ".nwd");
 
-            NwfPickPlan plan = NwfPick.From(nwd, false, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(nwd, false, disk.Disk());
 
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.Nwfs.Count, Is.EqualTo(1));
@@ -190,7 +175,7 @@ namespace Federator.Core.Tests
             disk.File("Feds", "e.nwf.bak");
             disk.File("Feds", "f.nwfx");
 
-            NwfPickPlan plan = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, false, disk.Disk());
 
             Assert.That(plan.CanStart, Is.True, plan.WhyNoRun);
             Assert.That(plan.PickedAFolder, Is.True);
@@ -205,8 +190,8 @@ namespace Federator.Core.Tests
             string top = disk.File("Feds", "a.nwf");
             string deep = disk.File("Feds", "Zone 1", "Level 2", "b.nwf");
 
-            Assert.That(NwfPick.From(folder, false, string.Empty, Internal, disk.Disk()).Paths(), Is.EqualTo(new[] { top }));
-            Assert.That(NwfPick.From(folder, true, string.Empty, Internal, disk.Disk()).Paths(), Is.EqualTo(new[] { top, deep }));
+            Assert.That(NwfPick.From(folder, false, disk.Disk()).Paths(), Is.EqualTo(new[] { top }));
+            Assert.That(NwfPick.From(folder, true, disk.Disk()).Paths(), Is.EqualTo(new[] { top, deep }));
         }
 
         [Test]
@@ -217,7 +202,7 @@ namespace Federator.Core.Tests
             disk.File("Feds", "a.nwd");
             disk.File("Feds", "Zone 1", "b.nwf");
 
-            NwfPickPlan plan = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, false, disk.Disk());
 
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.WhyNoRun, Does.Contain(folder));
@@ -226,73 +211,25 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Two NWFs of one name in two subfolders write two NWDs, each beside its own NWF, and
-        /// with no Excel folder their reports go beside each of them too. With an Excel folder
-        /// both reports land on one path, and the second would write over the first, so the run
-        /// is refused before anything is opened, naming both and the path.
+        /// Two NWFs of one name in two subfolders write two NWDs, each beside its own NWF. Their
+        /// reports go in one Log folder, beside the folder both sit in, where nothing is ever
+        /// overwritten and the second takes a dated name, so the pick is not refused, F158.
         /// </summary>
         [Test]
-        public void TwoNwfsThatWouldWriteTheSameReportAreRefusedBeforeTheRun()
+        public void TwoNwfsOfOneNameShareTheLogFolderAndAreNotRefused()
         {
             FakeDisk disk = new FakeDisk();
             string folder = TestPaths.At("Feds");
             string one = disk.File("Feds", "Zone 1", Name + ".nwf");
             string two = disk.File("Feds", "Zone 2", Name + ".nwf");
-            string excel = TestPaths.At("Reports");
 
-            NwfPickPlan apart = NwfPick.From(folder, true, string.Empty, Internal, disk.Disk());
-            Assert.That(apart.CanStart, Is.True, apart.WhyNoRun);
-
-            NwfPickPlan together = NwfPick.From(folder, true, excel, Internal, disk.Disk());
-
-            Assert.That(together.CanStart, Is.False);
-            Assert.That(together.WhyNoRun, Does.Contain(one));
-            Assert.That(together.WhyNoRun, Does.Contain(two));
-            Assert.That(together.WhyNoRun, Does.Contain(ReportPaths.Workbook(excel, Name)));
-            Assert.That(together.WhyNoRun, Does.Contain("write over"));
-        }
-
-        /// <summary>
-        /// A picked NWF writes its internal workbook beside its clash workbook, named after it with the suffix,
-        /// so A.nwf beside A Internal.nwf would write A Internal.xlsx twice, one over the other, F127-R5 on the
-        /// picked NWF run. Refused before the run, naming both and the path.
-        /// </summary>
-        [Test]
-        public void AnNwfWhoseWorkbookIsAnotherNwfsInternalWorkbookIsRefusedBeforeTheRun()
-        {
-            FakeDisk disk = new FakeDisk();
-            string folder = TestPaths.At("Feds");
-            string one = disk.File("Feds", Name + ".nwf");
-            string two = disk.File("Feds", Internal.WorkbookNameFor(Name).ToLowerInvariant() + ".nwf");
-
-            NwfPickPlan plan = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk());
-
-            Assert.That(plan.CanStart, Is.False, "two NWFs would write one workbook");
-            Assert.That(plan.WhyNoRun, Does.Contain(one));
-            Assert.That(plan.WhyNoRun, Does.Contain(two));
-            Assert.That(plan.WhyNoRun, Does.Contain("internal workbook"));
-            Assert.That(plan.WhyNoRun, Does.Contain("write over"));
-        }
-
-        /// <summary>The suffix is the setting the run writes by, so another suffix lets the two run.</summary>
-        [Test]
-        public void ThePickedNwfsInternalWorkbookIsReadThroughTheSuffixSetting()
-        {
-            FakeDisk disk = new FakeDisk();
-            disk.File("Feds", Name + ".nwf");
-            disk.File("Feds", Internal.WorkbookNameFor(Name) + ".nwf");
-            GenericModelsSettings other = new GenericModelsSettings();
-            other.WorkbookSuffix = "Checks";
-
-            NwfPickPlan plan = NwfPick.From(TestPaths.At("Feds"), false, string.Empty, other, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, true, disk.Disk());
 
             Assert.That(plan.CanStart, Is.True, plan.WhyNoRun);
-        }
-
-        [Test]
-        public void ThePickRefusesNoInternalWorkbookSettings()
-        {
-            Assert.Throws<ArgumentNullException>(() => NwfPick.From("  ", false, string.Empty, null, new FakeDisk().Disk()));
+            Assert.That(plan.Nwfs.Count, Is.EqualTo(2));
+            Assert.That(plan.Nwfs[0].NwdPath, Is.Not.EqualTo(plan.Nwfs[1].NwdPath));
+            Assert.That(plan.Nwfs[0].ReportFolder, Is.EqualTo(Path.Combine(folder, ReportPaths.Subfolder)));
+            Assert.That(plan.Nwfs[1].ReportFolder, Is.EqualTo(plan.Nwfs[0].ReportFolder));
         }
 
         /// <summary>The NWD names are compared the same way, read case blind as Windows reads a name.</summary>
@@ -308,7 +245,7 @@ namespace Federator.Core.Tests
                 folder => new List<string> { one, two },
                 folder => new List<string>());
 
-            NwfPickPlan plan = NwfPick.From(TestPaths.At("Feds"), false, string.Empty, Internal, both);
+            NwfPickPlan plan = NwfPick.From(TestPaths.At("Feds"), false, both);
 
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.WhyNoRun, Does.Contain(OpenDocumentJob.NwdBeside(one)).IgnoreCase);
@@ -324,7 +261,7 @@ namespace Federator.Core.Tests
             string locked = TestPaths.At("Feds", "Locked");
             disk.WillNotRead(locked);
 
-            NwfPickPlan plan = NwfPick.From(folder, true, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, true, disk.Disk());
 
             Assert.That(plan.CanStart, Is.True, plan.WhyNoRun);
             Assert.That(plan.Paths(), Is.EqualTo(new[] { top }));
@@ -341,7 +278,7 @@ namespace Federator.Core.Tests
             string folder = disk.Folder(TestPaths.At("Feds"));
             disk.WillNotRead(folder);
 
-            NwfPickPlan plan = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, false, disk.Disk());
 
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.WhyNoRun, Does.Contain(folder));
@@ -368,7 +305,7 @@ namespace Federator.Core.Tests
             string locked = TestPaths.At("Feds", "Locked");
             disk.WillNotRead(locked);
 
-            NwfPickPlan plan = NwfPick.From(folder, true, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, true, disk.Disk());
             string line = plan.Describe();
 
             Assert.That(line, Does.Contain("1 folder would not read. " + NwfPick.NamedOncePressed));
@@ -405,7 +342,7 @@ namespace Federator.Core.Tests
             string good = disk.File("Feds", "a.nwf");
             string bad = disk.File("Feds", "b|c.nwf");
 
-            NwfPickPlan plan = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, false, disk.Disk());
 
             Assert.That(plan.CanStart, Is.True, plan.WhyNoRun);
             Assert.That(plan.Runnable, Is.EqualTo(1));
@@ -429,7 +366,7 @@ namespace Federator.Core.Tests
             disk.File("Feds", "b|c.nwf");
             disk.File("Feds", "d|e.nwf");
 
-            NwfPickPlan plan = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk());
+            NwfPickPlan plan = NwfPick.From(folder, false, disk.Disk());
 
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.WhyNoRun, Does.Contain("holds 2 NWFs and none of them can run"));
@@ -443,7 +380,7 @@ namespace Federator.Core.Tests
             disk.File("Feds", "a.nwf");
             disk.File("Feds", "b.nwf");
 
-            IList<string> lines = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk()).SettingsLines();
+            IList<string> lines = NwfPick.From(folder, false, disk.Disk()).SettingsLines();
 
             Assert.That(lines, Has.Some.EqualTo("NWFs picked       : " + folder + ", a folder"));
             Assert.That(lines, Has.Some.EqualTo("include subfolders: no"));
@@ -451,7 +388,7 @@ namespace Federator.Core.Tests
             Assert.That(lines, Has.Some.EqualTo("NWFs refused      : 0"));
             Assert.That(lines, Has.Some.StartsWith("each NWF          : opened where it sits"));
             Assert.That(lines, Has.Some.StartsWith("NWD               : beside each NWF"));
-            Assert.That(lines, Has.Some.StartsWith("reports           : in " + ReportPaths.Subfolder + " beside each NWF"));
+            Assert.That(lines, Has.Some.StartsWith("reports           : in the " + ReportPaths.Subfolder + " folder beside the folder of each NWF"));
             Assert.That(lines, Has.Some.StartsWith("source folder     : not applicable"));
             Assert.That(lines, Has.Some.StartsWith("grouping          : not applicable"));
 
@@ -466,13 +403,11 @@ namespace Federator.Core.Tests
         {
             FakeDisk disk = new FakeDisk();
             string nwf = disk.File("Feds", "a.nwf");
-            string excel = TestPaths.At("Reports");
 
-            IList<string> lines = NwfPick.From(nwf, true, excel, Internal, disk.Disk()).SettingsLines();
+            IList<string> lines = NwfPick.From(nwf, true, disk.Disk()).SettingsLines();
 
             Assert.That(lines, Has.Some.EqualTo("NWFs picked       : " + nwf + ", one file"));
             Assert.That(lines, Has.Some.StartsWith("include subfolders: not applicable"));
-            Assert.That(lines, Has.Some.EqualTo("reports           : in the Excel folder picked, " + excel));
         }
 
         [Test]
@@ -483,7 +418,7 @@ namespace Federator.Core.Tests
             disk.File("Feds", "a.nwf");
             disk.File("Feds", "b|c.nwf");
 
-            string line = NwfPick.From(folder, false, string.Empty, Internal, disk.Disk()).ResultLine();
+            string line = NwfPick.From(folder, false, disk.Disk()).ResultLine();
 
             Assert.That(line, Does.StartWith("NWFs picked    : 2 from " + folder));
             Assert.That(line, Does.Contain("1 refused before it was opened"));
@@ -498,9 +433,9 @@ namespace Federator.Core.Tests
             disk.File("Feds", "a.nwf");
             disk.File("Feds", "b.nwf");
 
-            Assert.That(NwfPick.From(folder, false, string.Empty, Internal, disk.Disk()).Describe(),
+            Assert.That(NwfPick.From(folder, false, disk.Disk()).Describe(),
                 Does.StartWith("2 NWFs found in " + folder + ", 2 can run."));
-            Assert.That(NwfPick.From(string.Empty, false, string.Empty, Internal, disk.Disk()).Describe(),
+            Assert.That(NwfPick.From(string.Empty, false, disk.Disk()).Describe(),
                 Does.Contain("Pick one NWF or a folder of NWFs"));
         }
 
@@ -549,9 +484,9 @@ namespace Federator.Core.Tests
                 File.WriteAllText(Path.Combine(folder, "a.nwd"), string.Empty);
                 File.WriteAllText(Path.Combine(folder, "c.nwfx"), string.Empty);
 
-                Assert.That(NwfPick.From(folder, false, string.Empty, Internal).Paths(), Is.EqualTo(new[] { top }));
-                Assert.That(NwfPick.From(folder, true, string.Empty, Internal).Paths(), Is.EqualTo(new[] { top, deep }));
-                Assert.That(NwfPick.From(top, false, string.Empty, Internal).Paths(), Is.EqualTo(new[] { top }));
+                Assert.That(NwfPick.From(folder, false).Paths(), Is.EqualTo(new[] { top }));
+                Assert.That(NwfPick.From(folder, true).Paths(), Is.EqualTo(new[] { top, deep }));
+                Assert.That(NwfPick.From(top, false).Paths(), Is.EqualTo(new[] { top }));
             }
             finally
             {

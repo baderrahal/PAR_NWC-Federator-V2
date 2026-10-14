@@ -10,13 +10,15 @@ namespace Federator.Core.Tests
     /// Two things were leaking into it. It said "Workbooks go in UNKNOWN" before a scan,
     /// which reads as a fault when nothing is wrong yet, and behind that it showed
     /// "Parameter name: nwfFolder", which is a code identifier and means nothing to
-    /// anyone using this.
+    /// anyone using this. Since F158 the line names the Log folder, whose place is worked
+    /// out from the NWF and the NWD folders alone.
     /// </summary>
     [TestFixture]
     public class WindowWordingTests
     {
         private const string Source = @"C:\00_NM\NWC Fed\NWC\test001";
         private const string Nwf = @"C:\00_NM\NWC Fed\NWF\test001";
+        private const string Nwd = @"C:\00_NM\NWC Fed\NWD\test001";
 
         /// <summary>
         /// FR-131. With the NWF folder inside the scanned folder the label said the NWF folder cannot be
@@ -27,9 +29,9 @@ namespace Federator.Core.Tests
         {
             string scanned = TestPaths.At("nwc", "test001");
             string said = ReportPaths.WhereTheyGo(
-                string.Empty, TestPaths.At("nwc", "test001", "NWF"), scanned);
+                TestPaths.At("nwc", "test001", "NWF"), null, scanned);
 
-            Assert.That(said, Does.Contain("is inside the folder being scanned"));
+            Assert.That(said, Does.Contain("inside the folder being scanned"));
             Assert.That(said, Does.Contain(scanned));
             Assert.That(said, Does.Not.Contain("Parameter name"));
             Assert.That(said, Does.Not.Contain("cannot be read"));
@@ -42,7 +44,8 @@ namespace Federator.Core.Tests
         {
             string said = ReportPaths.WhereTheyGo(string.Empty, string.Empty, string.Empty);
 
-            Assert.That(said, Is.EqualTo("beside the NWF folder, once one is picked on this step"));
+            Assert.That(said, Does.Contain("once the NWF folder is picked on this step"));
+            Assert.That(said, Does.Contain("Log"));
             Assert.That(said, Does.Not.Contain("UNKNOWN"));
         }
 
@@ -53,12 +56,10 @@ namespace Federator.Core.Tests
         [Test]
         public void AFrameworkMessageAboutAPathNeverReachesTheLine()
         {
-            string said = ReportPaths.WhereTheyGo(string.Empty, "C:\\nwf\0folder", Source);
+            string said = ReportPaths.WhereTheyGo("C:\\nwf\0folder", Nwd, Source);
 
             Assert.That(said, Does.Not.Contain("Illegal"));
             Assert.That(said, Does.Not.Contain("path"));
-            Assert.That(said, Is.EqualTo(
-                "not worked out yet, the NWF folder on this step cannot be read"));
         }
 
         // The one the brief asks for by name.
@@ -71,46 +72,41 @@ namespace Federator.Core.Tests
                 @"\\server\share", "con", @"C:\a\b\c"
             };
 
-            foreach (string picked in awkward)
+            foreach (string nwf in awkward)
             {
-                foreach (string nwf in awkward)
+                foreach (string nwd in awkward)
                 {
-                    string said = ReportPaths.WhereTheyGo(picked, nwf, Source);
+                    string said = ReportPaths.WhereTheyGo(nwf, nwd, Source);
 
-                    Assert.That(said, Does.Not.Contain("Parameter name"), picked + " | " + nwf);
-                    Assert.That(said, Does.Not.Contain("nwfFolder"), picked + " | " + nwf);
-                    Assert.That(said, Does.Not.Contain("System."), picked + " | " + nwf);
-                    Assert.That(said, Does.Not.Contain("Exception"), picked + " | " + nwf);
-                    Assert.That(said, Does.Not.Contain("UNKNOWN"), picked + " | " + nwf);
-                    Assert.That(said, Is.Not.Empty, picked + " | " + nwf);
+                    Assert.That(said, Does.Not.Contain("Parameter name"), nwf + " | " + nwd);
+                    Assert.That(said, Does.Not.Contain("nwfFolder"), nwf + " | " + nwd);
+                    Assert.That(said, Does.Not.Contain("System."), nwf + " | " + nwd);
+                    Assert.That(said, Does.Not.Contain("Exception"), nwf + " | " + nwd);
+                    Assert.That(said, Does.Not.Contain("UNKNOWN"), nwf + " | " + nwd);
+                    Assert.That(said, Is.Not.Empty, nwf + " | " + nwd);
                 }
             }
         }
 
         [Test]
-        public void APickedFolderIsShownEvenBeforeTheNwfFolderIs()
+        public void OnceTheFoldersArePickedItSaysTheRealFolderBesideBoth()
         {
-            Assert.That(ReportPaths.WhereTheyGo(@"C:\out\reports", string.Empty, string.Empty),
-                Is.EqualTo(@"C:\out\reports"));
+            TestPaths.OnWindowsOnly("a Windows path");
+
+            Assert.That(ReportPaths.WhereTheyGo(Nwf, Nwd, Source),
+                Is.EqualTo(@"C:\00_NM\NWC Fed\Log"));
+            Assert.That(ReportPaths.WhereTheyGo(Nwf, string.Empty, Source),
+                Is.EqualTo(@"C:\00_NM\NWC Fed\NWF\Log"));
         }
 
-        [Test]
-        public void OnceBothArePickedItSaysTheRealFolder()
-        {
-            Assert.That(ReportPaths.WhereTheyGo(string.Empty, Nwf, Source),
-                Does.StartWith(Nwf));
-            Assert.That(ReportPaths.WhereTheyGo(@"C:\out\reports", Nwf, Source),
-                Is.EqualTo(@"C:\out\reports"));
-        }
-
-        // A folder inside the one being scanned is still refused, and the reason still
+        // A Log folder inside the one being scanned is still refused, and the reason still
         // reaches the line, because that one is worth reading.
         [Test]
-        public void AFolderInsideTheSourceStillSaysWhyItWasRefused()
+        public void ALogFolderInsideTheSourceStillSaysWhyItWasRefused()
         {
-            string said = ReportPaths.WhereTheyGo(Source, Nwf, Source);
+            string said = ReportPaths.WhereTheyGo(Source + @"\out", null, Source);
 
-            Assert.That(said, Does.Contain("Reports are not written into the folder"));
+            Assert.That(said, Does.Contain("not written into the folder"));
             Assert.That(said, Does.Not.Contain("Parameter name"));
         }
 

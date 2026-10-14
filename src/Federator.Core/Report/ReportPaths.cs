@@ -1,47 +1,33 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Federator.Core.Naming;
 
 namespace Federator.Core.Report
 {
-    /// <summary>Where the reports go, and why, when a picked folder had to be refused.</summary>
-    public sealed class ReportFolderChoice
-    {
-        internal ReportFolderChoice(string folder, string refusedReason)
-        {
-            Folder = folder;
-            RefusedReason = refusedReason;
-        }
-
-        public string Folder { get; private set; }
-
-        /// <summary>Null unless a picked folder was refused and the default used instead.</summary>
-        public string RefusedReason { get; private set; }
-
-        public bool WasRefused
-        {
-            get { return !string.IsNullOrEmpty(RefusedReason); }
-        }
-    }
-
     /// <summary>
-    /// Where a workbook goes. One place builds the path, so the path written to and the
-    /// path looked for cannot drift, exactly as OutputPaths does for the NWF and the NWD.
+    /// Where the logs and the reports go. One place builds the path, so the path written to and
+    /// the path looked for cannot drift, exactly as OutputPaths does for the NWF and the NWD.
+    ///
+    /// F158. The NWF and the NWD folders hold the NWF and the NWD and nothing else. Every log and
+    /// every report goes in ONE folder named Log, which sits beside them in the same group area:
+    /// the run log and its .tsv, the notes on the shared coordinates, the Excel, the Internal
+    /// workbook, the HTML, the XML and the _files folder of pictures. The HTML and the Excel
+    /// keep their pictures' links because the _files folder is in the same folder as both.
     /// </summary>
     public static class ReportPaths
     {
-        /// <summary>The subfolder used when no Excel folder was picked.</summary>
-        public const string DefaultSubfolder = "Clash Reports";
+        /// <summary>The name of the folder the logs and the reports go in.</summary>
+        public const string DefaultSubfolder = "Log";
 
         private static string subfolder = DefaultSubfolder;
 
         /// <summary>
-        /// The subfolder the reports go in when no Excel folder was picked. A setting and
-        /// not a constant, because the name shapes where every report of every run lands.
-        /// It is static because the open file run and the line under the Outputs step both
-        /// work the folder out with no options object in front of them. A name that is not
-        /// one folder is refused where it is set.
+        /// The name of the folder the logs and the reports go in. A setting and not a constant,
+        /// because the name shapes where every report of every run lands. It is static because the
+        /// open file run and the line under the Outputs step both work the folder out with no
+        /// options object in front of them. A name that is not one folder is refused where it is set.
         /// </summary>
         public static string Subfolder
         {
@@ -54,14 +40,14 @@ namespace Federator.Core.Report
                 if (wanted.Length == 0)
                 {
                     throw new ArgumentException(
-                        "The reports need a subfolder name to go in when no Excel folder is picked.",
+                        "The logs and the reports need a folder name to go in.",
                         "value");
                 }
 
                 if (wanted.IndexOfAny(NotInAFolderName) >= 0)
                 {
                     throw new ArgumentException(
-                        "The subfolder is one folder name and not a path, so \"" + wanted
+                        "The folder is one folder name and not a path, so \"" + wanted
                             + "\" cannot be used.",
                         "value");
                 }
@@ -87,50 +73,31 @@ namespace Federator.Core.Report
         public const string XmlExtension = ".xml";
 
         /// <summary>
-        /// The folder the workbooks go in. Whatever was picked, and when nothing was
-        /// picked, a subfolder beside the NWF folder so the reports sit next to the models
-        /// they came from rather than somewhere nobody looks.
-        /// </summary>
-        internal static string Folder(string pickedFolder, string nwfFolder)
-        {
-            return Choose(pickedFolder, nwfFolder, null).Folder;
-        }
-
-        /// <summary>
-        /// Where the reports will go, in words a person would say, for the line under the
-        /// Outputs step. Never throws and never shows a code identifier.
+        /// Where the logs and the reports will go, in words a person would say, for the line under
+        /// the Outputs step. Never throws and never shows a code identifier.
         ///
-        /// It said "Workbooks go in UNKNOWN" before a scan, with
-        /// "Parameter name: nwfFolder" behind it, because the empty NWF folder threw and
-        /// the exception message went straight to the label. Nothing is wrong at that
-        /// point. The folder has simply not been picked yet, and that is what it says.
+        /// It said "Workbooks go in UNKNOWN" before a scan, with "Parameter name: nwfFolder" behind
+        /// it, because the empty NWF folder threw and the exception message went straight to the
+        /// label. Nothing is wrong at that point. The folder has simply not been picked yet.
         /// </summary>
-        public static string WhereTheyGo(string pickedFolder, string nwfFolder, string sourceFolder)
+        public static string WhereTheyGo(string nwfFolder, string nwdFolder, string sourceFolder)
         {
             string nwf = nwfFolder == null ? string.Empty : nwfFolder.Trim();
-            string picked = pickedFolder == null ? string.Empty : pickedFolder.Trim();
 
             if (nwf.Length == 0)
             {
-                return picked.Length > 0
-                    ? picked
-                    : "beside the NWF folder, once one is picked on this step";
+                return "beside the NWF and NWD folders, in a folder called " + Subfolder
+                    + ", once the NWF folder is picked on this step";
             }
 
             try
             {
-                ReportFolderChoice where = Choose(picked, nwf, sourceFolder);
-
-                return where.WasRefused
-                    ? where.Folder + ". " + where.RefusedReason
-                    : where.Folder;
+                return LogFolder(nwf, nwdFolder, sourceFolder);
             }
             catch (ArgumentException error) when (error.ParamName == "nwfFolder")
             {
-                // The refusal Choose throws on purpose, its first line only, since the rest is the
-                // framework's parameter name and a label carries none. An ArgumentException the
-                // framework throws, from a path holding a quote or a bar, has no such parameter
-                // name and falls to the plain wording below, since its message is not ours to show.
+                // The refusal LogFolder throws on purpose, its first line only, since the rest is
+                // the framework's parameter name and a label carries none.
                 string first = error.Message.Split(new[] { '\r', '\n' }, 2)[0];
 
                 return first.Length > 0
@@ -145,67 +112,101 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// Where the reports go, and whether a picked folder had to be refused.
+        /// The Log folder for a run: beside the NWF and the NWD folders, inside the same group area,
+        /// which is the deepest folder that holds both. Where the two are one folder, or one holds
+        /// the other, it is the folder above, so the Log folder is never inside the folder the NWF
+        /// and the NWD sit in and that folder holds the NWF and the NWD alone. Where the two are on
+        /// different drives it is beside the NWF folder. An empty NWD folder reads as the NWF's.
         ///
-        /// The reports never go inside the folder being scanned. A real run put them in
-        /// C:\00_NM\NWC Fed\NWC\test001, which is where the NWC files it was reading
-        /// live. The Clash step picks an XML at run time, so a report written there is a
-        /// file a later run can be pointed at as its own input, and even where it is not
-        /// it fills the source folder with output.
+        /// The logs and the reports never go inside the folder being scanned, because the Clash step
+        /// picks an XML at run time and a report written there is a file a later run can be pointed
+        /// at as its own input. Said rather than written somewhere surprising.
         /// </summary>
-        public static ReportFolderChoice Choose(
-            string pickedFolder, string nwfFolder, string sourceFolder)
-        {
-            string picked = pickedFolder == null ? string.Empty : pickedFolder.Trim();
-            string fallback = Beside(nwfFolder);
-
-            if (picked.Length == 0)
-            {
-                return Refuse(fallback, sourceFolder, null);
-            }
-
-            if (!IsInside(picked, sourceFolder))
-            {
-                return new ReportFolderChoice(picked, null);
-            }
-
-            return Refuse(
-                fallback,
-                sourceFolder,
-                "The Excel folder " + picked + " is inside the folder being scanned, "
-                    + Trimmed(sourceFolder)
-                    + ". Reports are not written into the folder they were read from, so they "
-                    + "went to " + fallback + " instead.");
-        }
-
-        private static ReportFolderChoice Refuse(
-            string fallback, string sourceFolder, string reason)
-        {
-            if (!IsInside(fallback, sourceFolder))
-            {
-                return new ReportFolderChoice(fallback, reason);
-            }
-
-            // The NWF folder is itself inside the source folder, so there is nowhere safe
-            // to default to. Said rather than written somewhere surprising.
-            throw new ArgumentException(
-                "The NWF folder " + Trimmed(fallback) + " is inside the folder being scanned, "
-                    + Trimmed(sourceFolder)
-                    + ", so there is nowhere to put the reports that is not the folder they "
-                    + "were read from. Pick an Excel folder outside it.",
-                "nwfFolder");
-        }
-
-        private static string Beside(string nwfFolder)
+        public static string LogFolder(string nwfFolder, string nwdFolder, string sourceFolder)
         {
             if (string.IsNullOrEmpty(nwfFolder) || nwfFolder.Trim().Length == 0)
             {
                 throw new ArgumentException(
-                    "With no Excel folder picked, the NWF folder is what the default is built from.",
+                    "The logs and the reports go beside the NWF folder, so it has to be picked first.",
                     "nwfFolder");
             }
 
-            return Path.Combine(nwfFolder.Trim(), Subfolder);
+            string nwf = Full(nwfFolder);
+            string nwd = string.IsNullOrEmpty(nwdFolder) || nwdFolder.Trim().Length == 0 ? nwf : Full(nwdFolder);
+            string area = Common(nwf, nwd) ?? Path.GetDirectoryName(nwf);
+
+            if (area == null)
+            {
+                // A drive root. Nothing is above it, so the Log folder is inside it.
+                area = nwf;
+            }
+            else if (Same(area, nwf) || Same(area, nwd))
+            {
+                area = Path.GetDirectoryName(area) ?? area;
+            }
+
+            string folder = Path.Combine(area, Subfolder);
+
+            if (IsInside(folder, sourceFolder))
+            {
+                throw new ArgumentException(
+                    "The Log folder would be " + folder + ", which is inside the folder being scanned, "
+                        + Trimmed(sourceFolder) + ". Logs and reports are not written into the folder they "
+                        + "were read from. Pick an NWF folder outside it.",
+                    "nwfFolder");
+            }
+
+            return folder;
+        }
+
+        /// <summary>The deepest folder holding both, or null where they share none, as on two drives.</summary>
+        private static string Common(string one, string two)
+        {
+            string[] a = one.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string[] b = two.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            List<string> shared = new List<string>();
+
+            for (int i = 0; i < a.Length && i < b.Length; i++)
+            {
+                if (!string.Equals(a[i], b[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+
+                shared.Add(a[i]);
+            }
+
+            if (shared.Count == 0 || (shared.Count == 1 && shared[0].Length == 0))
+            {
+                return null;
+            }
+
+            string joined = string.Join(Path.DirectorySeparatorChar.ToString(), shared.ToArray());
+
+            // A drive on its own reads C: and needs its separator to be a folder.
+            return joined.EndsWith(":", StringComparison.Ordinal)
+                ? joined + Path.DirectorySeparatorChar
+                : joined;
+        }
+
+        private static bool Same(string one, string two)
+        {
+            return string.Equals(
+                one.TrimEnd(Path.DirectorySeparatorChar),
+                two.TrimEnd(Path.DirectorySeparatorChar),
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string Full(string folder)
+        {
+            try
+            {
+                return Path.GetFullPath(folder.Trim()).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            }
+            catch (Exception)
+            {
+                return folder.Trim().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            }
         }
 
         /// <summary>
@@ -253,8 +254,8 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The workbook for one group, named like the group's other outputs so all three
-        /// sit together under one name. Overwrites, the same as the NWF and the NWD.
+        /// The workbook for one group, named like the group's other outputs so all of them
+        /// sit together under one name.
         /// </summary>
         public static string Workbook(string folder, string outputName)
         {
@@ -285,6 +286,90 @@ namespace Federator.Core.Report
             }
 
             return Path.Combine(folder, outputName + extension);
+        }
+
+        /// <summary>
+        /// The name a group's reports are written under, so that nothing already in the Log folder is
+        /// overwritten, F158. The name as it is where none of its files is there: the workbook, the
+        /// Internal workbook, the HTML, the XML and the _files folder. Where any is, the name with the
+        /// moment of the run after it, and a number after that where even that is taken. Nothing is
+        /// deleted or touched, and the name is worked out once per group so the Excel, the HTML and the
+        /// pictures folder all carry the same one and their links keep working.
+        /// </summary>
+        public static string NameThatOverwritesNothing(
+            string folder, string workbookName, string internalSuffix, DateTime now, Func<string, bool> exists)
+        {
+            if (string.IsNullOrEmpty(folder) || string.IsNullOrEmpty(workbookName))
+            {
+                return workbookName;
+            }
+
+            if (exists == null)
+            {
+                exists = path => File.Exists(path) || Directory.Exists(path);
+            }
+
+            if (!AnyOfThemExist(folder, workbookName, internalSuffix, exists))
+            {
+                return workbookName;
+            }
+
+            string dated = workbookName + " " + now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
+            string candidate = dated;
+
+            for (int number = 2; AnyOfThemExist(folder, candidate, internalSuffix, exists); number++)
+            {
+                candidate = dated + " " + number.ToString(CultureInfo.InvariantCulture);
+            }
+
+            return candidate;
+        }
+
+        private static bool AnyOfThemExist(string folder, string name, string internalSuffix, Func<string, bool> exists)
+        {
+            string workbook = Path.Combine(folder, name + WorkbookExtension);
+
+            if (exists(workbook)
+                || exists(Path.Combine(folder, name + XmlExtension))
+                || exists(HtmlTabularWriter.PathFor(workbook))
+                || exists(ImageNaming.FolderFor(workbook)))
+            {
+                return true;
+            }
+
+            return !string.IsNullOrEmpty(internalSuffix)
+                && exists(Path.Combine(folder, name + " " + internalSuffix + WorkbookExtension));
+        }
+
+        /// <summary>
+        /// The path for something written into the Log folder that must not replace a file there,
+        /// F158: the plain name where it is free, and the name with the moment after it where not.
+        /// </summary>
+        public static string FreeFilePath(string folder, string fileName, DateTime now, Func<string, bool> exists)
+        {
+            if (exists == null)
+            {
+                exists = path => File.Exists(path) || Directory.Exists(path);
+            }
+
+            string plain = Path.Combine(folder, fileName);
+
+            if (!exists(plain))
+            {
+                return plain;
+            }
+
+            string stem = Path.GetFileNameWithoutExtension(fileName);
+            string extension = Path.GetExtension(fileName);
+            string dated = stem + " " + now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
+            string candidate = Path.Combine(folder, dated + extension);
+
+            for (int number = 2; exists(candidate); number++)
+            {
+                candidate = Path.Combine(folder, dated + " " + number.ToString(CultureInfo.InvariantCulture) + extension);
+            }
+
+            return candidate;
         }
     }
 }

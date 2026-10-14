@@ -35,7 +35,7 @@ namespace Federator.Core.Generic
 
         /// <summary>
         /// What is put after the group's workbook name to name the internal workbook, so the two workbooks of a
-        /// group sit together in the Clash Reports folder. Bader's answer B to Q146, 11 Oct 2026: the clash
+        /// group sit together in the Log folder. Bader's answer B to Q146, 11 Oct 2026: the clash
         /// workbook goes to the client and keeps the Navisworks export's layout, so the Generic Models sheet and
         /// the Coverage sheet go in an internal workbook beside it, and its name says Internal because it holds
         /// both. It was Generic Models while it held that sheet alone.
@@ -168,7 +168,7 @@ namespace Federator.Core.Generic
 
         /// <summary>
         /// The name of the group's internal workbook, without its extension: the group's workbook name, one
-        /// space and the suffix, so the two sit together in the Clash Reports folder under one name. It holds
+        /// space and the suffix, so the two sit together in the Log folder under one name. It holds
         /// the Generic Models sheet and the Coverage sheet, Q146 answered B.
         /// </summary>
         public string WorkbookNameFor(string groupWorkbookName)

@@ -14,7 +14,6 @@ namespace Federator.Core.Diagnostics
         Source,
         Nwf,
         Nwd,
-        Excel,
 
         /// <summary>The picture the client report page carries, if anyone picks one.</summary>
         Logo,
@@ -131,7 +130,6 @@ namespace Federator.Core.Diagnostics
                 PickerKind.Source,
                 PickerKind.Nwf,
                 PickerKind.Nwd,
-                PickerKind.Excel,
                 PickerKind.Logo,
                 PickerKind.PickedNwf
             };
