@@ -342,6 +342,18 @@ namespace Federator.Addin.Engine
 
         private bool packLooked;
 
+        private MatrixPack chosenPack;
+
+        /// <summary>
+        /// The pack this run reads, chosen by the project code of its NWC files before anything was
+        /// opened, PackChoice, F166. Without one the engine falls back to the only pack built in.
+        /// </summary>
+        public void UsePack(MatrixPack chosen)
+        {
+            chosenPack = chosen;
+            packLooked = false;
+        }
+
         private MatrixPack ThePack()
         {
             if (packLooked)
@@ -351,6 +363,13 @@ namespace Federator.Addin.Engine
 
             packLooked = true;
             string whyNone = null;
+
+            if (chosenPack != null)
+            {
+                pack = chosenPack;
+                log.Line(MatrixPack.Line(pack, null));
+                return pack;
+            }
 
             try
             {

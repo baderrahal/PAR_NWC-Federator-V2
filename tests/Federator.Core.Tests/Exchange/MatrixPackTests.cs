@@ -94,7 +94,7 @@ namespace Federator.Core.Tests
         /// <summary>
         /// The packs are read off resource names alone. Two folders are two packs, a name outside the prefix or with
         /// no file is no pack, either separator reads, and the one pack a run uses is refused with its reason where
-        /// there is none or more than one, since nothing chooses between packs yet, Q164.
+        /// there is none or more than one, since a run chooses by the project code, PackChoice, F166, Q164.
         /// </summary>
         [Test]
         public void PacksAreFoundByTheirResourceNamesAndTwoAreNotChosenBetween()
@@ -116,7 +116,7 @@ namespace Federator.Core.Tests
 
             string why;
             Assert.That(MatrixPack.TheOne(two, out why), Is.Null);
-            Assert.That(why, Is.EqualTo("2 matrix packs are built into this tool, A, B, and nothing chooses between them yet"));
+            Assert.That(why, Is.EqualTo("2 matrix packs are built into this tool, A, B, and a run chooses one by the project code of its NWC files, PackChoice"));
             Assert.That(MatrixPack.TheOne(new List<MatrixPack>(), out why), Is.Null);
             Assert.That(why, Is.EqualTo("no matrix pack is built into this tool"));
             Assert.That(MatrixPack.TheOne(new List<MatrixPack> { two[1] }, out why), Is.SameAs(two[1]));
@@ -144,7 +144,7 @@ namespace Federator.Core.Tests
             MatrixPack pack = TheBuiltInPack();
             string whyNone;
 
-            Assert.That(pack.Files.Count, Is.EqualTo(5), "the two CSVs, the clash XML and its two lists");
+            Assert.That(pack.Files.Count, Is.EqualTo(6), "the two CSVs, the clash XML, its two lists and the project code");
             Assert.That(pack.XmlFile(out whyNone), Is.EqualTo(Matrix + ".xml"), whyNone);
 
             foreach (string file in new[] { Matrix + ".xml", Matrix + ".teams.txt", Matrix + ".corrections.txt" })

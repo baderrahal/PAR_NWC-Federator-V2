@@ -379,6 +379,18 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            List<KeyValuePair<string, IList<string>>> pickedGroups = new List<KeyValuePair<string, IList<string>>>();
+
+            foreach (string picked in plan.Paths())
+            {
+                pickedGroups.Add(PackChoice.Group(picked, new List<string> { picked }));
+            }
+
+            if (!ChoosePackOrStop(pickedGroups, "the run of picked NWFs"))
+            {
+                return;
+            }
+
             running = true;
             RunPickedNwfsButton.IsEnabled = false;
 
@@ -398,6 +410,7 @@ namespace Federator.Addin.Ui
                 ExchangeDocument exchange = ReadTheMatrixForAnOpenFileRun(out teams);
 
                 engine = new FederationEngine(SetProgress, log, exchange, teams, options);
+                engine.UsePack(chosenPack);
                 engine.RunPickedNwfs(plan.Paths());
 
                 SayWhatAnOpenFileRunAddedUp(engine);
@@ -1131,8 +1144,46 @@ namespace Federator.Addin.Ui
         /// </summary>
         private static bool MatrixIsBuiltIn()
         {
-            string whyNone;
-            return MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone) != null;
+            foreach (MatrixPack built in MatrixPack.All())
+            {
+                string whyNone;
+
+                if (built.XmlFile(out whyNone) != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// The pack the run being started reads, chosen by the project code of its NWC file names,
+        /// PackChoice, F166. Null until a run chooses it, and then the matrix is read off the only
+        /// pack built in where there is one.
+        /// </summary>
+        private MatrixPack chosenPack;
+
+        /// <summary>
+        /// Chooses the pack of a run from the file names alone, before anything is opened. A run
+        /// that matches no pack, more than one or mixed codes stops here, said in the log and in a
+        /// window, and false is returned.
+        /// </summary>
+        private bool ChoosePackOrStop(IList<KeyValuePair<string, IList<string>>> groups, string what)
+        {
+            chosenPack = null;
+            PackChoice choice = PackChoice.For(groups, MatrixPack.All(), new ContainerNameSettings());
+
+            if (choice.Stopped)
+            {
+                log.Line("PACK     " + what + " is stopped, " + choice.Why);
+                SetProgress("Stopped. " + choice.Why);
+                Warn(choice.Why);
+                return false;
+            }
+
+            chosenPack = choice.Pack;
+            return true;
         }
 
         /// <summary>
@@ -1140,10 +1191,10 @@ namespace Federator.Addin.Ui
         /// the pack holds beside it, or null with no pack, where the tests saved in each NWF run as they did with
         /// no clash matrix read. A pack that will not read throws, so the caller says why as it did for a clash matrix.
         /// </summary>
-        private static ExchangeDocument ReadTheMatrix()
+        private ExchangeDocument ReadTheMatrix()
         {
             string whyNone;
-            MatrixPack pack = MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
+            MatrixPack pack = chosenPack ?? MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
             return pack == null ? null : MatrixCorrections.ReadPack(pack);
         }
 
@@ -1996,6 +2047,20 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // F166, Q164 B. The pack is chosen by the project code of the NWC file names, before the
+            // preview opens any NWF and before the confirm, so a run with no pack stops untouched.
+            List<KeyValuePair<string, IList<string>>> packGroups = new List<KeyValuePair<string, IList<string>>>();
+
+            foreach (FederationJob job in jobs)
+            {
+                packGroups.Add(PackChoice.Group(job.Building, job.Files));
+            }
+
+            if (!ChoosePackOrStop(packGroups, "the run"))
+            {
+                return;
+            }
+
             // F76. A tolerance that is not one is refused here, in Core's words, rather
             // than reaching 1830 tests and being discovered in a report.
             ToleranceChoice tolerance = ToleranceOrSayWhyNot("the run");
@@ -2283,6 +2348,7 @@ namespace Federator.Addin.Ui
 
                 engine = new FederationEngine(
                     SetProgress, log, exchange, teams, options, nwfFolder, nwdFolder);
+                engine.UsePack(chosenPack);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
 
                 // What each group actually did, in the list. A group that was rebuilt
@@ -2556,6 +2622,15 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            string openPath = OpenDocumentPath();
+
+            if (!ChoosePackOrStop(
+                new List<KeyValuePair<string, IList<string>>> { PackChoice.Group(openPath, new List<string> { openPath }) },
+                "the run on the open file"))
+            {
+                return;
+            }
+
             running = true;
             RunOpenButton.IsEnabled = false;
 
@@ -2579,6 +2654,7 @@ namespace Federator.Addin.Ui
                 // NWF folder is what once wrote to Clash Reports\Clash Reports, which is gone.
                 engine = new FederationEngine(
                     SetProgress, log, exchange, teams, options);
+                engine.UsePack(chosenPack);
 
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
                 // they are there whatever happens inside it.
@@ -2764,6 +2840,15 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            string setsPath = OpenDocumentPath();
+
+            if (!ChoosePackOrStop(
+                new List<KeyValuePair<string, IList<string>>> { PackChoice.Group(setsPath, new List<string> { setsPath }) },
+                "building the sets by hand"))
+            {
+                return;
+            }
+
             running = true;
             BuildSetsButton.IsEnabled = false;
 
@@ -2777,6 +2862,7 @@ namespace Federator.Addin.Ui
                 FederationEngine engine = new FederationEngine(
                     SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings),
                     ReportsWanted(ToleranceChoice.Default()));
+                engine.UsePack(chosenPack);
                 SetBuildOutcome outcome = engine.BuildSetsByHand();
 
                 ShowSetLines(outcome.Lines());
@@ -2825,6 +2911,15 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            string testsPath = OpenDocumentPath();
+
+            if (!ChoosePackOrStop(
+                new List<KeyValuePair<string, IList<string>>> { PackChoice.Group(testsPath, new List<string> { testsPath }) },
+                "running the tests by hand"))
+            {
+                return;
+            }
+
             running = true;
             RunTestsButton.IsEnabled = false;
 
@@ -2836,6 +2931,7 @@ namespace Federator.Addin.Ui
 
                 FederationEngine engine = new FederationEngine(
                     SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings), ReportsWanted(tolerance));
+                engine.UsePack(chosenPack);
                 ClashRunOutcome outcome = engine.RunTestsByHand();
 
                 if (outcome == null)

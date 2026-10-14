@@ -32,6 +32,13 @@ namespace Federator.Core.Exchange
         /// <summary>The by design pairs of the pack, left_set, right_set and reason, F72b.</summary>
         public const string ByDesignFile = "by-design-pairs.csv";
 
+        /// <summary>
+        /// The file that names the project code the pack is for, F166, Bader's answer B to Q164:
+        /// one line, such as 1104. A run reads part 1 of its NWC file names and picks the pack
+        /// whose code is the same, PackChoice. A pack with no such file matches no run.
+        /// </summary>
+        public const string ProjectCodeFile = "project-code.txt";
+
         private readonly Assembly assembly;
         private readonly Dictionary<string, string> resources = new Dictionary<string, string>(StringComparer.Ordinal);
 
@@ -43,6 +50,44 @@ namespace Federator.Core.Exchange
 
         /// <summary>The pack's name, its folder's, such as the project code.</summary>
         public string Name { get; private set; }
+
+        private string projectCode;
+        private bool projectCodeRead;
+
+        /// <summary>
+        /// The project code this pack carries, read once off its project-code.txt and trimmed, or
+        /// null where it holds none or the file is empty.
+        /// </summary>
+        public string ProjectCode
+        {
+            get
+            {
+                if (!projectCodeRead)
+                {
+                    projectCodeRead = true;
+
+                    if (Holds(ProjectCodeFile))
+                    {
+                        string text = ReadText(ProjectCodeFile).Trim();
+                        projectCode = text.Length == 0 ? null : text.Split(new[] { '\r', '\n' })[0].Trim();
+                    }
+                }
+
+                return projectCode;
+            }
+        }
+
+        /// <summary>
+        /// A pack with no files and a code given, for a test that needs a second pack to choose
+        /// between. Built in the test only and never shipped, since nothing in src calls it.
+        /// </summary>
+        internal static MatrixPack ForTest(string name, string code)
+        {
+            MatrixPack pack = new MatrixPack(null, name);
+            pack.projectCode = code;
+            pack.projectCodeRead = true;
+            return pack;
+        }
 
         /// <summary>The files the pack holds, in Ordinal order.</summary>
         public IList<string> Files
@@ -126,7 +171,7 @@ namespace Federator.Core.Exchange
                 }
 
                 whyNone = packs.Count + " matrix packs are built into this tool, " + string.Join(", ", names.ToArray())
-                    + ", and nothing chooses between them yet";
+                    + ", and a run chooses one by the project code of its NWC files, PackChoice";
                 return null;
             }
 
@@ -172,7 +217,8 @@ namespace Federator.Core.Exchange
             }
 
             List<string> files = new List<string>(pack.Files);
-            return LinePrefix + " the built in matrix pack " + pack.Name + ", holding " + string.Join(", ", files.ToArray());
+            return LinePrefix + " the built in matrix pack " + pack.Name + ", project code "
+                + (pack.ProjectCode ?? "UNKNOWN") + ", holding " + string.Join(", ", files.ToArray());
         }
 
         /// <summary>The words a log line names one of its files by: the built in matrix pack, its name and the file.</summary>
