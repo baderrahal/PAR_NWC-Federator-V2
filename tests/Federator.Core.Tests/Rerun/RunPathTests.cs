@@ -17,7 +17,7 @@ namespace Federator.Core.Tests
         {
             Assert.That(RunPath.FirstRun, Is.EqualTo("First run"));
             Assert.That(RunPath.WeeklyRun, Is.EqualTo("Weekly run"));
-            Assert.That(RunPath.WeeklyRunPlusXml, Is.EqualTo("Weekly run plus XML"));
+            Assert.That(RunPath.WeeklyRunPlusMatrix, Is.EqualTo("Weekly run plus matrix"));
             Assert.That(RunPath.Rebuilt, Is.EqualTo("Rebuilt"));
             Assert.That(RunPath.Skipped, Is.EqualTo("Skipped (changed on disk)"));
             Assert.That(RunPath.Stopped, Is.EqualTo("Stopped (the NWF read empty)"));
@@ -54,7 +54,7 @@ namespace Federator.Core.Tests
             Assert.That(RunPath.AfterOpening(RerunDecision.Changed, false), Is.EqualTo(RunPath.Rebuilt));
             Assert.That(RunPath.AfterOpening(RerunDecision.Changed, true), Is.EqualTo(RunPath.Rebuilt));
             Assert.That(RunPath.AfterOpening(RerunDecision.Open, false), Is.EqualTo(RunPath.WeeklyRun));
-            Assert.That(RunPath.AfterOpening(RerunDecision.Open, true), Is.EqualTo(RunPath.WeeklyRunPlusXml));
+            Assert.That(RunPath.AfterOpening(RerunDecision.Open, true), Is.EqualTo(RunPath.WeeklyRunPlusMatrix));
             Assert.That(RunPath.AfterOpening(RerunDecision.Build, true), Is.EqualTo(RunPath.FirstRun));
         }
 
@@ -96,7 +96,7 @@ namespace Federator.Core.Tests
         public void OpenIsAWeeklyRunAndAnXmlMakesItPlusXml()
         {
             Assert.That(RunPath.Label(RerunDecision.Open, false), Is.EqualTo(RunPath.WeeklyRun));
-            Assert.That(RunPath.Label(RerunDecision.Open, true), Is.EqualTo(RunPath.WeeklyRunPlusXml));
+            Assert.That(RunPath.Label(RerunDecision.Open, true), Is.EqualTo(RunPath.WeeklyRunPlusMatrix));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Federator.Core.Tests
             Assert.That(RunPath.Expected(false, false), Is.EqualTo(RunPath.FirstRun));
             Assert.That(RunPath.Expected(false, true), Is.EqualTo(RunPath.FirstRun));
             Assert.That(RunPath.Expected(true, false), Is.EqualTo(RunPath.WeeklyRun));
-            Assert.That(RunPath.Expected(true, true), Is.EqualTo(RunPath.WeeklyRunPlusXml));
+            Assert.That(RunPath.Expected(true, true), Is.EqualTo(RunPath.WeeklyRunPlusMatrix));
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Federator.Core.Tests
             Assert.That(counts[RunPath.Rebuilt], Is.EqualTo(0));
             Assert.That(counts[RunPath.FirstRun], Is.EqualTo(1));
             Assert.That(counts[RunPath.WeeklyRun], Is.EqualTo(2));
-            Assert.That(counts[RunPath.WeeklyRunPlusXml], Is.EqualTo(0));
+            Assert.That(counts[RunPath.WeeklyRunPlusMatrix], Is.EqualTo(0));
             Assert.That(counts[RunPath.Skipped], Is.EqualTo(0));
             Assert.That(counts[RunPath.Unknown], Is.EqualTo(2), "a label nobody knows counts as Unknown");
         }
@@ -146,7 +146,7 @@ namespace Federator.Core.Tests
             Assert.That(lines[0], Is.EqualTo("This run federates 3 groups."));
             Assert.That(all, Does.Contain("First run: 2"));
             Assert.That(all, Does.Contain("Weekly run: 1"));
-            Assert.That(all, Does.Contain("Weekly run plus XML: 0"));
+            Assert.That(all, Does.Contain("Weekly run plus matrix: 0"));
             Assert.That(all, Does.Contain("Rebuilt: 0"));
             Assert.That(all, Does.Contain("cleared before each one"));
             Assert.That(all, Does.Not.Contain("Unknown"), "no unknown line when no group is unknown");
@@ -155,7 +155,7 @@ namespace Federator.Core.Tests
         [Test]
         public void WithNoFirstRunTheDialogNeverSaysCleared()
         {
-            IList<string> lines = RunPath.ConfirmLines(new[] { RunPath.WeeklyRun, RunPath.WeeklyRunPlusXml });
+            IList<string> lines = RunPath.ConfirmLines(new[] { RunPath.WeeklyRun, RunPath.WeeklyRunPlusMatrix });
             string all = string.Join("\n", new List<string>(lines).ToArray());
 
             Assert.That(all, Does.Contain("First run: 0."));
@@ -168,11 +168,11 @@ namespace Federator.Core.Tests
         public void TheResultLinesNameEachPathInAFixedOrder()
         {
             IList<string> lines = RunPath.ResultLines(
-                new[] { RunPath.FirstRun, RunPath.WeeklyRunPlusXml, RunPath.Skipped, RunPath.Skipped });
+                new[] { RunPath.FirstRun, RunPath.WeeklyRunPlusMatrix, RunPath.Skipped, RunPath.Skipped });
 
             Assert.That(lines[0], Is.EqualTo("first run      : 1"));
             Assert.That(lines[1], Is.EqualTo("weekly run     : 0"));
-            Assert.That(lines[2], Is.EqualTo("weekly + XML   : 1"));
+            Assert.That(lines[2], Is.EqualTo("weekly + matrix: 1"));
             Assert.That(lines[3], Is.EqualTo("rebuilt        : 0"));
             Assert.That(lines[4], Is.EqualTo("skipped        : 2"));
             Assert.That(lines.Count, Is.EqualTo(5), "no unknown line when no group is unknown");

@@ -517,7 +517,7 @@ namespace Federator.Core.Tests
             {
                 log.GroupFinished("a", GroupOutcome.Done, 1.0, null, RunPath.FirstRun);
                 log.GroupFinished("b", GroupOutcome.Done, 1.0, null, RunPath.WeeklyRun);
-                log.GroupFinished("c", GroupOutcome.Done, 1.0, null, RunPath.WeeklyRunPlusXml);
+                log.GroupFinished("c", GroupOutcome.Done, 1.0, null, RunPath.WeeklyRunPlusMatrix);
                 log.GroupFinished("d", GroupOutcome.Partial, 1.0, "left alone", RunPath.Skipped);
                 log.WriteResultBlock();
                 text = ReadWhileOpen(log);
@@ -527,7 +527,7 @@ namespace Federator.Core.Tests
             Assert.That(text, Does.Contain("GROUP    finished d  PARTIAL  1.000s  Skipped (changed on disk)  left alone"));
             Assert.That(text, Does.Contain("first run      : 1"));
             Assert.That(text, Does.Contain("weekly run     : 1"));
-            Assert.That(text, Does.Contain("weekly + XML   : 1"));
+            Assert.That(text, Does.Contain("weekly + matrix: 1"));
             Assert.That(text, Does.Contain("skipped        : 1"));
         }
 

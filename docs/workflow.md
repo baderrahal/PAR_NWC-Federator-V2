@@ -18,7 +18,7 @@ The same NWC folder, Run pressed. Per group the tool finds the NWF already there
 it (OPENED), lets Navisworks reload the newer NWCs, runs the tests of the built in matrix
 saved inside the NWF where they sit, keeping their results, writes Excel, HTML, images and
 the NWD. Since F155 the matrix is read on every run, so a test of it the NWF lacks is added
-and the label reads Weekly run plus XML. A test saved in the NWF that the matrix does not
+and the label reads Weekly run plus matrix. A test saved in the NWF that the matrix does not
 name is not run, and the COVERAGE block names it, Q168. With no pack built in, every saved
 test runs.
 
@@ -35,7 +35,7 @@ One per group in the Run as column, counted in the confirm dialog, carried in th
 
     First run                  no NWF at the output path yet
     Weekly run                 the NWF is there and no matrix is built in
-    Weekly run plus XML        the NWF is there and the built in matrix is read,
+    Weekly run plus matrix        the NWF is there and the built in matrix is read,
                                every weekly run since F155
     Rebuilt                    the NWF is there and points at a different file list.
                                Only known once the NWF is opened, so the window opens

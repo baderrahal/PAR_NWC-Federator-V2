@@ -31,7 +31,7 @@ namespace Federator.Core.Rerun
 
         public const string WeeklyRun = "Weekly run";
 
-        public const string WeeklyRunPlusXml = "Weekly run plus XML";
+        public const string WeeklyRunPlusMatrix = "Weekly run plus matrix";
 
         public const string Rebuilt = "Rebuilt";
 
@@ -54,7 +54,7 @@ namespace Federator.Core.Rerun
 
         /// <summary>The seven labels, in the order the counts are listed.</summary>
         public static readonly string[] All =
-            { FirstRun, WeeklyRun, WeeklyRunPlusXml, Rebuilt, Skipped, Stopped, Unknown };
+            { FirstRun, WeeklyRun, WeeklyRunPlusMatrix, Rebuilt, Skipped, Stopped, Unknown };
 
         /// <summary>The label for a group once Decide has run and the group has ended.</summary>
         public static string Label(RerunDecision decision, bool xmlPicked)
@@ -64,7 +64,7 @@ namespace Federator.Core.Rerun
                 case RerunDecision.Build:
                     return FirstRun;
                 case RerunDecision.Open:
-                    return xmlPicked ? WeeklyRunPlusXml : WeeklyRun;
+                    return xmlPicked ? WeeklyRunPlusMatrix : WeeklyRun;
                 case RerunDecision.Rebuilt:
                     return Rebuilt;
                 case RerunDecision.Changed:
@@ -189,8 +189,8 @@ namespace Federator.Core.Rerun
                 + (counts[WeeklyRun] > 0
                     ? ". The NWF already there is opened and the saved tests run. Nothing inside it is cleared."
                     : "."));
-            lines.Add(WeeklyRunPlusXml + ": " + counts[WeeklyRunPlusXml]
-                + (counts[WeeklyRunPlusXml] > 0
+            lines.Add(WeeklyRunPlusMatrix + ": " + counts[WeeklyRunPlusMatrix]
+                + (counts[WeeklyRunPlusMatrix] > 0
                     ? ". The NWF already there is opened and the XML adds or updates tests. Nothing inside it is cleared."
                     : "."));
             lines.Add(Rebuilt + ": " + counts[Rebuilt]
@@ -230,7 +230,7 @@ namespace Federator.Core.Rerun
 
             lines.Add("first run      : " + counts[FirstRun]);
             lines.Add("weekly run     : " + counts[WeeklyRun]);
-            lines.Add("weekly + XML   : " + counts[WeeklyRunPlusXml]);
+            lines.Add("weekly + matrix: " + counts[WeeklyRunPlusMatrix]);
             lines.Add("rebuilt        : " + counts[Rebuilt]);
             lines.Add("skipped        : " + counts[Skipped]);
 

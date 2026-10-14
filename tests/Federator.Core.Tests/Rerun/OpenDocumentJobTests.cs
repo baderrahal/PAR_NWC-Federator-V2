@@ -208,8 +208,8 @@ namespace Federator.Core.Tests
                 string withXml = OpenDocumentJob.Describe(open, true);
 
                 Assert.That(noXml, Does.StartWith(RunPath.WeeklyRun + "."));
-                Assert.That(noXml, Does.Not.Contain(RunPath.WeeklyRunPlusXml));
-                Assert.That(withXml, Does.StartWith(RunPath.WeeklyRunPlusXml + "."));
+                Assert.That(noXml, Does.Not.Contain(RunPath.WeeklyRunPlusMatrix));
+                Assert.That(withXml, Does.StartWith(RunPath.WeeklyRunPlusMatrix + "."));
                 Assert.That(noXml, Does.Not.Contain(RunPath.FirstRun));
                 Assert.That(withXml, Does.Not.Contain(RunPath.FirstRun));
             }
