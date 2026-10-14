@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 05:00, round 5, tasks 1 to 4 merged, task 5 timing in review, Q182 waits for Bader
+STATE OPEN, 2026-10-15 05:20, round 5, tasks 1 to 4 merged, task 5 timing merged, Q182 waits for Bader
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 253 | 16 | 1 | 1 | 60 | 7 | 338 |
-| total | 456 | 24 | 1 | 1 | 161 | 18 | 661 |
+| outside the waves | 254 | 16 | 0 | 1 | 60 | 7 | 338 |
+| total | 457 | 24 | 0 | 1 | 161 | 18 | 661 |
 <!-- the end of the counts -->
 
 ## Now

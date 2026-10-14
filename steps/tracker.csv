@@ -659,4 +659,4 @@ Q180-1,"the picture caps 150, 100 and 50 always apply to every test, no trigger,
 Q181-1,"everything outside the tool folder is deleted except the Comments folder, replaces the first item of Q174 where it said nothing a coordinator made is touched, F191",none,none,Bader's request,merged,273,none,2026-10-15
 Q182,"how many tests and clashes of priority A and B have clashes over 150 mm in a pair carrying the size folder and so stay in the one view, and whether to handle them another way, F192",none,none,question,waiting for Bader,none,none,2026-10-15
 F193,"the answers of the round 5 orders recorded in steps\02_questions.md and the tracker, Q177 to Q182",F193,none,fix,merged,273,none,2026-10-15
-F194,"the seconds of every view are measured and said in VIEWS TIMING lines, the read back split into its hidden items, the walk of the overrides and the colour of the clashing items",F194,none,fix,in review,none,none,2026-10-15
+F194,"the seconds of every view are measured and said in VIEWS TIMING lines, the read back split into its hidden items, the walk of the overrides and the colour of the clashing items",F194,none,fix,merged,274,none,2026-10-15
