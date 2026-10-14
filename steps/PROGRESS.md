@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 03:30, round 5, task 3 of 7 merged, F192 Over 150mm only inside C, nothing waits on an answer
+STATE OPEN, 2026-10-15 04:10, round 5, tasks 1 to 4 merged, Q182 waits for Bader
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 247 | 16 | 0 | 0 | 60 | 7 | 330 |
-| total | 450 | 24 | 0 | 0 | 161 | 18 | 653 |
+| outside the waves | 253 | 16 | 0 | 1 | 60 | 7 | 337 |
+| total | 456 | 24 | 0 | 1 | 161 | 18 | 660 |
 <!-- the end of the counts -->
 
 ## Now
@@ -25,7 +25,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - F180 the C04 run, report at the top of steps\03_bader_next.md. Pictures stopped at 9000, no GDI crash, then Navisworks
   grew to 26 GB and the NWD step hung with a 0 byte NWD. Run stopped, Part 2 NOT started, as ordered
 - Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the
-  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder 271, F192 Over 150mm only inside C in review
+  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder 271, F192 Over 150mm only inside C 272, F193 records in review
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
@@ -44,7 +44,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 4. The register rows of 13 Oct: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
 
 ## Waiting for Bader
-- Nothing waits on a question. Q175 C and Q176 750 are answered and recorded by F183
+- Q182: how to handle the clashes over 150 mm of tests of priority A and B, which have no Over 150mm folder. The counts come from the next run
 - What Excel shows a person when it opens a workbook of linked pictures, and whether its click link that goes up
   one folder to Clash report opens the jpg, steps\03_bader_next.md
 
