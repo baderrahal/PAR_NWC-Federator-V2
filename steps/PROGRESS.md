@@ -15,15 +15,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 199 | 16 | 0 | 8 | 59 | 7 | 289 |
-| total | 402 | 24 | 0 | 8 | 160 | 18 | 612 |
+| outside the waves | 200 | 16 | 0 | 9 | 60 | 7 | 292 |
+| total | 403 | 24 | 0 | 9 | 161 | 18 | 615 |
 <!-- the end of the counts -->
 
 ## Now
 - Bader's message of 13 Oct, Q162, five things: all merged on 14 Oct, F151 232, F152 233, F153 234, F154 235, F155 236
 - F156 237: build\install.ps1 refused every build since F152, found by the loop's install, fixed and installed
-- Set 94, main 51d9f31d, 1A02MM through the window: RAN, no log beside the NWF, 4160 linked pictures and none embedded,
-  130 blocks, the built in pack, 25 mm on every test. Excel read the 4160 as linked pictures. steps\history\log.md
+- Bader's order of 14 Oct, tasks A to D: F157 239 pictures trail, F158 240 Log folder, F159 241 skip option gone, F161 242
+- F160, C04 under NM fed, main 6c47bef4: Navisworks crashed at picture 8907 of 10170, GDI objects 9999, lcodwin.dll
 
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -44,14 +44,14 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 
 ## Waiting for Bader
 - Q163 the picture click link, Q164 a second pack, Q165 ReadPicked and cut-xml.ps1, Q166 the Weekly run plus XML label,
-  Q167 the two checks that still read the XML's tolerance, Q168 a saved test the matrix does not name is not run
+  Q167 the XML tolerance checks, Q168 a saved test the matrix does not name, Q169 to Q171 of 14 Oct, the report is at the top
 - What Excel shows a person when it opens a workbook of 4160 linked pictures, steps 1435 to 1437
 
 ## Blockers and known bugs
-- A saved test the built in matrix does not name is not run since F155, Q168
-- One DIALOG finding at the close of set 94, a captionless Navisworks window after RESULT, UNKNOWN
-- FR-067 is out: P15 shows its sequence crashed Navisworks twice, so a probe answers it first
-- T6-R-WPFBOX, F149-R1 and the coordinates box starting ticked, as before
+- Navisworks crashes at about picture 8900, one GDI object a picture, 10000 allowed, F160 and Q171
+- A saved test the built in matrix does not name is not run since F155, Q168. F163: tools\loop names two boxes now gone
+- One DIALOG finding at the close of set 94 UNKNOWN. FR-067 is out, a probe answers it first
+- T6-R-WPFBOX and F149-R1, as before. Q169 the Log place and Q170 a model on Internal still FAILS, in 02_questions
 
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record

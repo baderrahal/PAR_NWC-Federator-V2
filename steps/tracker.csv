@@ -611,3 +611,6 @@ Q169,"whether the Log folder is at the deepest folder holding the NWF and NWD fo
 F159,"the option that skipped the clash for models off the shared coordinates removed, the clash always runs, a NOTICE in the log and in the list names the models",F159,none,fix,merged,241,none,2026-10-14
 Q170,"whether a group with a model on Internal or naming no site still ends FAILED now that its clash always runs, F159",none,none,question,waiting for Bader,none,none,2026-10-14
 F161,"the picture pass names where its GDI objects go, render or save, and warns of one file named twice only where a picture was written, after run 20261014-105308",F161,none,fix,merged,242,none,2026-10-14
+F160,"the run on C04 under NM fed with the build of F157 to F159, its crash in lcodwin.dll at picture 8907 of 10170 at 9999 GDI objects, the evidence and the report",F160,none,fix,merged,243,none,2026-10-14
+Q171,"whether the picture step stops at 9000 GDI objects and lets the run finish, or all pictures in several sessions, F160",none,none,question,waiting for Bader,none,none,2026-10-14
+F163,"tools\loop and tools\probes\drive-window-run.ps1 still type into the Excel folder box and tick the skip box, both gone with F158 and F159",F163,none,fix,open,none,none,2026-10-14

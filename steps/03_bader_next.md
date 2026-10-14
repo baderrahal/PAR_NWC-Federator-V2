@@ -1,5 +1,80 @@
 # 03 Bader next
 
+## The round of 2026-10-14, F157 to F161, and the run on C04
+
+Written for Bader. Simple words. What the evidence proves is marked PROVEN. What is not known is marked UNKNOWN.
+
+### What was done
+
+- F157, PR 239. The picture step now writes a MEMORY line with GDI and USER object counts at the start, every 250 pictures and on every failure. It writes a RATE line every 250. Every IMAGE failure has a time, the clash, its test, the full path and the whole exception with its call trace. The log already flushed every line to disk
+- F158, PR 240. Logs and reports go in one folder called Log beside the NWF and NWD folders. The Excel folder box is gone. Nothing in Log is overwritten or deleted, a name already there gets a date. Question 169 asks if the place is right
+- F159, PR 241. The option "Skip clash when models sit off shared coordinates" is gone. The clash always runs. A NOTICE in the log and in the list file names the models and says the results may be wrong for them. Question 170 asks about the group ending FAILED
+- F161, PR 242. Two fixes after the run below, the GDI split and the file name warning
+- F160 is this report
+
+### The run on C:\Users\bader\Desktop\NM fed\NWC\C04
+
+Started 10:53 with the build 6c47bef4, tolerance 25 mm, viewpoints on, 1 group 1A04PK, 10 NWC files. It crashed at 11:10:26 in the picture step, 17 minutes in. The NWF was saved in a new folder, `NWF\C04\run 2026-10-14 1052`, because an NWF was already in `NWF\C04`. The NWD was not made. No HTML and no Excel was made.
+
+### PROVEN by the evidence
+
+1. The crash is in Navisworks. Windows Application log, Error, 11:10:26: Roamer.exe 22.5.1433.58, faulting module lcodwin.dll 22.5.1433.58, exception code 0xc0000005, fault offset 0x0000000000045344, Report Id 95c3d2cf-2b87-4e23-b1b0-e85a5f0b8115
+2. GDI objects of Navisworks go up by exactly 1 for every picture. 1092 at the start, 3092 at picture 2000, 9092 at picture 8000, 9999 at picture 8907. The pictures in the _files folder are 8907
+3. A process may hold 10,000 GDI objects. The first image failure came at 9999. The error is in Navisworks's own TestsImageForResult. Windows wrote GDIObjectLeak reports at 11:08:52 to 11:09:02, when the count passed about 9,000. The crash came 5 seconds after the failures began
+4. The earlier crash at 02:34 is the same. Windows wrote GDIObjectLeak at 02:33:02 and 02:33:26. The log at 02:33:26 reads picture 7931, and 7931 plus about 1,100 is about 9,000. It is the same count
+5. Clash35 and Clash36 naming one file was not two clashes on one name. A failed picture gives its number back, so the next clash gets the same file name for a file that was never written. In this run 10 failed clashes got cd350007.jpg in a row. The warning of F157 said wrongly that a picture would be replaced. F161 fixes that
+6. Task C works. 8 models were off the coordinates. The clash tests were made and run, the NWF was saved, viewpoints were asked for, and the log says NOTICE. Nothing was skipped
+7. Task B works for what ran. Log was made beside the NWF and NWD folders, and the 8907 pictures are in `Log\..._files`. The NWF folder holds the NWF alone. The log said `RUN logs and reports go in C:\Users\bader\Desktop\NM fed\Log`
+8. A model on Internal, ST-MOD-000002, still made the group FAILED, as the old rule with the option off did
+
+### UNKNOWN
+
+- Whether the GDI object is made inside Navisworks's TestsImageForResult or in our save and dispose of the bitmap. F161 adds a GDI line that answers it on the next run
+- Why Navisworks's private memory grew to 28 GB, about 2.6 MB for each picture, on a PC with 15.8 GB of RAM. It did not cause this crash as far as the evidence shows, the commit limit is 35.8 GB
+- Whether the HTML, the Excel and the copy of the run log in Log work end to end. The run never reached them. The Core test LogFolderLinksTests proves the links on written files. The copy of the log into Log is proven by LogCopyTests only
+- Whether the viewpoint step works after the pictures, it was not reached
+
+### Evidence, kept outside the repo in C:\NWC-PC-Test\evidence\2026-10-14-run-c04
+
+launcher.txt, life.txt (GDI, memory and CPU every 15 s), driver.txt, run-20261014-105308.log and .tsv, the two registry exports, the AutoSave lists. The crash dump is `C:\Users\bader\AppData\Local\CrashDumps\Roamer.exe.25436.dmp`, 71 MB. Windows report: `C:\ProgramData\Microsoft\Windows\WER\ReportArchive\AppCrash_Roamer.exe_1fdd64d565bd9f268c788b26c9e96a57183d58c_6d739cb3_b2ad21cc-952c-4f17-9823-294aa494f776`. RAM 15.8 GB, free 8.5 GB after the crash. Disk C: 98.8 GB free. Page file 20 GB, peak 3 GB.
+
+Last 5 rows of the .tsv are the PICTURES `pictures models` rows of 11:10:06 to 11:10:21, the last for `BLD-PL-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings`. The last lines of the log are the IMAGE failures of Clash7 to Clash10 at 11:10:21, each with GDI objects 9999.
+
+### What I started and what I wrote outside the repo
+
+Started and closed: build\install.ps1 through powershell.exe, reg.exe twice, one powershell.exe launcher, one powershell.exe driver, one Navisworks Roamer.exe pid 25436, closed by Dispose, exit code 0. dotnet build, dotnet test, git and gh in the repo. The dotnet build servers were shut down at the end.
+
+Written outside the repo:
+- `%APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`, the install
+- `NM fed\NWF\C04\run 2026-10-14 1052\` with the NWF, 4,697 bytes
+- `NM fed\NWD\C04\run 2026-10-14 1052\`, empty
+- `NM fed\Log\1104-PAR-1A04PK-ZZZ-BM-MOD-000001_files\`, 8,907 jpg files, 335 MB
+- the tool's own run-20261014-105308.log and .tsv and folders.txt in `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
+- Windows: the crash dump and the report folder above
+- Navisworks's own HKCU settings, the counters and the recent file list, 20 lines, see the two .reg exports
+- evidence folder above, and the scratch files of this session under `%TEMP%\claude`
+
+Nothing of yours was overwritten. All 12,983 files that were under NM fed before are unchanged.
+
+Two things were removed, and not by me:
+- the tool's keep 30 rule removed `run-20260920-220804.log` and `.tsv` at the start of the run. I put both back from the loop's logs-backup, the sha256 is equal
+- Navisworks's own AutoSave rotation removed three old files, `...Autosave738.nwf` to `Autosave740.nwf`, and wrote three new, `Autosave1479` to `1481`. No copy of the three exists. The loop switches AutoSave off before a run and my launcher did not. That was a gap of mine
+
+### Next step
+
+Do not run the whole building again until the pictures are fixed, it will crash again at about picture 8900. My suggestion for the fix, F162, needs your answer: stop the picture step when GDI objects pass 9,000, say so, and let the run go on to the NWD, the HTML and the Excel with the rest of the pictures left empty. That makes a run finish. It does not give you all the pictures. Giving all of them needs one of these, none tried yet: take the pictures in several Navisworks sessions, or find out if the save of the bitmap is the leak, which the GDI line will say, or raise the Windows limit `GDIProcessHandleQuota`, which needs admin and a restart and is not for 27 people.
+
+Run steps, one action each:
+1. Install main at 64cb73d or later with `build\install.ps1`
+2. In the tool, on 3. Outputs under More, set "At most per test, 0 for no cap" to 10. That keeps the run well under 8,900 pictures
+3. Run C04 to its end. It should reach the NWD, the HTML and the Excel
+4. Read the lines that start `GDI      PICTURES` in the log and send them with the log
+
+### Left over
+
+- `tools\loop` and `tools\probes\drive-window-run.ps1` still name the Excel folder box and the skip box. The harness will stop on them. Not changed in this round, it needs its own fix
+- Q169, the place of the Log folder. Q170, the group with a model on Internal ends FAILED. Both are in `steps\02_questions.md`
+
 **SINCE F155, 2026-10-14, THE CLASH XML BOX IS GONE.** There is no Clash XML box, no Browse beside it, no Teams line under it, and no entry `Use the value in the XML` or `Other` in the tolerance drop down. The clash matrix is built into the tool. Earlier steps in this file that use them, steps 422 to 504, 587, 597, 1045 to 1060, 1133 to 1146 and 1222, cannot be followed as written on a build with F155. Skip them. The steps from 1400 on are written for the build with F155.
 
 **The last run, 2026-09-20 16:20, was the worksets round proving run against HIS OWN C02 folders, log `run-20260920-162006.log`, and it reads 8 groups DONE and 2 FAILED. The two are 1A02MM and 1A02WL, failed on purpose under Q70 because a structural model in each was exported on Revit`s internal origin, and BOTH still wrote their NWF, their NWD and their report. THE WORKSETS ROUND IS NOT ON MAIN YET: it is the branch `round-worksets` and has to be merged before a build here carries any of what these steps describe. THE ADD-IN BUILDS, 0 errors and 0 warnings.**

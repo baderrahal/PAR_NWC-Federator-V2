@@ -42,7 +42,7 @@ namespace Federator.Core.Report
         public string Detail { get; private set; }
 
         /// <summary>
-        /// The exception in full, its type, message, inner exceptions and stack trace, F157, or null
+        /// The exception in full, its type, message, inner exceptions and call trace, F157, or null
         /// where the failure was not a throw. Written under the failure line and never read by the
         /// guard, so it carries a path and a trace without making one reason per picture.
         /// </summary>

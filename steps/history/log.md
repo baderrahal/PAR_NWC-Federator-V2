@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F160 the run on C04 under NM fed with the build of F157 to F159
+
+Branch fix-F160 off main 64cb73d. Task D of Bader's order. The report in simple words is the top of
+steps\03_bader_next.md and the raw evidence is in C:\NWC-PC-Test\evidence\2026-10-14-run-c04.
+
+What was run: main 6c47bef4 installed with build\install.ps1, Navisworks Manage 2025 started through the Automation
+API by a lean launcher of this session, one driver typed the NWC folder, the NWF and NWD folders of a new dated
+sub-folder and pressed Scan, Run and OK. Tolerance 25 mm, viewpoints on. The folder is a Desktop test copy, not a live one.
+
+What happened:
+- 10:53:23 the run began, 741 tests created, 8 models off the shared coordinates, the clash ran, the NOTICE is in the log
+- the picture step climbed one GDI object a picture, 1092 to 9999 at picture 8907
+- 11:10:21 the first IMAGE failure at 9999, 11:10:26 Roamer.exe faulted in lcodwin.dll, 0xc0000005, offset 0x45344
+- no NWD, no HTML, no Excel and no copy of the log in Log, the run did not reach them. The NWF was saved at 10:53:26
+
+Proven by it: the cause of the crash of 20261014-020323 is the same, the GDI count of Navisworks reaching 10000. The
+wrong "two clashes one file" reading is explained and fixed in F161. Task B and Task C read right in the real window.
+
+Not known: whether the GDI object is made in TestsImageForResult or in the save, and why the private memory reached
+28 GB. F161 adds the GDI line for the first.
+
+Written outside the repo, in the report. The tool's keep 30 rule removed one old log pair and it was put back from the
+loop's backup. Navisworks's AutoSave rotation removed three old files, none restorable. The launcher did not switch
+AutoSave off as the loop does.
+
+Core tests: 3087 passed, 0 failed, 0 skipped. Release build 0 warnings, 0 errors.
+
 ## 2026-10-14 F161 the GDI split of the picture pass, and the one file named twice warning read right
 
 Branch fix-F161 off main 6c47bef. Found by run 20261014-105308, the first run with F157, on C04 under NM fed. Its log
@@ -84,7 +111,7 @@ this entry.
 ## 2026-10-14 F157 the picture pass leaves a trail for a run that dies
 
 Branch fix-F157 off main 49c69e3. Run 20261014-020323 of 1A04PK ended inside PICTURES at picture 8775 of 10206 with no
-stack trace, no RESULT block and no memory line since the start of the step. Its last two lines carried no time stamp.
+call trace, no RESULT block and no memory line since the start of the step. Its last two lines carried no time stamp.
 
 What was read first, off the machine and not assumed:
 - Windows Error Reporting holds three GDIObjectLeak events for Roamer.exe at 02:33:02 and 02:33:26, about a minute
@@ -98,7 +125,7 @@ What changed, diagnostic logging only:
   every 250 pictures (ImageOptions.LogEveryPictures) and on every image failure
 - RATE PICTURES line every 250 pictures, since the last line and since the start of the pass
 - every IMAGE failure is a stamped line with the clash, its test, the reason, then the file and the whole exception with
-  its stack trace under it. The guard still reads the reason alone
+  its call trace under it. The guard still reads the reason alone
 - a WARNING line naming both clashes when two would write one picture file
 - every log line was already flushed to the disk as it is written, RunLog.WriteRaw. A test now reads the file while it is
   open, for the pictures' lines

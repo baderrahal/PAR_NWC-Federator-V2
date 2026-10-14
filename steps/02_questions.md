@@ -1007,3 +1007,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 170. From the loop, 2026-10-14, F159. The option that skipped the clash for models off the shared coordinates is gone, as you asked. The clash always runs and a NOTICE names the models and says the clash results may be wrong for them, in the run log and in the Models not on the same shared coordinates list. One thing was left as it was, because the order did not say. A model that names Internal or names no site still FAILS its group as Q70 answered, which is what a run with the old option switched off did. That means a group with such a model ends FAILED, though it made its NWF, NWD, tests and viewpoints. Should that group end DONE with the NOTICE alone, or PARTIAL, or stay FAILED?
 
     Answer:
+
+171. From the loop, 2026-10-14, F160 and F161. The run on C04 crashed Navisworks at picture 8907 because its GDI objects went up by one for every picture and reached the 10000 a process may hold. The tool cannot raise that limit. May the picture step stop when the GDI objects pass 9000, say so in the log and in the window, and let the run go on to the NWD, the HTML and the Excel with the pictures after that left empty? Or do you want all the pictures, which needs the pictures taken in several Navisworks sessions and is a bigger change?
+
+    Answer:
