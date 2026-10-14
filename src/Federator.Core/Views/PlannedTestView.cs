@@ -5,8 +5,8 @@ using Federator.Core.Clash;
 namespace Federator.Core.Views
 {
     /// <summary>
-    /// One view this run means to write, F114: one clash test's open clashes, all of them since F186,
-    /// in the folder of its priority letter under the tool's one top folder, Bader's answer 1 of Q174. The
+    /// One view this run means to write, F114: one clash test's open clashes, all of them since F186 except in C,
+    /// where the ones over the threshold are in the Over 150mm view of F192, in the folder of its priority letter under the tool's one top folder, Bader's answer 1 of Q174. The
     /// team pair still decides which models the view shows and no longer decides where it sits.
     /// </summary>
     public sealed class PlannedTestView
@@ -17,12 +17,14 @@ namespace Federator.Core.Views
             ClashPriority priority,
             string priorityFolder,
             TeamPair pair,
+            string sizeFolder,
             string name,
             IList<ViewClash> clashes)
         {
             Priority = priority;
             PriorityFolder = priorityFolder;
             Pair = pair;
+            SizeFolder = sizeFolder;
             Name = name;
             this.clashes = new List<ViewClash>(clashes);
         }
@@ -34,6 +36,12 @@ namespace Federator.Core.Views
 
         /// <summary>The team pair of the test, which decides the models the view shows and nothing of where it sits.</summary>
         public TeamPair Pair { get; private set; }
+
+        /// <summary>
+        /// F192. Over 150mm, the sub folder of C that holds the view of the test's clashes over the threshold, or null.
+        /// It exists under C only, Bader's order of 15 Oct 2026.
+        /// </summary>
+        public string SizeFolder { get; private set; }
 
         /// <summary>The view's name, exactly the test's name and never trimmed.</summary>
         public string Name { get; private set; }
@@ -76,7 +84,14 @@ namespace Federator.Core.Views
         {
             get
             {
-                return new List<string> { ToolViewFolder.Name, PriorityFolder };
+                List<string> folders = new List<string> { ToolViewFolder.Name, PriorityFolder };
+
+                if (SizeFolder != null)
+                {
+                    folders.Add(SizeFolder);
+                }
+
+                return folders;
             }
         }
 

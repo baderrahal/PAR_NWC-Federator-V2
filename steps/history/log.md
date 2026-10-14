@@ -2,6 +2,28 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F192 the Over 150mm folder exists only inside C
+
+Branch fix-F192 off main a04df5a. Bader's order of 15 Oct, task 3.
+
+What the old rule was, read from git (F114, the commit before F186) and the docs: in a team pair that carries the size
+folder, Mechanical or Electrical, a clash whose larger service is over 150 mm, the larger side of a duct or the diameter
+of a pipe by SizeRule.LargestMillimetres, went into the test's own view under an Over 150mm sub folder, and every other
+clash, a small service, a size that could not be read or no service at all, stayed in the test's view in the pair folder,
+so no clash was in two views. A size not read was named. F186 dropped the folder and put every clash in one view.
+
+Now: inside C only, the same split. The test's clashes over the threshold are its view in C/Over 150mm and the rest its
+view in C. A test with no priority is C. A pair that does not carry the size folder has no split. In A and B there is no
+Over 150mm folder and every open clash stays in the test's one view. The clashes the old rule would have split off there
+are counted and named in the VIEWS plan block, for Bader's decision, which is a question in steps/02_questions.md.
+The counts of the last run could not be read, because the F189 logs hold the size read and not each verdict, so the
+counts come from the next run's plan block.
+
+Check 2 of the VIEWS TREE now allows the Over 150mm folder inside C and nowhere else, and check 1 finds a test's second
+view by its place. The tree lines show the folder. The tests, docs and rules say it.
+
+Core tests 3212 passing, Release build clean. Not run in Navisworks yet, the run of task 7 shows it.
+
 ## 2026-10-15 F191 everything outside the tool folder is deleted, Comments is kept
 
 Branch fix-F191 off main daf56e1. Bader's order of 15 Oct, task 2.

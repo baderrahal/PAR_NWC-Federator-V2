@@ -132,28 +132,31 @@ test's priority and the two teams of its sides. That is the picture each team re
 own clashes. Clash Detective is where one clash is looked at close up, and the pictures in
 the report are how one clash is shown there.
 
-The tree, outermost first:
+The tree, outermost first, since F186 and F192:
 
-    A, B, C or No priority           the priority the clash matrix gives the test
-      Architecture vs Mechanical     the two teams of the test's sides, in the team map's one order
+    NWC Federator (auto)             the tool's one folder, deleted and made again each run
+      A, B or C                      the priority the clash matrix gives the test, none being C
         BLD-ME-Ducts-vs-BLD-AR-Walls   the test, named exactly as Clash Detective names it
-        Over 150mm                   only in a pair carrying it, Mechanical or Electrical here
+      C
+        Over 150mm                   inside C only, for a pair carrying it, Mechanical or Electrical here
           BLD-ME-Ducts-vs-BLD-AR-Walls the same test's clashes whose larger service is over 150 mm
+
+There is no team pair level. Everything outside the tool folder is deleted on a run that makes
+viewpoints, except a folder named Comments, which is kept with all inside it and made empty
+where there is none, F191.
 
 Where a clash goes, by example:
 
-- a duct of 600 by 150 against a wall, test BLD-ME-Ducts-vs-BLD-AR-Walls, priority A: in
-  `A / Architecture vs Mechanical / Over 150mm / BLD-ME-Ducts-vs-BLD-AR-Walls`, because the
-  larger side of the duct is 600 and the pair carries the size folder
-- a pipe of 100 mm against the same wall, same test: in
-  `A / Architecture vs Mechanical / BLD-ME-Ducts-vs-BLD-AR-Walls`, the view in the pair
-  folder, with every clash of the test that is not over 150 mm
-- a fitting whose size could not be read: in the pair folder's view too, never under Over
+- a duct of 600 by 150 against a wall, test BLD-ME-Ducts-vs-BLD-AR-Walls, priority C: in
+  `C / Over 150mm / BLD-ME-Ducts-vs-BLD-AR-Walls`, because the larger side of the duct is 600
+  and the pair carries the size folder
+- a pipe of 100 mm against the same wall, same test: in `C / BLD-ME-Ducts-vs-BLD-AR-Walls`,
+  with every clash of the test that is not over 150 mm
+- the same duct in a test of priority A or B: in the test's one view in `A` or `B`. There is
+  no Over 150mm folder there, and the log counts these clashes for Bader's decision
+- a fitting whose size could not be read: in the test's main view in C, never under Over
   150mm, and named in the log's VIEWS block
-- a column against a beam, test BLD-ST-Columns-vs-BLD-ST-Framing, priority B: in
-  `B / Structure vs Structure / BLD-ST-Columns-vs-BLD-ST-Framing`, a team against itself
-  being one pair, and no Over 150mm, because neither team carries it
-- a test the priority file says nothing about: under `No priority`
+- a test the priority file says nothing about: under `C`
 - a clash Reviewed, Approved or Resolved: in no view, and counted in the VIEWS block
 - a mirrored test, the same two sets the other way round: no view of its own, its clashes
   are in the kept test's view
@@ -182,13 +185,13 @@ no view is made and the log says so in every group.
 ## The 150 mm rule and the sub groups
 
 Pipes, ducts, cable trays and their fittings over 150 mm are in the viewpoints. Smaller
-ones are not. The large ones of Mechanical and Electrical sit in a sub group of their own,
-so the tree reads:
+ones are not. The large ones of Mechanical and Electrical sit in a sub folder of their own,
+Over 150mm, and since F192 that folder exists inside C only:
 
-    ME
-      ME only
-      Over 150mm
-        ME over 150mm
+    NWC Federator (auto)
+      C
+        Over 150mm
+          BLD-ME-Ducts-vs-BLD-AR-Walls   the test's clashes over 150 mm
 
 The sub folder is named from the threshold, so the folder and the rule that fills it can
 never disagree. Which disciplines get a sub group is a setting, because ME and EL are

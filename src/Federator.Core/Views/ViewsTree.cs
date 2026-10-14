@@ -252,11 +252,13 @@ namespace Federator.Core.Views
             List<string> lines = new List<string>();
             string priority = null;
 
-            // F186. The tool's one top folder, then A, B and C, then the tests directly. No team pair level.
+            // F186 and F192. The tool's one top folder, then A, B and C, then the tests directly, and inside C the Over 150mm folder. No team pair level.
             if (facts.Plan.Views.Count > 0)
             {
                 lines.Add(ToolViewFolder.Name);
             }
+
+            string sizeFolder = null;
 
             foreach (PlannedTestView view in facts.Plan.Views)
             {
@@ -264,9 +266,17 @@ namespace Federator.Core.Views
                 {
                     lines.Add("  " + view.PriorityFolder);
                     priority = view.PriorityFolder;
+                    sizeFolder = null;
                 }
 
-                lines.Add("    " + view.Name + "  " + view.Clashes.Count
+                // F192. The Over 150mm folder is inside C only, and its views are indented under it.
+                if (view.SizeFolder != null && !string.Equals(view.SizeFolder, sizeFolder, StringComparison.Ordinal))
+                {
+                    lines.Add("    " + view.SizeFolder);
+                    sizeFolder = view.SizeFolder;
+                }
+
+                lines.Add((view.SizeFolder == null ? "    " : "      ") + view.Name + "  " + view.Clashes.Count
                     + " open clashes, " + ShowsAndHides(facts, models, view) + ", " + StateOf(facts, view));
             }
 
