@@ -241,13 +241,13 @@ namespace Federator.Addin.Engine
                 using (seconds.In(ViewsPart.Removing))
                 {
                     Remove(document, inventory);
+                }
 
-                    // F191, Bader's order of 15 Oct 2026. Everything at the root outside the tool folder and the
-                    // Comments folder is deleted, after the tool folder is built.
-                    using (seconds.In(ViewsPart.DeletingOutside))
-                    {
-                        DeleteOutsideTheToolFolder(document, outcome);
-                    }
+                // F191, Bader's order of 15 Oct 2026. Everything at the root outside the tool folder and the
+                // Comments folder is deleted, after the tool folder is built. Its own part, not nested in Removing.
+                using (seconds.In(ViewsPart.DeletingOutside))
+                {
+                    DeleteOutsideTheToolFolder(document, outcome);
                 }
             }
             finally
@@ -925,6 +925,10 @@ namespace Federator.Addin.Engine
                         ReadBackSeconds = seconds.SecondsIn(ViewsPart.ReadingBack) - readBack0,
                         ReadBackHiddenSeconds = lastReadBack == null ? 0.0 : lastReadBack.HiddenSeconds,
                         ReadBackOverrideSeconds = lastReadBack == null ? 0.0 : lastReadBack.OverrideSeconds,
+                        ReadBackGetSeconds = lastReadBack == null ? 0.0 : lastReadBack.GetOverridesSeconds,
+                        ReadBackOverrideColourSeconds = lastReadBack == null ? 0.0 : lastReadBack.ColourOfOverrideSeconds,
+                        ReadBackOverrideItemSeconds = lastReadBack == null ? 0.0 : lastReadBack.ItemOfOverrideSeconds,
+                        ReadBackOverridePathSeconds = lastReadBack == null ? 0.0 : lastReadBack.PathOfOverrideSeconds,
                         ReadBackColourSeconds = lastReadBack == null ? 0.0 : lastReadBack.ColourSeconds,
                         PrivateMegabytes = privateBytes < 0 ? -1.0 : privateBytes / (1024.0 * 1024.0),
                         TreeItems = treeNow

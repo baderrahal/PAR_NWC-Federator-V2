@@ -40,6 +40,18 @@ namespace Federator.Core.Views
         /// <summary>Inside the read back, walking the material overrides one by one.</summary>
         public double ReadBackOverrideSeconds { get; set; }
 
+        /// <summary>F196. Inside the walk of the overrides, getting the list from the saved view.</summary>
+        public double ReadBackGetSeconds { get; set; }
+
+        /// <summary>F196. Inside the walk, reading the colour of each override.</summary>
+        public double ReadBackOverrideColourSeconds { get; set; }
+
+        /// <summary>F196. Inside the walk, reading the item of each coloured override.</summary>
+        public double ReadBackOverrideItemSeconds { get; set; }
+
+        /// <summary>F196. Inside the walk, making the index path of each coloured item.</summary>
+        public double ReadBackOverridePathSeconds { get; set; }
+
         /// <summary>Inside the read back, asking the colour each clashing item will show.</summary>
         public double ReadBackColourSeconds { get; set; }
 
@@ -137,7 +149,11 @@ namespace Federator.Core.Views
                 + " s, the add into its folder " + Show(views.Sum(v => v.AddingSeconds)) + " s, the mark " + Show(views.Sum(v => v.MarkingSeconds))
                 + " s, the read back " + Show(views.Sum(v => v.ReadBackSeconds)) + " s, of which the hidden items "
                 + Show(views.Sum(v => v.ReadBackHiddenSeconds)) + " s, the walk of the overrides " + Show(views.Sum(v => v.ReadBackOverrideSeconds))
-                + " s and the colour of the clashing items " + Show(views.Sum(v => v.ReadBackColourSeconds)) + " s");
+                + " s (getting the list " + Show(views.Sum(v => v.ReadBackGetSeconds)) + " s, the colour of each override "
+                + Show(views.Sum(v => v.ReadBackOverrideColourSeconds)) + " s, the item of each coloured one "
+                + Show(views.Sum(v => v.ReadBackOverrideItemSeconds)) + " s, its path "
+                + Show(views.Sum(v => v.ReadBackOverridePathSeconds)) + " s)"
+                + ", and the colour of the clashing items " + Show(views.Sum(v => v.ReadBackColourSeconds)) + " s");
 
             int quarter = Math.Max(1, views.Count / 4);
             double first = views.Take(quarter).Average(v => v.Seconds);

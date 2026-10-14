@@ -79,7 +79,7 @@ namespace Federator.Core.Tests
             string all = string.Join("\n", new List<string>(timings.Lines("G")).ToArray());
 
             Assert.That(all, Does.Contain("making the view 1 s, hiding and dimming 2 s, the add into its folder 10 s, the mark 0.1 s, the read back 85 s"));
-            Assert.That(all, Does.Contain("of which the hidden items 5 s, the walk of the overrides 70 s and the colour of the clashing items 10 s"));
+            Assert.That(all, Does.Contain("of which the hidden items 5 s, the walk of the overrides 70 s (getting the list 0 s, the colour of each override 0 s, the item of each coloured one 0 s, its path 0 s), and the colour of the clashing items 10 s"));
         }
 
         [Test]
