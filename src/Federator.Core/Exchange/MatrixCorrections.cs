@@ -519,6 +519,9 @@ namespace Federator.Core.Exchange
         /// ExchangeReader.ReadFile does, in the encoding the file declares, and a file that will
         /// not read as XML throws as ReadFile's does. A set the corrections cannot read in a file
         /// that does read is counted and said, never thrown.
+        ///
+        /// IT STAYS for the coming clash test work, by Bader's order of 14 Oct 2026, Q165, though no
+        /// run reads an XML from the disk since F155. That work is a mirror check, steps\01_next.md.
         /// </summary>
         public static ExchangeDocument ReadPicked(string path)
         {

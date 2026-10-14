@@ -1622,3 +1622,9 @@ The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TW
 - WHY. F152 made Core reference System.IO.Compression for the zip of the workbook. The .NET 4.8 reference assemblies give it the version 4.2.0.0, and the framework's own file is 4.0.0.0. The runtime unifies the two: a load of the 4.2.0.0 name in an ordinary PowerShell on this machine returns the framework's 4.0.0.0 from the GAC. The install check reads references in the reflection only context, which applies no binding policy, so it read the reference as missing.
 - THE CHANGE. After its two reads by full name and by plain name, the check reads the name after binding policy, `AppDomain.ApplyPolicy`, which gives the name the runtime loads. A name with no policy comes back as it was, so a reference that is truly missing is still refused.
 - DONE 2026-10-14. PROVED here: `run.ps1 -Mode Install -Stamp e2082a73`, the commit of the fix, exited with VERDICT: INSTALLED e2082a73, install.ps1 exit 0, the 15 files present and the stamp read back, where the same install of 41b4ac32 exited 1. install.ps1 parses with no error. Core tests are not touched, 3099 passed. WHAT IS UNKNOWN: whether Navisworks loads the zip types when a run writes the workbook. The window run of this round is that proof.
+
+## The next clash test round, recorded 14 Oct 2026, not built
+
+Bader's order, Q165. A mirror check: a test A against B, for example a wall of AR against a wall of STR, and its
+mirror B against A must give the same clash count, and more checks. MatrixCorrections.ReadPicked and
+tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Nothing of it is built in F165.
