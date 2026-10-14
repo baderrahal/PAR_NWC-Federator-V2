@@ -39,6 +39,7 @@ namespace Federator.Core.Report
             GhostTheOtherItems = false;
             TextureCacheLimitBytes = TextureCache.DefaultLimitBytes;
             TextureCacheCheckEverySeconds = TextureCache.DefaultCheckEverySeconds;
+            LogEveryPictures = PictureWatch.DefaultEvery;
 
             // New, Active and Reviewed. The same three Navisworks itself calls open, but
             // set out here in its own right, because this is which clashes are worth a
@@ -96,6 +97,9 @@ namespace Federator.Core.Report
 
         /// <summary>The least seconds between two measurements of the texture cache, sixty, F147.</summary>
         public int TextureCacheCheckEverySeconds { get; set; }
+
+        /// <summary>How many pictures between two MEMORY and RATE lines in the picture pass, 250, F157.</summary>
+        public int LogEveryPictures { get; set; }
 
         /// <summary>Is this clash one to render.</summary>
         public bool Wants(ClashStatus status)

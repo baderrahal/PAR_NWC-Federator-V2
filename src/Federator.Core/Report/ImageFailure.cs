@@ -41,6 +41,13 @@ namespace Federator.Core.Report
         /// <summary>What is said beside the reason on the line, or null where the reason says it all.</summary>
         public string Detail { get; private set; }
 
+        /// <summary>
+        /// The exception in full, its type, message, inner exceptions and stack trace, F157, or null
+        /// where the failure was not a throw. Written under the failure line and never read by the
+        /// guard, so it carries a path and a trace without making one reason per picture.
+        /// </summary>
+        public string Full { get; private set; }
+
         public static ImageFailure BecauseNoFileArrived(string path)
         {
             return new ImageFailure(NoFileArrived, "at " + path);
@@ -53,7 +60,9 @@ namespace Federator.Core.Report
                 throw new ArgumentNullException("error");
             }
 
-            return new ImageFailure(error.GetType().Name + ": " + error.Message, null);
+            ImageFailure thrown = new ImageFailure(error.GetType().Name + ": " + error.Message, null);
+            thrown.Full = error.ToString();
+            return thrown;
         }
 
         /// <summary>
@@ -76,7 +85,9 @@ namespace Federator.Core.Report
             int slash = path.LastIndexOfAny(new[] { '\\', '/' });
             string folder = slash > 0 ? path.Substring(0, slash) : null;
             reason = WithoutThe(reason, folder, "the picture's folder");
-            return new ImageFailure(reason, "at " + path);
+            ImageFailure written = new ImageFailure(reason, "at " + path);
+            written.Full = thrown.Full;
+            return written;
         }
 
         private static string WithoutThe(string text, string what, string instead)
