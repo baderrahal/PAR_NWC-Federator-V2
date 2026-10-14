@@ -201,6 +201,38 @@ namespace Federator.Core.Tests
             Assert.That(text, Does.Contain("    and 8 more"));
         }
 
+        // ---------- where an NWF's own folders are ----------
+
+        [Test]
+        public void AnNwfBuiltByTheNwcPageKeepsItsNwdAndLogFolderForTheNwfPage()
+        {
+            NwfPlaces places = new NwfPlaces();
+            places.Remember(@"C:\NM fed\NWF\C04\G.nwf", @"C:\NM fed\NWD\C04\G.nwd", @"C:\NM fed\Log");
+
+            Assert.That(places.NwdOf(@"c:\nm fed\nwf\c04\g.NWF"), Is.EqualTo(@"C:\NM fed\NWD\C04\G.nwd"));
+            Assert.That(places.LogFolderOf(@"C:\NM fed\NWF\C04\G.nwf"), Is.EqualTo(@"C:\NM fed\Log"));
+            Assert.That(places.NwdOf(@"C:\other.nwf"), Is.EqualTo(string.Empty), "an NWF the list does not know is run beside its file");
+            Assert.That(places.LogFolderOf(@"C:\other.nwf"), Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void ARunRememberedAgainReplacesItsLineAndTheFileReadsBack()
+        {
+            NwfPlaces places = new NwfPlaces();
+            places.Remember(@"C:\n\G.nwf", @"C:\d\1\G.nwd", @"C:\l1");
+            places.Remember(@"C:\n\H.nwf", @"C:\d\H.nwd", @"C:\l2");
+            places.Remember(@"c:\N\g.nwf", @"C:\d\2\G.nwd", @"C:\l3");
+
+            Assert.That(places.Rows.Count, Is.EqualTo(2));
+
+            NwfPlaces again = NwfPlaces.Read(places.ToLines());
+
+            Assert.That(again.NwdOf(@"C:\n\G.nwf"), Is.EqualTo(@"C:\d\2\G.nwd"));
+            Assert.That(again.LogFolderOf(@"C:\n\H.nwf"), Is.EqualTo(@"C:\l2"));
+            Assert.That(NwfPlaces.Read(new[] { "garbage", string.Empty }).Rows, Is.Empty);
+            Assert.That(NwfPlaces.Read(null).Rows, Is.Empty);
+        }
+
         // ---------- the NWC page ----------
 
         [Test]

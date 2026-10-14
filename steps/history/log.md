@@ -2,6 +2,26 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F189 the final run of Part 2 and the NWF's own folders
+
+Branch fix-F189 off main 7d0559d. Bader's order of 14 Oct, round 4 of the second set, task 8.
+
+Found and fixed first: the NWF page put the NWD and the Log folder beside the NWF, where the NWC page put them in two
+folders and a Log folder beside both. F189 keeps where each NWF's NWD and Log folder are, in nwf-places.tsv under
+%LOCALAPPDATA%\ParsonsNwcFederator, written when a group is built or refreshed, and the NWF page, its list of changed
+files and its confirmation use it. An NWF the list does not know is run beside its file as before.
+
+The final run, on a copy of C04 in Bader's layout, build 9eb59ad0, NM fed untouched: NWC page first build 61 min, DONE;
+the NWF page with nothing changed 68 min, DONE, the tool folder deleted with 187 items and made again with 187, the PROOF
+line counts equal, a coordinator's root view and root folder A left, statuses and comments kept; the NWF page after one NWC
+was written over 35 min, DONE, the changed file listed, 443 new clashes New, gone ones Resolved and kept, 15 tests warned
+by name, 125 views made again, 678 leftover jpgs removed including one planted, a text note kept. The saved viewpoint tree
+was read out of the NWF after each run. No Navisworks was left open and AutoSave was put back.
+
+Proved by tests: the places list. Core tests 3198 after, 0 failed. The Release build has 0 warnings and 0 errors.
+
+UNKNOWN: why the views took 53 and 61 minutes against 29, how the table looks to a person, the Rebuild in a real run.
+
 ## 2026-10-14 F188 the window has two pages, NWC and NWF
 
 Branch fix-F188 off main e4ccde5. Bader's order of 14 Oct, round 4 of the second set, task 9, and his answer 3 of Q174.

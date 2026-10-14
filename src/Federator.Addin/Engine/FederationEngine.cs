@@ -57,6 +57,9 @@ namespace Federator.Addin.Engine
         /// NWF folder, and in RunOpenDocument for the open file, from the file itself.
         /// </summary>
         private string reportFolder;
+
+        /// <summary>F189. Where each NWF's NWD and Log folder are, read once when the engine is made.</summary>
+        private readonly NwfPlaces places = NwfPlacesStore.Load();
         private readonly List<string> logFolders = new List<string>();
         private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
 
@@ -827,6 +830,17 @@ namespace Federator.Addin.Engine
         {
             FederationJob job = OpenJob(open);
 
+            if (openItHere)
+            {
+                string knownNwd = places.NwdOf(open);
+
+                if (knownNwd.Length > 0)
+                {
+                    job = new FederationJob(
+                        job.Building, job.OutputName, job.NwfPath, knownNwd, job.Files, job.WorkbookName, job.DisciplineCount, job.Disciplines);
+                }
+            }
+
             currentBuilding = job.Building;
             live.Groups(at, of, job.Building);
             JobOutcome outcome = new JobOutcome(job);
@@ -866,7 +880,10 @@ namespace Federator.Addin.Engine
                 // The one rule for where the reports go, shared with the window's line.
                 // The open file's own folder stands where the NWF folder stands on a
                 // scanned run, and no scan folder is applied because there was no scan.
-                reportFolder = OpenDocumentJob.ReportFolder(open);
+                // F189. A picked NWF built by the NWC page keeps its NWD and its Log folder where that run put them, so the
+                // NWF page writes the NWD, the Log, the Backup and the Clash report beside the group's and not beside the file.
+                string knownLog = openItHere ? places.LogFolderOf(open) : string.Empty;
+                reportFolder = knownLog.Length > 0 ? knownLog : OpenDocumentJob.ReportFolder(open);
                 NoteTheLogFolder(reportFolder);
                 NameTheReportsSoNothingIsOverwritten(job);
 
@@ -966,6 +983,7 @@ namespace Federator.Addin.Engine
                         else
                         {
                             FinishTheGroup(document, job, outcome);
+                            NwfPlacesStore.Remember(job.NwfPath, job.NwdPath, reportFolder);
 
                             if (refresh != null)
                             {
@@ -1387,6 +1405,7 @@ namespace Federator.Addin.Engine
 
                 // F187. The manifest of the files the NWF links, written for the next refresh to compare with.
                 new RefreshRun(log).WriteManifest(document, reportFolder, null);
+                NwfPlacesStore.Remember(job.NwfPath, job.NwdPath, reportFolder);
             }
             catch (Exception error)
             {

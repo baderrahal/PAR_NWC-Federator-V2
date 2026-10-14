@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 22:05, round 4 second set, Part 2 F188 the two pages merged, F189 the final run next
+STATE OPEN, 2026-10-15 01:10, round 4 second set, Parts 1 and 2 merged, F189 the final run merged, nothing waits on an answer
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 243 | 16 | 0 | 0 | 60 | 7 | 326 |
-| total | 446 | 24 | 0 | 0 | 161 | 18 | 649 |
+| outside the waves | 244 | 16 | 0 | 0 | 60 | 7 | 327 |
+| total | 447 | 24 | 0 | 0 | 161 | 18 | 650 |
 <!-- the end of the counts -->
 
 ## Now
@@ -25,7 +25,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - F180 the C04 run, report at the top of steps\03_bader_next.md. Pictures stopped at 9000, no GDI crash, then Navisworks
   grew to 26 GB and the NWD step hung with a 0 byte NWD. Run stopped, Part 2 NOT started, as ordered
 - Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the
-  C04 run ended clean 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh in review. F188 the two pages and F189 the final run next
+  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268. F189 the final run ended clean, in review
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
@@ -35,6 +35,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 14 Oct 01:28, set 94 | 51d9f31d, main after 237 | 0.027 s | 245 s, group FAILED on the same model | none in 10 readings | PICTURES 112.5 s |
 | 14 Oct 16:15, C04 1A04PK | 8e647af8, main after 259 | 0.08 s, 7904 in 637 s | not run, 1A04PK hung at the NWD after 47 min | UNKNOWN | VIEWS 1517 s |
 | 14 Oct 18:26, C04 1A04PK | 0947159a, main after 263 | 0.07 s, 3042 in 218 s | not run, 1A04PK ended at 50.4 min | none read | VIEWS 2586 s |
+| 15 Oct 00:15, C04 copy, NWF page | 9eb59ad0, main after 268 | 3066 in 225 s | not run | none read | VIEWS 1723 s, 3 runs 61, 68 and 35 min |
 
 ## Next
 1. Part 2: F185 the checks, F186 viewpoint folder, F187 refresh and overwrite, F188 the two pages, F189 the final run

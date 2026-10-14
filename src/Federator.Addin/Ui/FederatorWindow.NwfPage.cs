@@ -276,7 +276,9 @@ namespace Federator.Addin.Ui
 
         private string TheLogFolderOf(string nwf)
         {
-            return OpenDocumentJob.ReportFolder(nwf);
+            // F189. Where the run that built or refreshed this NWF put its Log folder, else beside the file.
+            string known = NwfPlacesStore.Load().LogFolderOf(nwf);
+            return known.Length > 0 ? known : OpenDocumentJob.ReportFolder(nwf);
         }
 
         /// <summary>

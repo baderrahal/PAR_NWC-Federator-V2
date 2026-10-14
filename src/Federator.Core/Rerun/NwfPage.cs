@@ -344,6 +344,104 @@ namespace Federator.Core.Rerun
     }
 
     /// <summary>
+    /// Where an NWF's own NWD and Log folder are, F189. The NWC page builds a group with its NWF and its NWD in two
+    /// folders and the Log folder beside both, so the run of that NWF on the NWF page has to write its NWD and its Log,
+    /// Backup and Clash report folders there and not beside the NWF, where the open file route puts them. The list is
+    /// the tool's own, one NWF a line, remembered by the run that built or refreshed it. A line with no NWD or no
+    /// Log folder says so with an empty field and is not used for that part.
+    /// </summary>
+    public sealed class NwfPlaces
+    {
+        public const string FileName = "nwf-places.tsv";
+
+        private readonly List<string[]> rows = new List<string[]>();
+
+        public ReadOnlyCollection<string[]> Rows
+        {
+            get { return new ReadOnlyCollection<string[]>(rows); }
+        }
+
+        /// <summary>The NWD path of that NWF, or empty where the list holds none.</summary>
+        public string NwdOf(string nwf)
+        {
+            string[] row = Find(nwf);
+            return row == null ? string.Empty : row[1];
+        }
+
+        /// <summary>The Log folder of that NWF, or empty where the list holds none.</summary>
+        public string LogFolderOf(string nwf)
+        {
+            string[] row = Find(nwf);
+            return row == null ? string.Empty : row[2];
+        }
+
+        public void Remember(string nwf, string nwd, string logFolder)
+        {
+            if (string.IsNullOrWhiteSpace(nwf))
+            {
+                return;
+            }
+
+            for (int i = rows.Count - 1; i >= 0; i--)
+            {
+                if (string.Equals(rows[i][0], nwf, StringComparison.OrdinalIgnoreCase))
+                {
+                    rows.RemoveAt(i);
+                }
+            }
+
+            rows.Add(new[] { nwf.Trim(), (nwd ?? string.Empty).Trim(), (logFolder ?? string.Empty).Trim() });
+        }
+
+        public IList<string> ToLines()
+        {
+            List<string> lines = new List<string>();
+
+            foreach (string[] row in rows)
+            {
+                lines.Add(row[0] + "\t" + row[1] + "\t" + row[2]);
+            }
+
+            return lines;
+        }
+
+        public static NwfPlaces Read(IList<string> lines)
+        {
+            NwfPlaces places = new NwfPlaces();
+
+            if (lines == null)
+            {
+                return places;
+            }
+
+            foreach (string line in lines)
+            {
+                string[] parts = (line ?? string.Empty).Split('\t');
+
+                if (parts.Length == 3 && parts[0].Trim().Length > 0)
+                {
+                    places.Remember(parts[0], parts[1], parts[2]);
+                }
+            }
+
+            return places;
+        }
+
+        private string[] Find(string nwf)
+        {
+            foreach (string[] row in rows)
+            {
+                if (string.Equals(row[0], nwf, StringComparison.OrdinalIgnoreCase))
+                {
+                    return row;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    /// <summary>
     /// The folder a rebuild writes into so no NWF or NWD is overwritten, F188: a dated folder under the NWF's own
     /// folder, named by the moment, the way the first runs of this tool were put by hand.
     /// </summary>
