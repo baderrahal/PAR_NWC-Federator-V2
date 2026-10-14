@@ -2828,14 +2828,14 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// F172 and F175. One line for each test with more than 750 clashes: its name, its priority letter,
+        /// F172, F175 and F190. One line for each test whose clashes exceed its cap: its name, its priority letter,
         /// its clashes, the pictures made and the clashes whose picture was skipped by the rule.
         /// </summary>
         private void SayTheTestsOverTheLimit()
         {
             foreach (TestReport test in Report.Tests)
             {
-                if (test.Rows.Count <= PictureLimits.ManyClashes)
+                if (test.Rows.Count <= Images.PictureLimitOf(test))
                 {
                     continue;
                 }

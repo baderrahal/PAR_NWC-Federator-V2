@@ -7,8 +7,8 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// F172 and F175, Bader's answers to Q171. A test with more than 750 clashes gets pictures for its
-    /// first 150, 100 or 50 clashes by its priority A, B or C, and the rest are skipped, per test and not
+    /// F172, F175 and F190, Bader's answers to Q171 and his order of 15 Oct 2026. Every test, whatever its clash
+    /// count, gets pictures for at most its first 150, 100 or 50 clashes by its priority A, B or C, per test and not
     /// for the run. A test the matrix does not name is C. The GDI objects of the process are the
     /// backstop: past 9000 no more pictures are made and the run goes on.
     /// </summary>
@@ -150,20 +150,37 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void ATestWith750ClashesOrLessGivesAllOfThemWhateverItsPriority()
+        public void ATestWithFewerClashesThanItsCapGetsAPictureForEach()
         {
             ClashReport report = Report();
-            TestReport a = AddTest(report, "EXACTLY-A", 750, ClashPriority.A);
-            TestReport b = AddTest(report, "EXACTLY-B", 750, ClashPriority.B);
-            TestReport c = AddTest(report, "EXACTLY-C", 750, ClashPriority.C);
-            TestReport small = AddTest(report, "SMALL", 40, ClashPriority.C);
+            TestReport a120 = AddTest(report, "A-120", 120, ClashPriority.A);
+            TestReport a400 = AddTest(report, "A-400", 400, ClashPriority.A);
+            TestReport b90 = AddTest(report, "B-90", 90, ClashPriority.B);
+            TestReport b300 = AddTest(report, "B-300", 300, ClashPriority.B);
+            TestReport c80 = AddTest(report, "C-80", 80, ClashPriority.C);
+            TestReport c20 = AddTest(report, "C-20", 20, ClashPriority.C);
             int gdi;
 
-            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(2290));
-            Assert.That(a.ImageCount, Is.EqualTo(750));
-            Assert.That(b.ImageCount, Is.EqualTo(750));
-            Assert.That(c.ImageCount, Is.EqualTo(750));
-            Assert.That(small.ImageCount, Is.EqualTo(40));
+            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(120 + 150 + 90 + 100 + 50 + 20));
+            Assert.That(a120.ImageCount, Is.EqualTo(120));
+            Assert.That(a400.ImageCount, Is.EqualTo(150));
+            Assert.That(b90.ImageCount, Is.EqualTo(90));
+            Assert.That(b300.ImageCount, Is.EqualTo(100));
+            Assert.That(c80.ImageCount, Is.EqualTo(50));
+            Assert.That(c20.ImageCount, Is.EqualTo(20));
+        }
+
+        [Test]
+        public void ATestWithExactlyItsCapOfClashesGetsAllOfThemAndOneMoreGetsTheCap()
+        {
+            ClashReport report = Report();
+            TestReport exact = AddTest(report, "EXACT-A", 150, ClashPriority.A);
+            TestReport one = AddTest(report, "ONE-MORE-A", 151, ClashPriority.A);
+            int gdi;
+
+            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(300));
+            AssertTheFirstOnesHavePicturesAndNoOtherDoes(exact, 150);
+            AssertTheFirstOnesHavePicturesAndNoOtherDoes(one, 150);
         }
 
         [Test]
@@ -175,17 +192,6 @@ namespace Federator.Core.Tests
 
             Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(150));
             AssertTheFirstOnesHavePicturesAndNoOtherDoes(test, 150);
-        }
-
-        [Test]
-        public void APriorityATestOf750ClashesGives750Pictures()
-        {
-            ClashReport report = Report();
-            TestReport test = AddTest(report, "SEVEN-A", 750, ClashPriority.A);
-            int gdi;
-
-            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(750));
-            AssertTheFirstOnesHavePicturesAndNoOtherDoes(test, 750);
         }
 
         [Test]
@@ -226,9 +232,8 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheCapsAndTheTriggerAreTheOnesBaderAnswered()
+        public void TheCapsAreTheOnesBaderAnswered()
         {
-            Assert.That(PictureLimits.ManyClashes, Is.EqualTo(750));
             Assert.That(PictureLimits.PicturesFor(ClashPriority.A), Is.EqualTo(150));
             Assert.That(PictureLimits.PicturesFor(ClashPriority.B), Is.EqualTo(100));
             Assert.That(PictureLimits.PicturesFor(ClashPriority.C), Is.EqualTo(50));
@@ -239,16 +244,14 @@ namespace Federator.Core.Tests
         [Test]
         public void TheBoxKeepsItsOwnJobAndTheLeastOfTheTwoHolds()
         {
-            Assert.That(PictureLimits.LimitFor(1500, ClashPriority.A, 0), Is.EqualTo(150));
-            Assert.That(PictureLimits.LimitFor(1500, ClashPriority.A, 300), Is.EqualTo(150), "the rule is there whatever the box says");
-            Assert.That(PictureLimits.LimitFor(1500, ClashPriority.A, 120), Is.EqualTo(120));
-            Assert.That(PictureLimits.LimitFor(1500, ClashPriority.B, 0), Is.EqualTo(100));
-            Assert.That(PictureLimits.LimitFor(1500, ClashPriority.C, 80), Is.EqualTo(50));
-            Assert.That(PictureLimits.LimitFor(1500, ClashPriority.C, 20), Is.EqualTo(20));
-            Assert.That(PictureLimits.LimitFor(200, ClashPriority.A, 0), Is.EqualTo(int.MaxValue));
-            Assert.That(PictureLimits.LimitFor(200, ClashPriority.C, 30), Is.EqualTo(30));
-            Assert.That(PictureLimits.LimitFor(750, ClashPriority.C, 0), Is.EqualTo(int.MaxValue));
-            Assert.That(PictureLimits.LimitFor(751, ClashPriority.C, 0), Is.EqualTo(50));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.A, 0), Is.EqualTo(150));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.A, 300), Is.EqualTo(150), "the cap is there whatever the box says");
+            Assert.That(PictureLimits.LimitFor(ClashPriority.A, 120), Is.EqualTo(120));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.B, 0), Is.EqualTo(100));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.C, 80), Is.EqualTo(50));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.C, 20), Is.EqualTo(20));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.None, 0), Is.EqualTo(50), "a test with no priority is C");
+            Assert.That(PictureLimits.LimitFor(ClashPriority.None, 30), Is.EqualTo(30));
 
             ClashReport report = Report();
             TestReport small = AddTest(report, "SMALL", 200, ClashPriority.A);
@@ -273,12 +276,12 @@ namespace Federator.Core.Tests
         [Test]
         public void TheGdiBackstopFiresAt9000AndTheRunFinishesWithTheRestLeftEmpty()
         {
-            // Many small tests, as the C04 run had, so the priority rule does not decide it: 40 tests of 400.
+            // Many tests at the cap, as the C04 run had: 100 tests of priority A with 160 clashes, 150 pictures each.
             ClashReport report = Report();
 
-            for (int t = 0; t < 40; t++)
+            for (int t = 0; t < 100; t++)
             {
-                AddTest(report, "T" + t, 400);
+                AddTest(report, "T" + t, 160, ClashPriority.A);
             }
 
             GdiBackstop backstop = new GdiBackstop();
@@ -375,9 +378,9 @@ namespace Federator.Core.Tests
         {
             ClashReport report = Report();
 
-            for (int t = 0; t < 40; t++)
+            for (int t = 0; t < 100; t++)
             {
-                AddTest(report, "T" + t, 400);
+                AddTest(report, "T" + t, 160, ClashPriority.A);
             }
 
             return report;
@@ -468,10 +471,10 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void ATestOf1000ClashesIsStillCappedByItsPriorityWhenTheMemoryStopDoesNotFire()
+        public void ATestOf400ClashesIsStillCappedByItsPriorityWhenTheMemoryStopDoesNotFire()
         {
             ClashReport report = Report();
-            TestReport test = AddTest(report, "MANY-A", 1000, ClashPriority.A);
+            TestReport test = AddTest(report, "MANY-A", 400, ClashPriority.A);
             GdiBackstop gdi = new GdiBackstop();
             MemoryBackstop memory = new MemoryBackstop();
 

@@ -218,9 +218,9 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// F172 and F175, Bader's answers to Q171. Is there room for one more picture on this test: under
-        /// the box's cap where it is not zero, and under the rule of PictureLimits where the test holds
-        /// more than 750 clashes, which gives its first 150, 100 or 50 a picture by its priority A, B or C
+        /// F172, F175 and F190, Bader's answers to Q171. Is there room for one more picture on this test: under
+        /// the box's cap where it is not zero, and under the rule of PictureLimits, which gives the first 150, 100
+        /// or 50 clashes of every test, whatever its clash count, a picture by its priority A, B or C
         /// and skips the rest. The least of the two holds. The box keeps its own job, a cap of the user's
         /// choosing for every test, and the rule is there whatever the box says.
         /// </summary>
@@ -232,7 +232,7 @@ namespace Federator.Core.Report
         /// <summary>The most pictures this test may have, F175: the rule of its picture priority and the box, the least.</summary>
         public int LimitOf(TestReport test)
         {
-            return PictureLimits.LimitFor(test.Rows.Count, test.PicturePriority, CapPerTest);
+            return PictureLimits.LimitFor(test.PicturePriority, CapPerTest);
         }
 
         /// <summary>Only the statuses asked for, in the order the tally reports them.</summary>
