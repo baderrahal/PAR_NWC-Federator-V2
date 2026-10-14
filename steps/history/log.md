@@ -2,6 +2,25 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F172 the pictures limit per test and the GDI backstop
+
+Branch fix-F172 off main 38ee05c. Bader's order of 14 Oct, round 3, task 3, Q171.
+
+What changed: PictureLimits holds the fixed rule. A test with more than 1000 clashes gets pictures for its first 100
+and the rest are skipped, per test. ImageOptions.RoomFor(test, written) reads it with the box's cap and the least of the
+two holds. One log line per such test says its name, its clashes, the pictures made and the skipped. GdiBackstop reads
+the GDI objects of the process before every picture in ClashImages.Write. Past 9000 no picture is made, a NOTICE says
+the picture number and the count, the pass stops asking for rows, and the run goes on to the NWD, the HTML, the Excel
+and the viewpoints. It is not the pictures' guard, which stops the run. The GDI split, MEMORY and RATE lines are kept.
+
+The "At most per test" box is kept. It has its own job, a cap of the user's choosing for every test, which the fixed
+rule does not do, and it defaults to 0 for none. Its label and the Describe line now say the fixed rule beside it.
+
+Proved by tests: a test of 1500 clashes gives 100 pictures, 1000 or less gives all, two tests of 1200 give 200 in
+total, the box and the rule give the least of the two, and a simulated pass of 16000 clashes in small tests stops at
+picture 8502 at 9001 objects, never nears 10000, and leaves the rest empty. UNKNOWN: that the real GDI count rises by
+one a picture as read here, which only the run on C04 shows.
+
 ## 2026-10-14 F171 a model on Internal is a notice and no reason for FAILED
 
 Branch fix-F171 off main 914b1db. Bader's order of 14 Oct, round 3, task 2, Q170.

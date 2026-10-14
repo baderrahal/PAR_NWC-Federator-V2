@@ -2790,7 +2790,8 @@ namespace Federator.Addin.Engine
             {
                 // FR-076. Nothing more is resolved, asked for or counted once the guard has fired,
                 // the reviewer's first point on attempt 1, and Run stops the run once the pass ends.
-                if (Images.ShouldStopTheRun)
+                // F172. The GDI backstop ends the pictures the same way and nothing else.
+                if (Images.ShouldStopTheRun || Images.GdiBackstopFired)
                 {
                     break;
                 }
@@ -2800,9 +2801,38 @@ namespace Federator.Addin.Engine
                 textures.BetweenTests();
             }
 
+            SayTheTestsOverTheLimit();
+
+            if (Images.GdiBackstopFired)
+            {
+                log.Line("IMAGES   " + GdiBackstop.LeftLine(Images.RowsLeftWithoutAPicture(Report)));
+                progress("The pictures stopped at the GDI limit, the run goes on without the rest");
+            }
+
             return Words.Counted(walk.Rows, "row", "rows") + " in report order in "
                 + Words.Counted(walk.Stretches.Count, "stretch", "stretches")
-                + (Images.ShouldStopTheRun ? ", the pictures' guard fired" : string.Empty);
+                + (Images.ShouldStopTheRun ? ", the pictures' guard fired" : string.Empty)
+                + (Images.GdiBackstopFired ? ", stopped at the GDI limit" : string.Empty);
+        }
+
+        /// <summary>
+        /// F172. One line for each test with more than 1000 clashes: its name, its clashes, the pictures
+        /// made and the clashes whose picture was skipped by the rule.
+        /// </summary>
+        private void SayTheTestsOverTheLimit()
+        {
+            foreach (TestReport test in Report.Tests)
+            {
+                if (test.Rows.Count <= PictureLimits.ManyClashes)
+                {
+                    continue;
+                }
+
+                int made = test.ImageCount;
+                int skipped = Math.Max(0, Images.RowsThatWantAPicture(test) - Images.PictureLimitOf(test));
+
+                log.Line(PictureLimits.TestLine(test.Name, test.Rows.Count, made, skipped));
+            }
         }
 
         private PictureWatch pictureWatch;
@@ -2903,7 +2933,7 @@ namespace Federator.Addin.Engine
                     }
 
                     // FR-076. No row is resolved or counted once the guard has fired.
-                    while (next < rows.Count && !Images.ShouldStopTheRun)
+                    while (next < rows.Count && !Images.ShouldStopTheRun && !Images.GdiBackstopFired)
                     {
                         harvest.PictureLater(clashTests, test, Report, into, picturesWaiting[rows[next]].Row);
                         next++;
