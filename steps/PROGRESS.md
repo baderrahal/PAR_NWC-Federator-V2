@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 03:10, round 5, task 3 of 7 in review, F192 Over 150mm only inside C, nothing waits on an answer
+STATE OPEN, 2026-10-15 03:30, round 5, task 3 of 7 merged, F192 Over 150mm only inside C, nothing waits on an answer
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 246 | 16 | 1 | 0 | 60 | 7 | 330 |
-| total | 449 | 24 | 1 | 0 | 161 | 18 | 653 |
+| outside the waves | 247 | 16 | 0 | 0 | 60 | 7 | 330 |
+| total | 450 | 24 | 0 | 0 | 161 | 18 | 653 |
 <!-- the end of the counts -->
 
 ## Now
