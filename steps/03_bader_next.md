@@ -1,5 +1,34 @@
 # 03 Bader next
 
+## Round 4, second set, F188 the two pages, Task 9
+
+Written for Bader. Simple words. PROVEN means a run in the real window showed it. TEST means only a test showed it. UNKNOWN means nothing showed it yet. The runs were on a COPY of C04 under C:\NWC-PC-Test\work. Evidence: C:\NWC-PC-Test\evidence\2026-10-14-f188-pages.
+
+### What the window is now
+
+1. A tab control. The first page is NWC and the second, next to it, is NWF
+2. NWC page: the folder, the groups, the output folders, the tolerance drop down and the one Run button. It is for the first build of a group. A group whose NWF already exists is not ticked and cannot be ticked. A Rebuild box on the Grouping tab lets it be built again, after a confirmation that says it destroys the clash history. A rebuild goes into a new dated folder beside the old NWF and NWD, so nothing of yours is overwritten. PROVEN for the first part: with the NWF of the group already there, the window said "No group is ticked to run". TEST for the rest, the Rebuild box and the dated folder
+3. NWF page: the NWF picker, a list of the NWFs last used, the list of NWC files changed since the last run, the tolerance drop down, the five steps Refresh, Run tests, Pictures, Viewpoints and Reports each with a tick box, a Run button, and after the run a table per test of New, Active, Reviewed, Approved and Resolved before > after. The folder grouping, the matrix pack and the search set build are not on this page. A step that needs another is greyed with the reason. PROVEN: the page opened in the real window, a picked NWF was run from it, the confirmation came up and was answered, and the table showed 25 tests that moved
+4. The confirmation before the refresh lists the changed files, the number of tests, the viewpoint folder with its number of viewpoints that is deleted and made again, that a viewpoint moved by hand into it is deleted, and the number of old jpg files. Cancel is the default. A number that is not known says UNKNOWN. The NWF is copied into the Backup folder by the run before it opens anything. PROVEN that it comes up and OK starts the run. TEST for its words. The words of this run are in the log under CONFIRM from the next run on
+5. The NWFs last used are kept in `recent-nwfs.txt` in `%LOCALAPPDATA%\ParsonsNwcFederator`, ten at most. TEST. The file is a thing I wrote outside the repo only when the window is used
+6. Kept: the pack choice by project code, the tolerance drop down only, the Run as label, the Log and Clash report folders, the capped pictures and the stops. TEST, and PROVEN for the stops by the runs of F182 and F187
+
+### What the NWF page run showed
+
+- The picked NWF was a copy whose HV file I wrote over. The page listed it as changed, the run was DONE, all 6 Reviewed or Approved clashes kept their status, 10613 results were matched by Guid and 7 clashes were new. PROVEN
+- The run order of F182 held on this page: the NWF and NWD before the pictures, then the pictures, which stopped at the memory limit. PROVEN
+- The close on load option is still not reachable from the add-in. The NWF page says to set it by hand, Options, Model, Performance, in its grey line. PROVEN that the line is on the page
+
+### UNKNOWN
+
+- How the NWF page looks to a person. I read it with UI Automation and could not see it. The look is yours to judge, the layout is plain
+- The Rebuild confirmation and the dated folder in a real run. Only tests read them
+- The count of viewpoints in the confirmation until a run has written it, since it is kept in the manifest by the run
+
+### Numbers
+
+Core tests 3196 after, 0 failed. The Release build has 0 warnings and 0 errors.
+
 ## Round 4, second set, F187 the refresh and the overwrite, Task 7
 
 Written for Bader. Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. The runs were on a COPY of C04 under C:\NWC-PC-Test\work. Your files in NM fed were not changed. Evidence: C:\NWC-PC-Test\evidence\2026-10-14-f187-refresh.

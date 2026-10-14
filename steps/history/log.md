@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F188 the window has two pages, NWC and NWF
+
+Branch fix-F188 off main e4ccde5. Bader's order of 14 Oct, round 4 of the second set, task 9, and his answer 3 of Q174.
+
+What was built:
+- The window is a tab control, NWC first and NWF next to it. The NWC page is the four steps it had. The NWF page holds the NWF
+  picker, the NWFs last used, the changed NWC files, the tolerance drop down, the steps Refresh, Run tests, Pictures,
+  Viewpoints and Reports with a tick box each, a Run button, and the table of New, Active, Reviewed, Approved and
+  Resolved before > after for each test that moved
+- The confirmation before the refresh lists the changed files, the tests, the tool viewpoint folder with its viewpoints
+  and the warning that a viewpoint moved by hand into it is deleted, and the old jpg files. Cancel is the default
+- The NWC page does not run a group whose NWF exists, unless Rebuild is ticked and confirmed with the clash history named.
+  A rebuild goes into a new dated folder and never over a file
+- Run tests off is the refresh alone. The manifest keeps the number of tool views and tests so the page can say them
+- The logic that needs no window is Core's, NwfPageSteps, RecentNwfs, RefreshConfirm, NwcPageRule, RebuildFolder and
+  NwfPageWords, and a test reads the XAML for what each page holds
+
+Proved by runs in the real window, on a copy of C04, NM fed untouched. A picked NWF run from the NWF page with its
+confirmation answered, DONE, 6 of 6 Reviewed or Approved kept, a changed HV file listed, 25 tests in the table. A group
+with its NWF already there on the NWC page, and the window said no group is ticked.
+Proved by tests: the steps and what each needs, the NWFs last used, the words of the confirmation, the Rebuild rule, the
+dated folder name, the manifest facts, and the XAML for the pages. Core tests 3176 before and 3196 after, 0 failed.
+
+UNKNOWN: how the page looks to a person, the Rebuild in a real run.
+
 ## 2026-10-14 F187 the refresh of a picked NWF keeps what coordinators wrote
 
 Branch fix-F187 off main 0dca1a9 (after PR 266). Bader's order of 14 Oct, round 4 of the second set, task 7, and his answer 2 of Q174.

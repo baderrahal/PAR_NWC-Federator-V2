@@ -22,6 +22,8 @@ namespace Federator.Core.Report
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
             RefreshOnOpen = true;
+            RunTests = true;
+            RebuildExisting = false;
             Tolerance = ToleranceChoice.Default();
             MarkByDesign = false;
             RebuildDriftedSets = SetRebuildSettings.DefaultRebuildDriftedSets;
@@ -124,6 +126,20 @@ namespace Federator.Core.Report
         /// once. On by default, since this is the weekly run of the NWF page.
         /// </summary>
         public bool RefreshOnOpen { get; set; }
+
+        /// <summary>
+        /// F188. Run the tests of a picked NWF again where they sit. Off, the run is the refresh alone: the backup,
+        /// the linked files compared and brought up to date and the clash results read, and the NWF and NWD are not
+        /// written. The NWF page's Run tests tick box. On by default.
+        /// </summary>
+        public bool RunTests { get; set; }
+
+        /// <summary>
+        /// F188. A group whose NWF already exists is built again, into a new dated folder beside it and never over
+        /// the NWF or NWD that is there. The NWC page's Rebuild tick box, confirmed with the clash history named.
+        /// Off by default.
+        /// </summary>
+        public bool RebuildExisting { get; set; }
 
         /// <summary>
         /// The tolerance chosen on the Clash step, F76. Never null: the default is 25 mm,

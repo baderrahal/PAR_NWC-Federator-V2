@@ -617,7 +617,7 @@ function StateWords($r) {
 # caption and other words, so it stays a DIALOG.
 function IsConfirm($class, $caption, $texts) {
   if ($class -ne "#32770" -or $caption -cne "Parsons NWC Federator") { return $false }
-  foreach ($t in @($texts)) { if (([string]$t).TrimStart('"').StartsWith("This run federates ")) { return $true } }
+  foreach ($t in @($texts)) { if (([string]$t).TrimStart('"').StartsWith("This run federates ") -or ([string]$t).TrimStart('"').StartsWith("This run refreshes ")) { return $true } }
   return $false
 }
 # F106. Every rooted path in a text that does not start under $root, so a text naming a folder

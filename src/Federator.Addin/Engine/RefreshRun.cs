@@ -271,6 +271,28 @@ namespace Federator.Addin.Engine
                     }
                 }
 
+                // F188. What the NWF page says before it opens anything: the views under the tool folder now, and the
+                // tests. Read here, once the run has done its work, and kept in the same file.
+                try
+                {
+                    int toolViews = 0;
+
+                    foreach (Federator.Core.Views.ViewNode node in Federator.Core.Views.ToolViewFolder.NodesUnder(SavedViewpoints.ReadTree(document, null).Nodes))
+                    {
+                        if (!node.IsFolder)
+                        {
+                            toolViews++;
+                        }
+                    }
+
+                    next.SetFact("toolviews", toolViews);
+                    next.SetFact("tests", DocumentCensusReader.Read(document).Of(CensusCount.Tests));
+                }
+                catch (Exception error)
+                {
+                    log.Failure("counting the tool views and the tests for the manifest", error, "kept going, the page says UNKNOWN for them");
+                }
+
                 Directory.CreateDirectory(logFolder);
                 File.WriteAllLines(path, next.ToLines());
                 log.Line("REFRESH  manifest " + path + "  " + next.Entries.Count + " linked files, size, last write time and hash"
