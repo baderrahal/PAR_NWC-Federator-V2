@@ -439,6 +439,14 @@ namespace Federator.Core.Report
         public ClashPriority Priority { get; set; }
 
         /// <summary>
+        /// The priority the picture cap reads, F175, Bader's answer to Q171. Set at the start of the
+        /// picture pass from the built in priority map, a test it does not name being C by F168, because
+        /// Priority above is put on the report only after the clash step, where the pictures are already
+        /// taken. None until then, and the cap reads None as C. It changes no cell of any report.
+        /// </summary>
+        public ClashPriority PicturePriority { get; set; }
+
+        /// <summary>
         /// This test's number in the picture names, zero based, or minus one until it
         /// writes one. It counts tests that write pictures rather than tests in the file,
         /// which is what makes cd000001 the first picture of the first test that has one.

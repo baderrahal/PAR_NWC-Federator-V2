@@ -2,6 +2,28 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F175 the pictures limit by priority, Q171
+
+Branch fix-F175 off main 4dfa1b2. Bader's order of 14 Oct, round 4, task 1.
+
+What changed: a test with more than 1000 clashes gets pictures for its first 150 clashes at priority A, 100 at B and 50
+at C, per test. A saved test the matrix does not name is C, F168, and so is a test whose priority was not read.
+PictureLimits.LimitFor takes the priority, TestReport.PicturePriority carries it, and the runner sets it at the start of
+the picture pass from the built in priority map, since TestReport.Priority is put on the report only after the clash
+step. The log line per capped test now says the priority letter. The viewpoints are not touched by the rule. The box and
+the 9000 backstop are kept, and the least of the box and the rule holds. The label of the box and core.md are updated.
+
+The picture step: the one Bitmap it receives, from TestsImageForResult, is now disposed in a finally that holds every
+line between the render and the save, so no throw from the log or the count can skip it. No other Bitmap or Image is
+returned anywhere in src, read off every System.Drawing use. The GDI count is read again after each picture is saved and
+disposed, and the backstop fires on the picture that crosses 9000. The texture cache line of F147 already says where
+the folder is and its size at the start and end. F175 adds no clearing of it.
+
+Proved here: Core tests 3111 before, 3116 after, 0 failed. Release build 0 warnings 0 errors. The tests are for A, B and
+C of 1500 clashes, a saved test the map does not name, a test with no priority, 1000 clashes or less, the box, and the
+line. Waits for the run on C04: that the add-in reads the priority right at picture time and that the GDI count after
+each picture works in Navisworks.
+
 ## 2026-10-14 F174 the full run on C04 with F170 to F173 was not made
 
 Branch fix-F174 off main 21f3dec. Bader's order of 14 Oct, round 3, task 5.

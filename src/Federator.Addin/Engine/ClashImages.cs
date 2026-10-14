@@ -192,10 +192,10 @@ namespace Federator.Addin.Engine
             return count;
         }
 
-        /// <summary>The most pictures this test may have, the fixed rule of F172 and the box's cap, the least of the two.</summary>
+        /// <summary>The most pictures this test may have, the rule of F172 by its priority, F175, and the box's cap, the least of the two.</summary>
         public int PictureLimitOf(TestReport test)
         {
-            return PictureLimits.LimitFor(test.Rows.Count, options.CapPerTest);
+            return options.LimitOf(test);
         }
 
         /// <summary>The clashes of the whole report with a status that gets a picture and no picture, said once the pass ends.</summary>
@@ -306,7 +306,7 @@ namespace Federator.Addin.Engine
                         Directory.CreateDirectory(folder);
                     }
 
-                    Render(clashTests, result, path, test.Name + " " + row.Name);
+                    long gdiAfterTheSave = Render(clashTests, result, path, test.Name + " " + row.Name);
 
                     // The size is read back off the disk. A render that returned without
                     // writing anything must not be counted as a picture.
@@ -331,6 +331,14 @@ namespace Federator.Addin.Engine
                     report.Images.Wrote(visit.Elapsed, length);
                     number.PointTheRow(workbookPath);
 
+                    // F175, Bader's order. The GDI objects are read again once the picture is saved and its
+                    // bitmap disposed, so the backstop fires on the picture that crossed the limit and not only
+                    // on the one after it. The pass stops asking for rows as before.
+                    if (backstop.Check(gdiAfterTheSave, picturesMade + 1))
+                    {
+                        log.Line("IMAGES   " + backstop.Notice());
+                    }
+
                     if (guard != null)
                     {
                         guard.RecordSuccess();
@@ -354,32 +362,37 @@ namespace Federator.Addin.Engine
         /// native image handle and one per clash across 1830 tests is how a run runs a
         /// machine out of memory. No copy of it is made on the way to the disk.
         /// </summary>
-        private void Render(DocumentClashTests clashTests, IClashResult result, string path, string on)
+        private long Render(DocumentClashTests clashTests, IClashResult result, string path, string on)
         {
-            Bitmap bitmap;
+            // F175, Bader's order. Everything between the render returning and the save sits inside one
+            // try, so the bitmap is disposed on every path, the null one, a throw from the log or the
+            // count, and a throw from the save. It is the only Bitmap or Image the picture step receives,
+            // read off every System.Drawing use in src on 2026-10-14.
+            Bitmap bitmap = null;
             long gdiBefore = ProcessMemory.GdiObjectsNow();
+            long gdiAfterRender;
 
-            using (seconds.In(ImagesPart.Rendering))
+            try
             {
-                // F143. The call alone is timed, and named on a CALL line with its .tsv row where
-                // it took the setting's seconds or more, in the finally, so a call that throws
-                // after a long wait is named too.
-                double from = log.ElapsedSeconds;
-
-                try
+                using (seconds.In(ImagesPart.Rendering))
                 {
-                    bitmap = clashTests.TestsImageForResult(result, Style, options.Width, options.Height);
-                }
-                finally
-                {
-                    LongCall.Say(log, "TestsImageForResult", on, log.ElapsedSeconds - from, LongCallSeconds);
-                }
-            }
+                    // F143. The call alone is timed, and named on a CALL line with its .tsv row where
+                    // it took the setting's seconds or more, in the finally, so a call that throws
+                    // after a long wait is named too.
+                    double from = log.ElapsedSeconds;
 
-            long gdiAfterRender = ProcessMemory.GdiObjectsNow();
+                    try
+                    {
+                        bitmap = clashTests.TestsImageForResult(result, Style, options.Width, options.Height);
+                    }
+                    finally
+                    {
+                        LongCall.Say(log, "TestsImageForResult", on, log.ElapsedSeconds - from, LongCallSeconds);
+                    }
+                }
 
-            using (bitmap)
-            {
+                gdiAfterRender = ProcessMemory.GdiObjectsNow();
+
                 if (bitmap == null)
                 {
                     throw new InvalidOperationException(
@@ -391,8 +404,17 @@ namespace Federator.Addin.Engine
                     Save(bitmap, path);
                 }
             }
+            finally
+            {
+                if (bitmap != null)
+                {
+                    bitmap.Dispose();
+                }
+            }
 
-            gdiSplit.Add(gdiBefore, gdiAfterRender, ProcessMemory.GdiObjectsNow());
+            long gdiAfterSave = ProcessMemory.GdiObjectsNow();
+            gdiSplit.Add(gdiBefore, gdiAfterRender, gdiAfterSave);
+            return gdiAfterSave;
         }
 
         /// <summary>

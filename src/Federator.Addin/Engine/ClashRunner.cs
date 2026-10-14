@@ -2763,6 +2763,14 @@ namespace Federator.Addin.Engine
         /// <summary>The pass inside its step: Core's walk, then each stretch in turn until the guard fires, the texture cache checked between two and Hide Other set as the pass asks. Hands back the step's phrase.</summary>
         private string TakeThePictures(DocumentClashTests clashTests, TextureCacheWatch textures, PicturesHideOther hideOther)
         {
+            // F175, Bader's answer to Q171. The cap of a test reads its priority off the built in priority
+            // map, a test the map does not name being C, F168. The report's own Priority is put on only after
+            // the clash step, so it is read here for the cap and written to no cell.
+            foreach (TestReport capped in Report.Tests)
+            {
+                capped.PicturePriority = Priorities.OfASavedTest(capped.Name);
+            }
+
             PictureWalkOutcome walk = PictureWalk.Of(Report, ReadFrom);
 
             foreach (string line in walk.MetTwice)
@@ -2816,8 +2824,8 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// F172. One line for each test with more than 1000 clashes: its name, its clashes, the pictures
-        /// made and the clashes whose picture was skipped by the rule.
+        /// F172 and F175. One line for each test with more than 1000 clashes: its name, its priority letter,
+        /// its clashes, the pictures made and the clashes whose picture was skipped by the rule.
         /// </summary>
         private void SayTheTestsOverTheLimit()
         {
@@ -2831,7 +2839,7 @@ namespace Federator.Addin.Engine
                 int made = test.ImageCount;
                 int skipped = Math.Max(0, Images.RowsThatWantAPicture(test) - Images.PictureLimitOf(test));
 
-                log.Line(PictureLimits.TestLine(test.Name, test.Rows.Count, made, skipped));
+                log.Line(PictureLimits.TestLine(test.Name, test.PicturePriority, test.Rows.Count, made, skipped));
             }
         }
 
