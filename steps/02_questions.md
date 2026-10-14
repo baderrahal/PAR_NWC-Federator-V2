@@ -1032,8 +1032,14 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     2. OVERWRITE ON THE NWF PAGE. Keep the status, assigned to and comments of clashes that are still there. Re-run the tests, update the counts, keep what coordinators wrote.
     3. TWO PAGES. NWC once, NWF every week. The NWC page builds the NWF and NWD from the NWC folder with the search sets and the clash tests, once per group. After that the BIM Coordinator works on the NWF page.
 
-    Answer: Bader, 2026-10-14, as written above. The lead's notes. Item 1 is built in F182, item 2 in F183 and item 3 in F184, rows Q174-1 to Q174-3. They follow the research note steps\notes\nwc-nwf-design.md.
+    Answer: Bader, 2026-10-14, as written above, and restated in the order of the second set of round 4, tasks 5 to 9. The lead's notes. Item 1 is built in F186, item 2 in F187 and item 3 in F188, rows Q174-1 to Q174-3, after F182 to F184 took the numbers the first plan gave them. They follow the research note steps
+otes
+wc-nwf-design.md.
 
 175. From the loop, 2026-10-14, F180. The run on C04 with F175 to F179 stopped the pictures safely at 9000 GDI objects, at picture 7905, and did not crash. But Navisworks's private memory grew about 3.3 MB for each picture to 26 GB on a PC with 15.8 GB of RAM, and at the NWD step it stopped for 8 minutes with a 0 byte NWD while Windows held 53.4 of 55.2 GB of its commit limit. The GDI split lines say the +1 GDI object for each picture is made inside Navisworks's TestsImageForResult and none in our save. What should the tool do? A, also stop the pictures at a memory limit of Navisworks's private bytes, for example 12 GB. B, do the NWF save and the NWD before the pictures, so the NWD is published at low memory, and write the HTML and Excel after. C, both A and B. D, take the pictures in several Navisworks sessions, the biggest change, which keeps all the pictures.
 
-    Answer: 
+    Answer: Bader, 2026-10-14, his order of the second set of round 4, task 3, in one letter: C. Both. The picture step also stops at a memory limit of Navisworks's private bytes, 12 GB, the one named constant, and the NWF is saved and the NWD published BEFORE the pictures, the HTML, the Excel and the txt files after. The lead's notes. Built in F182. A stop is a normal end of the picture step. The order holds for every step but one: with Compact resolved ticked the pictures stay inside the clash step, because a compact moves the index a picture is found by. D, several Navisworks sessions, was not chosen.
+
+176. From Bader, 2026-10-14, his order of the second set of round 4, task 1, not a question put to him but the trigger of the picture cap. A test with more than 1000 clashes gets pictures for its first 150 at priority A, 100 at B and 50 at C, per test, since F175. At what number of clashes should the cap begin?
+
+    Answer: Bader, 2026-10-14, his order of the second set of round 4, task 1, in one number: 750. A test with more than 750 clashes gets pictures for its first 150 clashes at priority A, 100 at B and 50 at C, per test. A test with 750 clashes or fewer gets pictures for all of them. A saved test the matrix does not name is C. The viewpoints are not touched. The lead's notes. Built in F181. The question was not in this file when his answer came, so it is written here with his answer, as Q172 was.

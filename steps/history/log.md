@@ -2,6 +2,18 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F183 the answers to Q175 and Q176 recorded
+
+Branch fix-F183 off main a314d52. Bader's order of 14 Oct, round 4 of the second set, task 3. A record and no code.
+
+Q175 is answered C, both the memory stop and the NWF and NWD before the pictures, built in F182. Q176 is written into
+steps\02_questions.md with his answer, 750, built in F181, since the question was not in the file when his answer came,
+as Q172 was. It is a request of his, so its row is Q176-1. The Part 2 answers are Q174 and are restated by the second
+set. Because F182 to F184 took the numbers the first plan gave Part 2, the notes of Q174 and the rows Q174-1 to Q174-3 now
+name F186, F187 and F188.
+
+Proved here: nothing is code. Core tests unchanged, 3143 before and after. check-tracker and check-progress read clean.
+
 ## 2026-10-14 F182 the memory stop at 12 GB and the NWF and NWD before the pictures
 
 Branch fix-F182 off main 410086e. Bader's order of 14 Oct, round 4 of the second set, task 2, his answer C to Q175.
