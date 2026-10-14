@@ -62,6 +62,20 @@ namespace Federator.Addin.Engine
         public string WorkbookName { get; private set; }
 
         /// <summary>
+        /// The name the reports of this group are written under, set once at the top of the group by
+        /// the engine, F158, where a report already in the Log folder would otherwise be overwritten.
+        /// The Excel, the Internal workbook, the HTML, the XML and the _files folder all read it, so
+        /// they keep one name and the page's and the workbook's picture links keep working.
+        /// </summary>
+        internal void NameTheReports(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                WorkbookName = name;
+            }
+        }
+
+        /// <summary>
         /// How many disciplines the scan found in this group, or null where nothing was
         /// scanned. Fewer than two and the clash step creates every test and runs none,
         /// by BuildingGroup.CannotClashWith. D5.

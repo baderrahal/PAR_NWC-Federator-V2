@@ -306,7 +306,7 @@ namespace Federator.Addin.Ui
             RememberFolder(PickerKind.PickedNwf, picked);
             PickedNwfBox.Text = picked;
 
-            NwfPickPlan plan = PlanThePickedNwfs(Trimmed(ExcelFolderBox.Text));
+            NwfPickPlan plan = PlanThePickedNwfs();
 
             if (plan != null)
             {
@@ -318,11 +318,11 @@ namespace Federator.Addin.Ui
         /// What the box gives, by Core's rule, NwfPick.From, with the subfolders box of the
         /// Source step. Null where the reading threw, which is logged and said.
         /// </summary>
-        private NwfPickPlan PlanThePickedNwfs(string excelFolder)
+        private NwfPickPlan PlanThePickedNwfs()
         {
             try
             {
-                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true, excelFolder, internalWorkbook);
+                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true);
             }
             catch (Exception error)
             {
@@ -357,7 +357,7 @@ namespace Federator.Addin.Ui
             }
 
             ReportOptions options = ReportsWanted(tolerance);
-            NwfPickPlan plan = PlanThePickedNwfs(options.ExcelFolder);
+            NwfPickPlan plan = PlanThePickedNwfs();
 
             if (plan == null)
             {
@@ -1740,19 +1740,6 @@ namespace Federator.Addin.Ui
             }
         }
 
-        private void OnBrowseExcel(object sender, RoutedEventArgs e)
-        {
-            string picked = PickFolder(
-                "Pick the folder for the Excel reports", StartFor(PickerKind.Excel, ExcelFolderBox.Text));
-
-            if (picked != null)
-            {
-                RememberFolder(PickerKind.Excel, picked);
-                ExcelFolderBox.Text = picked;
-                RefreshOutputsSummary();
-            }
-        }
-
         private void OnOutputFolderChanged(
             object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
@@ -1773,9 +1760,8 @@ namespace Federator.Addin.Ui
         private ReportOptions ReportsWanted(ToleranceChoice tolerance)
         {
             ReportOptions options = new ReportOptions();
-            options.ExcelFolder = Trimmed(ExcelFolderBox.Text);
 
-            // Reports never go inside the folder being scanned. A real run put them
+            // Logs and reports never go inside the folder being scanned. A real run put them
             // in C:\00_NM\NWC Fed\NWC\test001, which is where its own input lives.
             options.SourceFolder = Trimmed(SourceFolderBox.Text);
             options.WriteXml = WriteClashXml.IsChecked == true;
@@ -1925,15 +1911,15 @@ namespace Federator.Addin.Ui
         {
             // One rule, in Core, so it can be proved rather than clicked.
             return ReportPaths.WhereTheyGo(
-                Trimmed(ExcelFolderBox.Text), Trimmed(NwfFolderBox.Text), Trimmed(SourceFolderBox.Text));
+                Trimmed(NwfFolderBox.Text), Trimmed(NwdFolderBox.Text), Trimmed(SourceFolderBox.Text));
         }
 
         private void RefreshOutputsSummary()
         {
             // IsChecked="True" in the XAML raises Checked while the tree is still being
             // built, so this can be reached before the controls it reads exist.
-            if (OutputsSummary == null || ExcelFolderBox == null
-                || NwfFolderBox == null || WriteClashXml == null || SourceFolderBox == null
+            if (OutputsSummary == null
+                || NwfFolderBox == null || NwdFolderBox == null || WriteClashXml == null || SourceFolderBox == null
                 || DateTheNwd == null)
             {
                 return;
@@ -2059,7 +2045,7 @@ namespace Federator.Addin.Ui
             log.Block(RunLog.GroupsSectionTitle, GroupListLines());
             log.Block(RunLog.FindingsSectionTitle, findings.Lines());
 
-            RunJobs(jobs, nwfFolder, tolerance);
+            RunJobs(jobs, nwfFolder, nwdFolder, tolerance);
         }
 
         /// <summary>
@@ -2258,7 +2244,7 @@ namespace Federator.Addin.Ui
         /// and the progress line repaint, which is not the same as moving the work onto a
         /// background thread. No Navisworks call may leave this thread.
         /// </summary>
-        private void RunJobs(IList<FederationJob> jobs, string nwfFolder, ToleranceChoice tolerance)
+        private void RunJobs(IList<FederationJob> jobs, string nwfFolder, string nwdFolder, ToleranceChoice tolerance)
         {
             running = true;
             RunButton.IsEnabled = false;
@@ -2300,19 +2286,15 @@ namespace Federator.Addin.Ui
                 }
 
                 ReportOptions options = ReportsWanted(tolerance);
-                ReportFolderChoice where = options.ChooseFor(nwfFolder);
+                string logFolder = options.LogFolderFor(nwfFolder, nwdFolder);
 
-                if (where.WasRefused)
-                {
-                    log.Line("RUN      " + where.RefusedReason);
-                }
-
-                log.Line("RUN      workbooks go in " + where.Folder);
+                log.Line("RUN      logs and reports go in " + logFolder
+                    + ", beside the NWF and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone");
                 log.Line("RUN      the clash XML is "
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
                 engine = new FederationEngine(
-                    SetProgress, log, exchange, teams, options, nwfFolder);
+                    SetProgress, log, exchange, teams, options, nwfFolder, nwdFolder);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
 
                 // What each group actually did, in the list. A group that was rebuilt
@@ -2396,8 +2378,9 @@ namespace Federator.Addin.Ui
         /// stopped before one was made, and then the block says nothing of the shared
         /// coordinates rule or the viewpoints box rather than guess. pickedNwfs is
         /// NwfPickPlan.ResultLine for a run of picked NWFs, F129, and null for every other run.
-        /// The log stays in the logs folder alone and no copy of it is written anywhere else,
-        /// Bader's decision of 2026-10-13, F151.
+        /// The log is written in the logs folder and, once the block is on the disk, copied with
+        /// its .tsv into the Log folder of the run, F158, which replaces F151's rule that no copy
+        /// is written anywhere else. The Log folder is not the NWF or the NWD folder.
         /// </summary>
         private void WriteTheResult(FederationEngine engine, string pickedNwfs = null)
         {
@@ -2415,6 +2398,37 @@ namespace Federator.Addin.Ui
             catch (Exception error)
             {
                 log.Failure("writing the result block", error, "kept going, the lines above are still on disk");
+            }
+
+            CopyTheLogIntoTheLogFolder(engine);
+        }
+
+        /// <summary>
+        /// F158. The run log and its .tsv copied into every Log folder the run wrote into, once the
+        /// RESULT block is on the disk. Nothing there is replaced, LogCopy. What it did is one line
+        /// each in the window and in the original log, which the copy cannot carry since it was
+        /// made first. A run that made no engine has no Log folder and copies nothing.
+        /// </summary>
+        private void CopyTheLogIntoTheLogFolder(FederationEngine engine)
+        {
+            try
+            {
+                if (engine == null || engine.LogFolders.Count == 0)
+                {
+                    return;
+                }
+
+                foreach (string folder in engine.LogFolders)
+                {
+                    foreach (string line in LogCopy.Into(folder, log.Path, RowLog.PathFor(log.Path), DateTime.Now))
+                    {
+                        log.Line(line);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure("copying the run log into the Log folder", error, "kept going, the log is still in the logs folder");
             }
         }
 
@@ -2574,7 +2588,7 @@ namespace Federator.Addin.Ui
                 // No folder is handed in. The engine reads the report folder off the open
                 // file through OpenDocumentJob.ReportFolder, the same rule ShowOpenDocument
                 // uses for the line above the button. Handing the report folder in as the
-                // NWF folder is what once wrote to Clash Reports\Clash Reports.
+                // NWF folder is what once wrote to Clash Reports\Clash Reports, which is gone.
                 engine = new FederationEngine(
                     SetProgress, log, exchange, teams, options);
 
@@ -2708,7 +2722,6 @@ namespace Federator.Addin.Ui
 
             OpenDocumentLine.Text = OpenDocumentJob.Describe(
                 open,
-                ExcelFolderBox == null ? string.Empty : Trimmed(ExcelFolderBox.Text),
                 MatrixIsBuiltIn());
 
             if (RunOpenButton != null)

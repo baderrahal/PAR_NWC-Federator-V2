@@ -272,7 +272,7 @@
                               HorizontalScrollBarVisibility="Disabled">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="One NWF folder, one NWD folder and one Excel folder for the whole run. Leave the Excel folder empty and the workbooks go beside the NWF folder, in a subfolder called Clash Reports. The name fields below fill the table, and any name in the table can be typed over. A name you type over is left alone when a pattern changes." />
+                               Text="One NWF folder and one NWD folder for the whole run, holding the NWF and NWD files alone. The logs and the reports go in a folder called Log beside them, made if it is not there, and nothing in it is overwritten or deleted. The name fields below fill the table, and any name in the table can be typed over. A name you type over is left alone when a pattern changes." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -300,10 +300,6 @@
                                  VerticalAlignment="Center" Margin="0,0,0,4"
                                  TextChanged="OnOutputFolderChanged" />
                         <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseNwd" Margin="4,0,0,4" />
-                        <Label Grid.Row="2" Grid.Column="0" Content="Excel folder" />
-                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="ExcelFolderBox"
-                                 VerticalAlignment="Center" TextChanged="OnOutputFolderChanged" />
-                        <Button Grid.Row="2" Grid.Column="2" Content="Browse" Click="OnBrowseExcel" />
                         <!-- The NWD, the client page and the photos used to be three tick
                              boxes. A weekly run wants all three every time, so they are
                              fixed on and are not a decision any more. -->

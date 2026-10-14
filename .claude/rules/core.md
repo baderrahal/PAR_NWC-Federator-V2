@@ -52,7 +52,7 @@ a choice, included.
 The collision check runs on the table, not on the patterns, so two names typed to the
 same thing is caught the same way two patterns colliding is. It names both groups and
 the run does not start. A group's internal workbook is named after its workbook with the
-suffix, `GenericModelsSettings.WorkbookNameFor`, and sits beside it in the Clash Reports
+suffix, `GenericModelsSettings.WorkbookNameFor`, and sits beside it in the Log
 folder, so the check reads each internal workbook name against every other group's
 workbook name too, ignoring case as the three kinds are read: a group whose workbook is X
 Internal beside a group X is named with both groups and the run does not start, F127-R5,
@@ -1258,10 +1258,17 @@ and 6 does not read as broken.
   consequences and the first is the one to act on
 - One workbook per group, written after the clash step and before the NWD is published,
   so the three outputs of a group agree with each other. Named like the group's other
-  outputs with an xlsx extension, and it overwrites, the same as the NWF and the NWD. The
-  Excel folder is picked on the Outputs step, and when it is empty the workbooks go beside
-  the NWF folder in a subfolder called Clash Reports, which is a setting,
-  ReportPaths.Subfolder. It is static because the open file run and the line under the
+  outputs with an xlsx extension. SINCE F158 THE NWF AND NWD FOLDERS HOLD THE NWF AND THE
+  NWD ALONE and every log and report goes in ONE folder called Log, a setting,
+  `ReportPaths.Subfolder`, beside them, worked out by `ReportPaths.LogFolder` as the deepest
+  folder holding both and one level up where the two are one folder or one holds the other.
+  It holds the run log and its .tsv, the notes on the shared coordinates, the Excel, the
+  Internal workbook, the HTML, the XML and the _files folder together, so the page's
+  relative links and the Excel's F152 file:/// links keep working, proved by
+  `LogFolderLinksTests`. NOTHING IN IT IS EVER OVERWRITTEN OR DELETED: a group whose name is
+  already there takes `ReportPaths.NameThatOverwritesNothing`, its name and the moment of the
+  run, for all of its files at once, and any other file takes `ReportPaths.FreeFilePath`.
+  There is no Excel folder to pick any more. The setting is static because the open file run and the line under the
   Outputs step both work the folder out with no options object in front of them, and a
   name carrying either slash is refused where it is set, by name and never by asking the
   running platform which one it calls a separator
@@ -1832,7 +1839,7 @@ and 6 does not read as broken.
   survive. The clash file is optional there, and without one the tests saved in the
   document are run where they sit, which is the ordinary weekly case, and a document
   holding none runs nothing and the log says so. The outputs are named after the open
-  file with the extension swapped and the report in Clash Reports beside it, which is
+  file with the extension swapped and the logs and the report in the Log folder beside its folder, which is
   exactly where the scanned path puts them, so the same building run either way writes the
   same files. No pattern is applied, because the name is already on the file. Five things
   are checked before it runs and the first that fails is named in the window and the log,
@@ -1855,7 +1862,7 @@ and 6 does not read as broken.
   read case blind. EACH IS JUDGED BY OpenDocumentJob.WhyNot BEFORE IT IS OPENED, the guard
   against an NWD, an address, a refused character and an unsaved document, in its words, and
   its outputs are named through OpenDocumentJob, the NWD beside it with the extension swapped
-  and the report in Clash Reports beside it or in the Excel folder picked, never copied here.
+  and the logs and the report in the Log folder beside its folder, never copied here.
   A refused NWF in a folder is named in RUN SETTINGS with its reason, never opened, and handed
   to the engine, which refuses it by the same check and counts it a FAILED group in RESULT. A
   picked file that is refused, a folder with none that can run, a pick that is not there and
@@ -2968,7 +2975,7 @@ docs\history\scan.md 5z-zb of 2026-10-08, and nothing of it has run on Naviswork
 - THE SHEET IS ONE SHAPE, `GenericSheet.Rows`, models with items first in the plan's order, then
   the ones not counted with why, none for a model at nought, named by
   `GenericModelsSettings.SheetName`, and it is the first sheet of THE INTERNAL WORKBOOK,
-  `InternalWorkbook.Write`, beside the clash workbook in the Clash Reports folder, named by
+  `InternalWorkbook.Write`, beside the clash workbook in the Log folder, named by
   `GenericModelsSettings.WorkbookNameFor`, the group's workbook name, a space and the suffix,
   Internal by default, Bader's answer B to Q146 of 11 Oct 2026, which also put the Coverage
   sheet after it. The suffix was Generic Models while the workbook held that sheet alone, and a

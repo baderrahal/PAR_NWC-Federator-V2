@@ -1705,31 +1705,6 @@ namespace Federator.Core.Diagnostics
                 file);
         }
 
-        /// <summary>
-        /// A file this run took away, with why. Read off the disk by its exact path first: a
-        /// file still there is never called removed and stays on the files written list, and
-        /// a file gone leaves that list, so the RESULT block never lists a file this run
-        /// removed under the line saying every size was read back off the disk. The list
-        /// kept a note the first run of a window wrote after the second run removed it, the
-        /// breaker's first finding at c5d8aa8.
-        /// </summary>
-        public void WriteRemoved(string kind, string path, string why)
-        {
-            if (SizeOnDisk(path) >= 0)
-            {
-                Line(kind.PadRight(8) + " NOT REMOVED  " + path + "  it is still on disk after the delete");
-                return;
-            }
-
-            lock (gate)
-            {
-                written.RemoveAll(seen => string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(seen.Kind, kind, StringComparison.Ordinal));
-            }
-
-            Line(kind.PadRight(8) + " removed  " + path + (string.IsNullOrEmpty(why) ? string.Empty : ", " + why));
-        }
-
         public void WriteAttempted(string kind, string path)
         {
             Line(kind.PadRight(8) + " attempt  " + path);
