@@ -325,6 +325,63 @@ namespace Federator.Core.Clash
         /// string, never trimmed, because two set names in the reference file end in a
         /// space and trimming would match the wrong set.
         /// </summary>
+        public ClashTestPlan WithTheSavedTestsTheMatrixDoesNotName(ClashTestPlan inTheDocument, out IList<string> added)
+        {
+            if (inTheDocument == null)
+            {
+                throw new ArgumentNullException("inTheDocument");
+            }
+
+            List<string> addedNames = new List<string>();
+            HashSet<string> named = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (PlannedClashTest test in buildable)
+            {
+                named.Add(test.Name);
+            }
+
+            foreach (SkippedClashTest test in skipped)
+            {
+                named.Add(test.Name);
+            }
+
+            List<PlannedClashTest> allBuildable = new List<PlannedClashTest>(buildable);
+            List<SkippedClashTest> allSkipped = new List<SkippedClashTest>(skipped);
+            List<string> allUnknown = new List<string>(unknownTestTypes);
+            int index = TestsInFile;
+
+            // The tests saved in the document that the matrix names are the matrix's, run where they
+            // sit by name. Only the ones it does not name are added, after its own, in the order the
+            // document holds them, each once, each run where it sits and none created or compared.
+            foreach (PlannedClashTest test in inTheDocument.buildable)
+            {
+                if (!string.IsNullOrEmpty(test.Name) && named.Add(test.Name))
+                {
+                    allBuildable.Add(test.AtFileIndex(index++));
+                    addedNames.Add(test.Name);
+                }
+            }
+
+            foreach (SkippedClashTest test in inTheDocument.skipped)
+            {
+                if (!string.IsNullOrEmpty(test.Name) && test.Name != "UNKNOWN" && named.Add(test.Name))
+                {
+                    allSkipped.Add(new SkippedClashTest(test.Name, test.Kind, test.Reason, index++));
+                }
+            }
+
+            foreach (string unknown in inTheDocument.unknownTestTypes)
+            {
+                if (!allUnknown.Contains(unknown))
+                {
+                    allUnknown.Add(unknown);
+                }
+            }
+
+            added = addedNames;
+            return new ClashTestPlan(Source, TestsInFile, DocumentUnits, allBuildable, allSkipped, allUnknown);
+        }
+
         public ClashTestPlan ResolveAgainst(IEnumerable<string> setPaths)
         {
             if (setPaths == null)

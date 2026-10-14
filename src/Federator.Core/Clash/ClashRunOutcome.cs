@@ -27,6 +27,27 @@ namespace Federator.Core.Clash
         public int TestsInFile { get; set; }
 
         /// <summary>
+        /// The names of the tests saved in the NWF that the matrix does not name, run too where they sit,
+        /// after the tests of the matrix, F168, Bader's answer A to Q168. Their viewpoints go under
+        /// priority C unless the priority map names them.
+        /// </summary>
+        public IList<string> SavedTestsRunToo
+        {
+            get { return savedRunToo; }
+        }
+
+        private readonly List<string> savedRunToo = new List<string>();
+
+        /// <summary>Records one saved test the matrix does not name that is run too.</summary>
+        public void AddSavedRunToo(string name)
+        {
+            if (!string.IsNullOrEmpty(name) && !savedRunToo.Contains(name))
+            {
+                savedRunToo.Add(name);
+            }
+        }
+
+        /// <summary>
         /// How many tests of this group were NOT created because a side finds nothing.
         /// Counted apart from every other skip reason, because a side with no items and a
         /// test nobody could read are different faults. THIS IS NOT 3b's COST, and it was

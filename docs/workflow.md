@@ -19,8 +19,9 @@ it (OPENED), lets Navisworks reload the newer NWCs, runs the tests of the built 
 saved inside the NWF where they sit, keeping their results, writes Excel, HTML, images and
 the NWD. Since F155 the matrix is read on every run, so a test of it the NWF lacks is added
 and the label reads Weekly run plus matrix. A test saved in the NWF that the matrix does not
-name is not run, and the COVERAGE block names it, Q168. With no pack built in, every saved
-test runs.
+name is run too, where it sits, after the tests of the matrix, at the tolerance of the drop
+down, and it is in the HTML, the Excel and the Coverage sheet, its viewpoints under priority C
+unless the priority map names it, F168, Q168 A. With no pack built in, every saved test runs.
 
 ## Rebuilt
 

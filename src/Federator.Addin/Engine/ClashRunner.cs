@@ -534,6 +534,28 @@ namespace Federator.Addin.Engine
                             + "the sets this document already holds");
                         return outcome;
                     }
+
+                    // F168, Bader's answer A to Q168. A test saved in the NWF that the matrix does not name,
+                    // such as one a coordinator added by hand in Clash Detective, is run too, where it sits,
+                    // after the tests of the matrix, at the tolerance of the drop down like every other test.
+                    // It is in the reports and in the Coverage sheet like any other.
+                    IList<string> savedToo;
+                    resolved = resolved.WithTheSavedTestsTheMatrixDoesNotName(inTheDocument, out savedToo);
+
+                    foreach (string savedName in savedToo)
+                    {
+                        outcome.AddSavedRunToo(savedName);
+                    }
+
+                    if (savedToo.Count > 0)
+                    {
+                        log.Line("CLASH    " + savedToo.Count
+                            + (savedToo.Count == 1 ? " test" : " tests") + " saved in the NWF that the matrix does not name "
+                            + (savedToo.Count == 1 ? "is" : "are") + " run too, where "
+                            + (savedToo.Count == 1 ? "it sits" : "they sit") + ", after the tests of the matrix: "
+                            + string.Join(", ", new List<string>(savedToo).GetRange(0, Math.Min(savedToo.Count, 10)).ToArray())
+                            + (savedToo.Count > 10 ? " and " + (savedToo.Count - 10) + " more" : string.Empty));
+                    }
                 }
 
                 // F132. The mirrored pairs among the tests to run, judged against the

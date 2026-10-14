@@ -1317,9 +1317,12 @@ and 6 does not read as broken.
   file's. The window's open, every run, both hand buttons and Build sets read the built in
   matrix, so every weekly run is a Weekly run plus matrix: a test of the matrix already saved in an
   NWF runs where it sits with its results kept, and a test of the matrix the NWF lacks is added.
-  A TEST SAVED IN THE NWF THAT THE MATRIX DOES NOT NAME IS NOT RUN, as on any run with an XML
-  before F155, and the COVERAGE block names it as a test in Clash Detective the matrix does not
-  name, Q168. With no pack
+  A TEST SAVED IN THE NWF THAT THE MATRIX DOES NOT NAME IS RUN TOO since F168, Bader's answer A
+  to Q168: `ClashTestPlan.WithTheSavedTestsTheMatrixDoesNotName` adds it after the tests of the
+  matrix, planned from the document, so it runs where it sits and is never created or compared, at
+  the tolerance of the drop down like every test. It is a row of the HTML, the Excel and the
+  Coverage sheet, `ClashRunOutcome.SavedTestsRunToo` names it, and its viewpoints go under
+  priority C unless the priority map names it, `PriorityMap.OfASavedTest`. With no pack
   built in, the tests saved in each NWF run as before and the RUN line says why no matrix was
   read. The Clash XML row, its Browse button, the Teams line, the remembered ClashXml folder and
   the picked paths are gone. NOTHING IN THE CODE NAMES ANY ONE PROJECT'S FILE still holds: the

@@ -447,7 +447,7 @@ namespace Federator.Addin.Engine
         /// priority, for this group and for the run. Nothing here changes a status, and
         /// priority is never used for one.
         /// </summary>
-        private void ApplyThePriorities(FederationJob job, ClashReport report)
+        private void ApplyThePriorities(FederationJob job, ClashReport report, IList<string> savedRunToo)
         {
             PriorityMap map = ThePriorities();
 
@@ -463,6 +463,13 @@ namespace Federator.Addin.Engine
             foreach (TestReport test in report.Tests)
             {
                 test.Priority = map.Of(test.Name);
+
+                // F168, Q168 A. A saved test the matrix does not name has no priority of its own, so its
+                // viewpoints go under C unless the priority map names it.
+                if (savedRunToo != null && savedRunToo.Contains(test.Name))
+                {
+                    test.Priority = map.OfASavedTest(test.Name);
+                }
                 names.Add(test.Name);
                 group.Add(test.Priority, test.RawClashes);
             }
@@ -3492,7 +3499,7 @@ namespace Federator.Addin.Engine
                 }
                 outcome.Clash = clash;
                 CountToleranceOrigins(outcome.Report);
-                ApplyThePriorities(job, outcome.Report);
+                ApplyThePriorities(job, outcome.Report, clash.SavedTestsRunToo);
                 log.Block("CLASH " + job.Building, clash.Lines());
 
                 // The run total, added as the group's own block is written so the two can
