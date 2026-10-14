@@ -1700,6 +1700,12 @@ and 6 does not read as broken.
   tool folder expected and not found once refuses the whole delete. The tests and results are counted before, after the
   first item and after all, and a change stops the delete and fails the step. One line says the number of items and the
   top level names, 50 at most. This replaced the one time clean up of the root folders A, B and C of F186.
+- THE TIME OF EACH VIEW, F194, `ViewTimings` and `ViewTiming`. Every view written is timed from the parts before and after
+  it, `ViewsSeconds.SecondsIn`, with the read back split into its hidden items, the walk of the material overrides and the
+  colour of the clashing items, and the group says once in VIEWS TIMING lines the count, the total, the average, the first
+  quarter against the last, the process's private bytes, the Pearson r of the seconds against the clashes, the overrides, the
+  tree at the start and the order, and the five slowest. A number that cannot be computed says UNKNOWN. The lines change no
+  view and no tree, they are read to find the cause before any fix is made.
 - THE REFRESH OF A PICKED NWF, F187, Bader's order of 14 Oct 2026 and his answer 2 of Q174, `RefreshRun`,
   `NwcManifest`, `NwfBackupName`, `ResultSnapshot` and `RefreshComparison`. A picked NWF, the NWF page's run, is
   copied into a Backup folder beside the Log folder before anything is opened, under its name and the moment to the

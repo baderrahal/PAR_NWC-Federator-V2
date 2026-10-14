@@ -668,8 +668,12 @@ namespace Federator.Addin.Engine
                         }
                     }
 
+                    System.Diagnostics.Stopwatch whole = System.Diagnostics.Stopwatch.StartNew();
+                    System.Diagnostics.Stopwatch hiddenWatch = System.Diagnostics.Stopwatch.StartNew();
                     ReadHidden(found, read);
+                    read.HiddenSeconds = hiddenWatch.Elapsed.TotalSeconds;
                     ReadPaint(document, found, paint, firstColour, secondColour, read);
+                    read.ReadSeconds = whole.Elapsed.TotalSeconds;
                 }
             }
 
@@ -730,6 +734,7 @@ namespace Federator.Addin.Engine
             Document document, SavedViewpoint found, PaintPlan paint, ViewpointColour firstColour, ViewpointColour secondColour, ViewReadBack read)
         {
             Dictionary<ItemPath, ViewpointColour> coloured = new Dictionary<ItemPath, ViewpointColour>();
+            System.Diagnostics.Stopwatch walkWatch = System.Diagnostics.Stopwatch.StartNew();
             AppearanceOverrides overrides = found.GetAppearanceOverrides();
 
             if (overrides != null && overrides.MaterialOverrides != null)
@@ -760,6 +765,7 @@ namespace Federator.Addin.Engine
                 }
             }
 
+            read.OverrideSeconds = walkWatch.Elapsed.TotalSeconds;
             List<ItemPath> painted = new List<ItemPath>(coloured.Keys);
 
             if (paint == null || firstColour == null || secondColour == null)
@@ -768,9 +774,11 @@ namespace Federator.Addin.Engine
                 return;
             }
 
+            System.Diagnostics.Stopwatch colourWatch = System.Diagnostics.Stopwatch.StartNew();
             read.ColoursAsked = paint.Red.Count + paint.Green.Count;
             CountShown(document, paint.Red, firstColour, coloured, painted, read);
             CountShown(document, paint.Green, secondColour, coloured, painted, read);
+            read.ColourSeconds = colourWatch.Elapsed.TotalSeconds;
             read.Painted = painted;
         }
 
@@ -1823,6 +1831,18 @@ namespace Federator.Addin.Engine
 
         /// <summary>How many will show another colour.</summary>
         public int ColoursWrong { get; set; }
+
+        /// <summary>F194. Seconds the whole read back took.</summary>
+        public double ReadSeconds { get; set; }
+
+        /// <summary>F194. Seconds reading the hidden items.</summary>
+        public double HiddenSeconds { get; set; }
+
+        /// <summary>F194. Seconds walking the material overrides one by one.</summary>
+        public double OverrideSeconds { get; set; }
+
+        /// <summary>F194. Seconds asking the colour each clashing item will show.</summary>
+        public double ColourSeconds { get; set; }
 
         /// <summary>How many could not be read either way.</summary>
         public int ColoursNotRead { get; set; }
