@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 22:00, round 4 second set, Part 2 F186 the viewpoint tree in review, F187 refresh and overwrite next
+STATE OPEN, 2026-10-14 22:10, round 4 second set, Part 2 F186 the viewpoint tree merged, F187 refresh and overwrite next
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 237 | 16 | 2 | 0 | 62 | 7 | 324 |
-| total | 440 | 24 | 2 | 0 | 163 | 18 | 647 |
+| outside the waves | 239 | 16 | 0 | 0 | 62 | 7 | 324 |
+| total | 442 | 24 | 0 | 0 | 163 | 18 | 647 |
 <!-- the end of the counts -->
 
 ## Now
