@@ -1062,14 +1062,26 @@ namespace Federator.Addin.Engine
 
             string internalSuffix = reports.GenericModels == null ? null : reports.GenericModels.WorkbookSuffix;
             string free = ReportPaths.NameThatOverwritesNothing(
-                reportFolder, job.WorkbookName, internalSuffix, DateTime.Now, null);
+                reportFolder, ReportPaths.ClashReportFolder(reportFolder), job.WorkbookName, internalSuffix,
+                DateTime.Now, null);
 
             if (!string.Equals(free, job.WorkbookName, StringComparison.Ordinal))
             {
-                log.Line("REPORT   " + job.WorkbookName + " is already in " + reportFolder
+                log.Line("REPORT   " + job.WorkbookName + " is already in " + reportFolder + " or in "
+                    + ReportPaths.ClashReportFolder(reportFolder)
                     + ", so this run writes its reports as " + free + " and leaves the earlier files as they are");
                 job.NameTheReports(free);
             }
+        }
+
+        /// <summary>
+        /// F170, Bader's answer to Q169. The HTML and its _files folder of pictures go in the Clash report
+        /// folder beside the Log folder, so the picture links of the page work. This is the path the Excel
+        /// would have there under the group's name, the one the pictures folder and the page are named by.
+        /// </summary>
+        private string ThePagePath(FederationJob job)
+        {
+            return ReportPaths.Workbook(ReportPaths.ClashReportFolder(reportFolder), job.WorkbookName);
         }
 
         private JobOutcome RunOne(FederationJob job)
@@ -3458,7 +3470,7 @@ namespace Federator.Addin.Engine
                     // them from. They used to ride on the workbook flag alone.
                     if (outputs.WriteImages && reportFolder != null)
                     {
-                        runner.WorkbookPath = ReportPaths.Workbook(reportFolder, job.WorkbookName);
+                        runner.WorkbookPath = ThePagePath(job);
                         runner.Images = new ClashImages(log, reports.Images, imageGuard, hideOtherAcrossTheRun);
                         log.Line("CLASH    " + reports.Images.Describe());
                     }
@@ -3787,8 +3799,7 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            string path = HtmlTabularWriter.PathFor(
-                ReportPaths.Workbook(reportFolder, job.WorkbookName));
+            string path = HtmlTabularWriter.PathFor(ThePagePath(job));
 
             Say("Writing the client report for " + job.Building);
             log.WriteAttempted("HTML", path);
@@ -3798,8 +3809,7 @@ namespace Federator.Addin.Engine
                 // The page IS the client's report and always carries only what theirs
                 // carries. Our extra columns live on the clash XML and nowhere else.
                 ClashReportXml writer = new ClashReportXml();
-                writer.LogoHref = CopyLogoIntoTheReportFolder(
-                    ReportPaths.Workbook(reportFolder, job.WorkbookName));
+                writer.LogoHref = CopyLogoIntoTheReportFolder(ThePagePath(job));
 
                 new HtmlTabularWriter().Write(writer.Build(report), stylesheet, path);
             }
@@ -4050,7 +4060,7 @@ namespace Federator.Addin.Engine
                 // that they show only while the _files folder stays where it was written.
                 WorkbookWriter writer = new WorkbookWriter();
                 writer.Write(report, path);
-                log.Line(LinkedPictures.Line(writer.PicturesLinked, path));
+                log.Line(LinkedPictures.Line(writer.PicturesLinked, ImageNaming.FolderFor(ThePagePath(job))));
             }
             catch (Exception error)
             {

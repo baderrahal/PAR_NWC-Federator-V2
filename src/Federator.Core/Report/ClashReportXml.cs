@@ -76,6 +76,13 @@ namespace Federator.Core.Report
         /// </summary>
         public string LogoHref { get; set; }
 
+        /// <summary>
+        /// The file the document is written to, set by Write. Each picture's href is then its path relative
+        /// to the folder of that file, so an XML in the Log folder reaches pictures in the Clash report
+        /// folder. Null for the page, whose links are relative to the page and are the rows' own.
+        /// </summary>
+        private string writtenTo;
+
         /// <summary>The stylesheets the shape was read from, named so the claim is checkable.</summary>
         internal static readonly string[] ShapeReadFrom =
         {
@@ -132,9 +139,18 @@ namespace Federator.Core.Report
                 Encoding = new System.Text.UTF8Encoding(false)
             };
 
-            using (XmlWriter writer = XmlWriter.Create(path, settings))
+            writtenTo = path;
+
+            try
             {
-                Build(report).WriteTo(writer);
+                using (XmlWriter writer = XmlWriter.Create(path, settings))
+                {
+                    Build(report).WriteTo(writer);
+                }
+            }
+            finally
+            {
+                writtenTo = null;
             }
 
             return path;
@@ -231,7 +247,14 @@ namespace Federator.Core.Report
             // picture off this one attribute. No picture, no attribute, no column.
             if (row.HasImage && row.ImageLink.Length > 0)
             {
-                element.Add(new XAttribute("href", Windows(row.ImageLink)));
+                string href = row.ImageLink;
+
+                if (writtenTo != null && !string.IsNullOrEmpty(row.ImagePath))
+                {
+                    href = LinkedPictures.RelativePathFor(writtenTo, row.ImagePath) ?? row.ImagePath;
+                }
+
+                element.Add(new XAttribute("href", Windows(href)));
             }
 
             element.Add(new XElement("resultstatus", row.Status.ToString()));

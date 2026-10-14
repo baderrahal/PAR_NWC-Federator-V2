@@ -2,6 +2,24 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F170 the HTML and its pictures in a Clash report folder
+
+Branch fix-F170 off main aefee2b. Bader's order of 14 Oct, round 3, task 1, Q169.
+
+What changed: the Log folder holds the run log, TSV, shared coordinates txt, folders list, Excel workbooks and XML. A new
+folder named Clash report, beside the Log folder, holds the HTML and its NAME_files folder of pictures together, so the
+relative picture links of the page work. ReportPaths.ClashReportFolder gives it, and the engine names the page, the
+pictures and the logo by one path in it. The Excel linked pictures (F152) still carry absolute file:/// targets, now to the
+jpgs in Clash report. The click links (F169), the cell link of the Image column and the href in the XML are relative to
+the file they sit in and go up one folder, for example ../Clash%20report/NAME_files/cdNNNNNN.jpg. Nothing is escaped in the
+cell link and the XML, where the reader does that. NameThatOverwritesNothing looks in both folders, so a name taken in
+either gets a dated name and nothing is overwritten. The summaries in LinkedPictures.cs sit each on its own method.
+
+Proved by tests: a test writes the Excel into Log, the jpgs into Clash report, then reads the Excel back as a zip and
+follows every linked picture, every click link, every cell link and every XML href to a jpg that exists, and writes the
+HTML through the installed stylesheet and follows its picture links. UNKNOWN: whether Excel follows a relative click link
+that goes up a folder, which only a person can try.
+
 ## 2026-10-14 F169 a click link on each picture of the Excel
 
 Branch fix-F169 off main 12089f3. Bader's order of 14 Oct, task 5, Q163 A.

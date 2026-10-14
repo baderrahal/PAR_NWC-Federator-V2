@@ -10,14 +10,36 @@ namespace Federator.Core.Report
     /// Where the logs and the reports go. One place builds the path, so the path written to and
     /// the path looked for cannot drift, exactly as OutputPaths does for the NWF and the NWD.
     ///
-    /// F158. The NWF and the NWD folders hold the NWF and the NWD and nothing else. Every log and
-    /// every report goes in ONE folder named Log, which sits beside them in the same group area:
-    /// the run log and its .tsv, the notes on the shared coordinates, the Excel, the Internal
-    /// workbook, the HTML, the XML and the _files folder of pictures. The HTML and the Excel
-    /// keep their pictures' links because the _files folder is in the same folder as both.
+    /// F158, changed by F170 (Bader's answer to Q169). The NWF and the NWD folders hold the NWF and
+    /// the NWD and nothing else. The Log folder sits beside them and holds the text type files and
+    /// the Excel: the run log and its .tsv, the notes on the shared coordinates, the Excel, the
+    /// Internal workbook and the XML. The Clash report folder sits beside the Log folder and holds
+    /// the HTML with its _files folder of pictures, so the picture links of the HTML work. The Excel
+    /// reaches the pictures by a link that goes up one folder.
     /// </summary>
     public static class ReportPaths
     {
+        /// <summary>The name of the folder that holds the HTML and its pictures, beside the Log folder.</summary>
+        public const string ClashReportSubfolder = "Clash report";
+
+        /// <summary>
+        /// The Clash report folder for a Log folder: its sibling, never inside it. Empty where there is
+        /// no Log folder.
+        /// </summary>
+        public static string ClashReportFolder(string logFolder)
+        {
+            if (string.IsNullOrEmpty(logFolder))
+            {
+                return string.Empty;
+            }
+
+            string trimmed = logFolder.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string parent = Path.GetDirectoryName(trimmed);
+
+            return string.IsNullOrEmpty(parent)
+                ? Path.Combine(trimmed, ClashReportSubfolder)
+                : Path.Combine(parent, ClashReportSubfolder);
+        }
         /// <summary>The name of the folder the logs and the reports go in.</summary>
         public const string DefaultSubfolder = "Log";
 
@@ -291,13 +313,15 @@ namespace Federator.Core.Report
         /// <summary>
         /// The name a group's reports are written under, so that nothing already in the Log folder is
         /// overwritten, F158. The name as it is where none of its files is there: the workbook, the
-        /// Internal workbook, the HTML, the XML and the _files folder. Where any is, the name with the
-        /// moment of the run after it, and a number after that where even that is taken. Nothing is
+        /// Internal workbook and the XML in the Log folder, the HTML and the _files folder in the Clash
+        /// report folder. Where any is, the name with the moment of the run after it, and a number after
+        /// that where even that is taken. Nothing is
         /// deleted or touched, and the name is worked out once per group so the Excel, the HTML and the
         /// pictures folder all carry the same one and their links keep working.
         /// </summary>
         public static string NameThatOverwritesNothing(
-            string folder, string workbookName, string internalSuffix, DateTime now, Func<string, bool> exists)
+            string folder, string clashReportFolder, string workbookName, string internalSuffix, DateTime now,
+            Func<string, bool> exists)
         {
             if (string.IsNullOrEmpty(folder) || string.IsNullOrEmpty(workbookName))
             {
@@ -309,7 +333,7 @@ namespace Federator.Core.Report
                 exists = path => File.Exists(path) || Directory.Exists(path);
             }
 
-            if (!AnyOfThemExist(folder, workbookName, internalSuffix, exists))
+            if (!AnyOfThemExist(folder, clashReportFolder, workbookName, internalSuffix, exists))
             {
                 return workbookName;
             }
@@ -317,7 +341,7 @@ namespace Federator.Core.Report
             string dated = workbookName + " " + now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
             string candidate = dated;
 
-            for (int number = 2; AnyOfThemExist(folder, candidate, internalSuffix, exists); number++)
+            for (int number = 2; AnyOfThemExist(folder, clashReportFolder, candidate, internalSuffix, exists); number++)
             {
                 candidate = dated + " " + number.ToString(CultureInfo.InvariantCulture);
             }
@@ -325,16 +349,24 @@ namespace Federator.Core.Report
             return candidate;
         }
 
-        private static bool AnyOfThemExist(string folder, string name, string internalSuffix, Func<string, bool> exists)
+        private static bool AnyOfThemExist(
+            string folder, string clashReportFolder, string name, string internalSuffix, Func<string, bool> exists)
         {
             string workbook = Path.Combine(folder, name + WorkbookExtension);
 
-            if (exists(workbook)
-                || exists(Path.Combine(folder, name + XmlExtension))
-                || exists(HtmlTabularWriter.PathFor(workbook))
-                || exists(ImageNaming.FolderFor(workbook)))
+            if (exists(workbook) || exists(Path.Combine(folder, name + XmlExtension)))
             {
                 return true;
+            }
+
+            if (!string.IsNullOrEmpty(clashReportFolder))
+            {
+                string page = Path.Combine(clashReportFolder, name + WorkbookExtension);
+
+                if (exists(HtmlTabularWriter.PathFor(page)) || exists(ImageNaming.FolderFor(page)))
+                {
+                    return true;
+                }
             }
 
             return !string.IsNullOrEmpty(internalSuffix)

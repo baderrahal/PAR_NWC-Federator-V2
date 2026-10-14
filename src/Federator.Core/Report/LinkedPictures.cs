@@ -85,17 +85,30 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The log's line for one workbook: how many linked pictures it holds and where they point, and that
-        /// they show only while that folder stays where it was written, since none is embedded.
-        /// </summary>
-        /// <summary>
         /// The click link of a picture, F169, Bader's answer A to Q163: the path of its jpg relative to the
         /// folder the workbook sits in, forward slashed, going up with .. where the jpg is not below it.
         /// A space, a per cent sign and a hash are escaped as the link is read as an address, and nothing
         /// is added after the file name, which the client's own workbook carried a stray %20 after.
         /// Where the jpg is on another drive no relative path exists, and the full path as an address is used.
+        /// With the Excel in the Log folder and the jpgs in the Clash report folder it goes up one folder.
         /// </summary>
         public static string RelativeLinkFor(string workbookPath, string imagePath)
+        {
+            string plain = RelativePathFor(workbookPath, imagePath);
+
+            if (plain == null)
+            {
+                return TargetFor(imagePath);
+            }
+
+            return plain.Replace("%", "%25").Replace(" ", "%20").Replace("#", "%23");
+        }
+
+        /// <summary>
+        /// The same relative path with nothing escaped, forward slashed, for a cell link and for the XML
+        /// where the reader of the file does its own escaping. Null where the jpg is on another drive.
+        /// </summary>
+        public static string RelativePathFor(string workbookPath, string imagePath)
         {
             if (string.IsNullOrEmpty(workbookPath) || string.IsNullOrEmpty(imagePath))
             {
@@ -117,7 +130,7 @@ namespace Federator.Core.Report
 
             if (same == 0)
             {
-                return TargetFor(imagePath);
+                return null;
             }
 
             List<string> parts = new List<string>();
@@ -132,10 +145,14 @@ namespace Federator.Core.Report
                 parts.Add(b[i]);
             }
 
-            return string.Join("/", parts.ToArray()).Replace("%", "%25").Replace(" ", "%20").Replace("#", "%23");
+            return string.Join("/", parts.ToArray());
         }
 
-        public static string Line(int count, string workbookPath)
+        /// <summary>
+        /// The log's line for one workbook: how many linked pictures it holds and where they point, and that
+        /// they show only while that folder stays where it was written, since none is embedded.
+        /// </summary>
+        public static string Line(int count, string picturesFolder)
         {
             if (count <= 0)
             {
@@ -144,7 +161,7 @@ namespace Federator.Core.Report
 
             return "XLSX     " + count.ToString(CultureInfo.InvariantCulture) + " linked "
                 + (count == 1 ? "picture" : "pictures") + " in the workbook, each pointing at its jpg in "
-                + ImageNaming.FolderFor(workbookPath)
+                + picturesFolder
                 + ". None is embedded, so they show only while that folder stays where it was written";
         }
 

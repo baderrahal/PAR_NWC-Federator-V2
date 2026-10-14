@@ -125,6 +125,7 @@ namespace Federator.Core.Report
 
             pictures.Clear();
             PicturesLinked = 0;
+            writtenTo = path;
 
             using (XLWorkbook workbook = new XLWorkbook())
             {
@@ -170,6 +171,9 @@ namespace Federator.Core.Report
 
         /// <summary>The clash rows of the workbook being written that carry a picture, each with its sheet row.</summary>
         private readonly List<LinkedPicture> pictures = new List<LinkedPicture>();
+
+        /// <summary>The workbook being written, so a cell link is relative to the folder it sits in.</summary>
+        private string writtenTo;
 
         // ---------- the title row ----------
 
@@ -545,10 +549,19 @@ namespace Federator.Core.Report
             // nor a picture, so the cell carries only the link.
             if (!string.IsNullOrEmpty(clash.ImageLink))
             {
+                // F170. Relative to the folder of the workbook, which goes up where the pictures sit in the
+                // Clash report folder beside the Log folder. The row's own link is relative to the page.
+                string link = clash.ImageLink;
+
+                if (!string.IsNullOrEmpty(clash.ImagePath) && !string.IsNullOrEmpty(writtenTo))
+                {
+                    link = LinkedPictures.RelativePathFor(writtenTo, clash.ImagePath) ?? clash.ImagePath;
+                }
+
                 // A relative Uri, not a plain string. Handed the string, ClosedXML reads
                 // it as an internal address, which makes the cell jump to a sheet that
                 // does not exist instead of opening the picture.
-                cell.SetHyperlink(new XLHyperlink(new Uri(clash.ImageLink, UriKind.Relative)));
+                cell.SetHyperlink(new XLHyperlink(new Uri(link, UriKind.RelativeOrAbsolute)));
             }
 
             if (!string.IsNullOrEmpty(clash.ImagePath))

@@ -11,11 +11,12 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// F158. The logs and the reports moved out of the NWF folder into one Log folder beside the NWF
-    /// and the NWD folders. The page's picture links are relative to the page and the workbook's linked
-    /// pictures (F152) are absolute file:/// paths, so both are read back here, off the files the writers
-    /// wrote after the move, and each is followed to a jpg that is on the disk inside the Log folder and
-    /// in neither the NWF nor the NWD folder.
+    /// F158 and F170. The Log folder beside the NWF and the NWD folders holds the text type files and the
+    /// Excel. The Clash report folder beside the Log folder holds the HTML and its _files folder of pictures.
+    /// The page's picture links are relative to the page, the workbook's linked pictures (F152) are absolute
+    /// file:/// paths, and its click links (F169) and cell links are relative to the Excel and go up one
+    /// folder. All of them are read back here, off the files the writers wrote, and each is followed to a
+    /// jpg that is on the disk in the Clash report folder and in none of the NWF, NWD or Log folders.
     /// </summary>
     [TestFixture]
     public class LogFolderLinksTests
@@ -40,7 +41,7 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheExcelsLinkedPicturesAndThePagesLinksResolveInsideTheLogFolderAfterTheMove()
+        public void TheExcelsLinkedPicturesClickLinksAndThePagesLinksAllResolveToJpgsInTheClashReportFolder()
         {
             TestPaths.OnWindowsOnly("the file:/// form of a drive letter path");
 
@@ -51,8 +52,13 @@ namespace Federator.Core.Tests
             Directory.CreateDirectory(nwd);
             Directory.CreateDirectory(log);
 
+            string clashReport = ReportPaths.ClashReportFolder(log);
+
+            Assert.That(clashReport, Is.EqualTo(Path.Combine(root, "NM fed", "Clash report")));
+
             string workbook = ReportPaths.Workbook(log, "1104-PAR-1A04PK-ZZZ-BM-MOD-000001");
-            ClashReport report = Report(workbook);
+            string pageAnchor = ReportPaths.Workbook(clashReport, "1104-PAR-1A04PK-ZZZ-BM-MOD-000001");
+            ClashReport report = Report(pageAnchor);
 
             foreach (TestReport test in report.Tests)
             {
@@ -69,6 +75,7 @@ namespace Federator.Core.Tests
             // the target writes it, and it has to be a jpg that is there, in the Log folder.
             List<string> targets = new List<string>();
             List<string> clickLinks = new List<string>();
+            List<string> cellLinks = new List<string>();
 
             using (ZipArchive zip = ZipFile.OpenRead(workbook))
             using (Stream stream = zip.GetEntry("xl/drawings/_rels/drawing1.xml.rels").Open())
@@ -86,9 +93,21 @@ namespace Federator.Core.Tests
                 }
             }
 
+            using (ZipArchive zip = ZipFile.OpenRead(workbook))
+            using (Stream stream = zip.GetEntry("xl/worksheets/_rels/sheet1.xml.rels").Open())
+            {
+                foreach (XElement relationship in XDocument.Load(stream).Root.Elements(PackageRel + "Relationship"))
+                {
+                    if ((string)relationship.Attribute("TargetMode") == "External")
+                    {
+                        cellLinks.Add((string)relationship.Attribute("Target"));
+                    }
+                }
+            }
+
             Assert.That(targets.Count, Is.EqualTo(3), "one linked picture for each clash row");
 
-            string pictures = ImageNaming.FolderFor(workbook);
+            string pictures = ImageNaming.FolderFor(pageAnchor);
 
             foreach (string target in targets)
             {
@@ -98,7 +117,8 @@ namespace Federator.Core.Tests
 
                 Assert.That(File.Exists(path), Is.True, "the Excel links to a picture that is not there: " + path);
                 Assert.That(ReportPaths.IsInside(path, pictures), Is.True, "the picture is not in the _files folder: " + path);
-                Assert.That(ReportPaths.IsInside(path, log), Is.True, "the picture is not in the Log folder: " + path);
+                Assert.That(ReportPaths.IsInside(path, clashReport), Is.True, "the picture is not in the Clash report folder: " + path);
+                Assert.That(ReportPaths.IsInside(path, log), Is.False, "a picture is in the Log folder: " + path);
                 Assert.That(ReportPaths.IsInside(path, nwf), Is.False, "a picture is in the NWF folder: " + path);
                 Assert.That(ReportPaths.IsInside(path, nwd), Is.False, "a picture is in the NWD folder: " + path);
             }
@@ -112,7 +132,30 @@ namespace Federator.Core.Tests
                 string resolved = Path.GetFullPath(Path.Combine(log, Uri.UnescapeDataString(click).Replace('/', Path.DirectorySeparatorChar)));
 
                 Assert.That(File.Exists(resolved), Is.True, "the click link reaches no file: " + click + " from " + log);
-                Assert.That(ReportPaths.IsInside(resolved, log), Is.True);
+                Assert.That(click, Does.StartWith("../Clash%20report/"), "the click link does not go up one folder");
+                Assert.That(ReportPaths.IsInside(resolved, clashReport), Is.True);
+            }
+
+            // The link of the cell itself, the one a person clicks in the Image column.
+            Assert.That(cellLinks.Count, Is.EqualTo(3), "a cell link for each picture");
+
+            foreach (string cell in cellLinks)
+            {
+                string resolved = Path.GetFullPath(Path.Combine(log, Uri.UnescapeDataString(cell).Replace('/', Path.DirectorySeparatorChar)));
+
+                Assert.That(File.Exists(resolved), Is.True, "the cell link reaches no file: " + cell + " from " + log);
+                Assert.That(ReportPaths.IsInside(resolved, clashReport), Is.True);
+            }
+
+            // The XML sits in the Log folder too, and its hrefs are relative to it.
+            string xml = ReportPaths.Xml(log, "1104-PAR-1A04PK-ZZZ-BM-MOD-000001");
+            new ClashReportXml().Write(report, xml);
+
+            foreach (XAttribute href in XDocument.Load(xml).Descendants().Attributes("href"))
+            {
+                string resolved = Path.GetFullPath(Path.Combine(log, href.Value));
+
+                Assert.That(File.Exists(resolved), Is.True, "the XML href reaches no file: " + href.Value);
             }
 
             // The page, whose picture links are relative to the page, which sits in the same folder as
@@ -125,11 +168,11 @@ namespace Federator.Core.Tests
                 Assert.Ignore("Navisworks is not on this machine, so its stylesheet cannot be read.");
             }
 
-            string page = HtmlTabularWriter.PathFor(workbook);
+            string page = HtmlTabularWriter.PathFor(pageAnchor);
             string pageFolder = Path.GetDirectoryName(page);
 
-            Assert.That(pageFolder, Is.EqualTo(log), "the page is not in the Log folder");
-            Assert.That(Path.GetDirectoryName(pictures), Is.EqualTo(log), "the _files folder is not beside the page");
+            Assert.That(pageFolder, Is.EqualTo(clashReport), "the page is not in the Clash report folder");
+            Assert.That(Path.GetDirectoryName(pictures), Is.EqualTo(clashReport), "the _files folder is not beside the page");
 
             new HtmlTabularWriter().Write(new ClashReportXml().Build(report), stylesheet, page);
 
@@ -147,7 +190,9 @@ namespace Federator.Core.Tests
                     "the page's link does not resolve from the page's folder: " + link);
             }
 
-            // And the NWF and the NWD folders hold no log, report or picture of this run.
+            // The Log folder holds no page and no pictures folder, and nothing is in the NWF or the NWD folder.
+            Assert.That(Directory.GetFiles(log, "*.html"), Is.Empty);
+            Assert.That(Directory.GetDirectories(log), Is.Empty, "the Log folder holds a folder of pictures");
             Assert.That(Directory.GetFileSystemEntries(nwf), Is.Empty, "the NWF folder holds more than the NWF");
             Assert.That(Directory.GetFileSystemEntries(nwd), Is.Empty, "the NWD folder holds more than the NWD");
         }
