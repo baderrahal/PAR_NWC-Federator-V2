@@ -33,6 +33,9 @@ namespace Federator.Core.Report
         /// <summary>The relationship type of a linked picture, as the client's drawing rels write it.</summary>
         public const string ImageRelationship = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
 
+        /// <summary>The relationship a click link on a picture goes through, F169.</summary>
+        public const string HyperlinkRelationship = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink";
+
         internal const string DrawingRelationship = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing";
 
         internal const string DrawingContentType = "application/vnd.openxmlformats-officedocument.drawing+xml";
@@ -85,6 +88,53 @@ namespace Federator.Core.Report
         /// The log's line for one workbook: how many linked pictures it holds and where they point, and that
         /// they show only while that folder stays where it was written, since none is embedded.
         /// </summary>
+        /// <summary>
+        /// The click link of a picture, F169, Bader's answer A to Q163: the path of its jpg relative to the
+        /// folder the workbook sits in, forward slashed, going up with .. where the jpg is not below it.
+        /// A space, a per cent sign and a hash are escaped as the link is read as an address, and nothing
+        /// is added after the file name, which the client's own workbook carried a stray %20 after.
+        /// Where the jpg is on another drive no relative path exists, and the full path as an address is used.
+        /// </summary>
+        public static string RelativeLinkFor(string workbookPath, string imagePath)
+        {
+            if (string.IsNullOrEmpty(workbookPath) || string.IsNullOrEmpty(imagePath))
+            {
+                throw new ArgumentException("A click link needs the workbook and the jpg.");
+            }
+
+            string from = Path.GetFullPath(Path.GetDirectoryName(Path.GetFullPath(workbookPath)))
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string to = Path.GetFullPath(imagePath);
+            string[] a = from.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string[] b = to.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            int same = 0;
+
+            while (same < a.Length && same < b.Length - 1
+                && string.Equals(a[same], b[same], StringComparison.OrdinalIgnoreCase))
+            {
+                same++;
+            }
+
+            if (same == 0)
+            {
+                return TargetFor(imagePath);
+            }
+
+            List<string> parts = new List<string>();
+
+            for (int i = same; i < a.Length; i++)
+            {
+                parts.Add("..");
+            }
+
+            for (int i = same; i < b.Length; i++)
+            {
+                parts.Add(b[i]);
+            }
+
+            return string.Join("/", parts.ToArray()).Replace("%", "%25").Replace(" ", "%20").Replace("#", "%23");
+        }
+
         public static string Line(int count, string workbookPath)
         {
             if (count <= 0)
@@ -115,7 +165,7 @@ namespace Federator.Core.Report
 
             using (ZipArchive zip = ZipFile.OpenRead(workbookPath))
             {
-                edit = Plan(zip, pictures);
+                edit = Plan(zip, pictures, workbookPath);
             }
 
             // Every part is turned into its bytes before anything is written, and the bytes go into a copy
@@ -169,7 +219,7 @@ namespace Federator.Core.Report
             internal XDocument DrawingRels;
         }
 
-        private static Edit Plan(ZipArchive zip, IList<LinkedPicture> pictures)
+        private static Edit Plan(ZipArchive zip, IList<LinkedPicture> pictures, string workbookPath)
         {
             Edit edit = new Edit();
             edit.SheetPart = FirstSheetPart(zip);
@@ -248,7 +298,13 @@ namespace Federator.Core.Report
                     new XAttribute("Type", ImageRelationship),
                     new XAttribute("Target", TargetFor(pictures[i].ImagePath)),
                     new XAttribute("TargetMode", "External")));
-                drawingRoot.Add(Anchor(sizes, pictures[i].Row, i + 2, id));
+                string linkId = "rId" + (pictures.Count + i + 1).ToString(CultureInfo.InvariantCulture);
+                rels.Add(new XElement(PackageRel + "Relationship",
+                    new XAttribute("Id", linkId),
+                    new XAttribute("Type", HyperlinkRelationship),
+                    new XAttribute("Target", RelativeLinkFor(workbookPath, pictures[i].ImagePath)),
+                    new XAttribute("TargetMode", "External")));
+                drawingRoot.Add(Anchor(sizes, pictures[i].Row, i + 2, id, linkId));
             }
 
             edit.Drawing = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"), drawingRoot);
@@ -262,7 +318,7 @@ namespace Federator.Core.Report
         /// far corner where the picture's size reaches over the sheet's own widths and heights, the blip a
         /// link and never an embed, stretched to the frame.
         /// </summary>
-        private static XElement Anchor(SheetSizes sizes, int row, int shapeId, string relationshipId)
+        private static XElement Anchor(SheetSizes sizes, int row, int shapeId, string relationshipId, string clickLinkId)
         {
             int fromRow = row - 1;
             int toColumn;
@@ -279,7 +335,8 @@ namespace Federator.Core.Report
                     new XElement(Xdr + "nvPicPr",
                         new XElement(Xdr + "cNvPr",
                             new XAttribute("id", shapeId),
-                            new XAttribute("name", "Picture " + (shapeId - 1).ToString(CultureInfo.InvariantCulture))),
+                            new XAttribute("name", "Picture " + (shapeId - 1).ToString(CultureInfo.InvariantCulture)),
+                            new XElement(A + "hlinkClick", new XAttribute(Rel + "id", clickLinkId), new XAttribute("tgtFrame", "_blank"))),
                         new XElement(Xdr + "cNvPicPr",
                             new XElement(A + "picLocks", new XAttribute("noChangeAspect", "1"), new XAttribute("noChangeArrowheads", "1")))),
                     new XElement(Xdr + "blipFill",

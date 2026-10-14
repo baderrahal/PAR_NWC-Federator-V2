@@ -85,7 +85,8 @@ namespace Federator.Core.Tests
             }
 
             List<XElement> relationships = Part(path, "xl/drawings/_rels/drawing1.xml.rels").Root
-                .Elements(PackageRel + "Relationship").ToList();
+                .Elements(PackageRel + "Relationship")
+                .Where(r => (string)r.Attribute("Type") == LinkedPictures.ImageRelationship).ToList();
 
             Assert.That(relationships.Count, Is.EqualTo(written.Count));
 
@@ -113,6 +114,64 @@ namespace Federator.Core.Tests
 
             Assert.That(Entries(path).Any(name => name.StartsWith("xl/media/", StringComparison.Ordinal)), Is.False,
                 "no picture is embedded");
+        }
+
+        /// <summary>
+        /// F169, Bader's answer A to Q163. Each picture carries a click link, a hlinkClick to the relative path of
+        /// its jpg, as the client's own workbook does, forward slashed and with nothing after the file name. Every
+        /// picture has one, each link is its own hyperlink relationship, and the linked picture itself is as it was.
+        /// </summary>
+        [Test]
+        public void EveryPictureHasAClickLinkToItsJpgRelativeAndForwardSlashed()
+        {
+            string path = Path.Combine(folder, "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.xlsx");
+            ClashReport report = Report(path, new[] { 3, 2, 0 }, new[] { true, false, true, true, false });
+
+            new WorkbookWriter().Write(report, path);
+
+            XDocument drawing = Part(path, "xl/drawings/drawing1.xml");
+            List<XElement> anchors = drawing.Root.Elements(Xdr + "twoCellAnchor").ToList();
+            Dictionary<string, XElement> relationships = Part(path, "xl/drawings/_rels/drawing1.xml.rels").Root
+                .Elements(PackageRel + "Relationship").ToDictionary(r => (string)r.Attribute("Id"));
+
+            Assert.That(anchors.Count, Is.EqualTo(3));
+
+            foreach (XElement anchor in anchors)
+            {
+                XElement click = anchor.Descendants(A + "hlinkClick").SingleOrDefault();
+
+                Assert.That(click, Is.Not.Null, "a picture with no click link");
+
+                XElement link = relationships[(string)click.Attribute(R + "id")];
+                string target = (string)link.Attribute("Target");
+
+                Assert.That((string)link.Attribute("Type"), Is.EqualTo(LinkedPictures.HyperlinkRelationship));
+                Assert.That((string)link.Attribute("TargetMode"), Is.EqualTo("External"));
+                Assert.That(target, Does.StartWith("1104-PAR-1A02MM-ZZZ-BM-MOD-000001_files/cd"));
+                Assert.That(target, Does.EndWith(".jpg"), "nothing stray after the file name");
+                Assert.That(target, Does.Not.Contain("\\"));
+
+                XElement blip = anchor.Descendants(A + "blip").Single();
+                Assert.That(blip.Attribute(R + "link"), Is.Not.Null, "the linked picture of F152 is kept");
+                Assert.That(blip.Attribute(R + "embed"), Is.Null);
+            }
+        }
+
+        [Test]
+        public void TheClickLinkIsRelativeToTheFolderOfTheWorkbookAndGoesUpWhereTheJpgIsNotBelowIt()
+        {
+            string log = Path.Combine(Path.GetTempPath(), "NM fed", "Log");
+            string workbook = Path.Combine(log, "X.xlsx");
+
+            Assert.That(
+                LinkedPictures.RelativeLinkFor(workbook, Path.Combine(log, "X_files", "cd000001.jpg")),
+                Is.EqualTo("X_files/cd000001.jpg"));
+            Assert.That(
+                LinkedPictures.RelativeLinkFor(workbook, Path.Combine(Path.GetDirectoryName(log), "Clash report", "X_files", "cd000001.jpg")),
+                Is.EqualTo("../Clash%20report/X_files/cd000001.jpg"));
+            Assert.That(
+                LinkedPictures.RelativeLinkFor(workbook, Path.Combine(log, "X 2026-10-14 153012_files", "cd000002.jpg")),
+                Is.EqualTo("X%202026-10-14%20153012_files/cd000002.jpg"));
         }
 
         /// <summary>
