@@ -77,7 +77,7 @@ Install the bundle, then drive the window at the fixture's own four folders:
     build\install.ps1
     <temp>\round-close\open-addin.ps1
     <temp>\round-close\drive.ps1 -Source <fixture>\NWC -Nwf <fixture>\NWF `
-                                 -Nwd <fixture>\NWD -Excel <fixture>\Report
+                                 -Nwd <fixture>\NWD
 
 The log lands in the fixture's own NWF folder and nothing outside the temp folder is
 touched.

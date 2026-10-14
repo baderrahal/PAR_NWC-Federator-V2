@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F173 the loop and the window driver, the skip option's leftovers
+
+Branch fix-F173 off main 45bac48. Bader's order of 14 Oct, round 3, task 4, and F163.
+
+F163, the loop and the driver. tools\probes\drive-window-run.ps1 no longer takes -Excel and no longer types into or
+reads ExcelFolderBox. tools\loop\run.ps1 hands the driver no -Excel, keeps the Log folder beside NWF and NWD as an output
+(not there before the first run, empty for item 1) and lists Log and Clash Report after a run. The stand-in window has
+no Excel folder box and no skip box. Its tick box for -Untick is MarkByDesign, with modes untick-on, untick-sticky and
+untick-scan. The driver read in the same way: DriverArguments gives no -Excel and the driver's parameters hold none.
+
+AutoSave. Seven probes that start Navisworks switched Auto-Save off nowhere: probe-mirror-count, probe-mirror-swap,
+probe-model-worksets, probe-test-remove, probe-view-comments, probe-view-guids and probe-viewpoint-tree. Each now calls
+SwitchAutoSaveOff after its last read before the constructor, as run.ps1 and the other probes do, and the backup and
+put back they already had restore it. run.ps1 and the other probes already did. drive-window-run.ps1 starts nothing.
+
+The skip option's leftovers, searched whole repo for: SkipClashOffCoordinates, "Skip clash when", skip box,
+ExcelFolderBox, Excel folder, the box id in XAML, settings, tests and rules files. In src and tests nothing is left.
+Found and fixed: the stand-in, the driver, run.ps1 and nw-guard.ps1 comments, tools\loop\README.md,
+tools\probes\README.md, tools\probes\fixture.md, .claude\rules\loop.md and build\team\INSTALL-TEAM.txt, which still told
+the team to untick a box that is gone and to pick an Excel folder and a Clash XML. What stays is history: steps\ and
+docs\history, which say what was true then, and one line in each of core.md and addin.md that says it is gone.
+
+UNKNOWN: tools\loop\prove-run.ps1 was not run. It refuses beside a Navisworks, and Bader had his own open from 13:47.
+Proved here: the touched scripts parse, the stand-in builds, DriverArguments builds the command line without -Excel.
+
 ## 2026-10-14 F172 the pictures limit per test and the GDI backstop
 
 Branch fix-F172 off main 38ee05c. Bader's order of 14 Oct, round 3, task 3, Q171.

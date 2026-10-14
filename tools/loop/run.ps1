@@ -49,7 +49,7 @@ $ErrorActionPreference = "Stop"
 #                              NMFed\NWD\<Folder>, copied into the run folder's open\ and
 #                              opened there. F126: -Untick names tick boxes of the tool's window
 #                              by their AutomationId, joined by commas, such as
-#                              SkipClashOffCoordinates, and is handed to the driver, which
+#                              MarkByDesign, and is handed to the driver, which
 #                              unticks each before it presses anything. Check with -Item 1 to 5
 #                              takes it too and names the boxes. The record names them
 #   CloseOwn -RunFolder <runs\NN\item...>
@@ -173,7 +173,7 @@ function RunPaths($loopRoot, $repo, $set, $item, $folder, $xml, $openFile, $docS
     InstalledDll = Join-Path $env:APPDATA "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\Federator.Addin.dll"
     RegSub = "Software\Autodesk\Navisworks Manage\22.0"
     SetRoot = $null; Copy = $null; CopyManifest = $null; CopyRemoved = $null
-    Nwc = $null; Nwf = $null; Nwd = $null; Report = $null; XmlFile = $null; OpenSource = $null; OpenDir = $null
+    Nwc = $null; Nwf = $null; Nwd = $null; Report = $null; Log = $null; XmlFile = $null; OpenSource = $null; OpenDir = $null
     SourceRunDir = $null; DocDir = $null; CompareDir = $null; ProbeCopy = $null
     ProbeDll = Join-Path $repo "tools\probes\DocumentReadProbe\bin\Release\net48\DocumentReadProbe.dll"
   }
@@ -189,7 +189,11 @@ function RunPaths($loopRoot, $repo, $set, $item, $folder, $xml, $openFile, $docS
       $p.Nwc = Join-Path $p.Copy ("NWC\" + $folder)
       $p.Nwf = Join-Path $p.Copy ("NWF\" + $folder)
       $p.Nwd = Join-Path $p.Copy ("NWD\" + $folder)
-      $p.Report = Join-Path $p.Copy ("Clash Report\" + $folder)
+      # F173. Since F158 and F170 the tool writes its logs and the Excel into Log and its HTML and pictures into
+      # Clash report, both beside the NWF and NWD folders and so directly under the copy. Clash report and
+      # Clash Report are one folder on Windows. The folder of Bader's shape that this copy holds is Report.
+      $p.Report = Join-Path $p.Copy "Clash Report"
+      $p.Log = Join-Path $p.Copy "Log"
     }
     $p.RunDir = Join-Path $loopRoot ("runs\" + $set + "\" + $p.RunName)
     $p.Evidence = Join-Path $repo ("steps\runs\" + $set + "\" + $p.RunName)
@@ -428,6 +432,12 @@ function CopyRefusal($paths, $item) {
 # runs after it need the NWFs item 1 wrote, and item 5 the file it opens. Returns each reason.
 function OutputsRefusal($paths, $item) {
   $why = New-Object System.Collections.Generic.List[string]
+  # F173. The Log folder is made by the tool, so it is not there before the first run and is no refusal.
+  # Where it is there for item 1 it must be empty, as the other output folders must.
+  if ($item -eq "1" -and $null -ne $paths.Log -and (Test-Path -LiteralPath $paths.Log -PathType Container)) {
+    $nLog = @(Get-ChildItem -LiteralPath $paths.Log -Recurse -File -Force).Count
+    if ($nLog -gt 0) { $why.Add("item 1, the first run, needs no files in the Log folder, and " + (Mask $paths.Log) + " holds " + $nLog + " files. Use a new set, nothing is ever emptied. Nothing was written") }
+  }
   foreach ($d in @($paths.Nwf, $paths.Nwd, $paths.Report)) {
     if (-not (Test-Path -LiteralPath $d -PathType Container)) { $why.Add((Mask $d) + " is not there, so the copy is not in Bader's folder shape. Nothing was written"); continue }
     if ($item -eq "1") {
@@ -2167,7 +2177,7 @@ function DriverArguments($drv, $ownerPid, $ownerTicks, $set, $stamp, $notes, $it
   $a = "-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $drv + "`" -OwnerPid " + $ownerPid + " -OwnerStartTicks " + $ownerTicks + " -Set " + $set + " -Stamp " + $stamp + " -Notes `"" + $notes + "`""
   if ($item -eq "5") { $a += " -OpenRun" }
   else {
-    $a += " -Source `"" + $paths.Nwc + "`" -Nwf `"" + $paths.Nwf + "`" -Nwd `"" + $paths.Nwd + "`" -Excel `"" + $paths.Report + "`""
+    $a += " -Source `"" + $paths.Nwc + "`" -Nwf `"" + $paths.Nwf + "`" -Nwd `"" + $paths.Nwd + "`""
   }
   $ids = @(UntickIds $untick)
   if ($ids.Count -gt 0) { $a += " -Untick " + ($ids -join ",") }
@@ -2797,7 +2807,7 @@ try {
             $ol.Add((ListingHeader))
             $xlsx = New-Object System.Collections.Generic.List[object]
             $outRoots = [ordered]@{}
-            foreach ($d in @($paths.Nwf, $paths.Nwd, $paths.Report)) { $outRoots[$d.Substring($paths.Copy.Length).TrimStart('\')] = $d }
+            foreach ($d in @($paths.Nwf, $paths.Nwd, $paths.Log, $paths.Report)) { $outRoots[$d.Substring($paths.Copy.Length).TrimStart('\')] = $d }
             if ($Item -eq "5") { $outRoots["open"] = $paths.OpenDir }
             $nOut = 0
             foreach ($label in $outRoots.Keys) {

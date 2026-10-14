@@ -379,16 +379,14 @@ modes:
   when the log on disk holds a RESULT block and a SESSION naming the stamp, and for item 1 a
   GROUPS block reading 0 groups unticked. Items 2 to 5 have run on no Navisworks yet.
   -Untick, F126, names tick boxes of the tool's window by their AutomationId, joined by commas,
-  such as SkipClashOffCoordinates, the box of F112's rule, so a building can be run once with that
-  rule switched off. Only Run and Check with -Item 1 to 5 take it, never a documents read, and an
+  such as MarkByDesign, so a building can be run once with that tick box off. F112's box,
+  SkipClashOffCoordinates, is gone since F159. Only Run and Check with -Item 1 to 5 take it, never a documents read, and an
   id that is not the plain shape of an x:Name or is named twice is refused, UntickRefusal in
   nw-guard.ps1. It is handed to the driver through DriverArguments, which unticks each box before
   it presses anything, and the record names the boxes on its RUN RECORD line and in one line of
-  their own, which Check prints under its own heading. SkipClashOffCoordinates is not remembered
-  between runs: the window sets it from AlignmentCheck.DefaultSkipClashOffCoordinates every time
-  it opens, src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at
-  e6d6f73, the same line on main since F112 merged as ddb059b. So nothing of the box needs
-  reading before the loop or putting back after. The two states the window does read back at
+  their own, which Check prints under its own heading. The window does not remember a tick box
+  between runs, so nothing of it needs reading before the loop or putting back after. The two
+  states the window does read back at
   its next open are FolderMemory's folders.txt, picker folders only, and since F131
   TeamMapMemory's team-map.txt, the team map a run with no XML reads. Every start reads
   team-map.txt before it, check 13b, a copy in the run folder's teammap read back by sha256,
@@ -667,10 +665,11 @@ confirm, a warning, or a new window that is not modal. They are proved by
 %LOCALAPPDATA%\NwcFederatorLoop\turn5\f125-proof\prove-f125.ps1, outside the repo, whose
 F125b checks of the second pass add the monitor watching the pane from before the tool's window
 and the line holding WM_CLOSE back, on the same modes. Since F126 the window role carries the
-tick box SkipClashOffCoordinates on 4. Clash, ticked when it opens as F112's is, writes each tick,
-each untick and what it reads when Run or Run the open file is pressed to its events file, and
-has three modes more: skip-off, the box opening unticked, skip-sticky, the box ticking itself
-again whenever it is unticked, and skip-scan, Scan ticking it again. They are proved by
+tick box MarkByDesign on 4. Clash (F126 gave it SkipClashOffCoordinates, which F173 replaced since
+F159 removed that box), writes each tick, each untick and what it reads when Run or Run the open
+file is pressed to its events file, and has three modes more: untick-on, the box opening ticked,
+untick-sticky, the box ticking itself again whenever it is unticked, and untick-scan, Scan ticking
+it again. They were proved by
 %LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof\prove-f126.ps1, outside the repo.
 
 - writes outside the repo: -Work, and the throwaway key HKCU\Software\NwcFederatorLoopTest

@@ -42,8 +42,8 @@
 #   its owner's state and calls PANE a WinForms window owned by a visible window that is not
 #   modal
 #
-# WHAT F126 CHANGED OR ADDED, so a window run can switch off a rule of the tool by its tick box,
-# F112's SkipClashOffCoordinates among them:
+# WHAT F126 CHANGED OR ADDED, so a window run can switch off a rule of the tool by its tick box
+# (F112's SkipClashOffCoordinates, its first use, has been gone since F159):
 # - changed: DriverCodes, which gains UNTICK, the driver's stop on a tick box it was told to
 #   untick and could not
 # - added: UntickIds and UntickRefusal, the one reading of the list of tick boxes that run.ps1's

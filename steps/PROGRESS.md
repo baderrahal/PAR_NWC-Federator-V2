@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 17:00, last run 94/item1-C02
+STATE OPEN, 2026-10-14 14:30, last run C04 under NM fed 20261014-105308, crashed at picture 8907
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,17 +15,16 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 218 | 16 | 0 | 0 | 60 | 7 | 301 |
-| total | 421 | 24 | 0 | 0 | 161 | 18 | 624 |
+| outside the waves | 220 | 16 | 0 | 0 | 59 | 7 | 302 |
+| total | 423 | 24 | 0 | 0 | 160 | 18 | 625 |
 <!-- the end of the counts -->
 
 ## Now
-- Bader's message of 13 Oct, Q162, five things: all merged on 14 Oct, F151 232, F152 233, F153 234, F154 235, F155 236
-- Bader's order of 14 Oct, tasks A to D: F157 239 pictures trail, F158 240 Log folder, F159 241 skip option gone, F161 242
-- F160, C04 under NM fed, main 6c47bef4: Navisworks crashed at picture 8907 of 10170, GDI objects 9999, lcodwin.dll
-- Bader's six answers of 14 Oct, Q163 to Q168, one PR each: F164 label, F165 notes, F166 pack by code, F167 tolerance,
-  F168 saved tests run, F169 picture click link
-
+- Bader's order of 14 Oct, round 2, Q163 to Q168: F164 to F169, merged, 244 to 249
+- Bader's order of 14 Oct, round 3, one PR each: F170 Clash report folder 250, F171 a model on Internal is a NOTICE 251,
+  F172 pictures limit 1000 per test and GDI backstop at 9000 252, F173 loop and driver clean up 253
+- F160, C04 under NM fed, crash at picture 8907 of 10170, GDI objects 9999, lcodwin.dll. F172 is its answer, unproven by a run
+- Task 5, the full run on C04 with this build, is the next thing, see 03_bader_next
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
@@ -36,23 +35,21 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 14 Oct 01:28, set 94 | 51d9f31d, main after 237 | 0.027 s | 245 s, group FAILED on the same model | none in 10 readings | PICTURES 112.5 s |
 
 ## Next
-1. Bader's proof of the round on his desktop PC, steps 1390 to 1513 of steps\03_bader_next.md: the build and install
-   in VS Code, the four NWC files of 1A02MM copied by hand, and what only Excel shows, steps 1435 to 1446
-3. tools\loop\prove-run.ps1 stops at its install.ps1 trials on main, 28 FAIL, and its H12b trial of install.ps1 at
-   0eb4ede exits 1 on any build since F152, so its window cases do not run
-3. The register rows of 13 Oct: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
+1. Task 5 of round 3: Core tests, Release build, install, one run on C04 with Navisworks, the report at the top of
+   steps\03_bader_next.md. Bader had his own Navisworks open at 13:47, so it waits for it to be closed
+2. Bader's proof of the round on his desktop PC, steps\03_bader_next.md
+3. tools\loop\prove-run.ps1 was not run after F173, a Navisworks of Bader's was open, so its window cases are UNKNOWN
+4. The register rows of 13 Oct: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
 
 ## Waiting for Bader
-- Q163 to Q168 answered on 14 Oct, built in F164 to F169 one by one, see the Now lines
-- Q169 the Log place, Q170 a model on Internal ends FAILED, Q171 the GDI limit, the report is at the top of 03_bader_next
-- What Excel shows a person when it opens a workbook of 4160 linked pictures, steps 1435 to 1437
+- What Excel shows a person when it opens a workbook of linked pictures, and whether its click link that goes up
+  one folder to Clash report opens the jpg, steps\03_bader_next.md
 
 ## Blockers and known bugs
-- Navisworks crashes at about picture 8900, one GDI object a picture, 10000 allowed, F160 and Q171
-- F163: tools\loop and the window driver name two boxes now gone. A saved test the matrix does not name runs since F168
+- Navisworks crashed at about picture 8900, one GDI object a picture. F172 stops the pictures at 9000, UNKNOWN until a run
 - One DIALOG finding at the close of set 94 UNKNOWN. FR-067 is out, a probe answers it first
-- T6-R-WPFBOX and F149-R1, as before. Q169 the Log place and Q170 a model on Internal still FAILS, in 02_questions
-
+- T6-R-WPFBOX and F149-R1, as before
+- Clash report and Clash Report are one folder on Windows, so a run writes into the Clash Report of NM fed
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record
 - steps\history\log.md: one entry per fix, newest at the top

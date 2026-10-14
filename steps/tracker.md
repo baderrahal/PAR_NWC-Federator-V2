@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 624 rows: open 161, in progress 24, in review 0, merged 392, proven by a run 29, waiting for Bader 0, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 153, outside the waves 2, right after F133 merges 6
+- By status, of 625 rows: open 160, in progress 24, in review 0, merged 394, proven by a run 29, waiting for Bader 0, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 154, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader: nothing
 
@@ -707,7 +707,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F161 | the picture pass names where its GDI objects go, render or save, and warns of one file named twice only where a picture was written, after run 20261014-105308 | F161 | fix | merged | 242 | none | 2026-10-14 |
 | F160 | the run on C04 under NM fed with the build of F157 to F159, its crash in lcodwin.dll at picture 8907 of 10170 at 9999 GDI objects, the evidence and the report | F160 | fix | merged | 243 | none | 2026-10-14 |
 | Q171 | whether the picture step stops at 9000 GDI objects and lets the run finish, or all pictures in several sessions, F160 | none | question | merged | 252 | none | 2026-10-14 |
-| F163 | tools\loop and tools\probes\drive-window-run.ps1 still type into the Excel folder box and tick the skip box, both gone with F158 and F159 | F163 | fix | open | none | none | 2026-10-14 |
+| F163 | tools\loop and tools\probes\drive-window-run.ps1 still type into the Excel folder box and tick the skip box, both gone with F158 and F159 | F163 | fix | merged | 253 | none | 2026-10-14 |
 | F164 | the Run as label Weekly run plus XML renamed Weekly run plus matrix in the window, the confirm and the log, Q166 A | F164 | fix | merged | 244 | none | 2026-10-14 |
 | F165 | MatrixCorrections.ReadPicked and cut-xml.ps1 kept for the coming clash test round, the mirror check recorded in 01_next, Q165 | F165 | fix | merged | 245 | none | 2026-10-14 |
 | F166 | the matrix pack chosen by the project code of the NWC file names, a run with no pack, two packs or mixed codes stopped before anything is opened, Q164 B | F166 | fix | merged | 246 | none | 2026-10-14 |
@@ -717,6 +717,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F170 | the HTML and its _files pictures in a Clash report folder beside Log, the Excel links up one folder, LinkedPictures summaries fixed, Q169 | F170 | fix | merged | 250 | none | 2026-10-14 |
 | F171 | a model on Internal no longer ends a group FAILED, a NOTICE naming it in the run log, the shared coordinates txt, the RESULT lines and the group result line, Q170 | F171 | fix | merged | 251 | none | 2026-10-14 |
 | F172 | a test over 1000 clashes gets pictures for its first 100, a backstop at 9000 GDI objects stops the pictures with a NOTICE and the run goes on, the At most per test box kept, Q171 | F172 | fix | merged | 252 | none | 2026-10-14 |
+| F173 | tools\loop and the window driver without the Excel folder box and the skip box, the Log folder in the loop's outputs, AutoSave switched off in seven probes that lacked it, the leftovers of the skip option searched and removed | F173 | fix | merged | 253 | none | 2026-10-14 |
 
 ## outside the waves
 

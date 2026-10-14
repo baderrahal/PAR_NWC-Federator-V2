@@ -74,7 +74,7 @@ inside a running Navisworks:
   and left, and a window that comes up after Run and is not the confirm still stops it unless it
   is that same pane, the line for it naming the rule's kind and both states. Since F126 it
   takes -Untick, tick boxes named by their AutomationId and joined by commas, such as
-  SkipClashOffCoordinates, the box of F112's rule. Before it presses anything it finds each on
+  MarkByDesign. Before it presses anything it finds each on
   the four tabs, toggles it through TogglePattern only when it reads On, reads it back Off and
   writes one line per box with its id, its tab, before and after, then reads each again before
   Run. A box on no tab, one with no TogglePattern, or one that does not read Off stops it with

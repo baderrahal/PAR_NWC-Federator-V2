@@ -32,20 +32,22 @@ To run it
 5. On step 2 Grouping, tick in the Run column each building to run.
 6. On step 3 Outputs, press Browse beside NWF folder and pick where the NWF files go.
 7. Press Browse beside NWD folder and pick where the NWD files go.
-8. Leave the Excel folder empty, and the workbooks go in a folder called Clash Reports beside
-   the NWF folder. Or press Browse beside Excel folder and pick another.
-9. On step 4 Clash, press Browse beside Clash XML and pick the clash XML. For buildings that
-   already have their NWF, leave it empty and the tests saved in each NWF are run.
-10. Where a building's models sit off shared coordinates, its clash is skipped. To clash it
-    anyway, untick "Skip clash when models sit off shared coordinates" on step 4.
+8. There is no folder to pick for the reports. The logs and the Excel go in a folder called
+   Log, and the HTML report with its pictures goes in a folder called Clash report. Both are
+   made beside the NWF and NWD folders and a name already there is never overwritten.
+9. On step 4 Clash, choose the tolerance. The clash tests are built into the tool, and a test
+   saved in a building's NWF that the tool does not name is run too.
+10. Where a model sits off shared coordinates, or on Revit's internal origin, the clash is
+    still run and the log carries a NOTICE that its clash results may be wrong.
 11. Press Run. The window says which building it is on, and when the run is done.
 
 
 Where it writes
 
   NWF and NWD files   the NWF folder and the NWD folder of step 3
-  Workbooks           the Excel folder, or Clash Reports beside the NWF folder, with each
-                      workbook's pictures in the folder beside it
+  Logs and workbooks  the Log folder beside the NWF and NWD folders
+  HTML and pictures   the Clash report folder beside the Log folder, the HTML with its
+                      _files folder of pictures
   The run's log       press Open log folder at the bottom of the window. Each run writes a
                       .log file and a .tsv file of the same name, in
                       %LOCALAPPDATA%\ParsonsNwcFederator\logs
