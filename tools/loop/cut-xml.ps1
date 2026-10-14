@@ -10,6 +10,7 @@ $ErrorActionPreference = "Stop"
 # Writes a copy of a picked clash XML that keeps every selection set and only the first -Tests
 # tests in the XML's order, mirrors included, so a fast check runs the same code paths in minutes.
 # The full XML is read and never written: its sha256 is read before and after and must not move.
+# It stays for the coming clash test work, by Bader's order of 14 Oct 2026, Q165, though a loop run takes no XML.
 #
 #   powershell -NoProfile -ExecutionPolicy Bypass -File tools\loop\cut-xml.ps1 -Xml <the picked XML>
 #     -OutFolder <a folder that is not there, under the run set's copy> -CoreDll <a Federator.Core.dll>

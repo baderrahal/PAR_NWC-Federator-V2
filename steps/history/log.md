@@ -2,6 +2,15 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F165 ReadPicked and cut-xml.ps1 stay, and the next clash test round is recorded
+
+Branch fix-F165 off main 917e785. Bader's order of 14 Oct, task 2, Q165 keep both. Nothing is deleted. One line in the
+comment of MatrixCorrections.ReadPicked and one in the head of tools\loop\cut-xml.ps1 say they stay for the coming clash
+test work by his order. The work is recorded in steps\01_next.md and steps\notes\clash-test-round.md and not built: a
+mirror check, a test A against B and its mirror B against A must give the same clash count, and more checks.
+
+Core tests 3087 passed, 0 failed. Release build 0 warnings, 0 errors. Comments and notes only.
+
 ## 2026-10-14 F164 the Run as label reads Weekly run plus matrix, and Bader's six answers are recorded
 
 Branch fix-F164 off main 00d3de2. Bader's order of 14 Oct, task 3, Q166 A. The same pull request records his six
