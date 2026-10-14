@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 00:50, round 4 second set, Parts 1 and 2 merged, F189 the final run in review, nothing waits on an answer
+STATE OPEN, 2026-10-15 01:10, round 4 second set, Parts 1 and 2 merged, F189 the final run merged, nothing waits on an answer
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 243 | 16 | 1 | 0 | 60 | 7 | 327 |
-| total | 446 | 24 | 1 | 0 | 161 | 18 | 650 |
+| outside the waves | 244 | 16 | 0 | 0 | 60 | 7 | 327 |
+| total | 447 | 24 | 0 | 0 | 161 | 18 | 650 |
 <!-- the end of the counts -->
 
 ## Now
