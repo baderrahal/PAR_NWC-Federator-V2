@@ -1,5 +1,87 @@
 # 03 Bader next
 
+## Round 4 of 14 Oct, Part 1 built, and the run on C04 that did NOT end
+
+Written for Bader. Simple words. PROVEN means the run or a test showed it and I saw the result. UNKNOWN means nothing showed it yet.
+
+### The short version
+
+Part 1 is built, tested and merged, F175 to F179. The full run on C04 was made with that build, 25 mm, viewpoints on. It did not end. The pictures were stopped safely at the 9000 GDI limit, so the old crash at picture 8907 did not come back. But Navisworks's memory grew to 26 GB, and at the NWD step it stopped and did nothing for 8 minutes. The NWD file is 0 bytes. No RESULT block, no run log copy and no txt files were written. I closed that Navisworks at 17:02, a program I started. It was not a Windows crash, it was a hang. Because the run did not end, I did NOT start Part 2, as you ordered. No retry was made.
+
+### What was done, one pull request each
+
+- F175, PR 255, Task 1. A test with more than 1000 clashes gets pictures for its first 150 at priority A, 100 at B, 50 at C, per test. A saved test the matrix does not name is C. A test with no priority read is C too. The log line per capped test now says the letter. The viewpoints are not touched. The box and the 9000 stop stay, the least holds. The label of the box and the docs say the new numbers. After each picture the GDI count is read again, and the one Bitmap the picture step gets is disposed in a finally on every path. I read every use of Bitmap and Image in the add-in. Only one picture call returns a Bitmap, so that was the only one to check
+- F176, PR 256, Task 2. A model that names no shared site is a NOTICE, the same as a model on Internal. It no longer makes the group FAILED and the clash always runs. The old failure code was dead after that, so I removed it with its tests
+- F177, PR 257, Task 3. In the Clash report folder the HTML and its _files folder keep the plain name and are overwritten. The Log folder keeps its dated names. After the pictures, a cd and digits jpg in that group's _files folder that this run did not write is removed, top level only, and one log line says how many. A failed run, a run that did not reach the end of its picture step, or one that wrote no picture removes nothing. An older Excel in Log points at jpgs a later run overwrites, so it then shows the new pictures. This is said in the code and in the docs
+- F178, PR 258, Task 4. Your answers are in steps\02_questions.md and the tracker. Q172 was not in that file, so I wrote it there with your yes
+- F179, PR 259, Task 6. Your research is in steps\notes\nwc-nwf-design.md in your words
+- This report is F180, Task 5
+
+### The run on C04, what happened, PROVEN by the run
+
+Evidence folder, outside the repo: C:\NWC-PC-Test\evidence\2026-10-14-run-c04-r4. Build 8e647af8, started 16:15, 1 group 1A04PK, 10 NWC files, 1830 tests from the matrix plus the tests saved in the NWF.
+
+1. The pictures. One test went over 1000 clashes: BLD-AR-Walls-vs-BLD-AR-Floors, priority A, 1556 clashes. It got 150 pictures and 1406 were skipped, and the log line names the letter A. Every other test had 1000 clashes or less and got all its pictures
+2. The 9000 stop fired at picture 7905, with 9001 GDI objects. 7904 pictures were written. 2266 clashes that wanted a picture have none. Navisworks never came near 10000 GDI objects. No GDI crash
+3. WHERE THE GDI OBJECT IS MADE. The log's GDI split lines read +1 GDI object for each picture inside Navisworks's own TestsImageForResult and +0 in our save and dispose of the bitmap. So our code does not leak it. Navisworks's call does
+4. THE MEMORY. Navisworks's private memory went from 0.8 GB at the start to 17 GB at 16:25 and 25.8 GB at 16:35, about 3.3 MB for each picture, and it never came back down. The texture cache folder is %TEMP%\ogs, not a folder named ogsN\N_TextureCache. It held 3.1 MB in 124 files before and after. It did not grow, and I did not delete it. No other folder named ogs was found under %TEMP% or %LOCALAPPDATA%
+5. THE HANG. At 16:54:59 the NWD step began with 26.1 GB private memory. The NWD file was made at 0 bytes and stayed so. For 8 minutes Navisworks used 0 CPU seconds and wrote nothing to disk, and its main thread was waiting. Windows reported 53.4 GB of its 55.2 GB commit limit in use and 3.9 GB of RAM free. Earlier runs published the NWD in about 1 s. I closed that Navisworks with Stop-Process at 17:02:39
+6. The steps before it did work. NWF saved, 187 views written, 292 viewpoints and 33 folders in the tree, workbook 17 s, HTML 2 s, Internal workbook 0.3 s. The views took 25 minutes. The run took 47 minutes up to the hang, and the target is 45
+7. The NWF folder holds only the NWF, 11.6 MB, in a new dated folder `NWF\C04\run 2026-10-14 1615`. The NWD folder holds only a 0 byte NWD in `NWD\C04\run 2026-10-14 1615`. Your NWF in NWF\C04 and the earlier `run 2026-10-14 1052` folders are untouched
+8. The Log folder holds the Excel and the Internal Excel and nothing else. There are no txt files, no TSV and no run log copy, because the run never reached the end. The tool's own run log is `%LOCALAPPDATA%\ParsonsNwcFederator\logs\run-20261014-161532.log` and the .tsv beside it
+9. The Clash report folder is new, and holds the HTML and its _files folder, 7904 pictures and the logo, 329 MB
+10. Links. Every picture link in the HTML resolves, 7905 of 7905. In the Excel every linked picture, click link and cell link resolves, 7904 of each. The click links go up one folder to Clash report. Whether Excel itself follows a link that goes up a folder is still UNKNOWN, only a person can click one
+11. A model on Internal, ST-MOD-000002, gave the NOTICE in the log with its name and the words that its clash results may be wrong. The log holds no failure reason for where the models sit
+12. Nothing of yours changed. The listing of NM fed before has 21885 files, and after it has 29795. The 7910 new files are the ones named above. None of the old 21885 changed in size or time
+13. AutoSave: the AutoSave folder listing is the same before and after, 61 files, in 47 minutes. The switch is put back to its old value 0
+
+### PROVEN ONLY BY A TEST, not by this run
+
+- The overwrite and the removal of leftover pictures. The Clash report folder was new, so the log says removed 0. LeftoverPicturesTests proves the two runs, the overwrite, the removed leftover and the kept files. A failed run removes nothing
+- A model that names no shared site as a NOTICE. C04 has no such model. Its NOTICE and the group staying out of FAILED are proved by AlignmentCheckTests and GroupJudgementTests
+- The priority letters B and C, and a saved test the matrix does not name as C. Only A met the rule in this run
+- Core tests 3124 pass, 0 fail. The Release build has 0 warnings and 0 errors. Actions was green on each PR
+
+### UNKNOWN
+
+- Why the NWD step stopped. The memory and the commit limit point at it, but nothing proved it. I took no memory dump, it would be 26 GB. A run that does the NWD before the pictures would answer it
+- What Windows wrote at 16:29:24, a NonCritical Roamer.exe report in ReportArchive. It is from the minute the 9000 stop fired. I could not read its file, access was refused
+- The group result line, the txt file of models off the coordinates, the RESULT block and the TSV rows of the end, since the run never wrote them
+- Whether the Excel opens with the pictures visible. Only a person can see it
+
+### What I propose, you decide, Q175 in steps\02_questions.md
+
+The 9000 GDI stop is not enough. Memory is the next wall, 3.3 MB for each picture, and 7904 pictures used 26 GB on this PC with 15.8 GB of RAM. Options:
+- A. Stop the pictures at a memory limit too, as the GDI stop does, for example when Navisworks's private memory passes 12 GB, about 3500 pictures. Smallest change
+- B. Do the NWD and the NWF save before the pictures. The viewpoints come first, the pictures after, and the HTML and Excel last. The NWD would be published with low memory. A bigger change to the order
+- C. Both A and B
+- D. Take the pictures in several Navisworks sessions. The biggest change, and it keeps all the pictures
+
+### What I started and what I wrote outside the repo
+
+Started, and each one has ended: dotnet build and dotnet test, git and gh, powershell scripts for edits and checks, build\install.ps1, reg.exe for two exports, one launcher powershell, one driver powershell, one Navisworks Manage 2025 Roamer.exe pid 20612. I closed that Roamer with Stop-Process after the hang. Your own Navisworks was not open and I touched none.
+
+Written outside the repo:
+- the install, `%APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`
+- the registry value enable of GlobalOptions\general\autosave under Navisworks Manage 22.0, written to "3 0" and put back to "0", read back as 0
+- in NM fed, new: `NWF\C04\run 2026-10-14 1615\` with the NWF, `NWD\C04\run 2026-10-14 1615\` with a 0 byte NWD that you can delete, `Log\` the two Excel files, `Clash report\` the HTML and 7904 jpgs and the logo
+- `%LOCALAPPDATA%\ParsonsNwcFederator\logs\run-20261014-161532.log` and .tsv, made by the tool
+- the evidence folder above, and scratch files under the session scratchpad and %TEMP%
+- Windows itself wrote one WER report and the Navisworks counters in the registry
+
+### Read in advance for Part 2, reading only, nothing built
+
+While the run went I read the code for Task 7. No code was changed for it.
+1. Tolerance: ApplyChosenTolerance already copies the test with CreateCopy, sets the tolerance on the copy and calls TestsEditTestFromCopy. A test already at the value is not touched. Nothing removes, replaces or copy-adds a test with results. The log text says results are kept, measured 5y
+2. Tests the NWF lacks are added by TestsAddCopy only. One call is on your list to remove: TestsCompactAllTests, behind the Compact resolved tick box, off by default. There is no Reset, no TestsRemove and no TestsReplaceWithCopy of a clash test. The one remove is Document.TryRemoveFile in the Rebuilt route, which takes a model out of the tree
+3. The viewpoint tree today is priority folder A, B, C or No priority, then the team pair folder, then Over 150mm where the pair has it, then one view for each test. Every view and folder carries a mark comment, the tag NWC-FEDERATOR-VIEW v1 with the run stamp, the folders and the name. What old NWFs hold is UNKNOWN until one is read in Navisworks
+4. The weekly run opens the NWF and lets Navisworks reload the files. It never calls Document.UpdateFiles
+5. The API has Document.UpdateFiles, DocumentSavedViewpoints.Remove and AddComment, Document.TryCloseFileHandles, and in its interop part LcOpPerformanceProps.SetCloseFileAfterLoad, which looks like the option Close NWC/NWD files on load. Whether it is reachable from the add-in is UNKNOWN
+
+### Next step
+
+Answer Q175. Then F181 to F185 follow, with the picture and memory rule first.
+
 ## Round 3 of 14 Oct, F170 to F173, and the run on C04 that was NOT done
 
 Written for Bader. Simple words. PROVEN means a test or a run I saw showed it. UNKNOWN means nothing showed it yet.
