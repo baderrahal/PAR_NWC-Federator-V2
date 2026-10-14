@@ -2,6 +2,23 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F178 the answers of round 4 recorded
+
+Branch fix-F178 off main f641f7d. Bader's order of 14 Oct, round 4, task 4. A record and no code.
+
+Written in steps\02_questions.md: a second Answer line under Q169 (the Clash report overwrite and the leftover pictures,
+F177) and under Q171 (the caps by priority A 150, B 100, C 50, a saved test the matrix does not name C, F175). Q170 keeps
+its answer. Q172 is new there, a model naming no shared site, answered yes, F176. The lead's note on it says it was not in
+the file when the answer came. Item 173 holds his two Clash report folder orders and the note that Clash Report and Clash
+report are one folder on Windows. Item 174 holds his three answers for Part 2: both viewpoints with the team pair level
+removed and the tool's earlier viewpoints deleted each run, keep status, assigned to and comments on the NWF page, and
+the two pages NWC once and NWF every week.
+
+Tracker: Q169, Q171 and Q172 read merged with this fix's number, Q173-1 and Q173-2 merged 257 following F177, Q174-1 to
+Q174-3 open until F182, F183 and F184 are built. check-tracker reads clean over 636 rows.
+
+Proved here: Core tests unchanged, 3124 before and after. Nothing in the add-in changed.
+
 ## 2026-10-14 F177 the Clash report folder is overwritten and its leftover pictures removed
 
 Branch fix-F177 off main 6e5e74e. Bader's order of 14 Oct, round 4, task 3.
