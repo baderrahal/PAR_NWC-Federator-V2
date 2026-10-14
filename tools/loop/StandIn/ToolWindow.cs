@@ -245,7 +245,7 @@ namespace NwcFederatorLoop.StandIn
                 string text = "This run federates 2 groups." + Environment.NewLine + Environment.NewLine
                     + "First run: 2. The NWF is built new, and the document is cleared before each one." + Environment.NewLine
                     + "Weekly run: 0." + Environment.NewLine
-                    + "Weekly run plus XML: 0." + Environment.NewLine
+                    + "Weekly run plus matrix: 0." + Environment.NewLine
                     + "Rebuilt: 0." + Environment.NewLine + Environment.NewLine
                     + open + Environment.NewLine + Environment.NewLine + "Carry on?";
                 MessageBoxResult answer = MessageBox.Show(window, text, "Parsons NWC Federator", MessageBoxButton.OKCancel, MessageBoxImage.Warning);

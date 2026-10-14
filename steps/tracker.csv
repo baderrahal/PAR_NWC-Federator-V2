@@ -595,15 +595,15 @@ Q162-3,"no Excel rows for tests with no clash, the HTML and the Coverage sheet k
 Q162-4,"the priority and by design CSVs built in, the two picker rows gone, F154",none,none,Bader's request,merged,235,none,2026-10-13
 Q162-5,"the clash matrix built in as a pack, the tolerance from the drop down alone, F155",none,none,Bader's request,merged,236,none,2026-10-14
 F152,"the workbook's pictures as linked pictures in the form of the client's own file, the thumbnail box gone, Q162-2",F152,none,fix,merged,233,none,2026-10-13
-Q163,"whether each linked picture also carries the client's click link to its jpg, F152",none,none,question,waiting for Bader,none,none,2026-10-13
+Q163,"whether each linked picture also carries the client's click link to its jpg, F152",none,none,question,merged,244,none,2026-10-14
 F153,"a test with no clash writes nothing in the workbook, which retires Q73 b, the page and the Coverage sheet keep every test, Q162-3",F153,none,fix,merged,234,none,2026-10-13
 F154,"the priority CSV and the by design CSV built into the matrix pack, read through the existing readers, the two picker rows gone, Q162-4",F154,none,fix,merged,235,none,2026-10-13
-Q164,"how a run chooses its matrix pack once a second project's pack is built in, F154 and F155",none,none,question,waiting for Bader,none,none,2026-10-13
+Q164,"how a run chooses its matrix pack once a second project's pack is built in, F154 and F155",none,none,question,merged,244,none,2026-10-14
 F155,"the clash matrix built into the matrix pack with its team map and list of corrections, read through ReadPack, the Clash XML row gone, the tolerance from the drop down alone at 25, 50 or 75 mm, Q162-5",F155,none,fix,merged,236,none,2026-10-14
-Q165,"whether MatrixCorrections.ReadPicked and tools\loop\cut-xml.ps1 stay now that no run reads an XML from the disk, F155",none,none,question,waiting for Bader,none,none,2026-10-14
-Q166,"whether the Run as label Weekly run plus XML is renamed now that every weekly run reads the built in matrix, F155",none,none,question,waiting for Bader,none,none,2026-10-14
-Q167,"whether a test with no tolerance or a file with no units is still skipped now that the XML tolerance is never used, F155",none,none,question,waiting for Bader,none,none,2026-10-14
-Q168,"whether a test saved in the NWF that the built in matrix does not name is run too, F155",none,none,question,waiting for Bader,none,none,2026-10-14
+Q165,"whether MatrixCorrections.ReadPicked and tools\loop\cut-xml.ps1 stay now that no run reads an XML from the disk, F155",none,none,question,merged,244,none,2026-10-14
+Q166,"whether the Run as label Weekly run plus XML is renamed now that every weekly run reads the built in matrix, F155",none,none,question,merged,244,none,2026-10-14
+Q167,"whether a test with no tolerance or a file with no units is still skipped now that the XML tolerance is never used, F155",none,none,question,merged,244,none,2026-10-14
+Q168,"whether a test saved in the NWF that the built in matrix does not name is run too, F155",none,none,question,merged,244,none,2026-10-14
 F156,"build\install.ps1 refused every build since F152, Federator.Core needs System.IO.Compression 4.2.0.0, read now after binding policy",F156,none,fix,merged,237,none,2026-10-14
 F157,"the picture pass leaves a trail for a run that dies, MEMORY with GDI and USER counts, the RATE, a stamped failure line with the whole exception, a warning for two clashes on one file",F157,none,fix,merged,239,none,2026-10-14
 F158,"the logs and the reports in one Log folder beside the NWF and NWD folders, the Excel folder box gone, nothing in Log overwritten or deleted",F158,none,fix,merged,240,none,2026-10-14
@@ -614,3 +614,4 @@ F161,"the picture pass names where its GDI objects go, render or save, and warns
 F160,"the run on C04 under NM fed with the build of F157 to F159, its crash in lcodwin.dll at picture 8907 of 10170 at 9999 GDI objects, the evidence and the report",F160,none,fix,merged,243,none,2026-10-14
 Q171,"whether the picture step stops at 9000 GDI objects and lets the run finish, or all pictures in several sessions, F160",none,none,question,waiting for Bader,none,none,2026-10-14
 F163,"tools\loop and tools\probes\drive-window-run.ps1 still type into the Excel folder box and tick the skip box, both gone with F158 and F159",F163,none,fix,open,none,none,2026-10-14
+F164,"the Run as label Weekly run plus XML renamed Weekly run plus matrix in the window, the confirm and the log, Q166 A",F164,none,fix,merged,244,none,2026-10-14

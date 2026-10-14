@@ -312,7 +312,7 @@ namespace Federator.Core.Rerun
         /// <summary>
         /// The same line, led by which workflow this is. The open file is always a Weekly
         /// run, because the NWF already exists and is the document, and there is no First
-        /// run on this path. A matrix read, the built in one since F155, makes it a Weekly run plus XML.
+        /// run on this path. A matrix read, the built in one since F155, makes it a Weekly run plus matrix.
         /// </summary>
         public static string Describe(string openPath, bool xmlPicked)
         {

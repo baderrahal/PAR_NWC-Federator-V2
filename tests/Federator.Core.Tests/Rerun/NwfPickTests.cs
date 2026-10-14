@@ -326,7 +326,7 @@ namespace Federator.Core.Tests
             Assert.That(NwfPick.DecidePhrase(true, true, true), Is.EqualTo("opened and read empty"));
             Assert.That(NwfPick.DecidePhrase(false, true, false), Is.EqualTo("not opened"));
             Assert.That(NwfPick.DecidePhrase(false, false, false), Is.EqualTo(RunPath.WeeklyRun));
-            Assert.That(NwfPick.DecidePhrase(false, false, true), Is.EqualTo(RunPath.WeeklyRunPlusXml));
+            Assert.That(NwfPick.DecidePhrase(false, false, true), Is.EqualTo(RunPath.WeeklyRunPlusMatrix));
         }
 
         /// <summary>

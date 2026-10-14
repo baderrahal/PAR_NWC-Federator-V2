@@ -26,7 +26,7 @@ namespace Federator.Core.Tests
         public void APickedNwfThatRanIsAWeeklyRunWithOrWithoutTheXml()
         {
             Assert.That(RunPath.ForAnOpenFile(true, RerunDecision.Open, false), Is.EqualTo(RunPath.WeeklyRun));
-            Assert.That(RunPath.ForAnOpenFile(true, RerunDecision.Open, true), Is.EqualTo(RunPath.WeeklyRunPlusXml));
+            Assert.That(RunPath.ForAnOpenFile(true, RerunDecision.Open, true), Is.EqualTo(RunPath.WeeklyRunPlusMatrix));
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Federator.Core.Tests
             foreach (RerunDecision decision in new[] { RerunDecision.Build, RerunDecision.Open, RerunDecision.Refused })
             {
                 Assert.That(RunPath.ForAnOpenFile(false, decision, false), Is.EqualTo(RunPath.WeeklyRun));
-                Assert.That(RunPath.ForAnOpenFile(false, decision, true), Is.EqualTo(RunPath.WeeklyRunPlusXml));
+                Assert.That(RunPath.ForAnOpenFile(false, decision, true), Is.EqualTo(RunPath.WeeklyRunPlusMatrix));
             }
         }
 

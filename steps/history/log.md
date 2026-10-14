@@ -2,6 +2,19 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F164 the Run as label reads Weekly run plus matrix, and Bader's six answers are recorded
+
+Branch fix-F164 off main 00d3de2. Bader's order of 14 Oct, task 3, Q166 A. The same pull request records his six
+answers, Q163 A, Q164 B, Q165 keep both, Q166 A, Q167 A and Q168 A, in steps\02_questions.md and the tracker. The
+tasks that build them follow, one pull request each: F165 notes, F166 pack by code, F167 tolerance, F168 saved tests,
+F169 picture click link.
+
+What changed: RunPath.WeeklyRunPlusXml is WeeklyRunPlusMatrix and reads "Weekly run plus matrix", in the window's
+label, the confirm, the log and the RESULT count line, which reads "weekly + matrix". The tests, the stand-in window
+of the loop, docs\workflow.md and .claude\rules\core.md read the new words. docs\history is kept whole.
+
+Core tests: 3087 passed before and after, 0 failed. Release build 0 warnings, 0 errors.
+
 ## 2026-10-14 F160 the run on C04 under NM fed with the build of F157 to F159
 
 Branch fix-F160 off main 64cb73d. Task D of Bader's order. The report in simple words is the top of

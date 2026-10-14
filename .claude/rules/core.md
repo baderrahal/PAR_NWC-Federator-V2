@@ -1310,7 +1310,7 @@ and 6 does not read as broken.
   the rules a file on the disk is read by, so the sets, the tests, the corrections and the teams
   read the same, a test proves it, and `ExchangeDocument.Pack` names the pack, its sha256 the
   file's. The window's open, every run, both hand buttons and Build sets read the built in
-  matrix, so every weekly run is a Weekly run plus XML: a test of the matrix already saved in an
+  matrix, so every weekly run is a Weekly run plus matrix: a test of the matrix already saved in an
   NWF runs where it sits with its results kept, and a test of the matrix the NWF lacks is added.
   A TEST SAVED IN THE NWF THAT THE MATRIX DOES NOT NAME IS NOT RUN, as on any run with an XML
   before F155, and the COVERAGE block names it as a test in Clash Detective the matrix does not
