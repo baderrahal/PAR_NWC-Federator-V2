@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F169 a click link on each picture of the Excel
+
+Branch fix-F169 off main 12089f3. Bader's order of 14 Oct, task 5, Q163 A.
+
+What changed: LinkedPictures writes, beside the linked picture of F152, an a:hlinkClick on each picture with
+tgtFrame _blank, in the form the client's own workbook has, and a hyperlink relationship under it whose target is
+LinkedPictures.RelativeLinkFor: the jpg's path relative to the folder the workbook sits in, forward slashed, going up
+with .. where the jpg is not below it, a space as %20, a per cent sign and a hash escaped, and nothing after the file
+name, where the client's file ended in a stray %20. The linked picture itself and the Image cell link are as they were.
+
+Where the files really sit: the order said the Excel is in Log and the jpgs in Clash report\..._files, so the link goes
+up one folder. Since F158 they sit together, Log\NAME.xlsx and Log\NAME_files\, so the link is NAME_files/cdNNNNNN.jpg and
+goes up nowhere. The code goes up where the jpg is below another folder, a test pins both, and a jpg on another drive gets
+the full path as an address.
+
+Proved here by tests: every picture of a written workbook has a click link, each its own hyperlink relationship, the
+target is relative, forward slashed and ends in .jpg, the linked picture is kept, and in a Log folder made in the test each
+click link resolved from the Excel's folder reaches a jpg that exists and sits inside it. UNKNOWN: whether Excel itself
+follows the relative link on a click, which a person has to try, steps\03_bader_next.md. The fallback to the full path
+was not needed by any evidence and is not used.
+
+Core tests 3099 before, 3101 after, 0 failed. Release build 0 warnings, 0 errors.
+
 ## 2026-10-14 F168 a saved test the matrix does not name is run too
 
 Branch fix-F168 off main be43468. Bader's order of 14 Oct, task 6, Q168 A.

@@ -68,13 +68,21 @@ namespace Federator.Core.Tests
             // The Excel, read as the zip it is. Each linked picture is an absolute path, decoded as
             // the target writes it, and it has to be a jpg that is there, in the Log folder.
             List<string> targets = new List<string>();
+            List<string> clickLinks = new List<string>();
 
             using (ZipArchive zip = ZipFile.OpenRead(workbook))
             using (Stream stream = zip.GetEntry("xl/drawings/_rels/drawing1.xml.rels").Open())
             {
                 foreach (XElement relationship in XDocument.Load(stream).Root.Elements(PackageRel + "Relationship"))
                 {
-                    targets.Add((string)relationship.Attribute("Target"));
+                    if ((string)relationship.Attribute("Type") == LinkedPictures.ImageRelationship)
+                    {
+                        targets.Add((string)relationship.Attribute("Target"));
+                    }
+                    else
+                    {
+                        clickLinks.Add((string)relationship.Attribute("Target"));
+                    }
                 }
             }
 
@@ -93,6 +101,18 @@ namespace Federator.Core.Tests
                 Assert.That(ReportPaths.IsInside(path, log), Is.True, "the picture is not in the Log folder: " + path);
                 Assert.That(ReportPaths.IsInside(path, nwf), Is.False, "a picture is in the NWF folder: " + path);
                 Assert.That(ReportPaths.IsInside(path, nwd), Is.False, "a picture is in the NWD folder: " + path);
+            }
+
+            // F169. The click link of each picture is relative to the Excel and has to reach a jpg that is
+            // there, read the way a person's click reads it, from the folder the Excel sits in.
+            Assert.That(clickLinks.Count, Is.EqualTo(3), "a click link for each picture");
+
+            foreach (string click in clickLinks)
+            {
+                string resolved = Path.GetFullPath(Path.Combine(log, Uri.UnescapeDataString(click).Replace('/', Path.DirectorySeparatorChar)));
+
+                Assert.That(File.Exists(resolved), Is.True, "the click link reaches no file: " + click + " from " + log);
+                Assert.That(ReportPaths.IsInside(resolved, log), Is.True);
             }
 
             // The page, whose picture links are relative to the page, which sits in the same folder as

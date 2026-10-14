@@ -1507,6 +1507,12 @@ and 6 does not read as broken.
   Excel on Windows. The workbook's cell link keeps a forward slash, because a hyperlink there
   is a Uri, and the click link on each picture of Bader's by-hand client xlsx is relative and
   forward slashed too, read on 2026-10-13
+- EACH PICTURE ALSO CARRIES A CLICK LINK, F169, Bader's answer A to Q163: an a:hlinkClick on the picture to the
+  relative path of its jpg from the folder the workbook sits in, forward slashed, going up with .. where the jpg is
+  not below it, a space written %20 and nothing after the file name, LinkedPictures.RelativeLinkFor. The linked picture
+  of F152 and the Image cell link are as they were. Since F158 the _files folder sits beside the workbook in the Log
+  folder, so the link is NAME_files/cdNNNNNN.jpg. Whether Excel itself follows a relative link is UNKNOWN until a
+  person clicks one
 - THE WORKBOOK'S PICTURES ARE LINKED PICTURES IN THE CLIENT'S FORM, F152, Bader's decision of
   2026-10-13, Q162-2: pictures stay links, the same form as the client's own file.
   samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001.xlsx, his by-hand workbook, holds

@@ -1,5 +1,21 @@
 # 03 Bader next
 
+## Your six answers of 14 Oct, built as F164 to F169
+
+Written for Bader. Simple words. Nothing here was run in Navisworks. What each does:
+
+- F164, Q166 A. The label reads Weekly run plus matrix
+- F165, Q165. ReadPicked and cut-xml.ps1 stay. The mirror check is recorded in `steps\01_next.md` as the next clash test round and is not built
+- F166, Q164 B. The pack is chosen by part 1 of the NWC file names. A code with no pack stops the run before anything is opened and says "No matrix pack for project code XXXX. Send the clash matrix and a session will add it." Two packs with one code, and a group or a run with two codes, stop too
+- F167, Q167 A. The tolerance comes only from the drop down. Nothing reads a tolerance or units from a matrix or an XML any more
+- F168, Q168 A. A test saved in the NWF that the matrix does not name runs too, where it sits, after the matrix tests, and is in the HTML, the Excel and the Coverage sheet. Its viewpoints are under priority C unless the priority map names it
+- F169, Q163 A. Each picture in the Excel has a click link to its jpg, relative, forward slashed, no stray %20
+
+What to try, one action each:
+1. Run a building with a hand made test saved in its NWF and look for it in the Excel and under priority C in the views
+2. In the Excel, click one picture. It should open its jpg. The jpgs are in `NAME_files` beside the Excel in `Log`, so the link has no `..` in it. Whether Excel follows a relative link is UNKNOWN until you click one
+3. Copy the NWC files of a building and rename part 1 of the names to another code. The run should stop at once with the words above
+
 ## The round of 2026-10-14, F157 to F161, and the run on C04
 
 Written for Bader. Simple words. What the evidence proves is marked PROVEN. What is not known is marked UNKNOWN.

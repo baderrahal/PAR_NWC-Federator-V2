@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 620 rows: open 161, in progress 24, in review 0, merged 385, proven by a run 29, waiting for Bader 3, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 149, outside the waves 2, right after F133 merges 6
+- By status, of 621 rows: open 161, in progress 24, in review 0, merged 386, proven by a run 29, waiting for Bader 3, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 150, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 3 rows: Q169, Q170, Q171
 
@@ -713,6 +713,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F166 | the matrix pack chosen by the project code of the NWC file names, a run with no pack, two packs or mixed codes stopped before anything is opened, Q164 B | F166 | fix | merged | 246 | none | 2026-10-14 |
 | F167 | the tolerance comes only from the drop down, the no tolerance and the UNKNOWN UNITS checks and every read of a matrix or XML tolerance removed, Q167 A | F167 | fix | merged | 247 | none | 2026-10-14 |
 | F168 | a test saved in the NWF that the matrix does not name is run too where it sits, after the tests of the matrix, in the reports and the Coverage sheet, priority C unless the map names it, Q168 A | F168 | fix | merged | 248 | none | 2026-10-14 |
+| F169 | each picture in the Excel carries a click link to its jpg, relative and forward slashed with no stray %20, Q163 A | F169 | fix | merged | 249 | none | 2026-10-14 |
 
 ## outside the waves
 
