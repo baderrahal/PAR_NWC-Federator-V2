@@ -208,9 +208,12 @@ namespace Federator.Core.Tests
             Assert.That(t1.Before, Is.EqualTo(new[] { 1, 1, 1, 1, 0 }));
             Assert.That(t1.After, Is.EqualTo(new[] { 0, 1, 1, 1, 1 }));
             Assert.That(t1.Kept, Is.EqualTo(4));
-            Assert.That(t1.Untouched, Is.EqualTo(2), "the reviewed and the approved one are exactly as they were");
+            Assert.That(t1.Untouched, Is.EqualTo(4), "no assigned to, comment, approver or group changed on any of the four");
+            Assert.That(t1.CoordinatorStatuses, Is.EqualTo(2));
+            Assert.That(t1.CoordinatorStatusesKept, Is.EqualTo(2), "the reviewed and the approved one keep their status");
+            Assert.That(t1.StatusMoved, Is.EqualTo(2), "a New found again is Active, and Clash4 is Resolved");
             Assert.That(t1.Dropped, Is.EqualTo(1), "Clash4 was Active and is Resolved");
-            Assert.That(t1.Changes, Is.EqualTo(new[] { "Clash1 status New to Active", "Clash4 status Active to Resolved" }));
+            Assert.That(t1.Changes, Is.Empty, "a status moved by the run is counted and not listed as a thing a coordinator wrote");
         }
 
         [Test]
@@ -298,7 +301,7 @@ namespace Federator.Core.Tests
 
             Assert.That(result.Moved(), Is.Empty);
             Assert.That(result.Warnings(), Is.Empty);
-            Assert.That(result.Summary(), Does.StartWith("REFRESH  5 clashes found again, of which 5 keep every status"));
+            Assert.That(result.Summary(), Does.StartWith("REFRESH  5 clashes found again. Of 2 Reviewed or Approved before, 2 keep that status. 5 keep every"));
         }
 
         // ---------- what the refresh never does, read off the add-in's source ----------

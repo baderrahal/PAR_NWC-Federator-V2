@@ -124,6 +124,15 @@ namespace Federator.Core.Rerun
         /// <summary>Clashes the test held before and found again.</summary>
         public int Kept { get; internal set; }
 
+        /// <summary>Clashes held before as Reviewed or Approved, which a coordinator set.</summary>
+        public int CoordinatorStatuses { get; internal set; }
+
+        /// <summary>Of those, the ones found again with the same status.</summary>
+        public int CoordinatorStatusesKept { get; internal set; }
+
+        /// <summary>Clashes found again with another status, a New that is Active now among them.</summary>
+        public int StatusMoved { get; internal set; }
+
         /// <summary>Clashes found again with the same status, assigned to, comments, approver and group.</summary>
         public int Untouched { get; internal set; }
 
@@ -277,10 +286,30 @@ namespace Federator.Core.Rerun
                 row.Kept++;
                 bool same = true;
 
+                // A status moved is Navisworks's own reconciliation where a clash found again goes New to Active, so it
+                // is counted and never listed as a field that changed. A status a coordinator set, Reviewed or Approved,
+                // that is not the same after is named, since that is what a refresh must not take away.
+                bool coordinatorStatus = old.Status == ClashStatus.Reviewed || old.Status == ClashStatus.Approved;
+
+                if (coordinatorStatus)
+                {
+                    row.CoordinatorStatuses++;
+
+                    if (now.Status == old.Status)
+                    {
+                        row.CoordinatorStatusesKept++;
+                    }
+                }
+
                 if (now.Status != old.Status)
                 {
-                    same = false;
-                    row.Changes.Add(old.Name + " status " + old.Status + " to " + now.Status);
+                    row.StatusMoved++;
+
+                    if (coordinatorStatus)
+                    {
+                        same = false;
+                        row.Changes.Add(old.Name + " status " + old.Status + " to " + now.Status);
+                    }
 
                     if ((old.Status == ClashStatus.New || old.Status == ClashStatus.Active) && now.Status == ClashStatus.Resolved)
                     {
@@ -415,6 +444,9 @@ namespace Federator.Core.Rerun
             int gone = 0;
             int found = 0;
             int changes = 0;
+            int coordinator = 0;
+            int coordinatorKept = 0;
+            int moved = 0;
 
             foreach (TestRefresh row in perTest)
             {
@@ -423,11 +455,17 @@ namespace Federator.Core.Rerun
                 gone += row.Gone;
                 found += row.Found;
                 changes += row.Changes.Count;
+                coordinator += row.CoordinatorStatuses;
+                coordinatorKept += row.CoordinatorStatusesKept;
+                moved += row.StatusMoved;
             }
 
-            return "REFRESH  " + kept.ToString(CultureInfo.InvariantCulture) + " clashes found again, of which "
-                + untouched.ToString(CultureInfo.InvariantCulture) + " keep every status, assigned to, comment, approver and group, "
-                + changes.ToString(CultureInfo.InvariantCulture) + " fields changed, "
+            return "REFRESH  " + kept.ToString(CultureInfo.InvariantCulture) + " clashes found again. Of "
+                + coordinator.ToString(CultureInfo.InvariantCulture) + " Reviewed or Approved before, "
+                + coordinatorKept.ToString(CultureInfo.InvariantCulture) + " keep that status. "
+                + untouched.ToString(CultureInfo.InvariantCulture) + " keep every assigned to, comment, approver and group and their Reviewed or Approved status, "
+                + changes.ToString(CultureInfo.InvariantCulture) + " things a coordinator wrote changed, "
+                + moved.ToString(CultureInfo.InvariantCulture) + " moved status, a New found again being Active, "
                 + found.ToString(CultureInfo.InvariantCulture) + " new, " + gone.ToString(CultureInfo.InvariantCulture)
                 + " no longer held at all. Matched by Guid " + MatchedByGuid.ToString(CultureInfo.InvariantCulture)
                 + " and by test and name " + MatchedByName.ToString(CultureInfo.InvariantCulture);

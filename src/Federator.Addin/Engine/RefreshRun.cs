@@ -31,6 +31,7 @@ namespace Federator.Addin.Engine
         private readonly List<string> unresolved = new List<string>();
         private EventHandler<FileInteractiveResolvingEventArgs> interactive;
         private EventHandler<FileResolvingEventArgs> resolving;
+        private int resolvedCalls;
 
         internal RefreshRun(RunLog log)
         {
@@ -128,15 +129,7 @@ namespace Federator.Addin.Engine
 
             resolving = delegate (object sender, FileResolvingEventArgs e)
             {
-                try
-                {
-                    log.Line("REFRESH  FileResolving  " + (e.FileReference ?? string.Empty) + ", referred to by "
-                        + (e.ReferringFileName ?? "UNKNOWN"));
-                }
-                catch (Exception)
-                {
-                    // As above.
-                }
+                resolvedCalls++;
             };
 
             NavisworksApplication.FileInteractiveResolving += interactive;
@@ -145,6 +138,12 @@ namespace Federator.Addin.Engine
 
         internal void StopWatching()
         {
+            if (resolvedCalls > 0)
+            {
+                log.Line("REFRESH  FileResolving fired " + resolvedCalls + " times while the NWF opened, one for each file it links and each file those link");
+                resolvedCalls = 0;
+            }
+
             if (interactive != null)
             {
                 NavisworksApplication.FileInteractiveResolving -= interactive;

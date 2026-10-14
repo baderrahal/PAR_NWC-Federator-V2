@@ -1055,8 +1055,19 @@ namespace Federator.Addin.Engine
 
             if (!refresh.UpdateTheFiles(document))
             {
-                outcome.AddError("Document.UpdateFiles did not bring every linked file up to date, so the clash results of this run "
-                    + "may be those of the files as they were. Nothing was removed from the tree");
+                if (comparison.ChangedCount == 0)
+                {
+                    // Measured on 14 Oct 2026, run B of F187: with no linked file changed UpdateFiles returned
+                    // False in no time and changed nothing, so with nothing to bring up to date a False is read as
+                    // that. What it returns where a file did change is what the next run with one shows.
+                    log.Line("REFRESH  UpdateFiles returned False with no linked file changed since the last manifest, "
+                        + "which is read as nothing to bring up to date. UNKNOWN whether False ever means a failure");
+                }
+                else
+                {
+                    outcome.AddError("Document.UpdateFiles did not bring every linked file up to date, so the clash results of this "
+                        + "run may be those of the files as they were. Nothing was removed from the tree");
+                }
             }
 
             return true;
