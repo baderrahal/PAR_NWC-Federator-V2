@@ -10,7 +10,7 @@ namespace Federator.Core.Views
     /// document can say, and off the plan where it cannot, the Basis saying which.
     ///
     ///   1  no team pair folder holds a test of another pair
-    ///   2  no Over 150mm folder sits outside its own pair
+    ///   2  no folder under the tool folder is anything but A, B or C, and Over 150mm only inside C
     ///   3  no view shows a model of a third team, the exceptions Q118 A allows named, read back
     ///   4  no clash is in two views, the plan's keys, and each view's painted items read back
     ///   5  no mirrored test has a view of this tool's, against the plan's mirror rule
@@ -195,9 +195,21 @@ namespace Federator.Core.Views
                 looked++;
                 PlannedTestView planned = null;
 
+                // F192. A test can have two views, one in C and one in C/Over 150mm, so the one at this place is
+                // taken first and the first of that name only where none is.
                 foreach (PlannedTestView view in read.Plan.Views)
                 {
-                    if (string.Equals(view.Name, node.Name, StringComparison.Ordinal))
+                    if (!string.Equals(view.Name, node.Name, StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    if (planned == null)
+                    {
+                        planned = view;
+                    }
+
+                    if (string.Equals(node.FolderPath, ViewPlace.FolderPath(view.Folders), StringComparison.Ordinal))
                     {
                         planned = view;
                         break;
@@ -221,7 +233,7 @@ namespace Federator.Core.Views
 
         private static ViewsTreeCheck NoFolderButALetterUnderTheToolFolder(Read read)
         {
-            ViewsTreeCheck check = new ViewsTreeCheck(2, "no folder under the tool folder is anything but A, B or C, and no team pair or size folder is made");
+            ViewsTreeCheck check = new ViewsTreeCheck(2, "no folder under the tool folder is anything but A, B or C, and Over 150mm only inside C");
 
             if (check.CouldNotRun(read.WhyThisRunsViewsCannotBeRead()))
             {
@@ -230,6 +242,18 @@ namespace Federator.Core.Views
 
             int looked = 0;
             List<string> letters = new List<string>(ToolViewFolder.Letters);
+
+            // F192, Bader's order of 15 Oct 2026. The one sub folder of the tool folder's tree is the Over 150mm
+            // folder the plan names, and it is allowed inside C and nowhere else.
+            List<string> sizeFolders = new List<string>();
+
+            foreach (PlannedTestView view in read.Plan.Views)
+            {
+                if (view.SizeFolder != null && !sizeFolders.Contains(view.SizeFolder))
+                {
+                    sizeFolders.Add(view.SizeFolder);
+                }
+            }
 
             foreach (ViewNode node in read.Mine)
             {
@@ -240,17 +264,24 @@ namespace Federator.Core.Views
 
                 looked++;
 
-
                 // The tool's own top folder is the root of this tree and is not a letter folder.
                 if (node.Folders.Count == 0 && string.Equals(node.Name, ToolViewFolder.Name, StringComparison.Ordinal))
                 {
                     continue;
                 }
 
-                if (node.Folders.Count != 1 || !string.Equals(node.Folders[0], ToolViewFolder.Name, StringComparison.Ordinal)
-                    || !letters.Contains(node.Name))
+                bool aLetter = node.Folders.Count == 1
+                    && string.Equals(node.Folders[0], ToolViewFolder.Name, StringComparison.Ordinal)
+                    && letters.Contains(node.Name);
+                bool theSizeFolderInC = node.Folders.Count == 2
+                    && string.Equals(node.Folders[0], ToolViewFolder.Name, StringComparison.Ordinal)
+                    && string.Equals(node.Folders[1], "C", StringComparison.Ordinal)
+                    && sizeFolders.Contains(node.Name);
+
+                if (!aLetter && !theSizeFolderInC)
                 {
-                    check.Fail(node + " is a folder of this tool that is not A, B or C directly under " + ToolViewFolder.Name);
+                    check.Fail(node + " is a folder of this tool that is not A, B or C directly under " + ToolViewFolder.Name
+                        + " or the Over 150mm folder inside C");
                 }
             }
 

@@ -81,7 +81,12 @@ namespace Federator.Core.Tests
         /// <summary>The tree as this run left it: a person's view at the root, then this run's marked folders and views.</summary>
         private static Tree Good(string lightsHome = "EL", ICollection<string> mirrors = null)
         {
-            Tree tree = new Tree { Plan = PlanOf(lightsHome, mirrors) };
+            return TreeOf(PlanOf(lightsHome, mirrors));
+        }
+
+        private static Tree TreeOf(TestViewPlanOutcome plan)
+        {
+            Tree tree = new Tree { Plan = plan };
             Dictionary<string, int> next = new Dictionary<string, int>();
             HashSet<string> made = new HashSet<string>();
 
@@ -254,6 +259,40 @@ namespace Federator.Core.Tests
             Assert.That(Joined(check.Failures), Does.Contain("Structure vs Mechanical").And.Contain("not A, B or C"));
         }
 
+        private static Tree TreeWithAnOver150mmViewInC()
+        {
+            return TreeOf(TestViewPlan.For(
+                new[]
+                {
+                    Clash(Ducts, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashPriority.C, SizeVerdict.Large, 1, 1, "ME", "ST"),
+                    Clash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashPriority.C, SizeVerdict.Small, 2, 2, "ME", "ST")
+                },
+                new ViewTeams(Map(), null, Codes, Settings), new string[0], Settings));
+        }
+
+        [Test]
+        public void Check2HoldsForTheOver150mmFolderInsideCAndBothViewsOfTheTestAreAtTheirPlace()
+        {
+            Tree tree = TreeWithAnOver150mmViewInC();
+
+            Assert.That(tree.Plan.Views.Count, Is.EqualTo(2));
+            Assert.That(Check(FactsOf(tree), 2).Holds, Is.True, Joined(Check(FactsOf(tree), 2).Failures));
+            Assert.That(Check(FactsOf(tree), 1).Holds, Is.True, Joined(Check(FactsOf(tree), 1).Failures));
+        }
+
+        [Test]
+        public void Check2NamesAnOver150mmFolderInsideAOrB()
+        {
+            Tree tree = Good();
+            string[] inA = { "NWC Federator (auto)", "A" };
+            tree.After.Add(new ViewNode(inA, "Over 150mm", true, 9, MarkOf(inA, "Over 150mm", null), 0, null, null, false));
+
+            ViewsTreeCheck check = Check(FactsOf(tree), 2);
+
+            Assert.That(check.Holds, Is.False);
+            Assert.That(Joined(check.Failures), Does.Contain("Over 150mm").And.Contain("inside C"));
+        }
+
         [Test]
         public void Check2HoldsOverTheLetterFoldersAndTheTopFolderItself()
         {
@@ -309,7 +348,7 @@ namespace Federator.Core.Tests
         {
             Tree tree = Good();
             PlannedTestView lights = tree.Plan.Views[1];
-            tree.Plan.Add(new PlannedTestView(lights.Priority, lights.PriorityFolder, lights.Pair, lights.Name, lights.Clashes));
+            tree.Plan.Add(new PlannedTestView(lights.Priority, lights.PriorityFolder, lights.Pair, null, lights.Name, lights.Clashes));
 
             ViewsTreeCheck check = Check(FactsOf(tree), 4);
 

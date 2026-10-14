@@ -1686,7 +1686,7 @@ and 6 does not read as broken.
 - THE VIEWPOINT TREE, F186, Bader's answer 1 of Q174, `ToolViewFolder`. Everything the tool
   makes goes in ONE root folder named NWC Federator (auto), carrying the comment NWCF-AUTO run=<stamp>. Under it A, B
   and C, the letter of the test's priority, a test with none being C, then one view for each test, directly. The team
-  pair level and the Over 150mm folder are gone, and every open clash of a test is in its one view. The team pair still
+  pair level is gone, and every open clash of a test is in its one view, except in C, F192, where in a pair that carries the size folder the clashes over the threshold are the test's view in C/Over 150mm and the rest its view in C. A and B have no Over 150mm folder, and the clashes the earlier rule would have split off there stay in the one view and are counted and named for Bader's decision. The team pair still
   decides which models a view shows. On every run the top folder of the last run is found by its name AND its marker and
   deleted with all it holds, `SavedViewpoints.RemoveToolFolder`, before the new views are made, and a folder of that
   name with no marker is a person's and is left. Nothing outside the folder is read for removal: the inventory and the

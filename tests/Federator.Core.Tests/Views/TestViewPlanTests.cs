@@ -103,7 +103,7 @@ namespace Federator.Core.Tests
 
         private const string Top = "NWC Federator (auto)";
 
-        /// <summary>No team pair level and no size folder: every open clash of a test is in its one view, whatever its size.</summary>
+        /// <summary>No team pair level and, in A, no size folder: every open clash of a test is in its one view, whatever its size.</summary>
         [Test]
         public void EveryOpenClashOfATestIsInItsOneViewWhateverItsSizeAndPair()
         {
@@ -120,6 +120,92 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "A" }));
             Assert.That(NamesOf(plan.Views[0]), Is.EqualTo(new[] { "Clash1", "Clash2", "Clash3", "Clash4", "Clash5" }));
             Assert.That(plan.Views[0].Name, Is.EqualTo(T));
+        }
+
+        // ---------- F192, Bader's order of 15 Oct 2026, Over 150mm only inside C ----------
+
+        private const string Ducts = "BLD-ME-Ducts-vs-BLD-ST-Columns";
+
+        [Test]
+        public void InCTheClashesOverTheThresholdAreTheTestsViewUnderOver150mmAndTheRestStayInC()
+        {
+            TestViewPlanOutcome plan = Plan(
+                Clash(Ducts, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, SizeVerdict.Large),
+                Clash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, SizeVerdict.Small),
+                Clash(Ducts, "Clash3", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.Active, ClashPriority.C, SizeVerdict.SizeUnknown),
+                Clash(Ducts, "Clash4", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, null),
+                Clash(Ducts, "Clash5", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, SizeVerdict.Large));
+
+            Assert.That(plan.Views.Count, Is.EqualTo(2));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "C" }));
+            Assert.That(NamesOf(plan.Views[0]), Is.EqualTo(new[] { "Clash2", "Clash3", "Clash4" }));
+            Assert.That(plan.Views[1].Folders, Is.EqualTo(new[] { Top, "C", "Over 150mm" }));
+            Assert.That(NamesOf(plan.Views[1]), Is.EqualTo(new[] { "Clash1", "Clash5" }));
+            Assert.That(plan.Views[0].Name, Is.EqualTo(Ducts));
+            Assert.That(plan.Views[1].Name, Is.EqualTo(Ducts));
+            Assert.That(plan.InViews, Is.EqualTo(5), "no clash is in two views and none is lost");
+            Assert.That(plan.OverSizeViews, Is.EqualTo(1));
+            Assert.That(plan.SizeUnknown.Count, Is.EqualTo(1));
+            Assert.That(plan.SizeUnknown[0], Does.Contain("Clash3"));
+        }
+
+        [Test]
+        public void ATestWithNoPriorityIsCAndSoGetsTheOver150mmFolderToo()
+        {
+            TestViewPlanOutcome plan = Plan(
+                Clash(Ducts, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.None, SizeVerdict.Large));
+
+            Assert.That(plan.Views.Count, Is.EqualTo(1), "a test with only large clashes has only the Over 150mm view, no empty half");
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "C", "Over 150mm" }));
+        }
+
+        [Test]
+        public void InAAndBThereIsNoOver150mmFolderAndEveryOpenClashStaysInTheTestsOneView()
+        {
+            const string TestB = "BLD-EL-Cable Trays-vs-BLD-AR-Walls";
+
+            TestViewPlanOutcome plan = Plan(
+                Clash(Ducts, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.A, SizeVerdict.Large),
+                Clash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.A, SizeVerdict.Small),
+                Clash(TestB, "Clash1", "BLD-EL-Cable Trays", "BLD-AR-Walls", ClashStatus.New, ClashPriority.B, SizeVerdict.Large),
+                Clash(TestB, "Clash2", "BLD-EL-Cable Trays", "BLD-AR-Walls", ClashStatus.New, ClashPriority.B, SizeVerdict.Large));
+
+            Assert.That(plan.Views.Count, Is.EqualTo(2));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "A" }));
+            Assert.That(NamesOf(plan.Views[0]), Is.EqualTo(new[] { "Clash1", "Clash2" }));
+            Assert.That(plan.Views[1].Folders, Is.EqualTo(new[] { Top, "B" }));
+            Assert.That(NamesOf(plan.Views[1]), Is.EqualTo(new[] { "Clash1", "Clash2" }));
+            Assert.That(plan.OverSizeViews, Is.EqualTo(0));
+            Assert.That(plan.OverSizeKeptTestsA, Is.EqualTo(1));
+            Assert.That(plan.OverSizeKeptTestsB, Is.EqualTo(1));
+            Assert.That(plan.OverSizeKeptClashes, Is.EqualTo(3));
+            Assert.That(string.Join("\n", new List<string>(plan.Lines()).ToArray()),
+                Does.Contain("no Over 150mm view made, all in the test's one view : 2 tests, 1 of A and 1 of B, 3 clashes, for Bader's decision"));
+        }
+
+        [Test]
+        public void APairThatDoesNotCarryTheSizeFolderHasNoOver150mmViewInCEither()
+        {
+            const string T = "BLD-AR-Walls-vs-BLD-ST-Columns";
+
+            TestViewPlanOutcome plan = Plan(
+                Clash(T, "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, SizeVerdict.Large),
+                Clash(T, "Clash2", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, SizeVerdict.Small));
+
+            Assert.That(plan.Views.Count, Is.EqualTo(1));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "C" }));
+            Assert.That(plan.OverSizeViews, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TheOver150mmViewsComeAfterTheViewsOfCItself()
+        {
+            TestViewPlanOutcome plan = Plan(
+                Clash(Ducts, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, SizeVerdict.Large),
+                Clash("BLD-AR-Walls-vs-BLD-ST-Columns", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C));
+
+            Assert.That(plan.Views[0].SizeFolder, Is.Null);
+            Assert.That(plan.Views[1].SizeFolder, Is.EqualTo("Over 150mm"));
         }
 
         [Test]

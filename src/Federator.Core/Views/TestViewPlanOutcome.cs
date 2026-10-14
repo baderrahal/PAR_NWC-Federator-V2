@@ -171,6 +171,82 @@ namespace Federator.Core.Views
             }
         }
 
+        // ---------- F192, the Over 150mm folder under C only ----------
+
+        private readonly List<string> overSizeKept = new List<string>();
+        private readonly List<string> sizeUnknown = new List<string>();
+        private int overSizeKeptClashes;
+        private int overSizeKeptTestsA;
+        private int overSizeKeptTestsB;
+
+        /// <summary>
+        /// A test of priority A or B in a pair that carries the size folder with clashes over the threshold. The
+        /// earlier rule would have made an Over 150mm view of them. Bader's order of 15 Oct 2026 is that no such
+        /// view is made outside C, so they stay in the test's one view, and they are counted for his decision.
+        /// </summary>
+        internal void OverSizeKeptWhole(string testName, string letter, int clashes)
+        {
+            overSizeKept.Add(testName + " : priority " + letter + ", " + clashes + " clashes over the threshold stay in the test's one view");
+            overSizeKeptClashes = overSizeKeptClashes + clashes;
+
+            if (letter == "A")
+            {
+                overSizeKeptTestsA++;
+            }
+            else
+            {
+                overSizeKeptTestsB++;
+            }
+        }
+
+        internal void NameSizeUnknown(string testName, string clashName, string letter)
+        {
+            sizeUnknown.Add(testName + " / " + clashName + " (" + letter + ")");
+        }
+
+        /// <summary>The tests of priority A in a carrying pair that have clashes over the threshold, kept in their one view.</summary>
+        public int OverSizeKeptTestsA
+        {
+            get { return overSizeKeptTestsA; }
+        }
+
+        /// <summary>The same for priority B.</summary>
+        public int OverSizeKeptTestsB
+        {
+            get { return overSizeKeptTestsB; }
+        }
+
+        /// <summary>The clashes over the threshold of those tests of A and B.</summary>
+        public int OverSizeKeptClashes
+        {
+            get { return overSizeKeptClashes; }
+        }
+
+        /// <summary>The views in an Over 150mm folder, all under C.</summary>
+        public int OverSizeViews
+        {
+            get
+            {
+                int count = 0;
+
+                foreach (PlannedTestView view in views)
+                {
+                    if (view.SizeFolder != null)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
+        /// <summary>The clashes read with no size in a carrying pair, each once, by test and clash name.</summary>
+        public ReadOnlyCollection<string> SizeUnknown
+        {
+            get { return new ReadOnlyCollection<string>(sizeUnknown); }
+        }
+
         internal void NameUnknownSet(string side, string words)
         {
             if (!unknownSets.Contains(side))
@@ -227,6 +303,15 @@ namespace Federator.Core.Views
             lines.Add("tests with a side on a team the team map does not name, or on UNKNOWN, so no view : " + unmapped.Count
                 + ", their " + unmappedOpen + " open clashes in no view, and nothing deleted from the NWF, the clashes, the sets or the report");
             Named(lines, unmappedWords);
+
+            lines.Add("Over 150mm folder, under C only : " + OverSizeViews + " views of tests of priority C in a pair that carries the size folder");
+            lines.Add("tests of priority A or B with clashes over the threshold, no Over 150mm view made, all in the test's one view : "
+                + (overSizeKeptTestsA + overSizeKeptTestsB) + " tests, " + overSizeKeptTestsA + " of A and " + overSizeKeptTestsB + " of B, "
+                + overSizeKeptClashes + " clashes, for Bader's decision");
+            Named(lines, overSizeKept);
+            lines.Add("clashes in a pair that carries the size folder whose size could not be read, so they stay in the test's main view : "
+                + sizeUnknown.Count);
+            Named(lines, sizeUnknown.Count > 20 ? sizeUnknown.GetRange(0, 20) : sizeUnknown);
 
             lines.Add("a side read as a team of UNKNOWN, by its set name : " + unknownSets.Count
                 + ", each named with why and none guessed at");
