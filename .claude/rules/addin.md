@@ -367,7 +367,7 @@ well as to pass.
   where no rule ran and said, and whether the clash step was sound, and asks for the second
   NWF save where a view was written or an item removed. A group whose views failed is not
   DONE. THE SWITCH IS THE BOX, F136. Whether a group asks for its views is Core's
-  `ViewpointRequest.WhyNone`, the box on the Clash step, the clash skipped and no report,
+  `ViewpointRequest.WhyNone`, the box on the Clash step and no report,
   and BuildViewpoints calls it in place of the two checks it held before. Unticked, no
   view is made, ViewpointsRequested is false so the group cannot fail at them, and one VIEWS
   line names the box, in every group that reaches the viewpoints step. The box, x:Name
@@ -612,8 +612,8 @@ well as to pass.
   constructor, and is never typed into the XAML as well. The photo size, the cap and the five
   status ticks are read from ImageOptions, the paste into cells tick gone with F152, which is where the
   1024 measured off the accepted report lives. Two copies of a default drift, and the XAML
-  copy is the one nothing can test. The tick box that skips the clash for models off the
-  shared coordinates starts from AlignmentCheck.DefaultSkipClashOffCoordinates beside its
+  copy is the one nothing can test. The tick box that once skipped the clash for models off the
+  shared coordinates started from its Core default beside its
   label, because the XAML once carried IsChecked True and that copy was the real default
 - A tally of what one run did is the engine's, and the window hands it to that run's
   RESULT block, because the engine is made for one press of a button and the log lives as
@@ -1041,10 +1041,10 @@ each and 213 took 17 seconds.
 
 There were fifteen, then eleven, and F72 made twelve, of which two were visible without
 opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash step, F150
-added GhostOtherItems under More and F152 took EmbedThumbnails out of it, so
-src\Federator.Addin\Ui\FederatorWindow.xaml holds SIXTEEN named tick boxes, of which SIX sit
+added GhostOtherItems under More, F152 took EmbedThumbnails out of it and F159 took SkipClashOffCoordinates out, so
+src\Federator.Addin\Ui\FederatorWindow.xaml holds FIFTEEN named tick boxes, of which FIVE sit
 under no expander, by x:Name IncludeSubfolders on the Source step and MarkPenetrations,
-MarkByDesign, RebuildDriftedSets, SkipClashOffCoordinates and MakeViewpoints on the Clash
+MarkByDesign, RebuildDriftedSets and MakeViewpoints on the Clash
 step. The other ten are eight under More, rarely changed, DateTheNwd, WriteClashXml,
 GhostOtherItems and the five Photo of boxes, and two under Things that destroy data,
 ApplyFileSettings and CompactResolved. Read off the XAML on 2026-10-13 by its CheckBox

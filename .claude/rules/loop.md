@@ -154,7 +154,7 @@ and nothing is fixed until a real run on real files shows it fixed.
   the .log only. H19 K2 of tools\loop\prove-run.ps1 proves the mask, 11 of 11 in the harness
   of 2026-10-06 at 5e3cd26, after it failed 8 of 9 replayed alone at a1017c0. Any choice the
   tool remembers between runs is read before the loop and put back after it. F112's tick box
-  SkipClashOffCoordinates, which a run may untick
+  SkipClashOffCoordinates, gone since F159, which a run could untick
   since F126, is not one: the window sets it from
   AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,
   src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at e6d6f73,

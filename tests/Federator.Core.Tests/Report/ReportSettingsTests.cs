@@ -128,24 +128,7 @@ namespace Federator.Core.Tests
                 Is.EqualTo(1));
         }
 
-        /// <summary>
-        /// Bader's answer to Q99 and Q100: the rule that skips the clash of a group not on
-        /// the same shared coordinates is ON by default, and a setting switches it off,
-        /// because a building is run once more with it off so every other fix is proved on
-        /// groups that clash.
-        /// </summary>
-        [Test]
-        public void TheRuleThatSkipsTheClashIsOnByDefaultAndCanBeSwitchedOff()
-        {
-            ReportOptions options = new ReportOptions();
 
-            Assert.That(options.SkipClashOffCoordinates, Is.True);
-            Assert.That(options.SkipClashOffCoordinates, Is.EqualTo(AlignmentCheck.DefaultSkipClashOffCoordinates));
-
-            options.SkipClashOffCoordinates = false;
-
-            Assert.That(options.SkipClashOffCoordinates, Is.False);
-        }
 
         /// <summary>
         /// Not a number would switch the rule off without a word, because nothing is more

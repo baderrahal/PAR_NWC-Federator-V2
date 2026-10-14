@@ -215,17 +215,12 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// T6-R-ZEROCLASHES. A group whose clash was skipped for the shared coordinates read 0
-        /// clashes in this block while RESULT read clashes found UNKNOWN and the block's own
-        /// legend says UNKNOWN is never a zero. A clash that never ran found no number.
+        /// T6-R-ZEROCLASHES. A group with no clash step has no clash count, UNKNOWN and never a
+        /// zero, since the block's own legend says UNKNOWN is never a zero.
         /// </summary>
         [Test]
-        public void AGroupWhoseClashWasSkippedHasUnknownClashesAndNotZero()
+        public void AGroupWithNoClashStepHasUnknownClashesAndNotZero()
         {
-            ClashRunOutcome skipped = new ClashRunOutcome();
-            skipped.ClashSkipped = OffCoordinates.ClashSkippedReason;
-
-            Assert.That(GroupSize.ClashesIn(skipped), Is.EqualTo(GroupSize.Unknown));
             Assert.That(GroupSize.ClashesIn(null), Is.EqualTo(GroupSize.Unknown),
                 "a group with no clash step has no clash count either");
         }

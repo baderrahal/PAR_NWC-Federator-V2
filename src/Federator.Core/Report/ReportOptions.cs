@@ -30,7 +30,7 @@ namespace Federator.Core.Report
             Sizes = new SizeSettings();
             StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
             FarModelMillimetres = AlignmentCheck.DefaultFarModelMillimetres;
-            SkipClashOffCoordinates = AlignmentCheck.DefaultSkipClashOffCoordinates;
+
             MakeViewpoints = ViewpointRequest.DefaultMakeViewpoints;
 
             // Fixed on, and the window no longer sets them. A weekly run wants the page
@@ -230,13 +230,7 @@ namespace Federator.Core.Report
 
         private double farModelMillimetres;
 
-        /// <summary>
-        /// Whether a group holding a model not on the same shared coordinates skips its clash
-        /// and only its clash, Bader's answer to Q99 and Q100. ON by default. Off, every group
-        /// is clashed and judged as it was before his answer, because a building is run once
-        /// more with it off so every other fix is proved on groups that clash.
-        /// </summary>
-        public bool SkipClashOffCoordinates { get; set; }
+
 
         /// <summary>
         /// Whether a group makes its saved views, F136, the box on the Clash step. ON by

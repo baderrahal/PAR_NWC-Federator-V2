@@ -213,12 +213,12 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Bader's answer to Q99 and Q100: the RESULT block lists the groups whose clash was
-        /// skipped because a model is not on the same shared coordinates, beside the count of
-        /// PARTIAL groups they are in.
+        /// Bader's answer to Q99 and Q100, changed by his order of 2026-10-14, F159: the RESULT
+        /// block lists the groups holding a model that is not on the same shared coordinates and
+        /// says no clash was skipped for them.
         /// </summary>
         [Test]
-        public void AGroupWhoseClashWasSkippedIsListedInTheResult()
+        public void AGroupHoldingAnOffModelIsListedInTheResultAndNothingIsSkipped()
         {
             using (RunLog log = Start())
             {
@@ -231,25 +231,23 @@ namespace Federator.Core.Tests
                     Federator.Core.Health.AlignmentCheck.DefaultFarModelMillimetres);
 
                 Federator.Core.Health.OffCoordinatesAcrossTheRun run =
-                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(true, new DateTime(2026, 9, 1, 9, 5, 0), 1);
+                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(new DateTime(2026, 9, 1, 9, 5, 0), 1);
                 run.Add("1B06K1", off, true);
-                log.GroupFinished(
-                    "1B06K1", GroupOutcome.Partial, 1.0, Federator.Core.Health.OffCoordinates.ClashSkippedReason, null);
+                log.GroupFinished("1B06K1", GroupOutcome.Done, 1.0, null, null);
 
                 log.WriteResultBlock(run);
                 string text = ReadWhileOpen(log);
 
-                Assert.That(text, Does.Contain("groups partial : 1"));
-                Assert.That(text, Does.Contain("clash skipped  : 1 group, models not on the same shared coordinates"));
+                Assert.That(text, Does.Contain("groups done    : 1"));
+                Assert.That(text, Does.Contain("clash skipped  : none, every clash is run whatever the coordinates are"));
                 Assert.That(text, Does.Contain("      1B06K1     1 model(s) not on the same shared coordinates"));
             }
         }
 
         /// <summary>
         /// The breaker's first finding at c5d8aa8, in the shape the window gives it: one log
-        /// for the whole window, Run pressed with the box ticked and then again with it
-        /// unticked. The second RESULT block carries the second run's groups alone, with the
-        /// second run's rule state, and names 1A02MM once.
+        /// for the whole window, Run pressed twice. The second RESULT block carries the second
+        /// run's groups alone and names 1A02MM once.
         /// </summary>
         [Test]
         public void TwoRunsInOneWindowEachWriteOnlyTheirOwnCoordinates()
@@ -265,12 +263,12 @@ namespace Federator.Core.Tests
                     Federator.Core.Health.AlignmentCheck.DefaultFarModelMillimetres);
 
                 Federator.Core.Health.OffCoordinatesAcrossTheRun first =
-                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(true, new DateTime(2026, 9, 1, 9, 5, 0), 1);
+                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(new DateTime(2026, 9, 1, 9, 5, 0), 1);
                 first.Add("1A02MM", off, true);
                 log.WriteResultBlock(first);
 
                 Federator.Core.Health.OffCoordinatesAcrossTheRun second =
-                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(false, new DateTime(2026, 9, 1, 10, 5, 0), 1);
+                    new Federator.Core.Health.OffCoordinatesAcrossTheRun(new DateTime(2026, 9, 1, 10, 5, 0), 1);
                 second.Add("1A02MM", off, true);
                 log.WriteResultBlock(second);
 
@@ -278,8 +276,7 @@ namespace Federator.Core.Tests
                 string secondBlock = text.Substring(text.LastIndexOf("RESULT", StringComparison.Ordinal));
 
                 Assert.That(secondBlock, Does.Contain(
-                    "clash skipped  : none, the rule that skips it was off for this run, so 1 group was clashed"));
-                Assert.That(secondBlock, Does.Not.Contain("clash skipped  : 1 group"));
+                    "clash skipped  : none, every clash is run whatever the coordinates are. 1 group holds a model not on"));
                 Assert.That(secondBlock.Split(new[] { "1A02MM" }, StringSplitOptions.None).Length - 1, Is.EqualTo(1));
             }
         }

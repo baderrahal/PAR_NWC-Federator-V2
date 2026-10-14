@@ -77,14 +77,7 @@ namespace Federator.Addin.Engine
         /// </summary>
         public string AlignmentFailure { get; set; }
 
-        /// <summary>
-        /// The models that made this group skip its clash, Bader's answer to Q99 and Q100,
-        /// or null where its clash was not skipped. Kept apart from the errors, because
-        /// nothing threw: the group is PARTIAL for it, or keeps whatever else it ended as.
-        /// Set only with the rule on and only where this run would have run a clash test in
-        /// the group, and read by the clash step, the viewpoints, the reports and the notes.
-        /// </summary>
-        public OffCoordinates ClashSkippedBecause { get; set; }
+
 
         /// <summary>
         /// What the shared coordinates rule judged of this group's models, whether or not
@@ -184,7 +177,7 @@ namespace Federator.Addin.Engine
             }
 
             facts.AlignmentFailure = AlignmentFailure;
-            facts.ClashSkippedOffCoordinates = ClashSkippedBecause != null;
+
             return facts;
         }
 

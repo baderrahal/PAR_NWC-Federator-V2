@@ -123,13 +123,7 @@ namespace Federator.Core.Rerun
         /// </summary>
         public string AlignmentFailure { get; set; }
 
-        /// <summary>
-        /// Whether this group's clash was skipped because a model is not on the same shared
-        /// coordinates as its reference model, Bader's answer to Q99 and Q100, which happens
-        /// only where the run would have run a clash test in it. Not an error: nothing
-        /// threw. Whether the NWF and the NWD are on the disk is judged on their own facts.
-        /// </summary>
-        public bool ClashSkippedOffCoordinates { get; set; }
+
 
         /// <summary>
         /// Every error on one line. All of them, because the RESULT block is what Bader
@@ -195,24 +189,8 @@ namespace Federator.Core.Rerun
                 outcome = GroupOutcome.Failed;
             }
 
-            if (!facts.ClashSkippedOffCoordinates)
-            {
-                return outcome;
-            }
-
-            // Bader's answer to Q99 and Q100. Only the clash was skipped, so a group that
-            // did everything else right is PARTIAL, never DONE, with his reason. A group
-            // already FAILED or PARTIAL keeps its outcome, the worse one, and the skipped
-            // clash is said on its reason too, so the RESULT block never names half of it.
-            if (outcome == GroupOutcome.Done)
-            {
-                reason = OffCoordinates.ClashSkippedReason;
-                return GroupOutcome.Partial;
-            }
-
-            reason = string.IsNullOrEmpty(reason)
-                ? OffCoordinates.ClashSkippedReason
-                : reason + ", and " + OffCoordinates.ClashSkippedReason;
+            // F159. Nothing is skipped for a model off the shared coordinates, so there is no
+            // PARTIAL for it. The check only says a NOTICE.
             return outcome;
         }
 

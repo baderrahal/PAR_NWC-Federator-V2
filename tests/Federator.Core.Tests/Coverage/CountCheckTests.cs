@@ -61,11 +61,11 @@ namespace Federator.Core.Tests
                 false, -1, CoverageReason.Failed, what);
         }
 
-        /// <summary>A test created this run and not run, its clash skipped by the coordinates rule.</summary>
+        /// <summary>A test created this run and not run, not run, the group holds one discipline.</summary>
         private static TestCoverage CreatedNotRun(string name)
         {
             return new TestCoverage(1, name, string.Empty, string.Empty, 2, 2, TestPresence.CreatedThisRun,
-                false, -1, CoverageReason.CoordinatesRule, string.Empty);
+                false, -1, CoverageReason.OneDiscipline, string.Empty);
         }
 
         private static IList<TestCoverage> Tests(params TestCoverage[] tests)

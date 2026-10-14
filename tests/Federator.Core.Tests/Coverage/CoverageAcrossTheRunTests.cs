@@ -443,7 +443,7 @@ namespace Federator.Core.Tests
         private static TestCoverage AlreadyThereNotRun(string name)
         {
             return new TestCoverage(1, name, string.Empty, string.Empty, 2, 2, TestPresence.AlreadyThere,
-                false, -1, CoverageReason.CoordinatesRule, string.Empty);
+                false, -1, CoverageReason.OneDiscipline, string.Empty);
         }
 
         /// <summary>

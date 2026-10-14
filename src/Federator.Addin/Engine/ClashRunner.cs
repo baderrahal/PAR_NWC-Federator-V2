@@ -305,14 +305,7 @@ namespace Federator.Addin.Engine
         /// </summary>
         public bool SingleDisciplineGroup { get; set; }
 
-        /// <summary>
-        /// True when a model of this group is not on the same shared coordinates as its
-        /// reference model and the rule that skips the clash is on, Bader's answer to Q99 and
-        /// Q100. The same path as SingleDisciplineGroup and not a second one: every test
-        /// whose sides both find something is created, F77, so the next run finds it already
-        /// there once the models are fixed, and none is run. Recorded under its own reason.
-        /// </summary>
-        public bool ClashSkippedOffCoordinates { get; set; }
+
 
         /// <summary>
         /// Apply the file settings to tests already in the document. Off by default,
@@ -1013,21 +1006,15 @@ namespace Federator.Addin.Engine
                     summary.RightItems = rightItems;
                 }
 
-                if (ClashSkippedOffCoordinates || SingleDisciplineGroup)
+                if (SingleDisciplineGroup)
                 {
                     // Created because both its sides find something, F77, so a later run
-                    // against a fuller model, or against models exported again on the shared
-                    // coordinates, finds it already there. Not run, because there is nothing
-                    // here for them to run against, or nothing a clash could be trusted on.
-                    LogSkip(ClashSkippedOffCoordinates
-                        ? outcome.AddSkipped(
-                            planned.Name,
-                            ClashSkipReason.NotOnTheSameCoordinates,
-                            "the group's models are not on the same shared coordinates, so this test is not run")
-                        : outcome.AddSkipped(
-                            planned.Name,
-                            ClashSkipReason.SingleDiscipline,
-                            "the group holds one discipline, so there is nothing for this test to clash against"));
+                    // against a fuller model finds it already there. Not run, because there is
+                    // nothing here for it to run against.
+                    LogSkip(outcome.AddSkipped(
+                        planned.Name,
+                        ClashSkipReason.SingleDiscipline,
+                        "the group holds one discipline, so there is nothing for this test to clash against"));
                     guard.RecordNotAttempted();
                     return;
                 }

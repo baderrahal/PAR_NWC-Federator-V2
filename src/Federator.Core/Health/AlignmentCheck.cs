@@ -94,16 +94,11 @@ namespace Federator.Core.Health
     ///
     /// Nothing here stops a run, Q65 answered: report it and run anyway. Two answers given
     /// later decide how a group ENDS, and the group still writes its NWF and its NWD either
-    /// way. Q70: a model naming no site at all fails its group, which Q111 B limits below. Q98 B2 with Bader's answer
-    /// to Q99 and Q100, which replaces Q65 and Q70 for this case: a model naming Internal,
-    /// or sitting more than the far model setting from its group's reference, is not on the
-    /// same shared coordinates, and where the run would have run a clash test in the group
-    /// its clash is skipped and nothing else, OffCoordinates. A model on Internal failed its
-    /// group until then and still does wherever no clash is skipped, the rule switched off
-    /// or no clash test to run in the group. Q111 B, built by F137, puts a model naming no
-    /// site at all in the same list, so it skips the clash the same way and fails its group
-    /// only where no clash is skipped. Q125 B, PARTIAL for a group that runs no clash test,
-    /// is not built here, since it needs the engine's outcome.
+    /// way. Q70: a model naming no site at all or naming Internal fails its group. A model
+    /// naming Internal, naming no site, or sitting more than the far model setting from its
+    /// group's reference is not on the same shared coordinates, OffCoordinates, Q98 B2 and
+    /// Bader's answer to Q99 and Q100. Since F159, Bader's order of 2026-10-14, the clash is
+    /// never skipped for it, and the block says a NOTICE that the clash results may be wrong.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -158,47 +153,20 @@ namespace Federator.Core.Health
         public const double DefaultFarModelMillimetres = 1000.0;
 
         /// <summary>
-        /// Whether a group holding a model not on the same shared coordinates skips its
-        /// clash, Bader's answer to Q99 and Q100. ON, and a setting,
-        /// ReportOptions.SkipClashOffCoordinates, because a building is run once more with it
-        /// off so every other fix is proved on groups that clash.
-        /// </summary>
-        public const bool DefaultSkipClashOffCoordinates = true;
-
-        /// <summary>
-        /// The tick box on the Clash step that switches the rule, ticked by default, because
-        /// a building is run once more with it off and a setting only a build can change is
-        /// no switch. Eight words.
-        /// </summary>
-        public const string TickLabel = "Skip clash when models sit off shared coordinates";
-
-        /// <summary>
-        /// The grey line under it, twelve words, with the distance read off the setting so
-        /// the window never carries a second copy of the metre.
-        /// </summary>
-        public static string HelpLine(double farModelMillimetres)
-        {
-            return "No site, Internal or over " + Metres(farModelMillimetres) + ". NWF and NWD still made";
-        }
-
-        /// <summary>
         /// The block, with the models not on the same shared coordinates measured against
-        /// the given distance in millimetres, and said the way the rule that skips the
-        /// clash is set and whether this run runs a clash test in the group at all. Written
-        /// even when everything agrees, because a missing block reads as a check that did
-        /// not run.
+        /// the given distance in millimetres. Nothing is skipped for them, F159, so the block
+        /// only says which models are off and that the clash results may be wrong for them.
+        /// Written even when everything agrees, because a missing block reads as a check that
+        /// did not run.
         /// </summary>
-        public static IList<string> Lines(
-            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates, bool runsATest)
+        public static IList<string> Lines(IList<ModelPlacement> models, double farModelMillimetres)
         {
             return Lines(
                 models,
                 DefaultReferenceDiscipline,
                 DefaultToleranceMillimetres,
                 DefaultInternalName,
-                farModelMillimetres,
-                skipClashOffCoordinates,
-                runsATest);
+                farModelMillimetres);
         }
 
         public static IList<string> Lines(
@@ -206,9 +174,7 @@ namespace Federator.Core.Health
             string referenceDiscipline,
             double toleranceMillimetres,
             string internalName,
-            double farModelMillimetres,
-            bool skipClashOffCoordinates,
-            bool runsATest)
+            double farModelMillimetres)
         {
             List<string> lines = new List<string>();
 
@@ -225,16 +191,16 @@ namespace Federator.Core.Health
                 lines.Add("no model in this group could be placed, so the models were not compared"
                     + " and none is called a far model. Check by eye that they sit on the same coordinates.");
 
-                // A model on Internal is known by its site alone, so it still skips the
-                // clash or fails the group here, and the block says so like any other.
+                // A model on Internal is known by its site alone, so it is still named off the
+                // coordinates and still fails the group here, and the block says so like any other.
                 OffCoordinates unplaced = NotOnTheSameCoordinates(models, null, internalName, farModelMillimetres);
 
                 if (unplaced.Any)
                 {
-                    AddOffCoordinates(lines, unplaced, skipClashOffCoordinates, runsATest);
+                    AddOffCoordinates(lines, unplaced);
                 }
 
-                AddFailure(lines, models, internalName, unplaced.SkipsTheClash(skipClashOffCoordinates, runsATest));
+                AddFailure(lines, models, internalName);
                 return lines;
             }
 
@@ -320,7 +286,7 @@ namespace Federator.Core.Health
             }
             else
             {
-                AddOffCoordinates(lines, off, skipClashOffCoordinates, runsATest);
+                AddOffCoordinates(lines, off);
 
                 if (off.NotJudged > 0)
                 {
@@ -339,28 +305,19 @@ namespace Federator.Core.Health
                     + "\", which is what Revit calls a model that was not exported on a shared site at all");
             }
 
-            AddFailure(lines, models, internalName, off.SkipsTheClash(skipClashOffCoordinates, runsATest));
+            AddFailure(lines, models, internalName);
             return lines;
         }
 
         /// <summary>
         /// The models not on the same shared coordinates under a heading that says what the
-        /// rule did with them: skipped the clash, was off, or had no clash to skip because
-        /// this run runs no clash test in the group.
+        /// check found and that nothing is skipped for them, F159.
         /// </summary>
-        private static void AddOffCoordinates(
-            IList<string> lines, OffCoordinates off, bool skipClashOffCoordinates, bool runsATest)
+        private static void AddOffCoordinates(IList<string> lines, OffCoordinates off)
         {
             // Not "as the reference model", because the reference itself can be on Internal.
-            lines.Add(!runsATest
-                ? off.Models.Count + " model(s) are not on the same shared coordinates. This run runs no clash test"
-                    + " in this group, so no clash is skipped for them:"
-                : off.SkipsTheClash(skipClashOffCoordinates, runsATest)
-                    ? "CLASH SKIPPED. " + off.Models.Count + " model(s) are not on the same shared coordinates, so the"
-                        + " clash is skipped. " + OffCoordinates.TestsCreatedNoneRun
-                        + ", and no viewpoint and no clash report is made:"
-                    : off.Models.Count + " model(s) are not on the same shared coordinates. The rule that skips the"
-                        + " clash for them is off for this run, so the group is clashed as before:");
+            lines.Add("NOTICE. " + off.Models.Count + " model(s) are not on the same shared coordinates. "
+                + OffCoordinates.ResultsMayBeWrong + " The clash is run and nothing is skipped:");
 
             for (int i = 0; i < off.Models.Count; i++)
             {
@@ -370,13 +327,12 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// Q70. The block says the group is failed and why, before any file of the group is
-        /// written, so it says nothing of them. Told whether the clash is skipped, which is
-        /// the one thing that keeps a model on Internal from failing the group.
+        /// written, so it says nothing of them.
         /// </summary>
         private static void AddFailure(
-            IList<string> lines, IList<ModelPlacement> models, string internalName, bool clashSkipped)
+            IList<string> lines, IList<ModelPlacement> models, string internalName)
         {
-            string fails = WhyItFailsTheGroup(models, internalName, clashSkipped);
+            string fails = WhyItFailsTheGroup(models, internalName);
 
             if (fails != null)
             {
@@ -390,15 +346,13 @@ namespace Federator.Core.Health
         /// its shared site, or names no site at all. A model whose site could not be read
         /// does neither, because a read that threw is not a fact about the model.
         ///
-        /// BADER'S ANSWER TO Q100 REPLACES THE FIRST HALF ONLY WHERE THE CLASH IS SKIPPED: a
-        /// model named Internal then skips the group's clash, OffCoordinates.SkipsTheClash,
-        /// and does not fail it. Wherever no clash is skipped, the rule off, or no clash test
-        /// to run in the group, it fails the group as Q70 answered, because his words give
-        /// such a group PARTIAL or nothing and never DONE, and a group with nothing to clash
-        /// would otherwise end DONE. A model naming no site at all is off the coordinates
-        /// too, Q111 B, so where the clash is skipped it fails nothing, and it fails the group
-        /// wherever no clash is skipped, as it did. The four inputs are the ones the
-        /// ALIGNMENT block takes, so the block and the group cannot differ.
+        /// SINCE F159 THE CLASH IS NEVER SKIPPED, so a model named Internal fails the group as
+        /// Q70 answered, which is what a run with the old rule switched off did. Bader's answer
+        /// to Q100, which let it skip the clash and not fail, no longer has anything to apply
+        /// to. A model naming no site at all is off the coordinates too, Q111 B, and fails the
+        /// group the same way. Whether a group that is still FAILED for this should be a NOTICE
+        /// alone is Q170. The inputs are the ones the ALIGNMENT block takes, so the block and
+        /// the group cannot differ.
         ///
         /// FAILED DOES NOT STOP THE GROUP. The engine goes on to the NWD, and to the clash
         /// report unless the clash was skipped, because Bader needs the evidence to take to
@@ -413,20 +367,12 @@ namespace Federator.Core.Health
         /// the run reports against it is either a clash that is not there or a miss that
         /// is. The numbers are worse than useless because they read as real.
         /// </summary>
-        public static string WhyItFailsTheGroup(
-            IList<ModelPlacement> models, double farModelMillimetres, bool skipClashOffCoordinates, bool runsATest)
+        public static string WhyItFailsTheGroup(IList<ModelPlacement> models)
         {
-            if (models == null || models.Count == 0)
-            {
-                return null;
-            }
-
-            OffCoordinates off = NotOnTheSameCoordinates(
-                models, ReferenceIn(models, DefaultReferenceDiscipline), DefaultInternalName, farModelMillimetres);
-            return WhyItFailsTheGroup(models, DefaultInternalName, off.SkipsTheClash(skipClashOffCoordinates, runsATest));
+            return WhyItFailsTheGroup(models, DefaultInternalName);
         }
 
-        private static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName, bool clashSkipped)
+        private static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName)
         {
             if (models == null || models.Count == 0)
             {
@@ -447,14 +393,9 @@ namespace Federator.Core.Health
 
                 if (!models[i].NamesASharedCoordinate)
                 {
-                    // Where the clash is skipped the model is off the coordinates and the group
-                    // ends PARTIAL by that, F137, Q111 B, and never FAILED by this.
-                    if (!clashSkipped)
-                    {
-                        withNoSite.Add(Named(models[i]));
-                    }
+                    withNoSite.Add(Named(models[i]));
                 }
-                else if (!clashSkipped && NamesInternal(models[i], internalName))
+                else if (NamesInternal(models[i], internalName))
                 {
                     onInternal.Add(Named(models[i]));
                 }
@@ -494,7 +435,7 @@ namespace Federator.Core.Health
         /// </summary>
         public static string FailedRunLine(int groups)
         {
-            return "ALIGNMENT failed " + groups + " group(s), each because, in a group whose clash was not skipped,"
+            return "ALIGNMENT failed " + groups + " group(s), each because"
                 + " a model names no shared site or was exported on the internal origin"
                 + (groups == 0 ? string.Empty : ". The failure does not stop the group.");
         }
