@@ -1716,6 +1716,23 @@ and 6 does not read as broken.
   the managed API returns, `Application.Options` holding only Grids, so whether the COM API reaches it is UNKNOWN
   and the NWF page tells the user to set it by hand. The route's Log and NWD folders are the open file's own, F158:
   the Log folder beside the NWF's folder and the NWD beside the NWF.
+- THE TWO PAGES, F188, Bader's answer 3 of Q174 and his order of 14 Oct 2026, task 9. The window is a TabControl,
+  `Pages`, whose first page is NWC and whose second beside it is NWF. The NWC page holds the four steps it always had,
+  Source, Grouping, Outputs and Clash, in `Steps`, and is for the first build of a group. A group whose NWF is already
+  there is not ticked and cannot be ticked, `NwcPageRule.CanRun`, unless the Rebuild box is ticked and confirmed with
+  the clash history named, `NwcPageRule.RebuildConfirm`, Cancel the default. A rebuild goes into a new dated folder
+  under the NWF's and the NWD's own folders, `RebuildFolder.Name`, and never over the files there,
+  `FederationEngine.TheDatedJobWhereTheNwfIsThere`. The NWF page holds the NWF picker, the NWFs last used,
+  remembered in `recent-nwfs.txt` under %LOCALAPPDATA%\ParsonsNwcFederator, `RecentNwfs`, the list of changed NWC
+  files read off the last manifest and the disk, the tolerance drop down only, the steps Refresh, Run tests, Pictures,
+  Viewpoints and Reports with a tick box each, `NwfPageSteps`, and a Run button. A step whose need is off is greyed
+  and says why. The folder grouping, the matrix pack and the search set build are not on this page. The confirmation
+  before the run, `RefreshConfirm`, lists the changed files, the tests, the tool viewpoint folder with its viewpoints
+  and that a viewpoint moved into it by hand is deleted, and the old jpg files, with Cancel the default. Where a
+  number is not known it says UNKNOWN. After the run a table shows each test that moved, New, Active, Reviewed,
+  Approved and Resolved before > after, from `JobOutcome.RefreshResults`. The picked NWF route, the NWF page's run,
+  keeps the pack choice by project code, the capped pictures, the stops and the order of F182. The words of the page
+  are Core's, `NwfPageWords`, and what its controls hold is read off the XAML by a test.
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR

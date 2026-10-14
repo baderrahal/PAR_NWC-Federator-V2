@@ -416,6 +416,7 @@ namespace Federator.Addin.Ui
                 oldPictures,
                 ToolViewFolder.Name);
 
+            log.Block("CONFIRM " + name, new List<string>(text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)));
             MessageBoxResult answer = MessageBox.Show(
                 this, text, RefreshConfirm.Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
 
