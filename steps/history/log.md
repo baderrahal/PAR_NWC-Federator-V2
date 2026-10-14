@@ -2,6 +2,18 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F179 the research note on NWC and NWF logic saved
+
+Branch fix-F179 off main e0f23d6. Bader's order of 14 Oct, round 4, task 6. A note and no code.
+
+steps\notes\nwc-nwf-design.md holds the REFERENCE of his brief in the same words, sections A to F, each point marked
+PROVEN, INFERRED or UNKNOWN as he marked it. Part 2 of the round follows it. It is listed in steps\notes\README.md.
+
+Also fixed: the tracker rows of Q169, Q171 and Q172 were left reading in review after F178 merged, because the script that
+sets a row's number only knew the F row. They read merged 258 now, the pull request of F178.
+
+Proved here: nothing is code. Core tests unchanged, 3124 before and after. check-tracker reads clean.
+
 ## 2026-10-14 F178 the answers of round 4 recorded
 
 Branch fix-F178 off main f641f7d. Bader's order of 14 Oct, round 4, task 4. A record and no code.
