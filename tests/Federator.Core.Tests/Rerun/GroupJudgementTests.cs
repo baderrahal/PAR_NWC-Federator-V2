@@ -670,16 +670,16 @@ namespace Federator.Core.Tests
         // ---------- a group failed on where its models sit, Q70 ----------
 
         /// <summary>
-        /// The reason the engine hands the judgement for a group whose ST was exported on
-        /// Internal, judged with the rule off, made at the ALIGNMENT step before any file is
-        /// written.
+        /// The reason the engine hands the judgement for a group whose ST names no shared site,
+        /// made at the ALIGNMENT step before any file is written. A model on Internal is no
+        /// longer a reason, F171.
         /// </summary>
-        private static string FailedOnInternal()
+        private static string FailedOnNoSite()
         {
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
                 new ModelPlacement("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc", "AR", "SWLS-02-SharedCoordinate", 0.0, 0.0, 0.0),
-                new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", "Internal", 0.0, 0.0, 255.0)
+                new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", string.Empty, 0.0, 0.0, 255.0)
             };
 
             return AlignmentCheck.WhyItFailsTheGroup(models);
@@ -700,12 +700,12 @@ namespace Federator.Core.Tests
         public void AGroupFailedOnItsModelsWithItsNwdFromThisRunNamesTheModelAlone()
         {
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnInternal();
+            facts.AlignmentFailure = FailedOnNoSite();
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Is.EqualTo(FailedOnInternal()));
+            Assert.That(reason, Is.EqualTo(FailedOnNoSite()));
             Assert.That(reason, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
             Assert.That(reason, Does.Not.Contain("NWD"));
             Assert.That(reason, Does.Not.Contain("written"));
@@ -720,14 +720,14 @@ namespace Federator.Core.Tests
         public void AGroupFailedOnItsModelsStillNamesAnNwdNotFromThisRun()
         {
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnInternal();
+            facts.AlignmentFailure = FailedOnNoSite();
             facts.NwdOnDisk = true;
             facts.NwdPublishReportedSuccess = false;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Is.EqualTo(FailedOnInternal() + ", and " + StaleNwd));
+            Assert.That(reason, Is.EqualTo(FailedOnNoSite() + ", and " + StaleNwd));
         }
 
         /// <summary>The same group with no NWD on the disk at all names it missing beside the model.</summary>
@@ -735,14 +735,14 @@ namespace Federator.Core.Tests
         public void AGroupFailedOnItsModelsStillNamesAMissingNwd()
         {
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnInternal();
+            facts.AlignmentFailure = FailedOnNoSite();
             facts.NwdOnDisk = false;
             facts.NwdPublishReportedSuccess = false;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Is.EqualTo(FailedOnInternal() + ", and " + MissingNwd));
+            Assert.That(reason, Is.EqualTo(FailedOnNoSite() + ", and " + MissingNwd));
         }
 
         /// <summary>
@@ -778,13 +778,13 @@ namespace Federator.Core.Tests
         public void AGroupFailedOnItsModelsKeepsWhatThrewBesideIt()
         {
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnInternal();
+            facts.AlignmentFailure = FailedOnNoSite();
             facts.AddError("creating the clash tests threw NullReferenceException");
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Does.Contain(FailedOnInternal()));
+            Assert.That(reason, Does.Contain(FailedOnNoSite()));
             Assert.That(reason, Does.Contain("creating the clash tests threw NullReferenceException"));
         }
     }

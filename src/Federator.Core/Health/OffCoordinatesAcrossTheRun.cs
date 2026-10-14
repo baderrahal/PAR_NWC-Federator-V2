@@ -82,7 +82,11 @@ namespace Federator.Core.Health
                 if (entry.Off != null && entry.Off.Any)
                 {
                     lines.Add("      " + entry.Building.PadRight(10) + " " + entry.Off.Models.Count
-                        + " model(s) not on the same shared coordinates, the clash results may be wrong");
+                        + " model(s) not on the same shared coordinates, the clash results may be wrong"
+                        + (entry.Off.OnInternal.Count == 0
+                            ? string.Empty
+                            : ". NOTICE, on Revit's internal origin: " + string.Join(", ", entry.Off.OnInternal)
+                                + ", the group is not FAILED for it"));
                 }
             }
 

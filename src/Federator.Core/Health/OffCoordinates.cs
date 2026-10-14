@@ -25,10 +25,12 @@ namespace Federator.Core.Health
         /// <summary>What a NOTICE says of the results, in Bader's words of 2026-10-14.</summary>
         public const string ResultsMayBeWrong = "The clash results may be wrong for these models.";
 
-        internal OffCoordinates(string reference, IList<string> models, int notJudged, int modelsRead)
+        internal OffCoordinates(
+            string reference, IList<string> models, int notJudged, int modelsRead, IList<string> onInternal = null)
         {
             Reference = reference;
             Models = new ReadOnlyCollection<string>(models);
+            OnInternal = new ReadOnlyCollection<string>(onInternal ?? new List<string>());
             NotJudged = notJudged;
             ModelsRead = modelsRead;
         }
@@ -38,6 +40,12 @@ namespace Federator.Core.Health
 
         /// <summary>One line per model not on the same shared coordinates, the line the log, the note and the run's list all carry.</summary>
         public IList<string> Models { get; private set; }
+
+        /// <summary>
+        /// F171, Bader's answer to Q170. The models that sit on Revit's internal origin and not on a shared
+        /// site, by name. Each is in Models too. This is a NOTICE and never a reason for FAILED.
+        /// </summary>
+        public IList<string> OnInternal { get; private set; }
 
         /// <summary>
         /// How many models this rule could not judge: not named above, and either their
@@ -61,6 +69,23 @@ namespace Federator.Core.Health
         /// follow it one to a line, indented. Empty where no model is off. It says the clash was run
         /// and nothing was skipped, since a reader who knew the old rule would look for that.
         /// </summary>
+        /// <summary>
+        /// Which models sit on Revit's internal origin, said for the group result line, the run log and the
+        /// list: the names, and that their clash results may be wrong. Empty where none does.
+        /// </summary>
+        public string InternalSaid()
+        {
+            if (OnInternal.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            return Words.Counted(OnInternal.Count, "model", "models") + " sit"
+                + (OnInternal.Count == 1 ? "s" : string.Empty)
+                + " on Revit's internal origin and not on a shared site: " + string.Join(", ", OnInternal)
+                + ". Their clash results may be wrong.";
+        }
+
         public IList<string> Notice(string building)
         {
             List<string> lines = new List<string>();
@@ -75,7 +100,10 @@ namespace Federator.Core.Health
                 + (Reference == null
                     ? ", and no model could be placed to measure from"
                     : ", measured from the reference model " + Reference)
-                + ". " + ResultsMayBeWrong + " The clash was run and nothing was skipped.");
+                + ". " + ResultsMayBeWrong + " The clash was run and nothing was skipped."
+                + (OnInternal.Count == 0
+                    ? string.Empty
+                    : " " + InternalSaid() + " This is a notice and the group does not end FAILED for it."));
 
             foreach (string model in Models)
             {
