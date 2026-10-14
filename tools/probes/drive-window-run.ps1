@@ -7,7 +7,6 @@ param(
   [string]$Source = "",
   [string]$Nwf = "",
   [string]$Nwd = "",
-  [string]$Excel = "",
   [string]$Untick = "",
   [switch]$OpenRun,
   [int]$WindowWaitSeconds = 600
@@ -33,8 +32,9 @@ param(
 # presses Scan. The scan is over when the window moves itself to 2. Grouping, which OnScan does
 # last, and a dialog of the pid before that stops it. Back on 1. Source it records
 # SourceSummary and FilesGrid's rows, on 2. Grouping GroupsGrid's rows and, where UI Automation
-# answers, whether every group is ticked. It types -Nwf, -Nwd and -Excel into NwfFolderBox,
-# NwdFolderBox and ExcelFolderBox on 3. Outputs, then reads every box back, each on its own tab.
+# answers, whether every group is ticked. It types -Nwf and -Nwd into NwfFolderBox and
+# NwdFolderBox on 3. Outputs, then reads every box back, each on its own tab. There is no Excel
+# folder box since F158, the logs and the reports having their own folders, Log and Clash report.
 # It presses RunButton only when each box reads exactly what was typed and ToleranceBox reads
 # 25 mm. There is no XML box since F155, the clash matrix being built into the tool.
 # MarkByDesign and MarkPenetrations are read, PriorityBox gone since F154,
@@ -64,8 +64,9 @@ param(
 # names no rooted path outside the loop folder.
 #
 # F126, -Untick. Tick boxes named by their AutomationId, the x:Name WPF exposes, joined by
-# commas, such as SkipClashOffCoordinates, the tick box of F112's rule, so a run can be made with
-# that rule switched off. Once the tool's window is found and before anything is pressed, each is
+# commas, such as MarkByDesign, so a run can be made with that tick box switched off. The box of
+# F112's rule, SkipClashOffCoordinates, is gone since F159. Once the tool's window is found and
+# before anything is pressed, each is
 # looked for on the four tabs in their order, read through TogglePattern, toggled once only when
 # it reads On, and read back, with one line naming its id, its tab, what it read before and what
 # it reads after. A box on no tab, one that answers no TogglePattern, or one that does not read
@@ -106,7 +107,7 @@ param(
 #   records a window that closes by itself as WINDOW CLOSED BY ITSELF
 # The control ids are those of src\Federator.Addin\Ui\FederatorWindow.xaml, read on
 # 2026-10-01: SourceFolderBox, IncludeSubfolders, FilesGrid, GroupsGrid, NwfFolderBox,
-# NwdFolderBox, ExcelFolderBox, ToleranceBox, MarkPenetrations,
+# NwdFolderBox, ToleranceBox, MarkPenetrations,
 # MarkByDesign, RunButton, RunOpenButton, OpenDocumentLine, SourceSummary, the Scan button by
 # its words, and the tabs 1. Source, 2. Grouping, 3. Outputs and 4. Clash. Whether each answers
 # UI Automation as this script expects in the real window is UNKNOWN until the first window
@@ -155,7 +156,7 @@ $script:NotesOk = $true
 Note ("driver started, pid " + $PID + ", owner pid " + $OwnerPid + ", start ticks UTC " + $OwnerStartTicks + ", set " + $Set + ", stamp " + $Stamp + $(if ($OpenRun) { ", the open file run" } else { "" }) + $(if ($Untick -ne "") { ", -Untick " + (MaskLine $Untick) } else { "" }))
 if ($Set -notmatch '^\d\d$') { Done "REFUSED" ("-Set is " + $Set + ", not two digits") }
 $setRoot = Join-Path $loopRoot ("runs\" + $Set)
-$boxes = [ordered]@{ "SourceFolderBox" = $Source; "NwfFolderBox" = $Nwf; "NwdFolderBox" = $Nwd; "ExcelFolderBox" = $Excel }
+$boxes = [ordered]@{ "SourceFolderBox" = $Source; "NwfFolderBox" = $Nwf; "NwdFolderBox" = $Nwd }
 if ($OpenRun) {
   foreach ($k in $boxes.Keys) { if ($boxes[$k] -ne "") { Done "REFUSED" ("the open file run types no folder, and the folder for " + $k + " was given") } }
 } else {
@@ -438,14 +439,13 @@ try {
     SelectTab "3. Outputs"
     TypeBox "NwfFolderBox" $Nwf
     TypeBox "NwdFolderBox" $Nwd
-    TypeBox "ExcelFolderBox" $Excel
     # Every box read back, each on its own tab, before anything that runs is pressed.
     $read = [ordered]@{}
     SelectTab "1. Source"
     $read["SourceFolderBox"] = BoxText "SourceFolderBox"
     SelectTab "3. Outputs"
-    foreach ($k in @("NwfFolderBox", "NwdFolderBox", "ExcelFolderBox")) { $read[$k] = BoxText $k }
-    $want = [ordered]@{ "SourceFolderBox" = $Source; "NwfFolderBox" = $Nwf; "NwdFolderBox" = $Nwd; "ExcelFolderBox" = $Excel }
+    foreach ($k in @("NwfFolderBox", "NwdFolderBox")) { $read[$k] = BoxText $k }
+    $want = [ordered]@{ "SourceFolderBox" = $Source; "NwfFolderBox" = $Nwf; "NwdFolderBox" = $Nwd }
     $wrong = New-Object System.Collections.Generic.List[string]
     foreach ($k in $want.Keys) {
       Note ("read back " + $k + ": " + $(if ($read[$k] -eq "") { "empty" } else { MaskLine $read[$k] }))

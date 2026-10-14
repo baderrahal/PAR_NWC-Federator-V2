@@ -153,12 +153,8 @@ and nothing is fixed until a real run on real files shows it fixed.
   is written. The .tsv is copied as it is. Those lines go through RunLog.Line, which writes
   the .log only. H19 K2 of tools\loop\prove-run.ps1 proves the mask, 11 of 11 in the harness
   of 2026-10-06 at 5e3cd26, after it failed 8 of 9 replayed alone at a1017c0. Any choice the
-  tool remembers between runs is read before the loop and put back after it. F112's tick box
-  SkipClashOffCoordinates, gone since F159, which a run could untick
-  since F126, is not one: the window sets it from
-  AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,
-  src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at e6d6f73,
-  the same line on main since F112 merged as ddb059b. The two states the window reads back at
+  tool remembers between runs is read before the loop and put back after it. No tick box of the
+  window is remembered, the window setting each when it opens. The two states the window reads back at
   its next open are FolderMemory's picker folders, folders.txt, and since F131 the team map
   TeamMapMemory keeps for a run with no XML, team-map.txt, both beside his logs, Q123
   answered B. folders.txt goes back with his logs folder after the loop. team-map.txt is

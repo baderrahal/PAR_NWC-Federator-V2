@@ -167,6 +167,11 @@ $app = $null; $myPid = 0; $myStart = $null; $myTicks = $null; $goneAtUtc = $null
 $disposed = $false; $suppressed = $false; $ctorSeconds = $null
 Say "==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ===="
 if (RoamerRefusal) { StopEarly "STOP before the constructor, so nothing is started and nothing of Bader's is written, the backup stays in the work folder: a Navisworks is running" }
+# F173. Auto-Save is switched off before Navisworks starts and put back with the rest of the settings, so
+# a probe never autosaves into the AutoSave folder, which rotates and deletes the oldest files there.
+$ao = SwitchAutoSaveOff $regSub $regRoot $regBefore
+if (-not $ao.Ok) { StopEarly ("STOP before the constructor, so nothing is started, the backup stays in the work folder: " + $ao.Line) }
+Say ("  " + $ao.Line)
 Say ""
 try {
   Say "==== STEP 3. Start one Navisworks through the API and adopt it ===="
