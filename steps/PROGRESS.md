@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 227 | 16 | 1 | 0 | 63 | 7 | 314 |
-| total | 430 | 24 | 1 | 0 | 164 | 18 | 637 |
+| outside the waves | 228 | 16 | 0 | 0 | 63 | 7 | 314 |
+| total | 431 | 24 | 0 | 0 | 164 | 18 | 637 |
 <!-- the end of the counts -->
 
 ## Now
