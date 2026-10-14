@@ -650,4 +650,4 @@ F187,"the refresh of a picked NWF: backup, linked files listened for and the mis
 F188,"the window has two pages NWC and NWF, the steps and the confirmation of the NWF page, the table of what each test did, the NWC page refuses a group with an NWF unless Rebuild is ticked, Q174-3",F188,none,fix,merged,268,none,2026-10-14
 F189,"the final run of Part 2 on a copy of C04 in Bader's layout, an NWF keeps its own NWD and Log folder for the NWF page, Q174-1 to Q174-3 proven by the run",F189,none,fix,merged,269,none,2026-10-15
 F190,"the picture caps A 150, B 100 and C 50 always apply to every test, the trigger of 750 clashes and its constant removed",F190,none,fix,merged,270,none,2026-10-15
-F191,"everything at the root of the saved viewpoints outside the tool folder is deleted except a folder named Comments, which is kept and made where missing, the one time clean up of A B C removed",F191,none,fix,in review,none,none,2026-10-15
+F191,"everything at the root of the saved viewpoints outside the tool folder is deleted except a folder named Comments, which is kept and made where missing, the one time clean up of A B C removed",F191,none,fix,merged,271,none,2026-10-15
