@@ -1683,7 +1683,7 @@ and 6 does not read as broken.
   no longer carried into the NWF and the NWD. F185 removed the Compact resolved option and its call of
   TestsCompactAllTests, so no result moves between the clash step and the pictures. `GroupOrder` writes the ORDER lines. A
   stop of the hand button's Run tests is unchanged, it takes its pictures inside the clash step.
-- THE VIEWPOINT TREE, F186, Bader's answer 1 of Q174, `ToolViewFolder`, `LegacyViewCleanup`. Everything the tool
+- THE VIEWPOINT TREE, F186, Bader's answer 1 of Q174, `ToolViewFolder`. Everything the tool
   makes goes in ONE root folder named NWC Federator (auto), carrying the comment NWCF-AUTO run=<stamp>. Under it A, B
   and C, the letter of the test's priority, a test with none being C, then one view for each test, directly. The team
   pair level and the Over 150mm folder are gone, and every open clash of a test is in its one view. The team pair still
@@ -1691,11 +1691,15 @@ and 6 does not read as broken.
   deleted with all it holds, `SavedViewpoints.RemoveToolFolder`, before the new views are made, and a folder of that
   name with no marker is a person's and is left. Nothing outside the folder is read for removal: the inventory and the
   seven tree checks are handed `ToolViewFolder.NodesUnder` and nothing else. A view a person moved into the folder goes
-  with it, and the NWF page says so. THE ONE TIME CLEAN UP: a root folder named A, B, C or No priority is deleted with
-  all it holds only where EVERY item inside is the old tree's own naming, a team pair folder of two team names, the size
-  folder, a view named as a test or as F85's per clash viewpoint. One item that is not leaves the whole folder, and the
-  log names the folder and the item. A root folder that holds nothing is left. A PROOF line reads the count of tests
-  and results before and after the delete. Statuses are not compared by it, UNKNOWN until the weekly run's snapshot.
+  with it, and the NWF page says so. DELETE EVERYTHING OUTSIDE IT, F191, Bader's order of 15 Oct 2026,
+  `OutsideTheToolFolder`: after the new tool folder is built and its marker is there, every viewpoint and every folder at
+  the root is deleted except the tool folder of this run and a root folder named Comments, whatever its case, which is
+  kept with all inside it. A folder named like it but not exactly it, "Comments old", is deleted, and so is a viewpoint
+  named Comments. An empty Comments folder is made where there is none. It runs after the build so a build that stopped
+  or threw deletes nothing of a coordinator's, and where no view was planned there is no tool folder to wait for. A
+  tool folder expected and not found once refuses the whole delete. The tests and results are counted before, after the
+  first item and after all, and a change stops the delete and fails the step. One line says the number of items and the
+  top level names, 50 at most. This replaced the one time clean up of the root folders A, B and C of F186.
 - THE REFRESH OF A PICKED NWF, F187, Bader's order of 14 Oct 2026 and his answer 2 of Q174, `RefreshRun`,
   `NwcManifest`, `NwfBackupName`, `ResultSnapshot` and `RefreshComparison`. A picked NWF, the NWF page's run, is
   copied into a Backup folder beside the Log folder before anything is opened, under its name and the moment to the

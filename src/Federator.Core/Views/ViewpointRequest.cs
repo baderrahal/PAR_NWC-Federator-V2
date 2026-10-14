@@ -39,6 +39,9 @@ namespace Federator.Core.Views
         /// </summary>
         public const string HelpLine = "Each viewpoint adds time, so a big run can take hours";
 
+        /// <summary>F191. What a run with viewpoints does to the rest of the viewpoint tree, said under the box.</summary>
+        public const string DeleteLine = "Every viewpoint outside the tool folder and the Comments folder is deleted";
+
         /// <summary>
         /// Why the group asks for no viewpoint, or null when it asks for them. The box
         /// comes first because it is the run's own choice and holds for every group, so

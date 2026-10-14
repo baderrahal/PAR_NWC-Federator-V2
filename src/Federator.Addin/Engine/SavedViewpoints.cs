@@ -1573,59 +1573,125 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// F186. Deletes one ROOT folder of an earlier version's tree with everything in it, by its name and kind
-        /// at the index the walk read it at or once among the root's children, RemoveAt on the root. The caller has
-        /// judged every item inside by LegacyViewCleanup. Nothing is removed where it is not found once and once only.
+        /// F191. Every item at the root of the saved viewpoint tree as a fresh read has it: its name, whether it is
+        /// a folder, its index among the root's children, and for a folder how many viewpoints and folders sit
+        /// inside it. A folder with the tool folder's name is the tool folder of THIS run only where one of its own
+        /// comments is the marker of this run's id, so a folder of that name with no marker, or an earlier run's,
+        /// is read as any other root folder. Nothing is changed.
         /// </summary>
-        public static RemovalReadBack RemoveRootFolder(Document document, string name, int indexInRoot)
+        public static IList<RootEntry> ReadRoot(Document document, string runId)
         {
-            RemovalReadBack answer = new RemovalReadBack();
+            List<RootEntry> entries = new List<RootEntry>();
 
-            if (document == null || string.IsNullOrEmpty(name))
+            if (document == null)
             {
-                answer.WhyNot = "nothing to remove was named";
-                return answer;
+                return entries;
             }
 
             using (GroupItem root = document.SavedViewpoints.RootItem)
             {
                 SavedItemCollection children = root.Children;
-                answer.CountBefore = children.Count;
-                int at = -1;
-                int matches = 0;
 
                 for (int i = 0; i < children.Count; i++)
                 {
                     using (SavedItem child = children[i])
                     {
-                        if (child is GroupItem && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
-                        {
-                            matches++;
+                        GroupItem group = child as GroupItem;
 
-                            if (at < 0 || i == indexInRoot)
+                        if (group == null)
+                        {
+                            entries.Add(new RootEntry(child.DisplayName, false, i, 0, 0, false));
+                            continue;
+                        }
+
+                        int views = 0;
+                        int folders = 0;
+                        CountBelow(group, ref views, ref folders);
+                        bool mine = false;
+
+                        if (runId != null && string.Equals(child.DisplayName, ToolViewFolder.Name, StringComparison.Ordinal))
+                        {
+                            IList<string> comments = CommentBodies(child);
+
+                            if (comments != null)
                             {
-                                at = i;
+                                foreach (string body in comments)
+                                {
+                                    if (string.Equals(ToolViewFolder.RunIdOf(body), runId, StringComparison.Ordinal))
+                                    {
+                                        mine = true;
+                                        break;
+                                    }
+                                }
                             }
                         }
+
+                        entries.Add(new RootEntry(child.DisplayName, true, i, views, folders, mine));
+                    }
+                }
+            }
+
+            return entries;
+        }
+
+        /// <summary>
+        /// F191. Deletes one item at the root, with everything inside it, in one RemoveAt on the root. The item at
+        /// that index must still be the one that was read, its name and its kind, or nothing is removed. Returns
+        /// null where it was removed and why not where it was not.
+        /// </summary>
+        public static string DeleteRootItem(Document document, RootEntry entry)
+        {
+            if (document == null || entry == null)
+            {
+                return "nothing to remove was named";
+            }
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection children = root.Children;
+
+                if (entry.Index < 0 || entry.Index >= children.Count)
+                {
+                    return "index " + entry.Index + " is not at the root any more";
+                }
+
+                using (SavedItem child = children[entry.Index])
+                {
+                    bool isFolder = child is GroupItem;
+
+                    if (isFolder != entry.IsFolder || !string.Equals(child.DisplayName, entry.Name, StringComparison.Ordinal))
+                    {
+                        return "the item at index " + entry.Index + " is not \"" + entry.Name + "\" any more";
                     }
                 }
 
-                if (matches != 1)
-                {
-                    answer.WhyNot = matches + " root folders are named " + name + ", so which one was judged is UNKNOWN";
-                    return answer;
-                }
-
-                document.SavedViewpoints.RemoveAt(root, at);
-                answer.Removed = true;
+                document.SavedViewpoints.RemoveAt(root, entry.Index);
             }
 
-            using (GroupItem again = document.SavedViewpoints.RootItem)
+            return null;
+        }
+
+        private static void CountBelow(GroupItem parent, ref int views, ref int folders)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
             {
-                answer.CountAfter = again.Children.Count;
-            }
+                using (SavedItem child = children[i])
+                {
+                    GroupItem group = child as GroupItem;
 
-            return answer;
+                    if (group != null)
+                    {
+                        folders++;
+                        CountBelow(group, ref views, ref folders);
+                    }
+                    else
+                    {
+                        views++;
+                    }
+                }
+            }
         }
 
         private static int CountUnder(GroupItem parent)

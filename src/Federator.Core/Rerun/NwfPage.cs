@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using Federator.Core.Views;
 using Federator.Core.Report;
 
 namespace Federator.Core.Rerun
@@ -216,6 +217,7 @@ namespace Federator.Core.Rerun
             string steps,
             int testsInMatrix,
             int toolViews,
+            int outsideAtTheLastRun,
             int oldPictures,
             string viewpointFolderName)
         {
@@ -257,6 +259,7 @@ namespace Federator.Core.Rerun
             text.AppendLine("Viewpoints: the folder " + viewpointFolderName + " with "
                 + (toolViews >= 0 ? toolViews.ToString(CultureInfo.InvariantCulture) : "UNKNOWN") + " viewpoints is deleted and made again."
                 + " A viewpoint moved by hand into that folder is deleted with it.");
+            text.AppendLine(OutsideTheToolFolder.ConfirmWords(outsideAtTheLastRun));
             text.AppendLine("Pictures: "
                 + (oldPictures >= 0 ? oldPictures.ToString(CultureInfo.InvariantCulture) : "UNKNOWN")
                 + " old jpg files in the Clash report folder are written again or removed.");
@@ -302,6 +305,7 @@ namespace Federator.Core.Rerun
             text.AppendLine();
             text.AppendLine("This DESTROYS THE CLASH HISTORY of that NWF in the new files: every status, assigned to and comment a coordinator wrote is not in them.");
             text.AppendLine("The old NWF is not overwritten. The new files go in a new dated folder beside it.");
+            text.AppendLine(OutsideTheToolFolder.ConfirmWords(-1));
             text.AppendLine();
             text.Append("Carry on? Cancel is the default.");
             return text.ToString();
@@ -333,7 +337,7 @@ namespace Federator.Core.Rerun
 
         public const string StepsHelp = "A step that needs another is greyed when that one is off.";
 
-        public const string RulesLine = "The tool viewpoint folder NWC Federator (auto) is deleted and made again on each run. A viewpoint moved by hand into it is deleted. "
+        public const string RulesLine = "The tool viewpoint folder NWC Federator (auto) is deleted and made again on each run. A viewpoint moved by hand into it is deleted. Every other viewpoint and folder outside it is deleted too, except the folder Comments. "
             + "Set Options, Model, Performance, Close NWC/NWD files on load in Navisworks, so a new NWC export can overwrite a linked file.";
 
         public const string TableHeading = "After the run: clashes of each test that moved, before > after";
