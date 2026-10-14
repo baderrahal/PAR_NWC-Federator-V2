@@ -18,8 +18,6 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class TestViewPlanTests
     {
-        private const string Over150 = "Over 150mm";
-
         private const string UnknownSetsLine =
             "a side read as a team of UNKNOWN, by its set name : ";
 
@@ -77,7 +75,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views.Count, Is.EqualTo(1));
             Assert.That(NamesOf(plan.Views[0]), Is.EqualTo(new[] { "Clash1", "Clash2" }));
             Assert.That(plan.Views[0].Name, Is.EqualTo(T));
-            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "A", "Structure vs Electrical" }));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "NWC Federator (auto)", "A" }));
             Assert.That(plan.LeftOutAt(ClashStatus.Reviewed), Is.EqualTo(1));
             Assert.That(plan.LeftOutAt(ClashStatus.Approved), Is.EqualTo(1));
             Assert.That(plan.LeftOutAt(ClashStatus.Resolved), Is.EqualTo(1));
@@ -101,10 +99,13 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views[0].CameraClash.ClashName, Is.EqualTo("Clash3"));
         }
 
-        // ---------- point 14, the size split ----------
+        // ---------- F186, Bader's answer 1 of Q174, the one tool folder, A B C, the tests directly ----------
 
+        private const string Top = "NWC Federator (auto)";
+
+        /// <summary>No team pair level and no size folder: every open clash of a test is in its one view, whatever its size.</summary>
         [Test]
-        public void InAPairWithMechanicalTheLargeServicesGoUnderOver150mmAndTheRestInThePairView()
+        public void EveryOpenClashOfATestIsInItsOneViewWhateverItsSizeAndPair()
         {
             const string T = "BLD-ME-Ducts-vs-BLD-ST-Columns";
 
@@ -115,102 +116,63 @@ namespace Federator.Core.Tests
                 Clash(T, "Clash4", "BLD-ME-Ducts", "BLD-ST-Columns", size: null),
                 Clash(T, "Clash5", "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.Large));
 
-            Assert.That(plan.Views.Count, Is.EqualTo(2));
-
-            PlannedTestView pairView = plan.Views[0];
-            PlannedTestView sizeView = plan.Views[1];
-
-            Assert.That(pairView.Folders, Is.EqualTo(new[] { "A", "Structure vs Mechanical" }));
-            Assert.That(NamesOf(pairView), Is.EqualTo(new[] { "Clash2", "Clash3", "Clash4" }));
-            Assert.That(sizeView.Folders, Is.EqualTo(new[] { "A", "Structure vs Mechanical", Over150 }));
-            Assert.That(NamesOf(sizeView), Is.EqualTo(new[] { "Clash1", "Clash5" }));
-            Assert.That(sizeView.Name, Is.EqualTo(T), "both views are named by their test");
-            Assert.That(plan.SizeUnknown, Is.EqualTo(new[] { T + " / Clash3" }), "FR-068, the size not read is named");
-        }
-
-        /// <summary>A rectangular service by its larger side: a 600 by 150 duct is 600 and over.</summary>
-        [Test]
-        public void ADuct600By150IsLargeAndGoesUnderOver150mm()
-        {
-            SizeSettings sizes = new SizeSettings();
-            Dictionary<string, double> read = new Dictionary<string, double> { { "Width", 600.0 }, { "Height", 150.0 } };
-            SizeVerdict verdict = SizeRule.VerdictFor(SizeRule.LargestMillimetres(read, "Millimeters", sizes), sizes);
-
-            TestViewPlanOutcome plan = Plan(Clash("T", "Clash1", "BLD-ME-Ducts", "BLD-AR-Walls", size: verdict));
-
-            Assert.That(plan.Views[0].SizeFolder, Is.EqualTo(Over150));
-        }
-
-        /// <summary>Over means over: a service of exactly 150 mm goes in the pair view.</summary>
-        [Test]
-        public void ExactlyTheThresholdGoesInThePairView()
-        {
-            SizeSettings sizes = new SizeSettings();
-            Dictionary<string, double> read = new Dictionary<string, double> { { "Diameter", 150.0 } };
-            SizeVerdict verdict = SizeRule.VerdictFor(SizeRule.LargestMillimetres(read, "Millimeters", sizes), sizes);
-
-            TestViewPlanOutcome plan = Plan(Clash("T", "Clash1", "BLD-EL-Cable Trays", "BLD-ST-Beams", size: verdict));
-
             Assert.That(plan.Views.Count, Is.EqualTo(1));
-            Assert.That(plan.Views[0].SizeFolder, Is.Null);
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "A" }));
+            Assert.That(NamesOf(plan.Views[0]), Is.EqualTo(new[] { "Clash1", "Clash2", "Clash3", "Clash4", "Clash5" }));
+            Assert.That(plan.Views[0].Name, Is.EqualTo(T));
         }
 
-        /// <summary>Point 11: Architecture vs Structure carries no size folder, so a large service there stays in its one view.</summary>
         [Test]
-        public void APairWithNoSizeFolderTeamGivesOneViewWhateverTheSize()
+        public void TheFolderIsTheToolFolderThenTheLetterOfThePriorityAndNothingBetween()
         {
             TestViewPlanOutcome plan = Plan(
-                Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", size: SizeVerdict.Large),
-                Clash("T", "Clash2", "BLD-AR-Walls", "BLD-ST-Columns", size: SizeVerdict.Small));
+                Clash("TA", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.A),
+                Clash("TB", "Clash1", "BLD-EL-Cable Trays", "BLD-AR-Walls", ClashStatus.New, ClashPriority.B),
+                Clash("TC", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C));
 
-            Assert.That(plan.Views.Count, Is.EqualTo(1));
-            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "A", "Architecture vs Structure" }));
-            Assert.That(plan.Views[0].Clashes.Count, Is.EqualTo(2));
-            Assert.That(plan.SizeUnknown, Is.Empty);
-        }
-
-        /// <summary>The folder's words come off the threshold in SizeSettings, the one place it is set.</summary>
-        [Test]
-        public void ADifferentThresholdRenamesTheSizeFolder()
-        {
-            ViewpointSettings settings = new ViewpointSettings();
-            settings.Sizes.ThresholdMillimetres = 250.0;
-
-            TestViewPlanOutcome plan = TestViewPlan.For(
-                new[] { Clash("T", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.Large) },
-                Teams(),
-                null,
-                settings);
-
-            Assert.That(plan.Views[0].SizeFolder, Is.EqualTo("Over 250mm"));
-        }
-
-        /// <summary>Over 150mm sits only directly under its own pair folder, never under a priority folder.</summary>
-        [Test]
-        public void TheSizeFolderSitsOnlyUnderItsOwnPair()
-        {
-            TestViewPlanOutcome plan = Plan(
-                Clash("T1", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.Large),
-                Clash("T2", "Clash1", "BLD-EL-Cable Trays", "BLD-AR-Walls", ClashStatus.New, ClashPriority.B, SizeVerdict.Large),
-                Clash("T3", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C, SizeVerdict.Large));
+            Assert.That(plan.Views.Count, Is.EqualTo(3));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "A" }));
+            Assert.That(plan.Views[1].Folders, Is.EqualTo(new[] { Top, "B" }));
+            Assert.That(plan.Views[2].Folders, Is.EqualTo(new[] { Top, "C" }));
 
             foreach (PlannedTestView view in plan.Views)
             {
-                IList<string> folders = view.Folders;
-
-                for (int i = 0; i < folders.Count; i++)
-                {
-                    if (folders[i] == Over150)
-                    {
-                        Assert.That(i, Is.EqualTo(2), view.ToString());
-                        Assert.That(view.Pair.CarriesSizeFolder, Is.True, view.ToString());
-                        Assert.That(folders[1], Is.EqualTo(plan.PairOfTest(view.Name).Folder), view.ToString());
-                    }
-                }
+                Assert.That(view.Folders.Count, Is.EqualTo(2), "no team pair level: " + view);
             }
+        }
 
-            Assert.That(plan.Views.Count, Is.EqualTo(3));
-            Assert.That(plan.Views[2].Folders, Is.EqualTo(new[] { "C", "Architecture vs Structure" }));
+        [Test]
+        public void ATestWithNoPriorityGoesUnderCAsEverywhereElseInTheTool()
+        {
+            TestViewPlanOutcome plan = Plan(
+                Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.None));
+
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "C" }));
+        }
+
+        [Test]
+        public void ThePairStillDecidesTheModelsAViewShowsAndNoLongerWhereItSits()
+        {
+            TestViewPlanOutcome plan = Plan(
+                Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.A));
+
+            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Architecture vs Structure"));
+            Assert.That(ViewPlace.FolderPath(plan.Views[0].Folders), Is.EqualTo(Top + "/A"));
+        }
+
+        [Test]
+        public void TheToolFolderMarkerIsWordsNoPersonTypesAndIsFoundByItsStart()
+        {
+            string body = ToolViewFolder.MarkerBody("2026-10-14T18:26:41Z");
+
+            Assert.That(body, Is.EqualTo("NWCF-AUTO run=2026-10-14T18:26:41Z"));
+            Assert.That(ToolViewFolder.IsMarker(body), Is.True);
+            Assert.That(ToolViewFolder.RunIdOf(body), Is.EqualTo("2026-10-14T18:26:41Z"));
+            Assert.That(ToolViewFolder.IsMarker("my own note, NWCF-AUTO run=1"), Is.False);
+            Assert.That(ToolViewFolder.IsMarker("NWCF-AUTO"), Is.False);
+            Assert.That(ToolViewFolder.IsMarker(null), Is.False);
+            Assert.That(ToolViewFolder.IsMarker("NWCF-AUTO run=1\nsecond line"), Is.False, "a comment that is more than the marker is a person's");
+            Assert.That(ToolViewFolder.RunIdOf("hello"), Is.Null);
         }
 
         // ---------- point 15 ----------
@@ -241,17 +203,6 @@ namespace Federator.Core.Tests
 
         // ---------- points 9, 10 and 12, the tree ----------
 
-        /// <summary>Point 9: the priority layer is always there, and a test the file does not name goes under No priority.</summary>
-        [Test]
-        public void ATestWithNoPriorityGoesUnderNoPriority()
-        {
-            TestViewPlanOutcome plan = Plan(
-                Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.None));
-
-            Assert.That(plan.Views[0].PriorityFolder, Is.EqualTo("No priority"));
-            Assert.That(ViewPlace.FolderPath(plan.Views[0].Folders), Is.EqualTo("No priority/Architecture vs Structure"));
-        }
-
         /// <summary>Point 10: two codes of one team, HV against PL, go in Mechanical vs Mechanical, and the group's own HV code is read.</summary>
         [Test]
         public void TwoCodesOfOneTeamGoInThatTeamAgainstItself()
@@ -262,7 +213,7 @@ namespace Federator.Core.Tests
             TestViewPlanOutcome plan = TestViewPlan.For(
                 new[] { Clash("T", "Clash1", "BLD-HV-Ducts", "BLD-PL-Pipes") }, teams, null, new ViewpointSettings());
 
-            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "A", "Mechanical vs Mechanical" }));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "NWC Federator (auto)", "A" }));
         }
 
         /// <summary>Point 12: Mechanical vs Structure is written Structure vs Mechanical, whichever side the test puts first.</summary>
@@ -302,13 +253,12 @@ namespace Federator.Core.Tests
 
             Assert.That(order, Is.EqualTo(new[]
             {
-                "A/Architecture vs Mechanical/Wall",
-                "A/Structure vs Mechanical/Beam",
-                "A/Structure vs Mechanical/Duct",
-                "A/Structure vs Mechanical/Over 150mm/Duct",
-                "B/Structure vs Electrical/Alpha",
-                "B/Structure vs Electrical/Zed",
-                "No priority/Architecture vs Structure/Loose"
+                "NWC Federator (auto)/A/Wall",
+                "NWC Federator (auto)/A/Beam",
+                "NWC Federator (auto)/A/Duct",
+                "NWC Federator (auto)/B/Alpha",
+                "NWC Federator (auto)/B/Zed",
+                "NWC Federator (auto)/C/Loose"
             }));
         }
 
@@ -350,7 +300,7 @@ namespace Federator.Core.Tests
         {
             IList<string> lines = Plan(
                 Clash("T", "Clash1", "BLD-EL-Lighting Fixtures", "BLD-Security Devices"),
-                Clash("U", "Clash1", "BLD-Security Devices", "BLD-ST-Floors")).Lines(new SizeSettings());
+                Clash("U", "Clash1", "BLD-Security Devices", "BLD-ST-Floors")).Lines();
 
             int at = lines.IndexOf(UnknownSetsLine + "1" + UnknownSetsTail);
 
@@ -393,7 +343,7 @@ namespace Federator.Core.Tests
                 },
                 teams,
                 null,
-                new ViewpointSettings()).Lines(new SizeSettings());
+                new ViewpointSettings()).Lines();
 
             int at = lines.IndexOf(UnknownSetsLine + "5" + UnknownSetsTail);
 
@@ -469,7 +419,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs Electrical"));
             Assert.That(plan.Views[0].Pair.CarriesSizeFolder, Is.True);
             Assert.That(plan.UnknownSets, Is.Empty);
-            Assert.That(plan.Lines(new SizeSettings()), Has.Member(UnknownSetsLine + "0" + UnknownSetsTail));
+            Assert.That(plan.Lines(), Has.Member(UnknownSetsLine + "0" + UnknownSetsTail));
         }
 
         /// <summary>
@@ -584,7 +534,7 @@ namespace Federator.Core.Tests
                 new ViewpointSettings());
 
             Assert.That(plan.UnknownSets, Is.EqualTo(new[] { Security, Nowhere }));
-            IList<string> lines = plan.Lines(new SizeSettings());
+            IList<string> lines = plan.Lines();
             Assert.That(lines, Has.Member(UnknownSetsLine + "2" + UnknownSetsTail));
             Assert.That(lines, Has.Member("    BLD-Devices" + NoCode + "no folder above it in the clash XML's set tree names a team"));
             Assert.That(
@@ -659,7 +609,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.LeftOutAt(ClashStatus.Resolved), Is.EqualTo(0), "a mirror's clashes are counted once, as a mirror's");
             Assert.That(plan.InViews + plan.LeftOut + plan.LeftOutAsMirrors, Is.EqualTo(plan.Considered));
 
-            IList<string> lines = plan.Lines(new SizeSettings());
+            IList<string> lines = plan.Lines();
 
             Assert.That(lines, Has.Member("mirrored tests, so no view : 1, their 2 clashes left out"));
             Assert.That(lines, Has.Member("    " + Mirror + " : 1 open and in no view, 1 at a status no view shows"));
@@ -699,7 +649,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views.Count, Is.EqualTo(2), "each kept test keeps its own view and no mirror gets one");
             Assert.That(plan.LeftOutAsMirrors, Is.EqualTo(4));
 
-            IList<string> lines = plan.Lines(new SizeSettings());
+            IList<string> lines = plan.Lines();
 
             Assert.That(lines, Has.Member("mirrored tests, so no view : 2, their 4 clashes left out"));
             Assert.That(lines, Has.Member(
@@ -714,7 +664,7 @@ namespace Federator.Core.Tests
         [Test]
         public void APlanHandedNoMirrorRuleSaysSo()
         {
-            IList<string> lines = Plan(Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns")).Lines(new SizeSettings());
+            IList<string> lines = Plan(Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns")).Lines();
 
             Assert.That(lines, Has.Member("mirrored tests : UNKNOWN, no mirror rule was handed to the plan, so a mirrored test gets a view as any test does"));
         }
@@ -728,7 +678,7 @@ namespace Federator.Core.Tests
         {
             IList<string> lines = Plan(
                 Clash("Shut", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.Resolved),
-                Clash("Open", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New)).Lines(new SizeSettings());
+                Clash("Open", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New)).Lines();
 
             Assert.That(lines, Has.Member("tests whose every clash is at a status no view shows, so no view : 1, a test with no clash at all is not handed to the plan and not counted here"));
         }
@@ -746,35 +696,10 @@ namespace Federator.Core.Tests
                 new ViewpointSettings());
 
             Assert.That(plan.Views.Count, Is.EqualTo(1));
-            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "A", "ME vs ST" }));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "NWC Federator (auto)", "A" }));
         }
 
         // ---------- the counts and the block ----------
-
-        [Test]
-        public void ASizeNotReadIsNamedOrCountedAsTheSizeSettingsSay()
-        {
-            ViewpointSettings settings = new ViewpointSettings();
-            List<ViewClash> clashes = new List<ViewClash>();
-
-            for (int i = 1; i <= 7; i++)
-            {
-                clashes.Add(Clash("T", "Clash" + i, "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.SizeUnknown));
-            }
-
-            IList<string> every = TestViewPlan.For(clashes, Teams(), null, settings).Lines(settings.Sizes);
-
-            Assert.That(every, Has.Member("size could not be read, in a pair with a size folder : 7, every one in its pair view and none dropped"));
-            Assert.That(every, Has.Member("    T / Clash7"));
-
-            settings.Sizes.NameEveryUnknown = false;
-            settings.Sizes.ExamplesWhenNotNamingEvery = 5;
-            IList<string> some = TestViewPlan.For(clashes, Teams(), null, settings).Lines(settings.Sizes);
-
-            Assert.That(some, Has.Member("    T / Clash5"));
-            Assert.That(some, Has.No.Member("    T / Clash6"));
-            Assert.That(some, Has.Member("    and 2 more, not named because the size settings name 5 and not every one"));
-        }
 
         /// <summary>
         /// F114-K29, Bader's words of 2026-10-13, "the idea is to create A B C and delete what come
@@ -797,7 +722,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.OpenOutsideTheMap, Is.EqualTo(2));
             Assert.That(plan.TestsWithNoOpenClash, Is.EqualTo(0));
 
-            IList<string> lines = plan.Lines(new SizeSettings());
+            IList<string> lines = plan.Lines();
 
             Assert.That(
                 lines,

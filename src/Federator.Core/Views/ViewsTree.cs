@@ -251,32 +251,22 @@ namespace Federator.Core.Views
         {
             List<string> lines = new List<string>();
             string priority = null;
-            string pair = null;
-            string size = null;
+
+            // F186. The tool's one top folder, then A, B and C, then the tests directly. No team pair level.
+            if (facts.Plan.Views.Count > 0)
+            {
+                lines.Add(ToolViewFolder.Name);
+            }
 
             foreach (PlannedTestView view in facts.Plan.Views)
             {
                 if (!string.Equals(view.PriorityFolder, priority, StringComparison.Ordinal))
                 {
-                    lines.Add(view.PriorityFolder);
+                    lines.Add("  " + view.PriorityFolder);
                     priority = view.PriorityFolder;
-                    pair = null;
                 }
 
-                if (!string.Equals(view.Pair.Folder, pair, StringComparison.Ordinal))
-                {
-                    lines.Add("  " + view.Pair.Folder);
-                    pair = view.Pair.Folder;
-                    size = null;
-                }
-
-                if (view.SizeFolder != null && !string.Equals(view.SizeFolder, size, StringComparison.Ordinal))
-                {
-                    lines.Add("    " + view.SizeFolder);
-                    size = view.SizeFolder;
-                }
-
-                lines.Add((view.SizeFolder == null ? "    " : "      ") + view.Name + "  " + view.Clashes.Count
+                lines.Add("    " + view.Name + "  " + view.Clashes.Count
                     + " open clashes, " + ShowsAndHides(facts, models, view) + ", " + StateOf(facts, view));
             }
 

@@ -27,7 +27,8 @@ namespace Federator.Core.Tests
         private static readonly string Earlier = ToolViewMark.StampOf(new DateTime(2026, 9, 28, 10, 0, 0, DateTimeKind.Utc));
         private static readonly Point3 Camera = new Point3(1, 2, 3);
         private static readonly string[] Codes = { "AR", "EL", "ME", "ST" };
-        private static readonly string[] Here = { "A", Pair };
+        private const string Top = "NWC Federator (auto)";
+        private static readonly string[] Here = { Top, "A" };
 
         private static TestViewPlanOutcome PlanOf(params string[] openTests)
         {
@@ -72,8 +73,8 @@ namespace Federator.Core.Tests
         {
             return new List<ViewNode>
             {
-                OurFolder(Earlier, new string[0], "A", 0),
-                OurFolder(Earlier, new[] { "A" }, Pair, 0),
+                OurFolder(Earlier, new string[0], Top, 0),
+                OurFolder(Earlier, new[] { Top }, "A", 0),
                 Ours(Earlier, Here, T, 0),
                 Ours(Run, Here, T, 1)
             };
@@ -411,7 +412,7 @@ namespace Federator.Core.Tests
             List<ViewNode> tree = new List<ViewNode>
             {
                 Folder(new string[0], "A", 0, new[] { "Rami's A list" }),
-                OurFolder(Earlier, new[] { "A" }, Pair, 0),
+                OurFolder(Earlier, new[] { Top }, "A", 0),
                 Ours(Earlier, Here, T, 0),
                 Ours(Run, Here, T, 1),
                 View(new[] { "A" }, "Rami's own", 1)
@@ -455,8 +456,8 @@ namespace Federator.Core.Tests
         public void NothingUnderTwoFoldersOfOneNameSideBySideIsRemoved()
         {
             List<ViewNode> tree = TreeWithTheNewView();
-            ViewNode twin = Folder(new string[0], "A", 1, new[] { "Rami's A list" });
-            ViewNode inTwin = View(new[] { "A" }, "Rami's own", 1);
+            ViewNode twin = Folder(new string[0], Top, 1, new[] { "Rami's list" });
+            ViewNode inTwin = View(new[] { Top }, "Rami's own", 1);
             tree.Add(twin);
             tree.Add(inTwin);
 

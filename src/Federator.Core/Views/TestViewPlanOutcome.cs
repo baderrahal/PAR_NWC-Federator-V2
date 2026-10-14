@@ -11,7 +11,6 @@ namespace Federator.Core.Views
         private readonly List<PlannedTestView> views = new List<PlannedTestView>();
         private readonly Dictionary<ClashStatus, int> leftOut = new Dictionary<ClashStatus, int>();
         private readonly Dictionary<string, TeamPair> pairOfTest = new Dictionary<string, TeamPair>(StringComparer.Ordinal);
-        private readonly List<string> sizeUnknown = new List<string>();
         private readonly List<string> unknownSets = new List<string>();
         private readonly List<string> unknownWords = new List<string>();
         private readonly List<string> mirrored = new List<string>();
@@ -75,12 +74,6 @@ namespace Federator.Core.Views
         /// A test with no clash at all is never handed to the plan and is not counted here.
         /// </summary>
         public int TestsWithNoOpenClash { get; internal set; }
-
-        /// <summary>Every clash in a pair carrying the size folder whose service size could not be read, by test and clash, FR-068.</summary>
-        public ReadOnlyCollection<string> SizeUnknown
-        {
-            get { return new ReadOnlyCollection<string>(sizeUnknown); }
-        }
 
         /// <summary>Every side that reads UNKNOWN, each once by its whole locator, FR-074 and N5 of F114c, the empty side for a side with no set name. Lines says why, each reason written.</summary>
         public ReadOnlyCollection<string> UnknownSets
@@ -178,11 +171,6 @@ namespace Federator.Core.Views
             }
         }
 
-        internal void NameSizeUnknown(string testName, string clashName)
-        {
-            sizeUnknown.Add(testName + " / " + clashName);
-        }
-
         internal void NameUnknownSet(string side, string words)
         {
             if (!unknownSets.Contains(side))
@@ -194,11 +182,11 @@ namespace Federator.Core.Views
 
         /// <summary>
         /// The VIEWS block's plan lines: the counts, the clashes left out by status, the mirrored
-        /// tests named, each with its open clashes in no view counted, or said UNKNOWN, every size that could not be read named, or as many as the
-        /// settings say with the rest counted, and every set whose side reads UNKNOWN named with
+        /// tests named, each with its open clashes in no view counted, or said UNKNOWN, and
+        /// every set whose side reads UNKNOWN named with
         /// why. Nothing is guessed and nothing is silent.
         /// </summary>
-        public IList<string> Lines(SizeSettings sizes)
+        public IList<string> Lines()
         {
             List<string> lines = new List<string>();
 
@@ -229,7 +217,7 @@ namespace Federator.Core.Views
                         + "so a clash only that mirror finds is in no view and how many of them it alone finds is UNKNOWN");
                 }
 
-                Named(lines, mirrorWords, null);
+                Named(lines, mirrorWords);
             }
             else
             {
@@ -238,15 +226,11 @@ namespace Federator.Core.Views
 
             lines.Add("tests with a side on a team the team map does not name, or on UNKNOWN, so no view : " + unmapped.Count
                 + ", their " + unmappedOpen + " open clashes in no view, and nothing deleted from the NWF, the clashes, the sets or the report");
-            Named(lines, unmappedWords, null);
-
-            lines.Add("size could not be read, in a pair with a size folder : " + sizeUnknown.Count
-                + ", every one in its pair view and none dropped");
-            Named(lines, sizeUnknown, sizes);
+            Named(lines, unmappedWords);
 
             lines.Add("a side read as a team of UNKNOWN, by its set name : " + unknownSets.Count
                 + ", each named with why and none guessed at");
-            Named(lines, unknownWords, null);
+            Named(lines, unknownWords);
 
             return lines;
         }
@@ -263,20 +247,11 @@ namespace Federator.Core.Views
             return string.Join(" and ", words.ToArray());
         }
 
-        private static void Named(List<string> lines, IList<string> names, SizeSettings sizes)
+        private static void Named(List<string> lines, IList<string> names)
         {
-            bool every = sizes == null || sizes.NameEveryUnknown;
-            int shown = every ? names.Count : Math.Min(names.Count, Math.Max(0, sizes.ExamplesWhenNotNamingEvery));
-
-            for (int i = 0; i < shown; i++)
+            for (int i = 0; i < names.Count; i++)
             {
                 lines.Add("    " + names[i]);
-            }
-
-            if (shown < names.Count)
-            {
-                lines.Add("    and " + (names.Count - shown) + " more, not named because the size settings name "
-                    + shown + " and not every one");
             }
         }
     }

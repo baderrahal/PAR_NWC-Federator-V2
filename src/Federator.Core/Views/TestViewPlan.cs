@@ -91,8 +91,6 @@ namespace Federator.Core.Views
                 }
             }
 
-            string sizeFolder = settings.SubGroupFolderName();
-
             foreach (string test in order)
             {
                 List<ViewClash> all = byTest[test];
@@ -143,8 +141,7 @@ namespace Federator.Core.Views
                     continue;
                 }
 
-                List<ViewClash> inPair = new List<ViewClash>();
-                List<ViewClash> overSize = new List<ViewClash>();
+                List<ViewClash> shown = new List<ViewClash>();
 
                 foreach (ViewClash clash in all)
                 {
@@ -154,39 +151,20 @@ namespace Federator.Core.Views
                         continue;
                     }
 
-                    if (pair.CarriesSizeFolder && clash.ServiceSize == SizeVerdict.Large)
-                    {
-                        overSize.Add(clash);
-                        continue;
-                    }
-
-                    if (pair.CarriesSizeFolder && clash.ServiceSize == SizeVerdict.SizeUnknown)
-                    {
-                        outcome.NameSizeUnknown(test, clash.ClashName);
-                    }
-
-                    inPair.Add(clash);
+                    shown.Add(clash);
                 }
 
-                if (inPair.Count == 0 && overSize.Count == 0)
+                if (shown.Count == 0)
                 {
                     outcome.TestsWithNoOpenClash = outcome.TestsWithNoOpenClash + 1;
                     continue;
                 }
 
-                string priorityFolder = first.Priority == ClashPriority.None
-                    ? settings.NoPriorityFolder
-                    : Priorities.Words(first.Priority);
-
-                if (inPair.Count > 0)
-                {
-                    outcome.Add(new PlannedTestView(first.Priority, priorityFolder, pair, null, test, inPair));
-                }
-
-                if (overSize.Count > 0)
-                {
-                    outcome.Add(new PlannedTestView(first.Priority, priorityFolder, pair, sizeFolder, test, overSize));
-                }
+                // F186, Bader's answer 1 of Q174. The folder is the priority's letter, a test with no priority
+                // being C as everywhere else, and every open clash of the test is in its one view. The team pair
+                // and the size folder no longer make a level of the tree.
+                outcome.Add(new PlannedTestView(
+                    first.Priority, ToolViewFolder.LetterOf(first.Priority), pair, test, shown));
             }
 
             outcome.Sort((a, b) => Compare(a, b, teams.Map));
@@ -203,7 +181,7 @@ namespace Federator.Core.Views
             }
         }
 
-        /// <summary>Priority, then the pair in the map's order, then the pair's views before its size folder, then the test name, Ordinal.</summary>
+        /// <summary>Priority, then the pair in the map's order, then the test name, Ordinal.</summary>
         private static int Compare(PlannedTestView a, PlannedTestView b, TeamMap map)
         {
             int byPriority = Priorities.Order(a.Priority).CompareTo(Priorities.Order(b.Priority));
@@ -227,9 +205,7 @@ namespace Federator.Core.Views
                 return bySecond;
             }
 
-            int bySize = (a.SizeFolder == null ? 0 : 1).CompareTo(b.SizeFolder == null ? 0 : 1);
-
-            return bySize != 0 ? bySize : string.CompareOrdinal(a.Name, b.Name);
+            return string.CompareOrdinal(a.Name, b.Name);
         }
     }
 }

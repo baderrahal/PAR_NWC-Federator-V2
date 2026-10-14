@@ -17,7 +17,7 @@ namespace Federator.Core.Tests
     {
         private const string Name = "BLD-ME-Ducts-vs-BLD-ST-Columns";
 
-        private static readonly string[] Folders = { "A", "Structure vs Mechanical", "Over 150mm" };
+        private static readonly string[] Folders = { "NWC Federator (auto)", "A" };
         private static readonly ViewpointSettings Settings = new ViewpointSettings();
         private static readonly Point3 Camera = new Point3(1, 2, 3);
 
@@ -26,8 +26,8 @@ namespace Federator.Core.Tests
         {
             string place = ViewPlace.Of(Folders, Name);
 
-            Assert.That(place, Is.EqualTo("A/Structure vs Mechanical/Over 150mm/" + Name));
-            Assert.That(ViewPlace.FolderPath(Folders), Is.EqualTo("A/Structure vs Mechanical/Over 150mm"));
+            Assert.That(place, Is.EqualTo("NWC Federator (auto)/A/" + Name));
+            Assert.That(ViewPlace.FolderPath(Folders), Is.EqualTo("NWC Federator (auto)/A"));
 
             ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "ME", "ST" }, Settings);
             ViewClash large = new ViewClash(Name, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,
@@ -69,30 +69,10 @@ namespace Federator.Core.Tests
             Assert.That(ViewPlace.Key(new[] { "A" }, "X", false), Is.EqualTo(ViewPlace.Key(new[] { "A" }, "X", false)));
         }
 
-        /// <summary>
-        /// F114 attempt 3, the breaker's finding 5 of attempt 2. A test named Over 150mm/Pipes in a
-        /// pair folder and a test named Pipes in that pair's size folder share one written place.
-        /// Their read backs are kept under two keys, so one cannot answer for the other.
-        /// </summary>
-        [Test]
-        public void TwoViewsOfOneWrittenPlaceKeepTheirReadBacksUnderTwoKeys()
-        {
-            ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "ME", "ST" }, Settings);
-            ViewClash large = new ViewClash("Pipes", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,
-                ClashPriority.A, SizeVerdict.Large, null, null, null, null, null);
-            ViewClash small = new ViewClash("Over 150mm/Pipes", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,
-                ClashPriority.A, SizeVerdict.Small, null, null, null, null, null);
-            TestViewPlanOutcome plan = TestViewPlan.For(new[] { large, small }, teams, null, Settings);
-
-            Assert.That(plan.Views.Count, Is.EqualTo(2));
-            Assert.That(plan.Views[0].ToString(), Is.EqualTo(plan.Views[1].ToString()), "one written place");
-            Assert.That(plan.Views[0].Key, Is.Not.EqualTo(plan.Views[1].Key));
-        }
-
         [Test]
         public void TheParentKeyIsTheKeyOfTheFolderItSitsIn()
         {
-            Assert.That(ViewPlace.ParentKey(Folders), Is.EqualTo(ViewPlace.Key(new[] { "A", "Structure vs Mechanical" }, "Over 150mm", true)));
+            Assert.That(ViewPlace.ParentKey(Folders), Is.EqualTo(ViewPlace.Key(new[] { "NWC Federator (auto)" }, "A", true)));
             Assert.That(ViewPlace.ParentKey(new string[0]), Is.EqualTo(string.Empty));
         }
     }

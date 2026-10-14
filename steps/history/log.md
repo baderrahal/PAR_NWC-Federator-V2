@@ -2,6 +2,34 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F186 the viewpoint tree is one tool folder, A B C, the tests directly
+
+Branch fix-F186 off main 45fd788 (after PR 265). Bader's answer 1 of Q174 and his order of 14 Oct, round 4 of the second
+set, task 6.
+
+What was done:
+- Everything the tool makes goes in one root folder, NWC Federator (auto), with the comment NWCF-AUTO run=<stamp>. Under
+  it A, B, C by the test's priority, a test with no priority being C, then one view for each test. No team pair level
+  and no size folder, so every open clash of a test is in its one view. The pair still decides the models a view shows
+- On each run the top folder of the last run is found by its name and its marker and deleted with everything in it,
+  before the new views are written. Nothing outside it is handed to the inventory or the tree checks, so a coordinator's
+  own viewpoints and folders are never read for removal. A folder of that name with no marker is left as a person's
+- The one time clean up of an NWF written before: a root folder A, B, C or No priority is deleted only where every item
+  inside is the old tree's own naming, and otherwise left with the first item named in the log. Counts are logged
+- A PROOF line reads the tests and results before and after the delete
+- The seven tree checks: check 1 now says every view sits under the tool folder and its letter, check 2 says no folder
+  under it is anything but A, B or C
+
+Proved here: the plan puts a test in [tool folder, letter], a no priority test in C, and one view holds every clash of a
+test whatever its size. The clean up rule deletes a root folder of only the tool's naming and keeps one with a person's
+view, a person's folder, a view at another depth, a team pair of names nobody knows, or nothing in it. A test reads the
+builder's source for the delete before the write and the clean up after, and the removal's source for the name and the
+marker. Core tests 3146 before and 3159 after, 0 failed. The Release build has 0 warnings and 0 errors.
+
+UNKNOWN until a run: whether RemoveAt on a root folder keeps the clash results unchanged on a real NWF, the PROOF line says
+at the first run. What an old NWF holds in its root folders. The text on the NWF page that a view moved by hand into the
+tool folder is deleted is Task 9's, F188.
+
 ## 2026-10-14 F185 the checks of Part 2, and the Compact resolved option removed
 
 Branch fix-F185 off main 9adc975. Bader's order of 14 Oct, round 4 of the second set, task 5.
