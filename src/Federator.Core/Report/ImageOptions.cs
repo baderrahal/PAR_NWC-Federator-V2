@@ -220,7 +220,7 @@ namespace Federator.Core.Report
         /// <summary>
         /// F172 and F175, Bader's answers to Q171. Is there room for one more picture on this test: under
         /// the box's cap where it is not zero, and under the rule of PictureLimits where the test holds
-        /// more than 1000 clashes, which gives its first 150, 100 or 50 a picture by its priority A, B or C
+        /// more than 750 clashes, which gives its first 150, 100 or 50 a picture by its priority A, B or C
         /// and skips the rest. The least of the two holds. The box keeps its own job, a cap of the user's
         /// choosing for every test, and the rule is there whatever the box says.
         /// </summary>

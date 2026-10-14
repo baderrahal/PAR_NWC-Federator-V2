@@ -2836,7 +2836,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// F172 and F175. One line for each test with more than 1000 clashes: its name, its priority letter,
+        /// F172 and F175. One line for each test with more than 750 clashes: its name, its priority letter,
         /// its clashes, the pictures made and the clashes whose picture was skipped by the rule.
         /// </summary>
         private void SayTheTestsOverTheLimit()

@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// F172 and F175, Bader's answers to Q171. A test with more than 1000 clashes gets pictures for its
+    /// F172 and F175, Bader's answers to Q171. A test with more than 750 clashes gets pictures for its
     /// first 150, 100 or 50 clashes by its priority A, B or C, and the rest are skipped, per test and not
     /// for the run. A test the matrix does not name is C. The GDI objects of the process are the
     /// backstop: past 9000 no more pictures are made and the run goes on.
@@ -150,20 +150,64 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void ATestWith1000ClashesOrLessGivesAllOfThemWhateverItsPriority()
+        public void ATestWith750ClashesOrLessGivesAllOfThemWhateverItsPriority()
         {
             ClashReport report = Report();
-            TestReport a = AddTest(report, "EXACTLY-A", 1000, ClashPriority.A);
-            TestReport b = AddTest(report, "EXACTLY-B", 1000, ClashPriority.B);
-            TestReport c = AddTest(report, "EXACTLY-C", 1000, ClashPriority.C);
+            TestReport a = AddTest(report, "EXACTLY-A", 750, ClashPriority.A);
+            TestReport b = AddTest(report, "EXACTLY-B", 750, ClashPriority.B);
+            TestReport c = AddTest(report, "EXACTLY-C", 750, ClashPriority.C);
             TestReport small = AddTest(report, "SMALL", 40, ClashPriority.C);
             int gdi;
 
-            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(3040));
-            Assert.That(a.ImageCount, Is.EqualTo(1000));
-            Assert.That(b.ImageCount, Is.EqualTo(1000));
-            Assert.That(c.ImageCount, Is.EqualTo(1000));
+            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(2290));
+            Assert.That(a.ImageCount, Is.EqualTo(750));
+            Assert.That(b.ImageCount, Is.EqualTo(750));
+            Assert.That(c.ImageCount, Is.EqualTo(750));
             Assert.That(small.ImageCount, Is.EqualTo(40));
+        }
+
+        [Test]
+        public void APriorityATestOf800ClashesGives150Pictures()
+        {
+            ClashReport report = Report();
+            TestReport test = AddTest(report, "EIGHT-A", 800, ClashPriority.A);
+            int gdi;
+
+            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(150));
+            AssertTheFirstOnesHavePicturesAndNoOtherDoes(test, 150);
+        }
+
+        [Test]
+        public void APriorityATestOf750ClashesGives750Pictures()
+        {
+            ClashReport report = Report();
+            TestReport test = AddTest(report, "SEVEN-A", 750, ClashPriority.A);
+            int gdi;
+
+            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(750));
+            AssertTheFirstOnesHavePicturesAndNoOtherDoes(test, 750);
+        }
+
+        [Test]
+        public void APriorityBTestOf800ClashesGives100Pictures()
+        {
+            ClashReport report = Report();
+            TestReport test = AddTest(report, "EIGHT-B", 800, ClashPriority.B);
+            int gdi;
+
+            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(100));
+            AssertTheFirstOnesHavePicturesAndNoOtherDoes(test, 100);
+        }
+
+        [Test]
+        public void APriorityCTestOf800ClashesGives50Pictures()
+        {
+            ClashReport report = Report();
+            TestReport test = AddTest(report, "EIGHT-C", 800, ClashPriority.C);
+            int gdi;
+
+            Assert.That(Pass(report, new ImageOptions(), null, 100, out gdi), Is.EqualTo(50));
+            AssertTheFirstOnesHavePicturesAndNoOtherDoes(test, 50);
         }
 
         [Test]
@@ -184,7 +228,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheCapsAndTheTriggerAreTheOnesBaderAnswered()
         {
-            Assert.That(PictureLimits.ManyClashes, Is.EqualTo(1000));
+            Assert.That(PictureLimits.ManyClashes, Is.EqualTo(750));
             Assert.That(PictureLimits.PicturesFor(ClashPriority.A), Is.EqualTo(150));
             Assert.That(PictureLimits.PicturesFor(ClashPriority.B), Is.EqualTo(100));
             Assert.That(PictureLimits.PicturesFor(ClashPriority.C), Is.EqualTo(50));
@@ -203,8 +247,8 @@ namespace Federator.Core.Tests
             Assert.That(PictureLimits.LimitFor(1500, ClashPriority.C, 20), Is.EqualTo(20));
             Assert.That(PictureLimits.LimitFor(200, ClashPriority.A, 0), Is.EqualTo(int.MaxValue));
             Assert.That(PictureLimits.LimitFor(200, ClashPriority.C, 30), Is.EqualTo(30));
-            Assert.That(PictureLimits.LimitFor(1000, ClashPriority.C, 0), Is.EqualTo(int.MaxValue));
-            Assert.That(PictureLimits.LimitFor(1001, ClashPriority.C, 0), Is.EqualTo(50));
+            Assert.That(PictureLimits.LimitFor(750, ClashPriority.C, 0), Is.EqualTo(int.MaxValue));
+            Assert.That(PictureLimits.LimitFor(751, ClashPriority.C, 0), Is.EqualTo(50));
 
             ClashReport report = Report();
             TestReport small = AddTest(report, "SMALL", 200, ClashPriority.A);

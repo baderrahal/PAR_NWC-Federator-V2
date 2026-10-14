@@ -1646,7 +1646,7 @@ and 6 does not read as broken.
   line, and a said that throws is named once in the outcome and the renaming goes on. A holding name an
   earlier, cut off renaming left is taken out before the move onto it and said
 - THE PICTURE LIMITS, F172 and F175, Bader's answers to Q171, `PictureLimits` and `GdiBackstop`. A test
-  with more than 1000 clashes gets pictures for its first 150 clashes at priority A, 100 at priority B and
+  with more than 750 clashes gets pictures for its first 150 clashes at priority A, 100 at priority B and
   50 at priority C, and the rest are skipped, per test and not for the run. A saved test the built in
   matrix does not name is C, F168, and so is a test with no priority read, so the cap is never the most
   by a doubt. The priority is read off the built in priority map at the start of the picture pass into
