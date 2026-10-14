@@ -115,17 +115,6 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// Why the group is FAILED on where its models sit, Q70, the words of
-        /// AlignmentCheck.WhyItFailsTheGroup, or null where it is not. Kept apart from the
-        /// errors, because nothing threw and the group goes on to its NWD, so the steps
-        /// after it are judged too and a missing NWD, or one not from this run, is named
-        /// beside it rather than hidden by it.
-        /// </summary>
-        public string AlignmentFailure { get; set; }
-
-
-
-        /// <summary>
         /// Every error on one line. All of them, because the RESULT block is what Bader
         /// sends back and a truncated list is a second run to find the rest.
         /// </summary>
@@ -154,11 +143,11 @@ namespace Federator.Core.Rerun
     ///
     ///   DONE     everything requested for this group succeeded, a rebuilt group included
     ///   PARTIAL  something requested did not complete, or the group was CHANGED and left
-    ///            alone, or its clash was skipped because a model is not on the same shared
-    ///            coordinates, Bader's answer to Q99 and Q100
-    ///   FAILED   something requested threw or produced nothing, or a model names no
-    ///            shared site or names Internal in a group whose clash is not skipped, Q70.
-    ///            Where the clash is skipped neither fails it, Q111 B
+    ///            alone
+    ///   FAILED   something requested threw or produced nothing
+    ///
+    /// Where the models sit judges nothing, F176, Bader's answer to Q172. A model on Internal or
+    /// naming no shared site is a NOTICE, the clash always runs, and the group is judged on its steps.
     ///
     /// A step deliberately switched off is not a failure. Judging a group by whether an
     /// NWD existed, when republishing was switched off, reported all 22 groups of a clean
@@ -176,25 +165,13 @@ namespace Federator.Core.Rerun
                 throw new ArgumentNullException("facts");
             }
 
-            GroupOutcome outcome = JudgeTheSteps(facts, out reason);
-
-            // Q70. A group failed on where its models sit is FAILED whatever its steps did,
-            // and what its steps did is said after the models, so the reason RESULT prints
-            // never stops at the models while its NWD is missing or not from this run.
-            if (!string.IsNullOrEmpty(facts.AlignmentFailure))
-            {
-                reason = string.IsNullOrEmpty(reason)
-                    ? facts.AlignmentFailure
-                    : facts.AlignmentFailure + ", and " + reason;
-                outcome = GroupOutcome.Failed;
-            }
-
-            // F159. Nothing is skipped for a model off the shared coordinates, so there is no
-            // PARTIAL for it. The check only says a NOTICE.
-            return outcome;
+            // F159, F171 and F176. Where the models sit never judges a group. A model off the shared
+            // coordinates, on Internal or naming no shared site at all is a NOTICE, the clash always
+            // runs, and the group is judged on its steps alone.
+            return JudgeTheSteps(facts, out reason);
         }
 
-        /// <summary>How the steps of the group went, everything but where its models sit.</summary>
+        /// <summary>How the steps of the group went. Where its models sit is not one of them.</summary>
         private static GroupOutcome JudgeTheSteps(GroupFacts facts, out string reason)
         {
             // FAILED. Something requested threw, or produced nothing.

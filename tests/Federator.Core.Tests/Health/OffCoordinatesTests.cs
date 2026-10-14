@@ -386,22 +386,22 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
-        /// Since F159 nothing is skipped, so a model naming no site fails its group as Q70 had it,
-        /// and the ALIGNMENT block names the model under a NOTICE and says nothing is skipped.
+        /// F176, Bader's answer to Q172. A model naming no site is a NOTICE and fails no group, and the
+        /// ALIGNMENT block names the model under a NOTICE and says nothing is skipped.
         /// </summary>
         [Test]
-        public void ANoSiteModelFailsTheGroupAndTheBlockSaysANoticeAndSkipsNothing()
+        public void ANoSiteModelFailsNoGroupAndTheBlockSaysANoticeAndSkipsNothing()
         {
             Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite()),
-                Does.Contain("1 model(s) name no shared site at all"));
+                AlignmentCheck.NotOnTheSameCoordinates(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres).NoSite.Count,
+                Is.EqualTo(1));
 
             string block = Joined(AlignmentCheck.Lines(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres));
 
             Assert.That(block, Does.Contain("NOTICE. 1 model(s) are not on the same shared coordinates"));
             Assert.That(block, Does.Contain("ST  " + StFile));
             Assert.That(block, Does.Not.Contain("CLASH SKIPPED"));
-            Assert.That(block, Does.Contain("THIS GROUP IS FAILED"));
+            Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
         }
 
         /// <summary>A site that could not be read is not a model naming none, so it is not on any list.</summary>
@@ -418,7 +418,6 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(off.Any, Is.False);
             Assert.That(off.Notice("1A02MM"), Is.Empty);
-            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null);
         }
 
         /// <summary>

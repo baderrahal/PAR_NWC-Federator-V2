@@ -191,8 +191,8 @@ namespace Federator.Core.Health
                 lines.Add("no model in this group could be placed, so the models were not compared"
                     + " and none is called a far model. Check by eye that they sit on the same coordinates.");
 
-                // A model on Internal is known by its site alone, so it is still named off the
-                // coordinates and still fails the group here, and the block says so like any other.
+                // A model on Internal or naming no site is known by its site alone, so it is still named off the
+                // coordinates here, as a NOTICE like any other.
                 OffCoordinates unplaced = NotOnTheSameCoordinates(models, null, internalName, farModelMillimetres);
 
                 if (unplaced.Any)
@@ -200,7 +200,6 @@ namespace Federator.Core.Health
                     AddOffCoordinates(lines, unplaced);
                 }
 
-                AddFailure(lines, models, internalName);
                 return lines;
             }
 
@@ -305,7 +304,6 @@ namespace Federator.Core.Health
                     + "\", which is what Revit calls a model that was not exported on a shared site at all");
             }
 
-            AddFailure(lines, models, internalName);
             return lines;
         }
 
@@ -323,92 +321,6 @@ namespace Federator.Core.Health
             {
                 lines.Add("   " + off.Models[i]);
             }
-        }
-
-        /// <summary>
-        /// Q70. The block says the group is failed and why, before any file of the group is
-        /// written, so it says nothing of them.
-        /// </summary>
-        private static void AddFailure(
-            IList<string> lines, IList<ModelPlacement> models, string internalName)
-        {
-            string fails = WhyItFailsTheGroup(models, internalName);
-
-            if (fails != null)
-            {
-                lines.Add("THIS GROUP IS FAILED. " + fails + ".");
-            }
-        }
-
-        /// <summary>
-        /// Why this group is FAILED, or null where it is not. A group fails when any of its models
-        /// names no site at all, Q111 B. A model whose site could not be read does not, because a
-        /// read that threw is not a fact about the model.
-        ///
-        /// F171, Bader's answer to Q170. A MODEL ON THE INTERNAL ORIGIN NO LONGER FAILS THE GROUP.
-        /// Q70 made it a failure, and Bader's answer replaced that with a NOTICE that names the model
-        /// and says its clash results may be wrong, OffCoordinates.OnInternal, in the run log, the
-        /// list of models off the coordinates and the group's result line. Every other reason for
-        /// FAILED stays as it was. The inputs are the ones the ALIGNMENT block takes, so the block and
-        /// the group cannot differ.
-        ///
-        /// FAILED DOES NOT STOP THE GROUP. The engine goes on to the NWD, and to the clash
-        /// report unless the clash was skipped, because Bader needs the evidence to take to
-        /// the people who own the models. This reason is made at the ALIGNMENT step, before
-        /// any of them is written, so it names the models and their sites and nothing of a
-        /// file. The steps that write say what was written, and GroupJudgement judges the
-        /// steps as it would without this reason, an NWD missing or not from this run
-        /// included, and names what it finds after it.
-        ///
-        /// WHY IT IS A FAILURE AND NOT A WARNING. A model on the internal origin is not
-        /// slightly out of place, it is in a different coordinate system, so every clash
-        /// the run reports against it is either a clash that is not there or a miss that
-        /// is. The numbers are worse than useless because they read as real.
-        /// </summary>
-        public static string WhyItFailsTheGroup(IList<ModelPlacement> models)
-        {
-            return WhyItFailsTheGroup(models, DefaultInternalName);
-        }
-
-        private static string WhyItFailsTheGroup(IList<ModelPlacement> models, string internalName)
-        {
-            if (models == null || models.Count == 0)
-            {
-                return null;
-            }
-
-            List<string> withNoSite = new List<string>();
-
-            for (int i = 0; i < models.Count; i++)
-            {
-                // A site whose read threw says nothing about the model, so the model is
-                // judged on neither half of this rule and the block says UNKNOWN for it.
-                if (models[i].SiteRead && !models[i].NamesASharedCoordinate)
-                {
-                    withNoSite.Add(Named(models[i]));
-                }
-            }
-
-            if (withNoSite.Count == 0)
-            {
-                return null;
-            }
-
-            return withNoSite.Count + " model(s) name no shared site at all: "
-                + string.Join(", ", withNoSite.ToArray());
-        }
-
-        /// <summary>
-        /// The ALIGNMENT failed run line. Since F171 a group fails on this only where a model names no
-        /// shared site, and a model on the internal origin is a notice. It says nothing of which files
-        /// were written, since a failed group's publish can fail too and the files written list can then
-        /// name last week's NWD.
-        /// </summary>
-        public static string FailedRunLine(int groups)
-        {
-            return "ALIGNMENT failed " + groups + " group(s), each because"
-                + " a model names no shared site"
-                + (groups == 0 ? string.Empty : ". The failure does not stop the group.");
         }
 
         /// <summary>How many models sit somewhere the reference does not, for the run line. Never fails anything.</summary>
@@ -474,6 +386,7 @@ namespace Federator.Core.Health
         {
             List<string> off = new List<string>();
             List<string> internalModels = new List<string>();
+            List<string> noSiteModels = new List<string>();
             int notJudged = 0;
 
             for (int i = 0; i < models.Count; i++)
@@ -516,6 +429,11 @@ namespace Federator.Core.Health
                     internalModels.Add(Named(model));
                 }
 
+                if (namesNoSite)
+                {
+                    noSiteModels.Add(Named(model));
+                }
+
                 off.Add(Named(model) + "   shared site " + SiteSaid(model)
                     + (onInternal ? ", Revit's own origin and not a shared site" : string.Empty)
                     + (namesNoSite ? ", the model names no shared site at all" : string.Empty)
@@ -523,7 +441,7 @@ namespace Federator.Core.Health
             }
 
             return new OffCoordinates(
-                reference == null ? null : Named(reference), off, notJudged, models.Count, internalModels);
+                reference == null ? null : Named(reference), off, notJudged, models.Count, internalModels, noSiteModels);
         }
 
         /// <summary>

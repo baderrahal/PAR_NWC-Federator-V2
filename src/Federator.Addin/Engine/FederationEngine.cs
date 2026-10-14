@@ -144,8 +144,6 @@ namespace Federator.Addin.Engine
         // What the two new blocks found across the whole run, for the RESULT block. A
         // count and never an action: the tool reports what it noticed and Bader decides.
         private int alignmentDifferences;
-        private int failedOnAlignment;
-        private readonly List<string> alignmentFailures = new List<string>();
 
         /// <summary>The EXPORT CHECK across this run, added up in Core by the rules each block judges by.</summary>
         private readonly ExportCheckAcrossTheRun exportsAcrossTheRun = new ExportCheckAcrossTheRun();
@@ -2625,20 +2623,9 @@ namespace Federator.Addin.Engine
             {
                 IList<ModelPlacement> placements = ModelFactsReader.Placements(document, reports.Names, log);
 
-                // Q70 answered b on 2026-09-20. A model naming no shared site fails the
-                // group. A model on the internal origin does not, F171, Bader's answer to
-                // Q170: it is a NOTICE, below, and the group is not FAILED for it. A FAILED group still
-                // goes on to its NWD, because the evidence is what Bader takes to the people
-                // who own the models. Kept apart from the errors, so the judgement still
-                // reads the NWD and names it beside this reason.
-                string fails = AlignmentCheck.WhyItFailsTheGroup(placements);
-
-                if (fails != null)
-                {
-                    outcome.AlignmentFailure = fails;
-                    failedOnAlignment++;
-                    alignmentFailures.Add(Words.Or(job.Building, "this group") + ": " + fails);
-                }
+                // Where the models sit fails no group. A model on the internal origin is a NOTICE,
+                // F171, Bader's answer to Q170, and so is a model naming no shared site, F176,
+                // Bader's answer to Q172. Both are said below and the clash always runs.
 
                 // Bader's answer to Q99 and Q100, changed by his order of 2026-10-14, F159. A
                 // model not on the same shared coordinates skips nothing. The group is clashed
@@ -2781,18 +2768,6 @@ namespace Federator.Addin.Engine
                 ? "ALIGNMENT across the run: " + alignmentDifferences
                     + " model(s) sit somewhere their group's reference model does not"
                 : CoordinatesAcrossTheRun.AlignmentRunLine(alignmentDifferences));
-
-            // Q70. Counted APART from the models that merely sit somewhere else, because
-            // a model naming no site fails its group and a model 95 mm out does not, and
-            // one line carrying both numbers would read as one fault. A model on the
-            // internal origin fails it wherever its clash is not skipped, Bader's answer to
-            // Q100, so the words are the same whichever way the rule is set.
-            lines.Add(AlignmentCheck.FailedRunLine(failedOnAlignment));
-
-            for (int i = 0; i < alignmentFailures.Count; i++)
-            {
-                lines.Add("   FAILED " + alignmentFailures[i]);
-            }
 
             lines.Add(exportsAcrossTheRun.Line());
 
@@ -4810,11 +4785,15 @@ namespace Federator.Addin.Engine
                 line.Append("  NOTICE ").Append(outcome.Coordinates.InternalSaid());
             }
 
+            // F176. A model naming no shared site is said the same way, a notice and no reason for FAILED.
+            if (outcome.Coordinates != null && outcome.Coordinates.NoSite.Count > 0)
+            {
+                line.Append("  NOTICE ").Append(outcome.Coordinates.NoSiteSaid());
+            }
+
             // How many, never what they say. This line is a label, and the errors carry
-            // the type name and the message of whatever threw. A failure on where the
-            // models sit is counted with them, because nothing threw but the log says what
-            // it was.
-            line.Append(RunLog.ErrorsAreInTheLog(outcome.Errors.Count + (outcome.AlignmentFailure == null ? 0 : 1)));
+            // the type name and the message of whatever threw.
+            line.Append(RunLog.ErrorsAreInTheLog(outcome.Errors.Count));
 
             return line.ToString();
         }
