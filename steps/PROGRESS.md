@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 18:30, round 4 second set, F181 the 750 trigger merged, F182 memory stop and new order next, last run C04 under NM fed 20261014-161532, pictures stopped at 9000, NWD step hung at 26 GB
+STATE OPEN, 2026-10-14 19:00, round 4 second set, F182 memory stop and NWD before pictures in review, F183 records and F184 the C04 run next, last run C04 hung at 26 GB
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 230 | 16 | 0 | 1 | 64 | 7 | 318 |
-| total | 433 | 24 | 0 | 1 | 165 | 18 | 641 |
+| outside the waves | 230 | 16 | 1 | 1 | 64 | 7 | 319 |
+| total | 433 | 24 | 1 | 1 | 165 | 18 | 642 |
 <!-- the end of the counts -->
 
 ## Now
@@ -24,8 +24,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
   F177 Clash report overwrite and leftover cd jpgs 257, F178 answers recorded 258, F179 research note 259
 - F180 the C04 run, report at the top of steps\03_bader_next.md. Pictures stopped at 9000, no GDI crash, then Navisworks
   grew to 26 GB and the NWD step hung with a 0 byte NWD. Run stopped, Part 2 NOT started, as ordered
-- F181 the 750 trigger, PR 261, Q176. Next F182 memory stop at 12 GB and the NWF and NWD before the pictures, F183 records,
-  F184 the C04 run, and Part 2 only if that run ends clean. F160 is answered by F172 and F175 as far as GDI goes
+- F181 the 750 trigger, PR 261, merged. F182 the memory stop at 12 GB and the NWF and NWD before the pictures, Q175 C, PR open
+  Next F183 records, F184 the C04 run, and Part 2 only if that run ends clean. F160 is answered as far as GDI goes
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 

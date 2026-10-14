@@ -1376,8 +1376,8 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// The tail every group runs once its document holds the models, whether it came
         /// from a scan through RunOne or is the open file through RunOpenDocument: the
-        /// units, the clash step, the NWF saved again, the workbook, the NWD, and the NWF
-        /// looked at once more. One method, so the two paths cannot drift apart in what
+        /// units, the clash step, the viewpoints, the NWF saved again, the NWD, the NWF
+        /// looked at once more, the pictures and the workbook that links them, F182. One method, so the two paths cannot drift apart in what
         /// they do or in what order. The two used to carry the same six calls each, and
         /// the comments sat on one of them only.
         /// </summary>
@@ -1463,10 +1463,48 @@ namespace Federator.Addin.Engine
                     () => outcome.NwfOnDisk ? "saved " + outcome.NwfSize + " bytes" : "not saved");
             }
 
-            // After the clash step and before the NWD, so the three outputs of a group
-            // agree with each other rather than the workbook describing a state the
-            // NWD does not carry.
+            // F182, Bader's answer B to Q175. THE NWD IS PUBLISHED BEFORE THE PICTURES. Navisworks's private
+            // memory grew about 3.3 MB for each picture, to 26 GB on C04, and the NWD publish after them hung for
+            // 8 minutes with a 0 byte file. So the NWF is saved and the NWD published here, at low memory, and a
+            // picture step that stops, fails or dies leaves both already written. The NWD reads the document and
+            // nothing a report holds, so no workbook has to be written first.
+            List<string> ended = new List<string>();
+            ended.Add(RunSteps.Views);
+
+            if (clashPutSomethingIn || viewsPutSomethingIn)
+            {
+                ended.Add(RunSteps.NwfSave);
+            }
+
+            InStep(
+                RunSteps.Nwd,
+                () => WriteNwd(document, job, outcome),
+                () => outcome.NwdOnDisk ? "published " + outcome.NwdSize + " bytes" : "nothing published");
+            ended.Add(RunSteps.Nwd);
+
+            // The NWD is published, and the NWF is the only record of what has been fixed, so the NWF is looked
+            // at once more AFTER it. Nothing was checking this, and a RESULT block reporting the size of the
+            // first save made it read as though publishing the NWD had emptied the file.
+            InStep(
+                RunSteps.Confirm,
+                () => ConfirmTheNwfSurvived(job, outcome),
+                () => outcome.NwfOnDisk ? "the NWF is " + outcome.NwfSize + " bytes" : "the NWF is NOT ON DISK");
+            ended.Add(RunSteps.Confirm);
+
+            log.Line(GroupOrder.WrittenBeforeThePictures(
+                job.Building, outcome.NwfOnDisk ? outcome.NwfSize : -1, outcome.NwdOnDisk ? outcome.NwdSize : -1,
+                outcome.PictureRunner != null));
+
+            // The pictures, once both files are written. Whatever links them is written after them, since the
+            // Excel, the HTML and the XML carry their file names. A stop ends the pass early and is a normal end,
+            // the leftover pictures of earlier runs are then removed as F177 says, and a throw leaves the rows not
+            // yet pictured with an empty Image cell.
+            TakeThePicturesOfTheGroup(job, outcome, ended);
+
+            // After the clash step, the viewpoints and the pictures, so the workbook links each picture the pass
+            // wrote and the three outputs agree with the NWF and the NWD, which were saved from the same rows.
             WriteWorkbook(job, outcome);
+            ended.Add(RunSteps.Workbook);
 
             // F127. After the clash workbook, because the count check reads it back, and while
             // the document is still open, because it reads Clash Detective's counts. A group
@@ -1477,27 +1515,21 @@ namespace Federator.Addin.Engine
                 () => outcome.Coverage == null
                     ? "no coverage taken"
                     : Words.Counted(outcome.Coverage.Tests.Count, "test", "tests") + " covered");
+            ended.Add(RunSteps.Coverage);
 
             // F128 and F127, Q146 answered B. The internal workbook beside the clash workbook,
             // holding the Generic Models sheet and the Coverage sheet, written whether or not
             // the clash step ran, because the count comes from the sets step.
             WriteTheInternalWorkbook(job, outcome);
+            ended.Add(RunSteps.InternalWorkbook);
 
-            InStep(
-                RunSteps.Nwd,
-                () => WriteNwd(document, job, outcome),
-                () => outcome.NwdOnDisk ? "published " + outcome.NwdSize + " bytes" : "nothing published");
+            log.Line(GroupOrder.EndedInOrder(job.Building, ended));
+            string outOfOrder = GroupOrder.FaultIn(ended);
 
-            // The NWD is published last, and the NWF is the only record of what has
-            // been fixed, so the NWF is looked at once more AFTER it. Nothing was
-            // checking this, and a RESULT block reporting the size of the first save
-            // made it read as though publishing the NWD had emptied the file.
-            InStep(
-                RunSteps.Confirm,
-                () => ConfirmTheNwfSurvived(job, outcome),
-                () => outcome.NwfOnDisk ? "the NWF is " + outcome.NwfSize + " bytes" : "the NWF is NOT ON DISK");
-
-
+            if (outOfOrder != null)
+            {
+                log.Line("ORDER    " + job.Building + ": " + outOfOrder);
+            }
 
             // F63. Last thing the group does, after every output is written, because the
             // question it answers is what the outputs DO NOT carry. Written even when it
@@ -2857,7 +2889,7 @@ namespace Federator.Addin.Engine
             // case, so the tests are created whether or not any set was built here.
             // F54. A status written into the document is a change, so it asks for the NWF
             // the same way a test that ran does.
-            return CreateAndRunTheTests(document, job, outcome, source) || changed;
+            return CreateAndRunTheTests(document, job, outcome, source, true) || changed;
         }
 
         /// <summary>
@@ -3053,7 +3085,7 @@ namespace Federator.Addin.Engine
             FederationJob job = OpenJob(Words.Or(document.FileName, "none"));
             JobOutcome outcome = new JobOutcome(job);
 
-            CreateAndRunTheTests(document, job, outcome, ClashSource.TestsFromXml);
+            CreateAndRunTheTests(document, job, outcome, ClashSource.TestsFromXml, false);
             return outcome.Clash;
         }
 
@@ -3317,8 +3349,10 @@ namespace Federator.Addin.Engine
         }
 
         private bool CreateAndRunTheTests(
-            Document document, FederationJob job, JobOutcome outcome, ClashSource source)
+            Document document, FederationJob job, JobOutcome outcome, ClashSource source, bool deferPictures)
         {
+            ClashRunner runnerStarted = null;
+
             try
             {
                 // The units come from the document that is open right now, because every
@@ -3367,6 +3401,7 @@ namespace Federator.Addin.Engine
                 }
 
                 ClashRunner runner = new ClashRunner(Tick, log, guard);
+                runnerStarted = runner;
 
                 // The three steps that run per test are opened in there, so the live line
                 // is handed over rather than the engine guessing at what it is doing.
@@ -3375,6 +3410,10 @@ namespace Federator.Addin.Engine
 
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
                 runner.CompactResolved = reports.CompactResolved;
+
+                // F182, Bader's answer B to Q175. The group's pictures wait until the NWF is saved and the NWD
+                // published. The hand button has neither, so it takes them where it always did.
+                runner.DeferPictures = deferPictures;
 
                 // F76. The tolerance chosen on the Clash step, or the file per test.
                 runner.Tolerance = reports.Tolerance;
@@ -3554,59 +3593,28 @@ namespace Federator.Addin.Engine
                     }
                 }
 
-                if (outcome.Report != null && runner.Images != null)
+                if (runner.PicturesDeferred)
                 {
-                    // Since F149 every picture is taken once every test has run, in the
-                    // report's order and under its final number, so this finds each already
-                    // right and renames none, where until then the pictures were rendered
-                    // under run order numbers while the tests ran and renamed here, 39 s of
-                    // set 09's 1A02MM. It stays, before any report is written, as the check
-                    // that every picture carries the number of its row. A rename that fails is
-                    // a warning on the report and never fails the group, since the NWF, the
-                    // pictures and the workbook are all still written. A step of its own,
-                    // FR-077, because it ran inside no step and its seconds came off no
-                    // total, 20.6 s of one group of set 03.
-                    InStep(
-                        RunSteps.Renumber,
-                        () => RenumberThePictures(job, outcome, runner.WorkbookPath, runner.Progress),
-                        () => "the pictures of " + job.Building);
-
-                    RemoveTheLeftoverPictures(job, outcome, runner, clash);
+                    // F182, Bader's answer B to Q175. The pictures wait for the NWF to be saved and the NWD to be
+                    // published, FinishTheGroup takes them then. What links them, the renumber, the leftover
+                    // removal and the picture lines, follows them there.
+                    outcome.PictureRunner = runner;
                 }
-
-                if (outcome.Report != null && runner.Images != null)
+                else
                 {
-                    // Measured, never estimated. Every number anyone has given for what a
-                    // clash image costs has been a guess until this line. The second line
-                    // is where the step's seconds went, the render apart from the save,
-                    // FR-077. The pictures' guard stopping the run is the runner's to say,
-                    // the same way the tests' guard is, and reaches here as clash.StopTheRun.
-                    foreach (string line in outcome.Report.Images.Lines())
+                    if (deferPictures && reports.CompactResolved && runner.Images != null)
                     {
-                        log.Line(line);
+                        log.Line("ORDER    " + job.Building + ": Compact resolved is on, and a compact moves the index a picture is "
+                            + "found by, so the pictures are taken here, before the NWF is saved and the NWD published, as they "
+                            + "always were");
                     }
 
-                    // FR-059. Added to the run's pictures as they are said, so RESULT counts
-                    // the pictures beside the files it lists.
-                    log.PicturesAcrossTheRun.Add(outcome.Report.Images);
-                    log.Line(runner.Images.Seconds.Line());
+                    AfterThePictures(job, outcome, runner, clash);
                 }
 
-                if (runner.Images != null)
-                {
-                    // F150. A Hide Other this group could not put back is one of its errors, so the
-                    // window shows it and not the log alone, the breaker's second point on attempt 1.
-                    outcome.AddError(hideOtherAcrossTheRun.TakeTheGroupError());
-                }
                 log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
 
-                if (clash.StopTheRun)
-                {
-                    // Not this group's failure alone. The rest of the run is abandoned
-                    // after this group finishes writing what it already has.
-                    stopTheRun = clash.StopTheRunReason;
-                    outcome.AddError(clash.StopTheRunReason);
-                }
+                SayTheStopOfTheClash(outcome, clash);
 
                 // F54 and FR-150. A status written into the document, or the file's settings
                 // put onto a saved test, is a write like any other, so it asks for the NWF to
@@ -3621,8 +3629,131 @@ namespace Federator.Addin.Engine
                     "the clash tests for " + job.Building,
                     error,
                     "kept going, whatever was already created and run is kept in the NWF");
+
+                // F182. Rows read before the throw still wait for their pictures, as they were taken after a
+                // merge that threw before, so the engine takes them after the NWD like any other group's.
+                if (runnerStarted != null && runnerStarted.HasPicturesWaiting)
+                {
+                    outcome.PictureRunner = runnerStarted;
+                }
+
                 return false;
             }
+        }
+
+        /// <summary>
+        /// What follows a group's pictures, F182: the renumber that checks every picture carries its row's number,
+        /// the removal of the leftover pictures of earlier runs, the picture lines and the Hide Other put back. It
+        /// ran inside the clash step before the NWD was moved ahead of the pictures, and runs there still where
+        /// the pictures were not deferred, so the two ways write the same lines.
+        /// </summary>
+        private void AfterThePictures(FederationJob job, JobOutcome outcome, ClashRunner runner, ClashRunOutcome clash)
+        {
+            if (outcome.Report != null && runner.Images != null)
+            {
+                // Since F149 every picture is taken once every test has run, in the
+                // report's order and under its final number, so this finds each already
+                // right and renames none, where until then the pictures were rendered
+                // under run order numbers while the tests ran and renamed here, 39 s of
+                // set 09's 1A02MM. It stays, before any report is written, as the check
+                // that every picture carries the number of its row. A rename that fails is
+                // a warning on the report and never fails the group, since the NWF, the
+                // pictures and the workbook are all still written. A step of its own,
+                // FR-077, because it ran inside no step and its seconds came off no
+                // total, 20.6 s of one group of set 03.
+                InStep(
+                    RunSteps.Renumber,
+                    () => RenumberThePictures(job, outcome, runner.WorkbookPath, runner.Progress),
+                    () => "the pictures of " + job.Building);
+
+                RemoveTheLeftoverPictures(job, outcome, runner, clash);
+            }
+
+            if (outcome.Report != null && runner.Images != null)
+            {
+                // Measured, never estimated. Every number anyone has given for what a
+                // clash image costs has been a guess until this line. The second line
+                // is where the step's seconds went, the render apart from the save,
+                // FR-077. The pictures' guard stopping the run is the runner's to say,
+                // the same way the tests' guard is, and reaches here as clash.StopTheRun.
+                foreach (string line in outcome.Report.Images.Lines())
+                {
+                    log.Line(line);
+                }
+
+                // FR-059. Added to the run's pictures as they are said, so RESULT counts
+                // the pictures beside the files it lists.
+                log.PicturesAcrossTheRun.Add(outcome.Report.Images);
+                log.Line(runner.Images.Seconds.Line());
+            }
+
+            if (runner.Images != null)
+            {
+                // F150. A Hide Other this group could not put back is one of its errors, so the
+                // window shows it and not the log alone, the breaker's second point on attempt 1.
+                outcome.AddError(hideOtherAcrossTheRun.TakeTheGroupError());
+            }
+        }
+
+        /// <summary>
+        /// The run stopped by the clash record, said once: the tests' guard after the tests, and the pictures'
+        /// guard after the pictures, which F182 moved to after the NWD. Not this group's failure alone, the rest of
+        /// the run is abandoned after this group finishes writing what it already has.
+        /// </summary>
+        private void SayTheStopOfTheClash(JobOutcome outcome, ClashRunOutcome clash)
+        {
+            if (!clash.StopTheRun || outcome.StopOfTheClashSaid)
+            {
+                return;
+            }
+
+            outcome.StopOfTheClashSaid = true;
+            stopTheRun = clash.StopTheRunReason;
+            outcome.AddError(clash.StopTheRunReason);
+        }
+
+        /// <summary>
+        /// F182, Bader's answer B to Q175. The group's pictures, taken once the NWF is saved and the NWD published,
+        /// at low memory behind them. Then everything that links them follows, as it did inside the clash step: the
+        /// renumber, the leftover removal and the picture lines. A throw out of the picture step is the group's
+        /// error and nothing more, since the NWF and the NWD are already written and the rows not yet pictured keep
+        /// an empty Image cell. A stop, the GDI one, the memory one or the guard's, is a normal end of the step.
+        /// </summary>
+        private void TakeThePicturesOfTheGroup(FederationJob job, JobOutcome outcome, List<string> ended)
+        {
+            ClashRunner runner = outcome.PictureRunner;
+
+            if (runner == null)
+            {
+                return;
+            }
+
+            outcome.PictureRunner = null;
+            ClashRunOutcome clash = outcome.Clash ?? new ClashRunOutcome();
+            bool threw = false;
+
+            try
+            {
+                runner.TakeTheDeferredPictures(clash);
+            }
+            catch (Exception error)
+            {
+                threw = true;
+                outcome.AddError("taking the pictures threw " + error.GetType().Name + ": " + error.Message);
+                log.Failure(
+                    "taking the pictures of " + job.Building + " after the NWD was published",
+                    error,
+                    "kept going, the NWF and the NWD are already written and the rows not yet pictured keep an empty Image cell");
+            }
+
+            ended.Add(RunSteps.Pictures);
+            log.Line(GroupOrder.PicturesEnded(
+                job.Building,
+                runner.Images != null && runner.Images.AStopFired,
+                threw));
+
+            AfterThePictures(job, outcome, runner, clash);
+            SayTheStopOfTheClash(outcome, clash);
         }
 
         /// <summary>
@@ -4249,6 +4380,7 @@ namespace Federator.Addin.Engine
         {
             outcome.Report = null;
             outcome.RowAddresses = null;
+            outcome.PictureRunner = null;
         }
 
         /// <summary>

@@ -486,7 +486,7 @@
             <TabItem Header="4. Clash">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. The clash matrix is built into the tool. A test of it already saved in an NWF runs where it sits, keeping its results." />
+                               Text="Press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD, then take the pictures and write the reports. The clash matrix is built into the tool. A test of it already saved in an NWF runs where it sits, keeping its results." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />

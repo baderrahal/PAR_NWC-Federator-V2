@@ -175,7 +175,8 @@ well as to pass.
   all three are normal. There is no picker: the one pack is read and a PACK line names it,
   and since F166 a run chooses its pack by the project code of its NWC file names, PackChoice, Q164 B, and stops before anything is opened where none or two match
 - Per group the order is append, save the NWF, build the sets, create the tests, run
-  them, save the NWF again, publish the NWD last. The sets, the tests and the results
+  them, build the viewpoints, save the NWF again, publish the NWD, then take the pictures and write the
+  reports that link them, F182. The sets, the tests and the results
   all live in the NWF, so an NWD published before the clash work ships without any of
   them. The NWD used to go first and that is what this ordering fixes. The second
   save only happens when the clash step actually put something into the document
@@ -721,7 +722,7 @@ well as to pass.
   beside them before they start PowerShell, and refuse in plain words when either is not,
   as when a file is started from inside the zip, F140
 - The NWF is looked at ONCE MORE after the NWD is published, because the NWD is published
-  last and the NWF is the only record of what has been fixed. The line says intact and the
+  and since F182 before the pictures, and the NWF is the only record of what has been fixed. The line says intact and the
   size, or CHANGED with both sizes, or GONE. Nothing was checking this, so a run that did
   destroy the clash history would have finished quietly. It writes nothing and changes
   nothing, so it cannot itself break a group
