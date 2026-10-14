@@ -59,6 +59,16 @@ namespace Federator.Addin.Engine
         private readonly ImagesSeconds seconds;
         private readonly ImageCodecInfo jpeg;
         private readonly PictureNameWatch names = new PictureNameWatch();
+        private readonly GdiSplit gdiSplit = new GdiSplit();
+
+        /// <summary>
+        /// The line saying where the GDI objects went since the last one, F161, or null where no
+        /// picture was taken since. The runner writes it under each MEMORY line.
+        /// </summary>
+        public string TakeTheGdiSplitLine()
+        {
+            return gdiSplit.TakeLine();
+        }
 
         /// <summary>
         /// The guard is handed in so it lives for the whole run rather than for one group,
@@ -216,7 +226,7 @@ namespace Federator.Addin.Engine
 
                 // F157. Two clashes that would write one file are said before the second is written,
                 // by name, so a run that stops can be read for whether one picture replaced another.
-                string twice = names.Take(path, test.Name, Name(row));
+                string twice = names.WouldReplace(path, test.Name, Name(row));
 
                 if (twice != null)
                 {
@@ -252,6 +262,7 @@ namespace Federator.Addin.Engine
                         return false;
                     }
 
+                    names.Wrote(path, Name(row));
                     report.Images.Wrote(visit.Elapsed, length);
                     number.PointTheRow(workbookPath);
 
@@ -281,6 +292,7 @@ namespace Federator.Addin.Engine
         private void Render(DocumentClashTests clashTests, IClashResult result, string path, string on)
         {
             Bitmap bitmap;
+            long gdiBefore = ProcessMemory.GdiObjectsNow();
 
             using (seconds.In(ImagesPart.Rendering))
             {
@@ -299,6 +311,8 @@ namespace Federator.Addin.Engine
                 }
             }
 
+            long gdiAfterRender = ProcessMemory.GdiObjectsNow();
+
             using (bitmap)
             {
                 if (bitmap == null)
@@ -312,6 +326,8 @@ namespace Federator.Addin.Engine
                     Save(bitmap, path);
                 }
             }
+
+            gdiSplit.Add(gdiBefore, gdiAfterRender, ProcessMemory.GdiObjectsNow());
         }
 
         /// <summary>

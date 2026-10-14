@@ -127,16 +127,37 @@ namespace Federator.Core.Tests
             PictureNameWatch names = new PictureNameWatch();
             string path = @"C:\out\Report_files\cd300035.jpg";
 
-            Assert.That(names.Take(path, "Test A", "Clash35"), Is.Null);
-            Assert.That(names.Take(@"C:\out\Report_files\cd300036.jpg", "Test A", "Clash36"), Is.Null);
+            Assert.That(names.WouldReplace(path, "Test A", "Clash35"), Is.Null);
+            names.Wrote(path, "Clash35");
+            Assert.That(names.WouldReplace(@"C:\out\Report_files\cd300036.jpg", "Test A", "Clash36"), Is.Null);
 
-            string warning = names.Take(path.ToUpperInvariant(), "Test A", "Clash36");
+            string warning = names.WouldReplace(path.ToUpperInvariant(), "Test A", "Clash36");
 
             Assert.That(warning, Does.StartWith("WARNING  "));
             Assert.That(warning, Does.Contain("Clash35"));
             Assert.That(warning, Does.Contain("Clash36"));
             Assert.That(warning, Does.Contain("Test A"));
             Assert.That(warning, Does.Contain("cd300035.jpg").IgnoreCase);
+        }
+
+        /// <summary>
+        /// Run 20261014-105308: ten clashes failed one after the other and each was handed the file
+        /// name of the one before, because a failed picture gives its number back. No file was
+        /// written, so no clash replaced another, and the watch says nothing.
+        /// </summary>
+        [Test]
+        public void ClashesThatFailedAreNeverWarnedOfAsReplacingEachOther()
+        {
+            PictureNameWatch names = new PictureNameWatch();
+            string path = @"C:\out\Report_files\cd350007.jpg";
+
+            for (int clash = 7; clash <= 16; clash++)
+            {
+                Assert.That(names.WouldReplace(path, "Test B", "Clash" + clash), Is.Null);
+            }
+
+            names.Wrote(path, "Clash17");
+            Assert.That(names.WouldReplace(path, "Test B", "Clash18"), Does.Contain("Clash17"));
         }
 
         [Test]

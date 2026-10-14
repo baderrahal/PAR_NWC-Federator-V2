@@ -610,3 +610,4 @@ F158,"the logs and the reports in one Log folder beside the NWF and NWD folders,
 Q169,"whether the Log folder is at the deepest folder holding the NWF and NWD folders, or one Log folder for each group, F158",none,none,question,waiting for Bader,none,none,2026-10-14
 F159,"the option that skipped the clash for models off the shared coordinates removed, the clash always runs, a NOTICE in the log and in the list names the models",F159,none,fix,merged,241,none,2026-10-14
 Q170,"whether a group with a model on Internal or naming no site still ends FAILED now that its clash always runs, F159",none,none,question,waiting for Bader,none,none,2026-10-14
+F161,"the picture pass names where its GDI objects go, render or save, and warns of one file named twice only where a picture was written, after run 20261014-105308",F161,none,fix,merged,242,none,2026-10-14

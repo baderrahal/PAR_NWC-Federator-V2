@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F161 the GDI split of the picture pass, and the one file named twice warning read right
+
+Branch fix-F161 off main 6c47bef. Found by run 20261014-105308, the first run with F157, on C04 under NM fed. Its log
+and the evidence are in steps\03_bader_next.md.
+
+What the run showed, read off its log and Windows:
+- GDI objects climbed exactly one a picture, 1092 at the first and 9999 at the 8907th, which is also the count of jpg
+  files in the _files folder. The first IMAGE failure came at 9999, and Navisworks crashed 5 s later in lcodwin.dll,
+  0xc0000005, WER APPCRASH at 11:10:26. A process is allowed 10000 GDI objects by default
+- the "two clashes would write one file" warning of F157 was wrong. A failed picture gives its number back, so the clashes
+  after it are handed the same file name for a file that was never written. Clash35 and Clash36 of the earlier run were
+  that, not two clashes on one name. The watch now warns only where a picture was written, PictureNameWatch.Wrote
+
+What changed:
+- PictureNameWatch.Take is WouldReplace and Wrote. ClashImages writes through Wrote once the file is read back
+- GdiSplit: each picture adds the GDI count before the render, after it and after the save, and each MEMORY line is
+  followed by one GDI line with the sums since the last. Whether the object is made in Navisworks's TestsImageForResult or
+  in the save and dispose of the bitmap is UNKNOWN until a run writes that line
+- ProcessMemory.GdiObjectsNow, one call, for it
+
+Core tests: 3083 passed before, 3087 passed after, 0 failed. Release build 0 warnings, 0 errors. Not run in Navisworks in
+this entry.
+
 ## 2026-10-14 F159 the option that skipped the clash for models off the shared coordinates is gone
 
 Branch fix-F159 off main 90afd45. Bader's request of 2026-10-14, task C.
