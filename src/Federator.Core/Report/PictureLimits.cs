@@ -8,7 +8,7 @@ namespace Federator.Core.Report
     /// F172 and F175, Bader's answers to Q171. How many pictures a clash test gets, and where the pictures
     /// stop so the run cannot crash on the GDI limit. Two rules and nothing else:
     ///
-    /// ONE RULE PER TEST BY ITS PRIORITY. A test with more than 1000 clashes gets pictures for its first
+    /// ONE RULE PER TEST BY ITS PRIORITY. A test with more than 750 clashes gets pictures for its first
     /// clashes only: priority A the first 150, priority B the first 100 and priority C the first 50. A test
     /// the matrix does not name counts as C, F168, and so does a test whose priority is not known. It is the
     /// test that counts, not the run. The clashes stay in the HTML, the Excel and the viewpoints, only
@@ -21,8 +21,8 @@ namespace Federator.Core.Report
     /// </summary>
     public static class PictureLimits
     {
-        /// <summary>A test with more clashes than this is a many clash test.</summary>
-        public const int ManyClashes = 1000;
+        /// <summary>A test with more clashes than this is a many clash test. 750 since F181, Bader's answer to Q176, it was 1000.</summary>
+        public const int ManyClashes = 750;
 
         /// <summary>The pictures a many clash test of priority A gets, its first clashes in report order.</summary>
         public const int PicturesForA = 150;

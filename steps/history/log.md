@@ -2,6 +2,20 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F181 the picture cap trigger is 750
+
+Branch fix-F181 off main 41fc074. Bader's order of 14 Oct, round 4 of the second set, task 1, his answer to Q176.
+
+What was done: a test with more than 750 clashes gets pictures for its first 150 clashes at priority A, 100 at B and 50 at C,
+per test. A test with 750 clashes or fewer gets all of them. A saved test the matrix does not name is C. The viewpoints are
+not touched. The trigger is the one named constant PictureLimits.ManyClashes, 750 where it was 1000. The log line per capped
+test keeps its priority letter. The label of the At most per test box, the rule in core.md and the tests say 750.
+
+Proved here: a priority A test of 800 clashes gets 150 pictures, one of 750 gets 750, a priority B test of 800 gets 100 and a
+priority C test of 800 gets 50. Core tests 3124 before and 3128 after, 0 failed. The Release build has 0 warnings and 0 errors.
+
+Waits for the local machine: the new label in the real window, and a run where a test of 751 to 1000 clashes meets the rule.
+
 ## 2026-10-14 F180 the full run on C04 with F175 to F179 stopped its pictures and then hung at the NWD
 
 Branch fix-F180 off main 8e647af. Bader's order of 14 Oct, round 4, task 5.
