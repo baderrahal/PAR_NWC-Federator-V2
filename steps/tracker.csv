@@ -606,5 +606,5 @@ Q167,"whether a test with no tolerance or a file with no units is still skipped 
 Q168,"whether a test saved in the NWF that the built in matrix does not name is run too, F155",none,none,question,waiting for Bader,none,none,2026-10-14
 F156,"build\install.ps1 refused every build since F152, Federator.Core needs System.IO.Compression 4.2.0.0, read now after binding policy",F156,none,fix,merged,237,none,2026-10-14
 F157,"the picture pass leaves a trail for a run that dies, MEMORY with GDI and USER counts, the RATE, a stamped failure line with the whole exception, a warning for two clashes on one file",F157,none,fix,merged,239,none,2026-10-14
-F158,"the logs and the reports in one Log folder beside the NWF and NWD folders, the Excel folder box gone, nothing in Log overwritten or deleted",F158,none,fix,in review,UNKNOWN,none,2026-10-14
+F158,"the logs and the reports in one Log folder beside the NWF and NWD folders, the Excel folder box gone, nothing in Log overwritten or deleted",F158,none,fix,merged,240,none,2026-10-14
 Q169,"whether the Log folder is at the deepest folder holding the NWF and NWD folders, or one Log folder for each group, F158",none,none,question,waiting for Bader,none,none,2026-10-14
