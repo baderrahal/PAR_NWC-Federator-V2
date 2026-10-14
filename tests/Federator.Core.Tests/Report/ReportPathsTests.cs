@@ -270,7 +270,7 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void AnEarlierPageOrPicturesFolderInTheClashReportFolderForcesTheDatedNameToo()
+        public void AnEarlierPageOrPicturesFolderInTheClashReportFolderForcesNoDatedNameAndIsLeftForTheRunToOverwrite()
         {
             string root = TempFolder.Make("FederatorClashReport");
 
@@ -283,9 +283,9 @@ namespace Federator.Core.Tests
                 File.WriteAllText(Path.Combine(clash, OutputName + "_files", "cd000001.jpg"), "earlier");
 
                 string name = ReportPaths.NameThatOverwritesNothing(
-                    log, clash, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), null);
+                    log, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), null);
 
-                Assert.That(name, Is.EqualTo(OutputName + " 2026-10-14 153012"));
+                Assert.That(name, Is.EqualTo(OutputName), "the Clash report folder is overwritten by name and never forces a dated one");
                 Assert.That(File.ReadAllText(Path.Combine(clash, OutputName + "_files", "cd000001.jpg")), Is.EqualTo("earlier"));
             }
             finally
@@ -298,7 +298,7 @@ namespace Federator.Core.Tests
         public void AFreeNameIsKeptAsItIs()
         {
             string name = ReportPaths.NameThatOverwritesNothing(
-                OutReports, ClashReportFolder, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), p => false);
+                OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), p => false);
 
             Assert.That(name, Is.EqualTo(OutputName));
         }
@@ -309,20 +309,18 @@ namespace Federator.Core.Tests
             HashSet<string> there = new HashSet<string> { ReportPaths.Workbook(OutReports, OutputName) };
 
             string name = ReportPaths.NameThatOverwritesNothing(
-                OutReports, ClashReportFolder, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
+                OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
 
             Assert.That(name, Is.EqualTo(OutputName + " 2026-10-14 153012"));
         }
 
         [Test]
-        public void EachOfTheGroupsFilesAloneForcesTheDatedName()
+        public void EachOfTheGroupsFilesInTheLogFolderAloneForcesTheDatedName()
         {
-            string workbook = ReportPaths.Workbook(ClashReportFolder, OutputName);
             string[] one =
             {
                 ReportPaths.Xml(OutReports, OutputName),
-                HtmlTabularWriter.PathFor(workbook),
-                ImageNaming.FolderFor(workbook),
+                ReportPaths.Workbook(OutReports, OutputName),
                 Path.Combine(OutReports, OutputName + " Internal.xlsx")
             };
 
@@ -330,9 +328,30 @@ namespace Federator.Core.Tests
             {
                 HashSet<string> there = new HashSet<string> { path };
                 string name = ReportPaths.NameThatOverwritesNothing(
-                    OutReports, ClashReportFolder, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
+                    OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
 
                 Assert.That(name, Is.EqualTo(OutputName + " 2026-10-14 153012"), path + " did not force a dated name");
+            }
+        }
+
+        /// <summary>
+        /// F177, Bader's order of 14 Oct 2026. The HTML and the _files folder in the Clash report folder are
+        /// overwritten by name, so neither forces a dated name for the group's files in the Log folder.
+        /// </summary>
+        [Test]
+        public void TheHtmlAndThePicturesFolderInTheClashReportFolderForceNoDatedName()
+        {
+            string workbook = ReportPaths.Workbook(ClashReportFolder, OutputName);
+
+            foreach (string path in new[] { HtmlTabularWriter.PathFor(workbook), ImageNaming.FolderFor(workbook) })
+            {
+                HashSet<string> there = new HashSet<string> { path };
+
+                Assert.That(
+                    ReportPaths.NameThatOverwritesNothing(
+                        OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains),
+                    Is.EqualTo(OutputName),
+                    path + " in the Clash report folder forced a dated name");
             }
         }
 
@@ -347,7 +366,7 @@ namespace Federator.Core.Tests
             };
 
             string name = ReportPaths.NameThatOverwritesNothing(
-                OutReports, ClashReportFolder, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
+                OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
 
             Assert.That(name, Is.EqualTo(dated + " 2"));
         }
@@ -385,7 +404,7 @@ namespace Federator.Core.Tests
                 File.WriteAllText(first, "the earlier run's workbook");
 
                 string name = ReportPaths.NameThatOverwritesNothing(
-                    folder, ReportPaths.ClashReportFolder(folder), OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), null);
+                    folder, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), null);
                 string second = ReportPaths.Workbook(folder, name);
                 File.WriteAllText(second, "this run's workbook");
 

@@ -2,6 +2,28 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F177 the Clash report folder is overwritten and its leftover pictures removed
+
+Branch fix-F177 off main 6e5e74e. Bader's order of 14 Oct, round 4, task 3.
+
+What changed: the HTML and its NAME_files folder in the Clash report folder keep the group's plain name and are
+overwritten by a later run. FederationJob.ClashReportName is that name and NameTheReports never changes it, and
+NameThatOverwritesNothing no longer looks at the Clash report folder, so only the Log folder keeps its dated names. An
+Excel in Log may carry a date while the HTML and pictures keep the plain name, and every link is made from each picture's
+own path. An older Excel in Log points at jpgs a later run overwrites and so shows the new pictures.
+
+Leftover pictures: LeftoverPictures.Remove, called after the Renumber step, removes from the group's NAME_files folder, top
+level only, every file named cd and six or more digits and .jpg, lower case, that this run did not write. Never the logo,
+another file, a folder or a link, and never outside a folder that ends _files. Nothing is removed where the picture step
+did not run to its end, the pictures' guard stopped the run, the group already holds an error, or this run wrote no
+picture. One IMAGES line says the count. ClashRunner.PicturesFinished carries the first of those.
+
+Proved here: Core tests 3115 before, 3124 after, 0 failed. LeftoverPicturesTests runs two runs into one folder: the same
+names are overwritten, no dated name is made there, the leftover goes, the logo, notes, another group's files and a sub
+folder stay, the first Excel is as it was, and every click link of the second Excel resolves. Failed run, step not
+finished, no picture written and a folder not named for a report each remove nothing. Release build 0 warnings 0 errors.
+Waits for the run on C04: the real Clash Report folder of NM fed, which holds nothing of this group yet.
+
 ## 2026-10-14 F176 a model naming no shared site is a NOTICE, Q172
 
 Branch fix-F176 off main 214cd4b. Bader's order of 14 Oct, round 4, task 2, Q172 answered yes.

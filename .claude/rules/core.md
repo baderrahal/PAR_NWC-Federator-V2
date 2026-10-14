@@ -1246,6 +1246,20 @@ and 6 does not read as broken.
   Outputs step both work the folder out with no options object in front of them, and a
   name carrying either slash is refused where it is set, by name and never by asking the
   running platform which one it calls a separator
+- THE CLASH REPORT FOLDER IS OVERWRITTEN AND NEVER DATED, F177, Bader's order of 14 Oct 2026. The HTML
+  and its NAME_files folder of pictures sit in the Clash report folder under the group's plain name,
+  `FederationJob.ClashReportName`, which `NameTheReports` never changes. A file the tool writes there under a
+  name already there is OVERWRITTEN. The Log folder keeps its dated names, `ReportPaths.NameThatOverwritesNothing`
+  no longer looks at the Clash report folder, so an Excel in Log may carry a date while the HTML and the
+  pictures keep the plain name, and every link is made from each picture's own path. AN OLDER EXCEL IN LOG
+  POINTS AT JPGS A LATER RUN OVERWRITES, so it then shows the later run's pictures, and its link to a
+  leftover that was removed no longer resolves. LEFTOVER PICTURES ARE REMOVED, `LeftoverPictures.Remove`, once the
+  picture step has run to its end: from the group's NAME_files folder, TOP LEVEL ONLY, every file named cd and
+  six or more digits and .jpg, lower case as the tool writes it, that this run did not write, and nothing
+  else. Never the logo, another file, a folder, a link, or anything outside a folder that ends _files. Nothing
+  is removed where the run did not reach the end of its picture step, the pictures' guard stopped it, the
+  group already holds an error, or this run wrote no picture. One IMAGES line says the count removed. Proved
+  by `LeftoverPicturesTests` and `ReportPathsTests`
 - Results are grouped, not one row per raw clash. A group is one row and its distance is
   the most severe clash in it, which is the minimum: a hard clash reports a negative
   overlap so the worst is the most negative, and a clearance test reports a gap so the

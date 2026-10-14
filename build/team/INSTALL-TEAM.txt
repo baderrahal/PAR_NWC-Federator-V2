@@ -34,7 +34,9 @@ To run it
 7. Press Browse beside NWD folder and pick where the NWD files go.
 8. There is no folder to pick for the reports. The logs and the Excel go in a folder called
    Log, and the HTML report with its pictures goes in a folder called Clash report. Both are
-   made beside the NWF and NWD folders and a name already there is never overwritten.
+   made beside the NWF and NWD folders. A file already in Log is never overwritten, it takes a date.
+   A file in Clash report with the same name IS overwritten, and a picture left there by an
+   earlier run that this run did not make is removed.
 9. On step 4 Clash, choose the tolerance. The clash tests are built into the tool, and a test
    saved in a building's NWF that the tool does not name is run too.
 10. Where a model sits off shared coordinates, or on Revit's internal origin, the clash is

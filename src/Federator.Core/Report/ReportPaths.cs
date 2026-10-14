@@ -15,7 +15,9 @@ namespace Federator.Core.Report
     /// the Excel: the run log and its .tsv, the notes on the shared coordinates, the Excel, the
     /// Internal workbook and the XML. The Clash report folder sits beside the Log folder and holds
     /// the HTML with its _files folder of pictures, so the picture links of the HTML work. The Excel
-    /// reaches the pictures by a link that goes up one folder.
+    /// reaches the pictures by a link that goes up one folder. F177, Bader's order of 14 Oct 2026: a file the
+    /// tool writes in the Clash report folder under a name already there is OVERWRITTEN and never dated,
+    /// and the Log folder keeps its dated names. An older Excel in Log points at jpgs a later run overwrites.
     /// </summary>
     public static class ReportPaths
     {
@@ -311,17 +313,18 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The name a group's reports are written under, so that nothing already in the Log folder is
-        /// overwritten, F158. The name as it is where none of its files is there: the workbook, the
-        /// Internal workbook and the XML in the Log folder, the HTML and the _files folder in the Clash
-        /// report folder. Where any is, the name with the moment of the run after it, and a number after
-        /// that where even that is taken. Nothing is
-        /// deleted or touched, and the name is worked out once per group so the Excel, the HTML and the
-        /// pictures folder all carry the same one and their links keep working.
+        /// The name a group's files in the LOG FOLDER are written under, so that nothing already there is
+        /// overwritten, F158, narrowed by F177. The name as it is where none of its files is there: the
+        /// workbook, the Internal workbook and the XML. Where any is, the name with the moment of the run
+        /// after it, and a number after that where even that is taken. Nothing is deleted or touched.
+        ///
+        /// THE CLASH REPORT FOLDER IS NOT LOOKED AT, F177, Bader's order of 14 Oct 2026. The HTML and the
+        /// _files folder of pictures there are overwritten by name and never dated, so a name taken there
+        /// is no reason for another. The HTML and the pictures keep the group's plain name, and the
+        /// Excel's links are made from each picture's own path, so they keep working under a dated Excel.
         /// </summary>
         public static string NameThatOverwritesNothing(
-            string folder, string clashReportFolder, string workbookName, string internalSuffix, DateTime now,
-            Func<string, bool> exists)
+            string folder, string workbookName, string internalSuffix, DateTime now, Func<string, bool> exists)
         {
             if (string.IsNullOrEmpty(folder) || string.IsNullOrEmpty(workbookName))
             {
@@ -333,7 +336,7 @@ namespace Federator.Core.Report
                 exists = path => File.Exists(path) || Directory.Exists(path);
             }
 
-            if (!AnyOfThemExist(folder, clashReportFolder, workbookName, internalSuffix, exists))
+            if (!AnyOfThemExist(folder, workbookName, internalSuffix, exists))
             {
                 return workbookName;
             }
@@ -341,7 +344,7 @@ namespace Federator.Core.Report
             string dated = workbookName + " " + now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
             string candidate = dated;
 
-            for (int number = 2; AnyOfThemExist(folder, clashReportFolder, candidate, internalSuffix, exists); number++)
+            for (int number = 2; AnyOfThemExist(folder, candidate, internalSuffix, exists); number++)
             {
                 candidate = dated + " " + number.ToString(CultureInfo.InvariantCulture);
             }
@@ -349,24 +352,13 @@ namespace Federator.Core.Report
             return candidate;
         }
 
-        private static bool AnyOfThemExist(
-            string folder, string clashReportFolder, string name, string internalSuffix, Func<string, bool> exists)
+        private static bool AnyOfThemExist(string folder, string name, string internalSuffix, Func<string, bool> exists)
         {
             string workbook = Path.Combine(folder, name + WorkbookExtension);
 
             if (exists(workbook) || exists(Path.Combine(folder, name + XmlExtension)))
             {
                 return true;
-            }
-
-            if (!string.IsNullOrEmpty(clashReportFolder))
-            {
-                string page = Path.Combine(clashReportFolder, name + WorkbookExtension);
-
-                if (exists(HtmlTabularWriter.PathFor(page)) || exists(ImageNaming.FolderFor(page)))
-                {
-                    return true;
-                }
             }
 
             return !string.IsNullOrEmpty(internalSuffix)
