@@ -120,6 +120,12 @@ namespace Federator.Addin.Engine
         /// <summary>F191. The items deleted outside the tool folder and Comments, or minus one where the step did not run.</summary>
         public int OutsideDeleted { get; private set; }
 
+        // F194. The seconds of each view, the read back of the last one, the group and the tree at the start.
+        private ViewTimings timings;
+        private ViewReadBack lastReadBack;
+        private string timedGroup = string.Empty;
+        private int treeItemsAtStart;
+
         /// <summary>How many items of earlier runs the inventory's removals took out, each a change to the document.</summary>
         public int RemovedCount { get; private set; }
 
@@ -174,6 +180,10 @@ namespace Federator.Addin.Engine
             TreeRows = null;
             RemovedCount = 0;
             OutsideDeleted = -1;
+            timings = new ViewTimings();
+            lastReadBack = null;
+            timedGroup = group;
+            treeItemsAtStart = 0;
             removals = null;
 
             try
@@ -182,6 +192,7 @@ namespace Federator.Addin.Engine
                 {
                     TreeWalk before = SavedViewpoints.ReadTree(document, null);
                     SayWalk("before anything was written", before);
+                    treeItemsAtStart = before.Nodes.Count;
                     emptyBefore = ViewNode.EmptyFolderKeys(before.Nodes);
                 }
 
@@ -868,6 +879,18 @@ namespace Federator.Addin.Engine
                         }
                     }
 
+                    // F194. The view's own seconds, taken from the parts before and after it, with what its read back saw.
+                    double viewStarted = log.ElapsedSeconds;
+                    double making0 = seconds.SecondsIn(ViewsPart.MakingTheView);
+                    double adding0 = seconds.SecondsIn(ViewsPart.FindingTheFolder) + seconds.SecondsIn(ViewsPart.AddingTheView)
+                        + seconds.SecondsIn(ViewsPart.MovingIntoTheFolder);
+                    double hiding0 = seconds.SecondsIn(ViewsPart.ShowingAndHiding) + seconds.SecondsIn(ViewsPart.Dimming)
+                        + seconds.SecondsIn(ViewsPart.Framing);
+                    double marking0 = seconds.SecondsIn(ViewsPart.Marking) + seconds.SecondsIn(ViewsPart.MakingTheFolders);
+                    double readBack0 = seconds.SecondsIn(ViewsPart.ReadingBack);
+                    lastReadBack = null;
+                    int treeNow = treeItemsAtStart + written.Count;
+
                     try
                     {
                         WriteOne(document, clashTests, view, models, indexOf, unitEnumName, outcome, written,
@@ -885,6 +908,27 @@ namespace Federator.Addin.Engine
                             error,
                             "kept going, the other views are still tried and the block carries the total");
                     }
+
+                    long privateBytes = Federator.Core.Diagnostics.ProcessMemory.PrivateBytesNow();
+                    timings.Add(new ViewTiming
+                    {
+                        Name = view.ToString(),
+                        Clashes = view.Clashes.Count,
+                        Overrides = lastReadBack == null ? -1 : lastReadBack.MaterialOverrideCount,
+                        Seconds = log.ElapsedSeconds - viewStarted,
+                        MakingSeconds = seconds.SecondsIn(ViewsPart.MakingTheView) - making0,
+                        AddingSeconds = seconds.SecondsIn(ViewsPart.FindingTheFolder) + seconds.SecondsIn(ViewsPart.AddingTheView)
+                            + seconds.SecondsIn(ViewsPart.MovingIntoTheFolder) - adding0,
+                        HidingAndDimmingSeconds = seconds.SecondsIn(ViewsPart.ShowingAndHiding) + seconds.SecondsIn(ViewsPart.Dimming)
+                            + seconds.SecondsIn(ViewsPart.Framing) - hiding0,
+                        MarkingSeconds = seconds.SecondsIn(ViewsPart.Marking) + seconds.SecondsIn(ViewsPart.MakingTheFolders) - marking0,
+                        ReadBackSeconds = seconds.SecondsIn(ViewsPart.ReadingBack) - readBack0,
+                        ReadBackHiddenSeconds = lastReadBack == null ? 0.0 : lastReadBack.HiddenSeconds,
+                        ReadBackOverrideSeconds = lastReadBack == null ? 0.0 : lastReadBack.OverrideSeconds,
+                        ReadBackColourSeconds = lastReadBack == null ? 0.0 : lastReadBack.ColourSeconds,
+                        PrivateMegabytes = privateBytes < 0 ? -1.0 : privateBytes / (1024.0 * 1024.0),
+                        TreeItems = treeNow
+                    });
                 }
             }
             finally
@@ -912,6 +956,12 @@ namespace Federator.Addin.Engine
                 + foldersMarked + " folder(s) made and marked"
                 + (foldersNotMarked > 0 ? ", " + foldersNotMarked + " made and NOT marked, said above" : string.Empty)
                 + (hidesSkipped > 0 ? ", the hiding skipped for " + hidesSkipped + " view(s) showing the same models as the one before" : string.Empty));
+
+            // F194. Where the seconds of the views went, view by view, said once for the group.
+            foreach (string timingLine in timings.Lines(timedGroup))
+            {
+                log.Line(timingLine);
+            }
         }
 
         /// <summary>
@@ -1221,6 +1271,7 @@ namespace Federator.Addin.Engine
                         dimmedThisOne && views.ColoursAnything ? views.SecondItemColour : null);
                 }
 
+                lastReadBack = read;
                 string notReadBack = WhyNotReadBack(read, view, cameraPoint, shown.Hidden.Count, dimmedThisOne, redCount + greenCount);
 
                 if (read.Found)

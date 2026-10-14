@@ -2,6 +2,25 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F194 the time of every view is measured and said
+
+Branch fix-F194 off main bbf2cec. Bader's order of 15 Oct, task 5, part 1 and part 3.
+
+What the old logs say before any new run (C:\NWC-PC-Test\evidence): in five full runs of 1A04PK the VIEWS step took 1517
+to 3687 s and the part named reading back took 1340 to 3509 s of it, 88 to 95 percent. Adding the view took 57 to 104 s,
+reading the clashes and planning 52 to 57 s, dimming 6 to 9 s. In the 15 Oct run the views went 5 to 8 s each at first
+and 80 to 90 s each from view 143 to 150, then about 3 s each from view 169 on, with the tree growing from 105 to 292
+items all the time. So the seconds do not follow the tree, and the cause named by the logs is the read back of each view.
+
+New: each view's own seconds are kept, from the parts before and after it, and said once for the group in the VIEWS
+TIMING lines: the count, the total, the average, the first quarter against the last, Navisworks private bytes, the Pearson
+r of the seconds against the view's clashes, its overrides, the tree at its start and the order, and the five slowest with
+their parts. The read back says the seconds of its hidden items, of the walk of the material overrides and of the colour
+of the clashing items. The two missing parts, the delete of the tool folder and the delete outside it, have their own
+seconds in the VIEWS line.
+
+Core tests 3218 passing, Release build clean. Not run in Navisworks yet, the run of task 7 shows it.
+
 ## 2026-10-15 F193 the round 5 answers recorded
 
 Branch fix-F193 off main fa94958. Bader's order of 15 Oct, task 4.

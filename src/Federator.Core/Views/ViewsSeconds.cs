@@ -72,6 +72,12 @@ namespace Federator.Core.Views
             get { return Total - parts.InParts; }
         }
 
+        /// <summary>F194. The seconds one part holds so far, which the add-in reads before and after a view for the view's own.</summary>
+        public double SecondsIn(ViewsPart part)
+        {
+            return parts.Of(part);
+        }
+
         /// <summary>The seconds one part holds, every stretch of it added.</summary>
         internal double Of(ViewsPart part)
         {
