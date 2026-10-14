@@ -2,6 +2,18 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F174 the full run on C04 with F170 to F173 was not made
+
+Branch fix-F174 off main 21f3dec. Bader's order of 14 Oct, round 3, task 5.
+
+Not run. Bader's own Navisworks was open from 13:47 (pid 23696, parent explorer.exe, the 1A02MM NWD open, 811 MB, the
+PC with 15.8 GB of RAM and 2.8 GB free). The repo's own loop and its proof harness refuse to run beside a Navisworks, the
+harness did so at 14:21, and the last C04 run grew to 28 GB. Nothing of his was closed or touched, no second Navisworks was
+started and build\install.ps1 was not run, since it would replace the add-in files under a running Navisworks.
+
+What was done: the report at the top of steps\03_bader_next.md with PROVEN and UNKNOWN, the F169 line 2 there corrected for
+the Clash report folder, and the tracker row F174 left open.
+
 ## 2026-10-14 F173 the loop and the window driver, the skip option's leftovers
 
 Branch fix-F173 off main 45bac48. Bader's order of 14 Oct, round 3, task 4, and F163.

@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 220 | 16 | 0 | 0 | 59 | 7 | 302 |
-| total | 423 | 24 | 0 | 0 | 160 | 18 | 625 |
+| outside the waves | 220 | 16 | 0 | 0 | 60 | 7 | 303 |
+| total | 423 | 24 | 0 | 0 | 161 | 18 | 626 |
 <!-- the end of the counts -->
 
 ## Now
@@ -24,7 +24,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Bader's order of 14 Oct, round 3, one PR each: F170 Clash report folder 250, F171 a model on Internal is a NOTICE 251,
   F172 pictures limit 1000 per test and GDI backstop at 9000 252, F173 loop and driver clean up 253
 - F160, C04 under NM fed, crash at picture 8907 of 10170, GDI objects 9999, lcodwin.dll. F172 is its answer, unproven by a run
-- Task 5, the full run on C04 with this build, is the next thing, see 03_bader_next
+- F174, the full run on C04 with this build, NOT made, a Navisworks of Bader's was open, the report is at the top of 03_bader_next
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 

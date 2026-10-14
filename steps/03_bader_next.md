@@ -1,5 +1,50 @@
 # 03 Bader next
 
+## Round 3 of 14 Oct, F170 to F173, and the run on C04 that was NOT done
+
+Written for Bader. Simple words. PROVEN means a test or a run I saw showed it. UNKNOWN means nothing showed it yet.
+
+### The short version
+
+The four fixes are built, tested and merged. The full run on C04 was not made. Your own Navisworks was open the whole time (pid 23696, started 13:47 from Explorer, the 1A02MM NWD open, 811 MB). I did not close it and I did not start a second one beside it. The PC has 15.8 GB of RAM with 2.8 GB free, and the last C04 run grew to 28 GB. A second Navisworks could have frozen or killed yours with work in it. The repo's own loop refuses to run beside a Navisworks for the same reason. For the same reason I did not run `build\install.ps1`, which would replace the add-in files under a running Navisworks.
+
+### What was done
+
+- F170, PR 250, Q169. The HTML and its `NAME_files` folder of pictures go in a new folder `Clash report` beside `Log`. `Log` keeps the run log, the TSV, the shared coordinates txt, the Excel and the XML. The Excel linked pictures point at the jpgs in `Clash report`. The click link, the Image cell link and the XML href go up one folder, for example `../Clash%20report/NAME_files/cd000001.jpg`. A name already in `Log` or in `Clash report` gets a dated name, nothing is overwritten
+- F171, PR 251, Q170. A model on Internal no longer ends a group FAILED. A NOTICE names the model and says its clash results may be wrong, in the run log, in the shared coordinates txt, in the RESULT lines and in the group result line. A model that names no shared site at all still fails its group, it is another reason and you did not say to change it
+- F172, PR 252, Q171. A test with more than 1000 clashes gets pictures for its first 100 and the rest are skipped, per test. One log line per such test says its name, its clashes, the pictures made and the skipped. A backstop reads the GDI objects of Navisworks before every picture. Past 9000 no picture is made, a NOTICE says the picture number and the count, and the run goes on to the NWD, the HTML, the Excel and the viewpoints. The box `At most per test` is kept. It does another job, a cap of your own for every test, and the least of the box and the fixed rule holds. Its label now says that a test over 1000 clashes gets 100
+- F173, PR 253, F163. The loop and the window driver no longer name the Excel folder box and the skip box. The stand-in window ticks MarkByDesign for the untick proof. Seven probes that start Navisworks did not switch Auto-Save off, and now do. The leftovers of the skip option are gone from the docs and from `build\team\INSTALL-TEAM.txt`, which still told the team to untick it. `steps\PROGRESS.md` is refreshed and matches the tracker
+
+### PROVEN
+
+1. Core tests 3111 pass, 0 fail. The Release build has 0 warnings and 0 errors. CI passed on each PR
+2. With the Excel in `Log` and the jpgs in `Clash report`, every linked picture, every click link, every cell link, every XML href and every picture link of the HTML resolves to a jpg that exists. LogFolderLinksTests writes the files and follows each link, and the HTML is written through the installed Navisworks stylesheet
+3. A test of 1500 clashes gets 100 pictures. A test of 1000 or less gets all of them. Two tests of 1200 get 200 in total. The box and the rule give the least of the two (PictureLimitsTests)
+4. In a simulated pass of 16000 clashes in small tests the backstop fires at picture 8502 at 9001 GDI objects, never nears 10000, and the rest are left empty (PictureLimitsTests). This is a test of our rule, not of Navisworks
+5. A group with a model on Internal gets no failure reason and is judged DONE where its files and viewpoints are there, and the NOTICE names the model. A model naming no site still fails the group (AlignmentCheckTests, GroupJudgementTests)
+6. The window driver takes no `-Excel`, and `DriverArguments` of the loop gives none. The touched scripts parse and the stand-in builds
+
+### UNKNOWN
+
+- Whether a real run on C04 with this build ends without a crash. The backstop reads `GetGuiResources` of the Navisworks process. That it rises by one per picture was measured on the run of 11:10, and it is not measured with this build
+- Whether the Excel itself follows a click link that goes up a folder, `../Clash%20report/...`. Only a person can click one
+- Whether the real Navisworks window still takes the typing of the driver. The driver was changed and not run against Navisworks
+- Whether `tools\loop\prove-run.ps1` passes. It refuses to start beside a Navisworks, and it did so at 14:21. Its window cases are UNKNOWN after F173
+- Why Navisworks's private memory reached 28 GB on C04. F161 added the GDI split line that says where the GDI object is made, and no run has read it yet
+- `Clash report` and `Clash Report` are one folder on Windows. NM fed already has a `Clash Report` of yours. The tool writes into it and gives a dated name where a name is taken. It never deletes or replaces. If you want them apart, say so and the folder gets another name
+
+### What to do for the run
+
+1. Close your Navisworks, or tell me it may be used
+2. `build\install.ps1` from VS Code, then the run on `C:\Users\bader\Desktop\NM fed\NWC\C04` with tolerance 25 mm and viewpoints on
+3. Then look in `NM fed\Log` for the txt files, the TSV, the run log and the Excel, and in `NM fed\Clash report` for the HTML and its `_files` folder. Look in the run log for the lines `IMAGES   ... has N clashes, more than 1000`, a `NOTICE   the pictures stopped at picture` if it fires, and the `GDI split` line
+
+### What I started and what I wrote outside the repo
+
+- Started: `dotnet build` and `dotnet test` many times, with their build servers. `git` and `gh` for the branches and PRs. Powershell scripts for edits and checks. `tools\loop\prove-run.ps1` once, which refused at once and did nothing. No Navisworks, no Roamer, no add-in install
+- Outside the repo I wrote: scratch scripts and notes under `%TEMP%` and under `C:\Users\bader\AppData\Local\Temp\claude\...`, the `TestResults` folders under the test project (ignored by git), and the evidence copy of the earlier run at `C:\NWC-PC-Test\evidence\2026-10-14-run-c04`. I wrote nothing in `C:\Users\bader\Desktop\NM fed`, nothing in `%APPDATA%` and nothing in the registry
+- I closed what I opened. Your Navisworks I did not open and did not touch
+
 ## Your six answers of 14 Oct, built as F164 to F169
 
 Written for Bader. Simple words. Nothing here was run in Navisworks. What each does:
@@ -13,7 +58,7 @@ Written for Bader. Simple words. Nothing here was run in Navisworks. What each d
 
 What to try, one action each:
 1. Run a building with a hand made test saved in its NWF and look for it in the Excel and under priority C in the views
-2. In the Excel, click one picture. It should open its jpg. The jpgs are in `NAME_files` beside the Excel in `Log`, so the link has no `..` in it. Whether Excel follows a relative link is UNKNOWN until you click one
+2. In the Excel, click one picture. It should open its jpg. Since F170 the jpgs are in `NAME_files` in the `Clash report` folder beside `Log`, so the link goes up one folder, `../Clash%20report/NAME_files/cdNNNNNN.jpg`. Whether Excel follows a relative link is UNKNOWN until you click one
 3. Copy the NWC files of a building and rename part 1 of the names to another code. The run should stop at once with the words above
 
 ## The round of 2026-10-14, F157 to F161, and the run on C04
