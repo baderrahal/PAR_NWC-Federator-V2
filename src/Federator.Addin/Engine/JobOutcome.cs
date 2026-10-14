@@ -250,7 +250,7 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// F182, Bader's answer B to Q175. The runner whose picture pass was left for after the NWF is saved and the
         /// NWD published, or null where the pictures were taken inside the clash step, where none were wanted or
-        /// where Compact resolved is on. The engine takes them, writes what links them, and lets go of this.
+        /// or where it is the hand button's run. The engine takes them, writes what links them, and lets go of this.
         /// </summary>
         public ClashRunner PictureRunner { get; set; }
 

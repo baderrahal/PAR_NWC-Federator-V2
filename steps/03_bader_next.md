@@ -1,5 +1,38 @@
 # 03 Bader next
 
+## Round 4, second set, Part 2 begins, F185 the checks before anything is built
+
+Written for Bader. Simple words. I read the code of main after PR 264 again and did not rely on last round's notes. PROVEN means code or a test showed it. UNKNOWN means nothing showed it yet.
+
+### 1. How the tool applies the tolerance to a test today
+
+- A test already in the NWF: `ApplyChosenTolerance` in ClashRunner. It reads the test's tolerance. If it is already at the chosen value it does nothing. Otherwise it takes `CreateCopy()` of that test, sets the tolerance on the copy, and calls `TestsEditTestFromCopy(test, copy)`. It never removes, replaces or re-adds the test, so clash results and statuses are kept. The log line says so and cites the measurement 5y. PROVEN by the code and by a test that reads the source, ClashHistorySourceTests
+- The file's settings route, `Apply`, behind the tick box Apply the file's settings, off by default, also uses `TestsEditTestFromCopy`, with a new test object holding the file's two sides. It does not touch results by itself, measured 5y. The help text and one log line under it said it resets the clashes. I changed both to say the results and statuses are kept. Whether a test whose two search sets change drops clashes is as the research says, UNKNOWN until Part 2 tests it on a copy
+- F76 is this same method
+
+### 2. How tests the NWF lacks are added, and what else could lose history
+
+- A test the NWF lacks is added by `TestsAddCopy`, one call, in ClashRunner. Nothing else calls it. A test saved in the NWF that the matrix does not name is run where it sits and is not added or changed
+- The one call that lost history was `TestsCompactAllTests`, behind the tick box Delete Resolved clashes from the NWF, off by default. I REMOVED it, with the tick box and its setting, as you ordered. A Resolved clash now stays and keeps counting. The log says so
+- There is no `Reset`, no `TestsRemove` and no `TestsReplaceWithCopy` of a clash test anywhere in the add-in. A test now fails the build of main if one is added, ClashHistorySourceTests
+- Still there, and not a clash test: `Document.TryRemoveFile` in the route that rebuilds a changed group, which takes a MODEL out of the tree. Task 7 says never to delete and re-append a model, so that route is Task 7's to change
+
+### 3. How the viewpoint tree is built today
+
+- Root folders by priority: A, B, C, or a folder named by the setting for no priority. Under it a folder for each team pair. Under that, an Over 150mm folder where the pair carries it. Then one view for each clash test, named by the test. Clashes of a test with no open clash get no view
+- A test with a side on a team the map does not name gets no view
+- Every view and folder carries a mark comment. The tag is NWC-FEDERATOR-VIEW v1, then the run stamp, the folders, the name and the camera. A view the tool made and a person did not touch is the tool's. A moved, renamed, turned or commented view is a person's and is kept
+- What old NWFs hold: root folders A, B, C and the no priority folder with team pair folders in them, each with that mark. UNKNOWN until one is opened, nothing in this session read an old NWF
+
+### 4. Does the weekly run refresh the NWC files
+
+No. The weekly run opens the existing NWF with `TryOpenFile`, and Navisworks reloads the linked files when it opens. It never calls `Document.UpdateFiles`. A changed NWC with the same name and place comes through as Navisworks reloads. PROVEN by a search of the add-in's source for UpdateFiles, which finds none. Task 7 adds the one explicit call
+
+### What changed in code
+
+- The Compact resolved option is removed, F185, and the tests that read the source fail on any removing or replacing call
+- Core tests 3143 before and 3146 after, 0 failed. The Release build has 0 warnings and 0 errors
+
 ## Round 4, second set, Part 1 built and the run on C04 that ENDED
 
 Written for Bader. Simple words. PROVEN means the run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet.

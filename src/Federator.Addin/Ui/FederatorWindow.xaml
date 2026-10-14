@@ -582,17 +582,7 @@
                                                   Content="Apply the file's settings to existing tests" />
                                     </StackPanel>
                                     <TextBlock Style="{StaticResource TickHelp}"
-                                               Text="Resets those clashes to New. Differences are listed either way." />
-                                </StackPanel>
-                                <StackPanel Margin="0,8,0,0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Style="{StaticResource WarningMark}" />
-                                        <CheckBox x:Name="CompactResolved" IsChecked="False"
-                                                  VerticalAlignment="Center"
-                                                  Content="Delete Resolved clashes from the NWF" />
-                                    </StackPanel>
-                                    <TextBlock Style="{StaticResource TickHelp}"
-                                               Text="Cannot be undone. The record of what was fixed is lost." />
+                                               Text="Changes which clashes those tests find. Statuses are kept. Differences are listed either way." />
                                 </StackPanel>
                             </StackPanel>
                         </Expander>

@@ -24,7 +24,6 @@ namespace Federator.Core.Report
             Tolerance = ToleranceChoice.Default();
             MarkByDesign = false;
             RebuildDriftedSets = SetRebuildSettings.DefaultRebuildDriftedSets;
-            CompactResolved = false;
             MarkPenetrations = false;
             Penetrations = new PenetrationSettings();
             Sizes = new SizeSettings();
@@ -125,12 +124,6 @@ namespace Federator.Core.Report
         /// already saved in the NWF, and it beats both the built in matrix and the document.
         /// </summary>
         public ToleranceChoice Tolerance { get; set; }
-
-        /// <summary>
-        /// Remove Resolved clashes after the tests run. Off by default, because it
-        /// destroys the record of what was resolved.
-        /// </summary>
-        public bool CompactResolved { get; set; }
 
         /// <summary>
         /// Move a small service through a wall, a floor, a roof or a structural foundation to

@@ -644,3 +644,4 @@ F182,"the picture step stops at 12 GB of Navisworks private memory with a NOTICE
 Q176-1,"the number of clashes past which a test's pictures are capped by its priority, answered 750, F181",none,none,Bader's request,merged,263,none,2026-10-14
 F183,"the answers Q175 C and Q176 750 recorded in steps\02_questions.md and the tracker, the Part 2 notes renumbered to F186 to F188",F183,none,fix,merged,263,none,2026-10-14
 F184,"the full run on C04 with F181 and F182 ended in 50 minutes, the NWD before the pictures, the memory stop at picture 3043, 4862 leftover jpgs removed, the report is at the top of 03_bader_next",F184,none,fix,merged,264,none,2026-10-14
+F185,"the checks of Part 2 read again, the Compact resolved option and its call of TestsCompactAllTests removed, tests that fail on any call that resets compacts removes or replaces a clash test",F185,none,fix,in review,none,none,2026-10-14

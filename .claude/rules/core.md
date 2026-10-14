@@ -1679,8 +1679,8 @@ and 6 does not read as broken.
   `TakeTheDeferredPictures` takes it, each test found again by its address and name as it always was. The
   viewpoints read the rows and their addresses and no picture file. The picture step is not followed by an
   NWF save, since it writes nothing into the document and the hiding is put back, so a put back that failed is
-  no longer carried into the NWF and the NWD. Compact resolved on keeps the old order, because a compact
-  moves the index a picture is found by, and a log line says so. `GroupOrder` writes the ORDER lines. A
+  no longer carried into the NWF and the NWD. F185 removed the Compact resolved option and its call of
+  TestsCompactAllTests, so no result moves between the clash step and the pictures. `GroupOrder` writes the ORDER lines. A
   stop of the hand button's Run tests is unchanged, it takes its pictures inside the clash step.
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because

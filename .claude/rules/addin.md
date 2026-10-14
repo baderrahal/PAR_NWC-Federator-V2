@@ -1048,7 +1048,7 @@ under no expander, by x:Name IncludeSubfolders on the Source step and MarkPenetr
 MarkByDesign, RebuildDriftedSets and MakeViewpoints on the Clash
 step. The other ten are eight under More, rarely changed, DateTheNwd, WriteClashXml,
 GhostOtherItems and the five Photo of boxes, and two under Things that destroy data,
-ApplyFileSettings and CompactResolved. Read off the XAML on 2026-10-13 by its CheckBox
+ApplyFileSettings, since F185 the only one, CompactResolved having gone. Read off the XAML on 2026-10-13 by its CheckBox
 elements with an x:Name, where main before F152 held seventeen. probe-window-labels.ps1 was
 not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
 Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only

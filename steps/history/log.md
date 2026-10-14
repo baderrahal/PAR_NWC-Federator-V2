@@ -2,6 +2,25 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F185 the checks of Part 2, and the Compact resolved option removed
+
+Branch fix-F185 off main 9adc975. Bader's order of 14 Oct, round 4 of the second set, task 5.
+
+Read again on main: the tolerance of a saved test is set by ApplyChosenTolerance through CreateCopy and
+TestsEditTestFromCopy, so results are kept, and a test already at the value is left alone. A missing test is added by
+TestsAddCopy in one place. The weekly run never calls UpdateFiles. The viewpoint tree is priority folder, team pair
+folder, size folder, then one view for each test, each with the F114 mark. The report is at the top of
+steps\03_bader_next.md.
+
+Changed: the one call that lost clash history, TestsCompactAllTests, is gone with its tick box and its setting, and
+ResolvedInTheDocument, which only it used, with it. The help text of Apply the file's settings said it resets the clashes
+and now says the results and statuses are kept, as 5y measured. ClashHistorySourceTests reads the add-in source and
+fails on any call that resets, compacts, removes or replaces a clash test, on a tolerance set any way but an edit from
+a copy, and on TestsAddCopy outside the runner.
+
+Proved here: Core tests 3143 before and 3146 after, 0 failed. The Release build has 0 warnings and 0 errors. Waits for the
+local machine: nothing new, the tick box is gone from the real window.
+
 ## 2026-10-14 F184 the full run on C04 with F181 and F182 ended
 
 Branch fix-F184 off main 0947159. Bader's order of 14 Oct, round 4 of the second set, task 4.
