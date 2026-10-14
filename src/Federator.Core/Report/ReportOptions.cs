@@ -21,6 +21,7 @@ namespace Federator.Core.Report
             WriteXml = false;
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
+            RefreshOnOpen = true;
             Tolerance = ToleranceChoice.Default();
             MarkByDesign = false;
             RebuildDriftedSets = SetRebuildSettings.DefaultRebuildDriftedSets;
@@ -116,6 +117,13 @@ namespace Federator.Core.Report
         /// different questions.
         /// </summary>
         public bool ApplyFileSettings { get; set; }
+
+        /// <summary>
+        /// F187, task 7. A picked NWF is refreshed before its tests run again: backed up, its linked files compared
+        /// with the last manifest, the ones that do not resolve named and the run stopped, and Document.UpdateFiles asked
+        /// once. On by default, since this is the weekly run of the NWF page.
+        /// </summary>
+        public bool RefreshOnOpen { get; set; }
 
         /// <summary>
         /// The tolerance chosen on the Clash step, F76. Never null: the default is 25 mm,

@@ -258,6 +258,15 @@ namespace Federator.Addin.Engine
         public bool StopOfTheClashSaid { get; set; }
 
         /// <summary>
+        /// F187. What the refresh of a picked NWF compared and kept: the linked files against the last manifest, and the
+        /// clash results before and after, for the table the NWF page shows. Null where no refresh was made.
+        /// </summary>
+        public Federator.Core.Rerun.ManifestComparison RefreshedFiles { get; set; }
+
+        /// <summary>F187. The clash results before the tests ran again against after, or null where no refresh was made.</summary>
+        public Federator.Core.Rerun.RefreshComparison RefreshResults { get; set; }
+
+        /// <summary>
         /// The workbook model for this group, or null when no report was wanted. Null once the
         /// group has ended, F147, FederationEngine.LetGoOfTheRows, so nothing after the group
         /// may read it.

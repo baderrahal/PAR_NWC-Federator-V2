@@ -22,6 +22,12 @@ namespace Federator.Core.Diagnostics
     public static class RunSteps
     {
         public const string Decide = "DECIDE";
+
+        /// <summary>
+        /// F187, task 7: the NWF page's refresh, after the NWF is opened and before the tests run again: the manifest of the
+        /// linked files compared, the linked files that do not resolve named, Document.UpdateFiles asked once.
+        /// </summary>
+        public const string Refresh = "REFRESH";
         public const string Append = "APPEND";
         public const string NwfSave = "NWF SAVE";
         public const string Units = "UNITS";
@@ -86,6 +92,7 @@ namespace Federator.Core.Diagnostics
         private static readonly string[] InOrder =
         {
             Decide,
+            Refresh,
             Append,
             NwfSave,
             Units,

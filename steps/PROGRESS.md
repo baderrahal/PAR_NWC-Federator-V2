@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 22:10, round 4 second set, Part 2 F186 the viewpoint tree merged, F187 refresh and overwrite next
+STATE OPEN, 2026-10-14 21:20, round 4 second set, Part 2 F187 the refresh merged, F188 the two pages next
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 239 | 16 | 0 | 0 | 62 | 7 | 324 |
-| total | 442 | 24 | 0 | 0 | 163 | 18 | 647 |
+| outside the waves | 241 | 16 | 0 | 0 | 61 | 7 | 325 |
+| total | 444 | 24 | 0 | 0 | 162 | 18 | 648 |
 <!-- the end of the counts -->
 
 ## Now
@@ -24,8 +24,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
   F177 Clash report overwrite and leftover cd jpgs 257, F178 answers recorded 258, F179 research note 259
 - F180 the C04 run, report at the top of steps\03_bader_next.md. Pictures stopped at 9000, no GDI crash, then Navisworks
   grew to 26 GB and the NWD step hung with a 0 byte NWD. Run stopped, Part 2 NOT started, as ordered
-- Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the C04
-  run ended clean, report at the top of steps  run ended clean, report at the top of steps  Next F183 records, F184 the C04 run, and Part 2 only if that run ends clean. F160 is answered as far as GDI goes3_bader_next.md. Part 2 next, F185 to F189 in the order of Bader's message3_bader_next.md. Part 2 next, F185 to F189 in the order of Bader's message
+- Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the
+  C04 run ended clean 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh in review. F188 the two pages and F189 the final run next
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 

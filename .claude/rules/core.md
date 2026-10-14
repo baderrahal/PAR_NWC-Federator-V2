@@ -1695,6 +1695,27 @@ and 6 does not read as broken.
   folder, a view named as a test or as F85's per clash viewpoint. One item that is not leaves the whole folder, and the
   log names the folder and the item. A root folder that holds nothing is left. A PROOF line reads the count of tests
   and results before and after the delete. Statuses are not compared by it, UNKNOWN until the weekly run's snapshot.
+- THE REFRESH OF A PICKED NWF, F187, Bader's order of 14 Oct 2026 and his answer 2 of Q174, `RefreshRun`,
+  `NwcManifest`, `NwfBackupName`, `ResultSnapshot` and `RefreshComparison`. A picked NWF, the NWF page's run, is
+  copied into a Backup folder beside the Log folder before anything is opened, under its name and the moment to the
+  second and never over an earlier copy, `File.Copy` told not to overwrite. It is then opened with
+  `FileInteractiveResolving` listened for: a linked file Navisworks cannot resolve is answered Ignore, named, and
+  STOPS the run with nothing saved, so the NWF on disk is as it was and no model is removed. The linked files are
+  compared with `nwc-manifest.tsv`, the tool's own state file with one fixed name in the Log folder, overwritten
+  each run: size and last write time, a SHA-256 only where one of them differs, so a file written again with the same
+  content is TOUCHED and not changed. `Document.UpdateFiles` is asked once. It returned False in no time on 14 Oct,
+  both with no file changed and with one changed before the open, an NWF reloading its linked files as it opens, so
+  a False is read as nothing left out of date and is a NOTICE, never a failure. `TryCloseFileHandles` is called
+  after it so a new export may overwrite a linked NWC. The units and each model's origin are read before and after
+  and said. Every clash result is read before the tests run again in place and after, by Guid and otherwise by test
+  and name: status, assigned to, comments, approver and group. A Reviewed or Approved a coordinator set that is not
+  the same after is named, a New found again being Active is counted and not listed, and a test that dropped clashes
+  gets a WARNING with its name. The route never removes a model, appends one again, moves or renames an NWC, or
+  deletes a file, and a test of its source says so. The option Close NWC/NWD files on load, Options, Model,
+  Performance, is `LcOpPerformanceProps.GetCloseFileAfterLoad` and `SetCloseFileAfterLoad`, which no public member of
+  the managed API returns, `Application.Options` holding only Grids, so whether the COM API reaches it is UNKNOWN
+  and the NWF page tells the user to set it by hand. The route's Log and NWD folders are the open file's own, F158:
+  the Log folder beside the NWF's folder and the NWD beside the NWF.
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR

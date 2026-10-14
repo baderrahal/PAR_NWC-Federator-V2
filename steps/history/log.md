@@ -2,6 +2,44 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F187 the refresh of a picked NWF keeps what coordinators wrote
+
+Branch fix-F187 off main 0dca1a9 (after PR 266). Bader's order of 14 Oct, round 4 of the second set, task 7, and his answer 2 of Q174.
+
+What was built, on the route of a picked NWF, which is the NWF page's run:
+- A backup of the NWF into a Backup folder beside the Log folder before anything opens, timestamped, never over an older one
+- The linked files listened for while it opens. One that does not resolve is named and stops the run, nothing saved
+- The manifest of the linked NWC files, path, size, last write time, SHA-256 only where size or time differ, compared with
+  the last, one fixed file name in the Log folder, and the changed ones listed
+- Document.UpdateFiles asked once, TryCloseFileHandles after it, the units and each model's origin said before and after
+- Every clash result read before the tests run again in place and after, and compared: Reviewed or Approved kept, assigned
+  to, comments, approver and group kept, a test that dropped clashes named in a WARNING, a table of New, Active,
+  Reviewed, Approved and Resolved before and after for each test that moved
+- No model is removed or appended again, no NWC moved or renamed, and a test of the source says so
+
+Proved by a run, on a COPY of C04 under C:\NWC-PC-Test\work, the originals of NM fed untouched. Evidence folder
+C:\NWC-PC-Test\evidence\2026-10-14-f187-refresh, build 6720ae8f:
+- A coordinator's edits made in Clash Detective's own calls on a copy, 3 tests, a Reviewed with an assignee and a comment,
+  an Approved with an approver, a New with an assignee and a comment. A refresh with no file changed kept all 6 Reviewed or
+  Approved statuses, all assignees, approvers and comments, matched all 10170 results by Guid, and the manifest said
+  10 unchanged
+- One NWC written over with another file's content. The manifest listed exactly that file as changed. 443 new clashes
+  were New, 1498 moved status, those a clash gone from its test Resolved and none removed, the 6 Reviewed or Approved kept.
+  Units and each model's origin were identical before and after the reload
+- A linked NWC renamed away. FileInteractiveResolving fired and was answered Ignore, the file was named, the group
+  FAILED with that reason, and the NWF on disk was byte for byte as it was. Three backups were made over three runs and
+  none overwrote another
+- UpdateFiles returned False in 0.0 s in all three, so a False is read as nothing left out of date. What it returns for a
+  file written after the NWF is open is UNKNOWN
+
+Proved by tests: the manifest's rules, the backup name, the snapshot and its comparison, and the source of the route.
+Core tests 3176 after, 0 failed. The Release build has 0 warnings and 0 errors.
+
+UNKNOWN: whether the Close NWC/NWD files on load option can be read or set by the add-in, no public member returns it.
+Whether an NWF opened by the NWF page on another PC finds its NWC at the same path. What UpdateFiles returns once a file
+is written after the open. The scanned build of a group still appends file by file with TryAppendFile and not
+AppendFiles, so a bad file is named one by one.
+
 ## 2026-10-14 F186 the viewpoint tree is one tool folder, A B C, the tests directly
 
 Branch fix-F186 off main 45fd788 (after PR 265). Bader's answer 1 of Q174 and his order of 14 Oct, round 4 of the second
