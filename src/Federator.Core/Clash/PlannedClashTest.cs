@@ -81,6 +81,13 @@ namespace Federator.Core.Clash
 
         public PlannedClashSide Right { get; private set; }
 
+        /// <summary>The same test at another place in the order, everything else as it was, F168.</summary>
+        internal PlannedClashTest AtFileIndex(int fileIndex)
+        {
+            return new PlannedClashTest(
+                Name, TestType, TestTypeName, MergeComposites, Left, Right, fileIndex, Address);
+        }
+
         /// <summary>The same test under another name, everything else as it was, F132's mirror name.</summary>
         internal PlannedClashTest Named(string name)
         {

@@ -618,3 +618,4 @@ F164,"the Run as label Weekly run plus XML renamed Weekly run plus matrix in the
 F165,"MatrixCorrections.ReadPicked and cut-xml.ps1 kept for the coming clash test round, the mirror check recorded in 01_next, Q165",F165,none,fix,merged,245,none,2026-10-14
 F166,"the matrix pack chosen by the project code of the NWC file names, a run with no pack, two packs or mixed codes stopped before anything is opened, Q164 B",F166,none,fix,merged,246,none,2026-10-14
 F167,"the tolerance comes only from the drop down, the no tolerance and the UNKNOWN UNITS checks and every read of a matrix or XML tolerance removed, Q167 A",F167,none,fix,merged,247,none,2026-10-14
+F168,"a test saved in the NWF that the matrix does not name is run too where it sits, after the tests of the matrix, in the reports and the Coverage sheet, priority C unless the map names it, Q168 A",F168,none,fix,merged,248,none,2026-10-14

@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 210 | 16 | 0 | 3 | 60 | 7 | 296 |
-| total | 413 | 24 | 0 | 3 | 161 | 18 | 619 |
+| outside the waves | 211 | 16 | 0 | 3 | 60 | 7 | 297 |
+| total | 414 | 24 | 0 | 3 | 161 | 18 | 620 |
 <!-- the end of the counts -->
 
 ## Now
@@ -49,7 +49,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 
 ## Blockers and known bugs
 - Navisworks crashes at about picture 8900, one GDI object a picture, 10000 allowed, F160 and Q171
-- A saved test the built in matrix does not name is not run since F155, Q168. F163: tools\loop names two boxes now gone
+- F163: tools\loop and the window driver name two boxes now gone. A saved test the matrix does not name runs since F168
 - One DIALOG finding at the close of set 94 UNKNOWN. FR-067 is out, a probe answers it first
 - T6-R-WPFBOX and F149-R1, as before. Q169 the Log place and Q170 a model on Internal still FAILS, in 02_questions
 

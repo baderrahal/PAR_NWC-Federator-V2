@@ -383,6 +383,44 @@ namespace Federator.Core.Tests
             Assert.That(CoverageWords.For(rows[0].Reason), Does.Contain("UNKNOWN"));
         }
 
+        // ---------- a saved test the matrix does not name, F168 ----------
+
+        /// <summary>
+        /// Bader's answer A to Q168. A test saved in the NWF that the matrix does not name is run too
+        /// where it sits, and it is a row of the coverage like any other, no longer only named as unrun.
+        /// </summary>
+        [Test]
+        public void ASavedTestTheMatrixDoesNotNameRunsAndIsARowOfTheCoverage()
+        {
+            ClashTestPlan matrix = Plan(Test("T", ArWalls, ArFloors));
+            ClashTestPlan inTheDocument = ClashTestPlan.FromDocument(
+                new List<SavedClashTest>
+                {
+                    new SavedClashTest("T", 1, true, false, 1, ArWalls, false, 1, ArFloors, new List<int> { 0 }),
+                    new SavedClashTest("By hand", 1, true, false, 1, ArWalls, false, 1, ArFloors, new List<int> { 1 })
+                },
+                "m");
+
+            IList<string> added;
+            ClashTestPlan together = matrix.WithTheSavedTestsTheMatrixDoesNotName(inTheDocument, out added);
+
+            Assert.That(added, Is.EqualTo(new[] { "By hand" }), "the one the matrix names is the matrix's");
+
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.AddCreated("T");
+            outcome.AddRan("T", 2, 2, Clashes(1), 0.1);
+            outcome.AddAlreadyPresent("By hand");
+            outcome.AddRan("By hand", 2, 2, Clashes(3), 0.1);
+
+            IList<TestCoverage> rows = Coverage(together, outcome);
+
+            Assert.That(rows.Count, Is.EqualTo(2));
+            Assert.That(rows[1].Name, Is.EqualTo("By hand"));
+            Assert.That(rows[1].Presence, Is.EqualTo(TestPresence.AlreadyThere));
+            Assert.That(rows[1].Ran, Is.True);
+            Assert.That(rows[1].Reason, Is.EqualTo(CoverageReason.HasClashes));
+        }
+
         // ---------- created and not run ----------
 
         [Test]

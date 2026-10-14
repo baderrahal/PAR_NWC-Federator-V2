@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F168 a saved test the matrix does not name is run too
+
+Branch fix-F168 off main be43468. Bader's order of 14 Oct, task 6, Q168 A.
+
+What changed:
+- ClashRunner, after the plan is resolved against the document's sets, adds every test saved in the NWF that the matrix
+  does not name, ClashTestPlan.WithTheSavedTestsTheMatrixDoesNotName. They come from the read the runner already makes of
+  the saved tests with their sides, are planned from the document and so run where they sit, never created and never
+  compared, after the tests of the matrix and in the order the document holds them. The tolerance is the drop down's,
+  by the code that sets it on every saved test. A saved test of a type the tool does not run is skipped by name
+- they are in the report, so in the HTML, the Excel and the Coverage sheet, and no longer only in the COVERAGE block as
+  tests the matrix does not name. The CLASH line names them, ClashRunOutcome.SavedTestsRunToo holds them
+- their viewpoints go under priority C unless the priority map names the test, PriorityMap.OfASavedTest. A test of the
+  matrix the map has no row for keeps no priority as before. What I did for priority: C, as the order says, applied in
+  FederationEngine.ApplyThePriorities
+- with no pack built in nothing changes, every saved test already runs
+
+Proved here by tests: the plan adds the unnamed saved tests after the matrix's, at their addresses and in order, once
+each, and not one the matrix names even where the matrix skipped it. An unknown type is skipped by name. The coverage
+holds the added test as a row that ran with its clashes. The priority is C where the map has no row and the map's
+letter where it has one. Not run in Navisworks in this entry, so that a hand made test in a real NWF runs and appears in
+the Excel is UNKNOWN until a run.
+
+Core tests 3093 before, 3099 after, 0 failed. Release build 0 warnings, 0 errors.
+
 ## 2026-10-14 F167 the tolerance comes only from the drop down
 
 Branch fix-F167 off main 79cafae. Bader's order of 14 Oct, task 4, Q167 A.

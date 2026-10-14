@@ -174,6 +174,17 @@ namespace Federator.Core.Clash
             return byTestName.TryGetValue(testName, out priority) ? priority : ClashPriority.None;
         }
 
+        /// <summary>
+        /// The priority of a test saved in the NWF that the matrix does not name and that is run too,
+        /// F168, Bader's answer A to Q168: the map's where it names the test, and C where it does not,
+        /// so its viewpoints sit under C and never under no priority.
+        /// </summary>
+        public ClashPriority OfASavedTest(string testName)
+        {
+            ClashPriority named = Of(testName);
+            return named == ClashPriority.None ? ClashPriority.C : named;
+        }
+
         /// <summary>Whether the file names that test at all.</summary>
         public bool Names(string testName)
         {
