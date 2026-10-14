@@ -58,6 +58,7 @@ namespace Federator.Addin.Engine
         private readonly HideOtherAcrossTheRun hideOther;
         private readonly ImagesSeconds seconds;
         private readonly ImageCodecInfo jpeg;
+        private readonly PictureNameWatch names = new PictureNameWatch();
 
         /// <summary>
         /// The guard is handed in so it lives for the whole run rather than for one group,
@@ -105,6 +106,12 @@ namespace Federator.Addin.Engine
         public bool OnlyTheTestsModels
         {
             get { return options.Write && options.OnlyTheTestsModels; }
+        }
+
+        /// <summary>How many pictures between two MEMORY and RATE lines, F157, the setting on ImageOptions.</summary>
+        public int LogEveryPictures
+        {
+            get { return options.LogEveryPictures; }
         }
 
         /// <summary>The size past which the texture cache is cleared between two tests' pictures, F147, the setting on ImageOptions.</summary>
@@ -207,6 +214,15 @@ namespace Federator.Addin.Engine
                 PictureNumber number = report.NextPictureOf(test, row);
                 string path = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
 
+                // F157. Two clashes that would write one file are said before the second is written,
+                // by name, so a run that stops can be read for whether one picture replaced another.
+                string twice = names.Take(path, test.Name, Name(row));
+
+                if (twice != null)
+                {
+                    log.Line("IMAGE    " + twice);
+                }
+
                 try
                 {
                     string folder = Path.GetDirectoryName(path);
@@ -232,7 +248,7 @@ namespace Federator.Addin.Engine
 
                     if (!arrived)
                     {
-                        Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseNoFileArrived(path));
+                        Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseNoFileArrived(path), path);
                         return false;
                     }
 
@@ -248,7 +264,7 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception error)
                 {
-                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrewWriting(error, path));
+                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrewWriting(error, path), path);
                     return false;
                 }
             }
@@ -336,10 +352,10 @@ namespace Federator.Addin.Engine
         /// reason alone, so the same fault at fifty paths is one reason, FR-076.
         /// </summary>
         private void Missed(
-            ClashReport report, TestReport test, ClashRow row, double tookSeconds, ImageFailure why)
+            ClashReport report, TestReport test, ClashRow row, double tookSeconds, ImageFailure why, string path)
         {
             report.ReleaseImageIndex(test);
-            Failed(report, row, tookSeconds, why);
+            Failed(report, test, row, tookSeconds, why, path);
         }
 
         /// <summary>
@@ -369,21 +385,60 @@ namespace Federator.Addin.Engine
 
             foreach (ClashRow row in counted.Failed)
             {
-                log.Detail("IMAGE    failed for " + Name(row) + ". " + (ReferenceEquals(row, firstRow) ? first : rest).Line());
+                ImageFailure why = ReferenceEquals(row, firstRow) ? first : rest;
+                SayTheFailure(test, row, why, null);
+            }
+
+            if (counted.Failed.Count > 0)
+            {
+                // Once for the fault and not once a row, so a stretch of 5000 rows left is one line.
+                SayTheMemory("on an image failure, " + counted.Failed.Count + " rows counted as failed from " + (firstRow == null ? "the rows left" : Name(firstRow)));
             }
 
             return counted;
         }
 
-        private void Failed(ClashReport report, ClashRow row, double tookSeconds, ImageFailure why)
+        private void Failed(ClashReport report, TestReport test, ClashRow row, double tookSeconds, ImageFailure why, string path)
         {
             report.Images.RenderFailed(row.Name, tookSeconds);
-            log.Detail("IMAGE    failed for " + Name(row) + ". " + why.Line());
+            SayTheFailure(test, row, why, path);
+            SayTheMemory("on an image failure, " + Name(row));
 
             if (guard != null)
             {
                 guard.RecordFailure(why.Reason);
             }
+        }
+
+        /// <summary>
+        /// One failed picture, F157: a stamped line with the clash, its test and the reason, and under
+        /// it the full path and the whole exception with its stack trace. The line was an unstamped
+        /// continuation line before, which is how a run that died had two failures and no time.
+        /// </summary>
+        private void SayTheFailure(TestReport test, ClashRow row, ImageFailure why, string path)
+        {
+            log.Line("IMAGE    failed for " + Name(row) + " in "
+                + (test == null || string.IsNullOrEmpty(test.Name) ? "an unnamed test" : test.Name)
+                + ". " + why.Line());
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                log.Detail("file     " + path);
+            }
+
+            if (!string.IsNullOrEmpty(why.Full))
+            {
+                foreach (string line in why.Full.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None))
+                {
+                    log.Detail("         " + line);
+                }
+            }
+        }
+
+        /// <summary>A MEMORY line with the GDI and USER counts, F157, on its own stamped line.</summary>
+        private void SayTheMemory(string when)
+        {
+            log.Line(ProcessMemory.PicturesLine(when, ProcessMemory.Read()));
         }
 
         private static string Name(ClashRow row)

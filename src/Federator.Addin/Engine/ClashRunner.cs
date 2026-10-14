@@ -2770,6 +2770,11 @@ namespace Federator.Addin.Engine
             HandTheProgress(harvest, string.Empty);
             harvest.BeginPieces(RunSteps.Pictures);
 
+            // F157. The memory with the GDI and USER counts at the start, then every
+            // Images.LogEveryPictures pictures with the rate, so a crash leaves numbers to read.
+            pictureWatch = new PictureWatch(Math.Max(1, Images.LogEveryPictures), log.ElapsedSeconds);
+            log.Line(ProcessMemory.PicturesLine("at the start, 0 of " + walk.Rows + " pictures", ProcessMemory.Read()));
+
             int done = 0;
 
             foreach (PictureStretch stretch in walk.Stretches)
@@ -2789,6 +2794,24 @@ namespace Federator.Addin.Engine
             return Words.Counted(walk.Rows, "row", "rows") + " in report order in "
                 + Words.Counted(walk.Stretches.Count, "stretch", "stretches")
                 + (Images.ShouldStopTheRun ? ", the pictures' guard fired" : string.Empty);
+        }
+
+        private PictureWatch pictureWatch;
+
+        /// <summary>
+        /// Once a picture is done, or passed over, F157: the MEMORY line and the RATE line when the
+        /// count reaches the next multiple of the setting. Each line is on the log's own flush, so
+        /// a crash after it loses nothing.
+        /// </summary>
+        private void AfterAPicture(int done, int total)
+        {
+            if (pictureWatch == null || !pictureWatch.Due(done))
+            {
+                return;
+            }
+
+            log.Line(ProcessMemory.PicturesLine(done + " of " + total + " pictures", ProcessMemory.Read()));
+            log.Line(pictureWatch.RateLine(done, total, log.ElapsedSeconds));
         }
 
         /// <summary>The key of the test of the document a row was read from, or null for a row that waits for no picture.</summary>
@@ -2823,6 +2846,7 @@ namespace Federator.Addin.Engine
                 {
                     next++;
                     harvest.Piece("picture", doneBefore + next, total);
+                    AfterAPicture(doneBefore + next, total);
                 }
 
                 if (next == rows.Count)
@@ -2868,6 +2892,7 @@ namespace Federator.Addin.Engine
                         harvest.PictureLater(clashTests, test, Report, into, picturesWaiting[rows[next]].Row);
                         next++;
                         harvest.Piece("picture", doneBefore + next, total);
+                        AfterAPicture(doneBefore + next, total);
                     }
                 }
             }

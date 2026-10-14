@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F157 the picture pass leaves a trail for a run that dies
+
+Branch fix-F157 off main 49c69e3. Run 20261014-020323 of 1A04PK ended inside PICTURES at picture 8775 of 10206 with no
+stack trace, no RESULT block and no memory line since the start of the step. Its last two lines carried no time stamp.
+
+What was read first, off the machine and not assumed:
+- Windows Error Reporting holds three GDIObjectLeak events for Roamer.exe at 02:33:02 and 02:33:26, about a minute
+  before the last log line at 02:34:26. There is no application crash event for that time. This fits a process out of GDI
+  objects and it is not proof, since the GDI count was never logged
+- Clash35 and Clash36 both showing cd300035.jpg is how NotReached prints the rows left, with the first fault's path. Both
+  cd300035.jpg and cd300036.jpg are on the disk, so two clashes did not share a name in that run
+
+What changed, diagnostic logging only:
+- MEMORY PICTURES line, private bytes, working set, managed heap, GDI objects and USER objects, at the start of the pass,
+  every 250 pictures (ImageOptions.LogEveryPictures) and on every image failure
+- RATE PICTURES line every 250 pictures, since the last line and since the start of the pass
+- every IMAGE failure is a stamped line with the clash, its test, the reason, then the file and the whole exception with
+  its stack trace under it. The guard still reads the reason alone
+- a WARNING line naming both clashes when two would write one picture file
+- every log line was already flushed to the disk as it is written, RunLog.WriteRaw. A test now reads the file while it is
+  open, for the pictures' lines
+
+Core tests: 3099 passed before, 3110 passed after, 0 failed, 0 skipped. Release build 0 warnings, 0 errors. Not run in
+Navisworks in this entry.
+
 ## 2026-10-14 the window run of set 94 on main 51d9f31d, the round of F151 to F156 in Navisworks
 
 Branch record-round-20261013 off main 51d9f31d. Set 94 is a new run set made from the four NWC files of 1A02MM that

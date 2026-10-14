@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Federator.Core.Diagnostics
 {
@@ -21,12 +22,33 @@ namespace Federator.Core.Diagnostics
         private const double Megabyte = 1024d * 1024;
 
         public ProcessMemory(long privateBytes, long workingSet, long managedBytes, string notReadBecause)
+            : this(privateBytes, workingSet, managedBytes, -1, -1, notReadBecause)
+        {
+        }
+
+        public ProcessMemory(
+            long privateBytes, long workingSet, long managedBytes, long gdiObjects, long userObjects, string notReadBecause)
         {
             PrivateBytes = privateBytes;
             WorkingSet = workingSet;
             ManagedBytes = managedBytes;
+            GdiObjects = gdiObjects;
+            UserObjects = userObjects;
             NotReadBecause = notReadBecause;
         }
+
+        /// <summary>The process's GDI object count, or below zero where not read. Windows ends a process's drawing at 10000 by default.</summary>
+        public long GdiObjects { get; private set; }
+
+        /// <summary>The process's USER object count, or below zero where not read.</summary>
+        public long UserObjects { get; private set; }
+
+        [DllImport("user32.dll")]
+        private static extern uint GetGuiResources(IntPtr process, uint flags);
+
+        private const uint GdiFlag = 0;
+
+        private const uint UserFlag = 1;
 
         /// <summary>The process's private bytes, or below zero where not read.</summary>
         public long PrivateBytes { get; private set; }
@@ -49,6 +71,8 @@ namespace Federator.Core.Diagnostics
         {
             long privateBytes = -1;
             long workingSet = -1;
+            long gdi = -1;
+            long user = -1;
             string why = null;
 
             try
@@ -57,6 +81,8 @@ namespace Federator.Core.Diagnostics
                 {
                     privateBytes = self.PrivateMemorySize64;
                     workingSet = self.WorkingSet64;
+                    gdi = ReadGui(self, GdiFlag);
+                    user = ReadGui(self, UserFlag);
                 }
             }
             catch (Exception error)
@@ -69,7 +95,47 @@ namespace Federator.Core.Diagnostics
                 why = error.GetType().Name + ": " + error.Message;
             }
 
-            return new ProcessMemory(privateBytes, workingSet, GC.GetTotalMemory(false), why);
+            return new ProcessMemory(privateBytes, workingSet, GC.GetTotalMemory(false), gdi, user, why);
+        }
+
+        /// <summary>One GUI object count of a process, or below zero where Windows refuses it or the call is not there.</summary>
+        private static long ReadGui(Process self, uint flag)
+        {
+            try
+            {
+                return GetGuiResources(self.Handle, flag);
+            }
+            catch (Exception error)
+            {
+                if (!(error is DllNotFoundException || error is EntryPointNotFoundException
+                    || error is Win32Exception || error is InvalidOperationException))
+                {
+                    throw;
+                }
+
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// The line the pictures write, F157: the three numbers of the step lines and the GDI and USER
+        /// object counts, which are what a run that draws thousands of pictures can run out of. The
+        /// when says which moment, such as the start of the pictures, a count reached or a failure.
+        /// </summary>
+        public static string PicturesLine(string when, ProcessMemory at)
+        {
+            return "MEMORY   PICTURES " + Words.Or(when, "UNKNOWN") + ", "
+                + "private bytes " + Megabytes(Of(at, m => m.PrivateBytes)) + ", "
+                + "working set " + Megabytes(Of(at, m => m.WorkingSet)) + ", "
+                + "managed heap " + Megabytes(Of(at, m => m.ManagedBytes)) + ", "
+                + "GDI objects " + Count(Of(at, m => m.GdiObjects)) + ", "
+                + "USER objects " + Count(Of(at, m => m.UserObjects))
+                + Why(at);
+        }
+
+        private static string Count(long number)
+        {
+            return number < 0 ? "UNKNOWN" : number.ToString(CultureInfo.InvariantCulture);
         }
 
         /// <summary>The line as a step starts, under its STEP started line.</summary>
