@@ -1,5 +1,35 @@
 # 03 Bader next
 
+## Round 4, second set, F189 the final run of Part 2, Task 8
+
+Written for Bader. Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. The runs were on a COPY of C04 under C:\NWC-PC-Test\work\final, in your own layout: NWF\C04, NWD\C04, Log, Clash report and a Backup folder. Your files in NM fed were not touched. Evidence: C:\NWC-PC-Test\evidence\2026-10-15-f189-final. Build 9eb59ad0. Navisworks was started by the launcher and closed by it each time, none was left open, and AutoSave was put back to 0.
+
+### The three runs
+
+1. NWC page, first build, viewpoints on. 61 minutes, DONE. NWF 11.5 MB, NWD 136 MB, Excel, HTML, 187 viewpoints in the tool folder, 3156 pictures, the memory stop at 12 GB. The manifest and the places of the NWF, its NWD and its Log folder were written. PROVEN
+2. I then did what a coordinator does on the copy: a Reviewed clash with an assignee and a comment, an Approved one with an approver, a New one with an assignee and a comment, on 3 tests, and one viewpoint of mine at the root and a root folder named A holding one viewpoint of mine
+3. NWF page, nothing changed, all five steps on. 68 minutes, DONE. The manifest said 10 unchanged. The backup was made first. The tool folder was found by its name and marker and deleted with its 187 items, the PROOF line said 741 tests and 10170 results before and 741 and 10170 after, and 187 viewpoints were made again. The one time clean up read the root folder A, named my viewpoint in it as not the tool's naming, and left the folder. The NWF and NWD were written before the pictures. All 6 Reviewed and Approved clashes kept their status and every assignee, approver and comment was as it was. All 10170 matched by Guid. PROVEN
+4. I wrote one NWC over with another file's content, planted a jpg named like the tool's that the run does not write, and a text note in the pictures folder. NWF page again. 35 minutes, DONE. The page's list and the manifest named exactly that NWC as changed. 443 new clashes were New, 1498 moved status, and 15 tests dropped clashes with a WARNING that names each. 125 viewpoints were made again in the tool folder. The 6 Reviewed and Approved kept their status. The planted jpg and 677 leftover pictures were removed, 678 in all, and the text note was kept. PROVEN
+
+### What I checked after the runs, PROVEN
+
+- The NWF and NWD folders hold only the NWF and the NWD. The Log folder holds the dated Excel and Internal Excel, the txt file, the run log and its TSV, and `nwc-manifest.tsv`. The Backup folder holds one timestamped copy of the NWF for each refresh and none overwrote another
+- The NWC files were not changed by the runs, size and time. Nothing was moved or renamed
+- After each run I read the saved viewpoint tree out of the NWF with a probe: the folders the NWCs brought are as they were, my viewpoint at the root and my folder A with its one viewpoint are there, and the tool folder holds A, B and C with its marker comment. Nothing outside the tool folder was touched
+- Statuses and comments kept, new clashes New, gone clashes Resolved and kept, none removed
+- The group result was DONE each time, with the NOTICE for the model on Internal and no FAILED
+
+### What is NOT proven by these runs
+
+- Whether the NWF page's table shows the numbers to a person. The earlier run in the real window showed 25 rows. In these runs my reader stopped after 25 minutes, before the run ended
+- Why the views took 53 and 61 minutes in the first two runs and 29 minutes in the third, where fewer clashes were open. UNKNOWN. The run is over the 45 minute target when viewpoints are on
+- Whether Excel shows the new workbook right to a person
+- The Rebuild in a real run. TEST only
+
+### One finding I fixed
+
+The NWF page used to put the NWD and the Log folder beside the NWF, which is not where your NWC page build puts them. F189 remembers where each NWF's NWD and Log folder are, in `nwf-places.tsv` under %LOCALAPPDATA%\ParsonsNwcFederator, so the NWF page writes there. PROVEN by the runs above, in your layout. For an NWF built before F189 the list has no line, and the NWF page then uses the folders beside the file until one run has written it
+
 ## Round 4, second set, F188 the two pages, Task 9
 
 Written for Bader. Simple words. PROVEN means a run in the real window showed it. TEST means only a test showed it. UNKNOWN means nothing showed it yet. The runs were on a COPY of C04 under C:\NWC-PC-Test\work. Evidence: C:\NWC-PC-Test\evidence\2026-10-14-f188-pages.

@@ -1733,6 +1733,12 @@ and 6 does not read as broken.
   Approved and Resolved before > after, from `JobOutcome.RefreshResults`. The picked NWF route, the NWF page's run,
   keeps the pack choice by project code, the capped pictures, the stops and the order of F182. The words of the page
   are Core's, `NwfPageWords`, and what its controls hold is read off the XAML by a test.
+- THE NWF'S OWN FOLDERS, F189, `NwfPlaces` and `NwfPlacesStore`. The NWC page builds a group with its NWF and NWD in
+  folders of the user's choosing and the Log folder beside both. The run that built or refreshed an NWF writes where
+  they are into `nwf-places.tsv` under %LOCALAPPDATA%\ParsonsNwcFederator, one NWF a line, and the NWF page's run, its list
+  of changed files and its confirmation read the NWD path and the Log folder there, so the NWD, the Log, the Backup and
+  the Clash report folders stay the group's own. An NWF the list does not know is run beside its file, the open file
+  route's rule of F158, until one run has written it.
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR
