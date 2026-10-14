@@ -428,7 +428,7 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// One failed picture, F157: a stamped line with the clash, its test and the reason, and under
-        /// it the full path and the whole exception with its stack trace. The line was an unstamped
+        /// it the full path and the whole exception with its call trace. The line was an unstamped
         /// continuation line before, which is how a run that died had two failures and no time.
         /// </summary>
         private void SayTheFailure(TestReport test, ClashRow row, ImageFailure why, string path)

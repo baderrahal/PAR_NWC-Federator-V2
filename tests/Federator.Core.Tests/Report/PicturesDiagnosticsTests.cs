@@ -161,14 +161,14 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void AFailureKeepsTheWholeExceptionWithItsStackTraceAndTheGuardStillSeesOneReason()
+        public void AFailureKeepsTheWholeExceptionWithItsCallTraceAndTheGuardStillSeesOneReason()
         {
             ImageFailure one = Thrown(@"C:\out\Report_files\cd300035.jpg");
             ImageFailure two = Thrown(@"C:\out\Report_files\cd300036.jpg");
 
             Assert.That(one.Full, Does.Contain("ArgumentException"));
             Assert.That(one.Full, Does.Contain("Parameter is not valid"));
-            Assert.That(one.Full, Does.Contain("   at "), "a stack trace is in it");
+            Assert.That(one.Full, Does.Contain("   at "), "a call trace is in it");
             Assert.That(one.Reason, Is.EqualTo(two.Reason), "the path is not in the reason, so fifty are one reason");
         }
 
