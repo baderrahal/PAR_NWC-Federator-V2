@@ -248,6 +248,16 @@ namespace Federator.Addin.Engine
         public ClashRunOutcome Clash { get; set; }
 
         /// <summary>
+        /// F182, Bader's answer B to Q175. The runner whose picture pass was left for after the NWF is saved and the
+        /// NWD published, or null where the pictures were taken inside the clash step, where none were wanted or
+        /// where Compact resolved is on. The engine takes them, writes what links them, and lets go of this.
+        /// </summary>
+        public ClashRunner PictureRunner { get; set; }
+
+        /// <summary>Whether the run stopped by the clash record has been put on this group's errors, so it is said once.</summary>
+        public bool StopOfTheClashSaid { get; set; }
+
+        /// <summary>
         /// The workbook model for this group, or null when no report was wanted. Null once the
         /// group has ended, F147, FederationEngine.LetGoOfTheRows, so nothing after the group
         /// may read it.

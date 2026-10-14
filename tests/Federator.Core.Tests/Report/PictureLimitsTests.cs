@@ -292,7 +292,7 @@ namespace Federator.Core.Tests
             Assert.That(gdiAtTheEnd, Is.LessThan(10000), "it never nears the 10000 a process may hold");
             Assert.That(backstop.Notice(), Does.Contain("picture 8502"));
             Assert.That(backstop.Notice(), Does.Contain("9001 GDI objects"));
-            Assert.That(backstop.Notice(), Does.Contain("The run goes on to the NWD, the HTML, the Excel and the viewpoints"));
+            Assert.That(backstop.Notice(), Does.Contain("The run goes on without the rest of the pictures"));
 
             int empty = 0;
 
@@ -322,6 +322,165 @@ namespace Federator.Core.Tests
             Assert.That(backstop.Check(9500, 4), Is.False, "said once");
             Assert.That(backstop.PictureNumber, Is.EqualTo(3));
             Assert.That(backstop.GdiObjects, Is.EqualTo(9001));
+        }
+
+        private const long Megabyte = 1024L * 1024;
+
+        /// <summary>
+        /// The picture pass with both stops, as ClashImages.Write asks them: each is read before the picture
+        /// and again after it is saved, the GDI count rising one and the private bytes rising a fixed amount
+        /// for every picture, as the C04 run measured it, 3.3 MB. The first stop to fire ends the pass.
+        /// </summary>
+        private static int PassWithBothStops(
+            ClashReport report, GdiBackstop gdi, MemoryBackstop memory, long gdiAtTheStart, long bytesAtTheStart, long bytesForAPicture)
+        {
+            int made = 0;
+            long gdiNow = gdiAtTheStart;
+            long bytesNow = bytesAtTheStart;
+            ImageOptions options = new ImageOptions();
+
+            foreach (TestReport test in report.Tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    if (gdi.Fired || memory.Fired)
+                    {
+                        return made;
+                    }
+
+                    if (!options.TakesAPictureOf(report, test, row, null))
+                    {
+                        continue;
+                    }
+
+                    if (gdi.Check(gdiNow, made + 1) || memory.Check(bytesNow, made + 1))
+                    {
+                        return made;
+                    }
+
+                    row.ImageFile = "cd" + made + ".jpg";
+                    made++;
+                    gdiNow++;
+                    bytesNow += bytesForAPicture;
+
+                    gdi.Check(gdiNow, made + 1);
+                    memory.Check(bytesNow, made + 1);
+                }
+            }
+
+            return made;
+        }
+
+        private static ClashReport ManySmallTests()
+        {
+            ClashReport report = Report();
+
+            for (int t = 0; t < 40; t++)
+            {
+                AddTest(report, "T" + t, 400);
+            }
+
+            return report;
+        }
+
+        [Test]
+        public void TheMemoryStopIs12GigabytesOfPrivateBytesAndReadsNothingItCouldNotRead()
+        {
+            Assert.That(PictureLimits.MemoryStopBytes, Is.EqualTo(12L * 1024 * 1024 * 1024));
+
+            MemoryBackstop stop = new MemoryBackstop();
+
+            Assert.That(stop.Check(-1, 1), Is.False, "a count that could not be read fires nothing");
+            Assert.That(stop.Check(PictureLimits.MemoryStopBytes, 2), Is.False, "12 GB is the limit and not past it");
+            Assert.That(stop.Check(PictureLimits.MemoryStopBytes + 1, 3), Is.True);
+            Assert.That(stop.Check(PictureLimits.MemoryStopBytes * 2, 4), Is.False, "said once");
+            Assert.That(stop.PictureNumber, Is.EqualTo(3));
+            Assert.That(stop.PrivateBytes, Is.EqualTo(PictureLimits.MemoryStopBytes + 1));
+        }
+
+        [Test]
+        public void TheMemoryStopFiresAtPastTwelveGigabytesAndTheRunFinishesWithTheRestLeftEmpty()
+        {
+            // The C04 run: 0.8 GB at the start and 3.3 MB of private memory for each picture. 16000 pictures
+            // are wanted, so without the stop it would reach 53 GB. The GDI count starts low, so only the
+            // memory stop can fire.
+            ClashReport report = ManySmallTests();
+            GdiBackstop gdi = new GdiBackstop();
+            MemoryBackstop memory = new MemoryBackstop();
+            long perPicture = 3300 * 1024;
+
+            int made = PassWithBothStops(report, gdi, memory, 500, 800 * Megabyte, perPicture);
+
+            Assert.That(memory.Fired, Is.True);
+            Assert.That(gdi.Fired, Is.False);
+            Assert.That(made, Is.InRange(3400, 3600), "about 3500 pictures, as the run's own arithmetic gave");
+            Assert.That(memory.PictureNumber, Is.EqualTo(made + 1), "the picture that was not made");
+            Assert.That(memory.PrivateBytes, Is.GreaterThan(PictureLimits.MemoryStopBytes));
+            Assert.That(memory.PrivateBytes - perPicture, Is.LessThanOrEqualTo(PictureLimits.MemoryStopBytes),
+                "it fired on the first reading past the limit");
+
+            int empty = 0;
+
+            foreach (TestReport test in report.Tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    if (!row.HasImage)
+                    {
+                        empty++;
+                    }
+                }
+            }
+
+            Assert.That(empty, Is.EqualTo(16000 - made));
+
+            string notice = memory.Notice(empty);
+
+            Assert.That(notice, Does.StartWith("NOTICE   the pictures stopped at picture " + memory.PictureNumber));
+            Assert.That(notice, Does.Contain("GB of private memory, past the 12.0 GB set"));
+            Assert.That(notice, Does.Contain(empty + " pictures were skipped"));
+            Assert.That(notice, Does.Contain("The run goes on without them"));
+            Assert.That(memory.FiredLine(), Does.Contain("picture " + memory.PictureNumber));
+        }
+
+        [Test]
+        public void TheFirstOfTheTwoStopsToFireEndsThePicturesAndTheOtherStaysQuiet()
+        {
+            // Memory is low and the GDI count is high: the GDI stop fires first, as on the run of 14 Oct.
+            ClashReport first = ManySmallTests();
+            GdiBackstop gdiFirst = new GdiBackstop();
+            MemoryBackstop memoryQuiet = new MemoryBackstop();
+            int madeByGdi = PassWithBothStops(first, gdiFirst, memoryQuiet, 8000, 800 * Megabyte, 1024);
+
+            Assert.That(gdiFirst.Fired, Is.True);
+            Assert.That(memoryQuiet.Fired, Is.False);
+            Assert.That(madeByGdi, Is.EqualTo(1001), "the 1001st picture takes the count to 9001, the one that crosses the limit");
+
+            // Memory is high and the GDI count low: the memory stop fires first.
+            ClashReport second = ManySmallTests();
+            GdiBackstop gdiQuiet = new GdiBackstop();
+            MemoryBackstop memoryFirst = new MemoryBackstop();
+            int madeByMemory = PassWithBothStops(second, gdiQuiet, memoryFirst, 500, 11 * 1024 * Megabyte, 3300 * 1024);
+
+            Assert.That(memoryFirst.Fired, Is.True);
+            Assert.That(gdiQuiet.Fired, Is.False);
+            Assert.That(madeByMemory, Is.LessThan(400));
+        }
+
+        [Test]
+        public void ATestOf1000ClashesIsStillCappedByItsPriorityWhenTheMemoryStopDoesNotFire()
+        {
+            ClashReport report = Report();
+            TestReport test = AddTest(report, "MANY-A", 1000, ClashPriority.A);
+            GdiBackstop gdi = new GdiBackstop();
+            MemoryBackstop memory = new MemoryBackstop();
+
+            int made = PassWithBothStops(report, gdi, memory, 500, 800 * Megabyte, 1024);
+
+            Assert.That(made, Is.EqualTo(150));
+            Assert.That(test.ImageCount, Is.EqualTo(150));
+            Assert.That(memory.Fired, Is.False);
+            Assert.That(gdi.Fired, Is.False);
         }
     }
 }

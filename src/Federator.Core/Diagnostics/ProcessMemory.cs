@@ -67,6 +67,30 @@ namespace Federator.Core.Diagnostics
             }
         }
 
+        /// <summary>
+        /// F182. This process's private bytes now, or below zero where Windows refuses it. One read, for the memory
+        /// stop of the picture step, which asks it before every picture and again after each is saved.
+        /// </summary>
+        public static long PrivateBytesNow()
+        {
+            try
+            {
+                using (Process self = Process.GetCurrentProcess())
+                {
+                    return self.PrivateMemorySize64;
+                }
+            }
+            catch (Exception error)
+            {
+                if (!(error is Win32Exception || error is InvalidOperationException || error is NotSupportedException))
+                {
+                    throw;
+                }
+
+                return -1;
+            }
+        }
+
         private const uint GdiFlag = 0;
 
         private const uint UserFlag = 1;

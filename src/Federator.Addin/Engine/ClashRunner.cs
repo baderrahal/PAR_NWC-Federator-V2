@@ -335,6 +335,15 @@ namespace Federator.Addin.Engine
         public ClashImages Images { get; set; }
 
         /// <summary>
+        /// F182, Bader's answer B to Q175. True leaves the picture pass out of Run: the tests run and the mirrors are
+        /// merged, the rows are read and each is addressed, and the pictures wait until TakeTheDeferredPictures is
+        /// called, which the engine does after the NWF is saved and the NWD published. Navisworks's private memory
+        /// grows about 3.3 MB for each picture, so the pictures come last of what changes the document's memory.
+        /// False takes them inside Run as before, the hand button's way.
+        /// </summary>
+        public bool DeferPictures { get; set; }
+
+        /// <summary>
         /// Where the workbook is going, because the pictures go in a folder named after
         /// it and beside it. Known before the clash step rather than after, since that is
         /// when the pictures are rendered.
@@ -481,7 +490,7 @@ namespace Federator.Addin.Engine
                 DocumentSelectionSets sets = document.SelectionSets;
                 byPath = IndexSets(sets);
 
-                if (Images != null)
+                if (Images != null && !PicturesDeferred)
                 {
                     modelsShown = new TestModelsShown(document, log, Images.OnlyTheTestsModels);
                 }
@@ -631,15 +640,26 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception)
                 {
-                    RenderThePicturesAfterTheMergeThrew(document, clashTests);
+                    // F182. Deferred pictures are taken later by the engine, which still finds them waiting.
+                    if (!PicturesDeferred)
+                    {
+                        RenderThePicturesAfterTheMergeThrew(document, clashTests);
+                    }
+
                     throw;
                 }
 
-                RenderThePicturesWaiting(document, clashTests);
+                // F182, Bader's answer B to Q175. With the pictures deferred nothing is taken here: the engine
+                // saves the NWF, publishes the NWD and only then calls TakeTheDeferredPictures, so a picture step
+                // that grows Navisworks's memory, stops or dies leaves both files already written.
+                if (!PicturesDeferred)
+                {
+                    RenderThePicturesWaiting(document, clashTests);
 
-                // FR-076. Every picture is taken above, so this is where the pictures' guard can
-                // stop the run, once every test of the group has run, F149.
-                StopIfTheImagesFailed(outcome);
+                    // FR-076. Every picture is taken above, so this is where the pictures' guard can
+                    // stop the run, once every test of the group has run, F149.
+                    StopIfTheImagesFailed(outcome);
+                }
 
                 // F76. One line per group, whichever way the choice reads.
                 WriteTheToleranceLine();
@@ -656,24 +676,7 @@ namespace Federator.Addin.Engine
             {
                 // It puts back any hidden state still changed and writes its one IMAGES line, in
                 // its own try so the index below is released whatever it does.
-                if (modelsShown != null)
-                {
-                    try
-                    {
-                        modelsShown.Dispose();
-                    }
-                    catch (Exception error)
-                    {
-                        log.Failure(
-                            "ending the clash step's hiding of the models for the pictures",
-                            error,
-                            "kept going, the sets index is released, and whatever is still hidden is carried into the views, the NWF and the NWD");
-                    }
-                    finally
-                    {
-                        modelsShown = null;
-                    }
-                }
+                EndTheHidingOfTheModels();
 
                 ReleaseTheIndex(byPath);
                 stepClock.Stop();
@@ -681,6 +684,86 @@ namespace Federator.Addin.Engine
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// Puts back any hidden state the picture pass left changed and writes the one IMAGES line of the
+        /// hiding, in its own try so the caller's own release is reached whatever it does.
+        /// </summary>
+        private void EndTheHidingOfTheModels()
+        {
+            if (modelsShown == null)
+            {
+                return;
+            }
+
+            try
+            {
+                modelsShown.Dispose();
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "ending the clash step's hiding of the models for the pictures",
+                    error,
+                    "kept going, the sets index is released, and whatever is still hidden is carried into the views, the NWF and the NWD");
+            }
+            finally
+            {
+                modelsShown = null;
+            }
+        }
+
+        /// <summary>
+        /// Whether Run leaves the picture pass to TakeTheDeferredPictures. Never where Compact resolved is on: a
+        /// compact moves the index of every result under a test, a picture is found by that index, so the
+        /// pictures are taken before it as they always were, and the NWD is then published after them as before.
+        /// </summary>
+        public bool PicturesDeferred
+        {
+            get { return DeferPictures && !CompactResolved && Images != null; }
+        }
+
+        /// <summary>Whether rows are waiting for a picture that TakeTheDeferredPictures would take.</summary>
+        public bool HasPicturesWaiting
+        {
+            get { return PicturesDeferred && picturesWaiting.Count > 0 && Report != null; }
+        }
+
+        /// <summary>
+        /// F182, Bader's answer B to Q175. The picture pass, taken after Run once the engine has saved the NWF and
+        /// published the NWD. It resolves each test again by its address and name, as the pass always did, so the
+        /// save and the publish between do not matter to it. A guard stop is put on the outcome as Run would
+        /// have. Every throw is the caller's: the rows not yet pictured keep an empty Image cell.
+        /// </summary>
+        public void TakeTheDeferredPictures(ClashRunOutcome outcome)
+        {
+            if (!HasPicturesWaiting)
+            {
+                return;
+            }
+
+            try
+            {
+                Document document = NavisworksApplication.ActiveDocument;
+
+                if (document == null)
+                {
+                    log.Line("IMAGES   stopped, there is no active document, so no picture was taken");
+                    return;
+                }
+
+                modelsShown = new TestModelsShown(document, log, Images.OnlyTheTestsModels);
+                DocumentClashTests clashTests = document.GetClash().TestsData;
+
+                RenderThePicturesWaiting(document, clashTests);
+                StopIfTheImagesFailed(outcome);
+            }
+            finally
+            {
+                EndTheHidingOfTheModels();
+                picturesWaiting.Clear();
+            }
         }
 
         /// <summary>
@@ -2811,7 +2894,7 @@ namespace Federator.Addin.Engine
                 // FR-076. Nothing more is resolved, asked for or counted once the guard has fired,
                 // the reviewer's first point on attempt 1, and Run stops the run once the pass ends.
                 // F172. The GDI backstop ends the pictures the same way and nothing else.
-                if (Images.ShouldStopTheRun || Images.GdiBackstopFired)
+                if (Images.ShouldStopTheRun || Images.AStopFired)
                 {
                     break;
                 }
@@ -2829,10 +2912,22 @@ namespace Federator.Addin.Engine
                 progress("The pictures stopped at the GDI limit, the run goes on without the rest");
             }
 
+            // F182. The memory stop's NOTICE, once the pass ends, so the count of pictures skipped is the real
+            // one: the picture number, Navisworks's private bytes and the clashes that wanted a picture and
+            // were not made for the stop, a test held to its own limit first.
+            if (Images.MemoryStopFired)
+            {
+                int skipped = Images.PicturesSkippedByTheStop(Report);
+
+                log.Line("IMAGES   " + Images.MemoryStop.Notice(skipped));
+                progress("The pictures stopped at the memory limit, the run goes on without the rest");
+            }
+
             return Words.Counted(walk.Rows, "row", "rows") + " in report order in "
                 + Words.Counted(walk.Stretches.Count, "stretch", "stretches")
                 + (Images.ShouldStopTheRun ? ", the pictures' guard fired" : string.Empty)
-                + (Images.GdiBackstopFired ? ", stopped at the GDI limit" : string.Empty);
+                + (Images.GdiBackstopFired ? ", stopped at the GDI limit" : string.Empty)
+                + (Images.MemoryStopFired ? ", stopped at the memory limit" : string.Empty);
         }
 
         /// <summary>
@@ -2953,7 +3048,7 @@ namespace Federator.Addin.Engine
                     }
 
                     // FR-076. No row is resolved or counted once the guard has fired.
-                    while (next < rows.Count && !Images.ShouldStopTheRun && !Images.GdiBackstopFired)
+                    while (next < rows.Count && !Images.ShouldStopTheRun && !Images.AStopFired)
                     {
                         harvest.PictureLater(clashTests, test, Report, into, picturesWaiting[rows[next]].Row);
                         next++;

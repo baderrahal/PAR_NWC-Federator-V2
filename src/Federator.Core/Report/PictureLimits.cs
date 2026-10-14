@@ -16,7 +16,7 @@ namespace Federator.Core.Report
     ///
     /// ONE BACKSTOP FOR THE PROCESS. Every picture costs the Navisworks process one GDI object and a
     /// process may hold 10000. Past 9000 no more pictures are made, a NOTICE says at which picture and
-    /// how many objects, and the run goes on to the NWD, the HTML, the Excel and the viewpoints. The
+    /// how many objects, and the run goes on with the rest of the group. The
     /// run 20261014-105308 crashed Navisworks at picture 8907 of 10170 at 9999 objects, in lcodwin.dll.
     /// </summary>
     public static class PictureLimits
@@ -35,6 +35,12 @@ namespace Federator.Core.Report
 
         /// <summary>The GDI objects of the Navisworks process past which no picture is made.</summary>
         public const long GdiStop = 9000;
+
+        /// <summary>
+        /// F182, Bader's answer C to Q175. The private bytes of the Navisworks process past which no picture is made,
+        /// 12 GB of 1024 cubed. The first of this and the GDI stop to fire ends the pictures.
+        /// </summary>
+        public const long MemoryStopBytes = 12L * 1024 * 1024 * 1024;
 
         /// <summary>
         /// The pictures a many clash test of that priority gets. None is C, because a test no matrix
@@ -154,7 +160,7 @@ namespace Federator.Core.Report
                 + " because Navisworks held " + GdiObjects.ToString(CultureInfo.InvariantCulture)
                 + " GDI objects, past the " + limit.ToString(CultureInfo.InvariantCulture)
                 + " set so the run does not crash on the limit of 10000. "
-                + "The run goes on to the NWD, the HTML, the Excel and the viewpoints";
+                + "The run goes on without the rest of the pictures";
         }
 
         /// <summary>The line said once the pass ends: how many clashes keep an empty Image cell.</summary>
@@ -163,6 +169,81 @@ namespace Federator.Core.Report
             return "NOTICE   " + clashesLeftWithoutAPicture.ToString(CultureInfo.InvariantCulture)
                 + " clashes with a status that gets a picture keep an empty Image cell, "
                 + "and so show no picture in the HTML and the Excel. They are still in both and in the viewpoints";
+        }
+    }
+
+    /// <summary>
+    /// F182, Bader's answer C to Q175. The second stop of the picture step, beside the GDI one. Navisworks's
+    /// private memory grew about 3.3 MB for each picture, to 26 GB on a PC with 15.8 GB of RAM, so past
+    /// MemoryStopBytes no more pictures are made, a NOTICE says at which picture, how much memory and how
+    /// many pictures were skipped, and the run goes on. It is asked before every picture and again after each
+    /// one is saved, as the GDI count is, and fires once. The first of the two stops to fire ends the pictures.
+    /// </summary>
+    public sealed class MemoryBackstop
+    {
+        private readonly long limit;
+
+        public MemoryBackstop()
+            : this(PictureLimits.MemoryStopBytes)
+        {
+        }
+
+        public MemoryBackstop(long limit)
+        {
+            this.limit = limit;
+        }
+
+        /// <summary>Whether it has fired, after which no picture is made.</summary>
+        public bool Fired { get; private set; }
+
+        /// <summary>The number of the picture that was not made, one based, or 0 before it fires.</summary>
+        public int PictureNumber { get; private set; }
+
+        /// <summary>The private bytes it read when it fired, or 0 before it fires.</summary>
+        public long PrivateBytes { get; private set; }
+
+        /// <summary>
+        /// Reads the private bytes for the picture about to be made. True only on the call that fires it.
+        /// A count that could not be read (negative) fires nothing.
+        /// </summary>
+        public bool Check(long privateBytesNow, int pictureNumber)
+        {
+            if (Fired || privateBytesNow < 0 || privateBytesNow <= limit)
+            {
+                return false;
+            }
+
+            Fired = true;
+            PictureNumber = pictureNumber;
+            PrivateBytes = privateBytesNow;
+            return true;
+        }
+
+        /// <summary>The line said at once when it fires, so a crash after it leaves the number to read.</summary>
+        public string FiredLine()
+        {
+            return "NOTICE   the memory stop fired at picture " + PictureNumber.ToString(CultureInfo.InvariantCulture)
+                + ", Navisworks held " + Gigabytes(PrivateBytes) + " of private memory, past the "
+                + Gigabytes(limit) + " set. No more pictures are made";
+        }
+
+        /// <summary>
+        /// The NOTICE for the log and the window, said once the pass ends: at which picture, how much
+        /// private memory, how many pictures were skipped and that the run goes on.
+        /// </summary>
+        public string Notice(int skippedPictures)
+        {
+            return "NOTICE   the pictures stopped at picture " + PictureNumber.ToString(CultureInfo.InvariantCulture)
+                + " because Navisworks held " + Gigabytes(PrivateBytes) + " of private memory, past the "
+                + Gigabytes(limit) + " set so it does not run out of memory. "
+                + skippedPictures.ToString(CultureInfo.InvariantCulture)
+                + " pictures were skipped and their Image cells are empty. The run goes on without them";
+        }
+
+        /// <summary>Bytes in gigabytes of 1024 cubed to one place, the unit the memory lines use for megabytes.</summary>
+        public static string Gigabytes(long bytes)
+        {
+            return (bytes / (1024d * 1024d * 1024d)).ToString("0.0", CultureInfo.InvariantCulture) + " GB";
         }
     }
 }

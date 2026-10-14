@@ -51,8 +51,8 @@ namespace Federator.Core.Diagnostics
         public const string Images = "IMAGES";
 
         /// <summary>
-        /// Renaming the pictures into report order, FR-077, once the clash step has run
-        /// every test and before the viewpoints read the rows. It ran inside no step before
+        /// Renaming the pictures into report order, FR-077, once the picture pass has run, F182,
+        /// and before the reports link them. It ran inside no step before
         /// this, 20.6 s of one group of set 03 in none of the totals.
         /// </summary>
         public const string Renumber = "RENUMBER";
@@ -78,6 +78,11 @@ namespace Federator.Core.Diagnostics
         public const string Nwd = "NWD";
         public const string Confirm = "CONFIRM";
 
+        /// <summary>
+        /// The order a group meets them since F182, Bader's answer B to Q175: the viewpoints, then the NWF saved and
+        /// the NWD published at low memory, then the pictures, which make Navisworks's memory grow, then the reports
+        /// that link the pictures. A picture step that stops or dies leaves the NWF and the NWD already written.
+        /// </summary>
         private static readonly string[] InOrder =
         {
             Decide,
@@ -88,17 +93,17 @@ namespace Federator.Core.Diagnostics
             TestsCreate,
             TestsRun,
             Harvest,
+            Views,
+            Nwd,
+            Confirm,
             Pictures,
             Images,
             Renumber,
-            Views,
             Workbook,
             Html,
             Xml,
             Coverage,
-            InternalWorkbook,
-            Nwd,
-            Confirm
+            InternalWorkbook
         };
 
         /// <summary>

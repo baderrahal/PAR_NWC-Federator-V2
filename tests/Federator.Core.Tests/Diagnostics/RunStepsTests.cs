@@ -20,26 +20,20 @@ namespace Federator.Core.Tests
 
             Assert.That(all.Count, Is.EqualTo(19));
 
-            // VIEWS is F85's, between IMAGES and WORKBOOK, because building the viewpoints
-            // runs after the clash step and before the second NWF save. It was untimed
-            // before, so the seconds it cost came off no total. RENUMBER is FR-077's,
-            // between IMAGES and VIEWS, because the pictures are renamed into report order
-            // once the clash step has run them all and before the viewpoints read the rows.
-            // It ran inside no step before, 20.6 s of one group in none of the totals.
-            // COVERAGE is F127's add-in half, after the clash workbook, its page and its XML,
-            // because it reads Clash Detective's counts and the clash workbook back. INTERNAL
-            // follows it, Bader's answer B to Q146: the internal workbook beside the clash
-            // workbook holds the Generic Models sheet of F128 and the Coverage sheet, so it is
-            // written once both are taken and whether or not the clash step ran. It was F128's
-            // GENERIC XLSX, listed after WORKBOOK while the engine wrote it after XML. PICTURES is
-            // F149's, between HARVEST and IMAGES: every picture is taken once every test has run,
-            // in the report's order, and each picture's IMAGES visit nests inside it, where it
-            // nested inside HARVEST before. Nineteen steps.
+            // F182, Bader's answer B to Q175: the viewpoints, then the NWF saved and the NWD published,
+            // then the pictures and the reports that link them. VIEWS is F85's, built after the clash step
+            // and before the NWF is saved the second time. NWD and CONFIRM follow at low memory, because
+            // Navisworks's memory grows 3.3 MB for each picture and the NWD publish hung at 26 GB with a 0
+            // byte file. PICTURES is F149's, every picture taken once every test has run, each picture's
+            // IMAGES visit nesting inside it, then RENUMBER, FR-077, which checks every picture carries its
+            // row's number. WORKBOOK, HTML and XML link the jpgs, so they come after. COVERAGE is F127's
+            // add-in half and reads the clash workbook back. INTERNAL follows it, Bader's answer B to Q146.
+            // Nineteen steps.
             string[] expected =
             {
                 "DECIDE", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
-                "HARVEST", "PICTURES", "IMAGES", "RENUMBER", "VIEWS", "WORKBOOK", "HTML", "XML", "COVERAGE", "INTERNAL",
-                "NWD", "CONFIRM"
+                "HARVEST", "VIEWS", "NWD", "CONFIRM", "PICTURES", "IMAGES", "RENUMBER",
+                "WORKBOOK", "HTML", "XML", "COVERAGE", "INTERNAL"
             };
 
             for (int i = 0; i < expected.Length; i++)
@@ -93,7 +87,7 @@ namespace Federator.Core.Tests
         public void TheOrderIsThePositionOnTheList()
         {
             Assert.That(RunSteps.OrderOf(RunSteps.Decide), Is.EqualTo(0));
-            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(18));
+            Assert.That(RunSteps.OrderOf(RunSteps.InternalWorkbook), Is.EqualTo(18));
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Views),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),
@@ -112,15 +106,44 @@ namespace Federator.Core.Tests
                 "the pictures are renamed once every one has been written");
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Renumber),
-                Is.LessThan(RunSteps.OrderOf(RunSteps.Views)),
-                "and before the viewpoints read the rows");
+                Is.LessThan(RunSteps.OrderOf(RunSteps.Workbook)),
+                "and before the reports that link them are written");
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Views),
                 Is.LessThan(RunSteps.OrderOf(RunSteps.Nwd)),
-                "and before the NWD is published");
+                "the viewpoints are built before the NWD is published");
             Assert.That(
                 RunSteps.OrderOf(RunSteps.TestsRun),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.TestsCreate)));
+        }
+
+        /// <summary>
+        /// F182, Bader's answer B to Q175. Navisworks's private memory grows with every picture, 26 GB on C04,
+        /// and the NWD publish hung there with a 0 byte file. So the NWF is saved and the NWD published BEFORE
+        /// the pictures, at low memory, and a picture step that stops or dies leaves both written.
+        /// </summary>
+        [Test]
+        public void TheNwfIsSavedAndTheNwdPublishedBeforeAnyPictureIsTaken()
+        {
+            int pictures = RunSteps.OrderOf(RunSteps.Pictures);
+
+            Assert.That(RunSteps.OrderOf(RunSteps.NwfSave), Is.LessThan(pictures));
+            Assert.That(RunSteps.OrderOf(RunSteps.Views), Is.LessThan(pictures), "the viewpoints need no picture");
+            Assert.That(RunSteps.OrderOf(RunSteps.Nwd), Is.LessThan(pictures));
+            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.LessThan(pictures), "the NWF is confirmed whole before them too");
+            Assert.That(RunSteps.OrderOf(RunSteps.Images), Is.GreaterThan(RunSteps.OrderOf(RunSteps.Nwd)));
+        }
+
+        [Test]
+        public void EveryReportThatLinksAPictureIsWrittenAfterThePictures()
+        {
+            int pictures = RunSteps.OrderOf(RunSteps.Pictures);
+
+            Assert.That(RunSteps.OrderOf(RunSteps.Workbook), Is.GreaterThan(pictures), "the Excel links the jpgs");
+            Assert.That(RunSteps.OrderOf(RunSteps.Html), Is.GreaterThan(pictures), "the HTML links the jpgs");
+            Assert.That(RunSteps.OrderOf(RunSteps.Xml), Is.GreaterThan(pictures));
+            Assert.That(RunSteps.OrderOf(RunSteps.Coverage), Is.GreaterThan(RunSteps.OrderOf(RunSteps.Workbook)), "it reads the workbook back");
+            Assert.That(RunSteps.OrderOf(RunSteps.InternalWorkbook), Is.GreaterThan(RunSteps.OrderOf(RunSteps.Coverage)));
         }
 
         /// <summary>

@@ -2,6 +2,44 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F182 the memory stop at 12 GB and the NWF and NWD before the pictures
+
+Branch fix-F182 off main 410086e. Bader's order of 14 Oct, round 4 of the second set, task 2, his answer C to Q175.
+
+What was done:
+- The memory stop. The picture step reads the private bytes of the Navisworks process before every picture and again
+  after each is saved and disposed, as it reads the GDI count. Past 12 GB, the one named constant
+  PictureLimits.MemoryStopBytes, no more pictures are made. One line says so at once, and once the pass ends a NOTICE
+  says the picture number, the private bytes and how many pictures were skipped. The GDI stop at 9000 stays and the
+  first of the two to fire ends the pictures
+- The new order. A group now runs: the tests with no picture, the viewpoints, the NWF saved where anything changed, the
+  NWD published, the NWF confirmed, then the pictures, the renumber and the leftover removal, then the workbook, the HTML
+  and the XML, the coverage and the internal workbook. The RESULT block and the log copy stay last, as before
+- The log says it. An ORDER line after the NWD says both files are written before the pictures, an ORDER line after the
+  pictures says whether they ended at their end, early at a stop or with a failure, and one ORDER line at the end of the
+  group lists the steps in the order they ended
+- F177 kept. A stop counts as the end of the picture step and leftover pictures are removed after it when the run wrote
+  at least one picture. A picture step that threw removes none
+
+Checked first: the HTML, the Excel and the XML name and link the jpgs, so they stay after the pictures, and the coverage
+and the internal workbook read the Excel back, so they follow it. The viewpoints read the rows and their addresses and
+no picture file, so they moved ahead. The NWD reads the document and nothing a report holds. The NWF is not saved again
+after the pictures, because the picture step writes nothing into the document and puts the hiding back, which also
+means a hiding that failed to come back is no longer carried into the NWF and the NWD. Whether TestsImageForResult
+leaves the open document marked changed is UNKNOWN, nothing read it.
+
+One step keeps its place and says why: with Compact resolved ticked the pictures are taken inside the clash step as
+before, because a compact moves the index a picture is found by. It is off by default and a log line says it.
+
+Proved here: the memory stop fires past 12 GB in a simulated pass of 16000 pictures at 3.3 MB each, at about picture
+3500, with the notice carrying the number and the skipped count, and the first of the two stops ends the pass. The step
+list says the NWF save, the viewpoints, the NWD and the confirm come before the pictures, and a test reading the engine's
+source says the NWD step is reached before any picture is taken. Core tests 3128 before and 3143 after, 0 failed. The
+Release build has 0 warnings and 0 errors.
+
+Waits for the local machine: a run on C04. Whether the NWD is published at low memory and whether the memory stop fires
+before the GDI one are UNKNOWN until it runs.
+
 ## 2026-10-14 F181 the picture cap trigger is 750
 
 Branch fix-F181 off main 41fc074. Bader's order of 14 Oct, round 4 of the second set, task 1, his answer to Q176.

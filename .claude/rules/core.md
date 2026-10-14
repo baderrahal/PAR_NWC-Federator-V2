@@ -1230,7 +1230,7 @@ and 6 does not read as broken.
   id label and both number formats all differed from the samples. It reports the FIRST
   divergence with what ours holds and what theirs holds, because one fault has forty
   consequences and the first is the one to act on
-- One workbook per group, written after the clash step and before the NWD is published,
+- One workbook per group, written after the clash step, the viewpoints, the NWD and the pictures, F182,
   so the three outputs of a group agree with each other. Named like the group's other
   outputs with an xlsx extension. SINCE F158 THE NWF AND NWD FOLDERS HOLD THE NWF AND THE
   NWD ALONE and every log and report goes in ONE folder called Log, a setting,
@@ -1658,11 +1658,30 @@ and 6 does not read as broken.
   `ImageOptions.RoomFor(test, written)`. A backstop reads the GDI objects of the process before every
   picture and again after each picture is saved and disposed, `ClashImages.Write`, and past 9000 no more
   are made: a NOTICE with the picture number and the count, the pass stops asking for rows, and the run
-  goes on to the NWD, the HTML, the Excel and the viewpoints. It is not the pictures' guard, which stops
+  goes on, the NWF and the NWD being already written since F182. It is not the pictures' guard, which stops
   the run. The only Bitmap the picture step receives is the one of `TestsImageForResult`, disposed in a
   finally on every path. The GDI split line, the MEMORY line, the RATE line of F157 and F161 and the
   texture cache line of F147 are kept. The texture cache is read and reported and no new clearing is made
   by F175.
+- THE MEMORY STOP AND THE ORDER OF A GROUP, F182, Bader's answer C to Q175, `MemoryBackstop`,
+  `PictureLimits.MemoryStopBytes` and `GroupOrder`. Navisworks's private memory grew about 3.3 MB for each
+  picture, to 26 GB on C04 on a PC with 15.8 GB of RAM, and the NWD publish after the pictures hung with a 0
+  byte file. A SECOND STOP beside the GDI one: `ClashImages.Write` reads the private bytes of the process
+  before every picture and again after each is saved, `ProcessMemory.PrivateBytesNow`, and past 12 GB, the one
+  named constant, no more are made. One line says it at once, and once the pass ends a NOTICE says the picture
+  number, the private bytes and how many pictures were skipped, `ClashImages.PicturesSkippedByTheStop`. The
+  first of the two stops to fire ends the pictures, and a stop is a normal end of the picture step, so F177
+  removes the leftover pictures after it as after a full pass, where a run that threw removes none. THE
+  PICTURES COME AFTER THE NWD. A group's order is the clash step with no picture, the viewpoints, the NWF
+  saved where anything changed, the NWD published, the NWF confirmed, then the pictures, the renumber, the
+  leftover removal, then the workbook with the HTML and the XML, the coverage and the internal workbook,
+  `RunSteps.All`. `ClashRunner.DeferPictures` leaves the pass out of `Run` and
+  `TakeTheDeferredPictures` takes it, each test found again by its address and name as it always was. The
+  viewpoints read the rows and their addresses and no picture file. The picture step is not followed by an
+  NWF save, since it writes nothing into the document and the hiding is put back, so a put back that failed is
+  no longer carried into the NWF and the NWD. Compact resolved on keeps the old order, because a compact
+  moves the index a picture is found by, and a log line says so. `GroupOrder` writes the ORDER lines. A
+  stop of the hand button's Run tests is unchanged, it takes its pictures inside the clash step.
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR

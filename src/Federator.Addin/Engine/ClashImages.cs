@@ -159,7 +159,7 @@ namespace Federator.Addin.Engine
         /// </summary>
         public bool Wanted(ClashReport report, TestReport test, ClashRow row, string workbookPath)
         {
-            return !backstop.Fired && !string.IsNullOrEmpty(workbookPath)
+            return !backstop.Fired && !memoryStop.Fired && !string.IsNullOrEmpty(workbookPath)
                 && options.TakesAPictureOf(report, test, row, guard);
         }
 
@@ -172,7 +172,31 @@ namespace Federator.Addin.Engine
             get { return backstop.Fired; }
         }
 
+        /// <summary>
+        /// F182, Bader's answer C to Q175. Whether the memory stop has fired: Navisworks's private bytes passed the
+        /// limit, no picture is made after it and the run goes on. The first of this and the GDI stop to fire ends the
+        /// pictures.
+        /// </summary>
+        public bool MemoryStopFired
+        {
+            get { return memoryStop.Fired; }
+        }
+
+        /// <summary>Whether either stop has fired, which ends the picture pass as a normal end, not a failure.</summary>
+        public bool AStopFired
+        {
+            get { return backstop.Fired || memoryStop.Fired; }
+        }
+
+        /// <summary>The memory stop, for the NOTICE the pass says once it ends.</summary>
+        public MemoryBackstop MemoryStop
+        {
+            get { return memoryStop; }
+        }
+
         private readonly GdiBackstop backstop = new GdiBackstop();
+
+        private readonly MemoryBackstop memoryStop = new MemoryBackstop();
 
         private int picturesMade;
 
@@ -196,6 +220,24 @@ namespace Federator.Addin.Engine
         public int PictureLimitOf(TestReport test)
         {
             return options.LimitOf(test);
+        }
+
+        /// <summary>
+        /// F182. The pictures a stop left unmade: for each test the clashes that want a picture by their status,
+        /// held to the test's limit, less the pictures it has. A render that failed is counted here too, so it is
+        /// a count of pictures not made at the stop and never more than the stop itself skipped.
+        /// </summary>
+        public int PicturesSkippedByTheStop(ClashReport report)
+        {
+            int skipped = 0;
+
+            foreach (TestReport test in report.Tests)
+            {
+                int couldHave = Math.Min(RowsThatWantAPicture(test), PictureLimitOf(test));
+                skipped += Math.Max(0, couldHave - test.ImageCount);
+            }
+
+            return skipped;
         }
 
         /// <summary>The clashes of the whole report with a status that gets a picture and no picture, said once the pass ends.</summary>
@@ -285,6 +327,16 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
+                // F182, Bader's answer C to Q175. The private bytes of the process are read the same way, before
+                // every picture and again after it is saved. Past the limit no more pictures are made and the run
+                // goes on. The NOTICE with the skipped count is said once the pass ends, this line at once so a
+                // crash after it leaves the number to read.
+                if (memoryStop.Check(ProcessMemory.PrivateBytesNow(), picturesMade + 1))
+                {
+                    log.Line("IMAGES   " + memoryStop.FiredLine());
+                    return false;
+                }
+
                 PictureNumber number = report.NextPictureOf(test, row);
                 string path = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
 
@@ -337,6 +389,12 @@ namespace Federator.Addin.Engine
                     if (backstop.Check(gdiAfterTheSave, picturesMade + 1))
                     {
                         log.Line("IMAGES   " + backstop.Notice());
+                    }
+
+                    // F182. The private bytes after this picture is saved and its bitmap disposed.
+                    if (memoryStop.Check(ProcessMemory.PrivateBytesNow(), picturesMade + 1))
+                    {
+                        log.Line("IMAGES   " + memoryStop.FiredLine());
                     }
 
                     if (guard != null)
