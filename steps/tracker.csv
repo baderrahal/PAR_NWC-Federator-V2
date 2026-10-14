@@ -652,3 +652,10 @@ F189,"the final run of Part 2 on a copy of C04 in Bader's layout, an NWF keeps i
 F190,"the picture caps A 150, B 100 and C 50 always apply to every test, the trigger of 750 clashes and its constant removed",F190,none,fix,merged,270,none,2026-10-15
 F191,"everything at the root of the saved viewpoints outside the tool folder is deleted except a folder named Comments, which is kept and made where missing, the one time clean up of A B C removed",F191,none,fix,merged,271,none,2026-10-15
 F192,"the Over 150mm folder exists only inside C, in C a test of a pair carrying the size folder splits its large clashes into C/Over 150mm, in A and B no such folder and the clashes are counted for a decision",F192,none,fix,merged,272,none,2026-10-15
+Q177-1,"the Over 150mm folder exists only under C, in C a test of a pair carrying the size folder splits its large clashes, F192",none,none,Bader's request,in review,none,none,2026-10-15
+Q178-1,"the Compact resolved option stays removed, recorded with Q177",none,none,Bader's request,in review,none,none,2026-10-15
+Q179-1,"the pictures keep both stops, 9000 GDI objects and 12 GB of private memory, recorded with Q177",none,none,Bader's request,in review,none,none,2026-10-15
+Q180-1,"the picture caps 150, 100 and 50 always apply to every test, no trigger, replaces the 750 of Q176, F190",none,none,Bader's request,in review,none,none,2026-10-15
+Q181-1,"everything outside the tool folder is deleted except the Comments folder, replaces the first item of Q174 where it said nothing a coordinator made is touched, F191",none,none,Bader's request,in review,none,none,2026-10-15
+Q182,"how many tests and clashes of priority A and B have clashes over 150 mm in a pair carrying the size folder and so stay in the one view, and whether to handle them another way, F192",none,none,question,waiting for Bader,none,none,2026-10-15
+F193,"the answers of the round 5 orders recorded in steps\02_questions.md and the tracker, Q177 to Q182",F193,none,fix,in review,none,none,2026-10-15

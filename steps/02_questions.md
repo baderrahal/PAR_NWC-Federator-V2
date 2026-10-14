@@ -1043,3 +1043,28 @@ wc-nwf-design.md.
 176. From Bader, 2026-10-14, his order of the second set of round 4, task 1, not a question put to him but the trigger of the picture cap. A test with more than 1000 clashes gets pictures for its first 150 at priority A, 100 at B and 50 at C, per test, since F175. At what number of clashes should the cap begin?
 
     Answer: Bader, 2026-10-14, his order of the second set of round 4, task 1, in one number: 750. A test with more than 750 clashes gets pictures for its first 150 clashes at priority A, 100 at B and 50 at C, per test. A test with 750 clashes or fewer gets pictures for all of them. A saved test the matrix does not name is C. The viewpoints are not touched. The lead's notes. Built in F181. The question was not in this file when his answer came, so it is written here with his answer, as Q172 was.
+
+177. From Bader, 2026-10-15, his order of round 5, task 3, not a question put to him but a rule. The Over 150mm sub folder of the viewpoint tree, which F186 dropped, comes back. Where should it be?
+
+    Answer: Bader, 2026-10-15, as written in his order. The Over 150mm folder exists ONLY under C. The tree is the tool folder, then A, B and C directly with their tests, and inside C one sub folder named Over 150mm. A and B have no such folder. In C, for a pair that carries the size folder, the clashes whose larger service is over the threshold are the test's view in C/Over 150mm and the rest its view in C, as the rule was before F186. The lead's notes. Built in F192. The question was not in this file when his answer came, so it is written here with his answer, as Q172 was.
+
+178. From Bader, 2026-10-15, his order of round 5, task 4, not a question put to him but a record. The Compact resolved option, removed in F185, stays removed.
+
+    Answer: Bader, 2026-10-15, as written in his order. It stays removed. No call of any compact or reset is made by the tool. The lead's notes. Nothing is built for it, the answer is recorded here with Q177.
+
+179. From Bader, 2026-10-15, his order of round 5, task 4, not a question put to him but a record. The pictures keep both stops, the 9000 GDI objects and the 12 GB of private memory of Q175 C.
+
+    Answer: Bader, 2026-10-15, as written in his order. Both stops stay, and the first to fire ends the pictures. The lead's notes. Nothing changed for it in F190, the answer is recorded here with Q177.
+
+180. From Bader, 2026-10-15, his order of round 5, task 1. The trigger of 750 clashes of Q176 is gone. Should a test with fewer clashes than 750 still get a picture for every clash?
+
+    Answer: Bader, 2026-10-15, as written in his order. The caps always apply, with no trigger. For EVERY clash test, whatever its clash count, pictures are made for at most 150 clashes at priority A, 100 at B and 50 at C, the first clashes in the order Navisworks lists them. A test with fewer clashes than its cap gets a picture for each. A saved test the matrix does not name, and a test with no priority read, is C. The box At most per test keeps its job and the least holds. The viewpoints are not touched. The lead's notes. Built in F190. This replaces the answer of Q176, 750, which is kept above as it was written.
+
+181. From Bader, 2026-10-15, his order of round 5, task 2. Q174 item 1 said nothing a coordinator made is touched. What is deleted in the saved viewpoints of an NWF?
+
+    Answer: Bader, 2026-10-15, as written in his order, in his words: anything outside the tool folder is deleted. The coordinator's own viewpoints and the folders the NWC files bring are outside it. A folder named Comments is kept, whatever its case, with everything inside it, and an empty one is made where there is none. A folder named like it but not exactly it is deleted. On every run that makes viewpoints, the NWC page and the NWF page. The lead's notes. Built in F191 after the new tool folder is built, so a build that stopped deletes nothing. The confirmations say that all outside is deleted. This replaces the first item of the answer of Q174 where it said nothing a coordinator made is touched.
+
+182. From the loop, 2026-10-15, F192. The Over 150mm folder is under C only. In a pair that carries the size folder, a test of priority A or B can have clashes whose larger service is over 150 mm. The old rule would have given them an Over 150mm view, and by your order there is none in A or B, so they stay in the test's one view. How many tests and views is that, and should they be handled another way?
+
+    The counts of the last run could not be read, because the logs of the F189 run hold the size read for each clash and not each verdict. The VIEWS plan block of the next run writes them: the tests of priority A and of B, and their clashes over the threshold. They are written here when that run is read. Nothing is decided on a guess.
+

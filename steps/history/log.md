@@ -2,6 +2,17 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F193 the round 5 answers recorded
+
+Branch fix-F193 off main fa94958. Bader's order of 15 Oct, task 4.
+
+Q177 the Over 150mm folder only under C, Q178 the Compact resolved option stays removed, Q179 the pictures keep both
+stops, Q180 the caps always apply with no trigger, Q181 everything outside the tool folder is deleted except Comments,
+Q182 the open question of the clashes over 150 mm in tests of priority A and B. They were not in this file when the order
+came, so they are written here with the answers, as Q172 and Q176 were. The tracker has a row for each.
+
+Core tests 3212 passing, nothing in src changed.
+
 ## 2026-10-15 F192 the Over 150mm folder exists only inside C
 
 Branch fix-F192 off main a04df5a. Bader's order of 15 Oct, task 3.
