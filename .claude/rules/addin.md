@@ -173,7 +173,7 @@ well as to pass.
   code, not names, not counts, not property internal names. Those appear in tests as sample
   data and in the pack as the project's data only. A file may hold sets, tests, or both, and
   all three are normal. There is no picker: the one pack is read and a PACK line names it,
-  and how to choose between two packs waits on Q164
+  and since F166 a run chooses its pack by the project code of its NWC file names, PackChoice, Q164 B, and stops before anything is opened where none or two match
 - Per group the order is append, save the NWF, build the sets, create the tests, run
   them, save the NWF again, publish the NWD last. The sets, the tests and the results
   all live in the NWF, so an NWD published before the clash work ships without any of

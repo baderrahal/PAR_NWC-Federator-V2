@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F166 the matrix pack is chosen by the project code of the NWC file names
+
+Branch fix-F166 off main 98a5cfb. Bader's order of 14 Oct, task 1, Q164 B.
+
+What changed:
+- each pack carries its project code in project-code.txt, 1104 for 1104-PAR, MatrixPack.ProjectCode
+- PackChoice.For reads part 1 of the file names, ContainerName, with the settings the grouping uses, and picks the
+  pack with the same code. It reads names only, so the answer is known before any file is opened
+- a run stops before anything is opened, said in the log as a PACK line and in a window, in simple words, where a name
+  has no project code, a group carries two codes, the groups of the run carry two codes, no pack carries the code, or
+  more than one does. The no pack words are Bader's: "No matrix pack for project code XXXX. Send the clash matrix and a
+  session will add it." and the code found is named
+- the scanned run asks before the preview opens any NWF and before the confirm. The run of picked NWFs, the run on the
+  open file and the two hand buttons ask from the NWF or open file names
+- FederationEngine.UsePack hands the chosen pack to the engine. The PACK line keeps the pack name and now says the code
+- no drop down and no picker. The matrix is still read through the same ReadPack
+- tests, PackChoiceTests: one pack and a matching code runs, a code with no pack stops, two packs with one code stop,
+  a mixed code group stops, two groups of two codes stop, a name with no code stops. A second pack, ForTest, is made in
+  the test only and nothing in src calls it
+
+Not run in Navisworks in this entry. Core tests 3098 passed before and after, 0 failed. Release build 0 warnings,
+0 errors.
+
 ## 2026-10-14 F165 ReadPicked and cut-xml.ps1 stay, and the next clash test round is recorded
 
 Branch fix-F165 off main 917e785. Bader's order of 14 Oct, task 2, Q165 keep both. Nothing is deleted. One line in the
