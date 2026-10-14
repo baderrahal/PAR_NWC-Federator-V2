@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 14:30, last run C04 under NM fed 20261014-105308, crashed at picture 8907
+STATE OPEN, 2026-10-14 15:30, round 4 started, last run C04 under NM fed 20261014-105308, crashed at picture 8907
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,16 +15,19 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 220 | 16 | 0 | 0 | 60 | 7 | 303 |
-| total | 423 | 24 | 0 | 0 | 161 | 18 | 626 |
+| outside the waves | 220 | 16 | 1 | 0 | 60 | 7 | 304 |
+| total | 423 | 24 | 1 | 0 | 161 | 18 | 627 |
 <!-- the end of the counts -->
 
 ## Now
 - Bader's order of 14 Oct, round 2, Q163 to Q168: F164 to F169, merged, 244 to 249
-- Bader's order of 14 Oct, round 3, one PR each: F170 Clash report folder 250, F171 a model on Internal is a NOTICE 251,
-  F172 pictures limit 1000 per test and GDI backstop at 9000 252, F173 loop and driver clean up 253
-- F160, C04 under NM fed, crash at picture 8907 of 10170, GDI objects 9999, lcodwin.dll. F172 is its answer, unproven by a run
-- F174, the full run on C04 with this build, NOT made, a Navisworks of Bader's was open, the report is at the top of 03_bader_next
+- Round 3 merged, F170 to F174, PRs 250 to 254. F174 the C04 run was not made, Bader's own Navisworks was open
+- ROUND 4, Bader's order of 14 Oct, one PR each, Part 1 before Part 2. F175 pictures cap by priority A 150 B 100 C 50
+  (Task 1, in review), then F176 no shared site is a NOTICE (2), F177 Clash report overwrite and leftover cd jpgs (3),
+  F178 answers recorded (4), F179 research note steps\notes\nwc-nwf-design.md (6), F180 the C04 run and report (5)
+- PART 2 only if the C04 run did not crash: F181 checks (7), F182 one viewpoint folder with a marker (8), F183 refresh
+  and clash history kept (9), F184 two page window NWC and NWF (10), F185 final run (11)
+- F160, C04 crash at picture 8907, GDI 9999, lcodwin.dll. F172 and F175 are its answer, unproven by a run
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
@@ -35,8 +38,8 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 14 Oct 01:28, set 94 | 51d9f31d, main after 237 | 0.027 s | 245 s, group FAILED on the same model | none in 10 readings | PICTURES 112.5 s |
 
 ## Next
-1. Task 5 of round 3: Core tests, Release build, install, one run on C04 with Navisworks, the report at the top of
-   steps\03_bader_next.md. Bader had his own Navisworks open at 13:47, so it waits for it to be closed
+1. Round 4 task 5: Core tests, Release build, install, one run on C04, report at the top of steps\03_bader_next.md.
+   Check Roamer.exe first. If one runs, stop and write it down. Do not start Part 2 on a crash
 2. Bader's proof of the round on his desktop PC, steps\03_bader_next.md
 3. tools\loop\prove-run.ps1 was not run after F173, a Navisworks of Bader's was open, so its window cases are UNKNOWN
 4. The register rows of 13 Oct: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30

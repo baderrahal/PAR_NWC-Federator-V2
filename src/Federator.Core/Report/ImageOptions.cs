@@ -218,15 +218,21 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// F172, Bader's answer to Q171. Is there room for one more picture on this test: under the box's
-        /// cap where it is not zero, and under the fixed rule of PictureLimits where the test holds more
-        /// than 1000 clashes, which gives its first 100 a picture and skips the rest. The least of the two
-        /// holds. The box keeps its own job, a cap of the user's choosing for every test, and the fixed
-        /// rule is there whatever the box says.
+        /// F172 and F175, Bader's answers to Q171. Is there room for one more picture on this test: under
+        /// the box's cap where it is not zero, and under the rule of PictureLimits where the test holds
+        /// more than 1000 clashes, which gives its first 150, 100 or 50 a picture by its priority A, B or C
+        /// and skips the rest. The least of the two holds. The box keeps its own job, a cap of the user's
+        /// choosing for every test, and the rule is there whatever the box says.
         /// </summary>
         public bool RoomFor(TestReport test, int alreadyWritten)
         {
-            return alreadyWritten < PictureLimits.LimitFor(test.Rows.Count, CapPerTest);
+            return alreadyWritten < LimitOf(test);
+        }
+
+        /// <summary>The most pictures this test may have, F175: the rule of its picture priority and the box, the least.</summary>
+        public int LimitOf(TestReport test)
+        {
+            return PictureLimits.LimitFor(test.Rows.Count, test.PicturePriority, CapPerTest);
         }
 
         /// <summary>Only the statuses asked for, in the order the tally reports them.</summary>
@@ -284,8 +290,7 @@ namespace Federator.Core.Report
             string cap = (CapPerTest > 0
                     ? "at most " + CapPerTest + " per test"
                     : "no cap of your own per test")
-                + ", and the first " + PictureLimits.PicturesForAManyClashTest + " of a test with more than "
-                + PictureLimits.ManyClashes + " clashes";
+                + ", and " + PictureLimits.RuleInWords();
 
             return "Images on, " + Width + " by " + Height + " pixels, " + statusList
                 + " only, " + cap + ", "
