@@ -607,12 +607,12 @@ Q168,"whether a test saved in the NWF that the built in matrix does not name is 
 F156,"build\install.ps1 refused every build since F152, Federator.Core needs System.IO.Compression 4.2.0.0, read now after binding policy",F156,none,fix,merged,237,none,2026-10-14
 F157,"the picture pass leaves a trail for a run that dies, MEMORY with GDI and USER counts, the RATE, a stamped failure line with the whole exception, a warning for two clashes on one file",F157,none,fix,merged,239,none,2026-10-14
 F158,"the logs and the reports in one Log folder beside the NWF and NWD folders, the Excel folder box gone, nothing in Log overwritten or deleted",F158,none,fix,merged,240,none,2026-10-14
-Q169,"whether the Log folder is at the deepest folder holding the NWF and NWD folders, or one Log folder for each group, F158",none,none,question,in review,UNKNOWN,none,2026-10-14
+Q169,"whether the Log folder is at the deepest folder holding the NWF and NWD folders, or one Log folder for each group, F158",none,none,question,merged,258,none,2026-10-14
 F159,"the option that skipped the clash for models off the shared coordinates removed, the clash always runs, a NOTICE in the log and in the list names the models",F159,none,fix,merged,241,none,2026-10-14
 Q170,"whether a group with a model on Internal or naming no site still ends FAILED now that its clash always runs, F159",none,none,question,merged,251,none,2026-10-14
 F161,"the picture pass names where its GDI objects go, render or save, and warns of one file named twice only where a picture was written, after run 20261014-105308",F161,none,fix,merged,242,none,2026-10-14
 F160,"the run on C04 under NM fed with the build of F157 to F159, its crash in lcodwin.dll at picture 8907 of 10170 at 9999 GDI objects, the evidence and the report",F160,none,fix,merged,243,none,2026-10-14
-Q171,"whether the picture step stops at 9000 GDI objects and lets the run finish, or all pictures in several sessions, F160",none,none,question,in review,UNKNOWN,none,2026-10-14
+Q171,"whether the picture step stops at 9000 GDI objects and lets the run finish, or all pictures in several sessions, F160",none,none,question,merged,258,none,2026-10-14
 F163,"tools\loop and tools\probes\drive-window-run.ps1 still type into the Excel folder box and tick the skip box, both gone with F158 and F159",F163,none,fix,merged,253,none,2026-10-14
 F164,"the Run as label Weekly run plus XML renamed Weekly run plus matrix in the window, the confirm and the log, Q166 A",F164,none,fix,merged,244,none,2026-10-14
 F165,"MatrixCorrections.ReadPicked and cut-xml.ps1 kept for the coming clash test round, the mirror check recorded in 01_next, Q165",F165,none,fix,merged,245,none,2026-10-14
@@ -628,10 +628,11 @@ F174,"the full run on C04 under NM fed with F170 to F173, not made because a Nav
 F175,"a test over 1000 clashes gets pictures for its first 150 at priority A, 100 at B and 50 at C, a saved test the matrix does not name is C, a GDI reading after each picture, Q171",F175,none,fix,merged,255,none,2026-10-14
 F176,"a model naming no shared site is a NOTICE like a model on Internal and no reason for FAILED, the clash always runs, the failure removed as dead code, Q172",F176,none,fix,merged,256,none,2026-10-14
 F177,"the HTML and pictures in the Clash report folder keep the plain name and are overwritten, only Log keeps dated names, the tool's own cd jpgs a run did not write are removed from its NAME_files folder, a failed run removes nothing",F177,none,fix,merged,257,none,2026-10-14
-Q172,"whether a model naming no shared site is a NOTICE like a model on Internal and the clash always runs, F171 and F176",none,none,question,in review,UNKNOWN,none,2026-10-14
+Q172,"whether a model naming no shared site is a NOTICE like a model on Internal and the clash always runs, F171 and F176",none,none,question,merged,258,none,2026-10-14
 Q173-1,"the Clash report folder overwrites a file of the same name and never dates it, the Log folder keeps its dated names, F177",none,none,Bader's request,merged,257,none,2026-10-14
 Q173-2,"the leftover cd jpg files a run did not write are removed from that group's NAME_files folder, a failed run removes nothing, F177",none,none,Bader's request,merged,257,none,2026-10-14
 Q174-1,"viewpoints, both, one tool folder A B C then the tests, the earlier tool viewpoints deleted each run, F182",none,none,Bader's request,open,none,none,2026-10-14
 Q174-2,"the NWF page keeps status, assigned to and comments of clashes still there, re-runs the tests, F183",none,none,Bader's request,open,none,none,2026-10-14
 Q174-3,"two pages, NWC once and NWF every week, F184",none,none,Bader's request,open,none,none,2026-10-14
 F178,"the answers of Q169 to Q172, the Clash report orders and the Part 2 answers recorded in steps\02_questions.md and the tracker",F178,none,fix,merged,258,none,2026-10-14
+F179,"the research note on NWC and NWF logic saved in steps\notes\nwc-nwf-design.md in Bader's words, with its PROVEN, INFERRED and UNKNOWN marks",F179,none,fix,in review,UNKNOWN,none,2026-10-14

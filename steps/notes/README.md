@@ -31,3 +31,7 @@ Written here and not copied:
   two breakers, which sent F103 to the form as Q92. Made by the lead from their returned
   answers and from the lead's own reads of the files at fcd981b, 867697a and a63c284, of the
   harness outputs and of Actions, line numbers of a63c284 unless a commit is named
+- nwc-nwf-design.md, the research of 14 Oct 2026 on how an NWF reads and refreshes its NWC files, how
+  clash results are kept or lost, how the tool's viewpoint folder is found and rebuilt, and the GDI
+  limit, each point marked PROVEN, INFERRED or UNKNOWN. Bader's brief of round 4, task 6, saved in his
+  words. Part 2 of that round, F181 to F185, follows it
