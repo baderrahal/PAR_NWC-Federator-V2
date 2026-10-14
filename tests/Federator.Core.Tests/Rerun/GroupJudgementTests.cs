@@ -667,23 +667,7 @@ namespace Federator.Core.Tests
 
         // ---------- Q98 B2 and Bader's answer to Q99 and Q100, the clash skipped ----------
 
-        // ---------- a group failed on where its models sit, Q70 ----------
-
-        /// <summary>
-        /// The reason the engine hands the judgement for a group whose ST names no shared site,
-        /// made at the ALIGNMENT step before any file is written. A model on Internal is no
-        /// longer a reason, F171.
-        /// </summary>
-        private static string FailedOnNoSite()
-        {
-            IList<ModelPlacement> models = new List<ModelPlacement>
-            {
-                new ModelPlacement("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc", "AR", "SWLS-02-SharedCoordinate", 0.0, 0.0, 0.0),
-                new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", string.Empty, 0.0, 0.0, 255.0)
-            };
-
-            return AlignmentCheck.WhyItFailsTheGroup(models);
-        }
+        // ---------- where the models sit judges no group, F176 ----------
 
         private const string StaleNwd = "the NWD publish did not report success, so the file at"
             + @" C:\out\nwd\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd is not from this run";
@@ -692,99 +676,62 @@ namespace Federator.Core.Tests
             + @" C:\out\nwd\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd";
 
         /// <summary>
-        /// The breaker's blocking finding on attempt 3. A group failed on Internal whose NWD
-        /// this run published is FAILED for its model alone, and its reason says nothing of
-        /// any file.
+        /// F176, Bader's answer to Q172. The judgement is handed no fact about where the models sit.
+        /// A model on Internal or naming no shared site is a notice, so a group whose steps are done is
+        /// DONE with no reason, whatever the models are.
         /// </summary>
         [Test]
-        public void AGroupFailedOnItsModelsWithItsNwdFromThisRunNamesTheModelAlone()
+        public void AGroupWhoseStepsAreDoneIsDoneWhateverItsModelsAre()
         {
-            GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnNoSite();
-
             string reason;
 
-            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Is.EqualTo(FailedOnNoSite()));
-            Assert.That(reason, Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
-            Assert.That(reason, Does.Not.Contain("NWD"));
-            Assert.That(reason, Does.Not.Contain("written"));
+            Assert.That(GroupJudgement.Judge(Clean(), out reason), Is.EqualTo(GroupOutcome.Done));
+            Assert.That(reason, Is.Null.Or.Empty);
+            Assert.That(typeof(GroupFacts).GetProperty("AlignmentFailure"), Is.Null,
+                "no fact about where the models sit reaches the judgement");
         }
 
         /// <summary>
-        /// The same group where the publish returned false and last week's NWD sits at the
-        /// path. The reason names the model and then the NWD as not from this run, where it
-        /// stopped at the model and the NWD was never named.
+        /// A stale NWD is the reason of a group on its own, named without any model, since where the
+        /// models sit is no reason.
         /// </summary>
         [Test]
-        public void AGroupFailedOnItsModelsStillNamesAnNwdNotFromThisRun()
+        public void AStaleNwdIsTheReasonAlone()
         {
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnNoSite();
             facts.NwdOnDisk = true;
             facts.NwdPublishReportedSuccess = false;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Is.EqualTo(FailedOnNoSite() + ", and " + StaleNwd));
+            Assert.That(reason, Is.EqualTo(StaleNwd));
         }
 
-        /// <summary>The same group with no NWD on the disk at all names it missing beside the model.</summary>
+        /// <summary>A group with no NWD on the disk at all names it missing and nothing about the models.</summary>
         [Test]
-        public void AGroupFailedOnItsModelsStillNamesAMissingNwd()
+        public void AMissingNwdIsTheReasonAlone()
         {
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnNoSite();
             facts.NwdOnDisk = false;
             facts.NwdPublishReportedSuccess = false;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Is.EqualTo(FailedOnNoSite() + ", and " + MissingNwd));
+            Assert.That(reason, Is.EqualTo(MissingNwd));
         }
 
-        /// <summary>
-        /// A group failed on a model naming no site, with a stale NWD, names both, the model first.
-        /// Since F159 there is no skipped clash to name beside them, so this is a test of how the
-        /// judgement joins the reasons and nothing more.
-        /// </summary>
+        /// <summary>A step that threw is named in the reason as before.</summary>
         [Test]
-        public void AGroupFailedOnItsModelsNamesTheStaleNwd()
-        {
-            IList<ModelPlacement> models = new List<ModelPlacement>
-            {
-                new ModelPlacement("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc", "AR", "A site", 0.0, 0.0, 0.0),
-                new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", string.Empty, 0.0, 0.0, 0.0)
-            };
-
-            GroupFacts facts = Clean();
-            facts.AlignmentFailure = AlignmentCheck.WhyItFailsTheGroup(models);
-            facts.NwdPublishReportedSuccess = false;
-
-            string reason;
-
-            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Is.EqualTo(
-                "1 model(s) name no shared site at all: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, and " + StaleNwd));
-        }
-
-        /// <summary>
-        /// A step that threw in the same group is named beside the model too, so neither hides
-        /// the other.
-        /// </summary>
-        [Test]
-        public void AGroupFailedOnItsModelsKeepsWhatThrewBesideIt()
+        public void AStepThatThrewIsTheReasonAsBefore()
         {
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = FailedOnNoSite();
             facts.AddError("creating the clash tests threw NullReferenceException");
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Does.Contain(FailedOnNoSite()));
             Assert.That(reason, Does.Contain("creating the clash tests threw NullReferenceException"));
         }
     }

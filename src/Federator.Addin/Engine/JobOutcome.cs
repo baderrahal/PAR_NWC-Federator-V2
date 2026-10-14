@@ -72,14 +72,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Why the group is FAILED on where its models sit, Q70, or null. Kept apart from
-        /// the errors, because nothing threw, so the judgement still reads the NWD after it.
-        /// </summary>
-        public string AlignmentFailure { get; set; }
-
-
-
-        /// <summary>
         /// What the shared coordinates rule judged of this group's models, whether or not
         /// its clash was skipped, or null where the read threw or never ran. Read by the
         /// notes, which take an earlier run's note away only where every model was judged.
@@ -175,8 +167,6 @@ namespace Federator.Addin.Engine
             {
                 facts.AddError(error);
             }
-
-            facts.AlignmentFailure = AlignmentFailure;
 
             return facts;
         }

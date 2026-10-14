@@ -26,11 +26,13 @@ namespace Federator.Core.Health
         public const string ResultsMayBeWrong = "The clash results may be wrong for these models.";
 
         internal OffCoordinates(
-            string reference, IList<string> models, int notJudged, int modelsRead, IList<string> onInternal = null)
+            string reference, IList<string> models, int notJudged, int modelsRead, IList<string> onInternal = null,
+            IList<string> noSite = null)
         {
             Reference = reference;
             Models = new ReadOnlyCollection<string>(models);
             OnInternal = new ReadOnlyCollection<string>(onInternal ?? new List<string>());
+            NoSite = new ReadOnlyCollection<string>(noSite ?? new List<string>());
             NotJudged = notJudged;
             ModelsRead = modelsRead;
         }
@@ -46,6 +48,13 @@ namespace Federator.Core.Health
         /// site, by name. Each is in Models too. This is a NOTICE and never a reason for FAILED.
         /// </summary>
         public IList<string> OnInternal { get; private set; }
+
+        /// <summary>
+        /// F176, Bader's answer to Q172. The models that name no shared site at all, by name, the same
+        /// as a model on Internal. Each is in Models too. This is a NOTICE and never a reason for FAILED,
+        /// and the clash always runs. A site whose read threw is not in it, since it is not a fact.
+        /// </summary>
+        public IList<string> NoSite { get; private set; }
 
         /// <summary>
         /// How many models this rule could not judge: not named above, and either their
@@ -86,6 +95,23 @@ namespace Federator.Core.Health
                 + ". Their clash results may be wrong.";
         }
 
+        /// <summary>
+        /// F176. Which models name no shared site at all, said for the group result line, the run log and
+        /// the list: the names, and that their clash results may be wrong. Empty where none does.
+        /// </summary>
+        public string NoSiteSaid()
+        {
+            if (NoSite.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            return Words.Counted(NoSite.Count, "model", "models") + " name"
+                + (NoSite.Count == 1 ? "s" : string.Empty)
+                + " no shared site at all: " + string.Join(", ", NoSite)
+                + ". Their clash results may be wrong.";
+        }
+
         public IList<string> Notice(string building)
         {
             List<string> lines = new List<string>();
@@ -103,7 +129,10 @@ namespace Federator.Core.Health
                 + ". " + ResultsMayBeWrong + " The clash was run and nothing was skipped."
                 + (OnInternal.Count == 0
                     ? string.Empty
-                    : " " + InternalSaid() + " This is a notice and the group does not end FAILED for it."));
+                    : " " + InternalSaid() + " This is a notice and the group does not end FAILED for it.")
+                + (NoSite.Count == 0
+                    ? string.Empty
+                    : " " + NoSiteSaid() + " This is a notice and the group does not end FAILED for it."));
 
             foreach (string model in Models)
             {

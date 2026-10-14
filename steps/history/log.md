@@ -2,6 +2,22 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F176 a model naming no shared site is a NOTICE, Q172
+
+Branch fix-F176 off main 214cd4b. Bader's order of 14 Oct, round 4, task 2, Q172 answered yes.
+
+What changed: a model that names no shared site is a NOTICE in the run log, in the list of models off the shared
+coordinates and in the group result line, the same as a model on Internal. It no longer makes the group FAILED, and
+the clash always runs. OffCoordinates holds the models in a new NoSite list beside OnInternal, with NoSiteSaid, and its
+Notice, the RESULT lines and the list for the modellers say them. The failure is gone as dead code, by the repo's rule:
+AlignmentCheck.WhyItFailsTheGroup and FailedRunLine, the THIS GROUP IS FAILED line of the block, GroupFacts and
+JobOutcome AlignmentFailure, and the engine's count of failed groups. Every other reason for FAILED is as it was. A site
+whose read threw is in no list.
+
+Proved here: Core tests 3116 before, 3115 after, 0 failed. Tests that said a no site model fails its group were
+rewritten to say it is a notice, and the judgement tests now say where the models sit judges nothing. Release build 0
+warnings 0 errors. Waits for the run on C04: a real model naming no shared site was not met by any run since F171.
+
 ## 2026-10-14 F175 the pictures limit by priority, Q171
 
 Branch fix-F175 off main 4dfa1b2. Bader's order of 14 Oct, round 4, task 1.

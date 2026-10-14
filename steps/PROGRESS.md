@@ -15,15 +15,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 221 | 16 | 0 | 0 | 60 | 7 | 304 |
-| total | 424 | 24 | 0 | 0 | 161 | 18 | 627 |
+| outside the waves | 221 | 16 | 1 | 0 | 60 | 7 | 305 |
+| total | 424 | 24 | 1 | 0 | 161 | 18 | 628 |
 <!-- the end of the counts -->
 
 ## Now
 - Bader's order of 14 Oct, round 2, Q163 to Q168: F164 to F169, merged, 244 to 249
 - Round 3 merged, F170 to F174, PRs 250 to 254. F174 the C04 run was not made, Bader's own Navisworks was open
 - ROUND 4, Bader's order of 14 Oct, one PR each, Part 1 before Part 2. F175 pictures cap by priority A 150 B 100 C 50
-  (Task 1, in review), then F176 no shared site is a NOTICE (2), F177 Clash report overwrite and leftover cd jpgs (3),
+  (Task 1, merged 255), F176 no shared site is a NOTICE (2, in review), F177 Clash report overwrite and leftover cd jpgs (3),
   F178 answers recorded (4), F179 research note steps\notes\nwc-nwf-design.md (6), F180 the C04 run and report (5)
 - PART 2 only if the C04 run did not crash: F181 checks (7), F182 one viewpoint folder with a marker (8), F183 refresh
   and clash history kept (9), F184 two page window NWC and NWF (10), F185 final run (11)

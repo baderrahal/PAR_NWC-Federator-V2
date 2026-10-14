@@ -86,6 +86,10 @@ namespace Federator.Core.Health
                         + (entry.Off.OnInternal.Count == 0
                             ? string.Empty
                             : ". NOTICE, on Revit's internal origin: " + string.Join(", ", entry.Off.OnInternal)
+                                + ", the group is not FAILED for it")
+                        + (entry.Off.NoSite.Count == 0
+                            ? string.Empty
+                            : ". NOTICE, naming no shared site: " + string.Join(", ", entry.Off.NoSite)
                                 + ", the group is not FAILED for it"));
                 }
             }
