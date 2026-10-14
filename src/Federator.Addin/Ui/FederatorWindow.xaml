@@ -172,7 +172,7 @@
                                   SelectionChanged="OnGroupingModeChanged" />
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-                        <CheckBox x:Name="RebuildExisting" Click="OnRebuildToggled" />
+                        <CheckBox x:Name="RebuildExisting" Checked="OnRebuildToggled" Unchecked="OnRebuildToggled" />
                         <TextBlock x:Name="RebuildHelp" Style="{StaticResource TickHelp}" />
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="GroupingSummary" Margin="0,6,0,0" />

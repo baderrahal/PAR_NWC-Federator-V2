@@ -96,5 +96,18 @@ namespace Federator.Core.Tests
             Assert.That(page, Does.Contain("MessageBoxButton.OKCancel,\n                    MessageBoxImage.Warning,\n                    MessageBoxResult.Cancel")
                 .Or.Contain("MessageBoxButton.OKCancel,\r\n                    MessageBoxImage.Warning,\r\n                    MessageBoxResult.Cancel"));
         }
+
+        [Test]
+        public void TheRebuildBoxAsksItsConfirmationOnCheckedSoAnAutomationTickAsksToo()
+        {
+            string xaml = Xaml();
+            int at = xaml.IndexOf("x:Name=\"RebuildExisting\"", System.StringComparison.Ordinal);
+            int end = xaml.IndexOf("/>", at, System.StringComparison.Ordinal);
+            string tag = xaml.Substring(at, end - at);
+
+            Assert.That(tag, Does.Contain("Checked=\"OnRebuildToggled\""));
+            Assert.That(tag, Does.Contain("Unchecked=\"OnRebuildToggled\""));
+            Assert.That(tag, Does.Not.Contain("Click="), "a Click is not raised by UI Automation's Toggle, a person's key press or an automation tick would skip the confirmation");
+        }
     }
 }

@@ -2,6 +2,21 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F195 the Rebuild box asks its confirmation when it is checked
+
+Branch fix-F195 off main d168fb2. Bader's order of 15 Oct, task 6, part 2.
+
+Found while making the driver press the Rebuild box: the box asked its confirmation on Click. A person's mouse click or
+a key press raises Click, and UI Automation's Toggle does not, so a tick made by automation changed the state with no
+confirmation. The box now asks on Checked and on Unchecked, the same confirmation with Cancel the default, and a Cancel
+that unticks the box asks nothing more. A source test reads the XAML.
+
+The driver is outside the repo, in the session scratchpad: it now waits up to 120 minutes for the NWF page's table, reads its
+rows cell by cell, and the launcher does not close the window until the table is read. With -Rebuild it ticks the box on a
+thread of its own, reads the confirmation whole, answers OK and scans again.
+
+Core tests 3219 passing, Release build clean.
+
 ## 2026-10-15 F194 the time of every view is measured and said
 
 Branch fix-F194 off main bbf2cec. Bader's order of 15 Oct, task 5, part 1 and part 3.

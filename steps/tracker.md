@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 661 rows: open 161, in progress 24, in review 0, merged 422, proven by a run 35, waiting for Bader 1, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 190, outside the waves 2, right after F133 merges 6
+- By status, of 662 rows: open 161, in progress 24, in review 0, merged 423, proven by a run 35, waiting for Bader 1, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 191, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 1 row: Q182
 
@@ -754,6 +754,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q182 | how many tests and clashes of priority A and B have clashes over 150 mm in a pair carrying the size folder and so stay in the one view, and whether to handle them another way, F192 | none | question | waiting for Bader | none | none | 2026-10-15 |
 | F193 | the answers of the round 5 orders recorded in steps\02_questions.md and the tracker, Q177 to Q182 | F193 | fix | merged | 273 | none | 2026-10-15 |
 | F194 | the seconds of every view are measured and said in VIEWS TIMING lines, the read back split into its hidden items, the walk of the overrides and the colour of the clashing items | F194 | fix | merged | 274 | none | 2026-10-15 |
+| F195 | the Rebuild box asks its confirmation on Checked and Unchecked so a tick made by automation or the keyboard asks too | F195 | fix | merged | 275 | none | 2026-10-15 |
 
 ## outside the waves
 
