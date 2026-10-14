@@ -605,4 +605,4 @@ Q166,"whether the Run as label Weekly run plus XML is renamed now that every wee
 Q167,"whether a test with no tolerance or a file with no units is still skipped now that the XML tolerance is never used, F155",none,none,question,waiting for Bader,none,none,2026-10-14
 Q168,"whether a test saved in the NWF that the built in matrix does not name is run too, F155",none,none,question,waiting for Bader,none,none,2026-10-14
 F156,"build\install.ps1 refused every build since F152, Federator.Core needs System.IO.Compression 4.2.0.0, read now after binding policy",F156,none,fix,merged,237,none,2026-10-14
-F157,"the picture pass leaves a trail for a run that dies, MEMORY with GDI and USER counts, the RATE, a stamped failure line with the whole exception, a warning for two clashes on one file",F157,none,fix,in review,UNKNOWN,none,2026-10-14
+F157,"the picture pass leaves a trail for a run that dies, MEMORY with GDI and USER counts, the RATE, a stamped failure line with the whole exception, a warning for two clashes on one file",F157,none,fix,merged,239,none,2026-10-14
