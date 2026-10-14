@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 19:00, round 4 second set, F182 memory stop and NWD before pictures in review, F183 records and F184 the C04 run next, last run C04 hung at 26 GB
+STATE OPEN, 2026-10-14 19:10, round 4 second set, F182 memory stop and NWD before pictures merged, F183 records and F184 the C04 run next, last run C04 hung at 26 GB
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 230 | 16 | 1 | 1 | 64 | 7 | 319 |
-| total | 433 | 24 | 1 | 1 | 165 | 18 | 642 |
+| outside the waves | 231 | 16 | 0 | 1 | 64 | 7 | 319 |
+| total | 434 | 24 | 0 | 1 | 165 | 18 | 642 |
 <!-- the end of the counts -->
 
 ## Now
