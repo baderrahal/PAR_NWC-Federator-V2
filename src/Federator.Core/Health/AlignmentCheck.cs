@@ -341,17 +341,15 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// Why this group is FAILED, or null where it is not, Q70 answered b on
-        /// 2026-09-20. A group fails when any of its models names the internal origin as
-        /// its shared site, or names no site at all. A model whose site could not be read
-        /// does neither, because a read that threw is not a fact about the model.
+        /// Why this group is FAILED, or null where it is not. A group fails when any of its models
+        /// names no site at all, Q111 B. A model whose site could not be read does not, because a
+        /// read that threw is not a fact about the model.
         ///
-        /// SINCE F159 THE CLASH IS NEVER SKIPPED, so a model named Internal fails the group as
-        /// Q70 answered, which is what a run with the old rule switched off did. Bader's answer
-        /// to Q100, which let it skip the clash and not fail, no longer has anything to apply
-        /// to. A model naming no site at all is off the coordinates too, Q111 B, and fails the
-        /// group the same way. Whether a group that is still FAILED for this should be a NOTICE
-        /// alone is Q170. The inputs are the ones the ALIGNMENT block takes, so the block and
+        /// F171, Bader's answer to Q170. A MODEL ON THE INTERNAL ORIGIN NO LONGER FAILS THE GROUP.
+        /// Q70 made it a failure, and Bader's answer replaced that with a NOTICE that names the model
+        /// and says its clash results may be wrong, OffCoordinates.OnInternal, in the run log, the
+        /// list of models off the coordinates and the group's result line. Every other reason for
+        /// FAILED stays as it was. The inputs are the ones the ALIGNMENT block takes, so the block and
         /// the group cannot differ.
         ///
         /// FAILED DOES NOT STOP THE GROUP. The engine goes on to the NWD, and to the clash
@@ -379,64 +377,37 @@ namespace Federator.Core.Health
                 return null;
             }
 
-            List<string> onInternal = new List<string>();
             List<string> withNoSite = new List<string>();
 
             for (int i = 0; i < models.Count; i++)
             {
                 // A site whose read threw says nothing about the model, so the model is
                 // judged on neither half of this rule and the block says UNKNOWN for it.
-                if (!models[i].SiteRead)
-                {
-                    continue;
-                }
-
-                if (!models[i].NamesASharedCoordinate)
+                if (models[i].SiteRead && !models[i].NamesASharedCoordinate)
                 {
                     withNoSite.Add(Named(models[i]));
                 }
-                else if (NamesInternal(models[i], internalName))
-                {
-                    onInternal.Add(Named(models[i]));
-                }
             }
 
-            if (onInternal.Count == 0 && withNoSite.Count == 0)
+            if (withNoSite.Count == 0)
             {
                 return null;
             }
 
-            string why = string.Empty;
-
-            if (onInternal.Count > 0)
-            {
-                why = onInternal.Count + " model(s) were exported on Revit's internal origin and not on a"
-                    + " shared site, which puts them in a different coordinate system from the rest of"
-                    + " the group: " + string.Join(", ", onInternal.ToArray());
-            }
-
-            if (withNoSite.Count > 0)
-            {
-                why += (why.Length > 0 ? ". And " : string.Empty)
-                    + withNoSite.Count + " model(s) name no shared site at all: "
-                    + string.Join(", ", withNoSite.ToArray());
-            }
-
-            return why;
+            return withNoSite.Count + " model(s) name no shared site at all: "
+                + string.Join(", ", withNoSite.ToArray());
         }
 
         /// <summary>
-        /// The ALIGNMENT failed run line. Its words do not follow the rule's setting, because
-        /// a model on Internal fails its group wherever its clash is not skipped, the rule on
-        /// or off, and the line once said with the rule on that every such group failed on a
-        /// model naming no site. It says nothing of which files were written, since a failed
-        /// group's publish can fail too and the files written list can then name last week's
-        /// NWD.
+        /// The ALIGNMENT failed run line. Since F171 a group fails on this only where a model names no
+        /// shared site, and a model on the internal origin is a notice. It says nothing of which files
+        /// were written, since a failed group's publish can fail too and the files written list can then
+        /// name last week's NWD.
         /// </summary>
         public static string FailedRunLine(int groups)
         {
             return "ALIGNMENT failed " + groups + " group(s), each because"
-                + " a model names no shared site or was exported on the internal origin"
+                + " a model names no shared site"
                 + (groups == 0 ? string.Empty : ". The failure does not stop the group.");
         }
 
@@ -502,6 +473,7 @@ namespace Federator.Core.Health
             IList<ModelPlacement> models, ModelPlacement reference, string internalName, double farModelMillimetres)
         {
             List<string> off = new List<string>();
+            List<string> internalModels = new List<string>();
             int notJudged = 0;
 
             for (int i = 0; i < models.Count; i++)
@@ -539,13 +511,19 @@ namespace Federator.Core.Health
                             + " from the reference, " + Metres(distance) + " in a straight line"
                             + (far ? ", more than " + Metres(farModelMillimetres) : string.Empty);
 
+                if (onInternal)
+                {
+                    internalModels.Add(Named(model));
+                }
+
                 off.Add(Named(model) + "   shared site " + SiteSaid(model)
                     + (onInternal ? ", Revit's own origin and not a shared site" : string.Empty)
                     + (namesNoSite ? ", the model names no shared site at all" : string.Empty)
                     + "   " + where);
             }
 
-            return new OffCoordinates(reference == null ? null : Named(reference), off, notJudged, models.Count);
+            return new OffCoordinates(
+                reference == null ? null : Named(reference), off, notJudged, models.Count, internalModels);
         }
 
         /// <summary>

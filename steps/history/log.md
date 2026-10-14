@@ -2,6 +2,22 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F171 a model on Internal is a notice and no reason for FAILED
+
+Branch fix-F171 off main 914b1db. Bader's order of 14 Oct, round 3, task 2, Q170.
+
+What changed: AlignmentCheck.WhyItFailsTheGroup no longer makes a model on Revit's internal origin a reason. The one
+reason left in it is a model that names no shared site at all, which is another reason for FAILED and stays as it was.
+OffCoordinates carries OnInternal, the names of the models on Internal, and InternalSaid says which model and that its
+clash results may be wrong. The NOTICE of the run log (OffCoordinates.Notice), the list "Models not on the same shared
+coordinates, run ..." in the Log folder, the RESULT lines and the group's result line (FederationEngine.Describe) all
+carry it. The ALIGNMENT failed run line names the one cause left.
+
+Proved by tests: a group with a model on Internal gives no failure reason, no THIS GROUP IS FAILED line in the block, a
+judgement of DONE where its files and viewpoints are there, and the notice naming the model. A model naming no site
+still fails its group. 18 tests that asserted the old rule were rewritten, none removed. UNKNOWN: the real Describe line
+of a run, which the Addin builds and only a run shows.
+
 ## 2026-10-14 F170 the HTML and its pictures in a Clash report folder
 
 Branch fix-F170 off main aefee2b. Bader's order of 14 Oct, round 3, task 1, Q169.

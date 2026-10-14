@@ -2626,7 +2626,8 @@ namespace Federator.Addin.Engine
                 IList<ModelPlacement> placements = ModelFactsReader.Placements(document, reports.Names, log);
 
                 // Q70 answered b on 2026-09-20. A model naming no shared site fails the
-                // group, and so does a model on the internal origin. A FAILED group still
+                // group. A model on the internal origin does not, F171, Bader's answer to
+                // Q170: it is a NOTICE, below, and the group is not FAILED for it. A FAILED group still
                 // goes on to its NWD, because the evidence is what Bader takes to the people
                 // who own the models. Kept apart from the errors, so the judgement still
                 // reads the NWD and names it beside this reason.
@@ -4800,6 +4801,13 @@ namespace Federator.Addin.Engine
             if (outcome.Clash != null)
             {
                 line.Append("  clash ").Append(outcome.Clash.CountsForTheLabel());
+            }
+
+            // F171. A model on Revit's internal origin is said here too, by name, since it ends no group
+            // FAILED any more and the line is where the group's result is read.
+            if (outcome.Coordinates != null && outcome.Coordinates.OnInternal.Count > 0)
+            {
+                line.Append("  NOTICE ").Append(outcome.Coordinates.InternalSaid());
             }
 
             // How many, never what they say. This line is a label, and the errors carry

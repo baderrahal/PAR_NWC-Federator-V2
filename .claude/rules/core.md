@@ -1072,8 +1072,8 @@ and 6 does not read as broken.
              skipped because a model is not on the same shared coordinates
     FAILED   something requested threw or produced nothing, a rebuild that appended
              nothing or could not keep its saved tests included, or a model names no
-             shared site or names Internal in a group whose clash is not skipped, Q70.
-             Where the clash is skipped neither fails it, Q111 B, F137
+             shared site, Q111 B. A model on Internal is no reason since F171, Q170:
+             it is a NOTICE that names the model
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
   in it, so it can be tested. The outcome and the reason for it come out of one
   pass, so the two can never disagree. A failure on where the models sit is kept apart
@@ -1093,11 +1093,13 @@ and 6 does not read as broken.
   coordinates when it names Internal as its shared site, when its site was read and names
   none at all, his answer B to Q111 on 2026-10-05 built by F137, or when it sits more than a
   metre from its group's reference model, as the ALIGNMENT block measures it. That
-  replaces Q70 for a model on Internal or naming no site ONLY WHERE THE GROUP'S CLASH IS
-  SKIPPED. Wherever no clash is skipped, the rule off or no clash test to run in the group,
-  such a model fails its group as Q70 answered, `AlignmentCheck.WhyItFailsTheGroup` taking
-  the four inputs the block takes, because his words give such a group PARTIAL or nothing
-  and never DONE, and a group with nothing to clash would otherwise end DONE. A site whose
+  replaced Q70 for a model on Internal or naming no site only where the group's clash was
+  skipped, and since F159 nothing is skipped. SINCE F171 (Q170) A MODEL ON INTERNAL NEVER
+  FAILS ITS GROUP. A model naming no site still does, `AlignmentCheck.WhyItFailsTheGroup`
+  taking the inputs the block takes. A model on Internal is a NOTICE by name, the models in
+  `OffCoordinates.OnInternal`, said by `OffCoordinates.InternalSaid`, in the run log, in the list
+  of models off the coordinates, in the RESULT lines and in the group's result line
+  (`FederationEngine.Describe`). A site whose
   read threw is neither, FR-002, and is not judged. `AlignmentCheck.NamesNoSite` is the one
   test of a model naming none, and its line in the block, the note and the list for the
   modellers says the model names no shared site at all. His answer B to Q125, PARTIAL with
@@ -1107,9 +1109,10 @@ and 6 does not read as broken.
   pins what main does until then. The reason is made at the ALIGNMENT step, before any file of the group is
   written, so it names the models and their sites and NOTHING OF A FILE. The steps that
   write say what was written. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`,
-  names both causes whichever way the rule is set, and says nothing of which files were
+  names the one cause left, and says nothing of which files were
   written either, because the line is made before any file is and the steps that write say
-  what was written. The files written list named an NWD whose publish returned false until
+  what was written, and since F171 it names one cause, a model naming no shared site. The
+  files written list named an NWD whose publish returned false until
   FR-189. The distance is the STRAIGHT LINE of dx, dy and
   dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
   and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
@@ -1122,8 +1125,8 @@ and 6 does not read as broken.
   `NOTICE` line for the group made by `OffCoordinates.Notice`, and the run's list, the
   "Models not on the same shared coordinates, run" file in the Log folder, carries a NOTICE
   for each group with the reference, the models and that the clash results may be wrong for
-  them, `OffCoordinates.ResultsMayBeWrong`. The group is still judged as Q70 had it, a model
-  naming Internal or no site fails it, since the rule that spared it is gone, which is Q170.
+  them, `OffCoordinates.ResultsMayBeWrong`. A model naming no site still fails its group. A
+  model naming Internal does not, Bader's answer to Q170 built by F171, and the notice says so.
   One line per such model, made by `AlignmentCheck.NotOnTheSameCoordinates` and nowhere else,
   names its file, its shared site and its distance from the reference in X, Y and Z. The
   ALIGNMENT block's all clear line is written only where every model was measured, and
