@@ -415,8 +415,7 @@ namespace Federator.Core.Tests
 
             foreach (ClashTestDefinition test in document.Tests)
             {
-                asks.Add("TEST " + test.Name + " | " + test.Left.Locator + " | " + test.Right.Locator
-                    + " | " + test.ToleranceInFileUnits.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+                asks.Add("TEST " + test.Name + " | " + test.Left.Locator + " | " + test.Right.Locator);
             }
 
             return asks;

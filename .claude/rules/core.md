@@ -966,10 +966,15 @@ and 6 does not read as broken.
   never ran keeps what the plan gave it, Bader's answer to Q54. A test that runs is still read
   off the document. `ToleranceChoice.BlocksLine` no longer says the blocks that never ran read
   off the picked file, and points at the line below it, `ReadFromLine`, for where each was read
-- Tolerance is read per test and converted from the file units attribute into the
-  units of the open document before it is set. There is no global tolerance setting
-  in this tool. Both numbers and both unit names go in the log, because which units
-  ClashTest.Tolerance is measured in is UNKNOWN until a test runs against a real model
+- THE TOLERANCE IS THE DROP DOWN'S ALONE, F167, Bader's answer A to Q167 of 14 Oct 2026. The
+  value chosen on the Clash step, 25, 50 or 75 mm, is converted into the document units by
+  `ToleranceChoice.InDocumentUnits` and set on every test, a test of the matrix and a test
+  already saved in the NWF, whatever the matrix, an XML or the test says. Nothing reads the
+  tolerance or the units of a matrix or an XML any more: the reader skips both, the plan carries
+  none, and a test with no tolerance or a file with no units is planned like any other. The two
+  checks that skipped them, FR-155's no tolerance and UNKNOWN UNITS, and their skip reasons are
+  gone. A tolerance in the matrix is data nobody reads. Which units ClashTest.Tolerance is
+  measured in is UNKNOWN until a test runs against a real model
 - A test type that does not map to a value on the enum is reported by name and
   skipped. It is never approximated to the nearest one, because a hard test standing
   in for a clearance test reports a number that reads as real and is not

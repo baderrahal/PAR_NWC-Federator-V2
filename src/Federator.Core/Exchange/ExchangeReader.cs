@@ -162,12 +162,9 @@ namespace Federator.Core.Exchange
         private ClashTestDefinition ReadTest(XElement test, string units)
         {
             string name = Attribute(test, "name");
-            string toleranceText = Attribute(test, "tolerance");
-            double tolerance = ReadDouble(toleranceText, "tolerance", name);
 
-            // Read as written, in the file units, and never converted here. A unit the
-            // tool does not know is judged once, in ClashTestPlan.Convert, where the test
-            // is skipped by name. Converting here threw on the whole file instead.
+            // F167, Bader's answer A to Q167. The tolerance and its units are not read. They come from
+            // the drop down alone, on every test, whatever the matrix or a file says.
             XElement linkage = Child(test, "linkage");
             List<string> missing = new List<string>();
 
@@ -175,9 +172,6 @@ namespace Federator.Core.Exchange
                 name,
                 Attribute(test, "test_type"),
                 Attribute(test, "status"),
-                !string.IsNullOrEmpty(toleranceText),
-                tolerance,
-                units,
                 ReadSetting(test, "merge_composites", "merge_composites", name, missing) != 0,
                 linkage == null ? null : Attribute(linkage, "mode"),
                 ReadRules(test),

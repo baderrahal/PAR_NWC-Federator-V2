@@ -57,7 +57,6 @@ namespace Federator.Core.Clash
 
             return new TestSettings
             {
-                Tolerance = planned.Tolerance,
                 TestType = planned.TestType,
                 TestTypeName = planned.TestTypeName,
                 MergeComposites = planned.MergeComposites,

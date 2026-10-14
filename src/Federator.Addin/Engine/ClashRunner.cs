@@ -705,7 +705,7 @@ namespace Federator.Addin.Engine
                     report.RightLocator = planned.Right.Locator;
                     // F155. The XML's tolerance is never read into a run, so a row that never ran
                     // carries the value chosen in the drop down, as every test is set to.
-                    Tolerance.PutOn(report, planned.DocumentUnits);
+                    Tolerance.PutOn(report, documentUnits);
                     report.TestTypeName = planned.TestTypeName;
                     report.State = TestState.Skipped;
                     byIndex.Add(index, report);

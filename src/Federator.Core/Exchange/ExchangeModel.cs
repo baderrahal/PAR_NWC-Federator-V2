@@ -41,9 +41,6 @@ namespace Federator.Core.Exchange
             string name,
             string testType,
             string status,
-            bool hasTolerance,
-            double toleranceInFileUnits,
-            string fileUnits,
             bool mergeComposites,
             string linkageMode,
             IList<string> rules,
@@ -54,9 +51,6 @@ namespace Federator.Core.Exchange
             Name = name;
             TestType = testType;
             Status = status;
-            HasTolerance = hasTolerance;
-            ToleranceInFileUnits = toleranceInFileUnits;
-            FileUnits = fileUnits;
             MergeComposites = mergeComposites;
             LinkageMode = linkageMode;
             Rules = new ReadOnlyCollection<string>(rules ?? new List<string>());
@@ -69,7 +63,8 @@ namespace Federator.Core.Exchange
         /// The settings the file left out of this test, FR-155: merge_composites, and per
         /// side selfintersect and primtypes, named as left primtypes and so on. Each reads as
         /// 0 or false in its property, which is a setting nobody wrote, so a test naming any
-        /// is skipped by name the way a test with no tolerance is.
+        /// is skipped by name. The tolerance is not one of them since F167, it comes from the
+        /// drop down alone and the file's is never read.
         /// </summary>
         public ReadOnlyCollection<string> MissingSettings { get; private set; }
 
@@ -81,20 +76,7 @@ namespace Federator.Core.Exchange
         /// <summary>The raw status string, for example new.</summary>
         public string Status { get; private set; }
 
-        /// <summary>
-        /// False when the file carried no tolerance attribute at all. Everything about a
-        /// test comes from the file and never from a constant, so a test with no tolerance
-        /// is skipped by name rather than given a zero that reads as a real one.
-        /// </summary>
-        public bool HasTolerance { get; private set; }
 
-        /// <summary>
-        /// The tolerance exactly as written, in <see cref="FileUnits"/>. Zero when
-        /// <see cref="HasTolerance"/> is false, and that test is never planned.
-        /// </summary>
-        public double ToleranceInFileUnits { get; private set; }
-
-        public string FileUnits { get; private set; }
 
         public bool MergeComposites { get; private set; }
 

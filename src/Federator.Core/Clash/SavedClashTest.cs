@@ -36,7 +36,6 @@ namespace Federator.Core.Clash
         public SavedClashTest(
             string name,
             int testTypeNumber,
-            double tolerance,
             bool mergeComposites,
             bool leftSelfIntersect,
             int leftPrimitiveTypes,
@@ -53,7 +52,6 @@ namespace Federator.Core.Clash
 
             Name = name ?? string.Empty;
             TestTypeNumber = testTypeNumber;
-            Tolerance = tolerance;
             MergeComposites = mergeComposites;
             LeftSelfIntersect = leftSelfIntersect;
             LeftPrimitiveTypes = leftPrimitiveTypes;
@@ -73,8 +71,7 @@ namespace Federator.Core.Clash
         /// </summary>
         public int TestTypeNumber { get; private set; }
 
-        /// <summary>Already in the document's units.</summary>
-        public double Tolerance { get; private set; }
+
 
         public bool MergeComposites { get; private set; }
 

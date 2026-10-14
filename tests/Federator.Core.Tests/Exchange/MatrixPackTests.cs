@@ -250,8 +250,7 @@ namespace Federator.Core.Tests
                 Assert.That(a.Left.Locator, Is.EqualTo(b.Left.Locator), at);
                 Assert.That(a.Right.Locator, Is.EqualTo(b.Right.Locator), at);
                 Assert.That(a.TestType, Is.EqualTo(b.TestType), at);
-                Assert.That(a.ToleranceInFileUnits, Is.EqualTo(b.ToleranceInFileUnits), at);
-                Assert.That(a.FileUnits, Is.EqualTo(b.FileUnits), at);
+
                 Assert.That(a.MergeComposites, Is.EqualTo(b.MergeComposites), at);
             }
         }

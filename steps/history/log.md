@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F167 the tolerance comes only from the drop down
+
+Branch fix-F167 off main 79cafae. Bader's order of 14 Oct, task 4, Q167 A.
+
+Search done over src, tests and tools, with the terms ToleranceInFileUnits, HasTolerance, FileUnits, DocumentUnits,
+"tolerance" as an attribute, ClashSkipReason.NoTolerance, UnknownUnits, ExchangeUnits.Convert, PlannedClashTest.Tolerance,
+SavedClashTest.Tolerance, TestSettings.FromFile and tolerance=. What was found and done:
+- ClashTestPlan.Plan, the check of FR-155 that skipped a test with no tolerance, and Convert, the check that skipped a test
+  of a file with no units or a unit the tool does not know. Both removed, with ClashSkipReason.NoTolerance and UnknownUnits,
+  their Describe words, their coverage mapping and their place in the CLASH block order
+- ExchangeReader.ReadTest read the tolerance and refused a malformed one. It reads neither tolerance nor units now, and
+  ClashTestDefinition.HasTolerance, ToleranceInFileUnits and FileUnits are gone
+- PlannedClashTest carried the file's tolerance, its units and the converted value. All four are gone, and the saved test
+  plan no longer passes the document's value in. SavedClashTest.Tolerance went too, since nothing read it
+- TestSettings.FromFile no longer takes a tolerance. ClashRunner sets inFile.Tolerance to the drop down's value as before
+- MirrorPair wrote a tolerance with its units in a mirror difference, and the tolerance is never compared. Removed
+- ClashRunner wrote the row of a test that never ran with the plan's units. It uses the document's units
+- not found as a use: ExchangeWriter, the report rows and the window, which already took the drop down's value
+- nothing in tools reads a matrix tolerance. compare-document.ps1 and read-workbook.ps1 read the words of a written report
+
+Proved here by tests: a matrix test at 100 mm is planned and its plan carries no tolerance and no units, reflection over
+PlannedClashTest and ClashTestDefinition. The value set on it is ToleranceChoice 25 mm in the document units, 0.025 m,
+25 mm, 0.0820209974 ft, and does not depend on the matrix. A saved test is planned with no tolerance and the runner's
+ApplyChosenTolerance puts the drop down's on it, which is the code that was already there. The setting of a value on a
+saved test needs Navisworks and was not run in this entry.
+
+Core tests 3098 before, 3093 after, 0 failed. The count falls because the two checks and the conversion tests are gone.
+Release build 0 warnings, 0 errors.
+
 ## 2026-10-14 F166 the matrix pack is chosen by the project code of the NWC file names
 
 Branch fix-F166 off main 98a5cfb. Bader's order of 14 Oct, task 1, Q164 B.

@@ -88,7 +88,6 @@ namespace Federator.Addin.Engine
                             saved.Add(new SavedClashTest(
                                 test.DisplayName,
                                 (int)test.TestType,
-                                test.Tolerance,
                                 test.MergeComposites,
                                 left.SelfIntersect,
                                 (int)left.PrimitiveTypes,

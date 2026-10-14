@@ -6,23 +6,22 @@ using Federator.Core.Exchange;
 
 namespace Federator.Core.Clash
 {
-    /// <summary>One test that can be created, with its tolerance already in document units.</summary>
+    /// <summary>
+    /// One test that can be created. It carries no tolerance since F167, Bader's answer A to Q167:
+    /// the value of the drop down is set on every test, ToleranceChoice, and nothing a matrix, an XML
+    /// or a saved test says is read.
+    /// </summary>
     public sealed class PlannedClashTest
     {
         internal PlannedClashTest(
             string name,
             ClashTestKind testType,
             string testTypeName,
-            double toleranceInFileUnits,
-            string fileUnits,
-            double tolerance,
-            string documentUnits,
             bool mergeComposites,
             PlannedClashSide left,
             PlannedClashSide right,
             int fileIndex)
-            : this(name, testType, testTypeName, toleranceInFileUnits, fileUnits, tolerance,
-                documentUnits, mergeComposites, left, right, fileIndex, null)
+            : this(name, testType, testTypeName, mergeComposites, left, right, fileIndex, null)
         {
         }
 
@@ -30,10 +29,6 @@ namespace Federator.Core.Clash
             string name,
             ClashTestKind testType,
             string testTypeName,
-            double toleranceInFileUnits,
-            string fileUnits,
-            double tolerance,
-            string documentUnits,
             bool mergeComposites,
             PlannedClashSide left,
             PlannedClashSide right,
@@ -45,10 +40,6 @@ namespace Federator.Core.Clash
             Name = name;
             TestType = testType;
             TestTypeName = testTypeName;
-            ToleranceInFileUnits = toleranceInFileUnits;
-            FileUnits = fileUnits;
-            Tolerance = tolerance;
-            DocumentUnits = documentUnits;
             MergeComposites = mergeComposites;
             Left = left;
             Right = right;
@@ -82,14 +73,7 @@ namespace Federator.Core.Clash
         /// <summary>The raw test_type string, kept so the log names what the file said.</summary>
         public string TestTypeName { get; private set; }
 
-        public double ToleranceInFileUnits { get; private set; }
 
-        public string FileUnits { get; private set; }
-
-        /// <summary>The tolerance converted into the units the open document is in.</summary>
-        public double Tolerance { get; private set; }
-
-        public string DocumentUnits { get; private set; }
 
         public bool MergeComposites { get; private set; }
 
@@ -101,8 +85,7 @@ namespace Federator.Core.Clash
         internal PlannedClashTest Named(string name)
         {
             return new PlannedClashTest(
-                name, TestType, TestTypeName, ToleranceInFileUnits, FileUnits, Tolerance, DocumentUnits,
-                MergeComposites, Left, Right, FileIndex, Address);
+                name, TestType, TestTypeName, MergeComposites, Left, Right, FileIndex, Address);
         }
 
         public override string ToString()

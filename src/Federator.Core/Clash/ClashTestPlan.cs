@@ -204,10 +204,6 @@ namespace Federator.Core.Clash
                     test.Name,
                     kind,
                     kind.ToString(),
-                    test.Tolerance,
-                    documentUnits,
-                    test.Tolerance,
-                    documentUnits,
                     test.MergeComposites,
                     new PlannedClashSide(test.LeftSelfIntersect, test.LeftPrimitiveTypes, test.LeftLocator),
                     new PlannedClashSide(test.RightSelfIntersect, test.RightPrimitiveTypes, test.RightLocator),
@@ -266,29 +262,10 @@ namespace Federator.Core.Clash
                 return;
             }
 
-            if (!test.HasTolerance)
-            {
-                skipped.Add(new SkippedClashTest(
-                    test.Name,
-                    ClashSkipReason.NoTolerance,
-                    "the file gives this test no tolerance at all, and a tolerance is never "
-                        + "supplied from anywhere else",
-                    fileIndex));
-                return;
-            }
-
-            double tolerance;
-            string unitsProblem = Convert(test, documentUnits, out tolerance);
-
-            if (unitsProblem != null)
-            {
-                skipped.Add(new SkippedClashTest(
-                    test.Name, ClashSkipReason.UnknownUnits, unitsProblem, fileIndex));
-                return;
-            }
-
+            // F167. A test with no tolerance, or a file with no units, is planned like any other. The
+            // tolerance is the drop down's on every test.
             // FR-155. A setting left out read as 0 or false, which is a setting nobody wrote,
-            // so the test is skipped by name the way a test with no tolerance is.
+            // so the test is skipped by name.
             if (test.MissingSettings.Count > 0)
             {
                 skipped.Add(new SkippedClashTest(
@@ -304,10 +281,6 @@ namespace Federator.Core.Clash
                 test.Name,
                 kind,
                 test.TestType,
-                test.ToleranceInFileUnits,
-                test.FileUnits,
-                tolerance,
-                documentUnits,
                 test.MergeComposites,
                 Side(test.Left),
                 Side(test.Right),
@@ -334,41 +307,6 @@ namespace Federator.Core.Clash
             }
 
             return rightMissing ? "the right side names no set" : null;
-        }
-
-        /// <summary>
-        /// The tolerance is written in the file units and the document measures in its
-        /// own, so it is converted before it is ever set. There is no global tolerance
-        /// setting in this tool, every test carries its own.
-        /// </summary>
-        private static string Convert(ClashTestDefinition test, string documentUnits, out double tolerance)
-        {
-            tolerance = 0.0;
-
-            if (string.IsNullOrEmpty(test.FileUnits))
-            {
-                return "the file gives no units, so the tolerance "
-                    + EventRow.Tolerance(test.ToleranceInFileUnits)
-                    + " cannot be converted";
-            }
-
-            if (string.IsNullOrEmpty(documentUnits))
-            {
-                return "the units of the open document are UNKNOWN, so the tolerance cannot be converted";
-            }
-
-            if (!ExchangeUnits.IsKnown(test.FileUnits))
-            {
-                return "the file unit \"" + test.FileUnits + "\" is not one this tool converts";
-            }
-
-            if (!ExchangeUnits.IsKnown(documentUnits))
-            {
-                return "the document unit \"" + documentUnits + "\" is not one this tool converts";
-            }
-
-            tolerance = ExchangeUnits.Convert(test.ToleranceInFileUnits, test.FileUnits, documentUnits);
-            return null;
         }
 
         private static PlannedClashSide Side(ClashSideDefinition side)
@@ -528,10 +466,7 @@ namespace Federator.Core.Clash
                     return "test type not one this tool creates";
                 case ClashSkipReason.NoLocator:
                     return "a side names no set";
-                case ClashSkipReason.UnknownUnits:
-                    return "the tolerance could not be converted";
-                case ClashSkipReason.NoTolerance:
-                    return "the file gives it no tolerance";
+
                 case ClashSkipReason.MissingSetting:
                     return "the file leaves out a setting of it";
                 case ClashSkipReason.NoName:

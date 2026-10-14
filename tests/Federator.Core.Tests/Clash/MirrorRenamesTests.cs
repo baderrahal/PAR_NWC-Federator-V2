@@ -521,7 +521,7 @@ namespace Federator.Core.Tests
             {
                 MirrorRuleTests.Saved(Kept, Ducts, Columns, 0),
                 MirrorRuleTests.Saved(Swap, Columns, Ducts, 1),
-                new SavedClashTest(NewName, 99, 0.025, true, false, 1, Ducts, false, 1, Walls, new[] { 2 })
+                new SavedClashTest(NewName, 99, true, false, 1, Ducts, false, 1, Walls, new[] { 2 })
             };
 
             ClashTestPlan document = ClashTestPlan.FromDocument(saved, "m");
@@ -568,7 +568,7 @@ namespace Federator.Core.Tests
             MirrorRule twoOfIt = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(
                 Kept, Ducts, Columns, Kept, Ducts, Columns));
             MirrorRule otherType = TheXmlRuleOver(ClashTestPlan.FromDocument(
-                new List<SavedClashTest> { new SavedClashTest(Kept, 99, 0.025, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }) },
+                new List<SavedClashTest> { new SavedClashTest(Kept, 99, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }) },
                 "m"));
             MirrorRule noRules = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, elsewhere, Columns));
 
@@ -613,11 +613,11 @@ namespace Federator.Core.Tests
         {
             foreach (SavedClashTest saved in new[]
             {
-                new SavedClashTest(Kept, 1, 0.05, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
-                new SavedClashTest(Kept, 2, 0.025, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
-                new SavedClashTest(Kept, 1, 0.025, false, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
-                new SavedClashTest(Kept, 1, 0.025, true, false, 1, Ducts, false, 3, Columns, new[] { 0 }),
-                new SavedClashTest(Kept, 1, 0.025, true, true, 1, Columns, false, 1, Ducts, new[] { 0 })
+                new SavedClashTest(Kept, 1, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 2, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 1, false, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 1, true, false, 1, Ducts, false, 3, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 1, true, true, 1, Columns, false, 1, Ducts, new[] { 0 })
             })
             {
                 MirrorRule rule = OverTheKeptTestSavedAs(saved);
@@ -656,12 +656,12 @@ namespace Federator.Core.Tests
                 new List<SavedClashTest>
                 {
                     MirrorRuleTests.Saved(Kept, Ducts, Columns, 0),
-                    new SavedClashTest(NewName, 1, 0.05, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })
+                    new SavedClashTest(NewName, 1, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })
                 },
                 "m"));
             string telephoneMirror = MirrorRuleTests.TelephoneVsWalls + " (mirror)";
             MirrorRule selfSwapped = ByRuleListOver(
-                new SavedClashTest(telephoneMirror, 1, 0.025, true, false, 1, Walls, true, 1, MirrorRuleTests.Telecom, new[] { 0 }));
+                new SavedClashTest(telephoneMirror, 1, true, false, 1, Walls, true, 1, MirrorRuleTests.Telecom, new[] { 0 }));
 
             Assert.That(MirrorMerge.Of(tolerance), Is.Empty, "no clash the mirror found at 0.05 m goes under a test run at 0.025 m");
             Assert.That(tolerance.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept) + " and " + Holds(NewName))));
@@ -687,7 +687,7 @@ namespace Federator.Core.Tests
 
             foreach (MirrorRule rule in new[]
             {
-                over(new SavedClashTest(NewName, 1, 0.05, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })),
+                over(new SavedClashTest(NewName, 1, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })),
                 over(MirrorRuleTests.Saved(NewName, Ducts, Walls, 1)),
                 over(MirrorRuleTests.AsHanded(NewName, 1))
             })
@@ -709,11 +709,11 @@ namespace Federator.Core.Tests
                 new List<SavedClashTest>
                 {
                     MirrorRuleTests.Saved(Kept, Ducts, Columns, 0),
-                    new SavedClashTest(Swap, 1, 0.05, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })
+                    new SavedClashTest(Swap, 1, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })
                 },
                 "m"));
             MirrorRule selfSwapped = ByRuleListOver(new SavedClashTest(
-                MirrorRuleTests.TelephoneVsWalls, 1, 0.025, true, false, 1, Walls, true, 1, MirrorRuleTests.Telecom, new[] { 0 }));
+                MirrorRuleTests.TelephoneVsWalls, 1, true, false, 1, Walls, true, 1, MirrorRuleTests.Telecom, new[] { 0 }));
 
             Assert.That(tolerance.Renames.Planned.Count, Is.EqualTo(1));
             Assert.That(tolerance.Renames.Planned[0].NewName, Is.EqualTo(NewName));
@@ -738,7 +738,7 @@ namespace Federator.Core.Tests
                 new List<SavedClashTest>
                 {
                     MirrorRuleTests.Saved(Kept, Ducts, Columns, 0),
-                    new SavedClashTest(NewName, 1, 0.05, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })
+                    new SavedClashTest(NewName, 1, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })
                 },
                 "m");
             MirrorRule second = MirrorRuleTests.RuleOver(TheXmlPlan().Buildable, MirrorRuleTests.Priorities(Swap, "A"), saved);
@@ -765,7 +765,7 @@ namespace Federator.Core.Tests
                 ClashTestPlan.FromDocument(
                     new List<SavedClashTest>
                     {
-                        new SavedClashTest(NewName, 1, 0.05, true, false, 1, Columns, false, 1, Ducts, new[] { 0 })
+                        new SavedClashTest(NewName, 1, true, false, 1, Columns, false, 1, Ducts, new[] { 0 })
                     },
                     "m"));
 
