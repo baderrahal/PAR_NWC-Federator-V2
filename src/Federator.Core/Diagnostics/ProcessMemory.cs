@@ -46,6 +46,27 @@ namespace Federator.Core.Diagnostics
         [DllImport("user32.dll")]
         private static extern uint GetGuiResources(IntPtr process, uint flags);
 
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetCurrentProcess();
+
+        /// <summary>This process's GDI object count now, or below zero where it cannot be read. Cheap, one call, no allocation.</summary>
+        public static long GdiObjectsNow()
+        {
+            try
+            {
+                return GetGuiResources(GetCurrentProcess(), GdiFlag);
+            }
+            catch (Exception error)
+            {
+                if (!(error is DllNotFoundException || error is EntryPointNotFoundException))
+                {
+                    throw;
+                }
+
+                return -1;
+            }
+        }
+
         private const uint GdiFlag = 0;
 
         private const uint UserFlag = 1;

@@ -2799,6 +2799,13 @@ namespace Federator.Addin.Engine
 
             log.Line(ProcessMemory.PicturesLine(done + " of " + total + " pictures", ProcessMemory.Read()));
             log.Line(pictureWatch.RateLine(done, total, log.ElapsedSeconds));
+
+            string split = Images == null ? null : Images.TakeTheGdiSplitLine();
+
+            if (split != null)
+            {
+                log.Line(split);
+            }
         }
 
         /// <summary>The key of the test of the document a row was read from, or null for a row that waits for no picture.</summary>
