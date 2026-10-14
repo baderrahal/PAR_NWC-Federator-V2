@@ -58,8 +58,7 @@ namespace Federator.Core.Coverage
         /// <summary>A side was not counted, so why the test has no results is UNKNOWN.</summary>
         SideNotCounted,
 
-        /// <summary>It was not run because the group's clash was skipped by the coordinates rule, F112.</summary>
-        CoordinatesRule,
+
 
         /// <summary>It was not run because the group holds one discipline.</summary>
         OneDiscipline,

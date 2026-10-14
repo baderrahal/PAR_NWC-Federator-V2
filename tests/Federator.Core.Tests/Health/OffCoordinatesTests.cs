@@ -6,12 +6,10 @@ using NUnit.Framework;
 namespace Federator.Core.Tests.Health
 {
     /// <summary>
-    /// Bader's answer to Q99 and Q100 on 2026-10-04. A group holding a model not on the same
-    /// shared coordinates as its reference model skips its clash and nothing else, where the
-    /// run would have run a clash test in it. A note says why, beside the NWD and in the
-    /// Clash Report folder, with one line per model, and says only what was checked. Each run
-    /// writes its own list of them for the modellers, and the RESULT block lists the groups
-    /// and how many the rule judged. The numbers are the real 1B06K1 of the C06 run of
+    /// The models not on the same shared coordinates, Bader's answer to Q99 and Q100 on 2026-10-04,
+    /// as his order of 2026-10-14 changed it, F159. The clash is never skipped for such a model. The
+    /// check says a NOTICE, in the run log and in the run's list for the modellers, which models, and
+    /// that the clash results may be wrong for them. The numbers are the real 1B06K1 of the C06 run of
     /// 2026-10-01, log line 1834.
     /// </summary>
     [TestFixture]
@@ -73,23 +71,6 @@ namespace Federator.Core.Tests.Health
                 AlignmentCheck.DefaultFarModelMillimetres);
         }
 
-        /// <summary>A group whose ST sits in place but whose site read threw, so it could be on Internal.</summary>
-        private static OffCoordinates OneSiteNotRead()
-        {
-            return AlignmentCheck.NotOnTheSameCoordinates(
-                new List<ModelPlacement>
-                {
-                    new ModelPlacement("c-AR.nwc", "AR", "Site", 0.0, 0.0, 0.0),
-                    new ModelPlacement("c-ST.nwc", "ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 10.0)
-                },
-                AlignmentCheck.DefaultFarModelMillimetres);
-        }
-
-        private const bool RuleOn = true;
-        private const bool RuleOff = false;
-        private const bool ATestRuns = true;
-        private const bool NothingToRun = false;
-
         /// <summary>The real 1A02MM's ST of 5q, on Internal and 255 mm above the AR, under a metre.</summary>
         private static OffCoordinates OnInternal()
         {
@@ -102,331 +83,125 @@ namespace Federator.Core.Tests.Health
                 AlignmentCheck.DefaultFarModelMillimetres);
         }
 
-        private static NwfAndNwd BothOnDisk()
-        {
-            return new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", true, true);
-        }
-
-        // ---------- the group's reason and its note ----------
+        // ---------- the NOTICE ----------
 
         [Test]
-        public void TheReasonIsBadersWords()
-        {
-            Assert.That(OffCoordinates.ClashSkippedReason, Is.EqualTo("clash skipped, models not on the same shared coordinates"));
-        }
-
-        /// <summary>
-        /// The note goes beside the NWD and into the Clash Report folder, so whoever looks for
-        /// the report finds the reason, and it carries the same lines as the log. It says only
-        /// what was checked: the tests in the words of the CLASH line, F77, and the NWF and the
-        /// NWD off the disk. It once said both held every model, set and clash test, which F77
-        /// makes false whenever a side finds nothing.
-        /// </summary>
-        [Test]
-        public void TheNoteSaysOnlyWhatWasChecked()
+        public void TheNoticeNamesTheGroupTheReferenceTheModelsAndSaysTheResultsMayBeWrong()
         {
             OffCoordinates off = The1B06K1();
-            string note = Joined(off.Note("1B06K1", BothOnDisk(), 0, new List<string>()));
+            IList<string> notice = off.Notice("1B06K1");
 
-            Assert.That(note, Does.StartWith("1B06K1: clash skipped, models not on the same shared coordinates"));
-            Assert.That(note, Does.Contain(
-                "No clash test was run and no clash report or viewpoint was made, because these models are not on the"
-                + " same shared coordinates, measured from the reference model AR  1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc:"));
-            Assert.That(note, Does.Contain("\n   " + off.Models[0]));
-            Assert.That(note, Does.Contain("The tests whose sides both find something are created and none is run."));
-            Assert.That(note, Does.Contain(@"The NWF is on disk at C:\out\1B06K1.nwf, read after the NWD was published."));
-            Assert.That(note, Does.Contain(@"The NWD was published by this run at C:\out\1B06K1.nwd."));
-            Assert.That(note, Does.Not.Contain("every model, set and clash test"));
-            Assert.That(note, Does.Contain(
-                "Once these models are exported again on the project's shared coordinates, the next run clashes the"
-                + " group with the tests already saved in its NWF."));
+            Assert.That(notice[0], Is.EqualTo(
+                "1B06K1: 1 model is not on the same shared coordinates, measured from the reference model"
+                + " AR  1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc. The clash results may be wrong for these models."
+                + " The clash was run and nothing was skipped."));
+            Assert.That(notice[1], Is.EqualTo("   " + off.Models[0]));
+            Assert.That(notice.Count, Is.EqualTo(2));
         }
 
-        /// <summary>A FAILED group's note says which file was not written, read off the disk and never assumed.</summary>
         [Test]
-        public void AFailedGroupsNoteSaysWhichFileWasNotWritten()
+        public void TheNoticeWordsAreBadersAndOneConstant()
         {
-            OffCoordinates off = The1B06K1();
-
-            string noNwd = Joined(off.Note(
-                "1B06K1", new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", false, false), 0, new List<string>()));
-            Assert.That(noNwd, Does.Contain(@"The NWD was NOT written. It is not on disk at C:\out\1B06K1.nwd."));
-            Assert.That(noNwd, Does.Not.Contain("published by this run"));
-
-            string noNwf = Joined(off.Note(
-                "1B06K1", new NwfAndNwd(@"C:\out\1B06K1.nwf", false, @"C:\out\1B06K1.nwd", true, true), 0, new List<string>()));
-            Assert.That(noNwf, Does.Contain(@"The NWF was NOT written. It is not on disk at C:\out\1B06K1.nwf."));
-            Assert.That(noNwf, Does.Not.Contain("The NWF is on disk"));
-
-            string stale = Joined(off.Note(
-                "1B06K1", new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", true, false), 0, new List<string>()));
-            Assert.That(stale, Does.Contain(
-                @"The NWD was NOT written by this run. The file at C:\out\1B06K1.nwd is from an earlier run, because the"
-                + " publish did not report success."));
+            Assert.That(OffCoordinates.ResultsMayBeWrong, Is.EqualTo("The clash results may be wrong for these models."));
         }
 
-        /// <summary>
-        /// The reviewer's blocking finding on attempt 2. The NWF line ended "read after the NWD
-        /// was published" whatever the NWD facts were, so the note of a group whose NWD was not
-        /// written, or whose publish did not report success, said a publish happened on the
-        /// line above the one saying it did not. It names a publish only where the outcome
-        /// shows one: the publish reported success and the NWD is on the disk.
-        /// </summary>
         [Test]
-        public void TheNwfLineSaysNothingOfAPublishTheOutcomeDidNotShow()
+        public void ThereIsNoNoticeWhereNoModelIsOff()
         {
-            OffCoordinates off = The1B06K1();
-            NwfAndNwd[] noPublishShown =
-            {
-                new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", false, false),
-                new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", true, false),
-                new NwfAndNwd(@"C:\out\1B06K1.nwf", true, @"C:\out\1B06K1.nwd", false, true)
-            };
-            string[] cases = { "no NWD", "a stale NWD", "a publish reported with no NWD on the disk" };
-
-            for (int i = 0; i < noPublishShown.Length; i++)
-            {
-                string nwfLine = TheNwfLine(off.Note("1B06K1", noPublishShown[i], 0, new List<string>()));
-
-                Assert.That(nwfLine, Is.EqualTo(@"The NWF is on disk at C:\out\1B06K1.nwf, read at the end of the group."), cases[i]);
-                Assert.That(nwfLine, Does.Not.Contain("publish"), cases[i]);
-            }
-
-            Assert.That(
-                TheNwfLine(off.Note("1B06K1", BothOnDisk(), 0, new List<string>())),
-                Is.EqualTo(@"The NWF is on disk at C:\out\1B06K1.nwf, read after the NWD was published."));
+            Assert.That(None().Notice("1B06WL"), Is.Empty);
+            Assert.That(NotPlaced().Notice("1A04PK"), Is.Empty, "a placement not read is not called off");
         }
 
-        private static string TheNwfLine(IList<string> note)
+        [Test]
+        public void AModelOnInternalIsInTheNoticeWithItsOwnWords()
         {
-            foreach (string line in note)
-            {
-                if (line.StartsWith("The NWF ", StringComparison.Ordinal))
+            IList<string> notice = OnInternal().Notice("1A02MM");
+
+            Assert.That(notice[0], Does.StartWith("1A02MM: 1 model is not on the same shared coordinates"));
+            Assert.That(Joined(notice), Does.Contain("ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
+            Assert.That(Joined(notice), Does.Contain("Revit's own origin"));
+        }
+
+        [Test]
+        public void TwoModelsReadAsModelsAndAreEachOnItsOwnLine()
+        {
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(
+                new List<ModelPlacement>
                 {
-                    return line;
-                }
-            }
+                    new ModelPlacement("x-AR.nwc", "AR", "Site", 0.0, 0.0, 0.0),
+                    new ModelPlacement("x-ST.nwc", "ST", "Internal", 0.0, 0.0, 0.0),
+                    new ModelPlacement("x-EL.nwc", "EL", string.Empty, 0.0, 0.0, 0.0)
+                },
+                AlignmentCheck.DefaultFarModelMillimetres);
 
-            Assert.Fail("the note has no NWF line");
-            return null;
-        }
+            IList<string> notice = off.Notice("1A02MM");
 
-        /// <summary>
-        /// The tests already saved in the NWF keep their results, F72c, and a skipped group
-        /// runs none of them, so the panel in the NWD shows an earlier run's clashes. The note
-        /// says so whichever way the count went.
-        /// </summary>
-        [Test]
-        public void TheNoteSaysTheTestsAlreadyInTheNwfKeepTheResultsOfAnEarlierRun()
-        {
-            OffCoordinates off = The1B06K1();
-            const string Keeps = "Any clash test already saved in the NWF keeps the results of an earlier run, because this run ran none.";
-
-            string weekly = Joined(off.Note("1B06K1", BothOnDisk(), 40, new List<string>()));
-            Assert.That(weekly, Does.Contain(Keeps + " 40 of this run's tests were already there."));
-
-            string first = Joined(off.Note("1B06K1", BothOnDisk(), 0, new List<string>()));
-            Assert.That(first, Does.Contain(Keeps));
-            Assert.That(first, Does.Not.Contain("were already there"));
-
-            string unknown = Joined(off.Note("1B06K1", BothOnDisk(), -1, new List<string>()));
-            Assert.That(unknown, Does.Contain(Keeps + " How many of this run's tests were already there is UNKNOWN."));
-        }
-
-        /// <summary>
-        /// Both readings of attempt 2: a skipped group makes no viewpoint and removes none,
-        /// so the viewpoints an earlier run saved stay in the NWF and in the NWD published
-        /// from it, and the note said only that this run made none, which reads as none.
-        /// </summary>
-        [Test]
-        public void TheNoteSaysTheViewpointsOfAnEarlierRunStayInTheNwf()
-        {
-            string note = Joined(The1B06K1().Note("1B06K1", BothOnDisk(), 0, new List<string>()));
-
-            Assert.That(note, Does.Contain(
-                "Any viewpoint an earlier run saved in the NWF is still in it, and in an NWD published from it."));
-        }
-
-        /// <summary>
-        /// Words and never deletion. A workbook, a page or an XML an earlier run wrote under
-        /// the name this run would have written stays where it is and reads as current, so
-        /// the note names each one the engine found, and says when none was found.
-        /// </summary>
-        [Test]
-        public void TheNoteNamesTheReportsOfAnEarlierRunThatStillStand()
-        {
-            OffCoordinates off = The1B06K1();
-            string found = @"   C:\out\Clash Reports\1B06K1.xlsx  last written 2026-09-28 14:02, 1,234 bytes";
-
-            string with = Joined(off.Note("1B06K1", BothOnDisk(), 0, new List<string> { found }));
-            Assert.That(with, Does.Contain(
-                "These report files are at the names this run would have written. Each is from an earlier run and was"
-                + " not written by this run:\n" + found));
-
-            string without = Joined(off.Note("1B06K1", BothOnDisk(), 0, new List<string>()));
-            Assert.That(without, Does.Contain(
-                "No report file is at the names this run would have written, so no report of an earlier run stands"
-                + " beside this note."));
-        }
-
-        [Test]
-        public void TheNoteIsNamedAfterTheFileItSitsBeside()
-        {
-            Assert.That(OffCoordinates.NoteEnding, Is.EqualTo(" clash skipped.txt"));
-        }
-
-        // ---------- which group skips its clash ----------
-
-        /// <summary>
-        /// The skip applies only where this run would have run a clash test. A group with
-        /// nothing to clash, no XML and no test saved, an XML of sets alone, or one
-        /// discipline, is judged as before, the breaker's second finding at c5d8aa8.
-        /// </summary>
-        [Test]
-        public void TheClashIsSkippedOnlyWhereTheRuleIsOnATestWouldRunAndAModelIsOff()
-        {
-            Assert.That(The1B06K1().SkipsTheClash(true, true), Is.True);
-            Assert.That(The1B06K1().SkipsTheClash(true, false), Is.False, "nothing to clash, so nothing is skipped");
-            Assert.That(The1B06K1().SkipsTheClash(false, true), Is.False, "the rule is off");
-            Assert.That(None().SkipsTheClash(true, true), Is.False, "every model in place");
-        }
-
-        // ---------- the note of an earlier run ----------
-
-        /// <summary>
-        /// An earlier run's note goes only when this run judged every model of the group and
-        /// did not skip its clash. A model whose placement or site is UNKNOWN, or a group with
-        /// no model read, keeps it, because an unknown is not a pass. Null is the note going,
-        /// and anything else is why it stays.
-        /// </summary>
-        [Test]
-        public void AnEarlierNoteGoesOnlyWhenEveryModelWasJudgedAndTheClashWasNotSkipped()
-        {
-            Assert.That(OffCoordinates.EarlierNoteKeptBecause(None(), RuleOn, ATestRuns), Is.Null);
-            Assert.That(OffCoordinates.EarlierNoteKeptBecause(The1B06K1(), RuleOn, ATestRuns), Is.Not.Null, "this run skipped the clash");
-            Assert.That(OffCoordinates.EarlierNoteKeptBecause(The1B06K1(), RuleOff, ATestRuns), Is.Null, "the rule was off and every model was judged");
-            Assert.That(OffCoordinates.EarlierNoteKeptBecause(NotPlaced(), RuleOn, ATestRuns), Is.Not.Null, "no placement read");
-            Assert.That(OffCoordinates.EarlierNoteKeptBecause(OneSiteNotRead(), RuleOn, ATestRuns), Is.Not.Null, "a site not read could be Internal");
-            Assert.That(
-                OffCoordinates.EarlierNoteKeptBecause(
-                    AlignmentCheck.NotOnTheSameCoordinates(new List<ModelPlacement>(), AlignmentCheck.DefaultFarModelMillimetres),
-                    RuleOn,
-                    ATestRuns),
-                Is.Not.Null,
-                "no model read at all");
-            Assert.That(
-                OffCoordinates.EarlierNoteKeptBecause(null, RuleOn, ATestRuns),
-                Is.EqualTo("this run did not judge every model of the group, so the note may still be true"),
-                "the read threw");
-        }
-
-        /// <summary>
-        /// F112 attempt 3. A group whose model is still on Internal, or still far, and in which
-        /// this run ran no clash test, keeps the note an earlier run left, because what it says
-        /// is still so. Attempt 2 removed it whenever every model was judged and the clash was
-        /// not skipped, which deleted a true note in a group with nothing to clash.
-        /// </summary>
-        [Test]
-        public void AnEarlierNoteStaysWhileAModelIsStillOffAndNoClashTestRan()
-        {
-            const string StillOff = "a model of the group is still not on the same shared coordinates and this run ran"
-                + " no clash test in it, so the note may still be true";
-
-            foreach (bool rule in new[] { RuleOn, RuleOff })
-            {
-                Assert.That(OffCoordinates.EarlierNoteKeptBecause(OnInternal(), rule, NothingToRun), Is.EqualTo(StillOff), "rule " + rule);
-                Assert.That(OffCoordinates.EarlierNoteKeptBecause(The1B06K1(), rule, NothingToRun), Is.EqualTo(StillOff), "rule " + rule);
-                Assert.That(OffCoordinates.EarlierNoteKeptBecause(None(), rule, NothingToRun), Is.Null, "every model in place, rule " + rule);
-            }
-
-            Assert.That(OffCoordinates.EarlierNoteKeptBecause(OnInternal(), RuleOff, ATestRuns), Is.Null, "the rule was off and the group was clashed");
+            Assert.That(notice[0], Does.StartWith("1A02MM: 2 models are not on the same shared coordinates"));
+            Assert.That(notice.Count, Is.EqualTo(3));
         }
 
         // ---------- the RESULT block ----------
 
         [Test]
-        public void WithTheRuleOnTheResultListsEachSkippedGroup()
+        public void TheResultSaysNothingWasSkippedAndListsEachGroupHoldingAnOffModel()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 2);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 2);
             run.Add("1B06K1", The1B06K1(), true);
             run.Add("1B06WL", None(), true);
 
             string result = Joined(run.ResultLines());
 
             Assert.That(result, Does.StartWith(
-                "clash skipped  : 1 group, models not on the same shared coordinates. In each the tests whose sides"
-                + " both find something are created and none is run"));
+                "clash skipped  : none, every clash is run whatever the coordinates are. 1 group holds a model not on"
+                + " the same shared coordinates, so the clash results may be wrong for it"));
             Assert.That(result, Does.Contain("coordinates    : 2 of 2 groups judged"));
-            Assert.That(result, Does.Contain("      1B06K1     1 model(s) not on the same shared coordinates, clash skipped"));
+            Assert.That(result, Does.Contain(
+                "      1B06K1     1 model(s) not on the same shared coordinates, the clash results may be wrong"));
             Assert.That(result, Does.Not.Contain("1B06WL"), "a group whose models are all in place is not listed");
-            Assert.That(result, Does.Not.Contain("wrote its NWF"), "the files written list says what was written");
         }
 
         [Test]
-        public void WithTheRuleOnAndNothingOffTheResultSaysNoughtAndHowManyWereJudged()
+        public void WithNothingOffTheResultSaysNoClashWasSkippedAndHowManyWereJudged()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 1);
             run.Add("1B06WL", None(), true);
 
             Assert.That(Joined(run.ResultLines()), Is.EqualTo(
-                "clash skipped  : 0 groups, models not on the same shared coordinates\n"
+                "clash skipped  : none, every clash is run whatever the coordinates are\n"
                 + "coordinates    : 1 of 1 group judged"));
         }
 
         /// <summary>
-        /// With the rule off the groups are clashed as before, and the RESULT block says the
-        /// rule was off, so a run with it off cannot be read as a run where nothing was off.
+        /// The breaker's first finding at c5d8aa8. One tally lived on the window's log and its groups
+        /// were never cleared, so the second run of a window listed 1A02MM twice. Each run has its own,
+        /// made when the run starts.
         /// </summary>
         [Test]
-        public void WithTheRuleOffTheResultSaysSoAndStillNamesTheGroups()
+        public void EachRunKeepsItsOwnGroups()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(false, Started, 1);
-            run.Add("1B06K1", The1B06K1(), true);
-
-            string result = Joined(run.ResultLines());
-
-            Assert.That(result, Does.StartWith(
-                "clash skipped  : none, the rule that skips it was off for this run, so 1 group was clashed with a model"
-                + " not on the same shared coordinates"));
-            Assert.That(result, Does.Contain("      1B06K1     1 model(s) not on the same shared coordinates, clashed, the rule was off"));
-        }
-
-        /// <summary>
-        /// The breaker's first finding at c5d8aa8. One tally lived on the window's log, its
-        /// rule state overwritten each run and its groups never cleared, so the second run of
-        /// a window, with the box unticked, listed 1A02MM twice and called both clashed. Each
-        /// run now has its own, made when the run starts with the rule state of that run.
-        /// </summary>
-        [Test]
-        public void EachRunKeepsItsOwnGroupsAndItsOwnRuleState()
-        {
-            OffCoordinatesAcrossTheRun first = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            OffCoordinatesAcrossTheRun first = new OffCoordinatesAcrossTheRun(Started, 1);
             first.Add("1A02MM", The1B06K1(), true);
 
-            OffCoordinatesAcrossTheRun second = new OffCoordinatesAcrossTheRun(false, Started.AddHours(1), 1);
+            OffCoordinatesAcrossTheRun second = new OffCoordinatesAcrossTheRun(Started.AddHours(1), 1);
             second.Add("1A02MM", The1B06K1(), true);
 
-            string firstResult = Joined(first.ResultLines());
             string secondResult = Joined(second.ResultLines());
 
-            Assert.That(firstResult, Does.StartWith("clash skipped  : 1 group,"));
-            Assert.That(secondResult, Does.StartWith("clash skipped  : none, the rule that skips it was off for this run, so 1 group was clashed"));
             Assert.That(Times(secondResult, "1A02MM"), Is.EqualTo(1));
             Assert.That(Joined(second.ForModellers()), Does.StartWith(
                 "Models not on the same shared coordinates, from the run started 2026-10-05 10:30"));
-            Assert.That(Times(Joined(second.ForModellers()), "\n1A02MM"), Is.EqualTo(1));
+            Assert.That(Times(Joined(second.ForModellers()), "1A02MM:"), Is.EqualTo(1));
         }
 
         /// <summary>
-        /// One fixed list name meant a smaller run, or the open file run of one group, wrote
-        /// over the list of the full run with its own few groups. Each run's list is now its
-        /// own file, named for the second its run started, so every run's list is kept.
+        /// One fixed list name meant a smaller run, or the open file run of one group, wrote over the
+        /// list of the full run. Each run's list is its own file, named for the second its run started.
         /// </summary>
         [Test]
         public void EachRunsListIsItsOwnFileNamedForItsStart()
         {
-            OffCoordinatesAcrossTheRun full = new OffCoordinatesAcrossTheRun(true, new DateTime(2026, 10, 5, 9, 30, 0), 46);
-            OffCoordinatesAcrossTheRun one = new OffCoordinatesAcrossTheRun(true, new DateTime(2026, 10, 5, 11, 2, 7), 1);
+            OffCoordinatesAcrossTheRun full = new OffCoordinatesAcrossTheRun(new DateTime(2026, 10, 5, 9, 30, 0), 46);
+            OffCoordinatesAcrossTheRun one = new OffCoordinatesAcrossTheRun(new DateTime(2026, 10, 5, 11, 2, 7), 1);
 
             Assert.That(full.ListName, Is.EqualTo("Models not on the same shared coordinates, run 2026-10-05 093000.txt"));
             Assert.That(one.ListName, Is.EqualTo("Models not on the same shared coordinates, run 2026-10-05 110207.txt"));
@@ -441,7 +216,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void ARunStoppedAfterThreeGroupsNeverReadsAsClean()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 46);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 46);
             run.Add("1B06WL", None(), true);
             run.Add("1B06WM", None(), true);
             run.Add("1B06WO", None(), true);
@@ -453,7 +228,7 @@ namespace Federator.Core.Tests.Health
             string list = Joined(run.ForModellers());
             Assert.That(list, Does.Not.Contain("No model in this run was found off"));
             Assert.That(list, Does.Contain(
-                "The rule judged 3 of 46 groups of this run. 43 were not reached, the run stopped or the group ended"
+                "The check judged 3 of 46 groups of this run. 43 were not reached, the run stopped or the group ended"
                 + " before its models were read."));
             Assert.That(list, Does.Contain("No group is listed, and that is not a clean bill for the groups and models above that were not judged."));
         }
@@ -461,7 +236,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void AGroupWhosePlacementsCannotBeReadIsCountedAndNeverReadsAsClean()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 1);
             run.Add("1A04PK", NotPlaced(), true);
 
             Assert.That(Joined(run.ResultLines()), Does.Contain(
@@ -476,7 +251,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void AGroupWhoseAlignmentReadThrewIsNotJudged()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 1);
             run.Add("1A04PK", null, true);
 
             Assert.That(Joined(run.ResultLines()), Does.Contain(
@@ -488,7 +263,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void EveryGroupAndModelJudgedAndNothingOffIsTheOneCleanList()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 2);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 2);
             run.Add("1B06WL", None(), true);
             run.Add("1B06WM", None(), true);
 
@@ -498,81 +273,52 @@ namespace Federator.Core.Tests.Health
                 "No model in this run was found off its group's shared coordinates, so no group is listed."));
         }
 
-        // ---------- a group with nothing to clash ----------
-
-        /// <summary>
-        /// The breaker's second finding at c5d8aa8: a group where no clash test would run is
-        /// judged as before. It is named with what was true of it and never called skipped.
-        /// </summary>
-        [Test]
-        public void AGroupWithNothingToClashIsNotSkippedAndSaysSo()
-        {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 1);
-            run.Add("1A02MM", The1B06K1(), false);
-
-            string result = Joined(run.ResultLines());
-            Assert.That(result, Does.StartWith("clash skipped  : 0 groups, models not on the same shared coordinates"));
-            Assert.That(result, Does.Contain(
-                "      1A02MM     1 model(s) not on the same shared coordinates, no clash test to run, so nothing was skipped"));
-
-            string list = Joined(run.ForModellers());
-            Assert.That(list, Does.Contain("   no clash test was to run in it this run, so nothing was skipped."));
-            Assert.That(list, Does.Not.Contain("its clash was skipped"));
-        }
-
         // ---------- the one list for the run ----------
 
-        /// <summary>One short file for the run, which Bader forwards to the modellers.</summary>
+        /// <summary>One short file for the run, which Bader forwards to the modellers, with a NOTICE a group.</summary>
         [Test]
-        public void TheListForTheModellersNamesEachGroupItsReferenceAndItsModels()
+        public void TheListForTheModellersCarriesANoticeForEachGroupWithItsReferenceAndItsModels()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 1);
             run.Add("1B06K1", The1B06K1(), true);
 
             string list = Joined(run.ForModellers());
 
             Assert.That(list, Does.StartWith("Models not on the same shared coordinates, from the run started 2026-10-05 09:30"));
-            Assert.That(list, Does.Contain("The rule judged 1 of 1 group of this run."));
+            Assert.That(list, Does.Contain("The check judged 1 of 1 group of this run."));
             Assert.That(list, Does.Contain(
-                "The rule that skips the clash was on for this run. The next run clashes each skipped group once its"
-                + " models are exported again on the project's shared coordinates."));
-            Assert.That(list, Does.Contain("\n1B06K1, measured from the reference model AR  1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc\n"));
+                "NOTICE. Every clash was run and none was skipped. The clash results may be wrong for these models."
+                + " Export them again on the project's shared coordinates and run again."));
             Assert.That(list, Does.Contain(
-                "   its clash was skipped. The tests whose sides both find something are created and none is run."));
+                "NOTICE. 1B06K1: 1 model is not on the same shared coordinates, measured from the reference model"
+                + " AR  1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc. The clash results may be wrong for these models."
+                + " The clash was run and nothing was skipped."));
             Assert.That(list, Does.Contain("\n   " + The1B06K1().Models[0]));
-            Assert.That(list, Does.Not.Contain("were written with every model"));
+            Assert.That(list, Does.Not.Contain("clash was skipped."), "nothing is skipped and the list never says it was");
         }
 
         /// <summary>
-        /// The rule state is given when the run starts and cannot be left unset, so the list
-        /// never has to guess it. ForModellers read an unset state as on until c5d8aa8.
+        /// A group with no clash test to run has no clash results, so the list says there are none to
+        /// be wrong, and still names its models.
         /// </summary>
         [Test]
-        public void WithTheRuleOffTheListSaysTheGroupsWereClashed()
+        public void AGroupWithNoClashTestToRunStillNamesItsModelsAndSaysThereAreNoResults()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(false, Started, 1);
-            run.Add("1B06K1", The1B06K1(), true);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 1);
+            run.Add("1A02MM", The1B06K1(), false);
 
             string list = Joined(run.ForModellers());
 
-            Assert.That(list, Does.Contain(
-                "The rule that skips the clash was off for this run, so a group below that ran a clash test was"
-                + " clashed, and its clashes with the other disciplines cannot be trusted until these models are"
-                + " exported again on the project's shared coordinates."));
-            Assert.That(list, Does.Contain("   it was clashed, the rule being off."));
-            Assert.That(list, Does.Not.Contain("its clash was skipped"));
+            Assert.That(list, Does.Contain("NOTICE. 1A02MM: 1 model is not on the same shared coordinates"));
+            Assert.That(list, Does.Contain("No clash test was to run in this group this run, so there are no results of it to be wrong."));
         }
 
         // ---------- the ALIGNMENT run line ----------
 
-        /// <summary>
-        /// The run line ended "Nothing was changed and every group ran." while RESULT, a few
-        /// lines on, listed groups whose clash was skipped. It now says what the rule did.
-        /// </summary>
         [Test]
-        public void TheAlignmentRunLineNamesTheSkippedGroupsAndNeverSaysEveryGroupRan()
+        public void TheAlignmentRunLineSaysNoClashWasSkippedAndNamesTheGroupsWithOffModels()
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 2);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 2);
             run.Add("1B06K1", The1B06K1(), true);
             run.Add("1B06WL", None(), true);
 
@@ -580,11 +326,11 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(line, Is.EqualTo(
                 "ALIGNMENT across the run: 3 model(s) sit somewhere their group's reference model does not. Nothing was"
-                + " changed in any model, and the clash of 1 group was skipped, models not on the same shared"
-                + " coordinates, which RESULT lists."));
+                + " changed in any model, and no clash was skipped. 1 group held models not on the same shared"
+                + " coordinates, so the clash results may be wrong for them, which RESULT lists."));
             Assert.That(line, Does.Not.Contain("every group ran"));
 
-            OffCoordinatesAcrossTheRun clean = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            OffCoordinatesAcrossTheRun clean = new OffCoordinatesAcrossTheRun(Started, 1);
             clean.Add("1B06WL", None(), true);
             Assert.That(clean.AlignmentRunLine(0), Is.EqualTo(
                 "ALIGNMENT across the run: 0 model(s) sit somewhere their group's reference model does not"));
@@ -608,9 +354,8 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
-        /// Bader's answer to Q111, B. A model whose revit_ProjectLocation names no site is not on
-        /// the same coordinates, so it is in the group's list, its line says no site is named, and
-        /// the group's clash is skipped where this run would have run one.
+        /// Bader's answer to Q111, B. A model whose revit_ProjectLocation names no site is not on the
+        /// same coordinates, so it is in the group's list and its line says no site is named.
         /// </summary>
         [Test]
         public void AModelNamingNoSiteIsNotOnTheSameCoordinatesAndItsLineSaysSo()
@@ -623,58 +368,40 @@ namespace Federator.Core.Tests.Health
             Assert.That(off.Models[0], Does.StartWith("ST  " + StFile));
             Assert.That(off.Models[0], Does.Contain("shared site none named"));
             Assert.That(off.Models[0], Does.Contain("the model names no shared site at all"));
-            Assert.That(off.SkipsTheClash(true, true), Is.True);
-            Assert.That(off.SkipsTheClash(false, true), Is.False, "the setting still switches the rule off");
-            Assert.That(off.SkipsTheClash(true, false), Is.False, "no clash test to skip");
         }
 
-        /// <summary>The note and the modellers' list carry the same line, so both say no site is named.</summary>
+        /// <summary>The notice and the modellers' list carry the same line, so both say no site is named.</summary>
         [Test]
-        public void TheNoteAndTheListSayNoSiteIsNamed()
+        public void TheNoticeAndTheListSayNoSiteIsNamed()
         {
             OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(
                 TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres);
 
-            Assert.That(Joined(off.Note("1A02MM", null, 0, null)), Does.Contain("the model names no shared site at all"));
+            Assert.That(Joined(off.Notice("1A02MM")), Does.Contain("the model names no shared site at all"));
 
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(Started, 1);
             run.Add("1A02MM", off, true);
 
             Assert.That(Joined(run.ForModellers()), Does.Contain("the model names no shared site at all"));
         }
 
         /// <summary>
-        /// Where the clash is skipped the group is PARTIAL by that and no longer FAILED by the model's
-        /// missing site, and the ALIGNMENT block says the clash was skipped and names the model.
+        /// Since F159 nothing is skipped, so a model naming no site fails its group as Q70 had it,
+        /// and the ALIGNMENT block names the model under a NOTICE and says nothing is skipped.
         /// </summary>
         [Test]
-        public void WhereTheClashIsSkippedANoSiteModelDoesNotFailTheGroup()
+        public void ANoSiteModelFailsTheGroupAndTheBlockSaysANoticeAndSkipsNothing()
         {
             Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, true, true),
-                Is.Null);
+                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite()),
+                Does.Contain("1 model(s) name no shared site at all"));
 
-            string block = Joined(AlignmentCheck.Lines(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, true, true));
+            string block = Joined(AlignmentCheck.Lines(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres));
 
-            Assert.That(block, Does.Contain("CLASH SKIPPED. 1 model(s) are not on the same shared coordinates"));
+            Assert.That(block, Does.Contain("NOTICE. 1 model(s) are not on the same shared coordinates"));
             Assert.That(block, Does.Contain("ST  " + StFile));
-            Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
-        }
-
-        /// <summary>
-        /// Where no clash is skipped, the rule off or no clash test to run, such a group still fails as
-        /// Q70 had it. Q125 B asks for PARTIAL there, which needs the engine and JobOutcome and waits
-        /// for the loop, so this is what main does until then.
-        /// </summary>
-        [Test]
-        public void WhereNoClashIsSkippedANoSiteModelStillFailsTheGroupUntilQ125IsWired()
-        {
-            Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, false, true),
-                Does.Contain("1 model(s) name no shared site at all"));
-            Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, true, false),
-                Does.Contain("1 model(s) name no shared site at all"));
+            Assert.That(block, Does.Not.Contain("CLASH SKIPPED"));
+            Assert.That(block, Does.Contain("THIS GROUP IS FAILED"));
         }
 
         /// <summary>A site that could not be read is not a model naming none, so it is not on any list.</summary>
@@ -690,8 +417,8 @@ namespace Federator.Core.Tests.Health
             OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
 
             Assert.That(off.Any, Is.False);
-            Assert.That(off.SkipsTheClash(true, true), Is.False);
-            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, true, true), Is.Null);
+            Assert.That(off.Notice("1A02MM"), Is.Empty);
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models), Is.Null);
         }
 
         /// <summary>

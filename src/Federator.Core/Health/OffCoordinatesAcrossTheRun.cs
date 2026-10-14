@@ -6,18 +6,20 @@ using Federator.Core.Diagnostics;
 namespace Federator.Core.Health
 {
     /// <summary>
-    /// What the shared coordinates rule did across ONE run, for the RESULT block and for the
+    /// What the shared coordinates check found across ONE run, for the RESULT block and for the
     /// one list the run writes for the modellers, Bader's answer to Q99 and Q100: "the RESULT
     /// block lists these groups, and the run writes one short list Bader can forward to the
     /// modellers, one file for the run".
     ///
-    /// ONE PER RUN, made when the run starts with that run's rule state, its start and its
-    /// count of groups, and never kept on the window's log. It lived on the log until
-    /// c5d8aa8, one per window, its rule state overwritten each run and its groups never
-    /// cleared, so the second run of a window listed the first run's groups again under the
-    /// second run's rule state, the breaker's first finding.
+    /// SINCE F159 NOTHING IS SKIPPED. The list says which models sit off the shared coordinates and
+    /// that the clash results may be wrong for them, as a NOTICE, and says that every clash was run.
     ///
-    /// EVERY GROUP THE RULE REACHED IS ADDED, judged or not, so the count of groups judged,
+    /// ONE PER RUN, made when the run starts with that run's start and its count of groups, and
+    /// never kept on the window's log. It lived on the log until c5d8aa8, one per window, and its
+    /// groups were never cleared, so the second run of a window listed the first run's groups
+    /// again, the breaker's first finding.
+    ///
+    /// EVERY GROUP THE CHECK REACHED IS ADDED, judged or not, so the count of groups judged,
     /// not reached and not read, and of models not judged, is said beside any zero, and a
     /// run that judged three groups of 46 never reads as 46 clean ones, the breaker's fourth.
     /// </summary>
@@ -25,14 +27,12 @@ namespace Federator.Core.Health
     {
         private const string ListNameStart = "Models not on the same shared coordinates, run ";
 
-        private readonly bool skipsTheClash;
         private readonly DateTime runStarted;
         private readonly int groupsInTheRun;
         private readonly List<Entry> entries = new List<Entry>();
 
-        public OffCoordinatesAcrossTheRun(bool skipsTheClash, DateTime runStarted, int groupsInTheRun)
+        public OffCoordinatesAcrossTheRun(DateTime runStarted, int groupsInTheRun)
         {
-            this.skipsTheClash = skipsTheClash;
             this.runStarted = runStarted;
             this.groupsInTheRun = groupsInTheRun;
         }
@@ -48,39 +48,32 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// One group, added as its ALIGNMENT block is written: what the rule judged of its
-        /// models, or null where the read threw, and whether this run would have run a clash
-        /// test in it, which decides whether its clash is skipped.
+        /// One group, added as its ALIGNMENT block is written: what the check judged of its
+        /// models, or null where the read threw, and whether this run runs a clash test in it.
         /// </summary>
         public void Add(string building, OffCoordinates off, bool runsATest)
         {
-            entries.Add(new Entry(string.IsNullOrEmpty(building) ? "UNKNOWN" : building, off, runsATest, skipsTheClash));
+            entries.Add(new Entry(string.IsNullOrEmpty(building) ? "UNKNOWN" : building, off, runsATest));
         }
 
-        /// <summary>The RESULT lines: what the rule did, how many groups it judged, and one line per group holding such a model.</summary>
+        /// <summary>How many groups held at least one model not on the same shared coordinates.</summary>
+        public int GroupsWithOffModels
+        {
+            get { return Count(e => e.Off != null && e.Off.Any); }
+        }
+
+        /// <summary>The RESULT lines: what the check did, how many groups it judged, and one line per group holding such a model.</summary>
         public IList<string> ResultLines()
         {
             List<string> lines = new List<string>();
-            int skipped = Count(e => e.Skipped);
+            int off = GroupsWithOffModels;
 
-            if (skipsTheClash)
-            {
-                lines.Add("clash skipped  : " + Words.Counted(skipped, "group", "groups") + ", models not on the same shared coordinates"
-                    + (skipped == 0
-                        ? string.Empty
-                        : ". In each " + OffCoordinates.TestsCreatedNoneRun.Substring(0, 1).ToLowerInvariant()
-                            + OffCoordinates.TestsCreatedNoneRun.Substring(1)));
-            }
-            else
-            {
-                int clashed = Count(e => e.Off != null && e.Off.Any && e.RunsATest);
-
-                lines.Add("clash skipped  : none, the rule that skips it was off for this run"
-                    + (clashed == 0
-                        ? string.Empty
-                        : ", so " + Words.Counted(clashed, "group", "groups") + (clashed == 1 ? " was" : " were")
-                            + " clashed with a model not on the same shared coordinates"));
-            }
+            lines.Add("clash skipped  : none, every clash is run whatever the coordinates are"
+                + (off == 0
+                    ? string.Empty
+                    : ". " + Words.Counted(off, "group", "groups") + (off == 1 ? " holds" : " hold")
+                        + " a model not on the same shared coordinates, so the clash results may be wrong for "
+                        + (off == 1 ? "it" : "them")));
 
             lines.Add("coordinates    : " + Judged() + " of " + Words.Counted(groupsInTheRun, "group", "groups") + " judged" + NotJudgedResult());
 
@@ -89,7 +82,7 @@ namespace Federator.Core.Health
                 if (entry.Off != null && entry.Off.Any)
                 {
                     lines.Add("      " + entry.Building.PadRight(10) + " " + entry.Off.Models.Count
-                        + " model(s) not on the same shared coordinates, " + entry.Status());
+                        + " model(s) not on the same shared coordinates, the clash results may be wrong");
                 }
             }
 
@@ -98,19 +91,19 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// The one list for the run, which Bader forwards to the modellers: how many groups
-        /// the rule judged, each group holding such a model with the reference it was
-        /// measured from, what this run did with it, and the same line per model the log
-        /// carries. Says only what was checked, and never that no model was found off while
-        /// any group or model was not judged.
+        /// the check judged, then a NOTICE for each group holding such a model with the
+        /// reference it was measured from and the same line per model the log carries.
+        /// Says only what was checked, and never that no model was found off while any group
+        /// or model was not judged.
         /// </summary>
         public IList<string> ForModellers()
         {
             List<string> lines = new List<string>();
             lines.Add("Models not on the same shared coordinates, from the run started "
                 + runStarted.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture));
-            lines.Add("The rule judged " + Judged() + " of " + Words.Counted(groupsInTheRun, "group", "groups") + " of this run." + NotJudgedList());
+            lines.Add("The check judged " + Judged() + " of " + Words.Counted(groupsInTheRun, "group", "groups") + " of this run." + NotJudgedList());
 
-            if (Count(e => e.Off != null && e.Off.Any) == 0)
+            if (GroupsWithOffModels == 0)
             {
                 lines.Add(Judged() == groupsInTheRun && ModelsNotJudged() == 0
                     ? "No model in this run was found off its group's shared coordinates, so no group is listed."
@@ -118,12 +111,8 @@ namespace Federator.Core.Health
                 return lines;
             }
 
-            lines.Add(skipsTheClash
-                ? "The rule that skips the clash was on for this run. The next run clashes each skipped group once its"
-                    + " models are exported again on the project's shared coordinates."
-                : "The rule that skips the clash was off for this run, so a group below that ran a clash test was"
-                    + " clashed, and its clashes with the other disciplines cannot be trusted until these models are"
-                    + " exported again on the project's shared coordinates.");
+            lines.Add("NOTICE. Every clash was run and none was skipped. " + OffCoordinates.ResultsMayBeWrong
+                + " Export them again on the project's shared coordinates and run again.");
 
             foreach (Entry entry in entries)
             {
@@ -133,14 +122,17 @@ namespace Federator.Core.Health
                 }
 
                 lines.Add(string.Empty);
-                lines.Add(entry.Building + (entry.Off.Reference == null
-                    ? ", where no model could be placed to measure from"
-                    : ", measured from the reference model " + entry.Off.Reference));
-                lines.Add("   " + entry.Sentence());
+                IList<string> notice = entry.Off.Notice(entry.Building);
+                lines.Add("NOTICE. " + notice[0]);
 
-                foreach (string model in entry.Off.Models)
+                for (int i = 1; i < notice.Count; i++)
                 {
-                    lines.Add("   " + model);
+                    lines.Add(notice[i]);
+                }
+
+                if (!entry.RunsATest)
+                {
+                    lines.Add("   No clash test was to run in this group this run, so there are no results of it to be wrong.");
                 }
             }
 
@@ -148,26 +140,27 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// The ALIGNMENT run line, which ended "Nothing was changed and every group ran."
-        /// while RESULT listed groups whose clash was skipped. It says what the rule did.
-        /// The models counted are those the block calls different, over the 1 mm tolerance.
+        /// The ALIGNMENT run line, which ended "Nothing was changed and every group ran." It says
+        /// what the check found. The models counted are those the block calls different, over the
+        /// 1 mm tolerance.
         /// </summary>
         public string AlignmentRunLine(int differentModels)
         {
-            int skipped = Count(e => e.Skipped);
+            int off = GroupsWithOffModels;
             string line = "ALIGNMENT across the run: " + differentModels
                 + " model(s) sit somewhere their group's reference model does not";
 
-            if (differentModels == 0 && skipped == 0)
+            if (differentModels == 0 && off == 0)
             {
                 return line;
             }
 
             return line + ". Nothing was changed in any model"
-                + (skipped == 0
+                + (off == 0
                     ? "."
-                    : ", and the clash of " + Words.Counted(skipped, "group", "groups") + " was skipped, models not on the same shared"
-                        + " coordinates, which RESULT lists.");
+                    : ", and no clash was skipped. " + Words.Counted(off, "group", "groups")
+                        + " held models not on the same shared coordinates, so the clash results may be wrong for them,"
+                        + " which RESULT lists.");
         }
 
         private int Judged()
@@ -190,7 +183,7 @@ namespace Federator.Core.Health
             return models;
         }
 
-        /// <summary>The groups the rule never reached: the run stopped, or the group ended before its models were read.</summary>
+        /// <summary>The groups the check never reached: the run stopped, or the group ended before its models were read.</summary>
         private int NotReached()
         {
             return Math.Max(0, groupsInTheRun - entries.Count);
@@ -253,15 +246,14 @@ namespace Federator.Core.Health
             return entries.FindAll(which).Count;
         }
 
-        /// <summary>One group as the rule left it.</summary>
+        /// <summary>One group as the check left it.</summary>
         private sealed class Entry
         {
-            public Entry(string building, OffCoordinates off, bool runsATest, bool ruleOn)
+            public Entry(string building, OffCoordinates off, bool runsATest)
             {
                 Building = building;
                 Off = off;
                 RunsATest = runsATest;
-                Skipped = off != null && off.SkipsTheClash(ruleOn, runsATest);
             }
 
             public string Building { get; private set; }
@@ -269,28 +261,6 @@ namespace Federator.Core.Health
             public OffCoordinates Off { get; private set; }
 
             public bool RunsATest { get; private set; }
-
-            public bool Skipped { get; private set; }
-
-            /// <summary>What this run did with the group, short, for its RESULT line.</summary>
-            public string Status()
-            {
-                return Skipped
-                    ? "clash skipped"
-                    : !RunsATest
-                        ? "no clash test to run, so nothing was skipped"
-                        : "clashed, the rule was off";
-            }
-
-            /// <summary>The same, as a sentence, for the list.</summary>
-            public string Sentence()
-            {
-                return Skipped
-                    ? "its clash was skipped. " + OffCoordinates.TestsCreatedNoneRun + "."
-                    : !RunsATest
-                        ? "no clash test was to run in it this run, so nothing was skipped."
-                        : "it was clashed, the rule being off.";
-            }
         }
     }
 }

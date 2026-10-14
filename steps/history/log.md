@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F159 the option that skipped the clash for models off the shared coordinates is gone
+
+Branch fix-F159 off main 90afd45. Bader's request of 2026-10-14, task C.
+
+What changed:
+- the tick box "Skip clash when models sit off shared coordinates", its help line, ReportOptions.SkipClashOffCoordinates,
+  AlignmentCheck.DefaultSkipClashOffCoordinates, TickLabel and HelpLine, and every read of them, are gone. The clash tests
+  always run, whatever the coordinates are
+- the check stays. OffCoordinates.Notice makes a NOTICE for a group holding a model off the coordinates: which models, the
+  reference, and that the clash results may be wrong for them. It is written to the run log as a NOTICE line, into the
+  ALIGNMENT block as NOTICE, and into the "Models not on the same shared coordinates, run" list in the Log folder, which
+  also says every clash was run and none skipped
+- gone with the skip: OffCoordinates.SkipsTheClash, Note, NoteEnding, EarlierNoteKeptBecause, ClashSkippedReason and
+  TestsCreatedNoneRun, ClashRunOutcome.ClashSkipped, ClashSkipReason.NotOnTheSameCoordinates, CoverageReason.CoordinatesRule,
+  GroupFacts.ClashSkippedOffCoordinates and its PARTIAL, ClashRunner.ClashSkippedOffCoordinates,
+  JobOutcome.ClashSkippedBecause, the per group note, NwfAndNwd and EarlierReports, which only the note called
+- the group is still judged as Q70 had it, a model on Internal or naming no site fails it. That is what a run with the old
+  option switched off did. Whether it should is Q170
+- tests: the skip tests are removed and the rest read the new words. ARunWithOffCoordinateModelsStillMakesTheNwfTheNwdAnd
+  TheTestsAndCarriesTheNotice proves the group ends DONE with its NWF, NWD, tests and viewpoints asked for, and the notice
+  is in the block, the log line's words and the list
+- not touched: tools\loop's stand-in window still has a box of the old name, and the loop's run.ps1 and drive-window-run.ps1
+  mention -Untick SkipClashOffCoordinates in comments and options
+
+Core tests: 3110 passed before, 3083 passed after, 0 failed, 0 skipped. Release build 0 warnings, 0 errors. Not run in
+Navisworks in this entry.
+
 ## 2026-10-14 F158 the logs and the reports in one Log folder beside the NWF and NWD folders
 
 Branch fix-F158 off main 0a78f51. Bader's request of 2026-10-14, task B.

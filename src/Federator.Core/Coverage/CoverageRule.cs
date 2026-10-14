@@ -222,8 +222,7 @@ namespace Federator.Core.Coverage
                     return CoverageReason.SideFoundNothing;
                 case ClashSkipReason.SingleDiscipline:
                     return CoverageReason.OneDiscipline;
-                case ClashSkipReason.NotOnTheSameCoordinates:
-                    return CoverageReason.CoordinatesRule;
+
                 case ClashSkipReason.Failed:
                     return CoverageReason.Failed;
                 default:
@@ -311,7 +310,7 @@ namespace Federator.Core.Coverage
                         CoverageReason.Unknown, "the run holds no record of this test");
             }
 
-            if (skipped.Kind == ClashSkipReason.NotOnTheSameCoordinates || skipped.Kind == ClashSkipReason.Failed)
+            if (skipped.Kind == ClashSkipReason.Failed)
             {
                 return new TestCoverage(position, test.Name, left, right, leftItems, rightItems, presence, false, -1,
                     ReasonFor(skipped.Kind), skipped.Reason);

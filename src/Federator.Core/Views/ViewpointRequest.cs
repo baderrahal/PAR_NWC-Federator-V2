@@ -4,10 +4,10 @@ namespace Federator.Core.Views
 {
     /// <summary>
     /// Whether a group asks for its saved viewpoints, F136, and the one VIEWS line that
-    /// says why not when it does not. Three things stop them, in this order: the box on
-    /// the Clash step unticked, the group's clash skipped because a model is not on the
-    /// same shared coordinates, and no report built for the group. A group that asks for
-    /// none cannot fail at them, which is F52's rule for a step not asked for.
+    /// says why not when it does not. Two things stop them, in this order: the box on
+    /// the Clash step unticked, and no report built for the group. A group whose models are
+    /// not on the same shared coordinates asks for them like any other, since F159. A group
+    /// that asks for none cannot fail at them, which is F52's rule for a step not asked for.
     ///
     /// The engine asked the second and third itself before this, and the box is Bader's
     /// word of 2026-10-05: until the new viewpoints of F114 are merged every test run has
@@ -44,18 +44,14 @@ namespace Federator.Core.Views
         /// comes first because it is the run's own choice and holds for every group, so
         /// every group of an unticked run says the same thing.
         /// </summary>
-        public static string WhyNone(bool makeViewpoints, bool clashSkipped, bool reportBuilt)
+        public static string WhyNone(bool makeViewpoints, bool reportBuilt)
         {
             if (!makeViewpoints)
             {
                 return "the box " + TickLabel + " was unticked, so no viewpoint is made";
             }
 
-            if (clashSkipped)
-            {
-                // Bader's answer to Q99 and Q100.
-                return OffCoordinates.ClashSkippedReason + ", so no viewpoint is made";
-            }
+
 
             if (!reportBuilt)
             {

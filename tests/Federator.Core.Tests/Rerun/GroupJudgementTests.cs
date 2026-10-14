@@ -258,8 +258,7 @@ namespace Federator.Core.Tests
                 Failing(f => f.NwdOnDisk = false),
                 Failing(f => f.NwdPublishReportedSuccess = false),
                 Failing(f => f.Decision = RerunDecision.Changed),
-                Failing(f => { f.AppendedCount = 3; f.FailedFileCount = 1; }),
-                Failing(f => f.ClashSkippedOffCoordinates = true)
+                Failing(f => { f.AppendedCount = 3; f.FailedFileCount = 1; })
             };
 
             foreach (GroupFacts facts in all)
@@ -668,72 +667,6 @@ namespace Federator.Core.Tests
 
         // ---------- Q98 B2 and Bader's answer to Q99 and Q100, the clash skipped ----------
 
-        /// <summary>
-        /// 1B06K1 ended DONE in the C06 run with its ST 2,823 km from the reference, log line
-        /// 2128, so its clash count read as whole. Under Bader's answer its clash is skipped
-        /// and nothing else, so a group that did everything else right is PARTIAL, never
-        /// DONE, with his reason.
-        /// </summary>
-        [Test]
-        public void AGroupWhoseClashWasSkippedIsPartialWithBadersReason()
-        {
-            GroupFacts facts = Clean();
-            facts.ClashSkippedOffCoordinates = true;
-
-            string reason;
-
-            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
-            Assert.That(reason, Is.EqualTo("clash skipped, models not on the same shared coordinates"));
-            Assert.That(reason, Is.EqualTo(OffCoordinates.ClashSkippedReason));
-        }
-
-        /// <summary>
-        /// A group that also failed for another reason stays FAILED, the worse of the two, and
-        /// the skipped clash is said too, so the RESULT block does not name only half of it.
-        /// </summary>
-        [Test]
-        public void AGroupThatAlsoFailedStaysFailedAndItsReasonSaysTheClashWasSkippedToo()
-        {
-            GroupFacts facts = Clean();
-            facts.AddError("1 model(s) name no shared site at all");
-            facts.ClashSkippedOffCoordinates = true;
-
-            string reason;
-
-            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
-            Assert.That(reason, Does.StartWith("1 model(s) name no shared site at all"));
-            Assert.That(reason, Does.EndWith(", and clash skipped, models not on the same shared coordinates"));
-        }
-
-        [Test]
-        public void AGroupAlreadyPartialStaysPartialAndNamesBoth()
-        {
-            GroupFacts facts = Clean();
-            facts.AppendedCount = 3;
-            facts.FailedFileCount = 1;
-            facts.ClashSkippedOffCoordinates = true;
-
-            string reason;
-
-            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Partial));
-            Assert.That(reason, Is.EqualTo("1 of 4 files did not append, and clash skipped, models not on the same shared coordinates"));
-        }
-
-        /// <summary>
-        /// Viewpoints are not asked for in a group whose clash was skipped, so the group can
-        /// never fail at them, the rule F52 already keeps for a step that was not asked for.
-        /// </summary>
-        [Test]
-        public void ASkippedGroupThatAskedForNoViewpointIsNotJudgedOnThem()
-        {
-            GroupFacts facts = Clean();
-            facts.ClashSkippedOffCoordinates = true;
-            facts.ViewpointsRequested = false;
-            facts.FailedViewpointCount = 0;
-
-            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Partial));
-        }
-
         // ---------- a group failed on where its models sit, Q70 ----------
 
         /// <summary>
@@ -749,7 +682,7 @@ namespace Federator.Core.Tests
                 new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", "Internal", 0.0, 0.0, 255.0)
             };
 
-            return AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, false, true);
+            return AlignmentCheck.WhyItFailsTheGroup(models);
         }
 
         private const string StaleNwd = "the NWD publish did not report success, so the file at"
@@ -813,15 +746,12 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A group failed on a model naming no site whose clash was also skipped for a model on
-        /// Internal, with a stale NWD, names all three, the model first and the skip last. The rule
-        /// for the reason is read with the rule off, since F137 a no site model fails a group only
-        /// where its clash is not skipped, and the skip is the fact the judgement is given beside it.
-        /// The engine can no longer make that pair for one group, so this is a test of how the
+        /// A group failed on a model naming no site, with a stale NWD, names both, the model first.
+        /// Since F159 there is no skipped clash to name beside them, so this is a test of how the
         /// judgement joins the reasons and nothing more.
         /// </summary>
         [Test]
-        public void AGroupFailedOnItsModelsWhoseClashWasSkippedNamesTheStaleNwdAndTheSkip()
+        public void AGroupFailedOnItsModelsNamesTheStaleNwd()
         {
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
@@ -830,16 +760,14 @@ namespace Federator.Core.Tests
             };
 
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, false, true);
-            facts.ClashSkippedOffCoordinates = true;
+            facts.AlignmentFailure = AlignmentCheck.WhyItFailsTheGroup(models);
             facts.NwdPublishReportedSuccess = false;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
             Assert.That(reason, Is.EqualTo(
-                "1 model(s) name no shared site at all: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, and " + StaleNwd
-                + ", and " + OffCoordinates.ClashSkippedReason));
+                "1 model(s) name no shared site at all: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, and " + StaleNwd));
         }
 
         /// <summary>

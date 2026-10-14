@@ -386,50 +386,6 @@ namespace Federator.Core.Tests
         // ---------- created and not run ----------
 
         [Test]
-        public void ACreatedTestInAGroupSkippedByTheCoordinatesRuleSaysSo()
-        {
-            ClashTestPlan plan = Plan(Test("T", ArWalls, ArFloors));
-            ClashRunOutcome outcome = new ClashRunOutcome();
-            outcome.AddCreated("T");
-            outcome.AddSkipped("T", ClashSkipReason.NotOnTheSameCoordinates, "not run, coordinates");
-
-            TestCoverage row = Only(plan, outcome);
-
-            Assert.That(row.Reason, Is.EqualTo(CoverageReason.CoordinatesRule));
-            Assert.That(row.Presence, Is.EqualTo(TestPresence.CreatedThisRun));
-            Assert.That(row.Ran, Is.False);
-        }
-
-        /// <summary>
-        /// F77 runs before the coordinates rule, so a test it kept out of a skipped group
-        /// keeps its side reason. Read the other way round, every set gap of both wave
-        /// buildings would read as a coordinates skip, which hides the gaps in the XML.
-        /// </summary>
-        [Test]
-        public void ATestF77KeptOutOfACoordinatesSkippedGroupKeepsItsSideReason()
-        {
-            ClashTestPlan plan = Plan(Test("T", ArStairs, ArFloors), Test("U", ArWalls, ArFloors));
-            ClashRunOutcome outcome = new ClashRunOutcome();
-            Dictionary<string, int> counts = Counts(ArStairs, 0, ArFloors, 2, ArWalls, 2);
-            CreationPlan creation = CreationPlan.For(plan.Buildable, counts);
-            outcome.KeepItemsByLocator(counts);
-            outcome.ClashSkipped = "clash skipped, models not on the same shared coordinates";
-
-            foreach (SkippedClashTest skipped in creation.NotCreated)
-            {
-                outcome.AddSkipped(skipped);
-            }
-
-            outcome.AddCreated("U");
-            outcome.AddSkipped("U", ClashSkipReason.NotOnTheSameCoordinates, "not run, coordinates");
-
-            IList<TestCoverage> rows = Coverage(plan, outcome);
-
-            Assert.That(rows[0].Reason, Is.EqualTo(CoverageReason.SideFoundNothing));
-            Assert.That(rows[1].Reason, Is.EqualTo(CoverageReason.CoordinatesRule));
-        }
-
-        [Test]
         public void AOneDisciplineGroupNamesItsCode()
         {
             ClashTestPlan plan = Plan(Test("T", ArWalls, ArFloors));

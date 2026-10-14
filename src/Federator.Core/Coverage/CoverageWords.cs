@@ -42,8 +42,7 @@ namespace Federator.Core.Coverage
                         + "so whether its discipline is in the group is UNKNOWN";
                 case CoverageReason.SideNotCounted:
                     return "a side was not counted, so why it has no results is UNKNOWN";
-                case CoverageReason.CoordinatesRule:
-                    return "not run, the clash was skipped by the coordinates rule";
+
                 case CoverageReason.OneDiscipline:
                     return "not run, the group holds one discipline";
                 case CoverageReason.Failed:

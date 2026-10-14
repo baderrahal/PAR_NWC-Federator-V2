@@ -17,13 +17,13 @@ namespace Federator.Core.Tests
         [Test]
         public void TheBoxTickedWithAReportAndAClashAsksForThem()
         {
-            Assert.That(ViewpointRequest.WhyNone(true, false, true), Is.Null);
+            Assert.That(ViewpointRequest.WhyNone(true, true), Is.Null);
         }
 
         [Test]
         public void TheBoxUntickedAsksForNoneAndSaysTheBoxWasUnticked()
         {
-            string why = ViewpointRequest.WhyNone(false, false, true);
+            string why = ViewpointRequest.WhyNone(false, true);
 
             Assert.That(why, Is.Not.Null, "an unticked box asked for viewpoints");
             Assert.That(why, Does.Contain("unticked"));
@@ -38,36 +38,19 @@ namespace Federator.Core.Tests
         [Test]
         public void TheBoxUntickedIsTheReasonWhateverElseHeldTheGroup()
         {
-            string alone = ViewpointRequest.WhyNone(false, false, true);
+            string alone = ViewpointRequest.WhyNone(false, true);
 
-            Assert.That(ViewpointRequest.WhyNone(false, true, true), Is.EqualTo(alone));
-            Assert.That(ViewpointRequest.WhyNone(false, false, false), Is.EqualTo(alone));
-            Assert.That(ViewpointRequest.WhyNone(false, true, false), Is.EqualTo(alone));
-        }
-
-        [Test]
-        public void TheClashSkippedAsksForNoneAndSaysTheClashWasSkipped()
-        {
-            Assert.That(
-                ViewpointRequest.WhyNone(true, true, true),
-                Is.EqualTo(OffCoordinates.ClashSkippedReason + ", so no viewpoint is made"));
+            Assert.That(ViewpointRequest.WhyNone(false, true), Is.EqualTo(alone));
+            Assert.That(ViewpointRequest.WhyNone(false, false), Is.EqualTo(alone));
+            Assert.That(ViewpointRequest.WhyNone(false, false), Is.EqualTo(alone));
         }
 
         [Test]
         public void NoReportAsksForNoneAndSaysThereWasNoReport()
         {
             Assert.That(
-                ViewpointRequest.WhyNone(true, false, false),
+                ViewpointRequest.WhyNone(true, false),
                 Is.EqualTo("no report was built for this group, so there is nothing to plan a viewpoint from"));
-        }
-
-        /// <summary>The clash skipped is named before the missing report, as the engine said it before F136.</summary>
-        [Test]
-        public void TheClashSkippedIsNamedBeforeTheMissingReport()
-        {
-            Assert.That(
-                ViewpointRequest.WhyNone(true, true, false),
-                Is.EqualTo(ViewpointRequest.WhyNone(true, true, true)));
         }
 
         /// <summary>

@@ -1466,19 +1466,7 @@ namespace Federator.Addin.Ui
                 RebuildDriftedSetsHelp.Text = SetRebuildSettings.HelpLine;
             }
 
-            // Bader's answer to Q99 and Q100. Read off Core the same way, its default
-            // beside its label and never typed into the XAML as well, and the distance in
-            // the grey line read off the setting the run will use.
-            if (SkipClashOffCoordinates != null)
-            {
-                SkipClashOffCoordinates.Content = AlignmentCheck.TickLabel;
-                SkipClashOffCoordinates.IsChecked = AlignmentCheck.DefaultSkipClashOffCoordinates;
-            }
 
-            if (SkipClashOffCoordinatesHelp != null)
-            {
-                SkipClashOffCoordinatesHelp.Text = AlignmentCheck.HelpLine(new ReportOptions().FarModelMillimetres);
-            }
 
             // F136. The same shape, ticked or not off the setting the run reads, and set
             // here because the window is made new at every open. The setting is ticked
@@ -1774,7 +1762,7 @@ namespace Federator.Addin.Ui
             options.Tolerance = tolerance;
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
-            options.SkipClashOffCoordinates = SkipClashOffCoordinates.IsChecked == true;
+
             options.MakeViewpoints = MakeViewpoints.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();

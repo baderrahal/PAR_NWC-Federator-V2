@@ -89,15 +89,13 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
-        /// The clash total of the group's clash step. Unknown where no step ran, and where its
-        /// clash was skipped for the shared coordinates, T6-R-ZEROCLASHES: the skipped group
-        /// read 0 clashes in TIMING BESIDE SIZE while RESULT said clashes found UNKNOWN, and a
-        /// clash that never ran found no number. A test that ran and found nothing is a real
+        /// The clash total of the group's clash step. Unknown where no step ran, T6-R-ZEROCLASHES:
+        /// a clash that never ran found no number. A test that ran and found nothing is a real
         /// zero and stays one.
         /// </summary>
         public static long ClashesIn(ClashRunOutcome clash)
         {
-            if (clash == null || !string.IsNullOrEmpty(clash.ClashSkipped))
+            if (clash == null)
             {
                 return Unknown;
             }
