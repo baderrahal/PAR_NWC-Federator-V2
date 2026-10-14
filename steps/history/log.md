@@ -2,6 +2,20 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F190 the picture caps always apply
+
+Branch fix-F190 off main 6e0129b. Bader's order of 15 Oct, task 1.
+
+The trigger of 750 clashes is gone with its constant. Every test, whatever its clash count, gets pictures for at most its
+first 150 clashes at priority A, 100 at B and 50 at C, in the order Navisworks lists them. A test with fewer clashes than
+its cap gets a picture for each. A test the matrix does not name, and a test with no priority read, is C. The box keeps its
+job and the least of the box and the cap holds. The 9000 GDI stop and the 12 GB memory stop are as before. The log line for
+a test whose clashes exceed its cap is kept. The box label, the help line, the rules file and the tests say the caps and no
+trigger. PictureLimits.LimitFor takes the priority and the box only.
+
+Core tests 3198 passing, Release build clean. Not run in Navisworks yet, the run of task 7 shows it.
+
+
 ## 2026-10-15 F189 the final run of Part 2 and the NWF's own folders
 
 Branch fix-F189 off main 7d0559d. Bader's order of 14 Oct, round 4 of the second set, task 8.

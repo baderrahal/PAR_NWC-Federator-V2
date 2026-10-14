@@ -1645,13 +1645,14 @@ and 6 does not read as broken.
   aside and renamed with its count, so the engine lets the window answer and writes a PROGRESS
   line, and a said that throws is named once in the outcome and the renaming goes on. A holding name an
   earlier, cut off renaming left is taken out before the move onto it and said
-- THE PICTURE LIMITS, F172 and F175, Bader's answers to Q171, `PictureLimits` and `GdiBackstop`. A test
-  with more than 750 clashes gets pictures for its first 150 clashes at priority A, 100 at priority B and
-  50 at priority C, and the rest are skipped, per test and not for the run. A saved test the built in
+- THE PICTURE LIMITS, F172, F175 and F190, Bader's answers to Q171 and his order of 15 Oct 2026, `PictureLimits` and
+  `GdiBackstop`. Every test, whatever its clash count, gets pictures for at most its first 150 clashes at priority A,
+  100 at priority B and 50 at priority C, and the rest are skipped, per test and not for the run. A test with fewer
+  clashes than its cap gets a picture for each. A saved test the built in
   matrix does not name is C, F168, and so is a test with no priority read, so the cap is never the most
   by a doubt. The priority is read off the built in priority map at the start of the picture pass into
   `TestReport.PicturePriority`, because `TestReport.Priority` is put on the report only after the clash
-  step. One log line per such test with its name, its priority letter, its clashes, the pictures made and
+  step. One log line per test whose clashes exceed its cap with its name, its priority letter, its clashes, the pictures made and
   the skipped. The clashes stay in the HTML, the Excel and the viewpoints, and every clash keeps its
   viewpoint, only the picture is skipped. The "At most per test" box keeps its own job, a cap of the
   user's choosing for every test, and the least of the box and the rule holds,

@@ -24,6 +24,7 @@ namespace Federator.Core.Tests
         {
             report = new ClashReport("1A04PK", "out");
             test = report.AddTest("BLD-AR-Walls-vs-BLD-AR-Floors");
+            test.PicturePriority = ClashPriority.A;
         }
 
         private List<ClashRow> Rows(int count, ClashStatus status)

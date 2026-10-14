@@ -8,11 +8,12 @@ namespace Federator.Core.Report
     /// F172 and F175, Bader's answers to Q171. How many pictures a clash test gets, and where the pictures
     /// stop so the run cannot crash on the GDI limit. Two rules and nothing else:
     ///
-    /// ONE RULE PER TEST BY ITS PRIORITY. A test with more than 750 clashes gets pictures for its first
-    /// clashes only: priority A the first 150, priority B the first 100 and priority C the first 50. A test
-    /// the matrix does not name counts as C, F168, and so does a test whose priority is not known. It is the
-    /// test that counts, not the run. The clashes stay in the HTML, the Excel and the viewpoints, only
-    /// their Image cell is empty, and every clash keeps its viewpoint.
+    /// ONE RULE PER TEST BY ITS PRIORITY, F190, Bader's order of 15 Oct 2026. Every test, whatever its
+    /// clash count, gets pictures for at most its first clashes in the order Navisworks lists them: priority A
+    /// the first 150, priority B the first 100 and priority C the first 50. A test with fewer clashes than its
+    /// cap gets a picture for each. A test the matrix does not name counts as C, F168, and so does a test whose
+    /// priority is not known. It is the test that counts, not the run. The clashes stay in the HTML, the Excel
+    /// and the viewpoints, only their Image cell is empty, and every clash keeps its viewpoint.
     ///
     /// ONE BACKSTOP FOR THE PROCESS. Every picture costs the Navisworks process one GDI object and a
     /// process may hold 10000. Past 9000 no more pictures are made, a NOTICE says at which picture and
@@ -21,16 +22,13 @@ namespace Federator.Core.Report
     /// </summary>
     public static class PictureLimits
     {
-        /// <summary>A test with more clashes than this is a many clash test. 750 since F181, Bader's answer to Q176, it was 1000.</summary>
-        public const int ManyClashes = 750;
-
-        /// <summary>The pictures a many clash test of priority A gets, its first clashes in report order.</summary>
+        /// <summary>The most pictures a test of priority A gets, its first clashes in report order.</summary>
         public const int PicturesForA = 150;
 
-        /// <summary>The pictures a many clash test of priority B gets.</summary>
+        /// <summary>The most pictures a test of priority B gets.</summary>
         public const int PicturesForB = 100;
 
-        /// <summary>The pictures a many clash test of priority C gets, and of one with no priority.</summary>
+        /// <summary>The most pictures a test of priority C gets, and of one with no priority.</summary>
         public const int PicturesForC = 50;
 
         /// <summary>The GDI objects of the Navisworks process past which no picture is made.</summary>
@@ -43,7 +41,7 @@ namespace Federator.Core.Report
         public const long MemoryStopBytes = 12L * 1024 * 1024 * 1024;
 
         /// <summary>
-        /// The pictures a many clash test of that priority gets. None is C, because a test no matrix
+        /// The most pictures a test of that priority gets. None is C, because a test no matrix
         /// names is C by F168 and a priority not known is the least a test may get, never the most.
         /// </summary>
         public static int PicturesFor(ClashPriority priority)
@@ -57,12 +55,13 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The most pictures a test may have. The rule of its priority for a many clash test, the least of
-        /// it and the box's number where the box is not zero, and no limit at all (int.MaxValue) otherwise.
+        /// The most pictures a test may have, F190. The cap of its priority, whatever its clash count, and
+        /// the least of it and the box's number where the box is not zero. A test with fewer clashes than
+        /// the limit gets a picture for each, because the pictures stop at the end of its clashes.
         /// </summary>
-        public static int LimitFor(int clashesInTheTest, ClashPriority priority, int boxCapPerTest)
+        public static int LimitFor(ClashPriority priority, int boxCapPerTest)
         {
-            int limit = clashesInTheTest > ManyClashes ? PicturesFor(priority) : int.MaxValue;
+            int limit = PicturesFor(priority);
 
             if (boxCapPerTest > 0 && boxCapPerTest < limit)
             {
@@ -73,15 +72,14 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The one line a many clash test gets in the log: its name, its priority letter, its clashes,
-        /// the pictures made and the clashes whose picture was skipped.
+        /// The one line a test whose clashes exceed its cap gets in the log: its name, its priority letter,
+        /// its clashes, the pictures made and the clashes whose picture was skipped.
         /// </summary>
         public static string TestLine(string testName, ClashPriority priority, int clashes, int made, int skipped)
         {
             return "IMAGES   " + testName + " has priority " + Letter(priority) + " and "
                 + clashes.ToString(CultureInfo.InvariantCulture)
-                + " clashes, more than " + ManyClashes.ToString(CultureInfo.InvariantCulture)
-                + ", so " + made.ToString(CultureInfo.InvariantCulture) + " pictures were made and "
+                + " clashes, more than its cap, so " + made.ToString(CultureInfo.InvariantCulture) + " pictures were made and "
                 + skipped.ToString(CultureInfo.InvariantCulture) + " were skipped. The clashes stay in the "
                 + "HTML, the Excel and the viewpoints, only their Image cell is empty";
         }
@@ -95,11 +93,10 @@ namespace Federator.Core.Report
             return priority == ClashPriority.None ? "C" : Priorities.Words(priority);
         }
 
-        /// <summary>The rule said in words for the window and the log: the trigger and the three caps.</summary>
+        /// <summary>The rule said in words for the window and the log: the three caps.</summary>
         public static string RuleInWords()
         {
-            return "a test with more than " + ManyClashes.ToString(CultureInfo.InvariantCulture)
-                + " clashes gets pictures for its first " + PicturesForA.ToString(CultureInfo.InvariantCulture)
+            return "every test gets pictures for at most its first " + PicturesForA.ToString(CultureInfo.InvariantCulture)
                 + " clashes at priority A, " + PicturesForB.ToString(CultureInfo.InvariantCulture)
                 + " at priority B and " + PicturesForC.ToString(CultureInfo.InvariantCulture) + " at priority C";
         }
