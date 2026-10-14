@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-14 20:40, round 4 second set, Part 2 F185 the checks in review, F186 viewpoint folder next
+STATE OPEN, 2026-10-14 20:50, round 4 second set, Part 2 F185 the checks merged, F186 viewpoint folder next
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 236 | 16 | 1 | 0 | 63 | 7 | 323 |
-| total | 439 | 24 | 1 | 0 | 164 | 18 | 646 |
+| outside the waves | 237 | 16 | 0 | 0 | 63 | 7 | 323 |
+| total | 440 | 24 | 0 | 0 | 164 | 18 | 646 |
 <!-- the end of the counts -->
 
 ## Now
