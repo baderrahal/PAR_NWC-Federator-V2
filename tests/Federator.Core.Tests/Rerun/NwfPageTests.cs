@@ -158,7 +158,7 @@ namespace Federator.Core.Tests
         public void TheConfirmListsTheChangedFilesTheTestsTheViewpointFolderAndTheOldPictures()
         {
             string text = RefreshConfirm.Text(
-                "C04.nwf", @"C:\n\Backup", OneChanged(), "Refresh, Run tests, Pictures, Viewpoints, Reports", 1830, 204, 7904,
+                "C04.nwf", @"C:\n\Backup", OneChanged(), "Refresh, Run tests, Pictures, Viewpoints, Reports", 1830, 204, 37, 7904,
                 "NWC Federator (auto)");
 
             Assert.That(text, Does.Contain("This run refreshes C04.nwf."));
@@ -167,6 +167,8 @@ namespace Federator.Core.Tests
             Assert.That(text, Does.Contain("the 1830 of the built in matrix"));
             Assert.That(text, Does.Contain("the folder NWC Federator (auto) with 204 viewpoints is deleted and made again"));
             Assert.That(text, Does.Contain("A viewpoint moved by hand into that folder is deleted with it."));
+            Assert.That(text, Does.Contain("ALL viewpoints and folders outside the tool folder NWC Federator (auto) and the folder Comments will be deleted"));
+            Assert.That(text, Does.Contain("The last run deleted 37 items there"));
             Assert.That(text, Does.Contain("7904 old jpg files"));
             Assert.That(text, Does.EndWith("Nothing is changed before OK. Cancel is the default."));
         }
@@ -174,11 +176,12 @@ namespace Federator.Core.Tests
         [Test]
         public void WhatIsNotKnownIsSaidUnknownAndNeverInvented()
         {
-            string text = RefreshConfirm.Text("C04.nwf", null, null, "Refresh", 0, -1, -1, "NWC Federator (auto)");
+            string text = RefreshConfirm.Text("C04.nwf", null, null, "Refresh", 0, -1, -1, -1, "NWC Federator (auto)");
 
             Assert.That(text, Does.Contain("UNKNOWN, no Log folder was found"));
             Assert.That(text, Does.Contain("UNKNOWN. No earlier run of this NWF left a list"));
             Assert.That(text, Does.Contain("with UNKNOWN viewpoints"));
+            Assert.That(text, Does.Contain("How many is UNKNOWN until the NWF opens"));
             Assert.That(text, Does.Contain("UNKNOWN old jpg files"));
             Assert.That(text, Does.Contain("the tests saved in the NWF run again where they sit"));
         }
@@ -196,7 +199,7 @@ namespace Federator.Core.Tests
                 now.Add(new ManifestEntry(@"C:\p\F" + i + ".nwc", 11, t1, null));
             }
 
-            string text = RefreshConfirm.Text("C04.nwf", @"C:\n\Backup", NwcManifest.Compare(last, now, p => "XX"), "Refresh", 1, 1, 1, "T");
+            string text = RefreshConfirm.Text("C04.nwf", @"C:\n\Backup", NwcManifest.Compare(last, now, p => "XX"), "Refresh", 1, 1, 1, 1, "T");
 
             Assert.That(text, Does.Contain("    and 8 more"));
         }

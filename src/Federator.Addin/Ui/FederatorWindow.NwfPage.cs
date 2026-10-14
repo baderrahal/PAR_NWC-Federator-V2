@@ -415,6 +415,7 @@ namespace Federator.Addin.Ui
                 steps.Words(),
                 TestsInTheMatrix(),
                 toolViews,
+                last == null ? -1 : (int)last.Fact("outside"),
                 oldPictures,
                 ToolViewFolder.Name);
 

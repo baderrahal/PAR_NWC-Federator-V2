@@ -9,8 +9,8 @@ namespace Federator.Core.Tests
     /// <summary>
     /// F186, Bader's answer 1 of Q174 and his order of 14 Oct 2026, task 6. Everything the tool makes goes in one top
     /// folder, found by its name and its marker. It is deleted with all it holds on every run and made again, and
-    /// nothing outside it is read for removal. A tree of an earlier version is cleaned up once, and only where
-    /// every item inside a root folder is the tool's own naming. Names are sample data.
+    /// nothing inside the folders it leaves is read for removal. What stands outside it is deleted by F191, and
+    /// the Comments folder is kept. Names are sample data.
     /// </summary>
     [TestFixture]
     public class ToolViewFolderTests
@@ -18,10 +18,6 @@ namespace Federator.Core.Tests
         private const string Top = "NWC Federator (auto)";
         private const string TestA = "BLD-AR-Walls-vs-BLD-ST-Columns";
         private const string TestB = "BLD-ME-Ducts-vs-BLD-ST-Columns";
-
-        private static readonly ViewpointSettings Settings = new ViewpointSettings();
-        private static readonly string[] Teams = { "Architecture", "Structure", "Mechanical", "Electrical", "UNKNOWN" };
-        private static readonly string[] Tests = { TestA, TestB };
 
         private static ViewNode Folder(string[] folders, string name, int index)
         {
@@ -78,150 +74,6 @@ namespace Federator.Core.Tests
             Assert.That(ToolViewFolder.NodesUnder(null), Is.Empty);
         }
 
-        // ---------- the one time clean up ----------
-
-        private static List<ViewNode> OldTree()
-        {
-            return new List<ViewNode>
-            {
-                Folder(new string[0], "A", 0),
-                Folder(new[] { "A" }, "Structure vs Mechanical", 0),
-                Folder(new[] { "A", "Structure vs Mechanical" }, "Over 150mm", 0),
-                View(new[] { "A", "Structure vs Mechanical" }, TestB, 0),
-                View(new[] { "A", "Structure vs Mechanical", "Over 150mm" }, TestB, 0),
-                Folder(new string[0], "B", 1),
-                Folder(new[] { "B" }, "Architecture vs Structure", 0),
-                View(new[] { "B", "Architecture vs Structure" }, TestA, 0)
-            };
-        }
-
-        [Test]
-        public void ARootFolderOfOnlyTheToolsOwnNamingIsDeletedWithEverythingInIt()
-        {
-            LegacyViewCleanup plan = LegacyViewCleanup.Plan(OldTree(), Tests, Teams, Settings);
-
-            Assert.That(plan.Roots.Count, Is.EqualTo(2));
-            Assert.That(plan.ToDelete().Count, Is.EqualTo(2));
-            Assert.That(plan.Roots[0].Delete, Is.True);
-            Assert.That(plan.Roots[0].Views, Is.EqualTo(2));
-            Assert.That(plan.Roots[0].Folders, Is.EqualTo(2));
-            Assert.That(plan.Roots[1].Views, Is.EqualTo(1));
-            Assert.That(plan.Lines()[0], Does.Contain("root folder A: every item is the tool's own naming, deleted with its 2 views and 2 folders"));
-        }
-
-        [Test]
-        public void OneViewOfAPersonsKeepsTheWholeRootFolderAndNamesItAndWhy()
-        {
-            List<ViewNode> tree = OldTree();
-            tree.Add(View(new[] { "A", "Structure vs Mechanical" }, "Rami's coordination view", 1));
-
-            LegacyViewCleanup plan = LegacyViewCleanup.Plan(tree, Tests, Teams, Settings);
-
-            Assert.That(plan.Roots[0].Delete, Is.False);
-            Assert.That(plan.Roots[0].Why, Does.Contain("Rami's coordination view").And.Contain("no test of the built in matrix or the document"));
-            Assert.That(plan.Roots[1].Delete, Is.True, "the other root folder is judged on its own");
-            Assert.That(plan.ToDelete().Count, Is.EqualTo(1));
-            Assert.That(plan.Lines()[0], Does.StartWith("root folder A: left as it is, "));
-        }
-
-        [Test]
-        public void AFolderOfAPersonsKeepsTheRootFolder()
-        {
-            List<ViewNode> tree = OldTree();
-            tree.Add(Folder(new[] { "B" }, "Site visit 12 Oct", 1));
-
-            LegacyViewCleanup plan = LegacyViewCleanup.Plan(tree, Tests, Teams, Settings);
-
-            Assert.That(plan.Roots[1].Delete, Is.False);
-            Assert.That(plan.Roots[1].Why, Does.Contain("Site visit 12 Oct").And.Contain("not two team names"));
-        }
-
-        [Test]
-        public void AViewDirectlyUnderTheRootOrTooDeepIsNotTheOldTrees()
-        {
-            List<ViewNode> direct = OldTree();
-            direct.Add(View(new[] { "A" }, TestA, 5));
-            Assert.That(LegacyViewCleanup.Plan(direct, Tests, Teams, Settings).Roots[0].Delete, Is.False);
-
-            List<ViewNode> deep = OldTree();
-            deep.Add(View(new[] { "A", "Structure vs Mechanical", "Over 150mm", "Extra" }, TestA, 5));
-            Assert.That(LegacyViewCleanup.Plan(deep, Tests, Teams, Settings).Roots[0].Delete, Is.False);
-        }
-
-        [Test]
-        public void ATeamPairOfNamesNobodyKnowsIsNotATeamPairFolder()
-        {
-            List<ViewNode> tree = new List<ViewNode>
-            {
-                Folder(new string[0], "C", 0),
-                Folder(new[] { "C" }, "Coordination vs Programme", 0),
-                View(new[] { "C", "Coordination vs Programme" }, TestA, 0)
-            };
-
-            LegacyViewCleanup plan = LegacyViewCleanup.Plan(tree, Tests, Teams, Settings);
-
-            Assert.That(plan.Roots[0].Delete, Is.False);
-        }
-
-        [Test]
-        public void APerClashViewpointOfTheFirstVersionCountsAsTheToolsNaming()
-        {
-            List<ViewNode> tree = new List<ViewNode>
-            {
-                Folder(new string[0], "A", 0),
-                Folder(new[] { "A" }, "Structure vs Mechanical", 0),
-                View(new[] { "A", "Structure vs Mechanical" }, TestB + "  Clash12", 0)
-            };
-
-            Assert.That(LegacyViewCleanup.Plan(tree, Tests, Teams, Settings).Roots[0].Delete, Is.True);
-
-            tree[2] = View(new[] { "A", "Structure vs Mechanical" }, "Some test  Clash12", 0);
-            Assert.That(LegacyViewCleanup.Plan(tree, Tests, Teams, Settings).Roots[0].Delete, Is.False);
-        }
-
-        [Test]
-        public void AnEmptyRootFolderIsLeftBecauseNothingProvesItIsTheTools()
-        {
-            List<ViewNode> tree = new List<ViewNode> { Folder(new string[0], "A", 0) };
-
-            LegacyViewCleanup plan = LegacyViewCleanup.Plan(tree, Tests, Teams, Settings);
-
-            Assert.That(plan.Roots[0].Delete, Is.False);
-            Assert.That(plan.Roots[0].Why, Does.Contain("holds nothing"));
-        }
-
-        [Test]
-        public void TheNoPriorityRootFolderOfTheOldTreeIsJudgedLikeA()
-        {
-            List<ViewNode> tree = new List<ViewNode>
-            {
-                Folder(new string[0], "No priority", 0),
-                Folder(new[] { "No priority" }, "Architecture vs Structure", 0),
-                View(new[] { "No priority", "Architecture vs Structure" }, TestA, 0)
-            };
-
-            Assert.That(LegacyViewCleanup.Plan(tree, Tests, Teams, Settings).Roots[0].Delete, Is.True);
-        }
-
-        [Test]
-        public void ARootFolderOfAnyOtherNameIsNeverLookedAt()
-        {
-            List<ViewNode> tree = new List<ViewNode>
-            {
-                Folder(new string[0], "My views", 0),
-                View(new[] { "My views" }, TestA, 0),
-                Folder(new string[0], Top, 1),
-                Folder(new[] { Top }, "A", 0)
-            };
-
-            LegacyViewCleanup plan = LegacyViewCleanup.Plan(tree, Tests, Teams, Settings);
-
-            Assert.That(plan.Roots, Is.Empty);
-            Assert.That(plan.Lines()[0], Does.Contain("no tree of an earlier version to clean up"));
-        }
-
-        // ---------- the proof that deleting viewpoints does not change the results ----------
-
         [Test]
         public void TheProofLineSaysTheCountsAreTheSameChangedOrNotRead()
         {
@@ -241,13 +93,13 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheToolFolderIsDeletedBeforeTheViewsAreWrittenAndTheLegacyTreeIsCleanedAfter()
+        public void TheToolFolderIsDeletedBeforeTheViewsAreWrittenAndTheItemsOutsideItAfter()
         {
             string source = BuilderSource();
             int body = source.IndexOf("public ViewpointBuildOutcome BuildForGroup(", System.StringComparison.Ordinal);
             int deleted = source.IndexOf("DeleteTheToolFolder(document);", body, System.StringComparison.Ordinal);
             int written = source.IndexOf("WriteTheViews(document, clashTests", body, System.StringComparison.Ordinal);
-            int cleaned = source.IndexOf("CleanUpTheLegacyTree(document", body, System.StringComparison.Ordinal);
+            int cleaned = source.IndexOf("DeleteOutsideTheToolFolder(document, outcome);", body, System.StringComparison.Ordinal);
 
             Assert.That(deleted, Is.GreaterThan(body));
             Assert.That(written, Is.GreaterThan(deleted), "the old folder goes before the new views are made");

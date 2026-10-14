@@ -2,6 +2,26 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F191 everything outside the tool folder is deleted, Comments is kept
+
+Branch fix-F191 off main daf56e1. Bader's order of 15 Oct, task 2.
+
+Every viewpoint and folder at the root of the saved viewpoint tree is deleted except the tool folder NWC Federator (auto)
+of this run and a folder named Comments, whatever its case, which is kept with all inside it. A folder named like it
+("Comments old") is deleted, and so is a viewpoint named Comments. An empty Comments folder is made where there is none.
+The one time clean up of the root folders A, B and C of F186 is gone with its code and tests, LegacyViewCleanup.
+
+Order chosen: AFTER the new tool folder is built and its marker is read back. A build that stopped or threw then deletes
+nothing of a coordinator's. Where no view was planned there is no tool folder to wait for. Not decided by speed: a big
+tree may slow the build, and task 5 measures that before the order is questioned.
+
+Safety: the clash tests and results are counted before, after the first item and after all, and a change stops the
+delete and fails the step. One line says the number of items and the top level names, 50 at most. The NWF page
+confirmation and the Rebuild confirmation say that all outside is deleted. The manifest keeps a fact, outside, with
+what the run deleted, so the next confirmation can say it. The number now is read when the NWF opens, not before.
+
+Core tests 3205 passing, Release build clean. Not run in Navisworks yet, the run of task 7 shows it.
+
 ## 2026-10-15 F190 the picture caps always apply
 
 Branch fix-F190 off main 6e0129b. Bader's order of 15 Oct, task 1.

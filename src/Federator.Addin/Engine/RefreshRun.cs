@@ -248,7 +248,7 @@ namespace Federator.Addin.Engine
         /// Writes the manifest of the files linked now, to its one fixed name in the Log folder, overwriting the last,
         /// which is the tool's own state file and the one file of the Log folder the tool overwrites by Bader's order.
         /// </summary>
-        internal void WriteManifest(Document document, string logFolder, NwcManifest withHashes)
+        internal void WriteManifest(Document document, string logFolder, NwcManifest withHashes, int outsideDeleted)
         {
             try
             {
@@ -286,6 +286,12 @@ namespace Federator.Addin.Engine
                     }
 
                     next.SetFact("toolviews", toolViews);
+
+                    if (outsideDeleted >= 0)
+                    {
+                        next.SetFact("outside", outsideDeleted);
+                    }
+
                     next.SetFact("tests", DocumentCensusReader.Read(document).Of(CensusCount.Tests));
                 }
                 catch (Exception error)

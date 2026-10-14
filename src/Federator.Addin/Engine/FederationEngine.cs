@@ -60,6 +60,9 @@ namespace Federator.Addin.Engine
 
         /// <summary>F189. Where each NWF's NWD and Log folder are, read once when the engine is made.</summary>
         private readonly NwfPlaces places = NwfPlacesStore.Load();
+
+        /// <summary>F191. What the last views step deleted outside the tool folder and Comments, minus one where it did not run.</summary>
+        private int viewsOutsideDeleted = -1;
         private readonly List<string> logFolders = new List<string>();
         private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
 
@@ -977,7 +980,7 @@ namespace Federator.Addin.Engine
 
                             if (refresh != null)
                             {
-                                refresh.WriteManifest(document, reportFolder, outcome.RefreshedFiles == null ? null : outcome.RefreshedFiles.Next);
+                                refresh.WriteManifest(document, reportFolder, outcome.RefreshedFiles == null ? null : outcome.RefreshedFiles.Next, viewsOutsideDeleted);
                             }
                         }
                         else
@@ -1114,7 +1117,7 @@ namespace Federator.Addin.Engine
         {
             try
             {
-                refresh.WriteManifest(document, reportFolder, outcome.RefreshedFiles == null ? null : outcome.RefreshedFiles.Next);
+                refresh.WriteManifest(document, reportFolder, outcome.RefreshedFiles == null ? null : outcome.RefreshedFiles.Next, viewsOutsideDeleted);
 
                 if (before == null || before.Records.Count == 0)
                 {
@@ -1404,7 +1407,7 @@ namespace Federator.Addin.Engine
                 FinishTheGroup(document, job, outcome);
 
                 // F187. The manifest of the files the NWF links, written for the next refresh to compare with.
-                new RefreshRun(log).WriteManifest(document, reportFolder, null);
+                new RefreshRun(log).WriteManifest(document, reportFolder, null, viewsOutsideDeleted);
                 NwfPlacesStore.Remember(job.NwfPath, job.NwdPath, reportFolder);
             }
             catch (Exception error)
@@ -4904,6 +4907,8 @@ namespace Federator.Addin.Engine
                     "kept going, the NWF is saved with whatever the clash step and the views put in, and the workbook, the NWD and the confirm still run");
                 built = null;
             }
+
+            viewsOutsideDeleted = builder.OutsideDeleted;
 
             if (builder.Plan != null)
             {

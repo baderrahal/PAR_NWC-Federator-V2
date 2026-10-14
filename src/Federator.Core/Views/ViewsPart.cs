@@ -54,6 +54,12 @@ namespace Federator.Core.Views
         PuttingBack = 15,
 
         /// <summary>The fresh walk after the removals that the VIEWS TREE block and its checks read.</summary>
-        ReadingTheTree = 16
+        ReadingTheTree = 16,
+
+        /// <summary>F191. The viewpoints and folders at the root outside the tool folder and Comments, read and deleted.</summary>
+        DeletingOutside = 17,
+
+        /// <summary>F191. The tool folder of the earlier run found by its name and marker and deleted with all inside.</summary>
+        DeletingTheToolFolder = 18
     }
 }

@@ -117,6 +117,9 @@ namespace Federator.Addin.Engine
         /// <summary>The VIEWS TREE block whole, one row each for the .tsv, or null where the tree was not read.</summary>
         public IList<string> TreeRows { get; private set; }
 
+        /// <summary>F191. The items deleted outside the tool folder and Comments, or minus one where the step did not run.</summary>
+        public int OutsideDeleted { get; private set; }
+
         /// <summary>How many items of earlier runs the inventory's removals took out, each a change to the document.</summary>
         public int RemovedCount { get; private set; }
 
@@ -170,6 +173,7 @@ namespace Federator.Addin.Engine
             TreeLog = null;
             TreeRows = null;
             RemovedCount = 0;
+            OutsideDeleted = -1;
             removals = null;
 
             try
@@ -183,7 +187,7 @@ namespace Federator.Addin.Engine
 
                 // F186, Bader's answer 1 of Q174. The tool's one top folder of an earlier run is deleted with
                 // everything in it before this run's views are made, found by its name and its marker.
-                using (seconds.In(ViewsPart.Removing))
+                using (seconds.In(ViewsPart.DeletingTheToolFolder))
                 {
                     DeleteTheToolFolder(document);
                 }
@@ -227,9 +231,12 @@ namespace Federator.Addin.Engine
                 {
                     Remove(document, inventory);
 
-                    // F186, task 6.3. The one time clean up of the root folders an earlier version wrote, each
-                    // deleted only where every item inside is the tool's own naming.
-                    CleanUpTheLegacyTree(document, group, teams, groupModels, testNames);
+                    // F191, Bader's order of 15 Oct 2026. Everything at the root outside the tool folder and the
+                    // Comments folder is deleted, after the tool folder is built.
+                    using (seconds.In(ViewsPart.DeletingOutside))
+                    {
+                        DeleteOutsideTheToolFolder(document, outcome);
+                    }
                 }
             }
             finally
@@ -298,69 +305,87 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// F186, task 6.3. The one time clean up of the root folders an NWF written before this version holds:
-        /// A, B, C and the no priority folder, each deleted only where EVERY item inside is the tool's own naming,
-        /// LegacyViewCleanup's rule, and left with its name and the first item that kept it where not. Nothing is
-        /// changed inside a folder it leaves. The counts go on one line each in the log.
+        /// F191, Bader's order of 15 Oct 2026. Everything at the root of the saved viewpoint tree is deleted except
+        /// the tool folder this run built and a folder named Comments, which is kept with all inside it and made
+        /// empty where there is none. It runs AFTER the tool folder is built and its marker is there, so a build
+        /// that stopped or threw deletes nothing of a coordinator's. The clash tests and results are counted
+        /// before, after the first item and after all, and the delete stops at the first item if the counts moved,
+        /// which is said and fails the view step. A throw is logged and the run goes on.
         /// </summary>
-        private void CleanUpTheLegacyTree(Document document, string group, ViewTeams teams, IList<ModelTeam> models, ICollection<string> testNames)
+        private void DeleteOutsideTheToolFolder(Document document, ViewpointBuildOutcome outcome)
         {
             try
             {
-                TreeWalk now = SavedViewpoints.ReadTree(document, null);
-                List<string> known = new List<string>(teams.Map.Teams);
+                IList<RootEntry> root = SavedViewpoints.ReadRoot(document, stamp);
+                OutsidePlan plan = OutsideTheToolFolder.Plan(root, Plan != null && Plan.Views.Count > 0);
 
-                if (!string.IsNullOrEmpty(teams.Map.UnknownTeam) && !known.Contains(teams.Map.UnknownTeam))
+                if (plan.Refused)
                 {
-                    known.Add(teams.Map.UnknownTeam);
+                    log.Line(OutsideTheToolFolder.Line(plan, 0, false));
+                    return;
                 }
 
-                foreach (string code in teams.Map.KnownCodes(CodesOf(models)))
-                {
-                    if (!known.Contains(code))
-                    {
-                        known.Add(code);
-                    }
-                }
+                DocumentCensus before = DocumentCensusReader.Read(document);
+                List<RootEntry> ordered = new List<RootEntry>(plan.Delete);
+                ordered.Sort((a, b) => b.Index.CompareTo(a.Index));
+                int removedItems = 0;
+                int removedTop = 0;
+                bool stopped = false;
 
-                LegacyViewCleanup plan = LegacyViewCleanup.Plan(now.Nodes, testNames, known, views);
-                int deleted = 0;
-                int kept = 0;
-
-                foreach (LegacyRoot root in plan.Roots)
+                foreach (RootEntry entry in ordered)
                 {
-                    if (!root.Delete)
+                    string whyNot = SavedViewpoints.DeleteRootItem(document, entry);
+
+                    if (whyNot != null)
                     {
-                        kept++;
-                        log.Line("VIEWS    LEGACY " + group + " " + root.Line());
+                        log.Line("VIEWS    OUTSIDE \"" + entry.Name + "\" was not deleted, " + whyNot);
                         continue;
                     }
 
-                    RemovalReadBack answer = SavedViewpoints.RemoveRootFolder(document, root.Node.Name, root.Node.IndexInParent);
+                    removedItems += entry.Items;
+                    removedTop++;
 
-                    if (answer.Removed)
+                    if (removedTop == 1)
                     {
-                        deleted++;
-                        RemovedCount += root.Views + root.Folders + 1;
-                        log.Line("VIEWS    LEGACY " + group + " " + root.Line());
-                    }
-                    else
-                    {
-                        kept++;
-                        log.Line("VIEWS    LEGACY " + group + " root folder " + root.Node.Name + " was judged the tool's and was not deleted, "
-                            + answer.WhyNot);
+                        DocumentCensus afterFirst = DocumentCensusReader.Read(document);
+
+                        if (!OutsideTheToolFolder.Unchanged(before, afterFirst))
+                        {
+                            stopped = true;
+                            break;
+                        }
                     }
                 }
 
-                log.Line("VIEWS    LEGACY " + group + " the clean up of an earlier version's tree: " + plan.Roots.Count
-                    + " root folder(s) read, " + deleted + " deleted, " + kept + " left as they are");
+                RemovedCount += removedItems;
+                OutsideDeleted = removedItems;
+                bool commentsMade = false;
+
+                if (plan.CreateComments && !stopped)
+                {
+                    commentsMade = SavedViewpoints.EnsureFolders(document, new List<string> { OutsideTheToolFolder.CommentsName }).Count > 0;
+                }
+
+                DocumentCensus after = DocumentCensusReader.Read(document);
+                log.Line(OutsideTheToolFolder.Line(plan, removedItems, commentsMade));
+                log.Line(ToolViewFolder.DeletedWithoutChangingTheResultsLine(
+                    before.Of(CensusCount.Tests), before.Of(CensusCount.Results), after.Of(CensusCount.Tests), after.Of(CensusCount.Results)));
+
+                if (stopped || !OutsideTheToolFolder.Unchanged(before, after))
+                {
+                    outcome.AddFailed(
+                        "outside the tool folder",
+                        "UNKNOWN",
+                        "deleting the viewpoints outside the tool folder changed the clash counts, so the delete stopped"
+                        + " and the NWF has to be looked at before it is trusted");
+                }
             }
             catch (Exception error)
             {
                 log.Failure(
-                    "the clean up of an earlier version's viewpoint tree for " + group,
+                    "deleting the viewpoints outside the tool folder",
                     error,
-                    "kept going, nothing more was deleted and every root folder is as it was");
+                    "kept going, what was not deleted stays at the root");
             }
         }
 

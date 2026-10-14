@@ -32,7 +32,7 @@ REFERENCE (research of 14 Oct 2026). Each point is PROVEN (a source says so), IN
 ## C. Viewpoints
 
 - PROVEN. SavedViewpoint.Guid returns zeros. Autodesk engineering said the full path (folder and name) is the unique key.
-- Design (PROVEN APIs, INFERRED design). One top FolderItem with a reserved name "NWC Federator (auto)". A marker comment added with DocumentSavedViewpoints.AddComment. To delete, find the folder by name and marker and call DocumentSavedViewpoints.Remove(rootFolder). Rebuild with AddCopy or InsertCopy. Never delete outside it.
+- Design (PROVEN APIs, INFERRED design). One top FolderItem with a reserved name "NWC Federator (auto)". A marker comment added with DocumentSavedViewpoints.AddComment. To delete, find the folder by name and marker and call DocumentSavedViewpoints.Remove(rootFolder). Rebuild with AddCopy or InsertCopy. Never delete outside it. Changed by Bader on 15 Oct 2026: everything outside the tool folder and the Comments folder is deleted (F191). The folder named Comments is kept with all inside it, and an empty one is made where there is none.
 - INFERRED. A clash result keeps its own viewpoint inside Clash Detective, so deleting saved viewpoints should not change results. No Autodesk page says so. Test it once.
 
 ## D. Pictures and the GDI problem

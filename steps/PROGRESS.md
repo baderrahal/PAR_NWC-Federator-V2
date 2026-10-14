@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 01:30, round 5, task 1 of 7 merged, F190 the picture caps always apply, nothing waits on an answer
+STATE OPEN, 2026-10-15 02:10, round 5, task 2 of 7 in review, F191 delete outside the tool folder, nothing waits on an answer
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 245 | 16 | 0 | 0 | 60 | 7 | 328 |
-| total | 448 | 24 | 0 | 0 | 161 | 18 | 651 |
+| outside the waves | 245 | 16 | 1 | 0 | 60 | 7 | 329 |
+| total | 448 | 24 | 1 | 0 | 161 | 18 | 652 |
 <!-- the end of the counts -->
 
 ## Now
@@ -25,7 +25,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - F180 the C04 run, report at the top of steps\03_bader_next.md. Pictures stopped at 9000, no GDI crash, then Navisworks
   grew to 26 GB and the NWD step hung with a 0 byte NWD. Run stopped, Part 2 NOT started, as ordered
 - Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the
-  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps always apply in review
+  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder in review
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 

@@ -1555,7 +1555,7 @@ namespace Federator.Addin.Ui
 
             if (MakeViewpointsHelp != null)
             {
-                MakeViewpointsHelp.Text = ViewpointRequest.HelpLine;
+                MakeViewpointsHelp.Text = ViewpointRequest.HelpLine + ". " + ViewpointRequest.DeleteLine + ".";
             }
         }
 
