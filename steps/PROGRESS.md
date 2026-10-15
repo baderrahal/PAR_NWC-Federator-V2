@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 13:55, round 6 done, F198 278 and F199 279 merged and proven by two NWF page runs, F200 report, Q182 Q184 Q185 wait for Bader
+STATE OPEN, 2026-10-15 14:40, F201 281 merged, 04 PK lines up with a manual Append by 0 mm, F202 report, Q182 Q184 Q185 Q186 wait for Bader
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,13 +15,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 263 | 16 | 0 | 3 | 60 | 7 | 349 |
-| total | 466 | 24 | 0 | 3 | 161 | 18 | 672 |
+| outside the waves | 264 | 16 | 0 | 4 | 60 | 7 | 351 |
+| total | 467 | 24 | 0 | 4 | 161 | 18 | 674 |
 <!-- the end of the counts -->
 
 ## Now
-- Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the
-  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder 271, F192 Over 150mm only inside C 272, F193 records 273, F194 view timing 274, F195 Rebuild box 275, F196 views speed 276, F197 report 277
+- 15 Oct: F201 no model's units are set, the units step had scaled every model 3.28 times and moved it up to 667 m on 1A04PK, 281.
+  F202 the rebuild of 04 PK with the fix, every file within 0 mm of a manual Append, report at the top of steps\03_bader_next.md
 - Round 6 of 15 Oct: F198 the tool folder named Clash Status 278, F199 the discipline folders under A, B and C 279, F200 the two NWF page runs
   that prove them, report at the top of steps\03_bader_next.md
 ## Speed
@@ -30,12 +30,11 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | date | build | a picture | 1A02MM | longest freeze | most time |
 |---|---|---|---|---|---|
 | Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
-| 15 Oct 00:15, C04 copy, NWF page | 9eb59ad0, main after 268 | 3066 in 225 s | not run | none read | VIEWS 1723 s, 3 runs 61, 68 and 35 min |
 | 15 Oct 04:06, C04 copy, NWF page | 444b9c37, main after 275 | 3184 in 209 s | not run | none read | VIEWS 215 s, the run 10.5 min where it was 61 min |
 | 15 Oct 13:12, C04 copy f199, NWF page twice | 770e1c9a, main after 279 | 3194 in 231 s, 2509 in 191 s | not run | none read | VIEWS 401 s and 283 s, the runs 13.2 and 10.5 min |
 
 ## Next
-1. Bader reads round 6 at the top of steps\03_bader_next.md and answers Q184 and Q185
+1. Bader reads F201 and F202 and round 6 at the top of steps\03_bader_next.md and answers Q184, Q185 and Q186
 2. The NWC page run with F199 was not run, only the NWF page. UNKNOWN by a run
 3. Bader's proof of the round on his desktop PC, steps\03_bader_next.md
 4. tools\loop\prove-run.ps1 was not run after F173, so its window cases are UNKNOWN
@@ -45,6 +44,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 - Q182: 47 tests of A and B, 1652 clashes over 150 mm, have no Over 150mm folder. Bader says how to handle them
 - Q184: HV and DR in Mechanical and EV in Electrical by the pack's team line, BLD-Security Devices in Other, a run with no XML
 - Q185: 1 test of C in Other with 1 clash over 150 mm stays in its one view, as A and B do
+- Q186: every NWF built before F201 has scaled models and clashes off them, 10170 against 13286 on 1A04PK. Which to rebuild
 - What Excel shows a person when it opens a workbook of linked pictures, and whether its click link that goes up
   one folder to Clash report opens the jpg, steps\03_bader_next.md
 
