@@ -1066,5 +1066,5 @@ wc-nwf-design.md.
 
 182. From the loop, 2026-10-15, F192. The Over 150mm folder is under C only. In a pair that carries the size folder, a test of priority A or B can have clashes whose larger service is over 150 mm. The old rule would have given them an Over 150mm view, and by your order there is none in A or B, so they stay in the test's one view. How many tests and views is that, and should they be handled another way?
 
-    The counts of the last run could not be read, because the logs of the F189 run hold the size read for each clash and not each verdict. The VIEWS plan block of the next run writes them: the tests of priority A and of B, and their clashes over the threshold. They are written here when that run is read. Nothing is decided on a guess.
+    The counts, read off the VIEWS plan block of the runs of 15 Oct 2026, run ids 20261015-021103 and 20261015-024833, the same in both: 47 tests of priority A or B in a pair that carries the size folder have clashes whose larger service is over 150 mm, 35 of A and 12 of B, with 1652 clashes in all. They stay in the test's one view and no Over 150mm view is made for them. 10 tests of priority C have an Over 150mm view. Nothing is decided on them until Bader says.
 

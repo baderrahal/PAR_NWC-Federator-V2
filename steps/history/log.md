@@ -2,6 +2,17 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F197 the report of round 5 and the counts of Q182
+
+Branch fix-F197 off main e22516c. Bader's order of 15 Oct, task 7.
+
+The report is at the top of steps\03_bader_next.md. The runs: the NWC page first build 30 min, the NWF page refresh with
+planted items 61 min before the fix and 10.5 min after it, and the Rebuild of a group whose NWF exists. All DONE, none hung.
+Q182 has its counts from the plan block of the runs, 47 tests, 35 of A and 12 of B, 1652 clashes, and waits for Bader. Q177,
+Q180 and Q181 are proven by a run in the tracker. The driver was fixed three times on the way, outside the repo: it matched
+the Rebuild confirmation by its first words and the texts start with the buttons, it called UI Automation for the answer
+while the tick call still held the channel, and its path guard looked at the loop folder and not at the work folder.
+
 ## 2026-10-15 F196 the views take 215 s where they took 3294 s, the cause found and fixed
 
 Branch fix-F196 off main 4f2d4e9. Bader's order of 15 Oct, task 5, parts 2 to 4.

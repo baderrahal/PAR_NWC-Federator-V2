@@ -652,13 +652,14 @@ F189,"the final run of Part 2 on a copy of C04 in Bader's layout, an NWF keeps i
 F190,"the picture caps A 150, B 100 and C 50 always apply to every test, the trigger of 750 clashes and its constant removed",F190,none,fix,merged,270,none,2026-10-15
 F191,"everything at the root of the saved viewpoints outside the tool folder is deleted except a folder named Comments, which is kept and made where missing, the one time clean up of A B C removed",F191,none,fix,merged,271,none,2026-10-15
 F192,"the Over 150mm folder exists only inside C, in C a test of a pair carrying the size folder splits its large clashes into C/Over 150mm, in A and B no such folder and the clashes are counted for a decision",F192,none,fix,merged,272,none,2026-10-15
-Q177-1,"the Over 150mm folder exists only under C, in C a test of a pair carrying the size folder splits its large clashes, F192",none,none,Bader's request,merged,273,none,2026-10-15
+Q177-1,"the Over 150mm folder exists only under C, in C a test of a pair carrying the size folder splits its large clashes, F192",none,none,Bader's request,proven by a run,272,20261015-021103,2026-10-15
 Q178-1,"the Compact resolved option stays removed, recorded with Q177",none,none,Bader's request,merged,273,none,2026-10-15
 Q179-1,"the pictures keep both stops, 9000 GDI objects and 12 GB of private memory, recorded with Q177",none,none,Bader's request,merged,273,none,2026-10-15
-Q180-1,"the picture caps 150, 100 and 50 always apply to every test, no trigger, replaces the 750 of Q176, F190",none,none,Bader's request,merged,273,none,2026-10-15
-Q181-1,"everything outside the tool folder is deleted except the Comments folder, replaces the first item of Q174 where it said nothing a coordinator made is touched, F191",none,none,Bader's request,merged,273,none,2026-10-15
+Q180-1,"the picture caps 150, 100 and 50 always apply to every test, no trigger, replaces the 750 of Q176, F190",none,none,Bader's request,proven by a run,270,20261015-021103,2026-10-15
+Q181-1,"everything outside the tool folder is deleted except the Comments folder, replaces the first item of Q174 where it said nothing a coordinator made is touched, F191",none,none,Bader's request,proven by a run,271,20261015-024833,2026-10-15
 Q182,"how many tests and clashes of priority A and B have clashes over 150 mm in a pair carrying the size folder and so stay in the one view, and whether to handle them another way, F192",none,none,question,waiting for Bader,none,none,2026-10-15
 F193,"the answers of the round 5 orders recorded in steps\02_questions.md and the tracker, Q177 to Q182",F193,none,fix,merged,273,none,2026-10-15
 F194,"the seconds of every view are measured and said in VIEWS TIMING lines, the read back split into its hidden items, the walk of the overrides and the colour of the clashing items",F194,none,fix,merged,274,none,2026-10-15
 F195,"the Rebuild box asks its confirmation on Checked and Unchecked so a tick made by automation or the keyboard asks too",F195,none,fix,merged,275,none,2026-10-15
 F196,"the views took 3294 s where the read back called GetAppearanceOverrides with the objects of earlier calls uncollected, now collected after each read back, 215 s, the nested timing part fixed",F196,none,fix,merged,276,none,2026-10-15
+F197,"the report of round 5 at the top of steps_bader_next.md, the counts of Q182 read off the runs, Q177 Q180 Q181 proven by a run",F197,none,fix,merged,277,none,2026-10-15
