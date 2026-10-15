@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 663 rows: open 161, in progress 24, in review 0, merged 424, proven by a run 35, waiting for Bader 1, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 192, outside the waves 2, right after F133 merges 6
+- By status, of 664 rows: open 161, in progress 24, in review 1, merged 421, proven by a run 38, waiting for Bader 1, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 193, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 1 row: Q182
 
@@ -746,16 +746,17 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F190 | the picture caps A 150, B 100 and C 50 always apply to every test, the trigger of 750 clashes and its constant removed | F190 | fix | merged | 270 | none | 2026-10-15 |
 | F191 | everything at the root of the saved viewpoints outside the tool folder is deleted except a folder named Comments, which is kept and made where missing, the one time clean up of A B C removed | F191 | fix | merged | 271 | none | 2026-10-15 |
 | F192 | the Over 150mm folder exists only inside C, in C a test of a pair carrying the size folder splits its large clashes into C/Over 150mm, in A and B no such folder and the clashes are counted for a decision | F192 | fix | merged | 272 | none | 2026-10-15 |
-| Q177-1 | the Over 150mm folder exists only under C, in C a test of a pair carrying the size folder splits its large clashes, F192 | none | Bader's request | merged | 273 | none | 2026-10-15 |
+| Q177-1 | the Over 150mm folder exists only under C, in C a test of a pair carrying the size folder splits its large clashes, F192 | none | Bader's request | proven by a run | 272 | 20261015-021103 | 2026-10-15 |
 | Q178-1 | the Compact resolved option stays removed, recorded with Q177 | none | Bader's request | merged | 273 | none | 2026-10-15 |
 | Q179-1 | the pictures keep both stops, 9000 GDI objects and 12 GB of private memory, recorded with Q177 | none | Bader's request | merged | 273 | none | 2026-10-15 |
-| Q180-1 | the picture caps 150, 100 and 50 always apply to every test, no trigger, replaces the 750 of Q176, F190 | none | Bader's request | merged | 273 | none | 2026-10-15 |
-| Q181-1 | everything outside the tool folder is deleted except the Comments folder, replaces the first item of Q174 where it said nothing a coordinator made is touched, F191 | none | Bader's request | merged | 273 | none | 2026-10-15 |
+| Q180-1 | the picture caps 150, 100 and 50 always apply to every test, no trigger, replaces the 750 of Q176, F190 | none | Bader's request | proven by a run | 270 | 20261015-021103 | 2026-10-15 |
+| Q181-1 | everything outside the tool folder is deleted except the Comments folder, replaces the first item of Q174 where it said nothing a coordinator made is touched, F191 | none | Bader's request | proven by a run | 271 | 20261015-024833 | 2026-10-15 |
 | Q182 | how many tests and clashes of priority A and B have clashes over 150 mm in a pair carrying the size folder and so stay in the one view, and whether to handle them another way, F192 | none | question | waiting for Bader | none | none | 2026-10-15 |
 | F193 | the answers of the round 5 orders recorded in steps\02_questions.md and the tracker, Q177 to Q182 | F193 | fix | merged | 273 | none | 2026-10-15 |
 | F194 | the seconds of every view are measured and said in VIEWS TIMING lines, the read back split into its hidden items, the walk of the overrides and the colour of the clashing items | F194 | fix | merged | 274 | none | 2026-10-15 |
 | F195 | the Rebuild box asks its confirmation on Checked and Unchecked so a tick made by automation or the keyboard asks too | F195 | fix | merged | 275 | none | 2026-10-15 |
 | F196 | the views took 3294 s where the read back called GetAppearanceOverrides with the objects of earlier calls uncollected, now collected after each read back, 215 s, the nested timing part fixed | F196 | fix | merged | 276 | none | 2026-10-15 |
+| F197 | the report of round 5 at the top of steps_bader_next.md, the counts of Q182 read off the runs, Q177 Q180 Q181 proven by a run | F197 | fix | in review | none | none | 2026-10-15 |
 
 ## outside the waves
 

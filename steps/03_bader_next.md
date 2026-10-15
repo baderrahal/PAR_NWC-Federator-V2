@@ -1,5 +1,57 @@
 # 03 Bader next
 
+
+## Round 5, F190 to F196, the three new rules, the viewpoint time and the runs
+
+Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. All runs were on a COPY of C04 under C:\NWC-PC-Test\work (r5 for the build and the refresh, r5rb for the Rebuild). Your files in NM fed were only read, to make the copy. Evidence: C:\NWC-PC-Test\work\run-evidence\f195-r1, f195-r2, f196-r4, f196-r3d, and the tool's own logs in %LOCALAPPDATA%\ParsonsNwcFederator\logs, run ids 20261015-021103, 20261015-024833, 20261015-035619 and 20261015-041406. Navisworks was started by the launcher each time and closed by it. AutoSave was put back to 0.
+
+### The short answer on the time
+
+The views were the time, and one call was all of it. Saved viewpoints took 3294 s of a 61 minute run. 3089 s of that was one call, the one that lists what a saved view overrides, and it gets slower with every call because the objects of the earlier calls are not collected. The tool now collects them after each view. The same refresh of the same NWF took 215 s of views and 10.5 minutes in all. PROVEN by a timed run, before and after on the same NWF.
+
+### What each rule did, PROVEN by the first run (NWC page, 30 min, DONE)
+
+1. Pictures. Every test is capped by its letter, A 150, B 100, C 50. 19 tests were over their cap and each has its log line. 3052 pictures were made. The memory stop at 12 GB still fired at picture 3052 and 1585 were skipped. The NWF and the NWD were written before the pictures.
+2. Outside the tool folder. 115 items were deleted outside it, 10 folders the NWC files brought. An empty Comments folder was made. The count of tests and results was 741 and 10170 before and after.
+3. Over 150mm. The tree read out of the NWF is the tool folder with A (125), B (32) and C (23 tests and the folder Over 150mm with 10 tests). Over 150mm is in C and nowhere else.
+
+### The weekly refresh (NWF page, 61 min before the fix, 10.5 min after it)
+
+Before it I put in the copy a viewpoint of mine at the root, a root folder with a viewpoint, a folder named Comments with a viewpoint, a folder named Comments old with a viewpoint, and edited 6 clashes (Reviewed with an assignee and a comment, Approved with an approver, New with an assignee and a comment).
+
+- Deleted, by the log: the root viewpoint, the root folder and Comments old, 5 items, and the PROOF counts were equal. PROVEN
+- Kept: the folder Comments with its viewpoint. The tree read out of the NWF afterwards shows it. PROVEN
+- The edited Reviewed and Approved clashes kept their status. PROVEN
+- The tool folder was deleted with its 190 items and made again with 190. PROVEN
+- The table of 187 tests was read from the real window after 61 minutes, each test with New, Active, Reviewed, Approved and Resolved before and after. A test that was New became Active, as it should, and the Reviewed and Approved ones did not move. PROVEN
+
+### The Rebuild in a real run (NWC page, group with an NWF, views off, DONE)
+
+I ticked Rebuild, the confirmation came and I read it whole (it names the group, says the clash history is not carried over, and says all outside the tool folder and Comments is deleted), I answered OK and the run built a new NWF and NWD in a new folder `run 2026-10-15 0414` beside the old ones. The old NWF and NWD have the same SHA-256 as before. PROVEN
+
+### Your question Q182, the clashes over 150 mm in A and B
+
+47 tests of priority A or B in a pair that carries the size folder have clashes whose larger service is over 150 mm, 35 of A and 12 of B, 1652 clashes in all. By your order they stay in the test's one view, so no Over 150mm view is made for them. 10 tests of priority C got an Over 150mm view. The same numbers came in both runs. PROVEN. Whether to do something else with the 1652 is yours to say.
+
+### What is NOT proven
+
+- The number in the confirmation of the NWF page is the one the last run deleted, 115 here. The real number is read when the NWF opens and written in the log, because it cannot be read before the file is open. The confirmation says so.
+- Two Comments folders on the root, one empty and one with a viewpoint, are both kept. That is my choice and not yet your word, and it is TEST and the run above.
+- Why a first build took 1342 s of views at 02:11 and 3182 s of views in the 14 Oct run, with the same code at that call. UNKNOWN. The cause is the same call, and how soon the objects are collected differs from run to run.
+- The picture caps do not keep a run under the 12 GB stop on this PC. 4637 pictures were wanted and 3052 were made. A run on the desktop PC of 15.8 GB would be the same, UNKNOWN on a PC with more memory.
+- How the pages look to a person and whether Excel shows the pictures right. UNKNOWN.
+- The viewpoint confirmation says the number counted at the last run. TEST.
+
+### What I changed outside the repo
+
+- Programs I started, all closed: eight Navisworks sessions started by my launcher, seven probe sessions that read, timed or edited the copy, and PowerShell drivers. In four of the launcher sessions my driver stopped on its own guard before it ran anything, and I closed those Navisworks sessions myself or the watchdog did, only ones I had started. The launcher put AutoSave back to 0 each time.
+- Files written: work\r5, work\r5rb and work\run-evidence under C:\NWC-PC-Test, the probe in work\probe, the scripts in the session scratchpad, and the tool's own logs and `nwf-places.tsv` under %LOCALAPPDATA%\ParsonsNwcFederator.
+- Your NM fed was not written. The 0 byte NWD is still there for you to delete.
+
+### What to try on the desktop PC
+
+1. Put your own viewpoints in a folder named Comments. Everything else outside the tool folder is deleted on a run that makes viewpoints.
+2. Press Run on the NWF page for a real NWF and read the confirmation. Cancel is the default.
 ## Round 4, second set, F189 the final run of Part 2, Task 8
 
 Written for Bader. Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. The runs were on a COPY of C04 under C:\NWC-PC-Test\work\final, in your own layout: NWF\C04, NWD\C04, Log, Clash report and a Backup folder. Your files in NM fed were not touched. Evidence: C:\NWC-PC-Test\evidence\2026-10-15-f189-final. Build 9eb59ad0. Navisworks was started by the launcher and closed by it each time, none was left open, and AutoSave was put back to 0.
