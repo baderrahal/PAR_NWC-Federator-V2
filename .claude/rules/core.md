@@ -1908,11 +1908,12 @@ and 6 does not read as broken.
 - Every unit this tool knows is one row of Federator.Core.Units.UnitTable, F33: the name
   on the Navisworks enum, the words the window shows, the short label the report and the
   log write, the exchange file's units code, and the millimetres in one. ExchangeUnits
-  converts through it, DocumentUnits and ClashRunner name units through it, and the
-  Outputs step offers the rows it offers. There is no other list, because the lists had
-  drifted, the same unit was micrometers in one and um in another. A model units name the
-  table does not know FAILS the group with nothing converted, it used to fall back to
-  Meters without a word. The exchange reader reads the tolerance as written and converts
+  converts through it, ClashRunner and the add-in's ModelBoxReader name units through it.
+  There is no other list, because the lists had drifted, the same unit was micrometers in
+  one and um in another. Since F201 no model's units are set, so there is no model units
+  name to judge. `PlacementCheck` says, one line a model, whether each model held its place
+  from the append to the NWD within 1 mm, a setting, and names a model whose units are not
+  the document's, which an NWF built before F201 carries. The exchange reader reads the tolerance as written and converts
   nothing, so a file in a unit the tool does not know reads, and ClashTestPlan.Convert,
   the one place a file unit is judged, skips each of its tests by name
 - DECIDE WAITS FOR THE MODELS BEFORE IT COUNTS THEM, F74. `Document.TryOpenFile`

@@ -77,33 +77,10 @@ namespace Federator.Core.Units
                 new UnitRow("Microinches", "Microinches", "uin", "uin", 0.0000254),
             });
 
-        /// <summary>
-        /// The units the Outputs step offers, in the order it shows them. Five of the
-        /// eleven, because a model on this project is only ever in one of these. The
-        /// first is the default.
-        /// </summary>
-        private static readonly string[] OfferedNames =
-        {
-            "Meters", "Millimeters", "Centimeters", "Feet", "Inches"
-        };
-
         /// <summary>Every unit this tool knows.</summary>
         internal static IList<UnitRow> All
         {
             get { return Rows; }
-        }
-
-        /// <summary>The rows the Outputs step offers, in order, the default first.</summary>
-        public static IList<UnitRow> Offered()
-        {
-            List<UnitRow> offered = new List<UnitRow>();
-
-            foreach (string name in OfferedNames)
-            {
-                offered.Add(ByEnumName(name));
-            }
-
-            return offered;
         }
 
         /// <summary>The row whose exchange code this is, case blind and trimmed, or null.</summary>

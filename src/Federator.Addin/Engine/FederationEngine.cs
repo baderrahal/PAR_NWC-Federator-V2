@@ -1601,35 +1601,17 @@ namespace Federator.Addin.Engine
             // work happens BEFORE the NWF is saved for the last time and long before
             // the NWD is published. The NWD used to go first, which shipped it with no
             // sets and no results in it.
-            // BEFORE the clash step, so every tolerance and every distance is read in
-            // the units the report is going out in. Converting afterwards would mean a
-            // report whose numbers and whose unit label disagree.
-            if (reports.SetDocumentUnits)
-            {
-                Autodesk.Navisworks.Api.Units wanted;
-
-                if (!TryWantedUnits(out wanted))
-                {
-                    // A unit name nobody can act on. The group stops here with nothing
-                    // converted and nothing written, rather than running in units it
-                    // was not asked for. It used to fall back to Meters without a word.
-                    string name = string.IsNullOrEmpty(reports.UnitsName)
-                        ? "an empty unit name"
-                        : reports.UnitsName;
-
-                    log.Line("UNITS    " + name + " is not one this tool knows");
-                    outcome.AddError(
-                        "the model units setting, " + name + ", is not one this tool knows, "
-                            + "so nothing was converted and the group did not run. Known units are "
-                            + string.Join(", ", new List<string>(UnitTable.EnumNames()).ToArray()));
-                    return;
-                }
-
-                InStep(
-                    RunSteps.Units,
-                    () => new DocumentUnits(log).Apply(document, wanted),
-                    () => "the document was asked for " + wanted);
-            }
+            // F201, the alignment of 04 PK. No model's units are set any more. Setting every model to Meters with its
+            // own transform handed back made each model 3.28 times larger about its own origin and moved the models
+            // apart, measured on 15 Oct 2026, where the Append command leaves each in the units its NWC carries. The
+            // tolerance is already put into the units the document reports, and every report number into metres by
+            // ReportUnits, so nothing needed the models set. The step reads each model as it stands now, once every NWC
+            // is appended or the NWF opened, and PlacementCheck reads them again as the NWD is published.
+            IList<ModelBox> appended = null;
+            InStep(
+                RunSteps.Units,
+                () => appended = ModelBoxReader.Read(document),
+                () => "the models left in the units their NWC carries, " + (appended == null ? 0 : appended.Count) + " read, none set");
 
             // Where the clash step will take its tests from, read once here and handed to
             // it, so the ALIGNMENT block knows whether this run runs a clash test in the
@@ -1690,9 +1672,14 @@ namespace Federator.Addin.Engine
                 ended.Add(RunSteps.NwfSave);
             }
 
+            // F201. Each model as the NWD is published, against itself when it was appended or opened, one line a file.
             InStep(
                 RunSteps.Nwd,
-                () => WriteNwd(document, job, outcome),
+                () =>
+                {
+                    SayWhereTheModelsAre(document, appended);
+                    WriteNwd(document, job, outcome);
+                },
                 () => outcome.NwdOnDisk ? "published " + outcome.NwdSize + " bytes" : "nothing published");
             ended.Add(RunSteps.Nwd);
 
@@ -4199,33 +4186,24 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The units the Outputs step asked for, by the name on the Navisworks enum, read
-        /// through UnitTable so the name is one this tool knows before Enum.Parse sees it.
-        /// False is a name the table does not know, or one the installed enum does not
-        /// carry, and the caller fails the group. It used to fall back to Meters on any
-        /// name it could not parse, silently, which is a setting replaced by a guess.
+        /// F201. One PLACE line a model, Core's PlacementCheck over the models read when the group's files were in and
+        /// again now, as the NWD is published. A read that throws is said and never stops the NWD, which is the next call.
         /// </summary>
-        private bool TryWantedUnits(out Autodesk.Navisworks.Api.Units wanted)
+        private void SayWhereTheModelsAre(Document document, IList<ModelBox> appended)
         {
-            wanted = Autodesk.Navisworks.Api.Units.Meters;
-
-            UnitRow row = UnitTable.FindByEnumName(reports.UnitsName);
-
-            if (row == null)
-            {
-                return false;
-            }
-
             try
             {
-                wanted = (Autodesk.Navisworks.Api.Units)Enum.Parse(
-                    typeof(Autodesk.Navisworks.Api.Units), row.EnumName, false);
-                return true;
+                IList<ModelBox> published = ModelBoxReader.Read(document);
+
+                foreach (string line in PlacementCheck.Lines(appended, published, document.Units.ToString(), reports.PlacementToleranceMillimetres))
+                {
+                    log.Line(line);
+                }
             }
-            catch (ArgumentException)
+            catch (Exception error)
             {
-                log.Line("UNITS    " + row.EnumName + " is in this tool's table and not on the installed enum");
-                return false;
+                log.Failure("reading where the models are as the NWD is published", error,
+                    "kept going, the NWD is published and whether a model moved is UNKNOWN");
             }
         }
 

@@ -5,6 +5,7 @@ using Federator.Core.Generic;
 using Federator.Core.Health;
 using Federator.Core.Naming;
 using Federator.Core.Sets;
+using Federator.Core.Units;
 using Federator.Core.Views;
 
 namespace Federator.Core.Report
@@ -35,11 +36,10 @@ namespace Federator.Core.Report
 
             MakeViewpoints = ViewpointRequest.DefaultMakeViewpoints;
 
-            // Fixed on, and the window no longer sets them. A weekly run wants the page
-            // and the units every time, so neither is a decision any more. F34.
+            // Fixed on, and the window no longer sets it. A weekly run wants the page
+            // every time, so it is not a decision any more. F34.
             WriteHtml = true;
-            SetDocumentUnits = true;
-            UnitsName = DefaultUnits;
+            PlacementToleranceMillimetres = PlacementCheck.DefaultToleranceMillimetres;
             LogoPath = string.Empty;
             Images = new ImageOptions();
             Names = new ContainerNameSettings();
@@ -62,22 +62,11 @@ namespace Federator.Core.Report
         public bool WriteHtml { get; set; }
 
         /// <summary>
-        /// Put the document into <see cref="UnitsName"/> before the clash step.
-        ///
-        /// On, because this is a Saudi project and every report the team sends is metric,
-        /// and a run on a document in feet wrote a tolerance of 0.246ft and distances in
-        /// feet, which nobody can use. It is a mutation of the document, so it is logged
-        /// with what the document was and what it became.
+        /// F201. A model whose box centre moved more than this many millimetres between the append and the NWD is
+        /// named on its PLACE line. The units of the models are never set since F201, the setting and the Model units
+        /// box having moved every model, and the report is in metres whatever the document is in, ReportUnits.
         /// </summary>
-        public bool SetDocumentUnits { get; set; }
-
-        /// <summary>
-        /// Which units, by the name on the Navisworks enum. Metres by default.
-        /// </summary>
-        public string UnitsName { get; set; }
-
-        /// <summary>Metres, because that is what the client receives.</summary>
-        public const string DefaultUnits = "Meters";
+        public double PlacementToleranceMillimetres { get; set; }
 
         /// <summary>
         /// The logo the HTML page shows, or empty for none, which is the default.

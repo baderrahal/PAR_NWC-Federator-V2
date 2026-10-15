@@ -111,7 +111,6 @@ namespace Federator.Addin.Ui
             ShowUndoWording();
             ShowProbeWording();
             RunRangeHelp.Text = ShiftRange.HelpLine;
-            FillUnits();
             ShowOpenDocument();
             ShowPickedNwfWording();
             StartTheNwfPage();
@@ -1401,26 +1400,6 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The units every number in the report is in. Metres by default, because this is
-        /// a Saudi project and every report the team sends is metric. Since F26 this sets
-        /// what the MODELS are put into, which is what a person sees in Navisworks. The
-        /// report itself is always metres, converted in Core before anything is written.
-        /// </summary>
-        private static readonly IList<UnitRow> UnitChoices = UnitTable.Offered();
-
-        private void FillUnits()
-        {
-            UnitsBox.Items.Clear();
-
-            foreach (UnitRow row in UnitChoices)
-            {
-                UnitsBox.Items.Add(UnitWording(row));
-            }
-
-            UnitsBox.SelectedIndex = 0;
-        }
-
-        /// <summary>
         /// The penetration box's label and its grey line, both read off Core. F72.
         ///
         /// The help line names the threshold, and the threshold is a SETTING, so typing
@@ -1754,28 +1733,6 @@ namespace Federator.Addin.Ui
 
             return answer == MessageBoxResult.OK;
         }
-        /// <summary>The table's display name, and on the default a word on what it is for.</summary>
-        private static string UnitWording(UnitRow row)
-        {
-            return row.EnumName == ReportOptions.DefaultUnits
-                ? row.DisplayName + ", which is what the models are set to"
-                : row.DisplayName;
-        }
-
-        private string ChosenUnits()
-        {
-            int at = UnitsBox == null ? 0 : UnitsBox.SelectedIndex;
-
-            return at >= 0 && at < UnitChoices.Count
-                ? UnitChoices[at].EnumName
-                : ReportOptions.DefaultUnits;
-        }
-
-        private void OnUnitsChanged(object sender, SelectionChangedEventArgs e)
-        {
-            RefreshOutputsSummary();
-        }
-
         private void OnBrowseLogo(object sender, RoutedEventArgs e)
         {
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
@@ -1830,8 +1787,8 @@ namespace Federator.Addin.Ui
             options.WriteXml = WriteClashXml.IsChecked == true;
             options.RebuildExisting = RebuildExisting.IsChecked == true;
 
-            // The page, the units and the photos are fixed on in the options themselves,
-            // so nothing here sets them. A weekly run wants all three every time.
+            // The page and the photos are fixed on in the options themselves, so nothing here
+            // sets them. A weekly run wants both every time. The units of a model are never set, F201.
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
             options.Tolerance = tolerance;
@@ -1840,7 +1797,6 @@ namespace Federator.Addin.Ui
 
             options.MakeViewpoints = MakeViewpoints.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
-            options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
             options.Names = settings;
             options.GenericModels = internalWorkbook;
@@ -2153,7 +2109,7 @@ namespace Federator.Addin.Ui
                     ? "dated, so every week is kept"
                     : "overwrites, so only the latest week exists"));
             log.Line("republish NWD    : yes, fixed");
-            log.Line("model units      : " + ChosenUnits() + ", which is what the models are set to");
+            log.Line("model units      : as each NWC carries them, never set, F201");
             log.Line("report units     : " + Federator.Core.Report.ReportUnits.Name
                 + ", always, converted before anything is written");
         }

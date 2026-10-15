@@ -1643,3 +1643,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's order of round 6, task 4 and task 6. On a copy of a real NWF under C:\NWC-PC-Test\work, the NWF page run twice with main after F199 installed, the tree read off the saved NWF, the log lines of the delete, the build, OUTSIDE, Comments and PROOF, the report at the top of steps\03_bader_next.md.
 - DONE 2026-10-15. Runs run-20261015-131241 and run-20261015-132746 on work\f199, both DONE, 7 of 7 checks, the PROOF counts equal, the tree read out of the NWF. The NWC page run with F199 was not run.
+
+## F201 The models of 04 PK did not line up
+
+- Bader's order of 15 Oct. The units step set every model to Meters with its own transform handed back, which scaled each model 3.28 times about its own origin and moved it 6.3 m to 666.9 m on 1A04PK. No model's units or transform is set any more, the Model units box is gone, and one PLACE line a file says each model held its place from the append to the NWD within 1 mm.
+- DONE 2026-10-15 in code. Core tests 3258 before and 3259 after. The rebuild of 04 PK with the fix is F202.
