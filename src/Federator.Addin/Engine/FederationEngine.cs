@@ -4814,8 +4814,8 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// One saved view per clash test of its open clashes, in folders by priority and team
-        /// pair, F114, made after the clash step and before the NWF is saved again so they
+        /// One saved view per clash test of its open clashes, in folders by priority letter and
+        /// discipline, F114, F186 and F199, made after the clash step and before the NWF is saved again so they
         /// are inside the file the NWD is published from. The plan is
         /// Federator.Core.Views.TestViewPlan, the writing is ViewpointBuilder, and the step
         /// is timed like every other one. The engine hands the builder what Core's rules
@@ -4880,6 +4880,10 @@ namespace Federator.Addin.Engine
                 log.Line("VIEWS    no mirror rule ran for this group, so which tests are mirrors is UNKNOWN to the views and check 5 says so");
             }
 
+            // F199, Bader's order of round 6, Q183. A saved test the picked matrix does not name goes in Other. With no
+            // matrix picked there is no pack to read that off, so the plan is handed null and says UNKNOWN.
+            ICollection<string> notInThePack = exchange == null || outcome.Clash == null ? null : outcome.Clash.SavedTestsRunToo;
+
             ViewpointBuilder builder = new ViewpointBuilder(Tick, log, reports.Penetrations, reports.Sizes, views);
             ViewpointBuildOutcome built = null;
 
@@ -4890,7 +4894,7 @@ namespace Federator.Addin.Engine
                     () => built = builder.BuildForGroup(
                         document, job.Building, outcome.Report, outcome.RowAddresses, viewTeams, models,
                         testsRan, outcome.Clash == null ? null : outcome.Clash.Skipped, outcome.KeptOfMirror,
-                        testNames, outcome.MirrorNames, clashStepSound),
+                        testNames, outcome.MirrorNames, notInThePack, clashStepSound),
                     () => built == null ? "nothing" : built.Summary());
             }
             catch (Exception error)

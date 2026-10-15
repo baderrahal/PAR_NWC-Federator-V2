@@ -21,10 +21,11 @@ namespace Federator.Core.Views
         private readonly List<string> unmappedWords = new List<string>();
         private int unmappedOpen;
 
-        internal TestViewPlanOutcome(IList<ClashStatus> inScope, ICollection<string> mirrorRule)
+        internal TestViewPlanOutcome(IList<ClashStatus> inScope, ICollection<string> mirrorRule, bool packHandedIn)
         {
             InScope = new ReadOnlyCollection<ClashStatus>(new List<ClashStatus>(inScope));
             MirrorRuleHandedIn = mirrorRule != null;
+            PackHandedIn = packHandedIn;
 
             if (mirrorRule != null)
             {
@@ -171,22 +172,55 @@ namespace Federator.Core.Views
             }
         }
 
-        // ---------- F192, the Over 150mm folder under C only ----------
+        // ---------- F199, the discipline folders ----------
+
+        private readonly List<string> notInThePack = new List<string>();
+
+        /// <summary>Whether the saved tests the pack does not name were handed to the plan, so such a test can be known.</summary>
+        public bool PackHandedIn { get; private set; }
+
+        /// <summary>Each saved test the pack does not name that got a view, once, which is in Other.</summary>
+        public ReadOnlyCollection<string> NotInThePack
+        {
+            get { return new ReadOnlyCollection<string>(notInThePack); }
+        }
+
+        internal void NameNotInThePack(string testName)
+        {
+            if (!notInThePack.Contains(testName))
+            {
+                notInThePack.Add(testName);
+            }
+        }
+
+        // ---------- F192 and F199, the Over 150mm folder inside Mechanical and Electrical of C only ----------
 
         private readonly List<string> overSizeKept = new List<string>();
+        private readonly List<string> overSizeKeptInC = new List<string>();
         private readonly List<string> sizeUnknown = new List<string>();
         private int overSizeKeptClashes;
         private int overSizeKeptTestsA;
         private int overSizeKeptTestsB;
+        private int overSizeKeptClashesInC;
 
         /// <summary>
-        /// A test of priority A or B in a pair that carries the size folder with clashes over the threshold. The
-        /// earlier rule would have made an Over 150mm view of them. Bader's order of 15 Oct 2026 is that no such
-        /// view is made outside C, so they stay in the test's one view, and they are counted for his decision.
+        /// A test in a pair that carries the size folder with clashes over the threshold, where no Over 150mm folder
+        /// stands, so they stay in the test's one view and are counted. Of priority A or B, Bader's order of 15 Oct
+        /// 2026, Q182. Of C in Architecture, Structure or Other, Bader's order of round 6, Q185.
         /// </summary>
-        internal void OverSizeKeptWhole(string testName, string letter, int clashes)
+        internal void OverSizeKeptWhole(string testName, string letter, string discipline, int clashes)
         {
-            overSizeKept.Add(testName + " : priority " + letter + ", " + clashes + " clashes over the threshold stay in the test's one view");
+            string words = testName + " : priority " + letter + ", " + discipline + ", " + clashes
+                + " clashes over the threshold stay in the test's one view";
+
+            if (letter == "C")
+            {
+                overSizeKeptInC.Add(words);
+                overSizeKeptClashesInC = overSizeKeptClashesInC + clashes;
+                return;
+            }
+
+            overSizeKept.Add(words);
             overSizeKeptClashes = overSizeKeptClashes + clashes;
 
             if (letter == "A")
@@ -197,6 +231,35 @@ namespace Federator.Core.Views
             {
                 overSizeKeptTestsB++;
             }
+        }
+
+        /// <summary>The tests of C in Architecture, Structure or Other with clashes over the threshold, kept in their one view, Q185.</summary>
+        public int OverSizeKeptTestsC
+        {
+            get { return overSizeKeptInC.Count; }
+        }
+
+        /// <summary>The clashes over the threshold of those tests of C.</summary>
+        public int OverSizeKeptClashesC
+        {
+            get { return overSizeKeptClashesInC; }
+        }
+
+        /// <summary>The views planned in that letter and discipline folder, the Over 150mm views inside it among them.</summary>
+        public int ViewsIn(string letter, string discipline)
+        {
+            int count = 0;
+
+            foreach (PlannedTestView view in views)
+            {
+                if (string.Equals(view.PriorityFolder, letter, StringComparison.Ordinal)
+                    && string.Equals(view.DisciplineFolder, discipline, StringComparison.Ordinal))
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         internal void NameSizeUnknown(string testName, string clashName, string letter)
@@ -222,7 +285,7 @@ namespace Federator.Core.Views
             get { return overSizeKeptClashes; }
         }
 
-        /// <summary>The views in an Over 150mm folder, all under C.</summary>
+        /// <summary>The views in an Over 150mm folder, all inside Mechanical or Electrical of C.</summary>
         public int OverSizeViews
         {
             get
@@ -304,11 +367,20 @@ namespace Federator.Core.Views
                 + ", their " + unmappedOpen + " open clashes in no view, and nothing deleted from the NWF, the clashes, the sets or the report");
             Named(lines, unmappedWords);
 
-            lines.Add("Over 150mm folder, under C only : " + OverSizeViews + " views of tests of priority C in a pair that carries the size folder");
+            lines.Add("discipline folders, views planned in each : " + DisciplineWords());
+            lines.Add(PackHandedIn
+                ? "saved tests the pack does not name, in Other : " + NotInThePack.Count
+                : "saved tests the pack does not name : UNKNOWN, no matrix was read, so every test goes by the code of its first side");
+            Named(lines, NotInThePack);
+            lines.Add("Over 150mm folder, inside Mechanical and Electrical of C only : " + OverSizeViews
+                + " views of tests of priority C in a pair that carries the size folder");
             lines.Add("tests of priority A or B with clashes over the threshold, no Over 150mm view made, all in the test's one view : "
                 + (overSizeKeptTestsA + overSizeKeptTestsB) + " tests, " + overSizeKeptTestsA + " of A and " + overSizeKeptTestsB + " of B, "
                 + overSizeKeptClashes + " clashes, for Bader's decision");
             Named(lines, overSizeKept);
+            lines.Add("tests of priority C in Architecture, Structure or Other with clashes over the threshold, no Over 150mm view made, "
+                + "all in the test's one view, Q185 : " + OverSizeKeptTestsC + " tests, " + OverSizeKeptClashesC + " clashes");
+            Named(lines, overSizeKeptInC);
             lines.Add("clashes in a pair that carries the size folder whose size could not be read, so they stay in the test's main view : "
                 + sizeUnknown.Count);
             Named(lines, sizeUnknown.Count > 20 ? sizeUnknown.GetRange(0, 20) : sizeUnknown);
@@ -318,6 +390,31 @@ namespace Federator.Core.Views
             Named(lines, unknownWords);
 
             return lines;
+        }
+
+        /// <summary>Each letter with the views of each discipline folder that holds one, a folder holding none not named.</summary>
+        private string DisciplineWords()
+        {
+            List<string> letters = new List<string>();
+
+            foreach (string letter in ToolViewFolder.Letters)
+            {
+                List<string> held = new List<string>();
+
+                foreach (string discipline in DisciplineFolders.Names)
+                {
+                    int count = ViewsIn(letter, discipline);
+
+                    if (count > 0)
+                    {
+                        held.Add(discipline + " " + count);
+                    }
+                }
+
+                letters.Add(letter + " " + (held.Count == 0 ? "none" : string.Join(", ", held.ToArray())));
+            }
+
+            return string.Join(", ", letters.ToArray());
         }
 
         private string StatusWords()

@@ -10,7 +10,8 @@ namespace Federator.Core.Views
     /// document can say, and off the plan where it cannot, the Basis saying which.
     ///
     ///   1  no team pair folder holds a test of another pair
-    ///   2  no folder under the tool folder is anything but A, B or C, and Over 150mm only inside C
+    ///   2  no folder under the tool folder is anything but A, B or C, then a discipline folder, and Over 150mm only
+    ///      inside Mechanical and Electrical of C, F199
     ///   3  no view shows a model of a third team, the exceptions Q118 A allows named, read back
     ///   4  no clash is in two views, the plan's keys, and each view's painted items read back
     ///   5  no mirrored test has a view of this tool's, against the plan's mirror rule
@@ -176,7 +177,7 @@ namespace Federator.Core.Views
 
         private static ViewsTreeCheck NoTestOutsideItsLetterFolder(Read read)
         {
-            ViewsTreeCheck check = new ViewsTreeCheck(1, "every view of this run sits in the tool folder under the letter of its test's priority");
+            ViewsTreeCheck check = new ViewsTreeCheck(1, "every view of this run sits in the tool folder under the letter of its test's priority and its discipline");
 
             if (check.CouldNotRun(read.WhyThisRunsViewsCannotBeRead()))
             {
@@ -233,7 +234,8 @@ namespace Federator.Core.Views
 
         private static ViewsTreeCheck NoFolderButALetterUnderTheToolFolder(Read read)
         {
-            ViewsTreeCheck check = new ViewsTreeCheck(2, "no folder under the tool folder is anything but A, B or C, and Over 150mm only inside C");
+            ViewsTreeCheck check = new ViewsTreeCheck(2, "no folder under the tool folder is anything but A, B or C, then a discipline folder, "
+                + "and Over 150mm only inside Mechanical and Electrical of C");
 
             if (check.CouldNotRun(read.WhyThisRunsViewsCannotBeRead()))
             {
@@ -242,9 +244,11 @@ namespace Federator.Core.Views
 
             int looked = 0;
             List<string> letters = new List<string>(ToolViewFolder.Letters);
+            List<string> disciplines = new List<string>(DisciplineFolders.Names);
 
-            // F192, Bader's order of 15 Oct 2026. The one sub folder of the tool folder's tree is the Over 150mm
-            // folder the plan names, and it is allowed inside C and nowhere else.
+            // F192 and F199, Bader's orders of 15 Oct 2026 and of round 6. Under a letter only a discipline folder,
+            // and the one sub folder of a discipline folder is the Over 150mm folder the plan names, allowed inside
+            // Mechanical and Electrical of C and nowhere else.
             List<string> sizeFolders = new List<string>();
 
             foreach (PlannedTestView view in read.Plan.Views)
@@ -273,15 +277,20 @@ namespace Federator.Core.Views
                 bool aLetter = node.Folders.Count == 1
                     && string.Equals(node.Folders[0], ToolViewFolder.Name, StringComparison.Ordinal)
                     && letters.Contains(node.Name);
-                bool theSizeFolderInC = node.Folders.Count == 2
+                bool aDiscipline = node.Folders.Count == 2
+                    && string.Equals(node.Folders[0], ToolViewFolder.Name, StringComparison.Ordinal)
+                    && letters.Contains(node.Folders[1])
+                    && disciplines.Contains(node.Name);
+                bool theSizeFolderInC = node.Folders.Count == 3
                     && string.Equals(node.Folders[0], ToolViewFolder.Name, StringComparison.Ordinal)
                     && string.Equals(node.Folders[1], "C", StringComparison.Ordinal)
+                    && DisciplineFolders.HoldsTheSizeFolder(node.Folders[2])
                     && sizeFolders.Contains(node.Name);
 
-                if (!aLetter && !theSizeFolderInC)
+                if (!aLetter && !aDiscipline && !theSizeFolderInC)
                 {
                     check.Fail(node + " is a folder of this tool that is not A, B or C directly under " + ToolViewFolder.Name
-                        + " or the Over 150mm folder inside C");
+                        + ", a discipline folder inside one of them, or the Over 150mm folder inside Mechanical or Electrical of C");
                 }
             }
 

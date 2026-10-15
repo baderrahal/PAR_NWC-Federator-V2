@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F199 the discipline folders under A, B and C
+
+Branch fix-F199 off main 1466e1a. Bader's order of round 6, Q183, tasks 1 to 3 and 5.
+
+THE TREE: Clash Status, then A, B and C, then Architecture, Structure, Mechanical, Electrical or Other, then the tests.
+Over 150mm stands inside Mechanical and Electrical of C only. A folder is made only where a view is written into it, as
+before, since the add-in makes each folder when the first view in it is written.
+
+ONE FUNCTION, DisciplineFolders.DisciplineFolderFor(test, inThePack, map, separator), in Core. Nothing else reads a code
+into a folder, so a switch to the team that fixes a clash changes it alone. The code of the test's first side, its left
+set, by CodeOf.Set: the order's words first, then the pack's team line for a code they do not name where it names one of
+the four folders, else Other. A saved test the matrix does not name is Other, off ClashRunOutcome.SavedTestsRunToo.
+
+THE CODES, read off the pack 1104-PAR: the team lines name AR, ST, HV, PL, FP, ME, DR, FF, EL and EV. AR Architecture,
+ST Structure, ME PL FP FF Mechanical by the order's words, HV and DR Mechanical and EV Electrical by the team line, Q184.
+The first sides of its 1830 tests carry AR 120, ST 111, ME 234, PL 195, FF 201, DR 220, EL 692 and no code 57, all
+BLD-Security Devices, which go to Other. Every test name is its left set, -vs-, its right set. A test reads the pack and
+proves the 1830 go 120, 111, 850, 692 and 57.
+
+C OUTSIDE MECHANICAL AND ELECTRICAL, Q185: a test of C in Architecture, Structure or Other keeps its clashes over the
+threshold in its one view and the VIEWS block counts and names them, apart from the A and B count of Q182.
+
+ALSO: tree check 2 allows a letter, a discipline under it and Over 150mm under C/Mechanical and C/Electrical only. The
+plan sorts by the letter folder, so a test with no priority is read with those of C and no folder line comes twice. The
+VIEWS TREE lines carry the discipline level and the views and open clashes of every folder. The VIEWS block says the
+views of each discipline folder and the saved tests not in the pack. The NWF page's rules line names the tree. The add-in
+hands the plan the saved tests the matrix does not name, null with no matrix picked, and nothing else changed in it.
+The teams file's comment on the size folder in the pack and in exchange.
+
+Core tests 3222 before and 3258 after, 0 failed. The solution 0 warnings and 0 errors. The NWF page runs are F200.
 ## 2026-10-15 F198 the tool folder is named Clash Status
 
 Branch fix-F198 off main 36e0198. Bader's order of round 6, the fast change, Q183, first.

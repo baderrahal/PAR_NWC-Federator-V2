@@ -251,36 +251,67 @@ namespace Federator.Core.Views
         {
             List<string> lines = new List<string>();
             string priority = null;
+            string discipline = null;
+            IList<PlannedTestView> views = facts.Plan.Views;
 
-            // F186 and F192. The tool's one top folder, then A, B and C, then the tests directly, and inside C the Over 150mm folder. No team pair level.
-            if (facts.Plan.Views.Count > 0)
+            // F186, F192 and F199. The tool's one top folder, then A, B and C, then the discipline folders, then the
+            // tests, and inside Mechanical and Electrical of C the Over 150mm folder. No team pair level. Each folder
+            // line says the views and the open clashes it holds at any depth.
+            if (views.Count > 0)
             {
-                lines.Add(ToolViewFolder.Name);
+                lines.Add(ToolViewFolder.Name + "  " + Counts(views, null, null, null));
             }
 
             string sizeFolder = null;
 
-            foreach (PlannedTestView view in facts.Plan.Views)
+            foreach (PlannedTestView view in views)
             {
                 if (!string.Equals(view.PriorityFolder, priority, StringComparison.Ordinal))
                 {
-                    lines.Add("  " + view.PriorityFolder);
+                    lines.Add("  " + view.PriorityFolder + "  " + Counts(views, view.PriorityFolder, null, null));
                     priority = view.PriorityFolder;
+                    discipline = null;
                     sizeFolder = null;
                 }
 
-                // F192. The Over 150mm folder is inside C only, and its views are indented under it.
+                if (!string.Equals(view.DisciplineFolder, discipline, StringComparison.Ordinal))
+                {
+                    lines.Add("    " + view.DisciplineFolder + "  " + Counts(views, view.PriorityFolder, view.DisciplineFolder, null));
+                    discipline = view.DisciplineFolder;
+                    sizeFolder = null;
+                }
+
                 if (view.SizeFolder != null && !string.Equals(view.SizeFolder, sizeFolder, StringComparison.Ordinal))
                 {
-                    lines.Add("    " + view.SizeFolder);
+                    lines.Add("      " + view.SizeFolder + "  " + Counts(views, view.PriorityFolder, view.DisciplineFolder, view.SizeFolder));
                     sizeFolder = view.SizeFolder;
                 }
 
-                lines.Add((view.SizeFolder == null ? "    " : "      ") + view.Name + "  " + view.Clashes.Count
+                lines.Add((view.SizeFolder == null ? "      " : "        ") + view.Name + "  " + view.Clashes.Count
                     + " open clashes, " + ShowsAndHides(facts, models, view) + ", " + StateOf(facts, view));
             }
 
             return lines;
+        }
+
+        /// <summary>The views and their open clashes in that letter, discipline and size folder, a null matching any.</summary>
+        private static string Counts(IList<PlannedTestView> views, string letter, string discipline, string sizeFolder)
+        {
+            int count = 0;
+            int clashes = 0;
+
+            foreach (PlannedTestView view in views)
+            {
+                if ((letter == null || string.Equals(view.PriorityFolder, letter, StringComparison.Ordinal))
+                    && (discipline == null || string.Equals(view.DisciplineFolder, discipline, StringComparison.Ordinal))
+                    && (sizeFolder == null || string.Equals(view.SizeFolder, sizeFolder, StringComparison.Ordinal)))
+                {
+                    count++;
+                    clashes += view.Clashes.Count;
+                }
+            }
+
+            return count + (count == 1 ? " view, " : " views, ") + clashes + (clashes == 1 ? " open clash" : " open clashes");
         }
 
         /// <summary>

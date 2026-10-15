@@ -128,34 +128,58 @@ make all of this unnecessary, is UNKNOWN. It has never been read off the install
 
 Since F114 every federation this tool writes carries one saved view per clash test of its
 open clashes, the New and Active ones, in the Saved Viewpoints panel, in folders by the
-test's priority and the two teams of its sides. That is the picture each team reads of its
-own clashes. Clash Detective is where one clash is looked at close up, and the pictures in
-the report are how one clash is shown there.
+test's priority and then its discipline. Clash Detective is where one clash is looked at
+close up, and the pictures in the report are how one clash is shown there.
 
-The tree, outermost first, since F186 and F192:
+The tree, outermost first, since F186, F192, F198 and F199:
 
-    Clash Status                     the tool's one folder, deleted and made again each run
-      A, B or C                      the priority the clash matrix gives the test, none being C
-        BLD-ME-Ducts-vs-BLD-AR-Walls   the test, named exactly as Clash Detective names it
+    Clash Status                         the tool's one folder, deleted and made again each run
+      A, B or C                          the priority the clash matrix gives the test, none being C
+        Architecture, Structure,         the discipline of the test's first side, made only
+        Mechanical, Electrical or Other  where a test is in it
+          BLD-ME-Ducts-vs-BLD-AR-Walls   the test, named exactly as Clash Detective names it
       C
-        Over 150mm                   inside C only, for a pair carrying it, Mechanical or Electrical here
-          BLD-ME-Ducts-vs-BLD-AR-Walls the same test's clashes whose larger service is over 150 mm
+        Mechanical or Electrical
+          Over 150mm                     inside Mechanical and Electrical of C only
+            BLD-ME-Ducts-vs-BLD-AR-Walls the same test's clashes whose larger service is over 150 mm
 
 There is no team pair level. Everything outside the tool folder is deleted on a run that makes
-viewpoints, except a folder named Comments, which is kept with all inside it and made empty
-where there is none, F191.
+viewpoints, except a folder named Comments, whatever its case, which is kept with all inside it
+and made empty where there is none, F191. The folder was named NWC Federator (auto) until F198,
+and one of that name an earlier run left is deleted as outside the tool folder.
+
+The discipline of a test, F199, is decided in one place, `DisciplineFolders.DisciplineFolderFor`,
+off the code of its first side. In the pack every test is named its left set, -vs-, its right
+set, so the first side is its left set:
+
+    AR, Architecture                     Architecture
+    ST, Structure                        Structure
+    ME, MEP, Mechanical, PL, FP, FF      Mechanical
+    EL, Electrical                       Electrical
+    HV, DR                               Mechanical, by the pack's team line, Q184
+    EV                                   Electrical, by the pack's team line, Q184
+    anything else, no code at all        Other, BLD-Security Devices among them, Q184
+    a saved test the pack does not name  Other
+
+The 1830 tests of the pack 1104-PAR go 120 to Architecture, 111 to Structure, 850 to
+Mechanical, 692 to Electrical and 57 to Other, read off the pack by a test.
 
 Where a clash goes, by example:
 
 - a duct of 600 by 150 against a wall, test BLD-ME-Ducts-vs-BLD-AR-Walls, priority C: in
-  `C / Over 150mm / BLD-ME-Ducts-vs-BLD-AR-Walls`, because the larger side of the duct is 600
-  and the pair carries the size folder
-- a pipe of 100 mm against the same wall, same test: in `C / BLD-ME-Ducts-vs-BLD-AR-Walls`,
-  with every clash of the test that is not over 150 mm
-- the same duct in a test of priority A or B: in the test's one view in `A` or `B`. There is
-  no Over 150mm folder there, and the log counts these clashes for Bader's decision
-- a fitting whose size could not be read: in the test's main view in C, never under Over
-  150mm, and named in the log's VIEWS block
+  `C / Mechanical / Over 150mm / BLD-ME-Ducts-vs-BLD-AR-Walls`, because the larger side of the
+  duct is 600 and the pair carries the size folder
+- a pipe of 100 mm against the same wall, same test: in
+  `C / Mechanical / BLD-ME-Ducts-vs-BLD-AR-Walls`, with every clash of the test that is not over
+  150 mm
+- the same duct in a test of priority A or B: in the test's one view in `A / Mechanical` or
+  `B / Mechanical`. There is no Over 150mm folder there, and the log counts these clashes for
+  Bader's decision, Q182
+- the same duct in a test of C whose first side is Structure, BLD-ST-Columns-vs-BLD-ME-Ducts:
+  in its one view in `C / Structure`. There is no Over 150mm folder in Architecture, Structure or
+  Other, so no clash is dropped and the log counts them, Q185
+- a fitting whose size could not be read: in the test's main view, never under Over 150mm, and
+  named in the log's VIEWS block
 - a test the priority file says nothing about: under `C`
 - a clash Reviewed, Approved or Resolved: in no view, and counted in the VIEWS block
 - a mirrored test, the same two sets the other way round: no view of its own, its clashes
@@ -167,11 +191,11 @@ the second green, and is framed on all its clashes at once, or on Clash Detectiv
 camera for a view of one clash.
 
 Every view and folder the tool makes carries one comment: a sentence saying it is the
-tool's and replaced on the next run, and a line no person would type. The next run makes
-the views fresh and removes its own earlier ones. A view a person renamed, moved, turned,
-commented on or drew on is kept from then on and named in the log, and so is anything the
-tool did not make, wherever it sits. The per clash viewpoints earlier runs made before
-F114 are removed on the first run after it, once the new tree is written and read back.
+tool's and replaced on the next run, and a line no person would type. The top folder carries
+NWCF-AUTO run=<id>. Each run finds the top folder of the last run by its name and that marker
+and deletes it with everything in it, a view a person moved into it included, then builds the
+tree again, F186. Once the new tree is built, everything outside it is deleted except the
+Comments folder, F191. Put your own viewpoints in Comments.
 
 The log carries a VIEWS block with the plan, a VIEWS BUILT block with one line per view
 and the totals, a VIEWS INVENTORY block saying what was kept and why and what went, and a
@@ -186,12 +210,17 @@ no view is made and the log says so in every group.
 
 Pipes, ducts, cable trays and their fittings over 150 mm are in the viewpoints. Smaller
 ones are not. The large ones of Mechanical and Electrical sit in a sub folder of their own,
-Over 150mm, and since F192 that folder exists inside C only:
+Over 150mm, and since F192 and F199 that folder exists inside Mechanical and Electrical of C
+only:
 
     Clash Status
       C
-        Over 150mm
-          BLD-ME-Ducts-vs-BLD-AR-Walls   the test's clashes over 150 mm
+        Mechanical
+          Over 150mm
+            BLD-ME-Ducts-vs-BLD-AR-Walls   the test's clashes over 150 mm
+        Electrical
+          Over 150mm
+            BLD-EL-Cable Trays-vs-BLD-AR-Walls
 
 The sub folder is named from the threshold, so the folder and the rule that fills it can
 never disagree. Which disciplines get a sub group is a setting, because ME and EL are

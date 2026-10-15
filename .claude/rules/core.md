@@ -1701,6 +1701,20 @@ and 6 does not read as broken.
   tool folder expected and not found once refuses the whole delete. The tests and results are counted before, after the
   first item and after all, and a change stops the delete and fails the step. One line says the number of items and the
   top level names, 50 at most. This replaced the one time clean up of the root folders A, B and C of F186.
+- THE DISCIPLINE FOLDERS, F199, Bader's order of round 6, Q183, `DisciplineFolders`. Under each letter the test's
+  discipline folder, Architecture, Structure, Mechanical, Electrical or Other, then its views. It is decided in ONE
+  place, `DisciplineFolders.DisciplineFolderFor(test, inThePack, map, separator)`, and nothing else reads a code into
+  a folder, so a later switch to the team that fixes a clash changes that function alone. The default rule is the code
+  of the test's first side, its left set, read by `CodeOf.Set`: the order's words first, AR and Architecture,
+  ST and Structure, ME, MEP, Mechanical, PL, FP and FF, EL and Electrical, then for a code they do not name the team the
+  pack's team line gives it where that is one of the four folders, HV and DR Mechanical and EV Electrical, Q184, else
+  Other. A saved test the picked matrix does not name, `ClashRunOutcome.SavedTestsRunToo`, is Other. With no matrix
+  picked the plan is handed null and says that list is UNKNOWN. A folder is made only where a view is written into it.
+  Over 150mm stands inside Mechanical and Electrical of C only, `HoldsTheSizeFolder`. A test of C in Architecture,
+  Structure or Other keeps its clashes over the threshold in its one view and they are counted and named, Q185, as
+  A and B are for Q182. Tree check 2 allows a letter under the top folder, a discipline under a letter and Over 150mm
+  under C/Mechanical and C/Electrical, nothing else. The plan sorts by the letter folder, then the discipline in
+  `DisciplineFolders.Names` order, so a test with no priority is read with those of C.
 - THE TIME OF EACH VIEW, F194, `ViewTimings` and `ViewTiming`. Every view written is timed from the parts before and after
   it, `ViewsSeconds.SecondsIn`, with the read back split into its hidden items, the walk of the material overrides and the
   colour of the clashing items, and the group says once in VIEWS TIMING lines the count, the total, the average, the first

@@ -152,6 +152,7 @@ namespace Federator.Addin.Engine
             IDictionary<string, string> keptOfMirror,
             ICollection<string> testNames,
             ICollection<string> mirrors,
+            ICollection<string> notInThePack,
             bool clashStepSound)
         {
             ViewpointBuildOutcome outcome = new ViewpointBuildOutcome();
@@ -214,7 +215,7 @@ namespace Federator.Addin.Engine
                     // F114-K38. A test whose harvest threw after only closed rows is not whole,
                     // and nor is the kept test of a mirror it failed on.
                     testsRead.ClashStepFailed(testsSkipped, keptOfMirror);
-                    Plan = TestViewPlan.For(clashes, teams, mirrors, views);
+                    Plan = TestViewPlan.For(clashes, teams, mirrors, notInThePack, views);
                 }
 
                 foreach (KeyValuePair<string, string> notWhole in testsRead.NotWhole())

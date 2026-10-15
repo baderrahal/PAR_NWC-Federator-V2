@@ -28,7 +28,7 @@ namespace Federator.Core.Tests
         private static readonly Point3 Camera = new Point3(1, 2, 3);
         private static readonly string[] Codes = { "AR", "EL", "ME", "ST" };
         private const string Top = "Clash Status";
-        private static readonly string[] Here = { Top, "A" };
+        private static readonly string[] Here = { Top, "A", "Mechanical" };
 
         private static TestViewPlanOutcome PlanOf(params string[] openTests)
         {
@@ -41,7 +41,7 @@ namespace Federator.Core.Tests
             }
 
             ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, Codes, Settings);
-            return TestViewPlan.For(clashes, teams, null, Settings);
+            return TestViewPlan.For(clashes, teams, null, null, Settings);
         }
 
         private static string[] Mark(string stamp, string[] folders, string name, Point3 camera)
