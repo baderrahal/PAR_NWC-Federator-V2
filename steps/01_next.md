@@ -1628,3 +1628,8 @@ The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TW
 Bader's order, Q165. A mirror check: a test A against B, for example a wall of AR against a wall of STR, and its
 mirror B against A must give the same clash count, and more checks. MatrixCorrections.ReadPicked and
 tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Nothing of it is built in F165.
+
+## F198 The tool folder is named Clash Status
+
+- Bader's order of round 6, the fast change, Q183. ToolViewFolder.Name is Clash Status, the NWF page's rules line reads it off the one constant, an empty Comments folder that stands is kept and no second is made, the folder of the old name an earlier run made is deleted as outside the tool folder by F191's rule.
+- DONE 2026-10-15. Core tests 3220 before and 3222 after. Proved on Navisworks with F199, steps\03_bader_next.md.

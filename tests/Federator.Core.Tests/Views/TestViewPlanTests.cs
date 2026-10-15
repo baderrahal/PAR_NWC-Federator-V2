@@ -75,7 +75,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views.Count, Is.EqualTo(1));
             Assert.That(NamesOf(plan.Views[0]), Is.EqualTo(new[] { "Clash1", "Clash2" }));
             Assert.That(plan.Views[0].Name, Is.EqualTo(T));
-            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "NWC Federator (auto)", "A" }));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "Clash Status", "A" }));
             Assert.That(plan.LeftOutAt(ClashStatus.Reviewed), Is.EqualTo(1));
             Assert.That(plan.LeftOutAt(ClashStatus.Approved), Is.EqualTo(1));
             Assert.That(plan.LeftOutAt(ClashStatus.Resolved), Is.EqualTo(1));
@@ -101,7 +101,7 @@ namespace Federator.Core.Tests
 
         // ---------- F186, Bader's answer 1 of Q174, the one tool folder, A B C, the tests directly ----------
 
-        private const string Top = "NWC Federator (auto)";
+        private const string Top = "Clash Status";
 
         /// <summary>No team pair level and, in A, no size folder: every open clash of a test is in its one view, whatever its size.</summary>
         [Test]
@@ -299,7 +299,7 @@ namespace Federator.Core.Tests
             TestViewPlanOutcome plan = TestViewPlan.For(
                 new[] { Clash("T", "Clash1", "BLD-HV-Ducts", "BLD-PL-Pipes") }, teams, null, new ViewpointSettings());
 
-            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "NWC Federator (auto)", "A" }));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "Clash Status", "A" }));
         }
 
         /// <summary>Point 12: Mechanical vs Structure is written Structure vs Mechanical, whichever side the test puts first.</summary>
@@ -339,12 +339,12 @@ namespace Federator.Core.Tests
 
             Assert.That(order, Is.EqualTo(new[]
             {
-                "NWC Federator (auto)/A/Wall",
-                "NWC Federator (auto)/A/Beam",
-                "NWC Federator (auto)/A/Duct",
-                "NWC Federator (auto)/B/Alpha",
-                "NWC Federator (auto)/B/Zed",
-                "NWC Federator (auto)/C/Loose"
+                "Clash Status/A/Wall",
+                "Clash Status/A/Beam",
+                "Clash Status/A/Duct",
+                "Clash Status/B/Alpha",
+                "Clash Status/B/Zed",
+                "Clash Status/C/Loose"
             }));
         }
 
@@ -782,7 +782,7 @@ namespace Federator.Core.Tests
                 new ViewpointSettings());
 
             Assert.That(plan.Views.Count, Is.EqualTo(1));
-            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "NWC Federator (auto)", "A" }));
+            Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { "Clash Status", "A" }));
         }
 
         // ---------- the counts and the block ----------

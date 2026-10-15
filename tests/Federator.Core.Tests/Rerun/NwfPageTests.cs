@@ -159,15 +159,15 @@ namespace Federator.Core.Tests
         {
             string text = RefreshConfirm.Text(
                 "C04.nwf", @"C:\n\Backup", OneChanged(), "Refresh, Run tests, Pictures, Viewpoints, Reports", 1830, 204, 37, 7904,
-                "NWC Federator (auto)");
+                "Clash Status");
 
             Assert.That(text, Does.Contain("This run refreshes C04.nwf."));
             Assert.That(text, Does.Contain(@"A copy of the NWF is made first in C:\n\Backup."));
             Assert.That(text, Does.Contain(@"    changed  C:\p\ST.nwc"));
             Assert.That(text, Does.Contain("the 1830 of the built in matrix"));
-            Assert.That(text, Does.Contain("the folder NWC Federator (auto) with 204 viewpoints is deleted and made again"));
+            Assert.That(text, Does.Contain("the folder Clash Status with 204 viewpoints is deleted and made again"));
             Assert.That(text, Does.Contain("A viewpoint moved by hand into that folder is deleted with it."));
-            Assert.That(text, Does.Contain("ALL viewpoints and folders outside the tool folder NWC Federator (auto) and the folder Comments will be deleted"));
+            Assert.That(text, Does.Contain("ALL viewpoints and folders outside the tool folder Clash Status and the folder Comments will be deleted"));
             Assert.That(text, Does.Contain("The last run deleted 37 items there"));
             Assert.That(text, Does.Contain("7904 old jpg files"));
             Assert.That(text, Does.EndWith("Nothing is changed before OK. Cancel is the default."));
@@ -176,7 +176,7 @@ namespace Federator.Core.Tests
         [Test]
         public void WhatIsNotKnownIsSaidUnknownAndNeverInvented()
         {
-            string text = RefreshConfirm.Text("C04.nwf", null, null, "Refresh", 0, -1, -1, -1, "NWC Federator (auto)");
+            string text = RefreshConfirm.Text("C04.nwf", null, null, "Refresh", 0, -1, -1, -1, "Clash Status");
 
             Assert.That(text, Does.Contain("UNKNOWN, no Log folder was found"));
             Assert.That(text, Does.Contain("UNKNOWN. No earlier run of this NWF left a list"));

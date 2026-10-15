@@ -2,6 +2,20 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F198 the tool folder is named Clash Status
+
+Branch fix-F198 off main 36e0198. Bader's order of round 6, the fast change, Q183, first.
+
+ToolViewFolder.Name is Clash Status where it was NWC Federator (auto). The NWF page's rules line reads the name off
+ToolViewFolder.Name and no longer types it. Nothing else names it: the add-in finds, marks and deletes the folder through
+that one constant. The marker NWCF-AUTO run=<id>, the find by name and marker, and the delete and rebuild are unchanged.
+
+The folder an earlier run made under the old name carries this tool's marker but not this name, so the find by name
+does not take it. It is outside this run's tool folder, so the delete of F191 takes it with everything in it, after the new
+Clash Status folder is built. A test proves it. The empty Comments folder: one that stands, empty or not, is kept and no
+second is made, and one is made empty only where none stands. A test proves the empty one that stands is kept.
+
+Core tests 3220 before and 3222 after, 0 failed. The add-in is not changed. Proved on Navisworks with F199, steps\03_bader_next.md.
 ## 2026-10-15 F197 the report of round 5 and the counts of Q182
 
 Branch fix-F197 off main e22516c. Bader's order of 15 Oct, task 7.

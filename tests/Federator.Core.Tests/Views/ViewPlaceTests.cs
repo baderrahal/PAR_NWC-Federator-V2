@@ -17,7 +17,7 @@ namespace Federator.Core.Tests
     {
         private const string Name = "BLD-ME-Ducts-vs-BLD-ST-Columns";
 
-        private static readonly string[] Folders = { "NWC Federator (auto)", "A" };
+        private static readonly string[] Folders = { "Clash Status", "A" };
         private static readonly ViewpointSettings Settings = new ViewpointSettings();
         private static readonly Point3 Camera = new Point3(1, 2, 3);
 
@@ -26,8 +26,8 @@ namespace Federator.Core.Tests
         {
             string place = ViewPlace.Of(Folders, Name);
 
-            Assert.That(place, Is.EqualTo("NWC Federator (auto)/A/" + Name));
-            Assert.That(ViewPlace.FolderPath(Folders), Is.EqualTo("NWC Federator (auto)/A"));
+            Assert.That(place, Is.EqualTo("Clash Status/A/" + Name));
+            Assert.That(ViewPlace.FolderPath(Folders), Is.EqualTo("Clash Status/A"));
 
             ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "ME", "ST" }, Settings);
             ViewClash large = new ViewClash(Name, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,
@@ -72,7 +72,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheParentKeyIsTheKeyOfTheFolderItSitsIn()
         {
-            Assert.That(ViewPlace.ParentKey(Folders), Is.EqualTo(ViewPlace.Key(new[] { "NWC Federator (auto)" }, "A", true)));
+            Assert.That(ViewPlace.ParentKey(Folders), Is.EqualTo(ViewPlace.Key(new[] { "Clash Status" }, "A", true)));
             Assert.That(ViewPlace.ParentKey(new string[0]), Is.EqualTo(string.Empty));
         }
     }
