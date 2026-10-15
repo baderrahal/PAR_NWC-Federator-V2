@@ -743,22 +743,21 @@ well as to pass.
   one property read off each item past the quick ones, in its own try, for the mirror merge
   key. Before it the source file and the discipline were read last and were lost to a throw
   three properties earlier, on all 426 items, one throw costing three columns
-- Setting the models is still done, BEFORE the clash step, and it is kept because it fixes
-  what the person sees in Navisworks. Measured on 2026-09-01 across all 4027 types:
-  Document.Units is read only, Model.Units is read only, and the only public managed member
-  that sets units at all is
-  DocumentModels.SetModelUnitsAndTransform(Model, Units, Transform3D, bool). So each MODEL
-  can be set and the DOCUMENT cannot. Whether Document.Units follows is UNKNOWN and no
-  longer matters, because it no longer decides the report. What Document.Units actually
-  reports is UNKNOWN too: setting a model writes a per file override, the same one the
-  Units and Transform dialog shows, while what the scene is measured and displayed in is
-  an application option, Options, Interface, Display Units, which Autodesk documents as
-  what tolerances for clash detection are set in. Whether Document.Units reads that option
-  is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
-  the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
-  line says the report is always in metres. DocumentUnits reads and sets and nothing more:
-  its three UNITS lines are Core's `UnitsLines`, and the read of Document.Units after the
-  models were set is a failure line where it throws and hands null on, FR-062
+- NO MODEL'S UNITS OR TRANSFORM IS EVER SET, F201, the alignment of 04 PK. Until F201 every
+  model was set to Meters before the clash step through
+  DocumentModels.SetModelUnitsAndTransform(model, Meters, model.Transform, reflected), the one
+  public member that sets units, measured on 2026-09-01. MEASURED on 15 Oct 2026 on a copy of
+  the ten NWCs of 1A04PK: appended alone, as the Append command does, every model is in Feet
+  and their boxes lie about one building near E 658350 N 2745900. Set to Meters with its own
+  transform handed back, each model became 3.28 times larger about its own origin and the
+  centres moved apart by up to 667 m, so the NWD's models did not line up and the clash ran on
+  that geometry. The units step, DocumentUnits, Core's UnitsLines, the Model units box on the
+  Outputs step and the options SetDocumentUnits and UnitsName are deleted. The tolerance is put
+  into the units Document.Units reports, and the report into metres by ReportUnits, as before.
+  The UNITS step now reads each model, `ModelBoxReader`, once the files are in, and the NWD
+  step reads them again before the NWD is written, one PLACE line a file from Core's
+  `PlacementCheck`, held within PlacementToleranceMillimetres, 1 mm, or named. A Core test reads
+  this folder and fails on SetModelUnitsAndTransform or OverridePermanentTransform
 - DocumentGuard reads IsClear, the file name and the model count, and hands each read that
   threw on with its reason to Core's `DiscardWarning`, FR-169, which words the warning
 - A tick box has to earn being a decision. How many there are and how many sit up front is

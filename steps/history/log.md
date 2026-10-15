@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F201 the models of 04 PK did not line up, the units step moved them
+
+Branch fix-F201 off main 177a0a5. Bader's order of 15 Oct: an NWD the tool made for 04 PK did not line up, where the same
+NWCs appended by hand did.
+
+READ: each NWC is appended by Document.TryAppendFile, the Append command's call, with no option, in name order. Then the
+UNITS step set every model to Meters by DocumentModels.SetModelUnitsAndTransform(model, Meters, model.Transform,
+reflected), the document reading Feet. Nothing else touches a model's units, transform, origin or place.
+
+MEASURED on a copy of the ten NWCs of 1A04PK under C:\NWC-PC-Test\work\f201, byte for byte NM fed's, by a probe outside
+the repo: appended alone, every model in Feet, its box 5 to 175 m across and all the boxes about one building near
+E 658350 N 2745900. Appended and then set to Meters as the tool does, every model 3.28 times larger about its own origin and
+moved 6.3 m to 666.9 m. The tool's own NWD and NWF of the same files, built by the installed 770e1c9a, read the same to the
+millimetre. So the cause is the units step, all ten files, every discipline. Not the shared coordinates, the NWC
+translations are the same in both, and not the method or the order of the append, the same call in the same order.
+
+FIXED: no model's units or transform is set. DocumentUnits, Core's UnitsLines, the Model units box of the Outputs step,
+ReportOptions SetDocumentUnits, UnitsName and DefaultUnits, and UnitTable.Offered are deleted with their tests. The tolerance
+is put into the units the document reports and the report into metres by ReportUnits, unchanged. The UNITS step reads each
+model, ModelBoxReader, and before the NWD is written the models are read again, one PLACE line a file from Core's
+PlacementCheck, held within PlacementToleranceMillimetres, 1 mm, or MOVED, and a model whose units are not the document's is
+named with the Rebuild an NWF built before F201 needs. The shared coordinates notice is unchanged.
+
+Core tests 3258 before and 3259 after, 7 deleted with their code and 8 added. The solution 0 warnings and 0 errors. The
+rebuild of 04 PK with the fix and its table are F202.
 ## 2026-10-15 F200 the two NWF page runs that prove F198 and F199
 
 Branch fix-F200 off main 770e1c9. Bader's order of round 6, tasks 4 and 6.

@@ -43,24 +43,6 @@ namespace Federator.Core.Tests
             }
         }
 
-        /// <summary>
-        /// The window offers what this returns, so every name it shows is a name the
-        /// engine can act on, and the default the options carry is the first one shown.
-        /// </summary>
-        [Test]
-        public void EveryOfferedUnitIsInTheTableAndTheDefaultIsFirst()
-        {
-            IList<UnitRow> offered = UnitTable.Offered();
-
-            Assert.That(offered.Count, Is.GreaterThan(0));
-            Assert.That(offered[0].EnumName, Is.EqualTo(ReportOptions.DefaultUnits));
-
-            foreach (UnitRow row in offered)
-            {
-                Assert.That(UnitTable.All, Does.Contain(row), row.EnumName);
-            }
-        }
-
         [Test]
         public void LookupsAreCaseBlindAndTrimmed()
         {

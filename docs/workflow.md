@@ -27,8 +27,24 @@ unless the priority map names it, F168, Q168 A. With no pack built in, every sav
 
 The NWF is there and points at a different file list than the scan. It is cleared and
 rebuilt from the scan folder, the sets and the tests saved inside it are kept, and from
-there it is a Weekly run: units, the clash step, the reports, the NWD. Bader decided this
-on 2026-09-07, Q22. The plan is `Federator.Core.Rerun.NwfRebuildPlan`.
+there it is a Weekly run: the models read where they sit, the clash step, the reports, the
+NWD. Bader decided this on 2026-09-07, Q22. The plan is `Federator.Core.Rerun.NwfRebuildPlan`.
+
+## Where the models sit, F201
+
+Each NWC is appended with `Document.TryAppendFile`, the call the Append command makes, and
+nothing is done to it after: no model's units are set and no model is moved. Until F201 the
+tool set every model to Meters before the clash step, which made each model 3.28 times
+larger about its own origin and moved the models apart, up to 667 m on 1A04PK, so the NWD
+did not line up the way a manual Append does. The report is still in metres, converted when
+it is written, and the clash tolerance is put into the units the document reports.
+
+The log says it per file. Once the files are in, the UNITS step reads each model's units and
+the centre of its box. Before the NWD is written they are read again, and one PLACE line a
+file says held, moved within 1 mm or less, or MOVED with the distance. A model whose units
+are not the document's is named: an NWF built before F201 holds its models set to Meters,
+and a Rebuild on the NWC page puts it right. The notice about models off the shared
+coordinates is unchanged.
 
 ## The labels
 
