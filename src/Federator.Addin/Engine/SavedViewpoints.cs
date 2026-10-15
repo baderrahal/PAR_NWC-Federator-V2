@@ -735,24 +735,40 @@ namespace Federator.Addin.Engine
         {
             Dictionary<ItemPath, ViewpointColour> coloured = new Dictionary<ItemPath, ViewpointColour>();
             System.Diagnostics.Stopwatch walkWatch = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Stopwatch part = System.Diagnostics.Stopwatch.StartNew();
             AppearanceOverrides overrides = found.GetAppearanceOverrides();
+            read.GetOverridesSeconds = part.Elapsed.TotalSeconds;
 
             if (overrides != null && overrides.MaterialOverrides != null)
             {
+                part.Restart();
                 read.MaterialOverrideCount = overrides.MaterialOverrides.Count;
+                read.CountOverridesSeconds = part.Elapsed.TotalSeconds;
+
+                long colourTicks = 0;
+                long itemTicks = 0;
+                long pathTicks = 0;
+                long start = System.Diagnostics.Stopwatch.GetTimestamp();
 
                 foreach (MaterialOverride material in overrides.MaterialOverrides)
                 {
+                    long before = System.Diagnostics.Stopwatch.GetTimestamp();
                     Color colour = material.Color;
+                    colourTicks += System.Diagnostics.Stopwatch.GetTimestamp() - before;
 
                     if (colour == null)
                     {
                         continue;
                     }
 
+                    before = System.Diagnostics.Stopwatch.GetTimestamp();
+
                     using (ModelItem named = material.Item)
                     {
+                        itemTicks += System.Diagnostics.Stopwatch.GetTimestamp() - before;
+                        before = System.Diagnostics.Stopwatch.GetTimestamp();
                         int[] path = PathOf(document, named);
+                        pathTicks += System.Diagnostics.Stopwatch.GetTimestamp() - before;
 
                         if (path == null)
                         {
@@ -760,9 +776,16 @@ namespace Federator.Addin.Engine
                             continue;
                         }
 
+                        read.ColouredOverrides++;
                         coloured[new ItemPath(path)] = new ViewpointColour(Clamp(colour.R), Clamp(colour.G), Clamp(colour.B));
                     }
                 }
+
+                double perTick = 1.0 / System.Diagnostics.Stopwatch.Frequency;
+                read.EnumerateSeconds = (System.Diagnostics.Stopwatch.GetTimestamp() - start) * perTick;
+                read.ColourOfOverrideSeconds = colourTicks * perTick;
+                read.ItemOfOverrideSeconds = itemTicks * perTick;
+                read.PathOfOverrideSeconds = pathTicks * perTick;
             }
 
             read.OverrideSeconds = walkWatch.Elapsed.TotalSeconds;
@@ -1840,6 +1863,27 @@ namespace Federator.Addin.Engine
 
         /// <summary>F194. Seconds walking the material overrides one by one.</summary>
         public double OverrideSeconds { get; set; }
+
+        /// <summary>F196. Seconds in GetAppearanceOverrides.</summary>
+        public double GetOverridesSeconds { get; set; }
+
+        /// <summary>F196. Seconds reading the count of the material overrides.</summary>
+        public double CountOverridesSeconds { get; set; }
+
+        /// <summary>F196. Seconds of the whole loop over the material overrides.</summary>
+        public double EnumerateSeconds { get; set; }
+
+        /// <summary>F196. Of the loop, the seconds reading the colour of each override.</summary>
+        public double ColourOfOverrideSeconds { get; set; }
+
+        /// <summary>F196. Of the loop, the seconds reading the item of each coloured override.</summary>
+        public double ItemOfOverrideSeconds { get; set; }
+
+        /// <summary>F196. Of the loop, the seconds making the index path of each coloured item.</summary>
+        public double PathOfOverrideSeconds { get; set; }
+
+        /// <summary>F196. How many overrides carry a colour, the painted items.</summary>
+        public int ColouredOverrides { get; set; }
 
         /// <summary>F194. Seconds asking the colour each clashing item will show.</summary>
         public double ColourSeconds { get; set; }

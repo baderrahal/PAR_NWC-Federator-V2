@@ -241,13 +241,13 @@ namespace Federator.Addin.Engine
                 using (seconds.In(ViewsPart.Removing))
                 {
                     Remove(document, inventory);
+                }
 
-                    // F191, Bader's order of 15 Oct 2026. Everything at the root outside the tool folder and the
-                    // Comments folder is deleted, after the tool folder is built.
-                    using (seconds.In(ViewsPart.DeletingOutside))
-                    {
-                        DeleteOutsideTheToolFolder(document, outcome);
-                    }
+                // F191, Bader's order of 15 Oct 2026. Everything at the root outside the tool folder and the
+                // Comments folder is deleted, after the tool folder is built. Its own part, not nested in Removing.
+                using (seconds.In(ViewsPart.DeletingOutside))
+                {
+                    DeleteOutsideTheToolFolder(document, outcome);
                 }
             }
             finally
@@ -888,6 +888,7 @@ namespace Federator.Addin.Engine
                         + seconds.SecondsIn(ViewsPart.Framing);
                     double marking0 = seconds.SecondsIn(ViewsPart.Marking) + seconds.SecondsIn(ViewsPart.MakingTheFolders);
                     double readBack0 = seconds.SecondsIn(ViewsPart.ReadingBack);
+                    double collect0 = seconds.SecondsIn(ViewsPart.Collecting);
                     lastReadBack = null;
                     int treeNow = treeItemsAtStart + written.Count;
 
@@ -923,8 +924,13 @@ namespace Federator.Addin.Engine
                             + seconds.SecondsIn(ViewsPart.Framing) - hiding0,
                         MarkingSeconds = seconds.SecondsIn(ViewsPart.Marking) + seconds.SecondsIn(ViewsPart.MakingTheFolders) - marking0,
                         ReadBackSeconds = seconds.SecondsIn(ViewsPart.ReadingBack) - readBack0,
+                        CollectSeconds = seconds.SecondsIn(ViewsPart.Collecting) - collect0,
                         ReadBackHiddenSeconds = lastReadBack == null ? 0.0 : lastReadBack.HiddenSeconds,
                         ReadBackOverrideSeconds = lastReadBack == null ? 0.0 : lastReadBack.OverrideSeconds,
+                        ReadBackGetSeconds = lastReadBack == null ? 0.0 : lastReadBack.GetOverridesSeconds,
+                        ReadBackOverrideColourSeconds = lastReadBack == null ? 0.0 : lastReadBack.ColourOfOverrideSeconds,
+                        ReadBackOverrideItemSeconds = lastReadBack == null ? 0.0 : lastReadBack.ItemOfOverrideSeconds,
+                        ReadBackOverridePathSeconds = lastReadBack == null ? 0.0 : lastReadBack.PathOfOverrideSeconds,
                         ReadBackColourSeconds = lastReadBack == null ? 0.0 : lastReadBack.ColourSeconds,
                         PrivateMegabytes = privateBytes < 0 ? -1.0 : privateBytes / (1024.0 * 1024.0),
                         TreeItems = treeNow
@@ -1269,6 +1275,18 @@ namespace Federator.Addin.Engine
                         document, view.Folders, index, view.Name, camera, paint,
                         dimmedThisOne && views.ColoursAnything ? views.FirstItemColour : null,
                         dimmedThisOne && views.ColoursAnything ? views.SecondItemColour : null);
+                }
+
+                // F196, Bader's order of 15 Oct 2026, task 5. The overrides a read back lists are managed objects, each
+                // with a native item, and a probe on 15 Oct 2026 read the same view five times: 0.75, 2.5, 4.2, 4.5 and
+                // 6.4 s with nothing collected between and 8.1, 0.65, 0.49, 0.69 and 0.73 s with a full collection
+                // between. The run that measured 3089 s of 3294 s of the views in this one call is why the objects of
+                // each read back are collected before the next view is made. No view and no tree changes.
+                using (seconds.In(ViewsPart.Collecting))
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
                 }
 
                 lastReadBack = read;

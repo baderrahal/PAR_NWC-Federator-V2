@@ -2,6 +2,41 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F196 the views take 215 s where they took 3294 s, the cause found and fixed
+
+Branch fix-F196 off main 4f2d4e9. Bader's order of 15 Oct, task 5, parts 2 to 4.
+
+FOUND, by the timing of F194 and probes on the saved NWF of the C04 copy:
+- 15 Oct 02:11 run, NWC page first build: the views took 1342 s and the read back 1154 s of it, all of it in one call,
+  GetAppearanceOverrides of the saved view, 1153.2 s, while the hidden items took 0.5 s and the colours of the clashing items
+  0.02 s. The tree did not matter: the first 47 views took 4.5 s each and the last 47 took 6.0 s with the tree from 115 to
+  304 items.
+- 15 Oct 02:48 run, NWF page refresh of the same NWF: the views took 3294 s, the read back 3090 s, and the same call 3089 s.
+  The first 47 views took 5.9 s each and the last 47 took 31.9 s. The five slowest, 87 to 139 s each, had 1 to 70 clashes and
+  18175 to 18307 overrides.
+- A probe read the same saved view of 28197 overrides five times in one session: 0.75, 2.5, 4.2, 4.5 and 6.4 s with nothing
+  collected between, and 8.1, 0.65, 0.49, 0.69 and 0.73 s with a full collection between. With the item of every override
+  disposed between: 0.71, 0.80, 0.67, 0.71 and 0.48 s. The cost is the objects of the earlier calls, which the call lists
+  as managed objects with a native item each and nothing disposes. A walk of the overrides in a probe on a freshly opened NWF
+  took 0.000 s. Dimming the models first, or not, made no difference to that.
+
+FIXED: after each read back the objects it left are collected, GC.Collect, WaitForPendingFinalizers, GC.Collect, its own part
+in the VIEWS line. No view and no tree changes, the read back is the same read back.
+
+PROVEN by a timed run, 15 Oct 03:56, the NWF page refresh of the same NWF as the 02:48 run: the views took 214.7 s, the read
+back 33.4 s and the collection 19.5 s, the whole run 10.5 min where it took 61 min. The table of 187 tests was read at the end.
+
+The causes asked for, one by one: the tree growing is not a cause, PROVEN by the first 47 against the last 47 views and by
+the fix which leaves the tree as it was. The delete and rebuild of the tool folder is not a cause, 0.02 s. Memory pressure
+is not the cause of this one, the private bytes were 2.1 to 4.7 GB and the fix did not change them. A view for a clash that
+is Resolved is not made, the plan takes New and Active only, PROVEN by its tests, and every test with an open clash has its
+view whatever its pictures. A repeated copy of the document state per view is not made by this tool, the one cost in the
+view that is repeated is the capture of the override of every item when the view is added, 0.5 s a view.
+
+The probe and the driver are outside the repo, in C:\NWC-PC-Test\work\probe and the session scratchpad.
+
+Core tests 3220 passing, Release build clean.
+
 ## 2026-10-15 F195 the Rebuild box asks its confirmation when it is checked
 
 Branch fix-F195 off main d168fb2. Bader's order of 15 Oct, task 6, part 2.

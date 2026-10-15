@@ -1706,6 +1706,11 @@ and 6 does not read as broken.
   quarter against the last, the process's private bytes, the Pearson r of the seconds against the clashes, the overrides, the
   tree at the start and the order, and the five slowest. A number that cannot be computed says UNKNOWN. The lines change no
   view and no tree, they are read to find the cause before any fix is made.
+  THE CAUSE, F196: `GetAppearanceOverrides` of a saved view lists its overrides as managed objects with a native item each, and
+  nothing disposes them, so the next call is slower for every call before it, 0.75 s then 6.4 s on one view in one session
+  and 8.1 then 0.5 to 0.7 s with a full collection between. The read back is 88 to 95 percent of the views, 3089 s of 3294 s on
+  15 Oct 2026. The objects of each read back are collected before the next view, `ViewsPart.Collecting`, and the same
+  refresh took 215 s. Anything else that lists a thousand items of a saved view has to dispose them or collect after.
 - THE REFRESH OF A PICKED NWF, F187, Bader's order of 14 Oct 2026 and his answer 2 of Q174, `RefreshRun`,
   `NwcManifest`, `NwfBackupName`, `ResultSnapshot` and `RefreshComparison`. A picked NWF, the NWF page's run, is
   copied into a Backup folder beside the Log folder before anything is opened, under its name and the moment to the

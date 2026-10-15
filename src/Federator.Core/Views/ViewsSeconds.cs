@@ -132,6 +132,8 @@ namespace Federator.Core.Views
                     return "putting the document back";
                 case ViewsPart.DeletingOutside:
                     return "deleting the items outside the tool folder";
+                case ViewsPart.Collecting:
+                    return "collecting the objects the read back left";
                 case ViewsPart.DeletingTheToolFolder:
                     return "deleting the tool folder of the earlier run";
                 case ViewsPart.ReadingTheTree:
