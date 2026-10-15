@@ -60,6 +60,9 @@ namespace Federator.Core.Views
         DeletingOutside = 17,
 
         /// <summary>F191. The tool folder of the earlier run found by its name and marker and deleted with all inside.</summary>
-        DeletingTheToolFolder = 18
+        DeletingTheToolFolder = 18,
+
+        /// <summary>F196. The collection of the objects the read back of a view left, so the next read back is not slowed by them.</summary>
+        Collecting = 19
     }
 }

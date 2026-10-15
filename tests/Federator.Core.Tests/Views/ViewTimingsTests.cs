@@ -78,7 +78,7 @@ namespace Federator.Core.Tests
 
             string all = string.Join("\n", new List<string>(timings.Lines("G")).ToArray());
 
-            Assert.That(all, Does.Contain("making the view 1 s, hiding and dimming 2 s, the add into its folder 10 s, the mark 0.1 s, the read back 85 s"));
+            Assert.That(all, Does.Contain("making the view 1 s, hiding and dimming 2 s, the add into its folder 10 s, the mark 0.1 s, the collection after the read back 0 s, the read back 85 s"));
             Assert.That(all, Does.Contain("of which the hidden items 5 s, the walk of the overrides 70 s (getting the list 0 s, the colour of each override 0 s, the item of each coloured one 0 s, its path 0 s), and the colour of the clashing items 10 s"));
         }
 
@@ -115,6 +115,21 @@ namespace Federator.Core.Tests
             Assert.That(source, Does.Contain("timings.Add(new ViewTiming"));
             Assert.That(source, Does.Contain("timings.Lines(timedGroup)"));
             Assert.That(source, Does.Contain("lastReadBack = read;"));
+        }
+
+        [Test]
+        public void TheObjectsOfEachReadBackAreCollectedBeforeTheNextViewIsMade()
+        {
+            string path = Path.Combine(Samples.Repo(), "src", "Federator.Addin", "Engine", "ViewpointBuilder.cs");
+            string source = File.ReadAllText(path);
+            int readBack = source.IndexOf("read = SavedViewpoints.ReadBack(", System.StringComparison.Ordinal);
+            int collect = source.IndexOf("using (seconds.In(ViewsPart.Collecting))", readBack, System.StringComparison.Ordinal);
+            int judged = source.IndexOf("string notReadBack = WhyNotReadBack(", readBack, System.StringComparison.Ordinal);
+
+            Assert.That(readBack, Is.GreaterThan(0));
+            Assert.That(collect, Is.GreaterThan(readBack));
+            Assert.That(collect, Is.LessThan(judged));
+            Assert.That(source.Substring(collect, 260), Does.Contain("GC.Collect();").And.Contain("GC.WaitForPendingFinalizers();"));
         }
     }
 }

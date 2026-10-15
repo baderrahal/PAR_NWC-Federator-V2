@@ -40,6 +40,9 @@ namespace Federator.Core.Views
         /// <summary>Inside the read back, walking the material overrides one by one.</summary>
         public double ReadBackOverrideSeconds { get; set; }
 
+        /// <summary>F196. The collection of the objects the read back left, after it.</summary>
+        public double CollectSeconds { get; set; }
+
         /// <summary>F196. Inside the walk of the overrides, getting the list from the saved view.</summary>
         public double ReadBackGetSeconds { get; set; }
 
@@ -147,6 +150,7 @@ namespace Federator.Core.Views
             lines.Add("VIEWS    TIMING " + group + " where the seconds of the views went: making the view "
                 + Show(views.Sum(v => v.MakingSeconds)) + " s, hiding and dimming " + Show(views.Sum(v => v.HidingAndDimmingSeconds))
                 + " s, the add into its folder " + Show(views.Sum(v => v.AddingSeconds)) + " s, the mark " + Show(views.Sum(v => v.MarkingSeconds))
+                + " s, the collection after the read back " + Show(views.Sum(v => v.CollectSeconds))
                 + " s, the read back " + Show(views.Sum(v => v.ReadBackSeconds)) + " s, of which the hidden items "
                 + Show(views.Sum(v => v.ReadBackHiddenSeconds)) + " s, the walk of the overrides " + Show(views.Sum(v => v.ReadBackOverrideSeconds))
                 + " s (getting the list " + Show(views.Sum(v => v.ReadBackGetSeconds)) + " s, the colour of each override "
