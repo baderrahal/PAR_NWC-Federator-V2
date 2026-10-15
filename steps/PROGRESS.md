@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 05:10, round 5 done, F197 report merged, Q182 waits for Bader
+STATE OPEN, 2026-10-15 13:55, round 6 done, F198 278 and F199 279 merged and proven by two NWF page runs, F200 report, Q182 Q184 Q185 wait for Bader
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,36 +15,36 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 261 | 16 | 0 | 3 | 60 | 7 | 347 |
-| total | 464 | 24 | 0 | 3 | 161 | 18 | 670 |
+| outside the waves | 261 | 16 | 1 | 3 | 60 | 7 | 348 |
+| total | 464 | 24 | 1 | 3 | 161 | 18 | 671 |
 <!-- the end of the counts -->
 
 ## Now
-- Round 4 of 14 Oct, one PR each. Part 1 merged: F175 pictures cap by priority 255, F176 no shared site is a NOTICE 256,
-  F177 Clash report overwrite and leftover cd jpgs 257, F178 answers recorded 258, F179 research note 259
-- F180 the C04 run, report at the top of steps\03_bader_next.md. Pictures stopped at 9000, no GDI crash, then Navisworks
-  grew to 26 GB and the NWD step hung with a 0 byte NWD. Run stopped, Part 2 NOT started, as ordered
 - Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the
-  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder 271, F192 Over 150mm only inside C 272, F193 records 273, F194 view timing 274, F195 Rebuild box 275, F196 views speed 276, F197 report in review
+  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder 271, F192 Over 150mm only inside C 272, F193 records 273, F194 view timing 274, F195 Rebuild box 275, F196 views speed 276, F197 report 277
+- Round 6 of 15 Oct: F198 the tool folder named Clash Status 278, F199 the discipline folders under A, B and C 279, F200 the two NWF page runs
+  that prove them, report at the top of steps\03_bader_next.md
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
 | date | build | a picture | 1A02MM | longest freeze | most time |
 |---|---|---|---|---|---|
 | Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
-| 14 Oct 16:15, C04 1A04PK | 8e647af8, main after 259 | 0.08 s, 7904 in 637 s | not run, 1A04PK hung at the NWD after 47 min | UNKNOWN | VIEWS 1517 s |
-| 14 Oct 18:26, C04 1A04PK | 0947159a, main after 263 | 0.07 s, 3042 in 218 s | not run, 1A04PK ended at 50.4 min | none read | VIEWS 2586 s |
 | 15 Oct 00:15, C04 copy, NWF page | 9eb59ad0, main after 268 | 3066 in 225 s | not run | none read | VIEWS 1723 s, 3 runs 61, 68 and 35 min |
 | 15 Oct 04:06, C04 copy, NWF page | 444b9c37, main after 275 | 3184 in 209 s | not run | none read | VIEWS 215 s, the run 10.5 min where it was 61 min |
+| 15 Oct 13:12, C04 copy f199, NWF page twice | 770e1c9a, main after 279 | 3194 in 231 s, 2509 in 191 s | not run | none read | VIEWS 401 s and 283 s, the runs 13.2 and 10.5 min |
 
 ## Next
-1. Part 2: F185 the checks, F186 viewpoint folder, F187 refresh and overwrite, F188 the two pages, F189 the final run
-2. Bader's proof of the round on his desktop PC, steps\03_bader_next.md
-3. tools\loop\prove-run.ps1 was not run after F173, so its window cases are UNKNOWN
-4. The register rows of 13 Oct: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
+1. Bader reads round 6 at the top of steps\03_bader_next.md and answers Q184 and Q185
+2. The NWC page run with F199 was not run, only the NWF page. UNKNOWN by a run
+3. Bader's proof of the round on his desktop PC, steps\03_bader_next.md
+4. tools\loop\prove-run.ps1 was not run after F173, so its window cases are UNKNOWN
+5. The register rows of 13 Oct: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
 
 ## Waiting for Bader
 - Q182: 47 tests of A and B, 1652 clashes over 150 mm, have no Over 150mm folder. Bader says how to handle them
+- Q184: HV and DR in Mechanical and EV in Electrical by the pack's team line, BLD-Security Devices in Other, a run with no XML
+- Q185: 1 test of C in Other with 1 clash over 150 mm stays in its one view, as A and B do
 - What Excel shows a person when it opens a workbook of linked pictures, and whether its click link that goes up
   one folder to Clash report opens the jpg, steps\03_bader_next.md
 
