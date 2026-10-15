@@ -1,5 +1,77 @@
 # 03 Bader next
 
+## F201 and F202, the models of 04 PK did not line up
+
+Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Every run was on a COPY under C:\NWC-PC-Test\work\f201. The ten NWCs there are byte for byte the ones in NM fed\NWC\C04. NM fed was not written: its listing was the same before and after every run.
+
+### The cause, PROVEN
+
+The tool appends each NWC the same way the Append command does, Document.TryAppendFile, in name order. Then its UNITS step set every model to Meters, with the model's own transform handed back. That one call made each model 3.28 times larger about its own origin and moved it. On 1A04PK every one of the ten files was moved, all disciplines, from 6.3 m (ST-000002) to 666.9 m (ME-000001).
+
+- Units: the cause. The NWCs are in Feet. Setting a model to Meters reads its feet as metres.
+- Shared coordinates: not the cause. The transform each NWC carries is the same in the tool's model and in the manual one.
+- The order or the way of the append: not the cause. Same call, same order.
+
+I proved it three ways. A probe appended the ten files with nothing else, and they line up. The same probe then made the tool's one call, and the models moved. The tool's own NWD and NWF moved exactly the same, to the millimetre.
+
+### The table before the fix, the tool's NWD (main 770e1c9a) against a manual Append
+
+Centres of each file's box in metres, E N Z, then the difference and the width of the box. AR-01 is 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc, and so on. An NWD keeps no units of its own for each file, so both columns say Feet. The NWF built in the same run holds all ten models in Meters, and its centres are the same as these.
+
+    file | units tool / manual | centre in the tool model, E N Z m | centre in the manual model, E N Z m | difference m | size x tool / manual m
+    AR-01.nwc | Feet / Feet | 658447.871 2745776.879 735.600 | 658349.930 2745901.121 700.691 | 162.0095 | 380.570 / 115.998
+    EL-01.nwc | Feet / Feet | 658438.315 2745763.360 731.961 | 658348.137 2745897.535 700.972 | 164.6067 | 358.708 / 109.334
+    FP-01.nwc | Feet / Feet | 658445.402 2745769.745 733.516 | 658349.507 2745899.103 700.681 | 164.3398 | 338.485 / 103.170
+    HV-01.nwc | Feet / Feet | 658437.489 2745788.123 742.248 | 658346.756 2745904.542 703.342 | 152.6425 | 333.712 / 101.715
+    ME-01.nwc | Feet / Feet | 657690.515 2746022.447 694.130 | 658346.844 2745904.405 686.409 | 666.9040 | 353.360 / 107.704
+    ME-02.nwc | Feet / Feet | 658316.636 2745613.433 676.435 | 658366.443 2745894.980 682.692 | 285.9875 | 167.531 / 51.063
+    ME-03.nwc | Feet / Feet | 658201.445 2746096.795 688.891 | 658382.641 2745851.157 681.462 | 305.3277 | 572.890 / 174.617
+    ME-04.nwc | Feet / Feet | 658432.472 2745788.540 733.907 | 658345.566 2745904.832 700.800 | 148.9046 | 342.744 / 104.468
+    ST-01.nwc | Feet / Feet | 658345.033 2745884.704 728.988 | 658350.475 2745898.479 698.710 | 33.7067 | 384.469 / 117.186
+    ST-02.nwc | Feet / Feet | 658342.315 2745852.002 686.684 | 658336.831 2745850.823 683.765 | 6.3244 | 17.377 / 5.296
+    largest difference 666.9040 m, 666904.0 mm
+
+### The fix, F201, pull request 281
+
+- The tool no longer sets any model's units or transform. The Model units box on the Outputs step is gone, because that is all it did.
+- The report is still in metres. Every number is converted when the report is written, as before. The clash tolerance is still put into the document's units.
+- The log has one PLACE line for each file. It reads the file's units and box centre when the file is appended, then again just before the NWD is written. It says held (1 mm or less, a setting) or MOVED with the distance.
+- A model whose units are not the document's units is named, with the advice to Rebuild. An NWF built before the fix has this.
+- The notice about models that are not on the same shared coordinates is still there, unchanged.
+
+### The table after the fix, the tool's NWD (main 9e3736c1) against a manual Append, PROVEN
+
+    file | units tool / manual | centre in the tool model, E N Z m | centre in the manual model, E N Z m | difference m | size x tool / manual m
+    AR-01.nwc | Feet / Feet | 658349.930 2745901.121 700.691 | 658349.930 2745901.121 700.691 | 0.0000 | 115.998 / 115.998
+    EL-01.nwc | Feet / Feet | 658348.137 2745897.535 700.972 | 658348.137 2745897.535 700.972 | 0.0000 | 109.334 / 109.334
+    FP-01.nwc | Feet / Feet | 658349.507 2745899.103 700.681 | 658349.507 2745899.103 700.681 | 0.0000 | 103.170 / 103.170
+    HV-01.nwc | Feet / Feet | 658346.756 2745904.542 703.342 | 658346.756 2745904.542 703.342 | 0.0000 | 101.715 / 101.715
+    ME-01.nwc | Feet / Feet | 658346.844 2745904.405 686.409 | 658346.844 2745904.405 686.409 | 0.0000 | 107.704 / 107.704
+    ME-02.nwc | Feet / Feet | 658366.443 2745894.980 682.692 | 658366.443 2745894.980 682.692 | 0.0000 | 51.063 / 51.063
+    ME-03.nwc | Feet / Feet | 658382.641 2745851.157 681.462 | 658382.641 2745851.157 681.462 | 0.0000 | 174.617 / 174.617
+    ME-04.nwc | Feet / Feet | 658345.566 2745904.832 700.800 | 658345.566 2745904.832 700.800 | 0.0000 | 104.468 / 104.468
+    ST-01.nwc | Feet / Feet | 658350.475 2745898.479 698.710 | 658350.475 2745898.479 698.710 | 0.0000 | 117.186 / 117.186
+    ST-02.nwc | Feet / Feet | 658336.831 2745850.823 683.765 | 658336.831 2745850.823 683.765 | 0.0000 | 5.296 / 5.296
+    largest difference 0.0000 m, 0.0 mm
+
+The NWF reads the same. The log of the run (run-20261015-141146) says all 10 files held, 0 mm, in Feet.
+
+### What else changed because of it, PROVEN
+
+The clash results changed. The same ten NWCs gave 10170 clashes in 187 tests before the fix and 13286 clashes in 194 tests after it. The old clashes were found on models that were too big and in the wrong place. Every clash report the tool made this way before the fix is wrong in the same way. See Q186.
+
+### What is UNKNOWN or not proven
+
+- Which of your existing NWFs were built with models set to Meters. The tool did it whenever the document was not already in Meters. It is UNKNOWN for each NWF until it is opened.
+- A weekly run on an old NWF naming its models in Meters and asking for a Rebuild: TEST only. I did not run the NWF page on an old NWF.
+- The groups other than 04 PK. Only 1A04PK was measured.
+- How it looks to you in Navisworks. I compared numbers read by a probe, not the picture on the screen.
+- The viewpoints were switched off in both tool runs so the runs were short. They do not move models.
+
+### Open questions
+
+- Q186: which groups to rebuild, all now or one by one. A Rebuild starts the clash history again.
+- Q182, Q184 and Q185 from round 6, as before.
 ## Round 6, F198 to F200, Clash Status and the discipline folders
 
 Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Both runs were on a COPY of C04 under C:\NWC-PC-Test\work\f199, with main 770e1c9a installed. NM fed was not written: its listing was the same 24940 files before and after each run.

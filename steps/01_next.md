@@ -1648,3 +1648,7 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's order of 15 Oct. The units step set every model to Meters with its own transform handed back, which scaled each model 3.28 times about its own origin and moved it 6.3 m to 666.9 m on 1A04PK. No model's units or transform is set any more, the Model units box is gone, and one PLACE line a file says each model held its place from the append to the NWD within 1 mm.
 - DONE 2026-10-15 in code. Core tests 3258 before and 3259 after. The rebuild of 04 PK with the fix is F202.
+
+## F202 The rebuild of 04 PK with F201
+
+- DONE 2026-10-15. run-20261015-141146 on main 9e3736c1, 10 of 10 files held, the NWD and the NWF within 0 mm of a manual Append of the same NWCs. Clashes 10170 before and 13286 after, Q186. Report at the top of steps\03_bader_next.md.

@@ -2,6 +2,17 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F202 the rebuild of 04 PK with F201, every file within 0 mm of a manual Append
+
+Branch fix-F202 off main 9e3736c. Bader's order of 15 Oct, tasks 5 and 6.
+
+main 9e3736c1 installed from C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2, install.ps1 exit 0, the stamp read back.
+1A04PK built new on the NWC page through the real window, from the copy C:\NWC-PC-Test\work\f201\NWC into empty folders,
+viewpoints off as in the run before the fix, run-20261015-141146, 6.6 min, DONE. Its PLACE lines: 10 of 10 held, 0 mm,
+every model in Feet, none set. The probe read its NWD and its NWF: every file's box centre is the manual Append's, the
+largest difference 0.0000 m, and every box the same size. Before the fix, run-20261015-135319 on main 770e1c9a: 6.3 m to
+666.9 m, every box 3.28 times wider. The clash: 10170 rows in 187 tests before, 13286 in 194 tests after, the same NWCs,
+Q186. NM fed's listing the same before and after every run. Not run: the NWF page on an NWF built before F201.
 ## 2026-10-15 F201 the models of 04 PK did not line up, the units step moved them
 
 Branch fix-F201 off main 177a0a5. Bader's order of 15 Oct: an NWD the tool made for 04 PK did not line up, where the same
