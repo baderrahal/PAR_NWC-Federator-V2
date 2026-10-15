@@ -17,7 +17,7 @@ namespace Federator.Core.Tests
     {
         private const string Name = "BLD-ME-Ducts-vs-BLD-ST-Columns";
 
-        private static readonly string[] Folders = { "Clash Status", "A" };
+        private static readonly string[] Folders = { "Clash Status", "A", "Mechanical" };
         private static readonly ViewpointSettings Settings = new ViewpointSettings();
         private static readonly Point3 Camera = new Point3(1, 2, 3);
 
@@ -26,13 +26,13 @@ namespace Federator.Core.Tests
         {
             string place = ViewPlace.Of(Folders, Name);
 
-            Assert.That(place, Is.EqualTo("Clash Status/A/" + Name));
-            Assert.That(ViewPlace.FolderPath(Folders), Is.EqualTo("Clash Status/A"));
+            Assert.That(place, Is.EqualTo("Clash Status/A/Mechanical/" + Name));
+            Assert.That(ViewPlace.FolderPath(Folders), Is.EqualTo("Clash Status/A/Mechanical"));
 
             ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "ME", "ST" }, Settings);
             ViewClash large = new ViewClash(Name, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,
                 ClashPriority.A, SizeVerdict.Large, null, null, null, null, null);
-            PlannedTestView planned = TestViewPlan.For(new[] { large }, teams, null, Settings).Views[0];
+            PlannedTestView planned = TestViewPlan.For(new[] { large }, teams, null, null, Settings).Views[0];
 
             Assert.That(planned.ToString(), Is.EqualTo(place), "the plan's view");
             Assert.That(planned.Key, Is.EqualTo(ViewPlace.Key(Folders, Name, false)), "the key its read backs are kept under");
@@ -72,7 +72,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheParentKeyIsTheKeyOfTheFolderItSitsIn()
         {
-            Assert.That(ViewPlace.ParentKey(Folders), Is.EqualTo(ViewPlace.Key(new[] { "Clash Status" }, "A", true)));
+            Assert.That(ViewPlace.ParentKey(Folders), Is.EqualTo(ViewPlace.Key(new[] { "Clash Status", "A" }, "Mechanical", true)));
             Assert.That(ViewPlace.ParentKey(new string[0]), Is.EqualTo(string.Empty));
         }
     }

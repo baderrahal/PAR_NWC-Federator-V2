@@ -26,8 +26,8 @@
 # never becomes two folders: Architecture, Structure, Mechanical, Electrical, then any other team
 # by its name, then UNKNOWN.
 #
-# SIZE-FOLDER names the teams whose pair folders carry the folder of services over the size,
-# Over 150mm, point 11. It sits inside each pair folder holding one of them, never shared.
+# SIZE-FOLDER names the teams whose pairs carry the folder of services over the size, Over 150mm,
+# point 11. Since F199 that folder sits inside Mechanical and Electrical of C only, Q183.
 #
 # Point 1 in Bader's words: the mechanical models are now split into HV, PL, FP and ME, and all
 # four belong to one team. Mechanical is HV, PL, FP, ME, DR and FF. Electrical is EL and EV.

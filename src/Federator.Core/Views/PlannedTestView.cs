@@ -5,9 +5,11 @@ using Federator.Core.Clash;
 namespace Federator.Core.Views
 {
     /// <summary>
-    /// One view this run means to write, F114: one clash test's open clashes, all of them since F186 except in C,
-    /// where the ones over the threshold are in the Over 150mm view of F192, in the folder of its priority letter under the tool's one top folder, Bader's answer 1 of Q174. The
-    /// team pair still decides which models the view shows and no longer decides where it sits.
+    /// One view this run means to write, F114: one clash test's open clashes, all of them since F186 except in
+    /// Mechanical and Electrical of C, where the ones over the threshold are in the Over 150mm view of F192 and F199, in
+    /// the folder of its discipline, F199, inside the folder of its priority letter under the tool's one top folder,
+    /// Bader's answer 1 of Q174 and his order of round 6, Q183. The team pair still decides which models the view shows
+    /// and no longer decides where it sits.
     /// </summary>
     public sealed class PlannedTestView
     {
@@ -16,6 +18,7 @@ namespace Federator.Core.Views
         internal PlannedTestView(
             ClashPriority priority,
             string priorityFolder,
+            string disciplineFolder,
             TeamPair pair,
             string sizeFolder,
             string name,
@@ -23,6 +26,7 @@ namespace Federator.Core.Views
         {
             Priority = priority;
             PriorityFolder = priorityFolder;
+            DisciplineFolder = disciplineFolder;
             Pair = pair;
             SizeFolder = sizeFolder;
             Name = name;
@@ -34,12 +38,18 @@ namespace Federator.Core.Views
         /// <summary>A, B or C, the letter folder under the tool folder. A test with no priority is C.</summary>
         public string PriorityFolder { get; private set; }
 
+        /// <summary>
+        /// F199. Architecture, Structure, Mechanical, Electrical or Other, the folder inside the letter folder, off
+        /// DisciplineFolders.DisciplineFolderFor alone.
+        /// </summary>
+        public string DisciplineFolder { get; private set; }
+
         /// <summary>The team pair of the test, which decides the models the view shows and nothing of where it sits.</summary>
         public TeamPair Pair { get; private set; }
 
         /// <summary>
-        /// F192. Over 150mm, the sub folder of C that holds the view of the test's clashes over the threshold, or null.
-        /// It exists under C only, Bader's order of 15 Oct 2026.
+        /// F192 and F199. Over 150mm, the sub folder that holds the view of the test's clashes over the threshold, or
+        /// null. It exists inside Mechanical and Electrical of C only, Bader's order of round 6.
         /// </summary>
         public string SizeFolder { get; private set; }
 
@@ -84,7 +94,7 @@ namespace Federator.Core.Views
         {
             get
             {
-                List<string> folders = new List<string> { ToolViewFolder.Name, PriorityFolder };
+                List<string> folders = new List<string> { ToolViewFolder.Name, PriorityFolder, DisciplineFolder };
 
                 if (SizeFolder != null)
                 {

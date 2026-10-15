@@ -513,8 +513,10 @@ well as to pass.
   until the proof steps of steps\03_bader_next.md run
 - SINCE F114 A VIEW IS PER CLASH TEST, which replaces F85's viewpoint per clash, which had
   reversed what this rule said before it, that no clash is ever saved as a viewpoint.
-  Bader's Q114: the thing a person presses is a test's open clashes framed together in the
-  A, B, C folders of their team pair, and Clash Detective is where one clash is looked at
+  Bader's Q114: the thing a person presses is a test's open clashes framed together, since F186
+  and F199 in Clash Status, then A, B or C, then the test's discipline folder, Core's
+  `DisciplineFolders`, and the add-in hands the plan the saved tests the matrix does not name
+  and nothing else of it, and Clash Detective is where one clash is looked at
   close up, docs\workflow.md. The plan is `Federator.Core.Views.TestViewPlan`, written by
   ViewpointBuilder since 2026-10-08, and F85's unmarked per clash viewpoints are known by
   `LegacyClashView` and removed once the new tree is written and read back. Do not read an

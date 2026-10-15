@@ -10,17 +10,19 @@ namespace Federator.Core.Views
     /// Bader's Q114 points 9 to 15. It replaces the per clash plan of F85, whose viewpoint per
     /// clash took 94.5 percent of the 2 h 12 min baseline on 1A02MM.
     ///
-    /// THE TREE, F186 and F192: the tool's top folder, then A, B and C, a test with no priority being C, then the
-    /// view named exactly by its test. The team pair decides which models a view shows and is no level of the
-    /// tree. Inside C and only inside C there is one sub folder, Over 150mm.
+    /// THE TREE, F186, F192 and F199: the tool's top folder Clash Status, then A, B and C, a test with no priority
+    /// being C, then the test's discipline folder, Architecture, Structure, Mechanical, Electrical or Other, read by
+    /// DisciplineFolders.DisciplineFolderFor alone, then the view named exactly by its test. The team pair decides
+    /// which models a view shows and is no level of the tree. Inside Mechanical and Electrical of C, and nowhere else,
+    /// there is one sub folder, Over 150mm.
     ///
-    /// WHAT A VIEW HOLDS: the test's clashes at the ViewStatuses setting, New and Active, all at once. In C, in a
-    /// pair that carries the size folder, a clash whose larger service is over the threshold goes in the test's
-    /// view under C/Over 150mm, and every other one, a small service, a size that could not be read or no service
-    /// at all, in its view in C, so no clash is in two views. A size not read there is named, FR-068. In A and B
-    /// no Over 150mm view is made, every open clash stays in the test's one view, and the clashes the earlier rule
-    /// would have split off are counted and named for Bader's decision. A test with no open clash gets no view,
-    /// and an empty half is never planned.
+    /// WHAT A VIEW HOLDS: the test's clashes at the ViewStatuses setting, New and Active, all at once. In Mechanical
+    /// and Electrical of C, in a pair that carries the size folder, a clash whose larger service is over the threshold
+    /// goes in the test's view under Over 150mm, and every other one, a small service, a size that could not be read or
+    /// no service at all, in its view in the discipline folder, so no clash is in two views. A size not read there is
+    /// named, FR-068. In A and B no Over 150mm view is made, and nor in Architecture, Structure or Other of C, Q185:
+    /// every open clash stays in the test's one view, and the clashes the earlier rule would have split off are counted
+    /// and named. A test with no open clash gets no view, and an empty half is never planned.
     ///
     /// THE SIZE IS F72a'S READING, SizeRule.LargestMillimetres: a rectangular service by its
     /// larger side and the larger of two services deciding, read by the add-in.
@@ -38,10 +40,13 @@ namespace Federator.Core.Views
     {
         /// <summary>
         /// The plan for one group, the clashes in the order they were read, the mirror rule's
-        /// tests left out, or null where no mirror rule ran.
+        /// tests left out, or null where no mirror rule ran. notInThePack is the saved tests the
+        /// picked matrix does not name, which go in Other, F199, or null where no matrix was read,
+        /// so which tests the pack names is UNKNOWN and every test goes by its first side.
         /// </summary>
         public static TestViewPlanOutcome For(
-            IEnumerable<ViewClash> clashes, ViewTeams teams, ICollection<string> mirrors, ViewpointSettings settings)
+            IEnumerable<ViewClash> clashes, ViewTeams teams, ICollection<string> mirrors, ICollection<string> notInThePack,
+            ViewpointSettings settings)
         {
             if (teams == null)
             {
@@ -65,7 +70,7 @@ namespace Federator.Core.Views
                 }
             }
 
-            TestViewPlanOutcome outcome = new TestViewPlanOutcome(inScope, mirrorRule);
+            TestViewPlanOutcome outcome = new TestViewPlanOutcome(inScope, mirrorRule, notInThePack != null);
             string sizeFolder = settings.SubGroupFolderName();
 
             List<string> order = new List<string>();
@@ -163,15 +168,25 @@ namespace Federator.Core.Views
 
                 // F186, Bader's answer 1 of Q174. The folder is the priority's letter, a test with no priority
                 // being C as everywhere else, and the team pair no longer makes a level of the tree.
-                // F192, Bader's order of 15 Oct 2026. In C, in a pair that carries the size folder, the clashes
-                // whose larger service is over the threshold are the test's view under C/Over 150mm and every
-                // other one is its view in C. In A and B there is no such folder: every open clash stays in the
-                // test's one view and the ones the earlier rule would have split off are counted and named.
+                // F199, Bader's order of round 6, Q183. Inside the letter the test's discipline folder, decided
+                // in DisciplineFolders.DisciplineFolderFor and nowhere else.
+                // F192 and F199. In Mechanical and Electrical of C, in a pair that carries the size folder, the
+                // clashes whose larger service is over the threshold are the test's view under Over 150mm and
+                // every other one is its view in the discipline folder. In A and B, and in Architecture,
+                // Structure and Other of C, Q185, there is no such folder: every open clash stays in the test's
+                // one view and the ones the earlier rule would have split off are counted and named.
                 string letter = ToolViewFolder.LetterOf(first.Priority);
+                bool inThePack = notInThePack == null || !notInThePack.Contains(test);
+                string discipline = DisciplineFolders.DisciplineFolderFor(first, inThePack, teams.Map, settings.SetNameSeparator);
+
+                if (!inThePack)
+                {
+                    outcome.NameNotInThePack(test);
+                }
 
                 if (!pair.CarriesSizeFolder)
                 {
-                    outcome.Add(new PlannedTestView(first.Priority, letter, pair, null, test, shown));
+                    outcome.Add(new PlannedTestView(first.Priority, letter, discipline, pair, null, test, shown));
                     continue;
                 }
 
@@ -194,25 +209,25 @@ namespace Federator.Core.Views
                     rest.Add(clash);
                 }
 
-                if (letter != "C")
+                if (letter != "C" || !DisciplineFolders.HoldsTheSizeFolder(discipline))
                 {
                     if (large.Count > 0)
                     {
-                        outcome.OverSizeKeptWhole(test, letter, large.Count);
+                        outcome.OverSizeKeptWhole(test, letter, discipline, large.Count);
                     }
 
-                    outcome.Add(new PlannedTestView(first.Priority, letter, pair, null, test, shown));
+                    outcome.Add(new PlannedTestView(first.Priority, letter, discipline, pair, null, test, shown));
                     continue;
                 }
 
                 if (rest.Count > 0)
                 {
-                    outcome.Add(new PlannedTestView(first.Priority, letter, pair, null, test, rest));
+                    outcome.Add(new PlannedTestView(first.Priority, letter, discipline, pair, null, test, rest));
                 }
 
                 if (large.Count > 0)
                 {
-                    outcome.Add(new PlannedTestView(first.Priority, letter, pair, sizeFolder, test, large));
+                    outcome.Add(new PlannedTestView(first.Priority, letter, discipline, pair, sizeFolder, test, large));
                 }
             }
 
@@ -230,14 +245,26 @@ namespace Federator.Core.Views
             }
         }
 
-        /// <summary>Priority, then the views of the letter folder before its Over 150mm folder, then the pair in the map's order, then the test name, Ordinal.</summary>
+        /// <summary>
+        /// The letter folder, A, B then C, a test with no priority in C with those of C, then the discipline in the order
+        /// of DisciplineFolders.Names, then the views of the discipline folder before its Over 150mm folder, then the pair
+        /// in the map's order, then the test name, Ordinal. The add-in makes each folder when the first view in it is
+        /// written, so this is the order the folders stand in, and each folder's views are read together.
+        /// </summary>
         private static int Compare(PlannedTestView a, PlannedTestView b, TeamMap map)
         {
-            int byPriority = Priorities.Order(a.Priority).CompareTo(Priorities.Order(b.Priority));
+            int byLetter = string.CompareOrdinal(a.PriorityFolder, b.PriorityFolder);
 
-            if (byPriority != 0)
+            if (byLetter != 0)
             {
-                return byPriority;
+                return byLetter;
+            }
+
+            int byDiscipline = DisciplineFolders.Order(a.DisciplineFolder).CompareTo(DisciplineFolders.Order(b.DisciplineFolder));
+
+            if (byDiscipline != 0)
+            {
+                return byDiscipline;
             }
 
             int bySize = (a.SizeFolder == null ? 0 : 1).CompareTo(b.SizeFolder == null ? 0 : 1);

@@ -190,7 +190,7 @@ namespace Federator.Core.Tests
                     new ViewClash("T", "Clash2", "BLD-EL-Lighting Fixtures", "BLD-ST-Floors", ClashStatus.Resolved, ClashPriority.A, null, null, null, null, null, null)
                 },
                 new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "AR", "EL", "ME", "ST" }, new ViewpointSettings()),
-                null,
+                null, null,
                 new ViewpointSettings());
 
             Assert.That(plan.Views.Count, Is.EqualTo(1));

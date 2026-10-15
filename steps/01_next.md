@@ -1633,3 +1633,12 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's order of round 6, the fast change, Q183. ToolViewFolder.Name is Clash Status, the NWF page's rules line reads it off the one constant, an empty Comments folder that stands is kept and no second is made, the folder of the old name an earlier run made is deleted as outside the tool folder by F191's rule.
 - DONE 2026-10-15. Core tests 3220 before and 3222 after. Proved on Navisworks with F199, steps\03_bader_next.md.
+
+## F199 The discipline folders under A, B and C
+
+- Bader's order of round 6, Q183. Clash Status, then A, B and C, then Architecture, Structure, Mechanical, Electrical or Other, then the tests, Over 150mm inside Mechanical and Electrical of C only. One function in Core, DisciplineFolders.DisciplineFolderFor, the code of the test's first side, the order's words then the pack's team line, else Other, a saved test the matrix does not name Other. Q184 the codes read off the pack, Q185 the clashes over the threshold of C outside Mechanical and Electrical kept in the one view.
+- DONE 2026-10-15. Core tests 3222 before and 3258 after, the solution 0 warnings and 0 errors. The NWF page runs on Navisworks are F200.
+
+## F200 The NWF page runs that prove F198 and F199
+
+- Bader's order of round 6, task 4 and task 6. On a copy of a real NWF under C:\NWC-PC-Test\work, the NWF page run twice with main after F199 installed, the tree read off the saved NWF, the log lines of the delete, the build, OUTSIDE, Comments and PROOF, the report at the top of steps\03_bader_next.md.
