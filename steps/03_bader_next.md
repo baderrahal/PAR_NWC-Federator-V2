@@ -1,5 +1,75 @@
 # 03 Bader next
 
+## Round 6, F198 to F200, Clash Status and the discipline folders
+
+Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Both runs were on a COPY of C04 under C:\NWC-PC-Test\work\f199, with main 770e1c9a installed. NM fed was not written: its listing was the same 24940 files before and after each run.
+
+### What was built
+
+1. F198, pull request 278. The tool folder is named Clash Status. An empty Comments folder that stands is kept and no second one is made. The folder of the old name, NWC Federator (auto), is deleted as outside the tool folder.
+2. F199, pull request 279. Inside Clash Status, under A, B and C, the tests sit in Architecture, Structure, Mechanical, Electrical or Other. Over 150mm is inside Mechanical and Electrical of C only. A discipline folder is made only where a test is in it.
+3. One function decides the folder, DisciplineFolderFor, in Core. It reads the code of the first side of the test. A later switch to the team that fixes it changes that function only.
+
+### The codes, read off the pack, Q184
+
+- AR goes to Architecture. ST goes to Structure. ME, PL, FP and FF go to Mechanical. EL goes to Electrical. That is your list.
+- HV and DR go to Mechanical, and EV to Electrical. Your list does not name them. Your team line in the pack does, so I used it.
+- BLD-Security Devices has no code on its first side, so it goes to Other. 57 tests of the pack are like this.
+- A saved test the pack does not name goes to Other. There were none in this NWF.
+- The 1830 tests of the pack go 120 to Architecture, 111 to Structure, 850 to Mechanical, 692 to Electrical and 57 to Other. A test proves it.
+
+### Over 150 mm in C outside Mechanical and Electrical, Q185
+
+They stay in the test's one view, in C/Architecture, C/Structure or C/Other, with its other clashes. Nothing is dropped. The log counts and names them. In this NWF that was 1 test with 1 clash, BLD-Security Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings in C/Other.
+
+### The two runs on the NWF page, PROVEN
+
+Before run 1 the copy held the old folder NWC Federator (auto) with 190 views, two Comments folders, and the items I planted: a viewpoint at the root, a folder "Rami folder", a third Comments folder and a folder "Comments old". I also edited 9 clashes.
+
+Run 1, 13.2 min, DONE, log run-20261015-131241:
+- Clash Status was built new: 190 views, 7 of 7 tree checks hold.
+- OUTSIDE deleted 200 items, 4 top level names: folder "NWC Federator (auto)", viewpoint "Rami coordination view", folder "Rami folder", folder "Comments old".
+- The Comments folders were kept with their 2 items.
+- PROOF: 741 tests and 10170 results before, 741 and 10170 after.
+
+Run 2, 10.5 min, DONE, log run-20261015-132746:
+- The old Clash Status was found by its name and its marker and deleted with its 190 items, then built again with 190.
+- OUTSIDE deleted 0, the root held nothing else. The Comments folders were kept with their 2 items.
+- PROOF: 741 and 10170 before and after, at both deletes.
+
+### The tree, read out of the saved NWF after run 2 by a second Navisworks
+
+Folder, views at any depth. The same after run 1, and the same as the VIEWS TREE block of both logs.
+
+    Clash Status 190
+      A 125: Architecture 6, Structure 29, Mechanical 39, Electrical 49, Other 2
+      B 32: Architecture 1, Mechanical 21, Electrical 10
+      C 33: Architecture 4, Mechanical 2 (Over 150mm 1), Electrical 22 (Over 150mm 8), Other 5
+    Comments 2, Comments 0, Comments 0
+
+B has no Structure and no Other folder because no test of B is in them.
+
+### What is NOT proven
+
+- The NWC page run with F199. Not run. The NWC page and the NWF page call the same function, FinishTheGroup then BuildViewpoints, read in the code. The NWF page alone was run. UNKNOWN by a run.
+- How the tree looks to a person in the Saved Viewpoints panel. I read it with a probe, not with my eyes. UNKNOWN.
+- HV, FP and EV are on no first side of a test in this pack. Their folders are TEST only.
+- A saved test not in the pack going to Other. TEST only, there was none in this NWF.
+- An empty Comments folder made where none stands. TEST here, PROVEN in round 5.
+- The views took 401 s in run 1 and 283 s in run 2, against 215 s on 15 Oct at 03:56. Most of run 1 was adding the views, 297 s against 95 s. Why it differs from run to run is UNKNOWN.
+- The PROOF counts say nothing of statuses.
+
+### What I changed outside the repo
+
+- Files: work\repo (the clone I built and installed from), work\f199 (the copy), and work\run-evidence\f199-before, f199-plant, f199-r1 and f199-r2, with both run logs.
+- Programs: two Navisworks runs by the launcher and six probe sessions. All closed by themselves with exit code 0.
+- The add-in installed before is kept in C:\NWC-PC-Test\backup\ParsonsNwcFederator.bundle.before-F199.
+
+### Open questions for you
+
+- Q182: 47 tests of A and B, 1652 clashes over 150 mm, stay in their one view.
+- Q184: are HV, DR and EV right? Should BLD-Security Devices be Electrical? Should a run with no XML put every test in Other?
+- Q185: should the clashes over 150 mm of C in Architecture, Structure or Other go another way?
 
 ## Round 5, F190 to F196, the three new rules, the viewpoint time and the runs
 

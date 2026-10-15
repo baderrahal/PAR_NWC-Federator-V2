@@ -2,6 +2,28 @@
 
 Newest entry at the top.
 
+## 2026-10-15 F200 the two NWF page runs that prove F198 and F199
+
+Branch fix-F200 off main 770e1c9. Bader's order of round 6, tasks 4 and 6.
+
+main 770e1c9a built and installed from a clone under C:\NWC-PC-Test\work\repo, install.ps1 exit 0, the stamp read back.
+A fresh copy of the C04 NWF of the round 5 runs in C:\NWC-PC-Test\work\f199. Before run 1 it held the old folder
+NWC Federator (auto) with 190 views and two Comments folders, and the probe planted a root viewpoint, the folder Rami
+folder, a third Comments folder and the folder Comments old, and edited 9 clashes. The NWF page was run twice through the
+real window by the launcher and driver of round 5, the tree read out of the saved NWF after each by a probe in a second
+Navisworks.
+
+Run 1, run-20261015-131241, 13.2 min, DONE: no Clash Status of an earlier run, OUTSIDE 200 items deleted, 4 top level
+names, NWC Federator (auto), Rami coordination view, Rami folder and Comments old, the Comments folders kept with their 2
+items, PROOF 741 tests and 10170 results before and after, 190 views, 7 of 7 checks hold. Run 2, run-20261015-132746,
+10.5 min, DONE: Clash Status found by its name and its marker and deleted with its 190 items, OUTSIDE 0, Comments kept,
+PROOF equal at both deletes, 190 views, 7 of 7 hold. The tree read out of the NWF after each run is the tree of the log:
+A 125, Architecture 6, Structure 29, Mechanical 39, Electrical 49, Other 2. B 32, Architecture 1, Mechanical 21,
+Electrical 10. C 33, Architecture 4, Mechanical 2 with Over 150mm 1, Electrical 22 with Over 150mm 8, Other 5. Q185 in
+this NWF is 1 test of C in Other with 1 clash. NM fed's listing was the same 24940 files before and after each run.
+
+Not run: the NWC page with F199. The records, the report at the top of steps\03_bader_next.md and PROGRESS.md.
+Core tests 3258 before and 3258 after.
 ## 2026-10-15 F199 the discipline folders under A, B and C
 
 Branch fix-F199 off main 1466e1a. Bader's order of round 6, Q183, tasks 1 to 3 and 5.
