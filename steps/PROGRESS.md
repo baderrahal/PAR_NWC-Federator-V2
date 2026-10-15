@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-15 02:30, round 5, tasks 1 to 4 merged, F194 timing and F195 Rebuild box merged, a run of task 7 is going
+STATE OPEN, 2026-10-15 04:30, round 5, F196 views speed fix in review, Q182 waits for Bader
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 255 | 16 | 0 | 1 | 60 | 7 | 339 |
-| total | 458 | 24 | 0 | 1 | 161 | 18 | 662 |
+| outside the waves | 255 | 16 | 1 | 1 | 60 | 7 | 340 |
+| total | 458 | 24 | 1 | 1 | 161 | 18 | 663 |
 <!-- the end of the counts -->
 
 ## Now
@@ -25,17 +25,17 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - F180 the C04 run, report at the top of steps\03_bader_next.md. Pictures stopped at 9000, no GDI crash, then Navisworks
   grew to 26 GB and the NWD step hung with a 0 byte NWD. Run stopped, Part 2 NOT started, as ordered
 - Round 4 second set: F181 750 trigger 261, F182 memory stop and NWF and NWD before the pictures 262, F183 records 263, F184 the
-  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder 271, F192 Over 150mm only inside C 272, F193 records 273, F194 view timing 274, F195 Rebuild box in review
+  C04 run 264, F185 checks 265, F186 viewpoint tree 266, F187 refresh 267, F188 two pages 268, F189 the final run 269. Round 5 of 15 Oct: F190 caps 270, F191 delete outside the tool folder 271, F192 Over 150mm only inside C 272, F193 records 273, F194 view timing 274, F195 Rebuild box 275, F196 views speed in review
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
 | date | build | a picture | 1A02MM | longest freeze | most time |
 |---|---|---|---|---|---|
 | Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
-| 14 Oct 01:28, set 94 | 51d9f31d, main after 237 | 0.027 s | 245 s, group FAILED on the same model | none in 10 readings | PICTURES 112.5 s |
 | 14 Oct 16:15, C04 1A04PK | 8e647af8, main after 259 | 0.08 s, 7904 in 637 s | not run, 1A04PK hung at the NWD after 47 min | UNKNOWN | VIEWS 1517 s |
 | 14 Oct 18:26, C04 1A04PK | 0947159a, main after 263 | 0.07 s, 3042 in 218 s | not run, 1A04PK ended at 50.4 min | none read | VIEWS 2586 s |
 | 15 Oct 00:15, C04 copy, NWF page | 9eb59ad0, main after 268 | 3066 in 225 s | not run | none read | VIEWS 1723 s, 3 runs 61, 68 and 35 min |
+| 15 Oct 04:06, C04 copy, NWF page | 444b9c37, main after 275 | 3184 in 209 s | not run | none read | VIEWS 215 s, the run 10.5 min where it was 61 min |
 
 ## Next
 1. Part 2: F185 the checks, F186 viewpoint folder, F187 refresh and overwrite, F188 the two pages, F189 the final run
@@ -49,7 +49,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
   one folder to Clash report opens the jpg, steps\03_bader_next.md
 
 ## Blockers and known bugs
-- The C04 run now ends, F184 20261014-182641. Over the 45 minute target at 50 minutes, the views took 43 of them, UNKNOWN why
+- The views were the time, 88 to 95 percent, and F196 took them from 3294 s to 215 s, a run from 61 min to 10.5 min on the NWF page
 - One DIALOG finding at the close of set 94 UNKNOWN. FR-067 is out, a probe answers it first
 - T6-R-WPFBOX and F149-R1, as before
 - The 0 byte NWD in NWD\C04\run 2026-10-14 1615 is the hung run's, Bader may delete it
