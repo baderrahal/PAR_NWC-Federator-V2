@@ -15,7 +15,7 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class ToolViewFolderTests
     {
-        private const string Top = "NWC Federator (auto)";
+        private const string Top = "Clash Status";
         private const string TestA = "BLD-AR-Walls-vs-BLD-ST-Columns";
         private const string TestB = "BLD-ME-Ducts-vs-BLD-ST-Columns";
 

@@ -14,7 +14,7 @@ namespace Federator.Core.Views
     public static class ToolViewFolder
     {
         /// <summary>The name of the top folder.</summary>
-        public const string Name = "NWC Federator (auto)";
+        public const string Name = "Clash Status";
 
         /// <summary>The first words of the marker comment on the top folder.</summary>
         public const string MarkerStart = "NWCF-AUTO";

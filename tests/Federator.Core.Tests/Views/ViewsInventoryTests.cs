@@ -27,7 +27,7 @@ namespace Federator.Core.Tests
         private static readonly string Earlier = ToolViewMark.StampOf(new DateTime(2026, 9, 28, 10, 0, 0, DateTimeKind.Utc));
         private static readonly Point3 Camera = new Point3(1, 2, 3);
         private static readonly string[] Codes = { "AR", "EL", "ME", "ST" };
-        private const string Top = "NWC Federator (auto)";
+        private const string Top = "Clash Status";
         private static readonly string[] Here = { Top, "A" };
 
         private static TestViewPlanOutcome PlanOf(params string[] openTests)

@@ -337,7 +337,7 @@ namespace Federator.Core.Rerun
 
         public const string StepsHelp = "A step that needs another is greyed when that one is off.";
 
-        public const string RulesLine = "The tool viewpoint folder NWC Federator (auto) is deleted and made again on each run. A viewpoint moved by hand into it is deleted. Every other viewpoint and folder outside it is deleted too, except the folder Comments. "
+        public const string RulesLine = "The tool viewpoint folder " + Federator.Core.Views.ToolViewFolder.Name + " is deleted and made again on each run. A viewpoint moved by hand into it is deleted. Every other viewpoint and folder outside it is deleted too, except the folder Comments. "
             + "Set Options, Model, Performance, Close NWC/NWD files on load in Navisworks, so a new NWC export can overwrite a linked file.";
 
         public const string TableHeading = "After the run: clashes of each test that moved, before > after";

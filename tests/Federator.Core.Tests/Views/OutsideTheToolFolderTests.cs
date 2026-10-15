@@ -26,7 +26,7 @@ namespace Federator.Core.Tests
 
         private static RootEntry Tool(int index)
         {
-            return new RootEntry("NWC Federator (auto)", true, index, 187, 4, true);
+            return new RootEntry("Clash Status", true, index, 187, 4, true);
         }
 
         private static List<string> DeletedNames(OutsidePlan plan)
@@ -132,11 +132,36 @@ namespace Federator.Core.Tests
         [Test]
         public void AToolFolderOfThatNameWithoutThisRunsMarkerIsOutsideAndDeleted()
         {
-            RootEntry old = Folder("NWC Federator (auto)", 0, 12, 3);
+            RootEntry old = Folder("Clash Status", 0, 12, 3);
             OutsidePlan plan = OutsideTheToolFolder.Plan(new List<RootEntry> { old, Tool(1) }, true);
 
-            Assert.That(DeletedNames(plan), Is.EqualTo(new[] { "NWC Federator (auto)" }));
+            Assert.That(DeletedNames(plan), Is.EqualTo(new[] { "Clash Status" }));
             Assert.That(plan.Delete[0].IsThisRunsToolFolder, Is.False);
+        }
+
+        [Test]
+        public void TheFolderOfTheOldNameAnEarlierRunMadeIsOutsideAndDeleted()
+        {
+            // F198. The tool folder was NWC Federator (auto) until it was named Clash Status, so the folder an
+            // earlier run made under the old name is outside this run's tool folder and goes with the rest.
+            RootEntry old = Folder("NWC Federator (auto)", 0, 190, 4);
+            OutsidePlan plan = OutsideTheToolFolder.Plan(new List<RootEntry> { old, Folder("Comments", 1, 0, 0), Tool(2) }, true);
+
+            Assert.That(ToolViewFolder.Name, Is.EqualTo("Clash Status"));
+            Assert.That(DeletedNames(plan), Is.EqualTo(new[] { "NWC Federator (auto)" }));
+            Assert.That(plan.ItemsDeleted, Is.EqualTo(1 + 190 + 4));
+        }
+
+        [Test]
+        public void AnEmptyCommentsFolderThatStandsIsKeptAndNoSecondIsMade()
+        {
+            OutsidePlan plan = OutsideTheToolFolder.Plan(new List<RootEntry> { Folder("Comments", 0, 0, 0), Tool(1) }, true);
+
+            Assert.That(plan.Delete, Is.Empty);
+            Assert.That(plan.KeptComments.Count, Is.EqualTo(1));
+            Assert.That(plan.ItemsKept, Is.EqualTo(0));
+            Assert.That(plan.CreateComments, Is.False, "the empty folder that stands is the one kept");
+            Assert.That(OutsideTheToolFolder.Line(plan, 0, false), Does.EndWith("The Comments folder was kept with its 0 items"));
         }
 
         [Test]
@@ -197,7 +222,7 @@ namespace Federator.Core.Tests
         {
             string said = OutsideTheToolFolder.ConfirmWords(37);
 
-            Assert.That(said, Does.Contain("ALL viewpoints and folders outside the tool folder NWC Federator (auto) and the folder Comments will be deleted"));
+            Assert.That(said, Does.Contain("ALL viewpoints and folders outside the tool folder Clash Status and the folder Comments will be deleted"));
             Assert.That(said, Does.Contain("The last run deleted 37 items there"));
             Assert.That(OutsideTheToolFolder.ConfirmWords(-1), Does.Contain("UNKNOWN until the NWF opens"));
         }

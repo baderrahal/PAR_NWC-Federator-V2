@@ -134,7 +134,7 @@ the report are how one clash is shown there.
 
 The tree, outermost first, since F186 and F192:
 
-    NWC Federator (auto)             the tool's one folder, deleted and made again each run
+    Clash Status                     the tool's one folder, deleted and made again each run
       A, B or C                      the priority the clash matrix gives the test, none being C
         BLD-ME-Ducts-vs-BLD-AR-Walls   the test, named exactly as Clash Detective names it
       C
@@ -188,7 +188,7 @@ Pipes, ducts, cable trays and their fittings over 150 mm are in the viewpoints. 
 ones are not. The large ones of Mechanical and Electrical sit in a sub folder of their own,
 Over 150mm, and since F192 that folder exists inside C only:
 
-    NWC Federator (auto)
+    Clash Status
       C
         Over 150mm
           BLD-ME-Ducts-vs-BLD-AR-Walls   the test's clashes over 150 mm

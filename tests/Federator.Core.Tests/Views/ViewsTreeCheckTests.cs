@@ -236,21 +236,21 @@ namespace Federator.Core.Tests
         public void Check1NamesAViewOutsideTheLetterFolderOfItsPriority()
         {
             Tree tree = Good();
-            int at = IndexOfView(tree, "NWC Federator (auto)/A", Lights);
-            string[] wrong = { "NWC Federator (auto)", "B" };
+            int at = IndexOfView(tree, "Clash Status/A", Lights);
+            string[] wrong = { "Clash Status", "B" };
             tree.After[at] = new ViewNode(wrong, Lights, false, 5, MarkOf(wrong, Lights, Camera), 0, Camera, null, false);
 
             ViewsTreeCheck check = Check(FactsOf(tree), 1);
 
             Assert.That(check.Holds, Is.False);
-            Assert.That(Joined(check.Failures), Does.Contain(Lights).And.Contain("NWC Federator (auto)/A"));
+            Assert.That(Joined(check.Failures), Does.Contain(Lights).And.Contain("Clash Status/A"));
         }
 
         [Test]
         public void Check2NamesAFolderUnderTheToolFolderThatIsNotALetter()
         {
             Tree tree = Good();
-            string[] top = { "NWC Federator (auto)" };
+            string[] top = { "Clash Status" };
             tree.After.Add(new ViewNode(top, "Structure vs Mechanical", true, 7, MarkOf(top, "Structure vs Mechanical", null), 0, null, null, false));
 
             ViewsTreeCheck check = Check(FactsOf(tree), 2);
@@ -284,7 +284,7 @@ namespace Federator.Core.Tests
         public void Check2NamesAnOver150mmFolderInsideAOrB()
         {
             Tree tree = Good();
-            string[] inA = { "NWC Federator (auto)", "A" };
+            string[] inA = { "Clash Status", "A" };
             tree.After.Add(new ViewNode(inA, "Over 150mm", true, 9, MarkOf(inA, "Over 150mm", null), 0, null, null, false));
 
             ViewsTreeCheck check = Check(FactsOf(tree), 2);
@@ -305,7 +305,7 @@ namespace Federator.Core.Tests
         public void Check3NamesAViewThatShowsAThirdTeamsModel()
         {
             Tree tree = Good();
-            tree.Hidden[ReadBackKey(Planned(tree, "NWC Federator (auto)/A/" + Ducts))] = new List<string> { Model("EL").FileName };
+            tree.Hidden[ReadBackKey(Planned(tree, "Clash Status/A/" + Ducts))] = new List<string> { Model("EL").FileName };
 
             ViewsTreeCheck check = Check(FactsOf(tree), 3);
 
@@ -360,7 +360,7 @@ namespace Federator.Core.Tests
         public void Check4NamesAViewWhosePaintDoesNotReadBack()
         {
             Tree tree = Good();
-            tree.Painted[ReadBackKey(Planned(tree, "NWC Federator (auto)/B/" + Walls))] = new List<ItemPath> { new ItemPath(new[] { 0, 4 }) };
+            tree.Painted[ReadBackKey(Planned(tree, "Clash Status/B/" + Walls))] = new List<ItemPath> { new ItemPath(new[] { 0, 4 }) };
 
             ViewsTreeCheck check = Check(FactsOf(tree), 4);
 
@@ -434,7 +434,7 @@ namespace Federator.Core.Tests
         public void Check5NamesAMirrorWhoseViewOfAnEarlierRunIsStillInTheTree()
         {
             Tree tree = Good("EL", new[] { Walls });
-            string[] folders = { "NWC Federator (auto)", "B" };
+            string[] folders = { "Clash Status", "B" };
             string earlier = ToolViewMark.StampOf(new DateTime(2026, 9, 28, 10, 0, 0, DateTimeKind.Utc));
             tree.After.Add(new ViewNode(folders, Walls, false, 0,
                 new[] { ToolViewMark.Body(earlier, folders, Walls, Camera, null, Settings) }, 0, Camera, null, false));
@@ -444,7 +444,7 @@ namespace Federator.Core.Tests
             ViewsTreeCheck check = Check(facts, 5);
 
             Assert.That(check.Holds, Is.False);
-            Assert.That(Joined(check.Failures), Does.Contain("NWC Federator (auto)/B/" + Walls + " is a view this tool made of a mirror"));
+            Assert.That(Joined(check.Failures), Does.Contain("Clash Status/B/" + Walls + " is a view this tool made of a mirror"));
         }
 
         /// <summary>The plan takes the mirrors, so no mirrored test gets a view, Bader's point that there are no mirrored tests.</summary>
@@ -554,7 +554,7 @@ namespace Federator.Core.Tests
 
             IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
             ViewsTreeCheck check = checks[2];
-            string place = "NWC Federator (auto)/B/" + Walls;
+            string place = "Clash Status/B/" + Walls;
 
             Assert.That(check.Ran, Is.True);
             Assert.That(check.Holds, Is.False);
@@ -611,7 +611,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheHomesOfAViewAreEachClashsFirstThenSecondHome()
         {
-            PlannedTestView ducts = Planned(Good(), "NWC Federator (auto)/A/" + Ducts);
+            PlannedTestView ducts = Planned(Good(), "Clash Status/A/" + Ducts);
 
             Assert.That(ducts.Homes, Is.EqualTo(new[] { Model("ME").FileName, Model("ST").FileName, Model("ME").FileName, Model("ST").FileName }));
         }
@@ -686,7 +686,7 @@ namespace Federator.Core.Tests
         public void Check3RanInPartWhereAHiddenModelReadBackHasNoName()
         {
             Tree tree = Good();
-            string walls = "NWC Federator (auto)/B/" + Walls;
+            string walls = "Clash Status/B/" + Walls;
             tree.Hidden[ReadBackKey(Planned(tree, walls))] = new List<string> { string.Empty, Model("EL").FileName, null, Model("ME").FileName };
 
             ViewsTreeCheck check = Check(FactsOf(tree), 3);
@@ -728,9 +728,9 @@ namespace Federator.Core.Tests
             Assert.That(check.Failures, Is.Empty);
             Assert.That(check.NotRead, Is.EqualTo(new[]
             {
-                "NWC Federator (auto)/A/" + Ducts + ", a clashing item lives in " + Model("ME").FileName + twice + "which one it lives in is UNKNOWN",
-                "NWC Federator (auto)/A/" + Lights + ", it reads back Current/" + Model("ME").FileName + " as hidden" + twice + "which one it hides is UNKNOWN",
-                "NWC Federator (auto)/B/" + Walls + ", it reads back Current/" + Model("ME").FileName + " as hidden" + twice + "which one it hides is UNKNOWN"
+                "Clash Status/A/" + Ducts + ", a clashing item lives in " + Model("ME").FileName + twice + "which one it lives in is UNKNOWN",
+                "Clash Status/A/" + Lights + ", it reads back Current/" + Model("ME").FileName + " as hidden" + twice + "which one it hides is UNKNOWN",
+                "Clash Status/B/" + Walls + ", it reads back Current/" + Model("ME").FileName + " as hidden" + twice + "which one it hides is UNKNOWN"
             }));
         }
 
@@ -793,7 +793,7 @@ namespace Federator.Core.Tests
         public void Check4NamesAPaintedItemReadBackWithNoPathAsNotRead()
         {
             Tree tree = Good();
-            string walls = "NWC Federator (auto)/B/" + Walls;
+            string walls = "Clash Status/B/" + Walls;
             tree.Painted[ReadBackKey(Planned(tree, walls))].Add(null);
 
             ViewsTreeCheck check = Check(FactsOf(tree), 4);
@@ -816,7 +816,7 @@ namespace Federator.Core.Tests
         public void ANullReadBackIsNotReadAndANullModelIsLeftOutAndNeitherStopsTheBlock()
         {
             Tree tree = Good();
-            string walls = "NWC Federator (auto)/B/" + Walls;
+            string walls = "Clash Status/B/" + Walls;
             tree.Hidden[ReadBackKey(Planned(tree, walls))] = null;
             ViewsTreeFacts facts = FactsOf(tree);
             facts.Models = new List<ModelTeam>(Models()) { null };
@@ -885,14 +885,14 @@ namespace Federator.Core.Tests
         public void Check3RanInPartWhereOneViewWasNotReadBackAndIsNotCountedAsHolding()
         {
             Tree tree = Good();
-            tree.Hidden.Remove(ReadBackKey(Planned(tree, "NWC Federator (auto)/A/" + Lights)));
+            tree.Hidden.Remove(ReadBackKey(Planned(tree, "Clash Status/A/" + Lights)));
             ViewsTreeFacts facts = FactsOf(tree);
             IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
             string block = Joined(ViewsTree.Lines(facts, checks, 0));
 
             Assert.That(checks[2].Holds, Is.False);
             Assert.That(block, Does.Contain("\nCHECK 3  no view shows a model of a third team  RAN IN PART, 0 broke it, 2 of 3 views"));
-            Assert.That(block, Does.Contain("\n    not read: NWC Federator (auto)/A/" + Lights + ", its hidden models were not read back"));
+            Assert.That(block, Does.Contain("\n    not read: Clash Status/A/" + Lights + ", its hidden models were not read back"));
             Assert.That(block, Does.Contain("\n6 of 7 hold, 1 ran in part and is not counted as holding"));
         }
 
@@ -941,12 +941,12 @@ namespace Federator.Core.Tests
         public void Check4NamesTheViewWhosePaintWasNotReadBack()
         {
             Tree tree = Good();
-            tree.Painted.Remove(ReadBackKey(Planned(tree, "NWC Federator (auto)/B/" + Walls)));
+            tree.Painted.Remove(ReadBackKey(Planned(tree, "Clash Status/B/" + Walls)));
 
             ViewsTreeCheck check = Check(FactsOf(tree), 4);
 
             Assert.That(check.Holds, Is.False);
-            Assert.That(Joined(check.NotRead), Is.EqualTo("NWC Federator (auto)/B/" + Walls + ", its painted items were not read back"));
+            Assert.That(Joined(check.NotRead), Is.EqualTo("Clash Status/B/" + Walls + ", its painted items were not read back"));
         }
 
         /// <summary>
@@ -967,7 +967,7 @@ namespace Federator.Core.Tests
                 Assert.That(checks[number - 1].Ran, Is.True, "check " + number);
                 Assert.That(checks[number - 1].Holds, Is.False, "check " + number);
                 Assert.That(Joined(checks[number - 1].NotRead),
-                    Is.EqualTo("NWC Federator (auto)/B/" + Walls + ", not found marked by this run in the walk after"), "check " + number);
+                    Is.EqualTo("Clash Status/B/" + Walls + ", not found marked by this run in the walk after"), "check " + number);
             }
         }
 
@@ -1010,7 +1010,7 @@ namespace Federator.Core.Tests
             ViewsTreeCheck check = Check(facts, 3);
 
             Assert.That(check.Holds, Is.False);
-            Assert.That(Joined(check.NotRead), Is.EqualTo("NWC Federator (auto)/A/" + Lights + ", it shows "
+            Assert.That(Joined(check.NotRead), Is.EqualTo("Clash Status/A/" + Lights + ", it shows "
                 + Model(string.Empty).FileName + " whose code will not read, so whether that is a third team is UNKNOWN"));
         }
 
@@ -1023,7 +1023,7 @@ namespace Federator.Core.Tests
             string block = Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0));
 
             Assert.That(block, Does.StartWith("VIEWS TREE 1A02MM"));
-            Assert.That(block, Does.Contain("\nNWC Federator (auto)\n  A\n    " + Ducts + "  2 open clashes, shows ME ST, hides AR EL, read back"));
+            Assert.That(block, Does.Contain("\nClash Status\n  A\n    " + Ducts + "  2 open clashes, shows ME ST, hides AR EL, read back"));
             Assert.That(block, Does.Contain("\n  B\n    " + Walls));
             Assert.That(block, Does.Contain("models     : AR Architecture, EL Electrical, ME Mechanical, ST Structure"));
 
@@ -1046,7 +1046,7 @@ namespace Federator.Core.Tests
         {
             ViewsTreeFacts facts = FactsOf(Good());
             ViewNode legacy = new ViewNode(new[] { "ME vs ST" }, Ducts + "  Clash9", false, 0, null, 0, Camera, null, false);
-            ViewNode refused = new ViewNode(new[] { "NWC Federator (auto)", "A" }, Ducts, false, 0, null, 0, Camera, null, false);
+            ViewNode refused = new ViewNode(new[] { "Clash Status", "A" }, Ducts, false, 0, null, 0, Camera, null, false);
             facts.Removals = new List<RemovalOutcome>
             {
                 new RemovalOutcome(legacy, InventoryDecision.RemoveLegacy, true, null),
@@ -1056,7 +1056,7 @@ namespace Federator.Core.Tests
             string block = Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0));
 
             Assert.That(block, Does.Contain("removed 0 at once, 0 this tool's earlier views, 1 per clash viewpoints and 0 folders, as the removals reported, 1 not removed: "
-                + "NWC Federator (auto)/A/" + Ducts + ", it is not at index 0 of its folder any more"));
+                + "Clash Status/A/" + Ducts + ", it is not at index 0 of its folder any more"));
 
             facts.Removals = null;
 
@@ -1071,7 +1071,7 @@ namespace Federator.Core.Tests
         public void AFailedCheckIsAFailedLineNamingWhatBrokeIt()
         {
             Tree tree = Good("EL", new[] { Walls });
-            string[] folders = { "NWC Federator (auto)", "B" };
+            string[] folders = { "Clash Status", "B" };
             string earlier = ToolViewMark.StampOf(new DateTime(2026, 9, 28, 10, 0, 0, DateTimeKind.Utc));
             tree.After.Add(new ViewNode(folders, Walls, false, 0,
                 new[] { ToolViewMark.Body(earlier, folders, Walls, Camera, null, Settings) }, 0, Camera, null, false));

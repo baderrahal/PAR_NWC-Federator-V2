@@ -663,3 +663,6 @@ F194,"the seconds of every view are measured and said in VIEWS TIMING lines, the
 F195,"the Rebuild box asks its confirmation on Checked and Unchecked so a tick made by automation or the keyboard asks too",F195,none,fix,merged,275,none,2026-10-15
 F196,"the views took 3294 s where the read back called GetAppearanceOverrides with the objects of earlier calls uncollected, now collected after each read back, 215 s, the nested timing part fixed",F196,none,fix,merged,276,none,2026-10-15
 F197,"the report of round 5 at the top of steps_bader_next.md, the counts of Q182 read off the runs, Q177 Q180 Q181 proven by a run",F197,none,fix,merged,277,none,2026-10-15
+F198,"the tool folder is named Clash Status where it was NWC Federator (auto), the rules line reads the one constant, the folder of the old name is deleted as outside, an empty Comments folder that stands is kept",F198,none,fix,in review,none,none,2026-10-15
+Q183-1,"the tool folder is named Clash Status and an empty Comments folder is kept, F198",none,none,Bader's request,in review,none,none,2026-10-15
+Q183-2,"inside Clash Status under A B and C the tests go in discipline folders Architecture Structure Mechanical Electrical Other, Over 150mm only inside Mechanical and Electrical of C, F199",none,none,Bader's request,open,none,none,2026-10-15
