@@ -1,4 +1,5 @@
-STATE OPEN, 2026-10-18 00:25, the round of many communities and the discipline reports, F208 in review, run-20261018-000821 and 001025 on a copy, main 83d2126 installed as c332da99 of fix-F208
+STATE OPEN, 2026-10-18 00:58, F208 288 merged and proved on a copy, F209 in review, run-20261018-004351 and 005237 on a copy, 3b6a16ab of fix-F209 installed
+
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -34,7 +35,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 17 Oct 21:30, C04 copy, NWF page twice | 2ad21979, main after 286 | 3116 in 273 s, 3097 in 279 s | not run | none read | the runs 16.9 and 17.3 min, every model shown for the pictures |
 
 ## Next
-1. F208 merged on green, then F209 the discipline reports measured first by a probe, then the F210 runs on C06 and C07
+1. F209 merged on green, then the F210 runs on copies of C06 and C07, flat and ACC, the NWC page then the NWF page
 2. Bader runs the NWF page on NM fed's C04 NWF with 2ad21979 and reads the CLASH HIDDEN and IMAGES HIDDEN lines, steps\03_bader_next.md
 3. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
 4. F207-R1: which 2 items each view paints that are not its clashes, read on a copy of C04

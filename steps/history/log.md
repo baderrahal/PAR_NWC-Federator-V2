@@ -2,6 +2,37 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F209 one Excel per discipline per package
+
+Branch fix-F209 off main 14a6e4e. Bader's message of 17 Oct 2026 late evening, feature 2.
+
+What was done. Measured first, docs\history\scan.md 5z-zg, by a new probe, tools\probes\DisciplineProbe, on copies of the 64
+NWCs of C06 and the 4 of C02: the Revit category, the element id, the family and the type on the Element tab, the level on
+Level, Schedule Level or the Item tab's Layer, a CAD file imported into a family as a topmost item typed Imports in Families
+under the family instance that is its element, 35 in C06, and C02's boxes 2,823 km apart with its four shared sites. Then
+Core, Federator.Core.Disciplines: the six checks in Bader's order, coordinates by the gap between the boxes with the C02
+case as a test, a missing discipline by group, naming against the reference discipline's learned pattern with a merged
+shape for each part, file age against 7 days, the CAD imports and the Generic Models elements with their ids, every line
+from a rule and an id not read written not readable and counted, and one workbook a discipline. Then the add-in: the facts
+read off each model of a group of a package, and the four workbooks of each package written once its groups end, on both
+pages.
+
+Proved on Navisworks on C:\NWC-PC-Test\work\multi\smoke2, a copy, run-20261018-004351 on the NWC page and run-20261018-005237
+on the NWF page: every workbook written and read back line for line, each check firing on the copies as the 01_next.md
+section names. The NWC page run showed one AR name making every part of it fixed, so ST-MOD-000002 broke on its number. The
+number is now judged by its shape alone, `DisciplineReportSettings.ShapeOnlyParts`, part 7 by default, and the NWF page run
+shows it following while a copy renamed to number 00002 still breaks.
+
+What remains. The full test on C06 and C07, F210. Three CAD and three Generic Models ids found again in Navisworks by their id.
+How a CAD file linked or imported into a project itself shows is UNKNOWN, none being in C06 or C02, so the CAD check reads
+imports into families alone.
+
+Known bugs. None found in this fix beyond the number, fixed above.
+
+What comes next. F210, the test on C06 and C07 in both layouts.
+
+Core tests 3319 before and 3345 after, 0 failed, 0 skipped. The solution 0 warnings and 0 errors.
+
 ## 2026-10-18 F208 many communities and nested packages
 
 Branch fix-F208 off main 83d2126. Bader's message of 17 Oct 2026 late evening, feature 1.
