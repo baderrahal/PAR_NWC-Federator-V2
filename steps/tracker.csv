@@ -674,3 +674,4 @@ F201,"the units step set every model to Meters with its own transform, scaling e
 Q186,"every NWF the tool built before F201 has its models scaled and moved and its clashes from that geometry, 10170 against 13286 on 1A04PK, which groups to rebuild, F201 F202",none,none,question,waiting for Bader,none,none,2026-10-15
 F202,"the rebuild of 04 PK with F201 on a copy, every file within 0 mm of a manual Append, the table before and after, clashes 10170 before and 13286 after, the report",F202,none,fix,merged,282,none,2026-10-15
 F203,"the picture walk takes the tests at or under their cap first, so the memory stop no longer leaves every small test of C04 with no picture, F190 F182",F203,none,fix,merged,283,none,2026-10-17
+F204,"the clash step shows every hidden item for the run and hides it again after, so a refresh of an NWF saved with models hidden no longer marks their clashes Resolved, 10016 of 13286 on C04",F204,none,fix,in review,UNKNOWN,none,2026-10-17

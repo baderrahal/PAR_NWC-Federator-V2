@@ -418,11 +418,81 @@ namespace Federator.Addin.Engine
         public int SidesNotCompared { get; private set; }
 
         /// <summary>
+        /// F204. Runs the plan with every item shown and hides again exactly what was hidden. Clash Detective finds no
+        /// clash on a hidden item, so an NWF saved with models hidden had the clashes of those models marked Resolved by a
+        /// refresh, 10016 of 13286 on a copy of C04 on 17 Oct 2026. The hidden state is read by the snapshot the
+        /// viewpoints use, SavedViewpoints.SnapshotHidden, and the models hidden whole are counted off their root items.
+        /// Neither showing nor putting back stops the run. The words are Federator.Core.Clash.HiddenForTheClash's.
+        /// </summary>
+        public ClashRunOutcome Run(ClashTestPlan plan)
+        {
+            Document document = NavisworksApplication.ActiveDocument;
+            HiddenSnapshot snapshot = null;
+            bool shown = false;
+
+            try
+            {
+                if (document != null)
+                {
+                    snapshot = SavedViewpoints.SnapshotHidden(document);
+                    int hiddenModels = 0;
+
+                    foreach (Model model in document.Models)
+                    {
+                        using (ModelItem root = model.RootItem)
+                        {
+                            if (root != null && root.IsHidden)
+                            {
+                                hiddenModels++;
+                            }
+                        }
+                    }
+
+                    log.Line(HiddenForTheClash.Found(snapshot.HiddenCount, hiddenModels, document.Models.Count));
+
+                    if (snapshot.HiddenCount > 0 || hiddenModels > 0)
+                    {
+                        document.Models.ResetAllHidden();
+                        shown = true;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                log.Line(HiddenForTheClash.Threw("showing every item for the clash", error.Message));
+            }
+
+            try
+            {
+                return RunTheTests(plan);
+            }
+            finally
+            {
+                if (shown)
+                {
+                    try
+                    {
+                        log.Line(HiddenForTheClash.PutBack(SavedViewpoints.RestoreHiddenState(document, snapshot), snapshot.HiddenCount));
+                    }
+                    catch (Exception error)
+                    {
+                        log.Line(HiddenForTheClash.Threw("hiding again what was hidden before the clash", error.Message));
+                    }
+                }
+
+                if (snapshot != null)
+                {
+                    snapshot.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
         /// Creates whatever the plan holds and runs it. The plan is resolved against the
         /// sets actually in the document first, so a locator naming a set that is not
         /// there skips its test by name rather than creating one with an empty side.
         /// </summary>
-        public ClashRunOutcome Run(ClashTestPlan plan)
+        private ClashRunOutcome RunTheTests(ClashTestPlan plan)
         {
             if (plan == null)
             {
