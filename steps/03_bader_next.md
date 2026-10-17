@@ -1,5 +1,115 @@
 # 03 Bader next
 
+## Audit round of 17 Oct, C02 and C04, the second run, and the missing Excel pictures
+
+Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Every run was on a COPY under C:\NWC-PC-Test\work\audit-c02-c04. Your NM fed and C:\00-NM\Federation Task\C02 + 04 were only read. Their listings, every file's name, size, date and SHA-256, are the same before and after the round: 12987 and 11506 files, 0 lines differ.
+
+Two fixes came out of the runs, F203 and F204, each merged on green. Main is 800c21c and it is installed.
+
+### The short answer
+
+1. Excel had no pictures for the small tests because the 12 GB memory stop ended the pictures before the small tests were reached. The pictures went most clashes first. Now the tests at or under their cap go first, F203. On C04 all 174 of them now have every picture, all 162 under 50 clashes among them. PROVEN
+2. Your NM fed C04 NWF was saved on 15 Oct at 14:51 with 8 of its 10 models hidden. Clash Detective finds no clash on a hidden item, so a weekly run marked 10016 of its 13286 clashes Resolved. Now the clash step shows every item for the run and hides them again after, F204. PROVEN
+3. The second run keeps everything: tests, statuses, Assigned To, comments, approvers and the clash GUIDs. PROVEN
+4. C02 needs your decision. Its NWF was built before F201, every model is in Meters, and two of its NWCs, AR and ME, are not on shared coordinates. Q191. PROVEN
+
+### Your steps, in this order
+
+Main 800c21c is already installed on this PC, its title reads 800c21c4. The first step proves F204 on your real file, and it comes first because a run before F204 would have marked the clashes of your 8 hidden models Resolved.
+
+1. Close every Navisworks.
+2. Open Navisworks, the tool, the NWF page, pick NM fed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf and press Run, then OK.
+3. In the log, read the two CLASH HIDDEN lines: 8 hidden items shown for the clash, then hidden again, read back. The page's table should show no test moving to Resolved.
+4. Open the newest dated Excel in NM fed\Log. The small tests at the end carry a picture on every row.
+5. Answer Q187 to Q193 below.
+
+### Part 0, the sources
+
+| what | found | tag |
+|---|---|---|
+| The newest C02 and C04 NWC, NWF, NWD, Clash report, Clash Test and Log | C:\Users\bader\Desktop\NM fed, 12987 files | PROVEN, listed |
+| The older set of 21 Sep | C:\00-NM\Federation Task\C02 + 04, 11506 files, listed and not copied, its NWFs are older than every fix since | PROVEN, listed |
+| The copy | work\audit-c02-c04\fed, all 12987 files | PROVEN |
+| Nothing live changed | listing-before and listing-after in work\audit-c02-c04, 0 lines differ in either source | PROVEN |
+| A copy of an NWF still opens its NWCs from NM fed\NWC, because the NWF keeps the full path. Navisworks only reads them. Nothing was written there, the listing proves it | probe read of the copy | PROVEN |
+
+### Part 1, no picture in Excel for tests under 50 clashes
+
+| check | what I found | tag |
+|---|---|---|
+| a. A jpg for each clash of a small test | Your C04 run of 15 Oct 14:11, main's code: 31 tests had pictures and 163 had none, all 162 tests under 50 clashes among them. Every jpg a row names is on disk, 3275 of 3275 | PROVEN |
+| b. The GDI or memory stop fired first | The memory stop fired at picture 3276. It fired on every C04 run with pictures since 14 Oct 18:26, at picture 3029 to 3331. The pictures went most clashes first, so the small tests at the end got none | PROVEN, the cause |
+| c. The cap box lowers the cap | No. The log says no cap of your own per test | PROVEN, not the cause |
+| d. The Excel link opens the jpg | Yes, 3275 of 3275 go up one folder to Clash report and find the jpg | PROVEN, not the cause |
+| e. The HTML shows a picture where Excel does not | No. The HTML had the same 3275 pictures and 10011 empty picture cells | PROVEN |
+| f. The row order matches the numbering | Yes, in every test | PROVEN |
+| The client's file | Each picture is a linked picture with a full file:/// path and no cell link. Ours is the same, plus a cell link | PROVEN, read off the file |
+| C02 in your Clash Test folder, 14 Oct | 4160 clashes and 4160 pictures. A small group never reaches the stop | PROVEN |
+| Why the memory grows | Each Navisworks picture call keeps about 3.1 MB and one GDI object. A full .NET collection after each picture still gave 3.0 MB. At 512 pixels it was 0.2 MB. 600 pictures measured three ways | PROVEN |
+| F203 on C04, run 1, main 800c21c | The memory stop at picture 3056. All 174 tests at or under their cap have every picture. The 20 tests over their cap got 537 of the 2350 they want. 3055 links, all open their jpg | PROVEN |
+| Your note that the caps were for tests over 1000 clashes | The code caps every test since F190 of 15 Oct. Not changed. Q187 | question |
+
+### Part 2, C04 and C02 in Navisworks
+
+| check | C04 | C02 | tag |
+|---|---|---|---|
+| Models appended | 10 of 10 | 4 of 4 | PROVEN |
+| Units | every model Feet, the document Feet, F201 held | every model Meters, the document Feet, built before F201, Q186 | PROVEN |
+| In place against a manual Append | 0 mm, F202 | boxes 3.3 to 4.3 times wider, EL and ST 17 to 20 m off. AR and ME of the manual Append sit 2824 km away, on Revit's internal origin, Q191 | PROVEN |
+| Hidden models in the saved NWF | 8 of 10 hidden whole | none read | PROVEN |
+| Tests against the built in pack 1104-PAR, 1830 tests | 741 in the NWF, all in the pack, 1089 not made because a side finds nothing, each named in the log | 561 in the NWF, all in the pack | PROVEN |
+| Duplicate names, mirrored pairs | 0 and 0, and the pack has no mirrored pair | 0 duplicate names | PROVEN |
+| Tolerance | 25 mm on all 741, the drop down's value, put in Feet | 25 mm on all 561 | PROVEN |
+| Test status | Old on all 741 before and after each run. Why is UNKNOWN, my guess is the hide put back after the clash | Old on all 561 | PROVEN, cause UNKNOWN |
+| Clashes, before run 1 | 13286 in 194 tests: New 3947, Reviewed 9339 | 4160 in 130 tests: Active 3698, Reviewed 462 | PROVEN |
+| Excel against the clash data | 194 tests and 13286 rows, every test equal | not run on C02 | PROVEN for C04 |
+| Zero clash tests | 547 left out of Excel and kept in the HTML | | PROVEN |
+| Units in the report | tolerance 0.025m, distances in metres, the same as the API gives. 2167 clashes are deeper than 1 m, Columns against Floors at 17.7 m. Whether that depth is real is UNKNOWN | | PROVEN |
+| Files | Excel in Log, pictures with the HTML in Clash report | | PROVEN |
+| Auto Reviewed, penetration | 2019 clashes: services 20 to 150 mm through Floors 1208 and Walls 811, none over 150 mm, none service against service. 10 samples with both items in work\audit-c02-c04\probe\penetration-samples.txt | | PROVEN |
+| Auto Reviewed, by design | 7320 clashes in 32 pairs of the built in pairs list. 4 of the pairs are service against service, 252 clashes, such as Pipe Accessories against Pipes. Q189 | | PROVEN |
+| The tool set Approved or Resolved | never, 0 | | PROVEN |
+| Views | Clash Status 152 views after run 2: A 102, B 30, C 20, discipline folders under each, Over 150mm only in C/Electrical (3). One view a test with an open clash, 43 tests whose every clash is Reviewed or Approved get none. The same as the VIEWS TREE of the log | | PROVEN |
+| The C02 tool run | not run, only probed | | UNKNOWN |
+
+### Part 3, the second run, does data get overwritten
+
+Run 1 then run 2 on the NWF page, main 800c21c, both DONE, 13.3 and 13.4 min. Before run 2 a probe set 10 clashes by hand, 5 Approved and 5 Reviewed, each with an Assigned To and a comment. 4 were Reviewed by the tool before, 3 open services through a wall or floor, 3 in other tests. It added a folder at the root and one inside Comments. I also put a note in Clash report and a jpg not named cd in the _files folder.
+
+| check | before -> after | tag |
+|---|---|---|
+| 1. Tests duplicated, reset or imported again | 741 -> 741, the same GUID on every test, 0 created, the clash XML read as the plan and no test made from it again | PROVEN |
+| 2. New to Active | run 1: New 3947 -> Active 3947 | PROVEN |
+| 2. Reviewed and Approved kept | run 2: Reviewed 9340 -> 9340, Approved 5 -> 5, Active 3941 -> 3941 | PROVEN |
+| 2. A clash not found again is Resolved | on the broken run 1, every clash of a hidden model went to Resolved, 10016. A clash that left the model for real was not run, the NWCs did not change | PROVEN for not found, UNKNOWN for a real change |
+| 3. Assigned To and comments kept | 10 assigned before, 10 after, 0 changed, 0 comments lost | PROVEN |
+| 4. Clash GUIDs the same | run 1 and run 2: 13286 of 13286 kept their GUID and their name. Matched by the two Element IDs where they are unique, 10448 of 10448 | PROVEN |
+| 5. Auto Reviewed leaves a person's status alone | the 6 a person set with no tool comment: 0 moved, 0 given a tool comment. The 4 that were the tool's: the person's status kept | PROVEN |
+| 6. Only the tool folder rebuilt | Clash Status deleted with its 153 items and made again with 152. The Comments folder kept with my folder inside it. My root folder "Audit user folder" was DELETED, by your round 5 order. Q190 | PROVEN |
+| 7. Clash report folder | the HTML written again. 3080 cd jpgs after, all this run's, every older cd jpg gone. My note, my jpg and the logo kept. Excel is not overwritten: each run writes a dated Excel beside the old one in Log | PROVEN |
+| 8. Excel and HTML of run 2 match the clashes | 13286 rows, the same as the NWF | PROVEN |
+| 9. Calls that could drop results | TestsReplaceWithCopy, TestsCompactAllTests and any reset: none in the code. TestsAddCopy: only for a pack test not in the document. TestsEditTestFromCopy: the tolerance when it differs, and the file's settings when that box is ticked, off by default. Both runs kept every result | READ and PROVEN |
+
+The facts from Autodesk I checked against, SEARCHED: the 2022 help says an Approved clash found again stays Approved, a clash not found is Resolved, and a hand set Resolved found again goes back to New. The same page for 2025 gives 404, so 2025 is UNKNOWN by the help and PROVEN by the runs above for Approved and Reviewed. The Autodesk article on XML import gave 403 and the apidocs pages gave nothing, so those lines rest on the runs.
+
+### What I changed outside the repo
+
+- Files: work\audit-c02-c04 (the copy, the listings, the probe reads, the tools), work\audit-c02-c04\fed-run1-hidden (the copy after the broken run 1, kept), work\run-evidence\audit-c04-r1, audit-c04-r1b and audit-c04-r2, work\probe\AuditProbe and run-auditprobe.ps1, C:\NWC-PC-Test\backup\ParsonsNwcFederator.bundle.before-F203, two lines in the tool's own nwf-places.tsv pointing at the copies, and the tool's logs.
+- Programs: four Navisworks starts by the launcher, three of them real runs, and 19 probe sessions. All closed by themselves with exit code 0, bar the first launcher start: its driver refused, my mistake, and I closed its tool window myself. AutoSave was put back to 0 each time.
+- Not mine: a second Claude session worked on C02 in work\audit-c02 at the same time, and you had Navisworks open from 14:02. I waited for it and touched neither.
+
+
+### Open questions for you, the recommended answer first
+
+1. Q187: keep the picture caps on every test, as now, or cap only the tests over 1000 clashes.
+2. Q188: set the Pixels box to 512, so every capped picture of C04 is made, or keep 1024, the client's size.
+3. Q189: keep the three accessory pairs of Mark by design and take Conduits against Cable Tray out, or take all four out, or keep all four.
+4. Q190: delete only the views and folders the tool made and keep every folder a person made, or keep the round 5 rule.
+5. Q191: have AR and ME of 1A02MM exported again on shared coordinates, then Rebuild C02, or Rebuild C02 now.
+6. Q192: name the stops, the caps, PLACE 1 mm and penetration 150 mm on the internal workbook, or leave them in the log only.
+7. Q193: let me measure next round why every test reads Old after a run, or leave it.
+8. Still open from before: Q182, Q184, Q185 and Q186.
+
 ## F201 and F202, the models of 04 PK did not line up
 
 Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Every run was on a COPY under C:\NWC-PC-Test\work\f201. The ten NWCs there are byte for byte the ones in NM fed\NWC\C04. NM fed was not written: its listing was the same before and after every run.

@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-10-17 F205 the audit round of C02 and C04, the second run, the missing Excel pictures
+
+Branch fix-F205 off main 800c21c. Bader's order of 17 Oct.
+
+What was done. NM fed's C02 and C04 copied to C:\NWC-PC-Test\work\audit-c02-c04, NM fed and C:\00-NM\Federation Task\C02 + 04
+listed with the SHA-256 of every file before and after, 12987 and 11506 files, 0 lines differ. A new probe outside the repo,
+AuditProbe, read the models, the tests, every result with its GUID, status, Assigned To and comments, and the view tree.
+Part 1: the missing pictures were the memory stop ending a walk that went most clashes first, F203. Part 3 run 1 of the NWF
+page on Bader's C04 NWF marked 10016 of 13286 clashes Resolved, the NWF being saved with 8 of 10 models hidden, F204. On a
+fresh copy with both fixes, run-20261017-150142 and run-20261017-151759, DONE: tests 741 with the same GUIDs, New to Active
+3947, every Reviewed and Approved kept, 13286 of 13286 clash GUIDs and names kept, the 10 planted clashes kept their status,
+Assigned To and comment, the tool touched none a person set, only Clash Status rebuilt, a root folder a person made deleted by
+the round 5 rule, the Comments folder kept. All 174 tests of C04 at or under their cap pictured, the 20 over it 537 of 2350.
+Auto Reviewed: penetration 2019 clashes, 20 to 150 mm, through walls and floors only, by design 7320 in 32 pairs, 4 of them
+service against service. C02: every model in Meters, built before F201, and its AR and ME NWCs on Revit's internal origin,
+2824 km from EL and ST. A picture at 1024 pixels keeps 3.1 MB in Navisworks, a collection does not free it, 512 keeps 0.2 MB.
+
+What remains. The C02 tool run, not run, only probed. A clash that leaves the model for real, not run. Why every test reads
+Old after a run, UNKNOWN, Q193.
+
+Known bugs. Every test reads Old after a run. Excel distances of 17.7 m on Columns against Floors, the API's own, real or not
+UNKNOWN.
+
+What comes next. Bader's answers to Q187 to Q193 and his run of the NWF page on NM fed's C04 NWF.
+
+Core tests 3269 before and 3269 after, no code changed in this entry.
+
 ## 2026-10-17 F204 the clash step shows every item and hides it again after
 
 Branch fix-F204 off main 7f5f38b. Found by the audit round's run 1.
