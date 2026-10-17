@@ -23,7 +23,8 @@ namespace Federator.Addin.Engine
     /// pictures through after, so no clash handle is held across the hide, the order the probe of
     /// 5z-zc ran in. Which models stay shown is PictureModels' rule in Core, and every doubt keeps
     /// every model shown and says why. Hide adds hiding to the other models and leaves every hide
-    /// the document held, and the state is read once before the first hide by
+    /// the document held, which since F206 is none, the picture pass showing every item first by
+    /// EverythingShown, and the state is read once before the first hide by
     /// SavedViewpoints.SnapshotHidden, measured in 5k, and put back after each test by
     /// RestoreHiddenState. Since F149 the pictures are taken once every test has run, in stretches
     /// of rows read from one test, so a test here is a stretch, and a test whose rows sit in two

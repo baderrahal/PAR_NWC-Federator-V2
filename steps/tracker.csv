@@ -683,3 +683,4 @@ Q191,"C02 was built before F201 and its AR and ME NWCs are not on shared coordin
 Q192,"numbers the code holds that no report shows, the stops, the caps, PLACE 1 mm and penetration 150 mm, show them on the internal workbook or not",none,none,question,waiting for Bader,none,none,2026-10-17
 Q193,"all tests read Old after a run, cause UNKNOWN, measure next round or leave",none,none,question,waiting for Bader,none,none,2026-10-17
 F205,"the audit round of C02 and C04 on copies, the second run, the missing Excel pictures, the report at the top of steps_bader_next.md, Q187 to Q193",F205,none,fix,merged,285,none,2026-10-17
+F206,"the pictures taken after the NWF save show every item and hide again after, so a model saved hidden no longer leaves its pictures empty, 744 of 3080 on C04",F206,none,fix,merged,286,none,2026-10-17

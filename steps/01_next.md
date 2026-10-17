@@ -1667,3 +1667,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's order of 17 Oct: a full coordinator audit of C02 and C04 on copies, the second run, and the missing Excel pictures. Runs on work\audit-c02-c04 with main 800c21c: run 1 and run 2 on the NWF page, DONE, a probe read before and after each, 10 clashes and two folders planted before run 2. The cause of the missing pictures is F203 and the lost clashes on hidden models F204. Q187 to Q193. NM fed and the 21 Sep set listed the same before and after, SHA-256 of every file.
 - DONE 2026-10-17. Report at the top of steps\03_bader_next.md.
+
+## F206 The pictures taken after the save show every item
+
+- Found by the check round of 17 Oct evening on F205's run 2 of the C04 copy, saved with 8 of 10 models hidden whole: F204 hides them again after the clash step and the pictures are taken after the NWF is saved, F182, so 744 of 3080 pictures showed only the sky and the grid label and 2127 belonged to tests with a side in a hidden model. The picture pass now shows every item first and hides again what was hidden after, the clash step's way, through one class EverythingShown that both steps use, one IMAGES HIDDEN line before and one after.
+- In code 2026-10-17. Core tests 3269 before and 3276 after, the solution 0 warnings and 0 errors. The run on a fresh copy of C04 is the check round's run 1.

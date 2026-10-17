@@ -900,7 +900,7 @@ well as to pass.
   each item enumerated off GetSelectedItems, never disposed one by one, and walked to its model by
   SavedViewpoints.ModelFileOf, which releases the parents and never the item. Hide takes the hidden state
   once by SnapshotHidden, measured in 5k, adds hiding to every other model's root by HideTheOtherModels,
-  which unlike ShowOnlyModels resets nothing, so every hide the document held stays in the pictures, and
+  which unlike ShowOnlyModels resets nothing, on a document F206's EverythingShown has already shown whole, and
   hands back what puts the state back by RestoreHiddenState after the stretch. NO CLASH HANDLE IS READ
   ACROSS THE HIDE: RenderThePicturesWaiting, where since F149 every picture is taken, reads the models off a
   handle released before the hide and pictures through one resolved after, the order 5z-zc ran in. A put
@@ -1083,3 +1083,14 @@ found on one CLASH HIDDEN line, calls `ResetAllHidden` where anything was hidden
 snapshot back by `SavedViewpoints.RestoreHiddenState`, read back and said. Neither the showing nor the putting back stops
 the run. The words are `Federator.Core.Clash.HiddenForTheClash`'s. Whether a model hidden whole that the snapshot does not
 list is hidden again after is read off the run, and the line says when it is not.
+
+THE PICTURES TAKEN AFTER THE SAVE SHOW EVERY ITEM TOO, F206. Since F182 the pictures are taken by
+`ClashRunner.TakeTheDeferredPictures` after the NWF is saved, so after F204 has hidden again what the document hid. On the
+audit round's run 2 of 17 Oct 2026, on a copy of C04 saved with 8 of 10 models hidden whole, 744 of the 3080 pictures showed
+only the sky and the grid label and 2127 belonged to tests with a side in a hidden model. Both steps now go through
+`EverythingShown`, one class that snapshots, counts the models hidden whole, says one line, calls `ResetAllHidden` where
+anything was hidden and puts the snapshot back when disposed. The picture pass makes it before `TestModelsShown` and disposes
+it after that one ends, so each test's other models are hidden on top of an all shown document and the person's hides come
+back last. Its words are `Federator.Core.Clash.HiddenForThePictures`'s, IMAGES HIDDEN, and they differ from the clash
+step's so the log says which step showed and which put back. A person's hide no longer reaches a picture, as it reaches
+neither the clash nor a view.
