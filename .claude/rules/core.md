@@ -2501,6 +2501,45 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
 - The words of the step and the panel are `PackageWords`, the buttons within the tick box rule, and the two pickers are
   `PickerKind.PackageParent` and `PackageReport`, each remembered on its own
 
+## The discipline reports, F209
+
+Bader's message of 17 Oct 2026 late evening, feature 2. Federator.Core.Disciplines. ONE WORKBOOK PER DISCIPLINE PER
+PACKAGE, AR, ST, ME and EL by default, `DisciplineReportSettings.Disciplines`, each one sheet named after the discipline,
+never one workbook of many sheets, saved in the package's report folder under `DisciplineWorkbook.NameFor`, the package's
+path in words, the discipline and the suffix, a name already there taking a dated one by `ReportPaths.FreeFilePath`.
+
+- EVERY LINE IS MADE BY A RULE OF THE FOLDER and none is free text. Bader's columns in his order, `CheckWords.Columns`:
+  community, package, group, file, check, result, value, element id. The file cell is the file's name. The element id is
+  empty on a line about no element and the setting's words, not readable by default, where an element's id was not read,
+  and `DisciplineReport.IdsNotReadable` counts them for the log, so nothing disappears quietly
+- THE SIX CHECKS, IN BADER'S ORDER IN EVERY WORKBOOK, `CheckWords.All`. A check with nothing to find still writes a line
+  saying so, since a workbook missing a check reads as one that did not run
+- 1. COORDINATES, `CoordinatesCheck`: each model measured from the boxes of the reference discipline's models of its group,
+  `DisciplineReportSettings.Reference`, AR by default, by the GAP BETWEEN THE TWO BOXES, nought where they touch or overlap
+  and the straight line of the gaps on the three axes where they do not, never the transform, which does not show C02's
+  2,823 km, scan.md 5z-zg. Over `FarMetres`, a choice of 1000 m and not a measurement, a model is far, and the line names the
+  distance, in km from a thousand metres on, and both shared sites. The reference model's line names every discipline far
+  from it. A group with no reference model is measured from its first discipline with a box, said on the line. A box or a
+  site not read is not read with why, never near or far. The C02 case is a test on the boxes the probe read
+- 2. A MISSING DISCIPLINE, `MissingDisciplineCheck`: a discipline found in other groups of the package and not in this one,
+  one line per group in its own workbook, off the file names. A discipline in every group, and one in no group, each get one
+  line saying so
+- 3. NAMING, `ReferenceNaming`, not against ISO: the reference discipline's names split on the naming separator, the part
+  count most of them have, each part all of them hold alike, and each part's MERGED SHAPE, `MergedShape`, a letter, a digit,
+  either where a letter and a digit meet, or a mark, the length kept, so C06's building codes 1B06BC and 1B06G1 share one.
+  The discipline's own part is left out. Every file of another discipline reads follows or breaks, and a break names the part,
+  what it holds and what the reference holds there, a shape said by naming a real part that has it. With no reference file no
+  pattern is learned and each workbook says so. The reference is a setting
+- 4. FILE AGE, `FileAgeCheck`: each NWC with the date the disk gives it, over `OlderThanDays`, 7, older than the limit, exactly
+  the limit within it, a date not read not read with why
+- 5 AND 6. CAD AND GENERIC MODELS, `ElementChecks`: one line per element the add-in read, the CAD file's name, the family and
+  type it sits in and its level, or the family, the type and the level, with its id. `LevelName` takes the name between the
+  quotes Navisworks gives a level, `CadFileName` an import's own name where it ends with an extension, both measured in
+  5z-zg. A model with none says none found, and one whose items were not walked says not read with why
+- A LINE NO WORKBOOK TAKES, a file of a code outside the list or whose name does not read, is in `DisciplineReport.LeftOut`
+  and counted by its code on the DISCIPLINE REPORT block. The internal names the add-in reads are `DisciplineProperties`,
+  each measured and typed once
+
 ## The diagnostic log
 
 The log is what Bader sends back when something goes wrong, so it is built to

@@ -32,6 +32,37 @@ namespace Federator.Core.Disciplines
         /// <summary>The words after the package and the discipline in a workbook's name.</summary>
         public const string DefaultWorkbookSuffix = "checks";
 
+        /// <summary>
+        /// The parts of a file name the naming check judges by their shape alone and never as a value every reference name
+        /// must share, counted from 1: the number, part 7, which counts the files of a discipline and differs by its nature,
+        /// so an ST-MOD-000002 beside one AR-MOD-000001 is not a break, read on the copies of 18 Oct 2026.
+        /// </summary>
+        public static readonly ReadOnlyCollection<int> DefaultShapeOnlyParts = new ReadOnlyCollection<int>(new[] { 7 });
+
+        private ReadOnlyCollection<int> shapeOnlyParts = DefaultShapeOnlyParts;
+
+        public IList<int> ShapeOnlyParts
+        {
+            get { return shapeOnlyParts; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                foreach (int part in value)
+                {
+                    if (part < 1)
+                    {
+                        throw new ArgumentOutOfRangeException("value", "A part is counted from 1.");
+                    }
+                }
+
+                shapeOnlyParts = new ReadOnlyCollection<int>(new List<int>(value));
+            }
+        }
+
         private ReadOnlyCollection<string> disciplines = DefaultDisciplines;
         private string reference = DefaultReference;
         private int olderThanDays = DefaultOlderThanDays;

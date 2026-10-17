@@ -173,7 +173,7 @@ namespace Federator.Core.Disciplines
                     }
 
                     List<string> words = order.ConvertAll(result => byResult[result] + " " + result);
-                    lines.Add("    " + check.PadRight(18) + (words.Count == 0 ? "no line" : string.Join(", ", words.ToArray())));
+                    lines.Add("    " + check.PadRight(19) + (words.Count == 0 ? "no line" : string.Join(", ", words.ToArray())));
                 }
             }
 

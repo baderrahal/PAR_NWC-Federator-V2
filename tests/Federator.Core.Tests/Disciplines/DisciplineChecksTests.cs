@@ -171,9 +171,9 @@ namespace Federator.Core.Tests
         [Test]
         public void TheArPatternIsLearnedAndAFileBreakingAFixedPartIsNamedWithWhatArHasThere()
         {
-            ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR"), Nwc("1B06G1", "AR") }, "AR", Names);
+            ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR"), Nwc("1B06G1", "AR") }, Settings, Names);
 
-            Assert.That(naming.Describe(), Is.EqualTo("learned from 2 AR names, 7 parts split on -: part 1 1104, part 2 PAR, part 3 shaped like 1B06BC, part 4 ZZZ, part 5 the discipline, part 6 MOD, part 7 000001"));
+            Assert.That(naming.Describe(), Is.EqualTo("learned from 2 AR names, 7 parts split on -: part 1 1104, part 2 PAR, part 3 shaped like 1B06BC, part 4 ZZZ, part 5 the discipline, part 6 MOD, part 7 shaped like 000001"));
             Assert.That(naming.Breaks(Nwc("1B06BC", "ME")), Is.Empty);
 
             string wrong = TestPaths.At("Parent", "1105-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc");
@@ -183,7 +183,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AFileWithAnotherPartCountOrAPartOfAnotherShapeIsNamed()
         {
-            ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR"), Nwc("1B06G1", "AR", "000002") }, "AR", Names);
+            ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR"), Nwc("1B06G1", "AR", "000002") }, Settings, Names);
 
             IList<string> six = naming.Breaks(TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-000001.nwc"));
             Assert.That(six[0], Is.EqualTo("it has 6 parts split on -, AR names have 7"));
@@ -235,11 +235,29 @@ namespace Federator.Core.Tests
             Assert.That(ReferenceNaming.MergedShape(new[] { "A-1", "A_1" }), Is.Null, "two marks share no shape");
         }
 
+        /// <summary>
+        /// Read on the smoke copy of 18 Oct 2026: one AR name, 1104-PAR-1B06BC-ZZZ-AR-MOD-000001, made every part of it
+        /// fixed, so ST-MOD-000002 read as a break of part 7. The number is judged by its shape alone, a setting.
+        /// </summary>
+        [Test]
+        public void TheNumberIsJudgedByItsShapeAloneSoAnotherNumberOfOneArNameFollowsAndAShortOneBreaks()
+        {
+            ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR") }, Settings, Names);
+
+            Assert.That(naming.Breaks(Nwc("1B06BC", "ST", "000002")), Is.Empty);
+            Assert.That(naming.Breaks(Nwc("1B06BC", "ME", "00002")).Single(), Is.EqualTo("part 7 reads 00002, AR has a part shaped like 000001 there"));
+
+            DisciplineReportSettings strict = new DisciplineReportSettings { ShapeOnlyParts = new int[0] };
+            Assert.That(ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR") }, strict, Names).Breaks(Nwc("1B06BC", "ST", "000002")).Single(),
+                Is.EqualTo("part 7 reads 000002, AR has 000001 there"), "with no part judged by shape alone the number is a fixed part");
+            Assert.That(() => strict.ShapeOnlyParts = new[] { 0 }, Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
         [Test]
         public void TheReferenceIsASettingSoStLearnsThePatternWhenAsked()
         {
             DisciplineReportSettings st = new DisciplineReportSettings { Reference = "ST" };
-            ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "ST") }, st.Reference, Names);
+            ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "ST") }, st, Names);
 
             Assert.That(naming.Describe(), Does.StartWith("learned from 1 ST names"));
         }

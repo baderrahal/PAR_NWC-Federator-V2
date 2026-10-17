@@ -91,7 +91,7 @@ namespace Federator.Core.Tests
 
             Assert.That(report.IdsNotReadable("ME"), Is.EqualTo(1));
             Assert.That(report.Lines(), Has.Some.StartsWith("ME  "));
-            Assert.That(report.Lines(), Has.Some.EqualTo("    Generic Models    2 found"));
+            Assert.That(report.Lines(), Has.Some.EqualTo("    Generic Models     2 found"));
             Assert.That(report.Lines().First(l => l.StartsWith("ME  ")), Does.EndWith("element ids not readable 1"));
         }
 

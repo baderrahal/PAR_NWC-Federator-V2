@@ -365,10 +365,10 @@ namespace Federator.Core.Disciplines
             get { return NameCount > 0; }
         }
 
-        public static ReferenceNaming Learn(IEnumerable<string> referenceFiles, string reference, ContainerNameSettings names)
+        public static ReferenceNaming Learn(IEnumerable<string> referenceFiles, DisciplineReportSettings settings, ContainerNameSettings names)
         {
             ReferenceNaming naming = new ReferenceNaming();
-            naming.Reference = reference;
+            naming.Reference = settings.Reference;
             naming.Separator = names.Separator;
             naming.DisciplinePart = names.DisciplinePart;
             List<string[]> parts = new List<string[]>();
@@ -414,7 +414,7 @@ namespace Federator.Core.Disciplines
                 string first = alike[0][i];
                 bool same = alike.TrueForAll(p => string.Equals(p[i], first, StringComparison.Ordinal));
                 string shape = MergedShape(alike.ConvertAll(p => p[i]));
-                naming.fixedValues.Add(same && i + 1 != names.DisciplinePart ? first : null);
+                naming.fixedValues.Add(same && i + 1 != names.DisciplinePart && !settings.ShapeOnlyParts.Contains(i + 1) ? first : null);
                 naming.shapes.Add(i + 1 != names.DisciplinePart ? shape : null);
                 naming.examples.Add(first);
             }
@@ -619,7 +619,7 @@ namespace Federator.Core.Disciplines
                 }
             }
 
-            ReferenceNaming naming = Learn(referenceFiles, settings.Reference, names);
+            ReferenceNaming naming = Learn(referenceFiles, settings, names);
             List<CheckRow> rows = new List<CheckRow>();
 
             foreach (string discipline in settings.Disciplines)
