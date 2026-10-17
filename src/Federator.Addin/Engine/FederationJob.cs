@@ -50,6 +50,32 @@ namespace Federator.Addin.Engine
 
         public string Building { get; private set; }
 
+        /// <summary>
+        /// The package this group belongs to, its path from the parent folder such as C06\Infrastructure, F208. Empty for
+        /// a run of one folder, the open file and a picked NWF, where there is no package.
+        /// </summary>
+        public string Package { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// The Log folder of the group's package, under its report folder, F208. Empty where the engine's own Log folder,
+        /// worked out once for the run, is the group's.
+        /// </summary>
+        public string LogFolder { get; private set; } = string.Empty;
+
+        /// <summary>The group named with its package, the words every GROUP line and RESULT carry, Core's PackagePlan.LabelFor.</summary>
+        public string Label
+        {
+            get { return Federator.Core.Packages.PackagePlan.LabelFor(Package, Building); }
+        }
+
+        /// <summary>Puts the group in its package with the package's Log folder, F208, and hands the job back.</summary>
+        public FederationJob InPackage(string package, string logFolder)
+        {
+            Package = package ?? string.Empty;
+            LogFolder = logFolder ?? string.Empty;
+            return this;
+        }
+
         public string OutputName { get; private set; }
 
         public string NwfPath { get; private set; }

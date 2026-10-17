@@ -23,7 +23,13 @@ namespace Federator.Core.Diagnostics
         /// the NWF output folder's, because the NWFs a person runs as they are and the folder
         /// a scanned run writes to are not the same place as often as not.
         /// </summary>
-        PickedNwf
+        PickedNwf,
+
+        /// <summary>The parent folder of the packages, F208, whose first level holds the communities.</summary>
+        PackageParent,
+
+        /// <summary>The Report folder the packages write under, F208. Its own kind, since it is never the parent.</summary>
+        PackageReport
     }
 
     /// <summary>
@@ -131,7 +137,9 @@ namespace Federator.Core.Diagnostics
                 PickerKind.Nwf,
                 PickerKind.Nwd,
                 PickerKind.Logo,
-                PickerKind.PickedNwf
+                PickerKind.PickedNwf,
+                PickerKind.PackageParent,
+                PickerKind.PackageReport
             };
         }
 

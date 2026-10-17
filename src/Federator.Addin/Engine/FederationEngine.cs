@@ -15,6 +15,7 @@ using Federator.Core.Findings;
 using Federator.Core.Generic;
 using Federator.Core.Health;
 using Federator.Core.Naming;
+using Federator.Core.Packages;
 using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
@@ -65,6 +66,9 @@ namespace Federator.Addin.Engine
         private int viewsOutsideDeleted = -1;
         private readonly List<string> logFolders = new List<string>();
         private readonly List<SourcePair> sourcePairs = new List<SourcePair>();
+
+        /// <summary>True once a run is handed a group or an NWF of a package, F208, so the run's list goes to every package.</summary>
+        private bool packagesRun;
 
         /// <summary>
         /// Every Log folder this run wrote into, F158: one for a scanned run, and one for each
@@ -599,6 +603,7 @@ namespace Federator.Addin.Engine
             foreach (FederationJob scanned in jobs)
             {
                 scannedGroupCodes.Add(scanned.Disciplines);
+                packagesRun = packagesRun || !string.IsNullOrEmpty(scanned.Package);
             }
 
             FingerprintThePickedXml();
@@ -609,12 +614,15 @@ namespace Federator.Addin.Engine
 
                 // The live line carries the group from here on, so the sentence beside it
                 // says what is NEW rather than repeating what the line already holds.
-                currentBuilding = job.Building;
-                live.Groups(i + 1, jobs.Count, job.Building);
+                currentBuilding = job.Label;
+                live.Groups(i + 1, jobs.Count, job.Label);
                 Say(job.Files.Count + (job.Files.Count == 1 ? " file" : " files"));
 
                 Stopwatch groupClock = Stopwatch.StartNew();
-                log.GroupStarted(job.Building, job.Files);
+
+                // F208. The group named with its community and package on its GROUP lines and in RESULT, where a run of
+                // packages carries one. A run of one folder keeps the plain group, PackagePlan.LabelFor.
+                log.GroupStarted(job.Label, job.Files);
 
                 JobOutcome outcome = RunOne(job);
                 groupClock.Stop();
@@ -625,7 +633,7 @@ namespace Federator.Addin.Engine
                 // A group that threw before Decide carries the default, Build, and so
                 // reads First run, the same default GroupJudgement judges it by.
                 log.GroupFinished(
-                    job.Building,
+                    job.Label,
                     outcome.Result,
                     groupClock.Elapsed.TotalSeconds,
                     outcome.Reason,
@@ -633,7 +641,7 @@ namespace Federator.Addin.Engine
 
                 // Q101. The clock stopped above, so this reads the same seconds the GROUP
                 // finished line carries.
-                Sized(job.Building, job.Files, outcome, groupClock.Elapsed.TotalSeconds);
+                Sized(job.Label, job.Files, outcome, groupClock.Elapsed.TotalSeconds);
 
                 if (StopsTheRunAfter(i + 1, jobs.Count))
                 {
@@ -785,10 +793,27 @@ namespace Federator.Addin.Engine
         /// </summary>
         public IList<JobOutcome> RunPickedNwfs(IList<string> nwfs)
         {
+            return RunPickedNwfs(nwfs, null);
+        }
+
+        /// <summary>
+        /// The NWFs of ticked packages, F208, each run as a picked NWF is, its package named on its GROUP lines and its NWD
+        /// and its logs written into the package's own folders, PackageNwfs. inPackages is the place of each NWF in the
+        /// order of nwfs, or null for a pick, where each NWF runs beside its file or where the run that built it wrote.
+        /// </summary>
+        public IList<JobOutcome> RunPickedNwfs(IList<string> nwfs, IList<PackageNwf> inPackages)
+        {
             if (nwfs == null)
             {
                 throw new ArgumentNullException("nwfs");
             }
+
+            if (inPackages != null && inPackages.Count != nwfs.Count)
+            {
+                throw new ArgumentException("one place for each NWF, in the same order", "inPackages");
+            }
+
+            packagesRun = inPackages != null;
 
             // One tally for this run, its count the picked NWFs, as Run makes one for a scan.
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
@@ -806,7 +831,7 @@ namespace Federator.Addin.Engine
             {
                 for (int i = 0; i < nwfs.Count; i++)
                 {
-                    outcomes.Add(RunAnOpenFile(nwfs[i], i + 1, nwfs.Count, true, summaries));
+                    outcomes.Add(RunAnOpenFile(nwfs[i], i + 1, nwfs.Count, true, summaries, inPackages == null ? null : inPackages[i]));
 
                     if (StopsTheRunAfter(i + 1, nwfs.Count))
                     {
@@ -829,13 +854,14 @@ namespace Federator.Addin.Engine
         /// written once the run ends.
         /// </summary>
         private JobOutcome RunAnOpenFile(
-            string open, int at, int of, bool openItHere, List<IList<string>> summaries)
+            string open, int at, int of, bool openItHere, List<IList<string>> summaries, PackageNwf inPackage = null)
         {
             FederationJob job = OpenJob(open);
 
             if (openItHere)
             {
-                string knownNwd = places.NwdOf(open);
+                // F208. An NWF of a package writes its NWD into the package's NWD folder, the place the NWC page gave it.
+                string knownNwd = inPackage != null ? inPackage.NwdPath : places.NwdOf(open);
 
                 if (knownNwd.Length > 0)
                 {
@@ -844,8 +870,13 @@ namespace Federator.Addin.Engine
                 }
             }
 
-            currentBuilding = job.Building;
-            live.Groups(at, of, job.Building);
+            if (inPackage != null && inPackage.Package != null)
+            {
+                job.InPackage(inPackage.Package.RelativePath, inPackage.LogFolder);
+            }
+
+            currentBuilding = job.Label;
+            live.Groups(at, of, job.Label);
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
@@ -858,7 +889,7 @@ namespace Federator.Addin.Engine
             // line says so.
             Stopwatch groupClock = Stopwatch.StartNew();
             IList<string> openFiles = openItHere ? null : FilesInsideTheOpenDocument(job.Building);
-            log.GroupStarted(job.Building, openFiles);
+            log.GroupStarted(job.Label, openFiles);
 
             try
             {
@@ -885,7 +916,9 @@ namespace Federator.Addin.Engine
                 // scanned run, and no scan folder is applied because there was no scan.
                 // F189. A picked NWF built by the NWC page keeps its NWD and its Log folder where that run put them, so the
                 // NWF page writes the NWD, the Log, the Backup and the Clash report beside the group's and not beside the file.
-                string knownLog = openItHere ? places.LogFolderOf(open) : string.Empty;
+                string knownLog = openItHere
+                    ? (job.LogFolder.Length > 0 ? job.LogFolder : places.LogFolderOf(open))
+                    : string.Empty;
                 reportFolder = knownLog.Length > 0 ? knownLog : OpenDocumentJob.ReportFolder(open);
                 NoteTheLogFolder(reportFolder);
                 NameTheReportsSoNothingIsOverwritten(job);
@@ -1031,7 +1064,7 @@ namespace Federator.Addin.Engine
                 // this run opened is labelled off how its open went, F129 attempt 2, so one
                 // that read empty is Stopped and RESULT counts it under NWF read empty.
                 log.GroupFinished(
-                    job.Building,
+                    job.Label,
                     outcome.Result,
                     groupClock.Elapsed.TotalSeconds,
                     outcome.Reason,
@@ -1039,7 +1072,7 @@ namespace Federator.Addin.Engine
 
                 // Q101, the same block as the scanned run, its files the models the open
                 // document holds.
-                Sized(job.Building, openFiles, outcome, groupClock.Elapsed.TotalSeconds);
+                Sized(job.Label, openFiles, outcome, groupClock.Elapsed.TotalSeconds);
 
                 // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
                 // where they apply, written once the run ends, just before the window
@@ -1280,7 +1313,8 @@ namespace Federator.Addin.Engine
                 + " and " + Path.GetDirectoryName(nwd) + ", and the files there are not touched. The clash history of the old NWF is not in the new one");
 
             return new FederationJob(
-                job.Building, job.OutputName, nwf, nwd, job.Files, job.WorkbookName, job.DisciplineCount, job.Disciplines);
+                job.Building, job.OutputName, nwf, nwd, job.Files, job.WorkbookName, job.DisciplineCount, job.Disciplines)
+                .InPackage(job.Package, job.LogFolder);
         }
 
         /// <summary>
@@ -1296,6 +1330,14 @@ namespace Federator.Addin.Engine
 
         private JobOutcome RunOne(FederationJob job)
         {
+            // F208. A group of a package writes its logs and reports in its package's Log folder, under the package's
+            // report folder, where a run of one folder has one Log folder for every group, set when the engine was made.
+            if (!string.IsNullOrEmpty(job.LogFolder))
+            {
+                reportFolder = job.LogFolder;
+                NoteTheLogFolder(reportFolder);
+            }
+
             job = TheDatedJobWhereTheNwfIsThere(job);
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
@@ -2904,7 +2946,7 @@ namespace Federator.Addin.Engine
                 log.Failure("reading where the models sit", error, "the run goes on and this group is not judged on it");
             }
 
-            CoordinatesAcrossTheRun.Add(job.Building, judged, runsATest);
+            CoordinatesAcrossTheRun.Add(job.Label, judged, runsATest);
         }
 
         /// <summary>
@@ -3029,21 +3071,29 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            string path = ReportPaths.FreeFilePath(reportFolder, CoordinatesAcrossTheRun.ListName, DateTime.Now, null);
+            // F208. A run of packages writes the run's list into the Log folder of every package it ran, as the window
+            // copies the run log into each, so no package's folder holds a list another package's run left. Any other run
+            // writes it into its one Log folder, as it always has.
+            List<string> folders = packagesRun ? new List<string>(logFolders) : new List<string> { reportFolder };
 
-            try
+            foreach (string folder in folders)
             {
-                log.WriteAttempted("LIST", path);
-                EnsureFolder(path);
-                File.WriteAllLines(path, CoordinatesAcrossTheRun.ForModellers());
-                log.WriteFinished("LIST", path);
-            }
-            catch (Exception error)
-            {
-                log.Failure(
-                    "the list of models not on the same shared coordinates at " + path,
-                    error,
-                    "kept going, the RESULT block lists the same groups");
+                string path = ReportPaths.FreeFilePath(folder, CoordinatesAcrossTheRun.ListName, DateTime.Now, null);
+
+                try
+                {
+                    log.WriteAttempted("LIST", path);
+                    EnsureFolder(path);
+                    File.WriteAllLines(path, CoordinatesAcrossTheRun.ForModellers());
+                    log.WriteFinished("LIST", path);
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "the list of models not on the same shared coordinates at " + path,
+                        error,
+                        "kept going, the RESULT block lists the same groups");
+                }
             }
         }
 
@@ -3736,7 +3786,7 @@ namespace Federator.Addin.Engine
                 // never disagree. The RESULT block had no clash total of any kind before
                 // the drift round: the number sat in ten CLASH blocks and adding it up
                 // meant reading a log thousands of lines long.
-                log.ClashesFound.Add(job.Building, clash.TotalClashes, clash.RanCount, clash.WithClashesCount);
+                log.ClashesFound.Add(job.Label, clash.TotalClashes, clash.RanCount, clash.WithClashesCount);
 
                 // 3b, the block his own report made urgent. A set that finds nothing is
                 // not one dead set, it is every clash test that points at it, and until

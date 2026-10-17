@@ -101,14 +101,28 @@ namespace Federator.Core.Tests
             ProveOnePicker(PickerKind.PickedNwf, "picked-nwf");
         }
 
+        /// <summary>F208. The parent folder of the packages, on step 5 of the NWC page.</summary>
+        [Test]
+        public void ThePackageParentPickerRemembersItsOwnFolder()
+        {
+            ProveOnePicker(PickerKind.PackageParent, "parent");
+        }
+
+        /// <summary>F208. The Report folder the packages write under, on step 5 of the NWC page.</summary>
+        [Test]
+        public void ThePackageReportPickerRemembersItsOwnFolder()
+        {
+            ProveOnePicker(PickerKind.PackageReport, "report");
+        }
+
         [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Five kinds and five tests above, since F154, F155 and F158 took out the priority, by design, clash XML and Excel folder
-            // pickers. The existing NWF picker has two
+            // Seven kinds and seven tests above: five since F154, F155 and F158 took out the priority, by design, clash XML and
+            // Excel folder pickers, and the parent and Report folders of the packages F208 added. The existing NWF picker has two
             // Browse buttons on one kind. If another kind is added this fails until it is
             // proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(5));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(7));
         }
 
         // ---------- the one that was actually broken ----------

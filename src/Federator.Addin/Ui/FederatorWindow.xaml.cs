@@ -16,6 +16,7 @@ using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Naming;
+using Federator.Core.Packages;
 using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
@@ -114,6 +115,7 @@ namespace Federator.Addin.Ui
             ShowOpenDocument();
             ShowPickedNwfWording();
             StartTheNwfPage();
+            StartThePackages();
             FillGroupingModes();
 
             log.Block("FOLDERS REMEMBERED", folders.Lines());
@@ -2273,10 +2275,11 @@ namespace Federator.Addin.Ui
         /// and the progress line repaint, which is not the same as moving the work onto a
         /// background thread. No Navisworks call may leave this thread.
         /// </summary>
-        private void RunJobs(IList<FederationJob> jobs, string nwfFolder, string nwdFolder, ToleranceChoice tolerance)
+        private void RunJobs(
+            IList<FederationJob> jobs, string nwfFolder, string nwdFolder, ToleranceChoice tolerance, PackageTally packages = null)
         {
             running = true;
-            RunButton.IsEnabled = false;
+            SetTheRunButtons(false);
 
             // Outside the try, so the RESULT block written in the finally carries what the
             // shared coordinates rule did in THIS run, or nothing where no engine was made.
@@ -2315,17 +2318,27 @@ namespace Federator.Addin.Ui
                 }
 
                 ReportOptions options = ReportsWanted(tolerance);
-                string logFolder = options.LogFolderFor(nwfFolder, nwdFolder);
 
-                log.Line("RUN      logs and reports go in " + logFolder
-                    + ", beside the NWF and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone");
+                // F208. A run of packages has no one NWF folder: each group writes into its package's Log folder, under
+                // the package's report folder beside its NWF and NWD folders, which its job carries.
+                log.Line(packages == null
+                    ? "RUN      logs and reports go in " + options.LogFolderFor(nwfFolder, nwdFolder)
+                        + ", beside the NWF and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone"
+                    : "RUN      logs and reports go in the Log folder of each package, under its report folder beside its NWF "
+                        + "and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone");
                 log.Line("RUN      the clash XML is "
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
-                engine = new FederationEngine(
-                    SetProgress, log, exchange, teams, options, nwfFolder, nwdFolder);
+                engine = packages == null
+                    ? new FederationEngine(SetProgress, log, exchange, teams, options, nwfFolder, nwdFolder)
+                    : new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.UsePack(chosenPack);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
+
+                if (packages != null)
+                {
+                    CountThePackageGroups(packages, outcomes);
+                }
 
                 // What each group actually did, in the list. A group that was rebuilt
                 // reads Rebuilt here once the run has settled it.
@@ -2389,9 +2402,9 @@ namespace Federator.Addin.Ui
             {
                 // The result block is written whatever happened, so a run that stopped still
                 // leaves a readable log with its summary at the end.
-                WriteTheResult(engine);
+                WriteTheResult(engine, null, packages == null ? null : packages.Lines());
                 running = false;
-                RunButton.IsEnabled = true;
+                SetTheRunButtons(true);
             }
         }
 
@@ -2412,18 +2425,20 @@ namespace Federator.Addin.Ui
         /// its .tsv into the Log folder of the run, F158, which replaces F151's rule that no copy
         /// is written anywhere else. The Log folder is not the NWF or the NWD folder.
         /// </summary>
-        private void WriteTheResult(FederationEngine engine, string pickedNwfs = null)
+        private void WriteTheResult(FederationEngine engine, string pickedNwfs = null, IList<string> packages = null)
         {
             try
             {
                 // F127. The coverage of this run, the engine's own tally, so RESULT carries every
-                // group's COVERAGE FAILED line and the counts of the tests once across the run.
+                // group's COVERAGE FAILED line and the counts of the tests once across the run. F208, each
+                // group of a run of packages with its community and package and the totals.
                 log.WriteResultBlock(
                     engine == null ? null : engine.CoordinatesAcrossTheRun,
                     engine == null || engine.MakesViewpoints,
                     engine == null ? null : engine.CoverageAcrossTheRun,
                     engine == null ? null : engine.GenericModelsAcrossTheRun,
-                    pickedNwfs: pickedNwfs);
+                    pickedNwfs: pickedNwfs,
+                    packages: packages);
             }
             catch (Exception error)
             {
@@ -2745,6 +2760,13 @@ namespace Federator.Addin.Ui
             }
 
             ShowOpenDocument();
+
+            // F208. The groups each package makes follow the grouping and the names of steps 2 and 3, which may have
+            // changed since the tree was read.
+            if (ReferenceEquals(Steps.SelectedItem, PackagesStep))
+            {
+                RefreshThePackageDetails();
+            }
         }
 
         /// <summary>

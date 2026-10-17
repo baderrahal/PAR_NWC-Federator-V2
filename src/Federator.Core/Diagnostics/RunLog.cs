@@ -2189,11 +2189,12 @@ namespace Federator.Core.Diagnostics
             bool makeViewpoints = true,
             CoverageAcrossTheRun coverage = null,
             GenericModelsAcrossTheRun generic = null,
-            string pickedNwfs = null)
+            string pickedNwfs = null,
+            IList<string> packages = null)
         {
             try
             {
-                WriteTheResult(thisRun, makeViewpoints, coverage, generic, pickedNwfs);
+                WriteTheResult(thisRun, makeViewpoints, coverage, generic, pickedNwfs, packages);
             }
             finally
             {
@@ -2207,7 +2208,8 @@ namespace Federator.Core.Diagnostics
             bool makeViewpoints,
             CoverageAcrossTheRun coverage,
             GenericModelsAcrossTheRun generic,
-            string pickedNwfs)
+            string pickedNwfs,
+            IList<string> packages)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -2242,6 +2244,19 @@ namespace Federator.Core.Diagnostics
             if (!string.IsNullOrEmpty(pickedNwfs))
             {
                 Line(pickedNwfs);
+            }
+
+            // F208. Under the group counts, because each line names one of those groups with its community and package,
+            // then one total per package, one per community and one for the run, Packages.PackageTally. Only for a run
+            // of packages.
+            if (packages != null)
+            {
+                Blank();
+
+                foreach (string line in packages)
+                {
+                    Line(line);
+                }
             }
 
             // F136. Under the group counts, because a group of an unticked run is DONE
