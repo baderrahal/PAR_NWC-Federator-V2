@@ -506,7 +506,7 @@ namespace Federator.Addin.Ui
 
             string text = RefreshConfirm.Text(
                 nwfs.Count + " NWFs of " + packagesWithNwfs + " packages",
-                null,
+                PackageWords.BackupOfEach,
                 null,
                 nwfSteps.Words(),
                 TestsInTheMatrix(),

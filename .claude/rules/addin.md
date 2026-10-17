@@ -1094,3 +1094,29 @@ it after that one ends, so each test's other models are hidden on top of an all 
 back last. Its words are `Federator.Core.Clash.HiddenForThePictures`'s, IMAGES HIDDEN, and they differ from the clash
 step's so the log says which step showed and which put back. A person's hide no longer reaches a picture, as it reaches
 neither the clash nor a view.
+
+## The packages, F208
+
+MANY COMMUNITIES AT ONCE, Bader's message of 17 Oct 2026 late evening, feature 1. Every rule and every word is Core's,
+core.md Communities and packages. The NWC page has a step 5. Packages and the NWF page a panel on its right, and both
+are bound to ONE `PackagePanel`, so the parent and the Report folders typed and every tick read the same on both pages.
+The tree is a TreeView of `PackageNode` lines whose tick reads and sets Core's `PackageTicks` and holds none of its own,
+every line open so every tick box is in the visual tree, its AutomationProperties.Name its title. Read reads the tree off
+the parent folder, writes the PACKAGE TREE block and shows nothing ticked. Each package's line carries its files and the
+groups they make by steps 2 and 3, counted again when the step is shown.
+
+THE NWC PAGE'S ROUTE, `OnRunPackages`: refused with Core's reason before anything is opened while no tree is read,
+nothing is ticked or the Report folder is refused, then one `PackagePlan` per ticked package, a group whose NWF is there
+left to the NWF page by `NwcPageRule`, the PACKAGES TICKED and PACKAGE GROUPS blocks, the pack choice and the confirm of
+the scanned run, the folders of each package that runs made and said, then `RunJobs` with one engine for the whole run.
+Each job carries its package and its package's Log folder, `FederationJob.InPackage`, the copy of a dated rebuild keeps
+both, and `RunOne` sets the Log folder off the job. The GROUP started and finished lines, the pace of the live line,
+the coordinates tally and the clash totals read `FederationJob.Label`, so community and package are on every group line
+and in RESULT. The list of models off the shared coordinates goes into the Log folder of every package the run wrote, as
+the run log is copied into each.
+
+THE NWF PAGE'S ROUTE, `OnRunNwfPackages`: the same refusals, the NWFs of each ticked package by `PackageNwfs`, a package
+with none named and the others run, the open document's confirm and the refresh confirm, then `RunPickedNwfs` with each
+NWF's place, `PackageNwf`, so its NWD, its Backup and its logs are written into its package's folders and not beside the
+file. One failure never stops the others: each group and each NWF is run in its own try, and only the guard that stops a
+run after its first 50 tests all fail the same way stops the packages after it.

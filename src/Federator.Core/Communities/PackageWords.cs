@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 
 namespace Federator.Core.Communities
@@ -49,6 +48,9 @@ namespace Federator.Core.Communities
         public const string NotReadYet = "Pick the parent folder and press Read.";
 
         public const string TreeWouldNotReadForALabel = "The parent folder could not be read. The log says why.";
+
+        /// <summary>Where the NWF page's run of packages copies each NWF before it opens it, for its confirmation.</summary>
+        public const string BackupOfEach = "the Backup folder under its package's report folder, one copy of each NWF";
 
         public static string ParentNotThere(string parent)
         {

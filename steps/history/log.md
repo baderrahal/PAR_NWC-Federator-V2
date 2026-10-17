@@ -2,6 +2,37 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F208 many communities and nested packages
+
+Branch fix-F208 off main 83d2126. Bader's message of 17 Oct 2026 late evening, feature 1.
+
+What was done. Core, a new folder Federator.Core.Communities: the tree read off one parent folder, the first level the
+communities and every folder below that directly holds NWC files one package, its own files only, at any depth, links
+never followed and every folder or file left out named. The ticks, nothing ticked at the start, a community ticking all
+its packages, Tick all, Clear all and the refusal while none is ticked. The plan of each package, its groups by the
+grouping and the names of steps 2 and 3, its NWF and NWD under Report at the package's path, the Report folder refused at
+or inside the parent. The NWFs the NWF page runs for a package, and the totals per group, package, community and run in
+RESULT. The add-in: step 5. Packages on the NWC page and a panel on the NWF page on one model, each job carrying its
+package and its Log folder, community and package on every GROUP line. The folder was first named Packages and the
+NuGet line packages/ of .gitignore kept it out of the first commit, so it is Communities and core.md says why.
+
+Proved on Navisworks with c332da99 on C:\NWC-PC-Test\work\multi\smoke, a copy: run-20261018-000821 on the NWC page, the
+tree of 3 communities and 4 packages at the right levels, Run with nothing ticked refused in Core's words, one package of
+two ticked alone, C06S\Infrastructure, built in 14.9 s into Report\C06S\Infrastructure with NWF, NWD, Log and Clash
+report, nothing made for the package left out, RESULT reading the group, package, community and run lines.
+run-20261018-001025 on the NWF page, the community ticked whole, the package with an NWF refreshed with its Backup, NWD and
+logs in its own folders, the one with none named as not run with why.
+
+What remains. The full test on C06 and C07, both layouts, both pages, F210. The confirm of the NWF page's run said the
+backup folder is UNKNOWN on that run and now names the Backup folder under each package's report folder, read once F210
+runs.
+
+Known bugs. None found in this fix.
+
+What comes next. F209, the discipline reports.
+
+Core tests 3276 before and 3319 after, 0 failed, 0 skipped. The solution 0 warnings and 0 errors.
+
 ## 2026-10-17 The plan of the round of many communities and the discipline reports, F208 to F211
 
 Bader's message of 17 Oct 2026 late evening, two features and a test on C06 and C07. Written before the first edit, on
