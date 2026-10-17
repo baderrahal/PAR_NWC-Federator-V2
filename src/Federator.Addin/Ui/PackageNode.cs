@@ -1,6 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
-using Federator.Core.Packages;
+using Federator.Core.Communities;
 
 namespace Federator.Addin.Ui
 {

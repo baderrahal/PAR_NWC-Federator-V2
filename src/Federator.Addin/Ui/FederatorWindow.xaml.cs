@@ -16,7 +16,7 @@ using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Naming;
-using Federator.Core.Packages;
+using Federator.Core.Communities;
 using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;

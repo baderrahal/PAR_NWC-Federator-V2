@@ -65,7 +65,7 @@ namespace Federator.Addin.Engine
         /// <summary>The group named with its package, the words every GROUP line and RESULT carry, Core's PackagePlan.LabelFor.</summary>
         public string Label
         {
-            get { return Federator.Core.Packages.PackagePlan.LabelFor(Package, Building); }
+            get { return Federator.Core.Communities.PackagePlan.LabelFor(Package, Building); }
         }
 
         /// <summary>Puts the group in its package with the package's Log folder, F208, and hands the job back.</summary>

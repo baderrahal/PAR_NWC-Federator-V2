@@ -7,7 +7,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Grouping;
-using Federator.Core.Packages;
+using Federator.Core.Communities;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -21,7 +21,7 @@ namespace Federator.Addin.Ui
     /// communities, every folder below holding NWC files directly one package, a tree of them with a tick box each on the
     /// NWC page's step 5 and on the NWF page, nothing ticked at the start. The NWC page builds each ticked package in turn
     /// and the NWF page runs the NWFs each ticked package holds, every output under the package's own report folder. The
-    /// rules and the words are Core's, Federator.Core.Packages, and are tested there. This part reads the disk and the
+    /// rules and the words are Core's, Federator.Core.Communities, and are tested there. This part reads the disk and the
     /// controls, and calls the engine.
     /// </summary>
     public partial class FederatorWindow

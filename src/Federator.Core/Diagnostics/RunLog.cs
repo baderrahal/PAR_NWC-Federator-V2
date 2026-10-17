@@ -2247,7 +2247,7 @@ namespace Federator.Core.Diagnostics
             }
 
             // F208. Under the group counts, because each line names one of those groups with its community and package,
-            // then one total per package, one per community and one for the run, Packages.PackageTally. Only for a run
+            // then one total per package, one per community and one for the run, Communities.PackageTally. Only for a run
             // of packages.
             if (packages != null)
             {

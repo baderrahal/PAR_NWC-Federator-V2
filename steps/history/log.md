@@ -28,7 +28,7 @@ the repo after the last merge and the closing entry. One branch and one pull req
 
 The order.
 
-1. F208, many communities and nested packages, branch fix-F208. Core first, in a new folder Federator.Core.Packages with
+1. F208, many communities and nested packages, branch fix-F208. Core first, in a new folder Federator.Core.Communities with
    its tests: the tree read off a parent folder, the first level the communities, every folder below that directly holds
    NWC files one package, its own files only, at any depth, so a folder holding files and subfolders is a package and
    each subfolder another. The ticks, nothing ticked at the start, a community ticking all its packages, Tick all and
