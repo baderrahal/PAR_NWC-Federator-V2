@@ -2276,7 +2276,7 @@ namespace Federator.Addin.Ui
         /// background thread. No Navisworks call may leave this thread.
         /// </summary>
         private void RunJobs(
-            IList<FederationJob> jobs, string nwfFolder, string nwdFolder, ToleranceChoice tolerance, PackageTally packages = null)
+            IList<FederationJob> jobs, string nwfFolder, string nwdFolder, ToleranceChoice tolerance, PackageRun packages = null)
         {
             running = true;
             SetTheRunButtons(false);
@@ -2337,7 +2337,10 @@ namespace Federator.Addin.Ui
 
                 if (packages != null)
                 {
-                    CountThePackageGroups(packages, outcomes);
+                    CountThePackageGroups(packages.Tally, outcomes);
+
+                    // F209. One workbook per discipline of every package that ran, once all its groups have.
+                    WriteTheDisciplineReports(packages, outcomes, options.Disciplines);
                 }
 
                 // What each group actually did, in the list. A group that was rebuilt
@@ -2402,7 +2405,7 @@ namespace Federator.Addin.Ui
             {
                 // The result block is written whatever happened, so a run that stopped still
                 // leaves a readable log with its summary at the end.
-                WriteTheResult(engine, null, packages == null ? null : packages.Lines());
+                WriteTheResult(engine, null, packages == null ? null : packages.Tally.Lines());
                 running = false;
                 SetTheRunButtons(true);
             }

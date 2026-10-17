@@ -8785,3 +8785,66 @@ eWEAK_REFERENCE 4.
 
 So disposing any of the three releases the wrapper and never the native object, which is why F150 disposes each
 inside one read or one write. What disposing an eEXTERNAL handle does beyond that was not read.
+
+## 5z-zg. HOW A CAD IMPORT AND A GENERIC MODELS ELEMENT SHOW IN AN NWC FROM REVIT, AND THE SHARED SITES OF C02, MEASURED 2026-10-18
+
+F209, the discipline reports, Bader's message of 17 Oct 2026, feature 2: measure first how a CAD file imported or linked into a
+Revit model shows in the Navisworks tree and properties of the NWC, and which property carries the Revit category and the
+element id. Nothing of it was measured before: 5q read the element id and the shared site, 5z-zb the category on the Element
+tab of 1A02MM and 1A04PK, and neither read a family, a type, a level or an import.
+
+**HOW.** `tools\probes\DisciplineProbe\probe-discipline.ps1`, GenericProbe's runner of 5z-zb with its plugin, its mode and its
+arguments changed and its guards untouched, sha256 of tools\loop\nw-guard.ps1 as written in the result. One Navisworks started
+through the Automation API and adopted, quit by Dispose and gone 1.6 s later, not forced. The plugin `DisciplineProbe.dll`,
+`tools\probes\DisciplineProbe\DisciplineProbePlugin.cs`, built with 0 warnings and 0 errors, run once per folder: Document.Clear,
+TryAppendFile of each NWC copy, then a walk of Model.RootItem.DescendantsAndSelf of every model, every tab and property of every
+item read by kind. The copies were of NM fed's NWC\C06, 64 NWCs, and of the four 1A02MM NWCs of C02 the audit round copied on 11
+Oct. Nothing saved, nothing published. The results, the machine's name masked: `discipline-probe-result-20261018.txt`, 22899
+lines, 103 s in all, and the second pass on C06 alone, `discipline-probe-result-20261018-imports.txt`, which lists every
+topmost import with the element above it.
+
+**THE REVIT CATEGORY AND THE ELEMENT ID ARE ON THE ELEMENT TAB, AS 5q AND 5z-zb READ THEM.** Of the 982 elements of C06 whose
+Element tab Category reads Generic Models, all 982 carry, on the tab internal `LcRevitData_Element`, `LcRevitPropertyElementCategory`
+Category, `LcRevitPropertyElementId` Id an Int32, `LcRevitPropertyElementFamily` Family, `LcRevitPropertyElementType` Type and
+`LcRevitPropertyElementName` Name, and the tab `LcRevitId` Element ID with `LcOaNat64AttributeValue`. The first one dumped,
+REC_OPENING COVER, Id 2342282, Family REC_OPENING COVER, Type PAR-ST-600 X 600, Category Id -2000151.
+
+**THE LEVEL IS A NAMED CONSTANT ON THE ELEMENT TAB, WHERE THE ELEMENT CARRIES ONE.** `lcldrevit_parameter_-1001352`, displayed
+Level, on 821 of the 982, read by kind as `Level "GRF", #151434`, the level's name between the quotes and its Revit id after the
+hash. An element hosted on a floor carries `lcldrevit_parameter_-1001365`, displayed Schedule Level, in the same shape, such as
+`Level "TANK ROOF", #2310673`. The Item tab, `LcOaNode`, carries `LcOaNodeLayer`, Layer, on 846 of the 982, the level's name
+alone, GRF. So the level is read off Level, then Schedule Level, then Layer, and is not readable where none is there.
+
+**A CAD FILE IMPORTED INTO A REVIT FAMILY IS AN ITEM WHOSE ITEM TAB TYPE READS Imports in Families.** `LcOaNode` with
+`LcOaSceneBaseClassUserName`, Type, `Imports in Families`, its internal type LcRevitInstance and below it an LcRevitComposite of
+the same Type. 35 topmost such items in C06, in five models: 1B06PH ME-000002 holds Chem-Feed Pkg-R0.dwg twice and Chlorine
+Transfer pump.dwg once, 1B06PO AR-000001 and 1B06WO AR-000001 ten each named 0__127_127_127 to 10_127_127_127, 1B06PP ME-000003
+holds sewage-pump.dwg twice, AIR VENT 100mm.dwg three times, FAB200-25RF.iam three times and O_859_00_DN500_1XXXX00_AA0.ipt
+twice, and 1B06WL ME-000002 Air Vent Valve.dwg twice. The CAD file's name is the item's own name where it carries one, .dwg,
+.iam or .ipt, and an import named like 8_127_127_127 carries none, so its file name is not readable. The item hangs under the
+family instance, Chem-Feed Pkg-R0.dwg under MEC-MEC-Doising Pump-PAR of Mechanical Equipment, and the nearest item above it with
+the Element tab's Id is that instance, Id 1819523 and 1819548 for the two pumps, with its own Level, Level "GRF". The import's
+first child carries an Element ID tab of its own, 1783551 under both pumps, the id inside the family that repeats across its
+instances, so the element of a CAD import is the instance above it. The Element tab Category of no item of C06 or C02 ends with
+a CAD extension, and no class but Imports in Families names an import: a CAD file linked or imported into the project itself
+and not into a family is in neither folder, so how it shows is UNKNOWN until a model holding one is read. The other candidates
+of the walk were the model roots named .nwc, families whose names hold LINK, earth pits with a test link, and a bitmap path
+holding .sat, none of them an import.
+
+**THE SHARED SITES AND THE BOXES OF C02, 1A02MM, THE C02 CASE.** In the document's units, Feet: AR 9.757 -29.403 0 to 39.891
+0.699 32.644, site SWLS-02-SharedCoordinate. EL 2158005.809 9009231.096 2227.227 to 2158052.473 9009286.938 2265.433, site LTB2.
+ME 6.31 -34.838 -3.281 to 35.835 1.506 31.824, site PW3_Shared_Location. ST 2158007.099 9009239.412 2228.129 to 2158053.584
+9009286.436 2265.039, site Internal. The site is the root's `LcRevitPropertyLocation` tab, `revit_ProjectLocation`, as 5q read it.
+The gap between the boxes of AR and EL is about 2,823.7 km, the 2,823 km of the audit round, and AR and ME overlap.
+
+**WHAT THIS DECIDES.** The discipline reports read a Generic Models element by the Element tab Category, its id, family and type
+off the Element tab, and its level off Level, Schedule Level, then Layer, Core's DisciplineProperties. A CAD import is a topmost
+item of the Item tab Type Imports in Families, its element id the nearest Element tab Id above it, its file name its own name
+where that ends with an extension. The coordinates check measures the gap between the boxes of the models' root items, since
+the transform 5q read does not show the 2,823 km of C02.
+
+**COST.** 172,006 items walked in the 64 models of C06 with every property of every item read, the appends included, 72.4 s inside the call, and C02's
+in 6.2 s.
+
+**UNKNOWN.** How a CAD file linked or imported into the project itself shows. Whether a Generic Models element of another
+exporter's NWC carries the same tabs, every one here being exported from Revit.

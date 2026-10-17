@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    F209, the discipline reports, 2026-10-18. A probe that runs INSIDE Navisworks, in GenericProbe's
+    shape, started through the automation API by tools\probes\DisciplineProbe\probe-discipline.ps1.
+    It appends the NWCs of one folder into a cleared document, walks every item of every model, and
+    writes how a CAD file imported or linked into a Revit model shows in the tree and the properties,
+    and which properties carry the Revit category, the element id, the family, the type and the level
+    of a Generic Models element. It references no project of this repo and saves nothing.
+
+        dotnet build tools\probes\DisciplineProbe\DisciplineProbe.csproj -c Release
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>DisciplineProbe</AssemblyName>
+    <RootNamespace>DisciplineProbe</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+    <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
+    <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api">
+      <HintPath>$(NavisworksApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckNavisworks" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(NavisworksApiDll)')" Text="Autodesk.Navisworks.Api.dll was not found at $(NavisworksApiDll). Pass -p:NavisworksPath with the real install folder." />
+  </Target>
+
+</Project>

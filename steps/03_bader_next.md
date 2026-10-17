@@ -1,5 +1,27 @@
 # 03 Bader next
 
+## F209, one Excel per discipline per package
+
+Simple words. Every line of these workbooks comes from a rule in the tool, and nothing in them is typed by a person or a model. The checks were measured first on copies of your C06 and C02 NWCs, docs\history\scan.md 5z-zg.
+
+Your steps, after the F208 steps below.
+
+1. Run Run ticked packages on the NWC page for one package, as in F208.
+2. Open that package's folder under your Report folder.
+   Look for: four Excel files named after the package, then AR, ST, ME or EL, then checks, one sheet each.
+3. Open the EL file and filter the Check column on Coordinates.
+   Look for: each EL model near or far, with its distance from AR and both shared sites.
+4. Filter the Check column on Missing discipline.
+   Look for: a line for each group of the package that lacks EL while others have it, or one line saying EL is in every group.
+5. Filter on Naming.
+   Look for: the AR pattern learned, then follows or breaks for each EL file, a break naming the part and what AR has there.
+6. Filter on File age.
+   Look for: every EL file with its date, older than the limit where it is over 7 days old.
+7. Open the ME file and filter on CAD, then on Generic Models.
+   Look for: one line per imported CAD file or Generic Models element with its element ID, or none found for each model.
+8. In Navisworks, find one listed element ID with Find Items on the Element tab's Id.
+   Look for: the family and the level the line names.
+
 ## F208, many communities and packages
 
 Simple words. PROVEN means a run showed it. Proved here on a copy, C:\NWC-PC-Test\work\multi\smoke, with the build c332da99, before the merge. The full test on C06 and C07 is F210, below once it runs.

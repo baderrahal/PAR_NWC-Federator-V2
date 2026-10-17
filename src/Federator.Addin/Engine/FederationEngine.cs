@@ -3029,6 +3029,62 @@ namespace Federator.Addin.Engine
             {
                 log.Failure("judging which sets of a team can reach its models", error, "the run goes on and this group's TEAMS block is not written");
             }
+
+            ReadTheDisciplineFacts(document, job, outcome);
+        }
+
+        /// <summary>
+        /// F209. What the discipline reports read off each model, for a group of a package alone, in a try of its own, so a
+        /// fault here never fails the group and never counts its EXPORT CHECK as not read. The facts stay on the outcome and
+        /// the window writes the package's workbooks from them once its groups have run.
+        /// </summary>
+        private void ReadTheDisciplineFacts(Document document, FederationJob job, JobOutcome outcome)
+        {
+            if (string.IsNullOrEmpty(job.Package))
+            {
+                return;
+            }
+
+            Stopwatch clock = Stopwatch.StartNew();
+
+            try
+            {
+                IList<Federator.Core.Disciplines.ModelFacts> facts = DisciplineFactsReader.Read(document, reports.Disciplines);
+                outcome.DisciplineFacts = facts;
+                int boxes = 0;
+                int sites = 0;
+                int cad = 0;
+                int generic = 0;
+                int noId = 0;
+
+                foreach (Federator.Core.Disciplines.ModelFacts model in facts)
+                {
+                    boxes += model.HasBox ? 1 : 0;
+                    sites += model.SiteNotRead == null ? 1 : 0;
+                    cad += model.Cad.Count;
+                    generic += model.Generic.Count;
+
+                    foreach (Federator.Core.Disciplines.ElementFact element in model.Cad)
+                    {
+                        noId += element.ElementId == null ? 1 : 0;
+                    }
+
+                    foreach (Federator.Core.Disciplines.ElementFact element in model.Generic)
+                    {
+                        noId += element.ElementId == null ? 1 : 0;
+                    }
+                }
+
+                log.Line("DISCIPLINE " + job.Label + " read " + facts.Count + " models, " + boxes + " boxes, " + sites + " sites, "
+                    + cad + " CAD imports, " + generic + " " + reports.Disciplines.GenericCategory + " elements, " + noId
+                    + " element ids not readable, in " + clock.Elapsed.TotalSeconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " s");
+            }
+            catch (Exception error)
+            {
+                outcome.DisciplineFacts = null;
+                outcome.DisciplineFactsNotRead = error.GetType().Name + ": " + error.Message;
+                log.Failure("reading the models for the discipline reports", error, "the run goes on and this group's models read as not read in those reports");
+            }
         }
 
         /// <summary>

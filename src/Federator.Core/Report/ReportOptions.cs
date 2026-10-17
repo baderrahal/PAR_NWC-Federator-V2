@@ -45,7 +45,14 @@ namespace Federator.Core.Report
             Names = new ContainerNameSettings();
             GenericModels = new GenericModelsSettings();
             Coverage = new CoverageSettings();
+            Disciplines = new Federator.Core.Disciplines.DisciplineReportSettings();
         }
+
+        /// <summary>
+        /// The discipline reports of a run of packages, F209: which disciplines get a workbook, the reference discipline, the
+        /// age limit, the far distance and the words for a value not read. Read off Core here and never typed in the window.
+        /// </summary>
+        public Federator.Core.Disciplines.DisciplineReportSettings Disciplines { get; set; }
 
         /// <summary>Clash pictures. On by default, because the accepted report has them.</summary>
         public ImageOptions Images { get; set; }
