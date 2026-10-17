@@ -24,6 +24,17 @@ namespace Federator.Core.Report
     /// the report, which only a merge that threw between two mirrors of one kept test could
     /// leave, is passed the second time and named, so its picture is taken once and no second
     /// picture of it is written over its cell.
+    ///
+    /// THE TESTS AT OR UNDER THEIR CAP ARE WALKED FIRST, F203. The rule of F190 gives a test with
+    /// fewer clashes than its cap a picture for each. The memory stop of F182 fired on every C04
+    /// run since 14 Oct at about 3000 to 3300 pictures, and the walk went in report order, most
+    /// clashes first, so every test after the stop had no picture at all. On the run of 15 Oct
+    /// 14:11 that was 163 tests, all 162 under 50 clashes among them, while the 174 tests at or
+    /// under their cap wanted 2518 pictures and the run made 3275. Walking those tests first, each
+    /// part in report order, then the tests over their cap, keeps the rule wherever the room allows
+    /// it, and the stop takes the last pictures of the largest tests instead. Where any test over
+    /// its cap comes before one under it in report order the pictures are taken out of report
+    /// order, so the renumber renames them to their final names.
     /// </summary>
     public static class PictureWalk
     {
@@ -32,7 +43,8 @@ namespace Federator.Core.Report
         /// The key of the test of the document a row was read from, or null where the row waits
         /// for no picture.
         /// </param>
-        public static PictureWalkOutcome Of(ClashReport report, Func<ClashRow, string> readFrom)
+        /// <param name="limitOf">The most pictures a test may have, its cap, F190 and F203.</param>
+        public static PictureWalkOutcome Of(ClashReport report, Func<ClashRow, string> readFrom, Func<TestReport, int> limitOf)
         {
             if (report == null)
             {
@@ -44,11 +56,16 @@ namespace Federator.Core.Report
                 throw new ArgumentNullException("readFrom");
             }
 
+            if (limitOf == null)
+            {
+                throw new ArgumentNullException("limitOf");
+            }
+
             PictureWalkOutcome outcome = new PictureWalkOutcome();
             Dictionary<ClashRow, TestReport> metUnder = new Dictionary<ClashRow, TestReport>();
             PictureStretch last = null;
 
-            foreach (TestReport test in ReportOrder.Tests(report))
+            foreach (TestReport test in UnderTheirCapFirst(report, readFrom, limitOf))
             {
                 foreach (ClashRow row in test.Rows)
                 {
@@ -80,6 +97,41 @@ namespace Federator.Core.Report
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// The tests to walk, F203: first every test whose rows waiting for a picture are no more than its cap,
+        /// then every other test, each part in report order.
+        /// </summary>
+        internal static IList<TestReport> UnderTheirCapFirst(ClashReport report, Func<ClashRow, string> readFrom, Func<TestReport, int> limitOf)
+        {
+            List<TestReport> under = new List<TestReport>();
+            List<TestReport> over = new List<TestReport>();
+
+            foreach (TestReport test in ReportOrder.Tests(report))
+            {
+                int waiting = 0;
+
+                foreach (ClashRow row in test.Rows)
+                {
+                    if (readFrom(row) != null)
+                    {
+                        waiting++;
+                    }
+                }
+
+                if (waiting <= limitOf(test))
+                {
+                    under.Add(test);
+                }
+                else
+                {
+                    over.Add(test);
+                }
+            }
+
+            under.AddRange(over);
+            return under;
         }
     }
 

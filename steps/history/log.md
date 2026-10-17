@@ -2,6 +2,27 @@
 
 Newest entry at the top.
 
+## 2026-10-17 F203 the tests at or under their cap get their pictures first
+
+Branch fix-F203 off main 42a2455. Bader's bug of 17 Oct: Excel shows no picture for tests with fewer than 50 clashes.
+
+What was done. The cause was read off the C04 run of 15 Oct 14:11, main's code 9e3736c1, its workbook opened as a zip:
+the memory stop fired at picture 3276, the walk went most clashes first, and the 163 tests after the stop had no picture,
+all 162 tests under 50 clashes among them. 3275 links, 3275 jpgs on disk, none missing, the numbering in row order in
+every test, and the HTML the same 3275. So not the cap, not the box, not the links and not the order of the rows. The
+174 tests at or under their cap wanted 2518 of the 4868 pictures the caps allow. PictureWalk.Of takes a limit and walks
+those tests first, then the tests over their cap, each part in report order. The renumber renames a picture taken out
+of report order to its report order name. Every C04 run since 14 Oct 18:26 hit the memory stop, 3029 to 3331 pictures.
+
+What remains. The run on a copy of C04 with this build, the audit round's run 1. The leak itself is native, one GDI
+object and about 3.3 MB for each TestsImageForResult, the managed heap flat at 120 to 250 MB, so it is not a collection.
+
+Known bugs. The 20 tests over their cap get 757 of the 2350 pictures they want on that run.
+
+What comes next. The audit round's runs and report.
+
+Core tests 3259 before and 3263 after, 0 failed, 0 skipped. The solution 0 warnings and 0 errors.
+
 ## 2026-10-15 F202 the rebuild of 04 PK with F201, every file within 0 mm of a manual Append
 
 Branch fix-F202 off main 9e3736c. Bader's order of 15 Oct, tasks 5 and 6.

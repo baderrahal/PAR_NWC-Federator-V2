@@ -2763,7 +2763,8 @@ namespace Federator.Addin.Engine
                 capped.PicturePriority = Priorities.OfASavedTest(capped.Name);
             }
 
-            PictureWalkOutcome walk = PictureWalk.Of(Report, ReadFrom);
+            // F203. The tests at or under their cap first, so the memory stop takes the last pictures of the largest tests.
+            PictureWalkOutcome walk = PictureWalk.Of(Report, ReadFrom, Images.PictureLimitOf);
 
             foreach (string line in walk.MetTwice)
             {

@@ -1652,3 +1652,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F202 The rebuild of 04 PK with F201
 
 - DONE 2026-10-15. run-20261015-141146 on main 9e3736c1, 10 of 10 files held, the NWD and the NWF within 0 mm of a manual Append of the same NWCs. Clashes 10170 before and 13286 after, Q186. Report at the top of steps\03_bader_next.md.
+
+## F203 The tests at or under their cap get their pictures first
+
+- Bader's bug of 17 Oct: Excel shows no picture for tests with fewer than 50 clashes. The cause, read off the C04 run of 15 Oct 14:11 on main's code: the memory stop of F182 fired at picture 3276, and the walk went in report order, most clashes first, so all 163 tests after it had no picture, all 162 tests under 50 clashes among them. Every link and every jpg was right, 3275 of 3275. The 174 tests at or under their cap wanted 2518 pictures. The walk now takes those tests first, then the tests over their cap, each part in report order, and the renumber gives every picture its report order name.
+- In code 2026-10-17. Core tests 3259 before and 3263 after, the solution 0 warnings and 0 errors. The run on a copy of C04 is the audit round's run 1.
