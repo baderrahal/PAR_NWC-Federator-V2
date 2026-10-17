@@ -2,6 +2,27 @@
 
 Newest entry at the top.
 
+## 2026-10-17 F206 the pictures taken after the save show every item
+
+Branch fix-F206 off main b5b1d82. Found by the check round of 17 Oct evening.
+
+What was done. F205's run 2 on the C04 copy, run-20261017-151759, saved with 8 of its 10 models hidden whole, read picture by
+picture against an empty one on a 64 by 64 grid: 744 of 3080 pictures showed only the sky and the grid label, and 2127
+belonged to tests with a side in a hidden model, so they showed one side at most. The log reads CLASH HIDDEN put back at
+15:23:05 and PICTURES started at 15:27:26, after the NWF save, F182, and TestModelsShown only adds hides. The views were
+not hit, ShowOnlyModels resets every hide first. F204's show and put back moved into one class, EverythingShown, which
+ClashRunner.Run and TakeTheDeferredPictures both use, the picture pass with Core's HiddenForThePictures words, IMAGES
+HIDDEN, made before TestModelsShown and disposed after it ends.
+
+What remains. The run on a fresh copy of C04 with this build: no empty picture, both sides in each, the two IMAGES HIDDEN
+lines, and the saved NWF still holding the 8 models hidden.
+
+Known bugs. None found in this fix.
+
+What comes next. The check round's runs and report.
+
+Core tests 3269 before and 3276 after, 0 failed, 0 skipped. The solution 0 warnings and 0 errors.
+
 ## 2026-10-17 F205 the audit round of C02 and C04, the second run, the missing Excel pictures
 
 Branch fix-F205 off main 800c21c. Bader's order of 17 Oct.

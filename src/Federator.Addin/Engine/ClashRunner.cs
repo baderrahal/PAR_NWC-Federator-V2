@@ -420,70 +420,20 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// F204. Runs the plan with every item shown and hides again exactly what was hidden. Clash Detective finds no
         /// clash on a hidden item, so an NWF saved with models hidden had the clashes of those models marked Resolved by a
-        /// refresh, 10016 of 13286 on a copy of C04 on 17 Oct 2026. The hidden state is read by the snapshot the
-        /// viewpoints use, SavedViewpoints.SnapshotHidden, and the models hidden whole are counted off their root items.
-        /// Neither showing nor putting back stops the run. The words are Federator.Core.Clash.HiddenForTheClash's.
+        /// refresh, 10016 of 13286 on a copy of C04 on 17 Oct 2026. EverythingShown does the showing and the putting back,
+        /// in the words of Federator.Core.Clash.HiddenForTheClash.
         /// </summary>
         public ClashRunOutcome Run(ClashTestPlan plan)
         {
-            Document document = NavisworksApplication.ActiveDocument;
-            HiddenSnapshot snapshot = null;
-            bool shown = false;
-
-            try
-            {
-                if (document != null)
-                {
-                    snapshot = SavedViewpoints.SnapshotHidden(document);
-                    int hiddenModels = 0;
-
-                    foreach (Model model in document.Models)
-                    {
-                        using (ModelItem root = model.RootItem)
-                        {
-                            if (root != null && root.IsHidden)
-                            {
-                                hiddenModels++;
-                            }
-                        }
-                    }
-
-                    log.Line(HiddenForTheClash.Found(snapshot.HiddenCount, hiddenModels, document.Models.Count));
-
-                    if (snapshot.HiddenCount > 0 || hiddenModels > 0)
-                    {
-                        document.Models.ResetAllHidden();
-                        shown = true;
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                log.Line(HiddenForTheClash.Threw("showing every item for the clash", error.Message));
-            }
-
-            try
+            using (new EverythingShown(
+                NavisworksApplication.ActiveDocument,
+                log,
+                "the clash",
+                HiddenForTheClash.Found,
+                HiddenForTheClash.PutBack,
+                HiddenForTheClash.Threw))
             {
                 return RunTheTests(plan);
-            }
-            finally
-            {
-                if (shown)
-                {
-                    try
-                    {
-                        log.Line(HiddenForTheClash.PutBack(SavedViewpoints.RestoreHiddenState(document, snapshot), snapshot.HiddenCount));
-                    }
-                    catch (Exception error)
-                    {
-                        log.Line(HiddenForTheClash.Threw("hiding again what was hidden before the clash", error.Message));
-                    }
-                }
-
-                if (snapshot != null)
-                {
-                    snapshot.Dispose();
-                }
             }
         }
 
@@ -796,6 +746,10 @@ namespace Federator.Addin.Engine
         /// published the NWD. It resolves each test again by its address and name, as the pass always did, so the
         /// save and the publish between do not matter to it. A guard stop is put on the outcome as Run would
         /// have. Every throw is the caller's: the rows not yet pictured keep an empty Image cell.
+        ///
+        /// F206. By now Run has hidden again what the document hid, so every item is shown for the pictures as it is for
+        /// the clash and hidden again after them, put back once the hiding of each test's other models has ended. The
+        /// audit round's run 2 on a copy of C04 saved with 8 of 10 models hidden had 744 of 3080 pictures empty without it.
         /// </summary>
         public void TakeTheDeferredPictures(ClashRunOutcome outcome)
         {
@@ -803,6 +757,8 @@ namespace Federator.Addin.Engine
             {
                 return;
             }
+
+            EverythingShown everything = null;
 
             try
             {
@@ -814,6 +770,13 @@ namespace Federator.Addin.Engine
                     return;
                 }
 
+                everything = new EverythingShown(
+                    document,
+                    log,
+                    "the pictures",
+                    HiddenForThePictures.Found,
+                    HiddenForThePictures.PutBack,
+                    HiddenForThePictures.Threw);
                 modelsShown = new TestModelsShown(document, log, Images.OnlyTheTestsModels);
                 DocumentClashTests clashTests = document.GetClash().TestsData;
 
@@ -824,6 +787,11 @@ namespace Federator.Addin.Engine
             {
                 EndTheHidingOfTheModels();
                 picturesWaiting.Clear();
+
+                if (everything != null)
+                {
+                    everything.Dispose();
+                }
             }
         }
 
