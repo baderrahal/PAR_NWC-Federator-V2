@@ -3,6 +3,8 @@ param(
   [string]$Out = "",
   [string]$NwcFolders = "",
   [string]$PluginAssembly = "",
+  [ValidateSet("discipline", "find")][string]$Mode = "discipline",
+  [string]$Ids = "",
   [int]$QuitWaitSeconds = 60,
   [int]$ConstructorDeadlineSeconds = 300,
   [int]$AdoptedDeadlineSeconds = 3600
@@ -239,7 +241,9 @@ try {
     Say ("  " + (Stamp) + "  calling ExecuteAddInPlugin(" + $probeId + ", discipline, the plugin's output file, the folder of copies " + $b.Leaf + ", " + $b.Leaf + ")")
     $sw = [Diagnostics.Stopwatch]::StartNew()
     $err = $null; $ret = $null
-    try { $ret = $app.ExecuteAddInPlugin($probeId, [string[]]@("discipline", $b.Output, $b.CopyDir, $b.Leaf)) } catch { $err = $_.Exception }
+    # F210. The mode find looks the element ids of -Ids up again in the copies, the ids a discipline report listed.
+    $pluginArgs = if ($Mode -eq "find") { [string[]]@("find", $b.Output, $b.CopyDir, $b.Leaf, $Ids) } else { [string[]]@("discipline", $b.Output, $b.CopyDir, $b.Leaf) }
+    try { $ret = $app.ExecuteAddInPlugin($probeId, $pluginArgs) } catch { $err = $_.Exception }
     Say ("  " + (Stamp) + "  ExecuteAddInPlugin " + $(if ($null -eq $err) { "RETURNED " + $ret } else { "THREW" }) + " after " + $sw.Elapsed.TotalSeconds.ToString("0.00") + " s")
     if ($null -ne $err) { Say ("    " + (Err $err)) }
     WindowsOf $myPid $myTicks

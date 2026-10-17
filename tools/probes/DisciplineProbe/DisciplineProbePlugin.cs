@@ -45,6 +45,27 @@ namespace DisciplineProbe
 
         public override int Execute(params string[] parameters)
         {
+            if (parameters != null && parameters.Length >= 5 && parameters[0] == "find")
+            {
+                using (results = new StreamWriter(parameters[1], true, new UTF8Encoding(false)))
+                {
+                    results.AutoFlush = true;
+                    Say("probe started, mode find, folder " + parameters[3] + ", ids " + parameters[4]);
+
+                    try
+                    {
+                        int code = Find(parameters[2], parameters[4]);
+                        Say("probe finished, code " + code);
+                        return code;
+                    }
+                    catch (Exception error)
+                    {
+                        Say("THREW " + error.GetType().Name + ": " + error.Message);
+                        return 1;
+                    }
+                }
+            }
+
             if (parameters == null || parameters.Length < 4 || parameters[0] != "discipline")
             {
                 return 2;
@@ -245,6 +266,77 @@ namespace DisciplineProbe
             foreach (KeyValuePair<string, int> pair in Sorted(cadReasons))
             {
                 Say("  " + pair.Value.ToString(Inv).PadLeft(7) + "  " + pair.Key);
+            }
+
+            Say("nothing in any model was changed, nothing was saved and nothing was published");
+            return 0;
+        }
+
+        /// <summary>
+        /// The F210 mode, find, 2026-10-18: the element ids a discipline report listed, found again in Navisworks by the Element
+        /// tab's Id, each with its model, its name, its class, its category, family, type and level, the parents up to the file
+        /// and any import under it, so the report's line can be read against what Navisworks holds.
+        /// </summary>
+        private int Find(string folder, string idList)
+        {
+            if (!Directory.Exists(folder))
+            {
+                Say("UNKNOWN: the folder of copies is not there");
+                return 3;
+            }
+
+            HashSet<string> ids = new HashSet<string>(idList.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries), StringComparer.Ordinal);
+            string[] files = Directory.GetFiles(folder, "*.nwc");
+            Array.Sort(files, StringComparer.Ordinal);
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            document.Clear();
+
+            foreach (string file in files)
+            {
+                Say("TryAppendFile " + Path.GetFileName(file) + " returned " + document.TryAppendFile(file));
+            }
+
+            Dictionary<string, int> found = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            for (int i = 0; i < document.Models.Count; i++)
+            {
+                Model model = document.Models[i];
+                string name = Path.GetFileName(model.FileName ?? string.Empty);
+
+                foreach (ModelItem item in model.RootItem.DescendantsAndSelf)
+                {
+                    string id = ReadOne(item, ElementTab, "LcRevitPropertyElementId");
+
+                    if (id == null || !ids.Contains(id))
+                    {
+                        continue;
+                    }
+
+                    int was;
+                    found[id] = found.TryGetValue(id, out was) ? was + 1 : 1;
+                    List<string> imports = new List<string>();
+
+                    foreach (ModelItem below in item.Descendants)
+                    {
+                        if (IsImport(below) && imports.Count < 4 && !imports.Contains(below.DisplayName))
+                        {
+                            imports.Add(below.DisplayName);
+                        }
+                    }
+
+                    Say("FOUND id " + id + " in " + name + ": [" + item.DisplayName + "] class [" + item.ClassDisplayName + "], category "
+                        + ReadOne(item, ElementTab, CategoryProperty) + ", family " + ReadOne(item, ElementTab, "LcRevitPropertyElementFamily")
+                        + ", type " + ReadOne(item, ElementTab, "LcRevitPropertyElementType") + ", Level " + ReadOne(item, ElementTab, "lcldrevit_parameter_-1001352")
+                        + ", Schedule Level " + ReadOne(item, ElementTab, "lcldrevit_parameter_-1001365") + ", Layer " + ReadOne(item, ItemTab, "LcOaNodeLayer")
+                        + ", imports under it " + (imports.Count == 0 ? "none" : string.Join(", ", imports.ToArray())));
+                    Say("     parents: " + Parents(item));
+                }
+            }
+
+            foreach (string id in ids)
+            {
+                int count;
+                Say("id " + id + ": " + (found.TryGetValue(id, out count) ? count + " item(s) carry it" : "NOT FOUND in any model"));
             }
 
             Say("nothing in any model was changed, nothing was saved and nothing was published");
