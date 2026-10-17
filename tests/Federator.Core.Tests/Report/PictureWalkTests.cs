@@ -84,13 +84,19 @@ namespace Federator.Core.Tests
             return from;
         }
 
+        /// <summary>No cap, so every test is under it and the walk is the report's order, F149.</summary>
         private static PictureWalkOutcome Walk(ClashReport report, Dictionary<ClashRow, string> from)
+        {
+            return Walk(report, from, test => int.MaxValue);
+        }
+
+        private static PictureWalkOutcome Walk(ClashReport report, Dictionary<ClashRow, string> from, Func<TestReport, int> limitOf)
         {
             return PictureWalk.Of(report, row =>
             {
                 string key;
                 return from.TryGetValue(row, out key) ? key : null;
-            });
+            }, limitOf);
         }
 
         private static IList<string> Names(IEnumerable<ClashRow> rows)
@@ -231,8 +237,9 @@ namespace Federator.Core.Tests
         [Test]
         public void NoReportOrNoReaderIsRefused()
         {
-            Assert.That(() => PictureWalk.Of(null, row => "Walls"), Throws.TypeOf<ArgumentNullException>());
-            Assert.That(() => PictureWalk.Of(MixedOrder(), null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => PictureWalk.Of(null, row => "Walls", test => 1), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => PictureWalk.Of(MixedOrder(), null, test => 1), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => PictureWalk.Of(MixedOrder(), row => "Walls", null), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
@@ -364,6 +371,129 @@ namespace Federator.Core.Tests
 
             Assert.That(renumbered.Renamed, Is.GreaterThan(0), "a walk in the order the tests ran leaves pictures to rename");
             Assert.That(renumbered.Missing, Is.EqualTo(0));
+        }
+
+        // ---------- F203, the tests at or under their cap first ----------
+
+        [Test]
+        public void TheTestsAtOrUnderTheirCapAreWalkedBeforeTheTestsOverIt()
+        {
+            ClashReport report = EveryKindOfPassOver();
+            ImageOptions options = CapOfTwo();
+            PictureWalkOutcome walk = Walk(report, EachFromItsOwnTest(report), options.LimitOf);
+
+            Assert.That(walk.Stretches.Count, Is.EqualTo(4));
+            AssertStretch(walk.Stretches[0], "Columns", "Columns", "Columns 1", "Columns 2");
+            AssertStretch(walk.Stretches[1], "Doors", "Doors", "Doors 1", "Doors 2");
+            AssertStretch(walk.Stretches[2], "Floors", "Floors", "Floors 1");
+            AssertStretch(walk.Stretches[3], "Walls", "Walls", "Walls 1", "Walls 2", "Walls 3");
+        }
+
+        /// <summary>
+        /// Takes the pictures of the walk until room pictures are written, the way the memory stop ends the pass,
+        /// and hands back the rows that got one.
+        /// </summary>
+        private IList<string> TakeUntilTheStop(ClashReport report, PictureWalkOutcome walk, ImageOptions options, int room)
+        {
+            int made = 0;
+
+            foreach (PictureStretch stretch in walk.Stretches)
+            {
+                foreach (ClashRow row in stretch.Rows)
+                {
+                    if (made < room && options.TakesAPictureOf(report, stretch.Into, row, null))
+                    {
+                        Take(report, options, stretch.Into, row, new string[0]);
+                        made++;
+                    }
+                }
+            }
+
+            List<string> pictured = new List<string>();
+
+            foreach (ClashRow row in ReportOrder.Rows(report))
+            {
+                if (row.HasImage)
+                {
+                    pictured.Add(row.Name);
+                }
+            }
+
+            return pictured;
+        }
+
+        [Test]
+        public void AStopAfterFourPicturesLeavesEveryTestUnderItsCapWithAllItsPictures()
+        {
+            ClashReport report = EveryKindOfPassOver();
+            ImageOptions options = CapOfTwo();
+            PictureWalkOutcome walk = Walk(report, EachFromItsOwnTest(report), options.LimitOf);
+
+            IList<string> pictured = TakeUntilTheStop(report, walk, options, 4);
+            ImageRenumberingOutcome renumbered = ImageRenumbering.Apply(report, workbook);
+
+            AssertNames(pictured, "Columns 2", "Doors 1", "Doors 2", "Floors 1");
+            Assert.That(renumbered.Missing, Is.EqualTo(0));
+
+            string[] named = { "cd000001.jpg", "cd010001.jpg", "cd010002.jpg", "cd020001.jpg" };
+            int i = 0;
+
+            foreach (ClashRow row in ReportOrder.Rows(report))
+            {
+                if (!row.HasImage)
+                {
+                    continue;
+                }
+
+                Assert.That(row.ImageFile, Is.EqualTo(named[i]), row.Name);
+                Assert.That(File.ReadAllText(row.ImagePath), Is.EqualTo(row.Name), "the picture under " + named[i] + " is its own row's");
+                i++;
+            }
+        }
+
+        // The break. The same stop in the report's order, most clashes first, spends the room on Walls, which is over
+        // its cap, and leaves Floors, under its cap with one clash, with no picture at all, which is what the C04 runs did.
+        [Test]
+        public void TheSameStopInTheReportsOrderLeavesASmallTestWithNoPicture()
+        {
+            ClashReport report = EveryKindOfPassOver();
+            ImageOptions options = CapOfTwo();
+            PictureWalkOutcome walk = Walk(report, EachFromItsOwnTest(report));
+
+            IList<string> pictured = TakeUntilTheStop(report, walk, options, 4);
+
+            AssertNames(pictured, "Walls 1", "Walls 2", "Columns 2", "Doors 1");
+            Assert.That(pictured.Contains("Floors 1"), Is.False);
+        }
+
+        [Test]
+        public void WithRoomForEveryPictureTheWalkOutOfReportOrderEndsUnderTheReportOrderNames()
+        {
+            ClashReport report = EveryKindOfPassOver();
+            ImageOptions options = CapOfTwo();
+            PictureWalkOutcome walk = Walk(report, EachFromItsOwnTest(report), options.LimitOf);
+
+            IList<string> pictured = TakeUntilTheStop(report, walk, options, int.MaxValue);
+            ImageRenumberingOutcome renumbered = ImageRenumbering.Apply(report, workbook);
+
+            AssertNames(pictured, "Walls 1", "Walls 2", "Columns 2", "Doors 1", "Doors 2", "Floors 1");
+            Assert.That(renumbered.Renamed, Is.EqualTo(6), "taken Columns, Doors, Floors, then Walls, every one is renamed");
+            Assert.That(renumbered.Missing, Is.EqualTo(0));
+
+            string[] named = { "cd000001.jpg", "cd000002.jpg", "cd010001.jpg", "cd020001.jpg", "cd020002.jpg", "cd030001.jpg" };
+            int i = 0;
+
+            foreach (ClashRow row in ReportOrder.Rows(report))
+            {
+                if (!row.HasImage)
+                {
+                    continue;
+                }
+
+                Assert.That(row.ImageFile, Is.EqualTo(named[i]), row.Name);
+                Assert.That(File.ReadAllText(row.ImagePath), Is.EqualTo(row.Name), "the picture under " + named[i] + " is its own row's");
+                i++;
+            }
         }
     }
 }

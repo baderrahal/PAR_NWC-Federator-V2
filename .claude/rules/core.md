@@ -1664,6 +1664,13 @@ and 6 does not read as broken.
   finally on every path. The GDI split line, the MEMORY line, the RATE line of F157 and F161 and the
   texture cache line of F147 are kept. The texture cache is read and reported and no new clearing is made
   by F175.
+- THE TESTS AT OR UNDER THEIR CAP ARE PICTURED FIRST, F203, PictureWalk.Of(report, readFrom, limitOf). The walk
+  takes every test whose rows waiting for a picture are no more than its cap first, then every test over its cap,
+  each part in report order, so the memory stop of F182 takes the last pictures of the largest tests and not every
+  picture of the small ones. Measured on the C04 run of 15 Oct 14:11: the stop at 3275 pictures left 163 tests with
+  none, all 162 under 50 clashes among them, while the 174 tests at or under their cap wanted 2518. A picture taken
+  out of report order is renamed by the renumber to its report order name, so the names and the links are as
+  before. PictureWalkTests prove the order, a stop after four pictures in each order, and the rename
 - THE MEMORY STOP AND THE ORDER OF A GROUP, F182, Bader's answer C to Q175, `MemoryBackstop`,
   `PictureLimits.MemoryStopBytes` and `GroupOrder`. Navisworks's private memory grew about 3.3 MB for each
   picture, to 26 GB on C04 on a PC with 15.8 GB of RAM, and the NWD publish after the pictures hung with a 0
