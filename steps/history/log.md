@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-17 F204 the clash step shows every item and hides it again after
+
+Branch fix-F204 off main 7f5f38b. Found by the audit round's run 1.
+
+What was done. Run 1 of the audit, the NWF page on a copy of Bader's C04 NWF with main 7f5f38b6, run-20261017-143535,
+DONE in 8.4 min, ran every test in 0.0 s and marked 10016 of 13286 clashes Resolved. A probe on the copy read 8 of the 10
+models hidden whole, saved so on 15 Oct at 14:51. One test by TestsRunTest on that NWF took 0.04 s and turned its 232
+results Resolved, the same NWF with the 8 items shown in memory took 1.74 s and found the 232, and the F202 NWF of the same
+NWCs, byte for byte, with nothing hidden took 0.4 s and found the 232. The sides, the sets, the type, the tolerance and
+every other property of the test read the same in both NWFs. So Clash Detective finds no clash on a hidden item.
+ClashRunner.Run now reads the hidden state by the snapshot the viewpoints use, counts the models hidden whole, shows every
+item for the run where anything was hidden, and puts the snapshot back after in a finally, one CLASH HIDDEN line before
+and one after, the words in Core's HiddenForTheClash.
+
+What remains. Run 1 again on a fresh copy with this build. Whether a model hidden whole is hidden again after is read off
+that run. The pictures and the viewpoints of a test whose model the person hid are UNKNOWN.
+
+Known bugs. None found in this fix.
+
+What comes next. The audit round's runs and report.
+
+Core tests 3263 before and 3269 after, 0 failed, 0 skipped. The solution 0 warnings and 0 errors.
+
 ## 2026-10-17 F203 the tests at or under their cap get their pictures first
 
 Branch fix-F203 off main 42a2455. Bader's bug of 17 Oct: Excel shows no picture for tests with fewer than 50 clashes.

@@ -1071,3 +1071,15 @@ each tab in turn. A collapsed expander has no visual tree behind it, so a box un
 found on none of the tabs and the driver stops UNTICK with nothing pressed. Once F114 merges
 the box opens ticked, Q131, and a test run that must leave the viewpoints off can only do it
 through a box the driver can find.
+
+## The clash step shows every item, F204
+
+CLASH DETECTIVE FINDS NO CLASH ON A HIDDEN ITEM. Measured on 17 Oct 2026 on a copy of the C04 NWF saved on 15 Oct with 8
+of its 10 models hidden whole: one test by TestsRunTest took 0.04 s and turned its 232 results Resolved, the same test on
+the same NWCs with nothing hidden took 0.4 s and found the 232, and the same NWF with the 8 items shown in memory took
+1.74 s and found the 232. The NWF page refresh of that NWF marked 10016 of 13286 clashes Resolved. So `ClashRunner.Run`
+reads the hidden state by `SavedViewpoints.SnapshotHidden` and counts the models whose root item is hidden, says what it
+found on one CLASH HIDDEN line, calls `ResetAllHidden` where anything was hidden, runs the plan, and in a finally puts the
+snapshot back by `SavedViewpoints.RestoreHiddenState`, read back and said. Neither the showing nor the putting back stops
+the run. The words are `Federator.Core.Clash.HiddenForTheClash`'s. Whether a model hidden whole that the snapshot does not
+list is hidden again after is read off the run, and the line says when it is not.
