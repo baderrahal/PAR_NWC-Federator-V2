@@ -675,3 +675,11 @@ Q186,"every NWF the tool built before F201 has its models scaled and moved and i
 F202,"the rebuild of 04 PK with F201 on a copy, every file within 0 mm of a manual Append, the table before and after, clashes 10170 before and 13286 after, the report",F202,none,fix,merged,282,none,2026-10-15
 F203,"the picture walk takes the tests at or under their cap first, so the memory stop no longer leaves every small test of C04 with no picture, F190 F182",F203,none,fix,merged,283,none,2026-10-17
 F204,"the clash step shows every hidden item for the run and hides it again after, so a refresh of an NWF saved with models hidden no longer marks their clashes Resolved, 10016 of 13286 on C04",F204,none,fix,merged,284,none,2026-10-17
+Q187,"the picture caps apply to every test since F190, Bader's memory says over 1000 clashes only, keep or change",none,none,question,waiting for Bader,none,none,2026-10-17
+Q188,"the picture size, 1024 pixels keeps 3.1 MB a picture in Navisworks and 512 keeps 0.2 MB, 512 would let every capped picture of C04 through",none,none,question,waiting for Bader,none,none,2026-10-17
+Q189,"Mark by design moves four service against service pairs to Reviewed, 252 clashes on C04, keep or take out",none,none,question,waiting for Bader,none,none,2026-10-17
+Q190,"a run that makes views deletes a folder a person made outside Clash Status and Comments, keep the round 5 rule or delete only the tool's own",none,none,question,waiting for Bader,none,none,2026-10-17
+Q191,"C02 was built before F201 and its AR and ME NWCs are not on shared coordinates, 2824 km off, export again then rebuild or rebuild now",none,none,question,waiting for Bader,none,none,2026-10-17
+Q192,"numbers the code holds that no report shows, the stops, the caps, PLACE 1 mm and penetration 150 mm, show them on the internal workbook or not",none,none,question,waiting for Bader,none,none,2026-10-17
+Q193,"all tests read Old after a run, cause UNKNOWN, measure next round or leave",none,none,question,waiting for Bader,none,none,2026-10-17
+F205,"the audit round of C02 and C04 on copies, the second run, the missing Excel pictures, the report at the top of steps_bader_next.md, Q187 to Q193",F205,none,fix,in review,UNKNOWN,none,2026-10-17

@@ -1662,3 +1662,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Found by the audit round's run 1 on 17 Oct: Bader's C04 NWF of 15 Oct 14:51 holds 8 of its 10 models hidden, Clash Detective finds no clash on a hidden item, and the NWF page refresh marked 10016 of 13286 clashes Resolved. A probe ran one test on that NWF: 0.04 s and 232 Resolved, with the 8 items shown 1.74 s and 232 found, on the control NWF 0.4 s and 232 found. The clash step now shows every item for the run and hides again what was hidden, one CLASH HIDDEN line before and one after.
 - In code 2026-10-17. Core tests 3263 before and 3269 after, the solution 0 warnings and 0 errors. The run on a fresh copy of C04 is the audit round's run 1 again.
+
+## F205 The audit round of C02 and C04
+
+- Bader's order of 17 Oct: a full coordinator audit of C02 and C04 on copies, the second run, and the missing Excel pictures. Runs on work\audit-c02-c04 with main 800c21c: run 1 and run 2 on the NWF page, DONE, a probe read before and after each, 10 clashes and two folders planted before run 2. The cause of the missing pictures is F203 and the lost clashes on hidden models F204. Q187 to Q193. NM fed and the 21 Sep set listed the same before and after, SHA-256 of every file.
+- DONE 2026-10-17. Report at the top of steps\03_bader_next.md.
