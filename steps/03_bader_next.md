@@ -1,6 +1,175 @@
 # 03 Bader next
 
-## Audit round of 17 Oct, C02 and C04, the second run, and the missing Excel pictures
+## Check round of 17 Oct evening, items 1 to 9 of the chat audit, and F206
+
+Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Every run was on a copy under C:\NWC-PC-Test\work\round-f206. NM fed was only read. Its listing, every file's name, size, date and SHA-256, was taken before and after the round: 12987 files both times, 0 lines differ.
+
+One fix came out of the round, F206, pull request 286, merged on green. Main is 2ad2197 and it is installed, its title reads 2ad21979.
+
+### The answer per item
+
+1. Approved clash with no picture. SOLVED, not a bug. The Photo of boxes tick New, Active and Reviewed by default, so an Approved clash gets no picture, in Excel and in the HTML alike. On F205's run 2: 0 of the 5 Approved have a picture, 4 of the 5 Reviewed do. The chat audit's C02 clash was Approved between its two runs, so run 1 pictured it and run 2 did not, and its HTML cell is empty too. The log says New, Active, Reviewed only. Q194. PROVEN
+2. Dated Excel in Log. SOLVED by your own rule: your answer to Q173 on 14 Oct says the Log folder keeps its dated names, and core.md says nothing in Log is overwritten. The XML is off by default, so none of these runs wrote one. No question needed. PROVEN
+3. Penetrations and By design on the NWF page. The no is the default. Both boxes are off by default and sit only on the NWC page, step 4. Clash, so a weekly NWF page run does not run them unless a person ticks them there first. F205's C04 runs 1 and 2 had both ticked, by the launcher, and moved 0 since the copy was already Reviewed. This round's weekly run 2: before it, 5 penetrations the tool had Reviewed were set back to New with no comment, as new clashes are, and 10 clashes were set by hand. Run 2 moved exactly those 5 to Reviewed, Ducts 150 mm and Pipes 20 to 29 mm through walls and floors, and left all 10 set by hand as they were, status, Assigned To and comment. Q195. PROVEN
+4. Excel columns against the client's file. STILL OPEN in four columns, not a fault in three, table below. Layer, Item Name, the logo and the pictures differ by how the tool writes them. Distance and the Image cell match the client's. Grid Location on C02 is empty because of the model, Q191. Q196 to Q198, Q201. PROVEN
+5. Picture links after a move. STILL OPEN. Log and Clash report copied to a new path and opened in Excel with the old folder gone: every picture reads The linked image cannot be displayed. The same workbook with relative links showed every picture after the move, still links. Q199. PROVEN
+6. Foundation in the penetration rule. SOLVED, it is yours: your answer to Q63 on 20 Sep, foundations join, framing and columns stay out. Asked again as Q200, unchanged. PROVEN, read off the repo
+7. C02 NWCs. STILL OPEN, it is the NWCs. C:\Users\bader\DC\ACCDocs is empty and C:\Users\bader\ACCDocs holds 56 files of another project, none an NWC, none named 1A02. No newer C02 NWC is on this PC. Q191 stays with you. PROVEN, read only
+8. Clash depth over 1 m. SOLVED, real geometry measured the Navisworks way, not units. A 38.15 m column through a 0.3 m slab: Navisworks gives the distance to pull them apart, from the slab to the column's top, 718.435 less 700.435 = 18.000 m, the Excel's -18. The units are right, -59.055 ft is 18.000 m. PROVEN by a probe
+9. Old status. SOLVED. Not a bug, as you said. Q193 closed, taken out of Known bugs and Next. No code change.
+10. Found this round, F206. STILL OPEN before the round, SOLVED now. A model saved hidden left its pictures empty: on F205's run 2, 744 of 3080 pictures showed only the sky and the grid label, and 2127 were missing a side. F204 hid the models again before the pictures. Fixed in F206, run 1 has 0 empty of 3116. PROVEN
+11. Found this round, not fixed. Views check 4, no clash is in two views, fails since the NWF holds hidden models: 152 views each read back 2 painted items that are not their clashes. It passed on 15 Oct. Which 2 items is UNKNOWN. Known bug, next round.
+
+### Item 1, the 10 clashes set by hand before F205's run 2
+
+| n | test | set to | Excel picture | HTML picture |
+|---|---|---|---|---|
+| 1 | BLD-AR-Ramps-vs-BLD-AR-Floors | Approved | none | none, empty src |
+| 2 | BLD-AR-Walls-vs-BLD-AR-Floors | Reviewed | cd020001.jpg | the same |
+| 3 | BLD-AR-Windows-vs-BLD-AR-Walls | Approved | none | none |
+| 4 | BLD-AR-Doors-vs-BLD-AR-Walls | Reviewed | none, past the memory stop | none |
+| 5 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors | Approved | none | none |
+| 6 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls | Reviewed | cd050117.jpg, empty sky, F206 | the same |
+| 7 | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors | Approved | none | none |
+| 8 | BLD-AR-Walls-vs-BLD-AR-Ramps | Reviewed | cd340024.jpg | the same |
+| 9 | BLD-AR-Railings-vs-BLD-AR-Walls | Approved | none | none |
+| 10 | BLD-ST-Foundation-vs-BLD-AR-Walls | Reviewed | cd790007.jpg | the same |
+
+The whole run: Active 1819 pictured and 2122 not, Reviewed 1261 and 8079, Approved 0 and 5. Excel and HTML agree row for row. The HTML is written by the tool from the same rows, it is not Navisworks' own report.
+
+### Item 4, column by column against the client's file
+
+C04 is F205's run 2, 13286 rows. C02 is the chat audit's run, 279 rows. The client's file holds 64 clashes in 1830 tests.
+
+| column | client | C04 | C02 | verdict |
+|---|---|---|---|---|
+| Grid Location | A-2 : LGF on 64 of 64 | filled on 13286 of 13286 | empty on 195 of 279 | C02 only. The grid is AR's, levels LGF 0.155, L01 4.155 and RO1 8.155 m, and AR sits on Revit's internal origin. 153 empty rows are EL and ST clashes at z 680 to 690 m, on shared coordinates, and 42 sit at z 8.2 to 9.5 m, above RO1. The model, Q191. Not a fault of the tool |
+| Item 1 Layer | the item's own layer, GRF, empty on 25 | the grid level, filled on all | empty on 195, the same rows as Grid | STILL OPEN. The tool writes the grid level in both Layer cells and never reads the item's own layer. A probe found an own layer for 10330 of 26572 C04 items. Q196 |
+| Item 2 Layer | own layer, empty on 58 | grid level, filled | empty on 195 | the same, Q196 |
+| Item 1 Item Name | filled on 64 | empty on 2703, 1697 of them EL conduits | empty on 112 | The model gives no name: the probe read such a solid as a nameless Solid under an element named Ramp. Whether to write the element's name instead is Q197 |
+| Item 2 Item Name | filled on 64 | empty on 1655 | empty on 9 | the same, Q197 |
+| Logo at A1 | a linked logo | none | none | STILL OPEN, by the rule not to copy the client's logo. Q198 |
+| Image cell | empty under the picture, no link | empty under the picture, a click link to the jpg | the same | Not a fault. Excel shows the cell empty, read in Excel on the moved copy, A9 text empty. The path ../Clash report/... is the address of the cell's click link, which shows when the mouse rests on it, not text in the cell |
+| Distance | -0.123, -0.2, General | -17.699, -0.106, General | -0.4, General | Not a fault. Both write the number rounded to the mm, so -0.400 shows as -0.4 in both files. 0 of 13286 C04 rows carry more than three decimals |
+| Pictures | close, other items shown, grid label | framed on both whole items, other items hidden, grid label | far, no label where Grid is empty | STILL OPEN as a look, Q201. The label is there wherever Grid is filled |
+
+### Item 5, the move
+
+| test | what Excel showed | file |
+|---|---|---|
+| A. Log and Clash report copied to work\round-f206\moved\fed, old folder still there | every picture, the red column | moved\A-moved-original-present.png |
+| B. The same, the old Clash report folder renamed away for the test | The linked image cannot be displayed, on every row | moved\B-moved-original-gone.png |
+| C. A copy of the moved workbook whose 3080 links read ../Clash%20report/ and the file, old folder renamed away | every picture, still a link | moved\C-relative-original-gone.png |
+
+The old folder was my own copy under work\audit-c02-c04 and was renamed back after each test.
+
+### Item 8, the deepest clashes, read by a probe on F205's run 2 copy
+
+| test / clash | depth | item 1 box height | item 2 box height | overlap of the boxes | why |
+|---|---|---|---|---|---|
+| BLD-ST-Floors-vs-BLD-ST-Columns / Clash6 | 18.000 m | slab 0.3 m at 700.435 to 700.735 | column 1.275 x 1.792 x 38.15 m, 680.285 to 718.435 | 1.275 x 1.792 x 0.3 m | column top 718.435 less slab bottom 700.435 |
+| BLD-ST-Floors-vs-BLD-ST-Columns / Clash1 to 4 | 18.000 m | the same slab | other columns of 38.15 m | 0.3 m deep | the same |
+| BLD-ST-Columns-vs-BLD-AR-Floors / Clash4 | 17.699 m | column 38.15 m | AR floor 0.1 m at 700.736 | 0.1 m deep | 718.435 less 700.736 |
+| BLD-ST-Floors-vs-BLD-ST-Walls / Clash1 | 6.285 m | slab 0.3 m | shaft wall 38.0 m | 0.3 m deep | the wall runs through the slab |
+| BLD-ST-Columns-vs-BLD-ST-Foundation / Clash1 | 3.700 m | column 45.45 m from 676.585 | raft 1.4 m, top 680.285 | 1.4 m deep | 680.285 less 676.585 |
+
+Depth of all 13286 C04 clashes: 0 to 0.1 m 3846, 0.1 to 0.5 m 6372, 0.5 to 1 m 901, 1 to 5 m 822, 5 to 10 m 905, over 10 m 440. The 2167 over 1 m are columns and walls that run through slabs.
+
+### F206 and the runs that prove it
+
+A fresh copy of NM fed's C04 NWF of 15 Oct 14:51, the same SHA-256 as F205's, saved with 8 of its 10 models hidden whole. Two runs on the NWF page with main 2ad21979, both rule boxes ticked, both DONE.
+
+| check | F205 run 2, before F206 | run 1, 21:30 | run 2, 21:50 | tag |
+|---|---|---|---|---|
+| Pictures written | 3080 | 3116 | 3097 | PROVEN |
+| Pictures that show only the sky | 744 | 0 | 0 | PROVEN |
+| Pictures nearly empty | 17 | 2, two thin pipes crossing, real content | 2, the same | PROVEN |
+| Tests with a side in a hidden model, pictured | 2127 pictures missing a side | both sides shown, read on cd000001 and cd050001 | the same | PROVEN |
+| IMAGES HIDDEN lines | none | 8 of 10 shown for the pictures, hidden again, read back | the same | PROVEN |
+| Models hidden in the saved NWF after | 8 | 8 | 8, read by a probe | PROVEN |
+| Pictures step | 207 s | 273 s | 279 s, the memory stop as before | PROVEN |
+| Whole run | 13.4 min | 16.9 min | 17.3 min | PROVEN |
+
+### Already proven in F205, read again after F206
+
+| check | run 1 | run 2 | tag |
+|---|---|---|---|
+| The small tests get every picture, F203 | 174 tests at or under their cap, 0 missing a picture. The 20 over it 598 of 2350 | 173, 0 missing. The 20 over it 584 of 2350 | PROVEN |
+| The hidden models fix, F204 | CLASH HIDDEN 8 shown, hidden again, read back, 0 Resolved | the same | PROVEN |
+| Tests not duplicated | 741 -> 741, same GUIDs, 0 added | 741 -> 741 | PROVEN |
+| New to Active | 3947 -> Active 3947 | the 5 new ones went to Reviewed by the penetration rule | PROVEN |
+| Reviewed and Approved kept | 9339 -> 9339 | 9335 -> 9335, Approved 5 -> 5 | PROVEN |
+| Assigned To and comments kept | none set | 10 -> 10, 0 changed, 0 comments lost, 5 more, the tool's on the 5 new | PROVEN |
+| Clash GUIDs kept | 13286 of 13286 | 13286 of 13286 | PROVEN |
+| The tool never sets Approved or Resolved | 0 | 0 | PROVEN |
+| Views in Clash Status A B C | 153, A 103, B 30, C 20 | 152, A 102, B 30, C 20, Comments kept with the folder inside it, the root folder a person made deleted, Q190 | PROVEN |
+| Workbook against Clash Detective | 741 compared, 741 agree | the same | PROVEN |
+| Views check 4 | FAILED, 152 views read 2 painted items not theirs | FAILED, 151 | PROVEN, known bug |
+
+### Your steps, in this order
+
+Main 2ad2197 is installed on this PC, its title reads 2ad21979. The first step proves F204 and F206 on your real file, which holds 8 of its 10 models hidden.
+
+1. Close every Navisworks.
+2. Open Navisworks, the tool, the NWC page, step 4. Clash, and tick Mark penetrations and Mark by design if you want them in this run, Q195.
+3. The NWF page, pick NM fed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, press Run, then OK.
+4. In the log read the two CLASH HIDDEN lines and the two IMAGES HIDDEN lines, each 8 shown and then hidden again, read back.
+5. Open the newest dated Excel in NM fed\Log. The duct against wall rows show the duct and the wall, not an empty sky.
+6. Answer Q194 to Q201 below, and the older ones still open.
+
+### Where to check
+
+Every path below is a copy or a file a run made. Open it to see the item for yourself.
+
+| path | proves | what to look for |
+|---|---|---|
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf | F206, items 3 and the F205 list | the NWF after run 2. Clash Detective: 741 tests, Approved 5, the 10 Audit Person clashes. Saved Viewpoints: Clash Status A B C and Comments\Audit folder inside Comments. 8 models hidden |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd | F206 | the NWD the runs published beside the NWF, 139.6 MB |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\Log\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.xlsx | F206, run 1 | 3116 pictures, BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls shows the duct through the wall |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\Log\1104-PAR-1A04PK-ZZZ-BM-MOD-000001 2026-10-17 215210.xlsx | F206, items 1 and 3, run 2 | the 5 Approved rows with no picture, the 5 renewed clashes now Reviewed, item 2's dated name |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\Log\1104-PAR-1A04PK-ZZZ-BM-MOD-000001 Internal.xlsx and ... 2026-10-17 215210 Internal.xlsx | item 2 | the Internal workbook of each run, dated beside the first |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\Clash report\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.html | items 1 and F206 | the page of run 2, Approved rows with an empty picture cell |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\Clash report\1104-PAR-1A04PK-ZZZ-BM-MOD-000001_files | F206 | 3097 cd jpgs of run 2, cd000001.jpg the column in its slab, cd050001.jpg the duct and the wall |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\Log\run-20261017-213058.log and .tsv | run 1 | CLASH HIDDEN, IMAGES HIDDEN, FAILED CHECK 4, penetrations YES |
+| C:\NWC-PC-Test\work\round-f206\fed\NWF\Log\run-20261017-215053.log and .tsv | run 2, item 3 | the PENETRATION block, 5 REVIEWED lines, 2014 a person had already set |
+| C:\NWC-PC-Test\work\round-f206\fed\NWD, Log, Clash report, Clash Test | the copy | NM fed's files as copied, not written by the runs, which wrote under fed\NWF |
+| C:\NWC-PC-Test\work\run-evidence\round-f206-r1 and round-f206-r2 | the runs | launcher.txt and driver.txt: the boxes ticked, Navisworks closed with 0, AutoSave put back to 0 |
+| C:\NWC-PC-Test\work\round-f206\probe\c04-plant.planted.tsv and c04-renew.deep.txt | item 3 | the 10 clashes set by hand and the 5 set back to New |
+| C:\NWC-PC-Test\work\round-f206\probe\compare-r0-r1.txt and compare-p-r2.txt | the F205 list | before and after each run, status moves, GUIDs, the 10 planted clashes |
+| C:\NWC-PC-Test\work\round-f206\probe\c04-r2.deep.txt | F206 | the 8 models hidden in the NWF after run 2 |
+| C:\NWC-PC-Test\work\round-f206\c04-r2.deep.txt | items 4 and 8 | the deepest clashes with both items and their boxes, the grid levels of C04, the nameless solids |
+| C:\NWC-PC-Test\work\round-f206\c02\c02.deep.txt and 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf | items 4 and 7 | a copy of the chat audit's C02 NWF: AR and ME at the origin, EL and ST 680 m up, AR's three levels |
+| C:\NWC-PC-Test\work\round-f206\c04-r2-xlsx.tsv, c04-r2-rows.tsv, c04-r2-html-files.tsv, c04-r2-blank.tsv, c04-r2-blank-bytest.tsv | items 1 and 4, F206 | F205's run 2 read row by row: status, picture, grid, layer, name, distance, and the 744 empty pictures by test |
+| C:\NWC-PC-Test\work\round-f206\r1-*.tsv and r2-*.tsv | F206 | the same reads of this round's two runs |
+| C:\NWC-PC-Test\work\round-f206\c02-r1-rows.tsv, c02-r2-rows.tsv, client-rows.tsv | items 1 and 4 | the chat audit's C02 runs and the client's file read the same way |
+| C:\NWC-PC-Test\work\round-f206\moved\fed | item 5 | the copy of F205's Log and Clash report at a new path |
+| C:\NWC-PC-Test\work\round-f206\moved\A-moved-original-present.png, B-moved-original-gone.png, C-relative-original-gone.png | item 5 | what Excel showed in each test |
+| C:\NWC-PC-Test\work\round-f206\moved\fed\Log\relative-links-test.xlsx | item 5 | the workbook with relative links. Open it: the pictures show though they live in moved\fed\Clash report |
+| C:\NWC-PC-Test\work\audit-c02-c04\fed\Log\1104-PAR-1A04PK-ZZZ-BM-MOD-000001 2026-10-17 151825.xlsx and Clash report | items 1, 4 and F206 | F205's run 2: 0 of 5 Approved pictured, cd050117.jpg an empty sky |
+| C:\NWC-PC-Test\work\audit-c02\fresh\Log and Clash report | items 1 and 4 | the chat audit's C02 runs, 279 and 278 pictures, the Approved clash's empty picture cell |
+| C:\NWC-PC-Test\work\round-f206\listing-before.tsv and listing-after.tsv | the guard | NM fed, 12987 files, the same both times |
+| C:\NWC-PC-Test\work\round-f206\nwf-places.before.tsv | the guard | the tool's own list before the runs. The runs added one line for the copy |
+| C:\NWC-PC-Test\backup\ParsonsNwcFederator.bundle.before-F206 | the install | the add-in that was installed before main 2ad2197 |
+| C:\NWC-PC-Test\work\probe\DeepProbe and run-deepprobe.ps1 | items 3, 4, 8 | the read only probe of this round, and its renew mode, the one that writes a copy |
+
+### What I changed outside the repo
+
+- Files: everything under C:\NWC-PC-Test\work\round-f206 and work\run-evidence\round-f206-r1 and -r2, work\probe\DeepProbe and run-deepprobe.ps1, C:\NWC-PC-Test\backup\ParsonsNwcFederator.bundle.before-F206, the installed add-in in %APPDATA%\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle, one line the tool added to its own nwf-places.tsv, the tool's two run logs.
+- For item 5 the folder C:\NWC-PC-Test\work\audit-c02-c04\fed\Clash report, F205's copy, was renamed away for two tests and renamed back, read back there.
+- Programs: two Navisworks Manage 2025 runs by the launcher, nine probe sessions, four Excel sessions read only. Each closed with exit code 0, AutoSave put back to 0. No Navisworks and no Excel runs now.
+
+### Open questions for you, the recommended answer first
+
+1. Q194: keep pictures for New, Active and Reviewed only, or tick Approved by default.
+2. Q195: show the penetration and by design boxes on the NWF page too, off by default, or tick them there by default, or leave it.
+3. Q196: Layer reads each item's own layer as the client's file does, or keeps the grid level.
+4. Q197: where a solid has no name, write its element's name, or leave the cell empty.
+5. Q198: link the install's logo at A1 of the Excel, or no logo.
+6. Q199: write the picture links relative so a moved report keeps its pictures, or keep the full path.
+7. Q200: keep structural foundations in the penetration rule as you answered Q63, or walls, floors and roofs only.
+8. Q201: let me run C04 on a copy with Ghost the other items ticked and put the pictures side by side, or leave the pictures.
+9. Still open from before: Q187 to Q192, Q182, Q184, Q185, Q186. Q191 is the C02 NWCs, item 7.
+10. No number the code holds came out of this round that no report shows. The ones before are Q192.
 
 Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Every run was on a COPY under C:\NWC-PC-Test\work\audit-c02-c04. Your NM fed and C:\00-NM\Federation Task\C02 + 04 were only read. Their listings, every file's name, size, date and SHA-256, are the same before and after the round: 12987 and 11506 files, 0 lines differ.
 

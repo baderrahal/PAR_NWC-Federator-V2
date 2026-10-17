@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 685 rows: open 161, in progress 24, in review 0, merged 430, proven by a run 41, waiting for Bader 11, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 214, outside the waves 2, right after F133 merges 6
+- By status, of 695 rows: open 162, in progress 24, in review 2, merged 430, proven by a run 41, waiting for Bader 18, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 224, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader, 11 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q193
+- Waits for Bader, 18 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201
 
 ## Wave 1
 
@@ -775,9 +775,19 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q190 | a run that makes views deletes a folder a person made outside Clash Status and Comments, keep the round 5 rule or delete only the tool's own | none | question | waiting for Bader | none | none | 2026-10-17 |
 | Q191 | C02 was built before F201 and its AR and ME NWCs are not on shared coordinates, 2824 km off, export again then rebuild or rebuild now | none | question | waiting for Bader | none | none | 2026-10-17 |
 | Q192 | numbers the code holds that no report shows, the stops, the caps, PLACE 1 mm and penetration 150 mm, show them on the internal workbook or not | none | question | waiting for Bader | none | none | 2026-10-17 |
-| Q193 | all tests read Old after a run, cause UNKNOWN, measure next round or leave | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q193 | all tests read Old after a run, cause UNKNOWN, measure next round or leave | none | question | in review | UNKNOWN | none | 2026-10-17 |
 | F205 | the audit round of C02 and C04 on copies, the second run, the missing Excel pictures, the report at the top of steps_bader_next.md, Q187 to Q193 | F205 | fix | merged | 285 | none | 2026-10-17 |
 | F206 | the pictures taken after the NWF save show every item and hide again after, so a model saved hidden no longer leaves its pictures empty, 744 of 3080 on C04 | F206 | fix | merged | 286 | none | 2026-10-17 |
+| Q194 | an Approved clash gets no picture since Photo of ticks New Active and Reviewed by default, keep it or tick Approved | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q195 | the penetration and by design boxes are off by default and only on the NWC page, show them on the NWF page or not | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q196 | the Layer columns carry the grid level, read each item's own layer as the client's file does or keep it | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q197 | Item Name is empty where the solid has no name, write the element's name instead or leave it | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q198 | the client's Excel carries the logo at A1, link the install's logo there or none | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q199 | Excel picture links break when Log and Clash report move, write them relative or keep the full path | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q200 | the penetration rule counts structural foundations by the answer to Q63, keep it or walls floors and roofs only | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q201 | the pictures hide the other items and frame both whole items, try the ghost box on a copy or leave them | none | question | waiting for Bader | none | none | 2026-10-17 |
+| F207 | the check round of 17 Oct evening, items 1 to 9 at the top of steps_bader_next.md, F206 proved, Q193 closed, Q194 to Q201 | F207 | fix | in review | UNKNOWN | none | 2026-10-17 |
+| F207-R1 | views check 4 fails on every C04 run since the NWF holds 8 hidden models, each of 151 or 152 views reads back 2 painted items that are not its clashes, it passed on 15 Oct, which 2 items is UNKNOWN, runs 20261017-150142, 151759, 213058 and 215053 | F207 | register row | open | none | none | 2026-10-17 |
 
 ## outside the waves
 

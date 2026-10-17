@@ -1672,3 +1672,9 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Found by the check round of 17 Oct evening on F205's run 2 of the C04 copy, saved with 8 of 10 models hidden whole: F204 hides them again after the clash step and the pictures are taken after the NWF is saved, F182, so 744 of 3080 pictures showed only the sky and the grid label and 2127 belonged to tests with a side in a hidden model. The picture pass now shows every item first and hides again what was hidden after, the clash step's way, through one class EverythingShown that both steps use, one IMAGES HIDDEN line before and one after.
 - In code 2026-10-17. Core tests 3269 before and 3276 after, the solution 0 warnings and 0 errors. The run on a fresh copy of C04 is the check round's run 1.
+- DONE 2026-10-17, merged in 286 and proved on a fresh copy of NM fed's C04 NWF with main 2ad21979: run-20261017-213058 and run-20261017-215053, both DONE, 0 of 3116 and 0 of 3097 pictures empty against 744 of 3080 before, both sides in the pictures of tests on a hidden model, two IMAGES HIDDEN lines each, read back, and the 8 models still hidden in the saved NWF.
+
+## F207 The check round of 17 Oct evening
+
+- Bader's order of 17 Oct evening: check items 1 to 9 of the chat audit of C02, SOLVED or STILL OPEN with evidence, fix only what is open. Answers at the top of steps\03_bader_next.md. Fix: F206. Q193 closed by his answer, Q194 to Q201 asked, finding F207-R1 the views check 4.
+- DONE 2026-10-17. NM fed listed the same before and after, 12987 files, SHA-256 of every file.

@@ -2,6 +2,32 @@
 
 Newest entry at the top.
 
+## 2026-10-17 F207 the check round of items 1 to 9, F206 proved
+
+Branch fix-F207 off main 2ad2197. Bader's order of 17 Oct evening.
+
+What was done. The nine items of the chat audit checked on copies under C:\NWC-PC-Test\work\round-f206, NM fed listed with
+the SHA-256 of every file before and after, 12987 files, 0 lines differ. Item 1: no picture for Approved by the Photo of
+default, on purpose, Q194. Item 2: covered by Bader's Q173. Item 3: off by default and only on the NWC page, Q195, and on a
+weekly run 5 penetrations set back to New went to Reviewed while 10 clashes set by hand kept everything. Item 4: Layer,
+Item Name, the logo and the pictures differ from the client's, Q196 to Q198 and Q201, Distance and the Image cell match it,
+C02's empty Grid is the model, Q191. Item 5: the absolute picture links break after a move, relative links showed in
+Excel after one, Q199. Item 6: foundations from Bader's Q63, Q200. Item 7: no C02 NWC in either ACCDocs folder. Item 8:
+the depth is Navisworks' distance to pull a column through a slab apart, 18.000 m, real. Item 9: Q193 closed. F206 found
+and merged, then proved by two NWF page runs on a fresh C04 copy with main 2ad21979, run-20261017-213058 and
+run-20261017-215053, both DONE: 0 empty pictures, 741 tests with the same GUIDs, New to Active, Reviewed and Approved
+kept, 13286 of 13286 clash GUIDs kept, 0 Approved or Resolved set by the tool, 174 and 173 tests at or under their cap
+all pictured, views in Clash Status A B C.
+
+What remains. Bader's answers to Q194 to Q201 and the older ones. His run on NM fed's C04 NWF with 2ad21979.
+
+Known bugs. F207-R1: views check 4 fails on every C04 run since the NWF holds hidden models, 2 painted items not its
+clashes in each view, which 2 is UNKNOWN. The memory stop still ends the pictures of the 20 tests over their cap.
+
+What comes next. F207-R1 read on a copy: which 2 items each view paints.
+
+Core tests 3276 before and 3276 after, no code changed in this entry.
+
 ## 2026-10-17 F206 the pictures taken after the save show every item
 
 Branch fix-F206 off main b5b1d82. Found by the check round of 17 Oct evening.
