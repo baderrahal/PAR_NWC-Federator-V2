@@ -284,7 +284,7 @@ namespace Federator.Addin.Engine
             return false;
         }
 
-        private static string SharedCoordinateOn(ModelItem root)
+        internal static string SharedCoordinateOn(ModelItem root)
         {
             using (PropertyCategoryCollection tabs = root.PropertyCategories)
             {

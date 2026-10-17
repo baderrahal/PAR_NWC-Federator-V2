@@ -113,6 +113,14 @@ namespace Federator.Addin.Engine
         public long ElementCount { get; set; }
 
         /// <summary>
+        /// What the discipline reports read off each model of the group, F209, for a group of a package, or null where
+        /// they were not read, with why. The window writes the package's workbooks from these once its groups have run.
+        /// </summary>
+        public IList<Federator.Core.Disciplines.ModelFacts> DisciplineFacts { get; set; }
+
+        public string DisciplineFactsNotRead { get; set; }
+
+        /// <summary>
         /// How this group ended. The rule itself lives in Federator.Core.Rerun so it can
         /// be tested without Navisworks. This only gathers the facts.
         /// </summary>

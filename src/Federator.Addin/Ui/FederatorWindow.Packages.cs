@@ -8,6 +8,7 @@ using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Grouping;
 using Federator.Core.Communities;
+using Federator.Core.Disciplines;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -294,9 +295,10 @@ namespace Federator.Addin.Ui
             GroupingMode mode = ChosenGrouping();
             string report = Trimmed(packagePanel.Report);
             ReportOptions options = ReportsWanted(tolerance);
-            PackageTally tally = new PackageTally();
+            PackageRun run = new PackageRun(report);
+            PackageTally tally = run.Tally;
             List<FederationJob> jobs = new List<FederationJob>();
-            List<Package> runnable = new List<Package>();
+            List<Package> runnable = run.Runnable;
             List<string> planLines = new List<string>();
             int tickedFiles = 0;
 
@@ -305,6 +307,7 @@ namespace Federator.Addin.Ui
                 tally.Expect(package);
                 tickedFiles += package.Files.Count;
                 PackagePlan plan = PackagePlan.For(package, report, mode, settings, naming, internalWorkbook, DateTime.Today);
+                run.Plans[package.RelativePath] = plan;
 
                 foreach (string line in plan.NotRun)
                 {
@@ -404,7 +407,150 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            RunJobs(jobs, null, null, tolerance, tally);
+            RunJobs(jobs, null, null, tolerance, run);
+        }
+
+        /// <summary>
+        /// One run of packages, F208 and F209: the Report folder, the tally RESULT reads, the packages that run on the NWC
+        /// page with the plan of each, by its path from the parent, for the discipline reports written once the groups end.
+        /// </summary>
+        private sealed class PackageRun
+        {
+            public PackageRun(string report)
+            {
+                Report = report;
+                Tally = new PackageTally();
+                Runnable = new List<Package>();
+                Plans = new Dictionary<string, PackagePlan>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            public string Report { get; private set; }
+
+            public PackageTally Tally { get; private set; }
+
+            public List<Package> Runnable { get; private set; }
+
+            public Dictionary<string, PackagePlan> Plans { get; private set; }
+        }
+
+        /// <summary>
+        /// F209. The discipline workbooks of every package that ran, each package in a try of its own, so one package's
+        /// fault never stops the others' reports, and every package's DISCIPLINE REPORT block in the log.
+        /// </summary>
+        private void WriteTheDisciplineReports(PackageRun run, IList<JobOutcome> outcomes, DisciplineReportSettings disciplines)
+        {
+            foreach (Package package in run.Runnable)
+            {
+                try
+                {
+                    PackagePlan plan;
+                    WriteOnePackagesReports(package, run.Plans.TryGetValue(package.RelativePath, out plan) ? plan : null, outcomes, run.Report, disciplines);
+                }
+                catch (Exception error)
+                {
+                    log.Failure("the discipline reports of " + package.RelativePath, error, "the other packages' reports are still written");
+                }
+            }
+        }
+
+        /// <summary>
+        /// One package's four workbooks. On the NWC page every group of its plan, the facts of those that ran and the files
+        /// of those that did not, and on the NWF page every NWF that ran, its models' files and facts. Each NWC's date off the
+        /// disk. Each workbook under a name nothing in the folder holds, ReportPaths.FreeFilePath, its size read back by the
+        /// log and its lines read back off the file.
+        /// </summary>
+        private void WriteOnePackagesReports(Package package, PackagePlan plan, IList<JobOutcome> outcomes, string report, DisciplineReportSettings disciplines)
+        {
+            List<JobOutcome> mine = new List<JobOutcome>();
+
+            foreach (JobOutcome outcome in outcomes)
+            {
+                if (outcome != null && outcome.Job != null && string.Equals(outcome.Job.Package, package.RelativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    mine.Add(outcome);
+                }
+            }
+
+            List<DisciplineGroup> groups = new List<DisciplineGroup>();
+
+            if (plan != null)
+            {
+                foreach (PackageGroup group in plan.Groups)
+                {
+                    JobOutcome ran = mine.Find(o => string.Equals(o.Job.Building, group.Building, StringComparison.Ordinal));
+                    groups.Add(new DisciplineGroup(group.Building, group.Files, ran == null ? null : ran.DisciplineFacts,
+                        ran == null ? "this group did not run in this run" : (ran.DisciplineFactsNotRead ?? "the group ended before its models were read")));
+                }
+            }
+            else
+            {
+                foreach (JobOutcome ran in mine)
+                {
+                    List<string> files = new List<string>();
+
+                    if (ran.DisciplineFacts != null)
+                    {
+                        foreach (ModelFacts model in ran.DisciplineFacts)
+                        {
+                            files.Add(model.File);
+                        }
+                    }
+                    else
+                    {
+                        files.AddRange(ran.Job.Files);
+                    }
+
+                    groups.Add(new DisciplineGroup(ran.Job.Building, files, ran.DisciplineFacts,
+                        ran.DisciplineFactsNotRead ?? "the NWF ended before its models were read"));
+                }
+            }
+
+            List<FileDate> dates = new List<FileDate>();
+
+            foreach (DisciplineGroup group in groups)
+            {
+                foreach (string file in group.Files)
+                {
+                    try
+                    {
+                        dates.Add(File.Exists(file) ? new FileDate(file, File.GetLastWriteTime(file), null) : new FileDate(file, null, "the file is not there"));
+                    }
+                    catch (Exception error)
+                    {
+                        dates.Add(new FileDate(file, null, error.GetType().Name + ": " + error.Message));
+                    }
+                }
+            }
+
+            DisciplineReport made = DisciplineReport.For(package.Community, package.RelativePath, groups, dates, DateTime.Now, disciplines, settings);
+            log.Block("DISCIPLINE REPORT " + package.RelativePath, made.Lines());
+            string folder = PackageOutput.FolderFor(report, package);
+
+            foreach (string discipline in made.Disciplines)
+            {
+                string path = ReportPaths.FreeFilePath(folder, DisciplineWorkbook.NameFor(package.RelativePath, discipline, disciplines), DateTime.Now, null);
+                IList<CheckRow> rows = made.RowsFor(discipline);
+                log.WriteAttempted("CHECKS", path);
+
+                try
+                {
+                    DisciplineWorkbook.Write(path, discipline, rows);
+                }
+                catch (Exception error)
+                {
+                    log.WriteThrew("CHECKS", path);
+                    log.Failure("writing the " + discipline + " workbook of " + package.RelativePath, error, "the other workbooks are still written");
+                    continue;
+                }
+
+                log.WriteFinished("CHECKS", path);
+                string why;
+                IList<IList<string>> back = DisciplineWorkbook.Read(path, out why);
+                log.Line(back == null
+                    ? "CHECKS   read back FAILED  " + path + ", " + why
+                    : "CHECKS   read back " + back.Count + " of " + rows.Count + " lines, " + made.IdsNotReadable(discipline)
+                        + " element ids not readable, " + discipline + " of " + package.RelativePath);
+            }
         }
 
         /// <summary>Each group of a run of packages added to the tally, by the package its job names.</summary>
@@ -446,7 +592,8 @@ namespace Federator.Addin.Ui
             NwfPageSteps nwfSteps = TheNwfSteps();
             nwfSteps.Apply(options);
             string report = Trimmed(packagePanel.Report);
-            PackageTally tally = new PackageTally();
+            PackageRun run = new PackageRun(report);
+            PackageTally tally = run.Tally;
             List<string> nwfs = new List<string>();
             List<PackageNwf> inPackages = new List<PackageNwf>();
             List<string> lines = new List<string>();
@@ -478,6 +625,7 @@ namespace Federator.Addin.Ui
                 }
 
                 packagesWithNwfs++;
+                run.Runnable.Add(package);
 
                 foreach (PackageNwf nwf in found)
                 {
@@ -570,6 +718,9 @@ namespace Federator.Addin.Ui
                         outcome == null ? GroupOutcome.Failed : outcome.Result,
                         outcome == null ? -1 : GroupSize.ClashesIn(outcome.Clash));
                 }
+
+                // F209. One workbook per discipline of every package that ran, from the facts its NWFs' models gave.
+                WriteTheDisciplineReports(run, outcomes, options.Disciplines);
 
                 SayWhatAnOpenFileRunAddedUp(engine);
                 log.Block(SetsAcrossTheRun.BlockTitle, engine.SetsAcrossTheRun.Lines());
