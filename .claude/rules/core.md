@@ -2460,6 +2460,47 @@ and 6 does not read as broken.
   blocked row, which the row itself refuses. The grey line under the group list is
   `ShiftRange.HelpLine`, at most twelve words by the tick box rule
 
+## Communities and packages, F208
+
+Bader's message of 17 Oct 2026 late evening, feature 1. The folder is Federator.Core.Communities and not Packages,
+because the NuGet line packages/ of .gitignore reads a folder of that name case blind and keeps it out of every commit.
+
+- THE TREE IS READ OFF ONE PARENT FOLDER, `PackageTree.Read`. The first level under it is the community. Every folder
+  at any depth below a community that directly holds files of the kind read is ONE PACKAGE, its own files only, so a
+  folder holding files and subfolders with files is one package and each subfolder another, and two folders are never
+  mixed into one package. The flat layout, a community holding its files itself, is the package the community is, named
+  `PackageWords.ItselfName`, and the ACC layout, folders of files under it, are packages side by side. Folder names with
+  spaces, the word and or an ampersand read like any other. A file is judged by its extension alone, read case blind, a
+  folder is listed whole and never matched by a wildcard, the disk is handed in as `NwfPickDisk` so every rule is proved
+  on folders a test makes. A link or a junction is named and never followed. A folder that will not read is named with
+  what the disk said and the rest are read. Files in the parent itself and a community with no file below it are named in
+  `LeftOut` and are in no package, never dropped in silence
+- NOTHING IS TICKED AT THE START, `PackageTicks`, so a parent of ten communities never runs all ten by mistake. A
+  community's tick sets every one of its packages, `StateOf` reads neither for a community partly ticked, and Tick all and
+  Clear all set every package. `WhyNoRun` refuses a run while none is ticked, and a tree not read refuses with its own
+  reason. The ticked run in the tree's order. `Lines` names every package ticked and every one left out with its full path
+  from the parent and its files, then the count of each
+- A PACKAGE WRITES UNDER ITS OWN REPORT FOLDER, `PackageOutput`: the Report folder and the package's path from the parent,
+  such as Report\C06\Infrastructure, its NWFs in NWF and its NWDs in NWD under it, `DefaultNwfSubfolder` and
+  `DefaultNwdSubfolder`, so `ReportPaths.LogFolder` puts the Log and the Clash report under it as well and every output of
+  a package is in its one folder. A Report folder that is the parent or inside it is refused, the rule that the reports
+  never go inside the folder being scanned. The folders are made only for a ticked package that runs, one line each saying
+  made or there
+- ONE PLAN PER PACKAGE, `PackagePlan.For`: its files parsed with the naming settings, gathered by the grouping chosen,
+  named by the patterns, each group's NWF and NWD in the package's folders, a name the scanned run's guard refuses
+  refusing that package and no other, a file that does not read and a group the grouping blocks named and run nothing. A
+  group is named with its package, `PackagePlan.LabelFor`, the package's path then the group, the words every GROUP line
+  and RESULT carry, and the plain group where a run has no package
+- THE NWF PAGE RUNS THE NWFS THE NWC PAGE WROTE, `PackageNwfs.For`: the NWF files directly in the package's NWF folder,
+  judged by `NwfPick.IsNwf`, in name order, each with its NWD in the package's NWD folder and its Log folder by
+  ReportPaths, so the two pages write into the same folders of the same package. No NWF there gives none, and the run names
+  the package with `PackageWords.NoNwfYet`
+- RESULT NAMES EVERY GROUP WITH ITS COMMUNITY AND PACKAGE, `PackageTally`, then one total per package, one per community
+  and one for the run, written by `RunLog.WriteResultBlock` under the group counts. A package that ran nothing is named with
+  why. A clash count not taken is UNKNOWN and a total holding one says at least
+- The words of the step and the panel are `PackageWords`, the buttons within the tick box rule, and the two pickers are
+  `PickerKind.PackageParent` and `PackageReport`, each remembered on its own
+
 ## The diagnostic log
 
 The log is what Bader sends back when something goes wrong, so it is built to

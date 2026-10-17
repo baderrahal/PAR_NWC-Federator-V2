@@ -1,5 +1,25 @@
 # 03 Bader next
 
+## F208, many communities and packages
+
+Simple words. PROVEN means a run showed it. Proved here on a copy, C:\NWC-PC-Test\work\multi\smoke, with the build c332da99, before the merge. The full test on C06 and C07 is F210, below once it runs.
+
+Your steps, in this order. The first proves the tree reads your own layout.
+
+1. Close every Navisworks.
+2. Open Navisworks and the tool, the NWC page, the tab 5. Packages.
+3. Type your parent folder in Parent folder, the folder whose first level is C06 and C07, and press Read.
+   Look for: one line per community, each package under it with its NWC files and its groups, and every box unticked.
+4. Press Run ticked packages with nothing ticked.
+   Look for: The run cannot start. Nothing is ticked. Tick a community or a package first.
+5. Pick a Report folder outside the parent folder with Browse beside Report folder.
+6. Tick one package only and press Run ticked packages, then OK.
+   Look for: in the log, GROUP started with the package's path before the group, and the folder Report then the package's path holding NWF, NWD, Log and Clash report. No folder for a package you did not tick.
+7. When it ends, read RESULT in the log.
+   Look for: a group line, a package line, a community line and a run line, each with its counts.
+8. Go to the NWF page. The same tree is on the right with your tick. Press Run ticked packages there, then OK.
+   Look for: the NWF of that package refreshed, its NWD in the package's NWD folder, and a package with no NWF named as not run.
+
 ## Check round of 17 Oct evening, items 1 to 9 of the chat audit, and F206
 
 Simple words. PROVEN means a run showed it and I saw the result. TEST means only a test showed it. UNKNOWN means nothing showed it yet. Every run was on a copy under C:\NWC-PC-Test\work\round-f206. NM fed was only read. Its listing, every file's name, size, date and SHA-256, was taken before and after the round: 12987 files both times, 0 lines differ.

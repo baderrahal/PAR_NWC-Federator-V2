@@ -44,6 +44,20 @@
             <Setter Property="Margin" Value="0,0,6,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+        <!-- F208. The tree of packages on both pages, one look. Every line is open, so every tick box is in the
+             visual tree and a driver finds it by its name. The tick is Core's PackageTicks, read through the line. -->
+        <Style x:Key="PackageItem" TargetType="TreeViewItem">
+            <Setter Property="IsExpanded" Value="True" />
+            <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
+        </Style>
+        <HierarchicalDataTemplate x:Key="PackageLine" ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox IsChecked="{Binding IsTicked, Mode=TwoWay}" AutomationProperties.Name="{Binding Title}"
+                          VerticalAlignment="Center" Margin="0,1,6,1" />
+                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Detail}" Foreground="#707070" Margin="10,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
     </Window.Resources>
 
     <DockPanel Margin="10">
@@ -635,6 +649,51 @@
                 </DockPanel>
             </TabItem>
 
+            <!-- Step 5, F208, Bader's message of 17 Oct 2026. Many communities at once, each ticked package built in
+                 turn with the grouping, the names and the clash choices of the steps before. Its words are Core's,
+                 PackageWords, read through the panel's data, which the NWF page's panel shares. -->
+            <TabItem Header="5. Packages" x:Name="PackagesStep">
+                <DockPanel Margin="8" x:Name="PackagesPanel">
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" TextWrapping="Wrap"
+                               Text="{Binding Heading}" />
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding ParentLabel}" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="PackageParentBox" VerticalAlignment="Center" Margin="0,0,0,4"
+                                 Text="{Binding Parent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowsePackageParent" Margin="4,0,0,4" />
+                        <Button Grid.Row="0" Grid.Column="3" x:Name="ReadPackagesButton" Content="{Binding ReadWord}"
+                                Click="OnReadPackages" FontWeight="Bold" Margin="4,0,0,4" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="{Binding ReportLabel}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="PackageReportBox" VerticalAlignment="Center" Margin="0,0,0,4"
+                                 Text="{Binding Report, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowsePackageReport" Margin="4,0,0,4" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Style="{StaticResource TickHelp}"
+                                   Margin="0,0,0,4" Text="{Binding ReportHelp}" />
+                    </Grid>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                        <Button x:Name="TickAllPackagesButton" Content="{Binding TickAllWord}" Click="OnTickAllPackages" Margin="0,0,4,0" />
+                        <Button x:Name="ClearAllPackagesButton" Content="{Binding ClearAllWord}" Click="OnClearAllPackages" />
+                        <Button x:Name="RunPackagesButton" Content="{Binding RunWord}" Click="OnRunPackages"
+                                FontWeight="Bold" MinWidth="160" Margin="16,0,0,0" />
+                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Bottom" x:Name="PackagesSummary" Text="{Binding Summary}"
+                               TextWrapping="Wrap" Margin="0,6,0,0" />
+                    <TreeView x:Name="PackagesTree" ItemsSource="{Binding Nodes}"
+                              ItemContainerStyle="{StaticResource PackageItem}" ItemTemplate="{StaticResource PackageLine}" />
+                </DockPanel>
+            </TabItem>
+
             </TabControl>
             </TabItem>
 
@@ -643,6 +702,50 @@
                  RefreshConfirm, read in the constructor and never typed here. -->
             <TabItem Header="NWF">
                 <DockPanel Margin="8">
+                    <!-- F208. The tree of the NWC page's step 5, the same data, on the right of the NWF page. Each ticked
+                         package runs the NWFs in the NWF folder under its report folder. -->
+                    <Border DockPanel.Dock="Right" Width="440" BorderBrush="#D0D0D0" BorderThickness="1"
+                            Padding="8" Margin="8,0,0,0" x:Name="NwfPackagesPanel">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" TextWrapping="Wrap"
+                                       Text="{Binding NwfHeading}" />
+                            <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Content="{Binding ParentLabel}" />
+                                <TextBox Grid.Row="0" Grid.Column="1" x:Name="NwfPackageParentBox" VerticalAlignment="Center" Margin="0,0,0,4"
+                                         Text="{Binding Parent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <Button Grid.Row="0" Grid.Column="2" x:Name="NwfReadPackagesButton" Content="{Binding ReadWord}"
+                                        Click="OnReadPackages" MinWidth="60" Margin="4,0,0,4" />
+                                <Label Grid.Row="1" Grid.Column="0" Content="{Binding ReportLabel}" />
+                                <TextBox Grid.Row="1" Grid.Column="1" x:Name="NwfPackageReportBox" VerticalAlignment="Center" Margin="0,0,0,4"
+                                         Text="{Binding Report, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource TickHelp}"
+                                           Margin="0,0,0,4" Text="{Binding ReportHelp}" />
+                            </Grid>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                                <Button x:Name="NwfTickAllPackagesButton" Content="{Binding TickAllWord}" Click="OnTickAllPackages"
+                                        MinWidth="70" Margin="0,0,4,0" />
+                                <Button x:Name="NwfClearAllPackagesButton" Content="{Binding ClearAllWord}" Click="OnClearAllPackages"
+                                        MinWidth="70" />
+                                <Button x:Name="RunNwfPackagesButton" Content="{Binding RunWord}" Click="OnRunNwfPackages"
+                                        FontWeight="Bold" MinWidth="140" Margin="12,0,0,0" />
+                            </StackPanel>
+                            <TextBlock DockPanel.Dock="Bottom" x:Name="NwfPackagesSummary" Text="{Binding Summary}"
+                                       TextWrapping="Wrap" Margin="0,6,0,0" />
+                            <TreeView x:Name="NwfPackagesTree" ItemsSource="{Binding Nodes}"
+                                      ItemContainerStyle="{StaticResource PackageItem}" ItemTemplate="{StaticResource PackageLine}" />
+                        </DockPanel>
+                    </Border>
+
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" x:Name="NwfPageHeading" />
 
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,4">

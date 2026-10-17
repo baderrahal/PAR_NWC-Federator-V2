@@ -2,6 +2,104 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F208 many communities and nested packages
+
+Branch fix-F208 off main 83d2126. Bader's message of 17 Oct 2026 late evening, feature 1.
+
+What was done. Core, a new folder Federator.Core.Communities: the tree read off one parent folder, the first level the
+communities and every folder below that directly holds NWC files one package, its own files only, at any depth, links
+never followed and every folder or file left out named. The ticks, nothing ticked at the start, a community ticking all
+its packages, Tick all, Clear all and the refusal while none is ticked. The plan of each package, its groups by the
+grouping and the names of steps 2 and 3, its NWF and NWD under Report at the package's path, the Report folder refused at
+or inside the parent. The NWFs the NWF page runs for a package, and the totals per group, package, community and run in
+RESULT. The add-in: step 5. Packages on the NWC page and a panel on the NWF page on one model, each job carrying its
+package and its Log folder, community and package on every GROUP line. The folder was first named Packages and the
+NuGet line packages/ of .gitignore kept it out of the first commit, so it is Communities and core.md says why.
+
+Proved on Navisworks with c332da99 on C:\NWC-PC-Test\work\multi\smoke, a copy: run-20261018-000821 on the NWC page, the
+tree of 3 communities and 4 packages at the right levels, Run with nothing ticked refused in Core's words, one package of
+two ticked alone, C06S\Infrastructure, built in 14.9 s into Report\C06S\Infrastructure with NWF, NWD, Log and Clash
+report, nothing made for the package left out, RESULT reading the group, package, community and run lines.
+run-20261018-001025 on the NWF page, the community ticked whole, the package with an NWF refreshed with its Backup, NWD and
+logs in its own folders, the one with none named as not run with why.
+
+What remains. The full test on C06 and C07, both layouts, both pages, F210. The confirm of the NWF page's run said the
+backup folder is UNKNOWN on that run and now names the Backup folder under each package's report folder, read once F210
+runs.
+
+Known bugs. None found in this fix.
+
+What comes next. F209, the discipline reports.
+
+Core tests 3276 before and 3319 after, 0 failed, 0 skipped. The solution 0 warnings and 0 errors.
+
+## 2026-10-17 The plan of the round of many communities and the discipline reports, F208 to F211
+
+Bader's message of 17 Oct 2026 late evening, two features and a test on C06 and C07. Written before the first edit, on
+branch fix-F208 off main 83d2126.
+
+What was read first. CLAUDE.md, the six files under .claude\rules, addin, core, loop, steps, tests and tracker, where the
+message says four. steps\PROGRESS.md, the top entry of this log, which lives at steps\history\log.md since F139 and not at
+steps\log.md, so this plan and every entry of the round go here and nowhere else. steps\01_next.md, its order and its
+newest sections F198 to F207. steps\02_questions.md, its newest questions Q182 to Q201, so a new one is Q202. The top of
+steps\03_bader_next.md, which holds the nine items of the chat audit of C02 that F207 checked. The file
+claude\audit-c02-2026-10-17.md the message names is on no branch, not on GitHub and nowhere on this PC, so the seven C02
+bugs are read as the items of that chat audit kept in steps\03_bader_next.md, and which seven the message means is
+UNKNOWN. docs\history\scan.md for what is measured: 5q, the shared site on the model root and the element id on the
+Element tab, and 5z-zb, the Revit category on the Element tab. Nothing measured says how a CAD import shows in an NWC
+or which property carries the family, the type or the level.
+
+The source. The message names C:\Users\bader\Desktop\NWC Fed, which is not there. The folder is NM fed, holding NWC\C06
+and NWC\C07 with 64 NWCs each, C07 holding the same names and sizes as C06, all coded 1B06, and empty NWF, NWD, Clash
+report, Clash Test and Report folders for both. It is read only. Its listing, every file's name, size, date and SHA-256,
+was taken at 23:38 into C:\NWC-PC-Test\work\multi\listing-before.tsv, 135 files and 25 folders.
+
+The F numbers. F208 the first feature, F209 the second, F210 the test on C06 and C07 with its records, F211 the audit of
+the repo after the last merge and the closing entry. One branch and one pull request each, merged on green.
+
+The order.
+
+1. F208, many communities and nested packages, branch fix-F208. Core first, in a new folder Federator.Core.Communities with
+   its tests: the tree read off a parent folder, the first level the communities, every folder below that directly holds
+   NWC files one package, its own files only, at any depth, so a folder holding files and subfolders is a package and
+   each subfolder another. The ticks, nothing ticked at the start, a community ticking all its packages, Tick all and
+   Clear all, and the reason Run is refused with none ticked. The report folder of a package, the Report folder mirroring
+   the path from the parent, refused inside the parent, with the NWF and NWD subfolders under it so the Log and the Clash
+   report land there too by the rule of ReportPaths. The lines naming every package ticked and left out with its path and
+   counts, and the totals per package, per community and for the run. Then the add-in: the tree on the NWC page and on
+   the NWF page, one model behind both, the NWC page route building every ticked package in turn and the NWF page route
+   running the NWFs each ticked package holds under its report folder, community and package named on every group line
+   and in RESULT. Build, the Core tests before and after, install, then a short run on a small copy under
+   C:\NWC-PC-Test\work\multi\smoke before the merge.
+2. F209, the discipline reports, branch fix-F209. Measure first: a probe under tools\probes on copies of the C06 NWCs, and
+   of C02 for the shared site, reads how a CAD import shows in the tree and the properties, and which properties carry the
+   Revit category, the element id, the family, the type and the level, appended to docs\history\scan.md with the date.
+   Then Core in Federator.Core.Disciplines with its tests: the six checks, coordinates with the C02 case of EL and ST
+   2,823 km from AR and ME as a test, a missing discipline, naming against the reference discipline's learned pattern, file
+   age, CAD and Generic Models, every row with community, package, group, file, check, result, value and element id, an id
+   that cannot be read listed as not readable and counted, and one workbook per discipline per package. Then the add-in
+   reads the facts per group where the EXPORT CHECK reads its models, and writes the reports per package on both routes.
+   Build, tests, install, a short run, merge.
+3. F210, the test, branch fix-F210. Copies only, at C:\NWC-PC-Test\work\multi: the flat layout, Parent\C06 and Parent\C07,
+   and the ACC layout, Parent\C06\Infrastructure and Landscape and Parent\C06\Infrastructure with the files split between
+   them and the same for C07, each with a Report folder holding empty C06 and C07 folders and a dummy community with one
+   copied NWC left unticked. The NWC page then the NWF page on each layout, a single package alone, and Run with nothing
+   ticked. Every point of the message's list checked off the logs, the folders and the workbooks, three CAD and three
+   Generic Models ids found again in Navisworks by their id, and the chat audit items read on C06 and C07, each still there,
+   gone, or cannot tell. NM fed listed again and compared. The findings in claude\audit-multi-2026-10-17.md, the logs and
+   tsv files copied into steps\logs named with the date and C06-C07, the proof steps for both features in
+   steps\03_bader_next.md.
+4. F211, after the last merge: an audit and QA of the whole repo against CLAUDE.md, every contradiction listed, and the
+   closing entry here.
+
+What is decided here and said to Bader. The NWF page route reads the same tree as the NWC page and runs the NWFs the NWC
+page wrote under each package's report folder, so the two pages work on the same packages. Nothing reaches a folder of a
+package that is not ticked, since a package's every output is under its own report folder. The tool's guard that stops a
+run after the first 50 tests all fail the same way stays, so it can still stop the packages after the one it fires in.
+Any new question goes to steps\02_questions.md from Q202 on.
+
+Core tests on main 83d2126: 3276 passed, 0 failed, 0 skipped.
+
 ## 2026-10-17 F207 the check round of items 1 to 9, F206 proved
 
 Branch fix-F207 off main 2ad2197. Bader's order of 17 Oct evening.

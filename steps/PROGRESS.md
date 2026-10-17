@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-17 22:30, F207 the check round of items 1 to 9, F206 286 merged and proved by run-20261017-213058 and 215053, main 2ad2197 installed, Q194 to Q201 wait for Bader
+STATE OPEN, 2026-10-18 00:25, the round of many communities and the discipline reports, F208 in review, run-20261018-000821 and 001025 on a copy, main 83d2126 installed as c332da99 of fix-F208
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,15 +15,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 270 | 16 | 0 | 18 | 61 | 7 | 372 |
-| total | 473 | 24 | 0 | 18 | 162 | 18 | 695 |
+| outside the waves | 271 | 16 | 0 | 18 | 61 | 7 | 373 |
+| total | 474 | 24 | 0 | 18 | 162 | 18 | 696 |
 <!-- the end of the counts -->
 
 ## Now
-- 17 Oct evening, check round F207: the nine items of the chat audit at the top of steps\03_bader_next.md. F206 the pictures taken
-  after the save show every item, 286, found when 744 of 3080 C04 pictures showed only the sky, the NWF holding 8 models hidden
+- 18 Oct, Bader's message of 17 Oct late evening: F208 many communities and nested packages, F209 one Excel per discipline per
+  package, F210 the test on C06 and C07 in two layouts, F211 the audit of the repo. The plan is the entry of 17 Oct in log.md
+- 17 Oct evening, check round F207: the nine items of the chat audit. F206 the pictures taken after the save show every item, 286
 - 17 Oct audit round: F203 small tests pictured first, 283. F204 the clash step shows every hidden item, 284. F205 the second run
-- 15 Oct: F201 no model's units are set, 281, F202 04 PK within 0 mm of a manual Append. Round 6: F198 to F200
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
@@ -34,11 +34,12 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 17 Oct 21:30, C04 copy, NWF page twice | 2ad21979, main after 286 | 3116 in 273 s, 3097 in 279 s | not run | none read | the runs 16.9 and 17.3 min, every model shown for the pictures |
 
 ## Next
-1. Bader runs the NWF page on NM fed's C04 NWF with 2ad21979 and reads the CLASH HIDDEN and IMAGES HIDDEN lines, steps\03_bader_next.md
-2. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
-3. F207-R1: which 2 items each view paints that are not its clashes, read on a copy of C04
-4. C02: AR and ME of 1A02MM sit on Revit's internal origin and no newer NWC is on this PC, Q191, then a C02 run
-5. tools\loop\prove-run.ps1 was not run after F173, so its window cases are UNKNOWN
+1. F208 merged on green, then F209 the discipline reports measured first by a probe, then the F210 runs on C06 and C07
+2. Bader runs the NWF page on NM fed's C04 NWF with 2ad21979 and reads the CLASH HIDDEN and IMAGES HIDDEN lines, steps\03_bader_next.md
+3. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
+4. F207-R1: which 2 items each view paints that are not its clashes, read on a copy of C04
+5. C02: AR and ME of 1A02MM sit on Revit's internal origin and no newer NWC is on this PC, Q191, then a C02 run
+6. tools\loop\prove-run.ps1 was not run after F173, so its window cases are UNKNOWN
 
 ## Waiting for Bader
 - Q194 Approved pictures, Q195 the rule boxes on the NWF page, Q196 Layer, Q197 Item Name, Q198 logo, Q199 relative links
