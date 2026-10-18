@@ -2,6 +2,22 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F218, Q202, far is more than 30 m from the reference discipline
+
+Branch fix-F218 off main 38cc64f, worked while F214's proof run went, Core alone. Bader's answer to Q202: far is more than 30 m
+from the reference discipline, 30 m the setting's default.
+
+What was done. `DisciplineReportSettings.DefaultFarMetres` is 30 m where F209 chose 1000 m, and its comment says far is MORE
+than it, so a gap of exactly 30 m is near, which is what `CoordinatesCheck` already did with gap above the setting. A new test,
+`FarIsMoreThanThirtyMetresByDefaultSoThirtyItselfIsNear`, puts an EL box 29.9, 30 and 30.1 m east of the AR box under the
+default settings and reads near, near and far. It fails on the code before, where all three read near. The rule in
+.claude\rules\core.md says the 30 m and where it came from.
+
+What was proved here. Core tests 3363 passed before, 3364 after, 0 failed, 0 skipped. No Navisworks run: the setting is read by
+the discipline reports' coordinates check alone, whose workbooks F220's run writes.
+
+What remains. Nothing of Q202. Known bugs: none new. What comes next: F214's merge once its proof run is read.
+
 ## 2026-10-18 F216, F210-R4, the full path on every package line
 
 Branch fix-F216 off main 4a5c515, worked while F214's proof run on the flat C06 and C07 copies went, since it touches Core

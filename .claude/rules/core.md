@@ -2558,7 +2558,8 @@ path in words, the discipline and the suffix, a name already there taking a date
 - 1. COORDINATES, `CoordinatesCheck`: each model measured from the boxes of the reference discipline's models of its group,
   `DisciplineReportSettings.Reference`, AR by default, by the GAP BETWEEN THE TWO BOXES, nought where they touch or overlap
   and the straight line of the gaps on the three axes where they do not, never the transform, which does not show C02's
-  2,823 km, scan.md 5z-zg. Over `FarMetres`, a choice of 1000 m and not a measurement, a model is far, and the line names the
+  2,823 km, scan.md 5z-zg. Over `FarMetres`, 30 m by Bader's answer to Q202 of 18 Oct 2026, F218, where F209 chose 1000 m, a model is far, so a gap of
+  exactly 30 m is near, proved at 29.9, 30 and 30.1 m, and the line names the
   distance, in km from a thousand metres on, and both shared sites. The reference model's line names every discipline far
   from it. A group with no reference model is measured from its first discipline with a box, said on the line. A box or a
   site not read is not read with why, never near or far. The C02 case is a test on the boxes the probe read

@@ -21,10 +21,11 @@ namespace Federator.Core.Disciplines
         public const int DefaultOlderThanDays = 7;
 
         /// <summary>
-        /// How far apart two boxes may sit before a discipline is far from the reference, in metres. A choice and not a
-        /// measurement: the gap between two boxes, which is nought where they overlap, and the C02 case is 2,823 km.
+        /// How far apart two boxes may sit before a discipline is far from the reference, in metres: far is MORE than this,
+        /// so a gap of exactly 30 m is near. Bader's answer to Q202 of 18 Oct 2026, F218, 30 m the default, where F209 chose
+        /// 1000 m. The gap between two boxes, which is nought where they overlap, and the C02 case is 2,823 km.
         /// </summary>
-        public const double DefaultFarMetres = 1000.0;
+        public const double DefaultFarMetres = 30.0;
 
         /// <summary>The words in a cell whose value could not be read, Bader's words for an element id.</summary>
         public const string DefaultNotReadable = "not readable";
