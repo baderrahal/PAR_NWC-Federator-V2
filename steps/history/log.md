@@ -31,14 +31,16 @@ copy of three small groups of C06, 1B06BS, 1B06M1 and 1B06PE: each group in its 
 to 2.2 s, the runner's line 3 starts 12.5 s and 3 quits 6.0 s, 3 groups DONE, 98 clashes, the four discipline workbooks written
 by the parent off the facts and read back whole. run-20261018-153325, the NWF page on the same NWFs: 3 NWFs each in its own
 Navisworks, 3 DONE, 98 clashes, starts 13.0 s and quits 5.5 s in all. A third run on 3c9ad2ae stopped before any press,
-since the build read +edits from the untracked probe folder of F223 and the driver refuses another stamp. Bader saw that
-Navisworks open with nothing happening. Its window was closed, the launcher quit its Navisworks and put the Auto-Save switch
-back, and the run was made again from a clean tree.
+since the build read +edits from the untracked probe folder tools\probes\AutoSaveProbe of F223 and the driver refuses another
+stamp. Bader said in the tab that Navisworks opened and nothing happened. The session closed that tool window by WM_CLOSE to
+the launcher's own Navisworks, the launcher quit it and put the Auto-Save switch back, the probe folder was held outside the
+tree, and the run was made again from a clean tree. The second pass was seen on Navisworks, run-20261018-155152 on 3c9ad2ae:
+the same three groups each in its own Navisworks, 3 starts 13.0 s and 3 quits 6.2 s, 3 DONE, 98 clashes, the group logs
+deleting no log, 33 left where 30 are kept. run-20261018-155943 on 3c9ad2ae, the NWF page on the same NWFs: 3 starts 13.1 s
+and 3 quits 5.7 s, 3 DONE, 98 clashes. Of the 14 Core tests added, 13 are in FreshNavisworksPerGroupTests and 1 in
+DisciplineChecksTests.
 
-What remains. The whole C06 and C07 in F229. The second pass was seen on Navisworks, run-20261018-155152 on 3c9ad2ae: the
-same three groups each in its own Navisworks, 3 starts 13.0 s and 3 quits 6.2 s, 3 DONE, 98 clashes, the group logs deleting
-no log, 33 left where 30 are kept. Known bugs: rows
-F222-R1 to R4. What comes next: F223, Q207.
+What remains. The whole C06 and C07 in F229. Known bugs: rows F222-R1 to R4. What comes next: F223, Q207.
 
 ## 2026-10-18 The round of F222 to F230, the plan, written before the first edit
 
