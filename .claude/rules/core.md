@@ -2617,7 +2617,9 @@ survive the crash rather than to be tidy.
   2026-10-13, F151, after his run of that day on 1A02MM wrote the copy into his NWF
   folder, and RunLog.TryCopyTo and NwfPick.LogFolder are gone. Since F158 the log and its
   .tsv are copied into each Log folder the run wrote into, once the RESULT block is on the
-  disk, `LogCopy.Into`, so its LOGS lines are the last thing a run writes
+  disk, `LogCopy.Into`, so its LOGS lines come after RESULT. In a package's own Navisworks,
+  F214, one line naming the package's result file follows them and is not in the copy, and
+  the window a person runs for a run of packages copies nothing, its joined RESULT last
 - logging is never the thing that stops a run. That holds for retention and for the
   log file itself, which falls back to the temp folder and then to window only output
 - a size is only logged after File.Exists passes and the real size is read back.
@@ -2686,8 +2688,8 @@ it if the same work carries the same name every time it is timed.
 ### The timing blocks, F60, which closes F21
 
 - a TIMING block per group, written straight after its GROUP finished line, and a
-  TIMING, THE WHOLE RUN block just before RESULT so RESULT stays the last thing in the
-  file. Both are `Federator.Core.Diagnostics.TimingBlock` and nothing else builds them
+  TIMING, THE WHOLE RUN block just before RESULT, so RESULT is the last block of the run,
+  the LOGS lines of F158 after it. Both are `Federator.Core.Diagnostics.TimingBlock` and nothing else builds them
 - every number is measured. The group total is the engine's own clock as GroupFinished
   read it, and the run total is the log's elapsed clock read where the block is written,
   NOT the groups added up, because the scan and the preview happen outside every group

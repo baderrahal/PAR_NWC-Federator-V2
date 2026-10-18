@@ -212,7 +212,7 @@ namespace Federator.Core.Tests
                 Assert.That(text, Does.Contain("The logo copied beside each report is not counted"),
                     "what neither line counts is said rather than left to be guessed");
                 Assert.That(text, Does.Not.Contain("copy of this log"),
-                    "since F151 no copy of the log is written, so RESULT names none");
+                    "the copies of the log F158 makes come after RESULT, so RESULT names none");
             }
         }
 

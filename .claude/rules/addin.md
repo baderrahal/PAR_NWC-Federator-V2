@@ -578,8 +578,8 @@ well as to pass.
   NWF, the NWF is the only record of what has been fixed, and there is no second copy
   anywhere, so it cannot be undone. A compact put back is never silent: its count is
   announced before it runs and the count removed reported after. The rules above that
-  still reason about a compact, the views' sibling pick among them, hold for a document an
-  earlier build compacted
+  still reason about a compact, the views' sibling pick among them, describe a compact
+  that no longer runs, and ClashRunOutcome.Compacted is never set past minus one
 - A clash side is pointed at the saved set through CreateSelectionSource, not filled
   with a copy of the set's items. That is what Clash Detective does when a person
   picks a set in the panel, and it is what keeps the counts matching the panel. A
@@ -1075,7 +1075,7 @@ opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash s
 added GhostOtherItems under More, F152 took EmbedThumbnails out of it and F159 took SkipClashOffCoordinates out,
 F188 added RebuildExisting and the five step boxes of the NWF page, so
 src\Federator.Addin\Ui\FederatorWindow.xaml holds TWENTY named tick boxes, of which ELEVEN sit
-under no expander, by x:Name IncludeSubfolders and RebuildExisting on the Source step, MarkPenetrations,
+under no expander, by x:Name IncludeSubfolders on the Source step, RebuildExisting on the Grouping step, MarkPenetrations,
 MarkByDesign, RebuildDriftedSets and MakeViewpoints on the Clash step, and NwfStepRefresh, NwfStepTests,
 NwfStepPictures, NwfStepViewpoints and NwfStepReports on the NWF page, each picking a step of the weekly run.
 The other nine are eight under More, rarely changed, DateTheNwd, WriteClashXml,

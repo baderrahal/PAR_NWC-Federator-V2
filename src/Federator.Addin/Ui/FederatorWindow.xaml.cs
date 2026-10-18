@@ -253,9 +253,9 @@ namespace Federator.Addin.Ui
             Steps.SelectedIndex = 1;
         }
 
-        // ---------- Step 1, the existing NWFs, F129 ----------
+        // ---------- The NWF page, the existing NWFs, F129 and F188 ----------
 
-        /// <summary>The label and the grey line of the third choice, Core's words, NwfPick.</summary>
+        /// <summary>The label and the grey line of the picked NWF box, Core's words, NwfPick.</summary>
         private void ShowPickedNwfWording()
         {
             PickedNwfLabel.Content = NwfPick.Label;
@@ -300,7 +300,7 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// Remembers the pick, puts it in the box and says what it gives on the Source step's
+        /// Remembers the pick, puts it in the box and says what it gives on the NWF page's
         /// line. The disk is read here and again when Run NWFs is pressed, never on each key.
         /// </summary>
         private void PickedNwfChosen(string picked)

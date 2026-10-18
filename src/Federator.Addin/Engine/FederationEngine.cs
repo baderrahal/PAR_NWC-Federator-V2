@@ -790,7 +790,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The picked NWFs of the Source step, F129, Bader's request 4 under Q112, one after
+        /// The picked NWFs of the NWF page, F129 and F188, Bader's request 4 under Q112, one after
         /// another, each opened where it sits and then run by the open file run's route,
         /// RunAnOpenFile, so every rule of that route applies to each: the checks before
         /// anything, the names off the file, nothing appended and nothing cleared, the tests of

@@ -301,7 +301,7 @@ namespace Federator.Core.Rerun
     }
 
     /// <summary>
-    /// The third choice on the Source step, F129, Bader's request 4 under Q112: one NWF or a
+    /// The picked NWFs of the NWF page, F129 and F188, Bader's request 4 under Q112: one NWF or a
     /// folder of NWFs, each run the way the open file run runs it.
     ///
     /// WHY THE OPEN FILE RUN'S ROUTE. Read off the code on 2026-10-08: the scanned run reaches an
@@ -315,7 +315,7 @@ namespace Federator.Core.Rerun
     /// </summary>
     public static class NwfPick
     {
-        /// <summary>The label beside the box on the Source step, by the tick box rule.</summary>
+        /// <summary>The label beside the box on the NWF page, by the tick box rule.</summary>
         public const string Label = "Existing NWF or folder of NWFs";
 
         /// <summary>The grey line under it, by the tick box rule.</summary>

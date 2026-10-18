@@ -2245,7 +2245,7 @@ namespace Federator.Core.Diagnostics
             string pickedNwfs,
             IList<string> packages)
         {
-            // Before RESULT, so RESULT stays the last thing in the file and does not have
+            // Before RESULT, so RESULT is the last block, the LOGS lines of F158 after it, and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
             //
             // THE RUN TOTAL IS RUN STARTED TO RUN FINISHED, F80, and not the session. It
