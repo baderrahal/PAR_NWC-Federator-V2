@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 01:10, last run multi3 run-20261018-205401, the round of F231 to F238, F231 merged in 312, F232 next
+STATE OPEN, 2026-10-19 01:35, last run multi3 run-20261018-205401, the round of F231 to F238, F231 merged in 312, F232 in review, F233 next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -38,6 +38,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 3. F237 the full run on final-2026-10-19, then F238 the audit, the proof steps and the closing entry
 
 ## Waiting for Bader
+- Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
 - Q212 the tests a rule left out still held in an NWF refreshed before it, leave them, delete once or a folder of their own
 - Q194 Approved pictures, Q195 the rule boxes on the NWF page, Q196 Layer, Q197 Item Name, Q198 logo, Q199 relative links
 - Q200 foundations, Q201 the look of the pictures. Q187 caps, Q188 512 pixels, Q189 by design pairs, Q190 folders, Q191 C02, Q192 numbers
