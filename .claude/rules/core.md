@@ -1031,8 +1031,16 @@ and 6 does not read as broken.
   asks whether the completeness was worth it. The reason is SingleDiscipline and it is counted apart from EmptySide on
   purpose. A side finding nothing says a discipline was not exported. One discipline says
   the group was never going to clash and no export would change that. In the last real
-  folder that was 1B06BS and 1C06PK, and both ran 1830 tests for nothing. The open file
-  is never judged this way, because nothing was scanned and its count is UNKNOWN
+  folder that was 1B06BS and 1C06PK, and both ran 1830 tests for nothing. The document
+  already open is never judged this way, because nothing was scanned and its count is UNKNOWN.
+  A PICKED NWF, THE NWF PAGE'S RUN, IS JUDGED THE SAME WAY SINCE F219, Bader's answer to Q203 of
+  18 Oct 2026, a group of one discipline running its tests on neither page: once it opens, its
+  disciplines are read off its models' file names by the scan's own parser,
+  `BuildingGroup.DisciplinesOf`, and where a model has no name or a name will not read the count
+  is UNKNOWN, said on a CLASH line, `DisciplinesNotReadLine`, and its tests run as before. Both
+  pages say why no test ran in one line, `BuildingGroup.OneDisciplineLine`, which names the
+  discipline. Tests that set a discipline against itself inside a group of two or more run on
+  both pages, counted for Bader in Q209
 - The reports never go inside the folder being scanned, whether it was picked or
   defaulted to. A run put the workbooks in the NWC folder it was reading, and the
   Clash step picks an XML at run time, so a report written there is a file a later run
