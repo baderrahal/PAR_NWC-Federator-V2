@@ -118,12 +118,15 @@ namespace Federator.Core.Communities
         /// every quit took added up, a start from the call that makes the Navisworks to its process told, a quit from the call
         /// that tells it to quit to its process gone.
         /// </summary>
-        public static string RunnerEnded(int groups, int packages, double seconds, int starts, double startSeconds, int quits, double quitSeconds)
+        public static string RunnerEnded(
+            int groups, int packages, double seconds, int starts, double startSeconds, int quits, double quitSeconds, int ended)
         {
             return "the runner ended after " + PackageWords.Count(groups, "group", "groups") + " of "
                 + PackageWords.Count(packages, "package", "packages") + " in " + Seconds(seconds) + ", "
                 + PackageWords.Count(starts, "start", "starts") + " took " + Seconds(startSeconds) + " in all and "
-                + PackageWords.Count(quits, "quit", "quits") + " " + Seconds(quitSeconds);
+                + PackageWords.Count(quits, "quit", "quits") + " " + Seconds(quitSeconds)
+                + (ended == 0 ? string.Empty : ", and " + PackageWords.Count(ended, "Navisworks", "Navisworks")
+                    + " still there past the wait " + (ended == 1 ? "was" : "were") + " ended by the runner");
         }
 
         public static string ChildStarted(int index, int count, string group, string parentLog)
@@ -207,7 +210,7 @@ namespace Federator.Core.Communities
             return PackageWords.Count(groups, "group runs", "groups run") + " one after the other, each in its own Navisworks. The log follows each.";
         }
 
-        /// <summary>The window's live line once the run ends, counting only the groups that wrote a result.</summary>
+        /// <summary>The window's live line once the run ends, counting only the groups whose result names a group they ran.</summary>
         public static string Finished(int withResult, int groups)
         {
             if (withResult == groups)
@@ -216,16 +219,16 @@ namespace Federator.Core.Communities
             }
 
             return "Run finished. " + withResult.ToString(CultureInfo.InvariantCulture) + " of " + PackageWords.Count(groups, "group", "groups")
-                + " wrote a result. The log's RESULT names each and why.";
+                + " ran. The log's RESULT names each and why.";
         }
 
-        /// <summary>The warning the person sees once a run in fresh starts ends with a group that wrote no result, or null where every one did.</summary>
+        /// <summary>The warning the person sees once a run in fresh starts ends with a group that wrote no result or ran nothing, or null where every one ran.</summary>
         public static string Warning(int withResult, int groups)
         {
             return withResult == groups
                 ? null
                 : (groups - withResult).ToString(CultureInfo.InvariantCulture) + " of " + PackageWords.Count(groups, "group", "groups")
-                    + " wrote no result, so whether they wrote files is not known. The log's RESULT names each and why.";
+                    + " wrote no result or ran nothing, and whether a group with no result wrote files is not known. The log's RESULT names each and why.";
         }
 
         /// <summary>The words the package tally carries for a group whose Navisworks wrote no result.</summary>

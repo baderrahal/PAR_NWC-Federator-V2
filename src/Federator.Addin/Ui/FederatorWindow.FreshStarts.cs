@@ -68,7 +68,7 @@ namespace Federator.Addin.Ui
         /// <summary>The runner's file in the bundle, beside this add-in.</summary>
         private const string RunnerFile = "Federator.Runner.exe";
 
-        /// <summary>The package this window runs in its own Navisworks, or null in the window a person runs.</summary>
+        /// <summary>The group this window runs in its own Navisworks, or null in the window a person runs.</summary>
         private readonly PackageRunChild child;
 
         /// <summary>The groups the last run of this window ended with, read by a child to write its result.</summary>
@@ -77,7 +77,7 @@ namespace Federator.Addin.Ui
         /// <summary>Why a child ran no group, where it knows, or null.</summary>
         private string childRanNoGroupBecause;
 
-        /// <summary>The window of one package's own Navisworks, which runs that package as soon as it is shown and closes.</summary>
+        /// <summary>The window of one group's own Navisworks, which runs that group as soon as it is shown and closes.</summary>
         public FederatorWindow(RunLog log, PackageRunChild child)
             : this(log)
         {
@@ -135,7 +135,7 @@ namespace Federator.Addin.Ui
             catch (Exception error)
             {
                 childRanNoGroupBecause = "its run threw " + error.GetType().Name + ": " + error.Message;
-                log.Failure("the run of package " + package + " in its own Navisworks", error, "its result says so and the window closes");
+                log.Failure("the run of group " + child.Unit.Label + " in its own Navisworks", error, "its result says so and the window closes");
             }
             finally
             {
@@ -269,7 +269,7 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// Each control of the order set by its name, in the order's order, one that cannot be set named. False where any
-        /// could not be set, and the package is then not run, so it never runs on settings the person did not choose.
+        /// could not be set, and the group is then not run, so it never runs on settings the person did not choose.
         /// </summary>
         private bool SetTheControls(IList<ControlValue> controls)
         {
@@ -402,11 +402,11 @@ namespace Federator.Addin.Ui
         /// the results are never read while the runner still starts Navisworks, and past the order's limit the runner is
         /// ended, the one process this window started.
         /// </summary>
-        private void WaitForTheRunner(Process process, PackageRunOrder order, int packages)
+        private void WaitForTheRunner(Process process, PackageRunOrder order, int groups)
         {
             long read = 0;
             bool failureSaid = false;
-            int limit = order.Settings.RunnerLimitMinutes(packages);
+            int limit = order.Settings.RunnerLimitMinutes(groups);
             Stopwatch clock = Stopwatch.StartNew();
 
             while (!process.WaitForExit(order.Settings.PollMilliseconds))
@@ -447,27 +447,40 @@ namespace Federator.Addin.Ui
         {
             List<PackageRunResult> results = new List<PackageRunResult>();
             List<string> whys = new List<string>();
-            int withResult = 0;
+            int ran = 0;
             PackageTally tally = run.Tally;
 
-            try
+            // F222. The packages the run planned, never the tree read again, which a person may have read off another folder.
+            Dictionary<string, Package> packages = new Dictionary<string, Package>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Package package in run.Runnable)
             {
-                for (int i = 0; i < order.Units.Count; i++)
+                packages[package.RelativePath] = package;
+            }
+
+            for (int i = 0; i < order.Units.Count; i++)
+            {
+                PackageRunUnit unit = order.Units[i];
+                string why;
+                PackageRunResult result = PackageRunResult.Read(order.ResultPathFor(i), out why);
+                results.Add(result);
+                whys.Add(why);
+
+                // F222. A result naming no group is a group that ran nothing, and the live line never says it ran.
+                if (result != null && result.Groups.Count > 0)
                 {
-                    PackageRunUnit unit = order.Units[i];
-                    Package package = packageTree.Find(unit.Package);
-                    string why;
-                    PackageRunResult result = PackageRunResult.Read(order.ResultPathFor(i), out why);
-                    results.Add(result);
-                    whys.Add(why);
+                    ran++;
+                }
+
+                try
+                {
+                    Package package = packages[unit.Package];
 
                     if (result == null)
                     {
                         tally.NoResult(package, unit.Name, why);
                         continue;
                     }
-
-                    withResult++;
 
                     foreach (PackageRunGroup group in result.Groups)
                     {
@@ -479,7 +492,14 @@ namespace Federator.Addin.Ui
                         tally.NotRun(package, unit.Name, result.NoGroupBecause);
                     }
                 }
+                catch (Exception error)
+                {
+                    log.Failure("counting the group " + unit.Label, error, "the other groups are still counted and the RESULT still written");
+                }
+            }
 
+            try
+            {
                 // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
                 WriteTheDisciplineReports(run, order.Units, results, whys);
                 log.RunFinished();
@@ -490,8 +510,8 @@ namespace Federator.Addin.Ui
                 log.Failure("joining the results of the groups", error, "each group's own log still holds its RESULT");
             }
 
-            SetProgress(PackageRunWords.Finished(withResult, order.Units.Count));
-            string warning = PackageRunWords.Warning(withResult, order.Units.Count);
+            SetProgress(PackageRunWords.Finished(ran, order.Units.Count));
+            string warning = PackageRunWords.Warning(ran, order.Units.Count);
 
             if (warning != null)
             {

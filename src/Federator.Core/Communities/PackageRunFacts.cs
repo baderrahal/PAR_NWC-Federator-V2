@@ -87,7 +87,7 @@ namespace Federator.Core.Communities
             for (int i = 0; i < units.Count; i++)
             {
                 if (string.Equals(units[i].Package, package.RelativePath, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(units[i].Group, nwf, StringComparison.OrdinalIgnoreCase))
+                    && units[i].IsTheGroupOf(nwf))
                 {
                     return i;
                 }

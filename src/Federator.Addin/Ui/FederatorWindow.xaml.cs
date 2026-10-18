@@ -2362,7 +2362,7 @@ namespace Federator.Addin.Ui
 
                 if (packages != null)
                 {
-                    // F222. The discipline workbooks are written by the window that started the run, off this group's result.
+                    // F222. No discipline workbook is written here: the window that started the run writes them off this group's result.
                     CountThePackageGroups(packages.Tally, outcomes);
                 }
 

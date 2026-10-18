@@ -1153,7 +1153,7 @@ with none named and the others run, the refresh confirm, then, since F214, each 
 its own Navisworks, whose window runs `RunPickedNwfs` with each NWF's place, `PackageNwf`, so its NWD, its Backup and its
 logs are written into its package's folders and not beside the file. One failure never stops the others: each group and each
 NWF is run in its own try, and since F214 the guard that stops a run after its first 50 tests all fail the same way stops
-only the package it fired in, since the next package runs in a fresh Navisworks with a fresh engine.
+only the package it fired in, and since F222 only the group, since the next runs in a fresh Navisworks with a fresh engine.
 
 ## A fresh Navisworks per package, F214
 
@@ -1206,7 +1206,12 @@ NWF, whose NWF the order names, compared without case, and runs nothing where no
 discipline facts its models gave or why none were read. It writes no discipline workbook. THE WINDOW THAT STARTED THE RUN
 reads every group's result, fills the package tally, writes each package's four discipline workbooks off the facts with
 `PackageRunFacts.GroupsOf`, each package in a try of its own, and only then writes the joined RESULT, so RESULT stays the
-last block. The scanned run of the NWC page and the picked NWFs of the NWF page, which run in the Navisworks a person
+last block. It counts a group as ran only where its result names a group, and joins the results against the packages
+the run planned and never the tree read again, a group counted in a try of its own, while Browse and Read refuse during the
+run. A group's own Navisworks opens its log with `RunLog.KeepEveryLog`, so it deletes no log the joined RESULT names, and
+where its package plans no group at all its result gives the package's own refusal and never `NotTheGroup`. A group's own
+window is a fresh engine, so the guard of 50 failures and Clash Detective's Hide Other baseline of F150 are each one group's,
+row F222-R3. The scanned run of the NWC page and the picked NWFs of the NWF page, which run in the Navisworks a person
 started, are unchanged and run every group there, as before F214. WHAT IS NOT MEASURED: what the starts and quits of one
 Navisworks a group cost on a whole community, read off the first run of C06 and C07 since F222, steps\03_bader_next.md.
 ## The discipline reports, F209

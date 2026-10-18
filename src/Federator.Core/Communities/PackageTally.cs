@@ -236,13 +236,24 @@ namespace Federator.Core.Communities
             {
                 Totals community = byCommunity[name];
                 lines.Add("community      " + name + " : " + PackageWords.Count(community.Packages.Count, "package", "packages")
-                    + ", " + community.Words());
+                    + ", " + community.Words() + NoEndWords(noEnds.FindAll(end => string.Equals(end.Package.Community, name, StringComparison.OrdinalIgnoreCase)).Count));
             }
 
             lines.Add("run            : " + PackageWords.Count(communities.Count, "community", "communities") + ", "
-                + PackageWords.Count(order.Count, "package", "packages") + ", " + run.Words());
+                + PackageWords.Count(order.Count, "package", "packages") + ", " + run.Words() + NoEndWords(noEnds.Count));
 
             return lines;
+        }
+
+        /// <summary>
+        /// F222. What a total of the community or the run leaves out: its groups with no end to count, which may hold clashes in
+        /// files on the disk, so the clashes of the total are a lower bound and never read as exact.
+        /// </summary>
+        private static string NoEndWords(int count)
+        {
+            return count == 0
+                ? string.Empty
+                : ", and " + PackageWords.Count(count, "group", "groups") + " with no end to count, each named above, so the clashes are at least that";
         }
 
         private static string ClashWords(long clashes, bool unknown)

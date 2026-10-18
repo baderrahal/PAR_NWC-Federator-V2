@@ -44,7 +44,10 @@ namespace Federator.Addin
             // First line of the handler, before the folder is read, before the window
             // opens anything, before any Navisworks call. A run that dies at startup still
             // leaves a file behind. StartOrDisabled never throws.
-            RunLog log = RunLog.StartOrDisabled();
+            // F222. A group's own Navisworks deletes no log, so the logs the joined RESULT names are all still there.
+            RunLog log = IsAPackageRun(parameters)
+                ? RunLog.StartOrDisabled(RunLog.DefaultLogFolder(), DateTime.Now, RunLog.KeepEveryLog)
+                : RunLog.StartOrDisabled();
 
             try
             {
@@ -140,7 +143,7 @@ namespace Federator.Addin
 
             if (order == null || index >= order.Units.Count)
             {
-                log.Line(PackageRunWords.Prefix + " the order of this package does not read, "
+                log.Line(PackageRunWords.Prefix + " the order of this group does not read, "
                     + (why ?? "it holds no group of index " + index) + ", so nothing runs");
                 return null;
             }

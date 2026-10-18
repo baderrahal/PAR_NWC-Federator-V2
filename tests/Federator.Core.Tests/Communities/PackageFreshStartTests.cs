@@ -167,7 +167,7 @@ namespace Federator.Core.Tests
         {
             PackageRunSettings settings = new PackageRunSettings();
 
-            Assert.That(settings.CeilingMinutes, Is.EqualTo(240));
+            Assert.That(settings.CeilingMinutes, Is.EqualTo(30), "F222, the ceiling of one group");
             Assert.That(settings.GoneWithinSeconds, Is.EqualTo(60));
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.CeilingMinutes = 0);
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.GoneWithinSeconds = 0);
@@ -428,9 +428,9 @@ namespace Federator.Core.Tests
 
             Assert.That(settings.PollMilliseconds, Is.EqualTo(200));
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.PollMilliseconds = 49);
-            Assert.That(settings.RunnerLimitMinutes(3), Is.EqualTo(3 * (240 + 1 + 1)),
+            Assert.That(settings.RunnerLimitMinutes(3), Is.EqualTo(3 * (30 + 1 + 1)),
                 "each group's ceiling, its wait rounded up to a minute, and a minute more");
-            Assert.That(settings.RunnerLimitMinutes(0), Is.EqualTo(242), "never less than one group's worth");
+            Assert.That(settings.RunnerLimitMinutes(0), Is.EqualTo(32), "never less than one group's worth");
 
             PackageRunOrder order = Order();
             order.Settings.PollMilliseconds = 500;
@@ -457,9 +457,9 @@ namespace Federator.Core.Tests
         public void TheLiveLineAndTheWarningCountOnlyTheGroupsThatWroteAResult()
         {
             Assert.That(PackageRunWords.Finished(3, 3), Does.Contain("3 groups ran"));
-            Assert.That(PackageRunWords.Finished(1, 3), Does.Contain("1 of 3 groups wrote a result").And.Not.Contain("ran,"));
+            Assert.That(PackageRunWords.Finished(1, 3), Does.Contain("1 of 3 groups ran.").And.Not.Contain("ran,"));
             Assert.That(PackageRunWords.Warning(3, 3), Is.Null);
-            Assert.That(PackageRunWords.Warning(0, 2), Does.Contain("2 of 2 groups wrote no result"));
+            Assert.That(PackageRunWords.Warning(0, 2), Does.Contain("2 of 2 groups wrote no result or ran nothing"));
         }
     }
 }

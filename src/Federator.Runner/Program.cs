@@ -44,7 +44,10 @@ namespace Federator.Runner
         private static int quits;
         private static double quitSeconds;
 
-        /// <summary>The Navisworks one package runs in, read by the ceiling's timer on its own thread.</summary>
+        /// <summary>The Navisworks the runner had to end, still there past the wait after they were told to quit.</summary>
+        private static int ended;
+
+        /// <summary>The Navisworks one group runs in, read by the ceiling's timer on its own thread.</summary>
         private sealed class Started
         {
             private int pid;
@@ -98,7 +101,7 @@ namespace Federator.Runner
             }
 
             Say(PackageRunWords.RunnerEnded(order.Units.Count, order.PackageCount, clock.Elapsed.TotalSeconds,
-                starts, startSeconds, quits, quitSeconds));
+                starts, startSeconds, quits, quitSeconds, ended));
             return 0;
         }
 
@@ -136,8 +139,14 @@ namespace Federator.Runner
                 Stopwatch step = Stopwatch.StartNew();
                 app = Activator.CreateInstance(type);
                 started.Pid = TheOneNew(before);
-                starts++;
-                startSeconds += step.Elapsed.TotalSeconds;
+
+                // F222. A start is counted once its process is told, so a start that cannot be told adds no seconds.
+                if (started.Pid > 0)
+                {
+                    starts++;
+                    startSeconds += step.Elapsed.TotalSeconds;
+                }
+
                 Say(PackageRunWords.Started(package, started.Pid, step.Elapsed.TotalSeconds));
 
                 if (started.Pid <= 0)
@@ -172,7 +181,7 @@ namespace Federator.Runner
 
                 if (started.Pid > 0)
                 {
-                    WaitGone(started.Pid, package, order.Settings.GoneWithinSeconds, quit);
+                    WaitGone(started.Pid, package, order.Settings.GoneWithinSeconds, app == null ? null : quit);
                 }
                 else
                 {
@@ -201,7 +210,7 @@ namespace Federator.Runner
             }
         }
 
-        private static void WaitGone(int pid, string package, int seconds, Stopwatch quit)
+        private static void WaitGone(int pid, string package, int seconds, Stopwatch told)
         {
             Stopwatch wait = Stopwatch.StartNew();
 
@@ -209,20 +218,26 @@ namespace Federator.Runner
             {
                 if (IsGone(pid))
                 {
-                    quits++;
-                    quitSeconds += quit.Elapsed.TotalSeconds;
-                    Say(PackageRunWords.Gone(package, quit.Elapsed.TotalSeconds));
+                    // A Navisworks whose start threw was never told to quit, so it is waited on and not counted as a quit.
+                    if (told != null)
+                    {
+                        quits++;
+                        quitSeconds += told.Elapsed.TotalSeconds;
+                    }
+
+                    Say(PackageRunWords.Gone(package, (told ?? wait).Elapsed.TotalSeconds));
                     return;
                 }
 
                 Thread.Sleep(poll);
             }
 
+            ended++;
             Say(PackageRunWords.Ended(package, seconds));
             End(pid);
         }
 
-        /// <summary>Where no Navisworks could be told as the package's own, waits for every one new since its start and ends none.</summary>
+        /// <summary>Where no Navisworks could be told as the group's own, waits for every one new since its start and ends none.</summary>
         private static void WaitAllNewGone(HashSet<int> before, string package, int seconds)
         {
             Stopwatch wait = Stopwatch.StartNew();

@@ -278,6 +278,13 @@ namespace Federator.Core.Diagnostics
             }
         }
 
+        /// <summary>
+        /// F222. The count a group's own Navisworks opens its log with, so it deletes no log: a run of 45 groups opens 45 logs
+        /// after the parent's, and with the 30 kept each later group would delete the logs of the groups before it, which the
+        /// joined RESULT names. The next run a person starts keeps its 30 as before, each group's log copied into its Log folder.
+        /// </summary>
+        public const int KeepEveryLog = int.MaxValue;
+
         public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt, int keepLogs)
         {
             return StartOrDisabled(preferredFolder, System.IO.Path.GetTempPath(), startedAt, keepLogs);

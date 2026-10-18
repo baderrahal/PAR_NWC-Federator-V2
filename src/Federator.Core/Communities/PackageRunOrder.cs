@@ -67,6 +67,15 @@ namespace Federator.Core.Communities
         {
             get { return Package + "  " + Name; }
         }
+
+        /// <summary>
+        /// Whether the group that writes this NWF is this one, the one rule a group's own Navisworks keeps its group by and the
+        /// discipline reports find a group's facts by, compared without case as Windows reads a path.
+        /// </summary>
+        public bool IsTheGroupOf(string nwf)
+        {
+            return string.Equals(Group, nwf, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     /// <summary>
@@ -193,6 +202,17 @@ namespace Federator.Core.Communities
             if (Units.Count == 0)
             {
                 return "the order names no group";
+            }
+
+            for (int i = 0; i < Units.Count; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (Units[j].IsTheGroupOf(Units[i].Group))
+                    {
+                        return "two groups of the order write one NWF, " + Units[i].Group + ", so neither could find its own";
+                    }
+                }
             }
 
             return null;

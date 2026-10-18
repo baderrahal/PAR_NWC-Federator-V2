@@ -25,7 +25,7 @@ namespace Federator.Core.Communities
             FactsNotRead = "UNKNOWN, no facts were handed in";
         }
 
-        /// <summary>The NWC files the group's run was handed or read at the open.</summary>
+        /// <summary>The NWC files the group's run was handed, on the NWC page. None on the NWF page, whose files are read off its models' facts.</summary>
         public IList<string> Files
         {
             get { return files; }
@@ -233,7 +233,7 @@ namespace Federator.Core.Communities
 
         private static string Number(double value)
         {
-            return value.ToString("R", CultureInfo.InvariantCulture);
+            return value.ToString("G17", CultureInfo.InvariantCulture);
         }
 
         /// <summary>One model read back, its CAD and Generic Models lines gathered until the result has been read whole.</summary>

@@ -43,6 +43,12 @@ namespace Federator.Addin.Ui
 
         private void OnBrowsePackageParent(object sender, RoutedEventArgs e)
         {
+            // F222. Read again during a run of packages the tree would no longer be the one the run joins its results against.
+            if (running)
+            {
+                return;
+            }
+
             string picked = PickFolder(PackageWords.PickTheParent, StartFor(PickerKind.PackageParent, packagePanel.Parent));
 
             if (picked != null)
@@ -358,10 +364,11 @@ namespace Federator.Addin.Ui
             log.Block(PackageWords.ChosenTitle, packageTicks.Lines());
             log.Block("PACKAGE GROUPS", planLines);
 
-            // F222, Q211. A group's own Navisworks runs its one group, the one whose NWF the order names, and no other.
-            if (child != null)
+            // F222, Q211. A group's own Navisworks runs its one group, the one whose NWF the order names, and no other. Where its
+            // package plans no group at all the refusal below gives the real reason.
+            if (child != null && jobs.Count > 0)
             {
-                jobs = jobs.FindAll(job => string.Equals(job.NwfPath, child.Unit.Group, StringComparison.OrdinalIgnoreCase));
+                jobs = jobs.FindAll(job => child.Unit.IsTheGroupOf(job.NwfPath));
 
                 if (jobs.Count == 0)
                 {
@@ -628,10 +635,11 @@ namespace Federator.Addin.Ui
             log.Block(PackageWords.ChosenTitle, packageTicks.Lines());
             log.Block("PACKAGE NWFS", lines);
 
-            // F222, Q211. A group's own Navisworks runs its one NWF, the one the order names, and no other.
-            if (child != null)
+            // F222, Q211. A group's own Navisworks runs its one NWF, the one the order names, and no other. Where its package holds
+            // no NWF at all the refusal below gives the real reason.
+            if (child != null && nwfs.Count > 0)
             {
-                inPackages = inPackages.FindAll(nwf => string.Equals(nwf.NwfPath, child.Unit.Group, StringComparison.OrdinalIgnoreCase));
+                inPackages = inPackages.FindAll(nwf => child.Unit.IsTheGroupOf(nwf.NwfPath));
                 nwfs = inPackages.ConvertAll(nwf => nwf.NwfPath);
 
                 if (nwfs.Count == 0)
@@ -745,7 +753,7 @@ namespace Federator.Addin.Ui
                         outcome == null ? -1 : GroupSize.ClashesIn(outcome.Clash));
                 }
 
-                // F222. The discipline workbooks are written by the window that started the run, off this NWF's result.
+                // F222. No discipline workbook is written here: the window that started the run writes them off this NWF's result.
                 SayWhatAnOpenFileRunAddedUp(engine);
                 log.Block(SetsAcrossTheRun.BlockTitle, engine.SetsAcrossTheRun.Lines());
                 log.RunFinished();

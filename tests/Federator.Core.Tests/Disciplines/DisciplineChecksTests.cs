@@ -181,6 +181,32 @@ namespace Federator.Core.Tests
         }
 
         [Test]
+        public void AGroupWhoseFilesWereNotReadIsNeverSaidToMissADiscipline()
+        {
+            List<DisciplineGroup> groups = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL") }, null, "not run"),
+                new DisciplineGroup("1B06BS", new[] { Nwc("1B06BS", "AR") }, null, "not run"),
+                new DisciplineGroup("1B06KI", new string[0], null, "its Navisworks wrote no result, the file is not there")
+            };
+
+            IList<CheckRow> rows = MissingDisciplineCheck.Rows("C06", "C06", groups, Settings, Names);
+
+            Assert.That(rows.Where(r => r.Group == "1B06KI" && r.Result == CheckWords.MissingHere).Count(), Is.EqualTo(0),
+                "F222, a group with no file read is UNKNOWN and never missing");
+            CheckRow ki = rows.Single(r => r.Group == "1B06KI" && r.Discipline == "AR");
+            Assert.That(ki.Result, Is.EqualTo(CheckWords.NotRead));
+            Assert.That(ki.Value, Is.EqualTo("whether AR is in 1B06KI is UNKNOWN, its files were not read, its Navisworks wrote no result, the file is not there"));
+            Assert.That(rows.Single(r => r.Discipline == "AR" && r.Group == string.Empty).Result, Is.EqualTo(CheckWords.NoneMissing),
+                "AR is in every group whose files were read");
+            Assert.That(rows.Single(r => r.Discipline == "EL" && r.Group == "1B06BS").Value,
+                Is.EqualTo("EL is in 1 of 2 groups of this package whose files were read and not in 1B06BS, which holds AR"));
+
+            IList<CheckRow> none = MissingDisciplineCheck.Rows("C06", "C06", groups.GetRange(2, 1), Settings, Names);
+            Assert.That(none.All(r => r.Result == CheckWords.NotRead), Is.True, "with no group read, nothing is said in or not in the package");
+        }
+
+        [Test]
         public void ADisciplineInNoGroupOfThePackageSaysSoOnce()
         {
             List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "ME") }, null, "not run") };
