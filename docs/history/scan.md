@@ -9016,17 +9016,22 @@ list, 15:40 and 16:08, and two of the mode timer, 16:09 with stretches of 100 s 
 the machine's name masked, are auto-save-list-1540-20261018.txt, auto-save-list-1608-20261018.txt, auto-save-timer-100s-20261018.txt and auto-save-timer-16min-20261018.txt
 in tools\probes\AutoSaveProbe.
 
-**THE SET.** `LcUOption` reads the set general.autosave with four options and three sets under it: enable, Boolean,
-folder_opts.folder_mode Boolean True, folder_opts.folder, the string '%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave',
-folder_opts.manage_disk_space Boolean True, folder_opts.mem_limit Int32 512, frequency.minutes Int32 15 and history.size Int32 3.
-With the registry's switch at "3 0" as Navisworks started, enable reads False. Every `SetBoolean`, `SetInt32` and
-`SetWideString` on them returned True and read back the value set.
+**THE SET.** `LcUOption` reads the set general.autosave as four entries, the option enable, Boolean, and the sets folder_opts,
+frequency and history, which hold six options more, seven in all: folder_opts.folder_mode Boolean True, folder_opts.folder,
+the string '%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave', folder_opts.manage_disk_space Boolean True,
+folder_opts.mem_limit Int32 512, frequency.minutes Int32 15 and history.size Int32 3. With the registry's switch at "3 0" as
+Navisworks started, enable reads False. The probe set three of them, enable by `SetBoolean`, frequency.minutes by `SetInt32`
+and folder_opts.folder by `SetWideString`, and each set returned True and read back the value set. The other four were read
+and never set.
 
 **THE REGISTRY.** The value enable of HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\general\autosave read "0" on
-this machine before the probes, never set, the default on, and the guard writes "3 0", off. A value set in a session reached no
-registry value while the session ran: enable read "3 0" at every one of the 12 REGISTRY reads the plugin made in the two timer runs, 6 a run, after each set on
-and each set off. Whether Navisworks writes the set's options into the registry as it quits was not read, since each run put
-every option back before its quit.
+this machine before the probes, never set, and the guard writes "3 0", off. That "0" is Navisworks' default on is read off
+autosaves made on this machine before F223 and not off a start measured with it. A value set in a session reached no registry
+value while the session ran, for enable, the one registry value the plugin read: enable read "3 0" at all 12 of the plugin's
+reads in the two timer runs, 6 a run, one before any set, one after the location and the time were set, one after each of the
+three sets of the switch and one after the put back. The registry values of frequency.minutes and folder_opts.folder were not
+read. Whether Navisworks writes the set's options into the registry as it quits was not read, since each run put every option
+back before its quit.
 
 **THE TIMER.** Each timer run pointed folder_opts.folder at a folder of its own, read back so, set frequency.minutes to 1, read
 back 1, saved a document of one appended NWC as probe-document.nwf, then with enable set on, then off, then on again appended
@@ -9046,7 +9051,7 @@ nothing here started one with it on. So the window's switch in a Navisworks a pe
 puts it back as Bader asked, and whether it stops the timer is UNKNOWN until a run in a Navisworks started with Auto-Save on is
 read for autosave files dated during it, row F223-R1.
 
-**WHAT THE GUARD LEFT.** The 16 minute run's guard put nothing back, since three Navisworks were started by hand at 16:51:04,
+**WHAT THE GUARD LEFT.** The guard of the run of 960 s stretches, 48 minutes in all, put nothing back, since three Navisworks were started by hand at 16:51:04,
 16:51:39 and 16:52:05 while it ran, and it said Auto-Save was left off for Bader. Those three started with the switch at "3 0".
 The session wrote "0" back by hand at 17:05 once no Navisworks ran, read back "0", and left every other value of the 35 the guard
 named, the recent files and the session counters of Bader's own starts, as they were.

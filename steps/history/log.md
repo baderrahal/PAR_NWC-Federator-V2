@@ -10,10 +10,10 @@ fails or Navisworks closes, the value read before logged and the value put back 
 append rule of Q202 stands.
 
 What was measured first, docs\history\scan.md 5z-zl. `tools\probes\AutoSaveProbe`, four runs: the set general.autosave reads and
-sets through LcUOption, enable, frequency.minutes 15, folder_opts.folder and the rest, every set read back, and a value set in a
-session reached no registry value while the session ran. In two timer runs that started with the switch off, as the guard
+sets through LcUOption, seven options, of which the probe set three, enable, frequency.minutes and folder_opts.folder, each read
+back, and enable set in a session reached no registry value while the session ran, the one registry value read. In two timer runs that started with the switch off, as the guard
 writes it, enable set on with a minute between saves wrote no autosave in stretches of 100 s and 960 s, so whether the option
-set off in a session started with it on stops its autosaves is UNKNOWN, row F223-R1. The 16 minute run's guard left Auto-Save
+set off in a session started with it on stops its autosaves is UNKNOWN, row F223-R1. The guard of the run of 960 s stretches left Auto-Save
 off for Bader, since three Navisworks were started by hand while it ran, and the session wrote "0" back by hand at 17:05 once no
 Navisworks ran, read back "0".
 
@@ -44,11 +44,15 @@ What was proved here. Core tests 3406 passed before on main, 3416 after, 0 faile
 errors, check-locals and check-imports clean. Of the 10 Core tests added, in AutoSaveSwitchTests, 6 drive AutoSaveKeeper on a
 fake registry and a fake record, a runner that died, two runs at once, a Navisworks still running, a put back that throws, a
 value that was not there and a switch that will not read among them, 1 reads the record's text, 1 its file, 1 the registry's
-values and 1 the window's lines. On Navisworks, the launcher told to leave the switch as it is, the NWC page on a copy of three
-groups of C06, 1B06BS, 1B06M1 and 1B06PE, each in its own Navisworks: run-20261018-173812 on eaac6f1e kept '0', switched '3 0'
+values and 1 the window's lines. On Navisworks, the session's launcher, a copy of F220's outside the repo, told to leave the
+switch as it is, the NWC page on the copy C:\NWC-PC-Test\work\smoke222b, community S1, the groups 1B06BS, 1B06M1 and 1B06PE of
+C06, each in its own Navisworks, evidence in C:\NWC-PC-Test\work\run-evidence\2026-10-18-F223-smoke-nwc and -nwc-b:
+run-20261018-173812 on eaac6f1e kept '0', switched '3 0'
 before the first group, found it off already before the other two, put '0' back and read '0', kept the record for the
-Navisworks it counted as running, and the window put it back as it was and deleted it, 3 DONE and 98 clashes.
-run-20261018-174250 on 83c5350f, the corrected count: the runner put '0' back, read '0' and deleted the record itself, 3 DONE
+Navisworks it counted as running, and the window found the record, read '0' as it was before the run, wrote nothing and
+deleted it, 3 DONE and 98 clashes. run-20261018-174250 on 83c5350f, which counts no listed process that reads exited: the
+runner counted none still running, put '0' back, read '0' and deleted the record itself, which shows the count and not which
+process the first run counted, 3 DONE
 and 98 clashes. Both left the switch at '0' as before, wrote no autosave, 62 files in Bader's AutoSave folder before and after
 each, and left no record. The run in a Navisworks a person started, the window's own switch, was not run, steps\03_bader_next.md.
 

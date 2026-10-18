@@ -8,7 +8,7 @@ namespace Federator.Core.Diagnostics
         /// <summary>The value could not be read, or reads as nothing this tool knows.</summary>
         Unknown,
 
-        /// <summary>The registry value reads "0", a value never set, so Navisworks' default, on.</summary>
+        /// <summary>The registry value reads "0", a value never set, Navisworks' default, on by the autosaves this machine made before F223 and not by a start measured with it.</summary>
         NeverSet,
 
         On,
@@ -66,7 +66,7 @@ namespace Federator.Core.Diagnostics
             switch (state)
             {
                 case AutoSaveState.NeverSet:
-                    return "never set, so on by Navisworks' default";
+                    return "never set, Navisworks' own default";
                 case AutoSaveState.On:
                     return "on";
                 case AutoSaveState.Off:

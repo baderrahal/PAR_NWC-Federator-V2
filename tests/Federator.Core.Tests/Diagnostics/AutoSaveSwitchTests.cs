@@ -82,7 +82,7 @@ namespace Federator.Core.Tests
             Assert.That(AutoSaveSwitch.OfRegistryValue("0"), Is.EqualTo(AutoSaveState.NeverSet), "a value never set is Navisworks' default, on");
             Assert.That(AutoSaveSwitch.OfRegistryValue(null), Is.EqualTo(AutoSaveState.Unknown));
             Assert.That(AutoSaveSwitch.OfRegistryValue("3 0 "), Is.EqualTo(AutoSaveState.Unknown), "never trimmed");
-            Assert.That(AutoSaveSwitch.Words(AutoSaveState.NeverSet), Does.Contain("on by Navisworks' default"));
+            Assert.That(AutoSaveSwitch.Words(AutoSaveState.NeverSet), Does.Contain("never set, Navisworks' own default"));
         }
 
         [Test]

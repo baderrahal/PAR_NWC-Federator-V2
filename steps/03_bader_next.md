@@ -32,7 +32,7 @@ Navisworks session. F222 first, since every later run goes through it.
    Look for: each group's Navisworks opening and closing as in F222, and no autosave file of the copies in
    %APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave dated during the run.
 3. When the live line says the run finished, open the log with Open log folder.
-   Look for: `AUTOSAVE the registry's switch reads '0', never set, so on by Navisworks' default, kept in
+   Look for: `AUTOSAVE the registry's switch reads '0', never set, Navisworks' own default, kept in
    auto-save-to-put-back.txt` near the start, one `AUTOSAVE the registry's switch read '0', switched off for this group's
    Navisworks` or `off already` line a group, and near the end `AUTOSAVE the registry's switch read '3 0', put back to '0', it
    reads '0', auto-save-to-put-back.txt deleted`.
