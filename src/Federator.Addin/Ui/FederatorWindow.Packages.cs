@@ -407,6 +407,13 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // F214. The window a person runs hands each package to a fresh Navisworks, and a package's own window runs it.
+            if (child == null)
+            {
+                RunPackagesInFreshStarts(PackageRunOrder.NwcPage, runnable, report, tally);
+                return;
+            }
+
             RunJobs(jobs, null, null, tolerance, run);
         }
 
@@ -665,7 +672,11 @@ namespace Federator.Addin.Ui
 
             log.Block("CONFIRM packages", new List<string>(text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)));
 
-            if (MessageBox.Show(this, text, RefreshConfirm.Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel)
+            if (child != null)
+            {
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ConfirmedByTheParent("The refresh"));
+            }
+            else if (MessageBox.Show(this, text, RefreshConfirm.Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel)
                 != MessageBoxResult.OK)
             {
                 Log("Run cancelled before anything was opened.");
@@ -681,6 +692,13 @@ namespace Federator.Addin.Ui
 
             if (!ChoosePackOrStop(pickedGroups, "the run of packages on the NWF page"))
             {
+                return;
+            }
+
+            // F214. The window a person runs hands each package to a fresh Navisworks, and a package's own window runs it.
+            if (child == null)
+            {
+                RunPackagesInFreshStarts(PackageRunOrder.NwfPage, run.Runnable, report, tally);
                 return;
             }
 
@@ -707,6 +725,7 @@ namespace Federator.Addin.Ui
                 engine = new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.UsePack(chosenPack);
                 IList<JobOutcome> outcomes = engine.RunPickedNwfs(nwfs, inPackages);
+                lastOutcomes = outcomes;
                 ShowTheNwfTable(outcomes);
 
                 for (int i = 0; i < outcomes.Count && i < inPackages.Count; i++)

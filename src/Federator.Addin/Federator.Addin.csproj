@@ -42,6 +42,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
     <ProjectReference Include="..\Federator.Core\Federator.Core.csproj" />
+    <!-- F214. The runner of a run of packages, referenced so its exe lands beside the add-in and install.ps1 carries it.
+         Nothing in the add-in calls a member of it: the window starts it as a program. -->
+    <ProjectReference Include="..\Federator.Runner\Federator.Runner.csproj" />
   </ItemGroup>
 
   <!-- Copy local false. These live in the Navisworks install folder and the running

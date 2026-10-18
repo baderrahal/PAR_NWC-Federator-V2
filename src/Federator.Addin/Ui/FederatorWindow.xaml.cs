@@ -1709,6 +1709,12 @@ namespace Federator.Addin.Ui
         /// </summary>
         private bool ConfirmTheOpenDocumentGoes()
         {
+            if (child != null)
+            {
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ConfirmedByTheParent("What opening a file discards"));
+                return true;
+            }
+
             string discarded;
 
             try
@@ -2203,6 +2209,12 @@ namespace Federator.Addin.Ui
         /// </summary>
         private bool ConfirmClear(IList<string> runPaths, ToleranceChoice tolerance)
         {
+            if (child != null)
+            {
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ConfirmedByTheParent("The run"));
+                return true;
+            }
+
             string discarded;
 
             try
@@ -2334,6 +2346,7 @@ namespace Federator.Addin.Ui
                     : new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.UsePack(chosenPack);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
+                lastOutcomes = outcomes;
 
                 if (packages != null)
                 {
@@ -2995,6 +3008,13 @@ namespace Federator.Addin.Ui
 
         private void Warn(string text)
         {
+            // F214. Nobody is at a package's own Navisworks, so what a box would say goes in the log and nothing waits.
+            if (child != null)
+            {
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.NoBox(text));
+                return;
+            }
+
             MessageBox.Show(this, text, "Parsons NWC Federator", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 

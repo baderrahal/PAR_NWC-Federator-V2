@@ -3,6 +3,7 @@ using System.Windows.Interop;
 using Autodesk.Navisworks.Api.Plugins;
 using Federator.Addin.Engine;
 using Federator.Addin.Ui;
+using Federator.Core.Communities;
 using Federator.Core.Diagnostics;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
@@ -62,7 +63,14 @@ namespace Federator.Addin
                     log.Line("WARNING  the run carries on but nothing is being written to disk");
                 }
 
-                FederatorWindow window = new FederatorWindow(log);
+                PackageRunChild child = ThePackageToRun(parameters, log);
+
+                if (IsAPackageRun(parameters) && child == null)
+                {
+                    return 2;
+                }
+
+                FederatorWindow window = child == null ? new FederatorWindow(log) : new FederatorWindow(log, child);
 
                 IntPtr owner = OwnerHandle();
 
@@ -79,6 +87,12 @@ namespace Federator.Addin
             {
                 log.Failure("starting the add-in", error, "stopped, the window never opened");
 
+                // F214. Nobody is at a package's own Navisworks, so the log carries it and the runner goes on.
+                if (IsAPackageRun(parameters))
+                {
+                    return 1;
+                }
+
                 System.Windows.MessageBox.Show(
                     "Parsons NWC Federator could not start." + Environment.NewLine + Environment.NewLine
                         + error + Environment.NewLine + Environment.NewLine
@@ -92,6 +106,46 @@ namespace Federator.Addin
             {
                 log.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Whether Navisworks was started for one package of a run of packages, F214: the runner hands the mode, the
+        /// order's path and the package's index. A person's press of the button hands nothing.
+        /// </summary>
+        private static bool IsAPackageRun(string[] parameters)
+        {
+            return parameters != null && parameters.Length > 0 && parameters[0] == PackageRunOrder.ChildMode;
+        }
+
+        /// <summary>The package this Navisworks was started to run, or null where it was not, or where the order would not read, said.</summary>
+        private static PackageRunChild ThePackageToRun(string[] parameters, RunLog log)
+        {
+            if (!IsAPackageRun(parameters))
+            {
+                return null;
+            }
+
+            int index;
+
+            if (parameters.Length != 3
+                || !int.TryParse(parameters[2], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out index))
+            {
+                log.Line(PackageRunWords.Prefix + " this Navisworks was started for a package with " + (parameters.Length - 1)
+                    + " arguments where it takes the order and the index, so nothing runs");
+                return null;
+            }
+
+            string why;
+            PackageRunOrder order = PackageRunOrder.Read(parameters[1], out why);
+
+            if (order == null || index >= order.Packages.Count)
+            {
+                log.Line(PackageRunWords.Prefix + " the order of this package does not read, "
+                    + (why ?? "it holds no package of index " + index) + ", so nothing runs");
+                return null;
+            }
+
+            return new PackageRunChild(order, index);
         }
 
         /// <summary>

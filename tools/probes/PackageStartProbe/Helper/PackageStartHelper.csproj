@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    F214, F210-R1, 2026-10-18. The helper of tools\probes\PackageStartProbe: a console program a plugin inside one
+    Navisworks starts, which starts a second Navisworks through the Automation API, hands a plugin there its arguments
+    by ExecuteAddInPlugin, quits it by Dispose and waits for its process to be gone. The Automation DLL is not copied,
+    it is loaded at run time from the install folder the helper is handed.
+
+        dotnet build tools\probes\PackageStartProbe\Helper\PackageStartHelper.csproj -c Release
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>PackageStartHelper</AssemblyName>
+    <RootNamespace>PackageStartHelper</RootNamespace>
+    <PlatformTarget>x64</PlatformTarget>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Management" />
+  </ItemGroup>
+
+</Project>
