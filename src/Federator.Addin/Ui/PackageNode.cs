@@ -16,12 +16,13 @@ namespace Federator.Addin.Ui
         private string detail;
 
         private PackageNode(
-            string title, string detail, Community community, Package package, Func<PackageNode, bool?> read, Action<PackageNode, bool> write)
+            string title, string detail, Community community, Package package, string nwf, Func<PackageNode, bool?> read, Action<PackageNode, bool> write)
         {
             Title = title ?? string.Empty;
             this.detail = detail ?? string.Empty;
             Community = community;
             Package = package;
+            Nwf = nwf;
             this.read = read;
             this.write = write;
             Children = new ObservableCollection<PackageNode>();
@@ -30,13 +31,20 @@ namespace Federator.Addin.Ui
         public static PackageNode ForCommunity(
             Community community, string detail, Func<PackageNode, bool?> read, Action<PackageNode, bool> write)
         {
-            return new PackageNode(community.Name, detail, community, null, read, write);
+            return new PackageNode(community.Name, detail, community, null, null, read, write);
         }
 
         public static PackageNode ForPackage(
             Package package, string detail, Func<PackageNode, bool?> read, Action<PackageNode, bool> write)
         {
-            return new PackageNode(package.Name, detail, null, package, read, write);
+            return new PackageNode(package.Name, detail, null, package, null, read, write);
+        }
+
+        /// <summary>One NWF of the NWF page's tree, F232, a line of its own under its package with its own tick.</summary>
+        public static PackageNode ForNwf(
+            string nwf, string detail, Func<PackageNode, bool?> read, Action<PackageNode, bool> write)
+        {
+            return new PackageNode(System.IO.Path.GetFileName(nwf), detail, null, null, nwf, read, write);
         }
 
         public string Title { get; private set; }
@@ -55,8 +63,11 @@ namespace Federator.Addin.Ui
         /// <summary>The community this line is, or null for a package.</summary>
         public Community Community { get; private set; }
 
-        /// <summary>The package this line is, or null for a community.</summary>
+        /// <summary>The package this line is, or null for a community or an NWF.</summary>
         public Package Package { get; private set; }
+
+        /// <summary>The full path of the NWF this line is, or null for a community or a package.</summary>
+        public string Nwf { get; private set; }
 
         public ObservableCollection<PackageNode> Children { get; private set; }
 
@@ -83,19 +94,21 @@ namespace Federator.Addin.Ui
     }
 
     /// <summary>
-    /// What both trees show, F208: the parent folder, the Report folder, the lines of the tree and the one line under it.
-    /// One instance is the data of the panel on the NWC page and of the one on the NWF page, so a folder typed or a box
-    /// ticked on one page reads the same on the other.
+    /// What both trees show, F208 and F232: the parent folder and the tree of packages of the NWC page, the tree of NWFs of the
+    /// NWF page, each with the one line under it, and the Report folder both pages read. One instance is the data of both
+    /// pages, so the Report folder typed on one reads the same on the other.
     /// </summary>
     public sealed class PackagePanel : ObservableObject
     {
         private string parent = string.Empty;
         private string report = string.Empty;
         private string summary = PackageWords.NotReadYet;
+        private string nwfSummary = PackageWords.NwfNotReadYet;
 
         public PackagePanel()
         {
             Nodes = new ObservableCollection<PackageNode>();
+            NwfNodes = new ObservableCollection<PackageNode>();
         }
 
         public string Parent
@@ -129,6 +142,19 @@ namespace Federator.Addin.Ui
         }
 
         public ObservableCollection<PackageNode> Nodes { get; private set; }
+
+        /// <summary>The lines of the NWF page's tree, community, package and NWF, F232.</summary>
+        public ObservableCollection<PackageNode> NwfNodes { get; private set; }
+
+        public string NwfSummary
+        {
+            get { return nwfSummary; }
+            set
+            {
+                nwfSummary = value ?? string.Empty;
+                Raise("NwfSummary");
+            }
+        }
 
         public string Heading
         {
@@ -168,11 +194,6 @@ namespace Federator.Addin.Ui
         public string ClearAllWord
         {
             get { return PackageWords.ClearAllButton; }
-        }
-
-        public string RunWord
-        {
-            get { return PackageWords.RunButton; }
         }
     }
 }

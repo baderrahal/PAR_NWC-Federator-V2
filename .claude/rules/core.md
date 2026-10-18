@@ -27,31 +27,18 @@ here as fixed and it is not. The first three come from the file names. The other
 are supplied, because the files in one group can disagree on all of them and outputs
 overwrite, so copying from any one input would mean picking a winner.
 
-The names are shown as a TABLE with one row per group, filled in by the scan, and every
-cell in it can be typed over. A pattern is where a name starts and not where it ends,
-because one group in twenty usually needs a name the pattern cannot give.
+The names are made by the patterns, one row per group of a package, `OutputNameTable`, and
+since F232, Bader's round of 19 Oct 2026, fix 2, no name is typed over: the Outputs step holds
+the naming boxes and the logo only, so the table of names a person could type over, its refill,
+its cleared cells of FR-160 and its typed names kept across a regroup of FR-153 went with it.
 
-A name typed over is held per CELL, not per row. Changing a pattern refills only the
-cells nobody has touched, so editing an NWF name does not freeze the NWD name beside it,
-and the refill says how many rows it kept. A cell is given back to the pattern by
-clearing it, FR-160: `OutputNameRow.Typed`, what a cell edit does, releases a name typed
-empty, spaces or nothing through `ReleaseToPattern` and the next refill builds it, where it
-was pinned as an empty name only a regroup undid. Anything else typed is held as typed over.
-Setting a cell to exactly what the pattern already gives still counts as typed over,
-because the person meant that value.
+A regroup keeps the Run boxes, FR-153, `Federator.Core.Grouping.KeptRunTicks`: a group the
+person left unticked starts unticked, matched by its key exactly, the label of its package and
+its group since F232, and every other group starts ticked where it can be, one new to the list
+and one that was blocked, whose empty box was never a choice, included.
 
-A regroup keeps what was typed, FR-153. Unticking one file makes the groups and the table
-again, and every name typed over in every other group was thrown away. The table made
-again takes each name typed over from the table before by its group's key,
-`OutputNameTable.KeepTypedFrom`, still typed over, and a name of a group that is gone goes
-nowhere. The Run boxes are kept the same way, `Federator.Core.Grouping.KeptRunTicks`: a
-group the person left unticked starts unticked, matched by its key exactly, and every other
-group starts ticked, one new to the list and one that was blocked, whose empty box was never
-a choice, included.
-
-The collision check runs on the table, not on the patterns, so two names typed to the
-same thing is caught the same way two patterns colliding is. It names both groups and
-the run does not start. A group's internal workbook is named after its workbook with the
+The collision check runs on the table, so two groups whose patterns give one name are caught.
+It names both groups and the package does not run. A group's internal workbook is named after its workbook with the
 suffix, `GenericModelsSettings.WorkbookNameFor`, and sits beside it in the Log
 folder, so the check reads each internal workbook name against every other group's
 workbook name too, ignoring case as the three kinds are read: a group whose workbook is X
@@ -993,7 +980,7 @@ and 6 does not read as broken.
 - Every picker returns a FOLDER to open at, including the one that chooses a file, and the
   caller never takes the parent of it. Doing that opened the clash XML picker one level
   above the folder it had remembered. The rule lives in
-  Federator.Core.Diagnostics.PickerStart so all seven can be proved rather than clicked
+  Federator.Core.Diagnostics.PickerStart so all three, the logo, the parent folder and the Report folder since F232, can be proved rather than clicked
 - Every picker remembers its own last folder, in a file beside the logs, and reopens
   there next time. Per picker and never one shared, because with one shared, picking an
   NWD folder moves the source picker to it and the next run reads the wrong folder. A
@@ -1011,8 +998,7 @@ and 6 does not read as broken.
   wrong at that point, the folder had not been picked. A failure DIALOG may carry the
   exception message, because that is what gets sent back. A label may not. Every wording a
   label carries lives in Core where a test can read it, and the test hands it the thing the
-  label must not carry and asserts it is not in what comes back. ReportPaths.WhereTheyGo for
-  where the workbooks go. RunLog.WhereTheLogIs, NoLogFileOpened, ErrorsAreInTheLog and
+  label must not carry and asserts it is not in what comes back. RunLog.WhereTheLogIs, NoLogFileOpened, ErrorsAreInTheLog and
   TheLogSaysWhy for anything about the log, so a run that could not open one names the
   folders it tried and the log line keeps what threw. RepeatedFailureGuard.Reason for the
   log and ReasonInPlainWords for the label, so the stopped run says how many tests failed
@@ -1697,8 +1683,8 @@ and 6 does not read as broken.
   `TestReport.PicturePriority`, because `TestReport.Priority` is put on the report only after the clash
   step. One log line per test whose clashes exceed its cap with its name, its priority letter, its clashes, the pictures made and
   the skipped. The clashes stay in the HTML, the Excel and the viewpoints, and every clash keeps its
-  viewpoint, only the picture is skipped. The "At most per test" box keeps its own job, a cap of the
-  user's choosing for every test, and the least of the box and the rule holds,
+  viewpoint, only the picture is skipped. The cap per test of ImageOptions keeps its own job, off by default and with no
+  box since F232, and the least of it and the rule holds,
   `ImageOptions.RoomFor(test, written)`. A backstop reads the GDI objects of the process before every
   picture and again after each picture is saved and disposed, `ClashImages.Write`, and past 9000 no more
   are made: a NOTICE with the picture number and the count, the pass stops asking for rows, and the run
@@ -1820,24 +1806,25 @@ and 6 does not read as broken.
   and the NWF page tells the user to set it by hand. The route's Log and NWD folders are the open file's own, F158:
   the Log folder beside the NWF's folder and the NWD beside the NWF.
 - THE TWO PAGES, F188, Bader's answer 3 of Q174 and his order of 14 Oct 2026, task 9. The window is a TabControl,
-  `Pages`, whose first page is NWC and whose second beside it is NWF. The NWC page holds the four steps it always had,
-  Source, Grouping, Outputs and Clash, and since F208 a fifth, Packages, in `Steps`, and is for the first build of a group. A group whose NWF is already
-  there is not ticked and cannot be ticked, `NwcPageRule.CanRun`, unless the Rebuild box is ticked and confirmed with
+  `Pages`, whose first page is NWC and whose second beside it is NWF. The NWC page holds four steps since F232, Bader's
+  round of 19 Oct 2026, fix 2, 1. Packages, 2. Grouping, 3. Outputs and 4. Clash, in `Steps`, and one Run button, RunButton,
+  and is for the first build of a group. A group whose NWF is already there is not ticked and cannot be ticked, nor a group
+  of one discipline, which reads `NwcPageRule.OneDiscipline`, `NwcPageRule.CanTick` and `StatusOf`, unless the Rebuild box is ticked and confirmed with
   the clash history named, `NwcPageRule.RebuildConfirm`, Cancel the default. A rebuild goes into a new dated folder
   under the NWF's and the NWD's own folders, `RebuildFolder.Name`, and never over the files there,
-  `FederationEngine.TheDatedJobWhereTheNwfIsThere`. The NWF page holds the NWF picker, the NWFs last used,
-  remembered in `recent-nwfs.txt` under %LOCALAPPDATA%\ParsonsNwcFederator, `RecentNwfs`, the list of changed NWC
-  files read off the last manifest and the disk, the tolerance drop down only, the steps Refresh, Run tests, Pictures,
+  `FederationEngine.TheDatedJobWhereTheNwfIsThere`. The NWF page holds its packages first since F232, a tree
+  of community, package and NWF read off the Report folder, `PackageTree.ReadNwfs`, its ticks `NwfTicks`, then the tolerance
+  drop down only, the list of changed NWC files of the one NWF ticked read off its last manifest and the disk, the steps Refresh, Run tests, Pictures,
   Viewpoints and Reports with a tick box each, `NwfPageSteps`, and a Run button. A step whose need is off is greyed
   and says why. The folder grouping, the matrix pack and the search set build are not on this page. The confirmation
-  before the run, `RefreshConfirm`, lists the changed files, the tests, the tool viewpoint folder with its viewpoints
+  before the run, `RefreshConfirm`, lists the NWFs and packages, the tests, the tool viewpoint folder with its viewpoints
   and that a viewpoint moved into it by hand is deleted, and the old jpg files, with Cancel the default. Where a
   number is not known it says UNKNOWN. THE OLD JPG FILES ARE COUNTED BY ONE RULE ON BOTH CONFIRMS, F217, Bader's F-R5 of
   18 Oct 2026: `RefreshConfirm.PicturesFolderOf` is where an NWF's pictures sit, composed as the engine composes them, ImageNaming.FolderFor of the page OpenDocumentJob names in its Clash report folder, and `RefreshConfirm.OldPictures` counts, across
   every folder, the files named as the tool names its pictures, `LeftoverPictures.IsOurPictureName`, which is what F177's
   removal reads, so the one NWF's confirm and the confirm of a run of packages, which said UNKNOWN until F217, count the
-  same files. A folder not there holds none, and one that will not read, denied or a drive gone, makes the count UNKNOWN, never a part, with the folder and what the disk said on a CONFIRM line. A pick of several NWFs counts every one. After the run a table shows each test that moved, New, Active, Reviewed,
-  Approved and Resolved before > after, from `JobOutcome.RefreshResults`. The picked NWF route, the NWF page's run,
+  same files. A folder not there holds none, and one that will not read, denied or a drive gone, makes the count UNKNOWN, never a part, with the folder and what the disk said on a CONFIRM line. A run of several NWFs counts every one. After the run a table shows each test that moved, New, Active, Reviewed,
+  Approved and Resolved before > after, from `JobOutcome.RefreshResults`. The NWF page's run, each NWF in its own Navisworks,
   keeps the pack choice by project code, the capped pictures, the stops and the order of F182. The words of the page
   are Core's, `NwfPageWords`, and what its controls hold is read off the XAML by a test.
 - THE NWF'S OWN FOLDERS, F189, `NwfPlaces` and `NwfPlacesStore`. The NWC page builds a group with its NWF and NWD in
@@ -2049,41 +2036,15 @@ and 6 does not read as broken.
   name, and that folder can be read from here. The NWD path is never the open path, read
   case blind, as a second lock on the same door. The rule lives in
   Federator.Core.Rerun.OpenDocumentJob so it can be tested without Navisworks
-- THE PICKED NWFS, F129, Bader's request 4 under Q112, FR-178. A choice on the NWF page since
-  F188, its File and Folder buttons, picks one NWF or a folder of NWFs, and each runs the way the
-  open file run runs it, so every rule above applies to each. What the pick gives is
-  Federator.Core.Rerun.NwfPick.From and nothing about it is decided in the add-in. A folder
-  is read with no pattern and no wildcard, its files listed whole and an NWF judged by its
-  extension alone, .nwf read case blind, NwfPick.IsNwf, so an NWD, an NWC, a .nwf.bak and a
-  .nwfx are never taken. Its subfolders are read only where the Include subfolders box of the
-  Source step asks, a subfolder that will not read is named with what the disk said and the
-  rest still run, and the picked folder not reading stops the run. The NWFs run in name order,
-  read case blind. EACH IS JUDGED BY OpenDocumentJob.WhyNot BEFORE IT IS OPENED, the guard
-  against an NWD, an address, a refused character and an unsaved document, in its words, and
-  its outputs are named through OpenDocumentJob, the NWD beside it with the extension swapped
-  and the logs and the report in the Log folder beside its folder, never copied here.
-  A refused NWF in a folder is named in RUN SETTINGS with its reason, never opened, and handed
-  to the engine, which refuses it by the same check and counts it a FAILED group in RESULT. A
-  picked file that is refused, a folder with none that can run, a pick that is not there and
-  nothing picked each stop the run before anything is opened, and so do TWO NWFS WRITING ONE
-  FILE, an NWD or a workbook on one path read case blind, named in one sentence each with
-  both NWFs and the path, because the second would write over the first, which is the scanned
-  run's refusal of a shared name. The words are Core's: the label and the grey line by the
-  tick box rule, the RUN SETTINGS lines, NwfPickPlan.SettingsLines, the RESULT line under the
-  group counts, NwfPickPlan.ResultLine through RunLog.WriteResultBlock, the window line,
-  NwfPickPlan.Describe, which never carries what the disk said, the PICKED NWF block in the
-  OPEN FILE block's shape, OpenDocumentJob.SummaryLines with the decision a picked NWF opened
-  by this run, and the GROUP started line, which says the files are read once the NWF opens
-  where no list is handed in, RunLog.GroupFilesReadAtTheOpen. The picker remembers its own
-  folder, PickerKind.PickedNwf, its file and its folder buttons on the one kind. THE LABEL
-  OF A GROUP OF THIS ROUTE is RunPath.ForAnOpenFile, F129 attempt 2: the document already open
-  is a Weekly run as before, and a picked NWF this run opened is labelled off its decision, so
-  one that opened and read empty is Stopped, as the scanned run labels the same F74 refusal,
-  and RESULT counts it under NWF read empty, and one that would not open or was refused before
-  the open carries Build, the label the scanned run gives a group whose Decide threw. The
-  DECIDE step's phrase is NwfPick.DecidePhrase, opened and read empty, not opened, or the
-  label of the run. Nothing is logged at the pick, so the window line says the folders that
-  would not read are named in RUN SETTINGS once Run NWFs is pressed, NwfPick.NamedOncePressed
+- THE NWFS OF THE NWF PAGE, F129 and F188, Bader's request 4 under Q112, FR-178, and since F232 his round of 19 Oct
+  2026, fix 2: each NWF ticked in the tree the page reads off the Report folder runs the way the open file run runs it, so
+  every rule above applies to each. The picker of F129, its File and Folder buttons, NwfPick.From, NwfPickPlan and its words
+  went with F232. An NWF is judged by its extension alone, .nwf read case blind, NwfPick.IsNwf, so an NWD, an NWC, a .nwf.bak
+  and a .nwfx are never taken. Its outputs go into its package's folders, `PackageNwf`. THE LABEL OF A GROUP OF THIS
+  ROUTE is RunPath.ForAnOpenFile, F129 attempt 2: the document already open is a Weekly run, and an NWF this run opened is
+  labelled off its decision, so one that opened and read empty is Stopped, and RESULT counts it under NWF read empty, and
+  one that would not open carries Build, the label the scanned run gives a group whose Decide threw. The DECIDE step's
+  phrase is NwfPick.DecidePhrase, opened and read empty, not opened, or the label of the run
 - Distance is the ROUNDED number and carries no number format, because that is what theirs
   holds. Ours stored -0.328083992004395 behind a format of 0.000, so the cell read -0.328
   and anyone sorting, filtering or copying the column got the long value. Rounding the
@@ -2512,8 +2473,8 @@ and 6 does not read as broken.
   digits, so 1B06PK is 9A99AA. A code is odd only when its shape is held by no
   other code and some other shape is shared, because with every shape unique
   there is no majority to differ from
-- Findings show in the Grouping step before Run is pressed, and go in the log in
-  a FINDINGS block after the group list. Nothing odd is one line, not an empty
+- Findings show under the tree of step 1. Packages before Run is pressed, over the NWC files of the
+  ticked packages, F232, and go in the log in a FINDINGS block after the PACKAGE GROUPS block. Nothing odd is one line, not an empty
   panel
 - A SHIFT CLICK ON A RUN BOX TICKS OR UNTICKS A RANGE, F130, Bader's request 5 under Q112,
   FR-179. `Federator.Core.Grouping.ShiftRange.Of` is handed the rows in the order the grid
@@ -2541,8 +2502,18 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   spaces, the word and or an ampersand read like any other. A file is judged by its extension alone, read case blind, a
   folder is listed whole and never matched by a wildcard, the disk is handed in as `NwfPickDisk` so every rule is proved
   on folders a test makes. A link or a junction is named and never followed. A folder that will not read is named with
-  what the disk said and the rest are read. Files in the parent itself and a community with no file below it are named in
-  `LeftOut` and are in no package, never dropped in silence
+  what the disk said and the rest are read. A PARENT HOLDING FILES ITSELF IS ONE PACKAGE NAMED AFTER IT, F232, Bader's round
+  of 19 Oct 2026, fix 2, the community of the parent's name holding the package `<parent> itself`, unless a folder under the
+  parent carries that name, where the parent's own files are left out and said, Q213. A community with no file below it is
+  named in `LeftOut` and is in no package, never dropped in silence. A Report folder that would put a package's own report
+  folder in the parent or inside it, Report\Parent being the parent where the Report folder is the parent's parent, is
+  refused before anything, `PackageOutput.WhyNot` handed the packages
+- THE NWF PAGE'S TREE IS READ OFF THE REPORT FOLDER, F232, `PackageTree.ReadNwfs`: the first level under it the community,
+  and a folder below it whose NWF folder, `PackageOutput.DefaultNwfSubfolder`, directly holds NWF files is one package at the
+  path the NWC page wrote it under, its files those NWFs in name order, so `PackageNwfs.For` finds the same files. The NWF
+  folder is not walked again. A link is named and never followed, a folder that will not read is named, and a community
+  holding none is left out and said. Nothing is ticked at the start, `NwfTicks`: a community or a package ticks every NWF under
+  it, one NWF is ticked alone, a path the tree does not hold is never ticked, and a run is refused while none is ticked
 - NOTHING IS TICKED AT THE START, `PackageTicks`, so a parent of ten communities never runs all ten by mistake. A
   community's tick sets every one of its packages, `StateOf` reads neither for a community partly ticked, and Tick all and
   Clear all set every package. `WhyNoRun` refuses a run while none is ticked, and a tree not read refuses with its own

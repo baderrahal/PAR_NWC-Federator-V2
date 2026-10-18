@@ -53,6 +53,41 @@ namespace Federator.Core.Communities
             return null;
         }
 
+        /// <summary>
+        /// WhyNot, and then, F232, the breaker's reading: a package's own report folder that would be the parent or inside it,
+        /// which the parent's own package can make, Report\Parent being the parent itself where the Report folder is the
+        /// parent's parent. Its Log folder would then sit in the folder read, so the run is refused here, before anything.
+        /// </summary>
+        public static string WhyNot(string parent, string reportRoot, IEnumerable<Package> packages)
+        {
+            string why = WhyNot(parent, reportRoot);
+
+            if (why != null || packages == null)
+            {
+                return why;
+            }
+
+            string from = parent == null ? string.Empty : parent.Trim();
+
+            if (from.Length == 0 || !IsFull(from))
+            {
+                return null;
+            }
+
+            foreach (Package package in packages)
+            {
+                string folder = FolderFor(reportRoot, package);
+
+                if (IsInsideOrSame(folder, from))
+                {
+                    return "The report folder of " + package.RelativePath + " would be " + folder + ", the parent folder or inside it, "
+                        + "so a report could be read as a package. Pick a Report folder outside " + from + ".";
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>The package's report folder, the Report folder and the package's path from the parent.</summary>
         public static string FolderFor(string reportRoot, Package package)
         {
@@ -185,6 +220,8 @@ namespace Federator.Core.Communities
     {
         private readonly List<PackageGroup> groups = new List<PackageGroup>();
         private readonly List<string> notRun = new List<string>();
+        private readonly List<SkippedBuildingGroup> skipped = new List<SkippedBuildingGroup>();
+        private readonly List<BuildingGroup> grouped = new List<BuildingGroup>();
 
         private PackagePlan(Package package, string reportRoot)
         {
@@ -213,6 +250,21 @@ namespace Federator.Core.Communities
         {
             get { return notRun.AsReadOnly(); }
         }
+
+        /// <summary>The groups the grouping blocked, each with its files and why, for the rows of the Grouping step, F232.</summary>
+        public IList<SkippedBuildingGroup> Skipped
+        {
+            get { return skipped.AsReadOnly(); }
+        }
+
+        /// <summary>The groups the grouping made, as the grouping gives them, for the findings of the Packages step, F232.</summary>
+        public IList<BuildingGroup> Grouped
+        {
+            get { return grouped.AsReadOnly(); }
+        }
+
+        /// <summary>How many of the package's files have a name that does not read, F232.</summary>
+        public int Unreadable { get; private set; }
 
         public int Blocked { get; private set; }
 
@@ -265,6 +317,7 @@ namespace Federator.Core.Communities
                 if (!parsed.IsReadable)
                 {
                     plan.notRun.Add("cannot be read  " + Path.GetFileName(file) + "  " + parsed.UnreadableReason);
+                    plan.Unreadable++;
                     continue;
                 }
 
@@ -278,8 +331,10 @@ namespace Federator.Core.Communities
             {
                 plan.notRun.Add("BLOCKED  " + skipped.Building + "  " + skipped.Reason);
                 plan.Blocked++;
+                plan.skipped.Add(skipped);
             }
 
+            plan.grouped.AddRange(result.Groups);
             OutputNameTable names = OutputNameTable.From(result.Groups, naming, settings, today);
             plan.WhyNot = names.WhyTheRunCannotStart(internalWorkbook);
 

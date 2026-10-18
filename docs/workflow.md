@@ -11,23 +11,27 @@ UNKNOWN, and the list of those is at the end.
 
 ## The NWC page, the first build of a group
 
-The page has five steps in a row of tabs, `FederatorWindow.xaml`.
+The page has four steps in a row of tabs, `FederatorWindow.xaml`, packages first since F232, Bader's
+round of 19 Oct 2026, fix 2.
 
-    1. Source      the folder of NWC files, Include subfolders, Scan, the findings. Nothing here
-                   blocks a run
+    1. Packages    the parent folder with Browse and Read, the Report folder with Browse, the
+                   tree of communities and packages with a tick box each, Tick all and Clear
+                   all, and under the tree the findings over the NWC files of the ticked
+                   packages. Nothing in the findings blocks a run
     2. Grouping    how the files are gathered into federations (per building is the default),
-                   the Rebuild box, and the list of groups with a Run box, the label it will
-                   take, and its status
-    3. Outputs     the NWF folder and the NWD folder, the logo, the name fields, and under
-                   More, rarely changed, the photo size, the cap per test, the five status
-                   boxes of the photos and the ghosted look box
+                   the Rebuild box, and one row per group of the ticked packages with its Run
+                   box, its community, package, building, files, disciplines, the label it will
+                   take, and its status. A group of one discipline reads One discipline, not
+                   built, and its box is off and greyed
+    3. Outputs     the name fields and the logo, nothing else
     4. Clash       the tolerance drop down, the viewpoints box, the two Reviewed rules, the
                    Run the open file button and the hand buttons
-    5. Packages    many communities at once, below
 
-The Run button under the page runs the groups ticked in step 2, in the Navisworks the person
-started. The Run ticked packages button of step 5 runs packages, each group in a Navisworks of its
-own, below.
+The one Run button, along the top of the bar under the page, runs the groups of the ticked packages
+that are ticked on step 2, each group in a Navisworks of its own, below. There is no Source step, no
+NWF or NWD folder box and no step 5 since F232. The photo size, the cap per test, the five status
+boxes of the photos, the ghosted look, the dated NWD and the clash XML have no box since F232 and run
+at their defaults, `ImageOptions` and `ReportOptions`.
 
 The clash matrix is built into the tool, F155. Nobody picks an XML. A run chooses its pack by the
 project code of the NWC file names, and stops before anything is opened where none or two match.
@@ -43,8 +47,8 @@ group writes its files before the next group starts.
 
 The NWC page refuses it. A group whose NWF is at its output path cannot be ticked, its status reads
 "NWF exists. Use the NWF page.", unless the Rebuild box on step 2 is ticked and confirmed
-(`NwcPageRule.CanRun`). Run ticked packages applies the same rule to each group and names the groups
-it left out in the log (`FederatorWindow.Packages.cs`, `NwcPageRule.CanRun`).
+(`NwcPageRule.CanTick`). Run applies the same rule to each group and names the groups it left out in
+the PACKAGE GROUPS block of the log (`FederatorWindow.Packages.cs`, `NwcPageRule.CanRun`).
 
 ### Rebuild and its dated folder
 
@@ -62,44 +66,44 @@ where it was with its history. The log says it on a REBUILD line (`FederationEng
 The group is then built at a path where no NWF is, so Decide finds nothing there. By the code its
 label at the end reads First run (`NwfComparison.NoNwfYet` gives Build and `RunPath.Label` turns Build
 into First run). The Run as column before the run looks only at the undated path, so it reads
-Weekly run plus matrix for such a group (`FederatorWindow.xaml.cs`, `RunPath.Expected`). What a real
+Weekly run plus matrix for such a group (`FederatorWindow.Packages.cs`, `RunPath.Expected`). What a real
 press of Rebuild writes in that column and in the log is UNKNOWN until a run reads it.
 
 ## The NWF page, the weekly work
 
-The NWF page has the NWF picker, the list of NWFs last used, the NWC files changed since the last
-run, the tolerance drop down, five steps with a box each, and a Run button of its own. On the right
-sits the package tree, below. The words are `NwfPageWords`.
+The NWF page has its packages first since F232: the Report folder with Browse and Read, a tree of
+community, package and NWF read off that folder with a tick box each, Tick all and Clear all. Under
+it sit the tolerance drop down, five steps with a box each, and one Run button. The words are
+`PackageWords` and `NwfPageWords`. There is no NWF picker, no File or Folder button, no list of NWFs
+last used and no panel on the right since F232.
 
-- Picking. The File and Folder buttons pick one NWF or a folder of NWFs. A folder is read with no
-  wildcard and an NWF is judged by its extension alone, so an NWD, an NWC and a .nwf.bak are never
-  taken. Subfolders are read only where Include subfolders on the NWC page's Source step is ticked.
-  The NWFs run in name order. The page remembers the last 10 it ran in `recent-nwfs.txt` under
-  %LOCALAPPDATA%\ParsonsNwcFederator (`RecentNwfs.Max`).
-- Changed files. The list under the picker is what changed among the NWC files since the last run of
-  that NWF, read off the manifest that run left and the disk. With no earlier manifest it says
-  UNKNOWN, and the run writes one.
+- The tree. The first level under the Report folder is a community. A folder below it whose NWF
+  folder holds NWF files is a package, at the path the NWC page wrote it under, and its NWFs are its
+  lines (`PackageTree.ReadNwfs`). An NWF is judged by its extension alone, so an NWD, an NWC and a
+  .nwf.bak are never taken. Ticking a community or a package ticks every NWF under it, and one NWF
+  is ticked alone (`NwfTicks`). Nothing is ticked until you tick it.
+- Changed files. With one NWF ticked, the list under Run is what changed among its NWC files since
+  its last run, read off the manifest that run left in its Log folder and the disk. With no earlier
+  manifest it says UNKNOWN, and the run writes one. With none or several ticked it says so, Q214.
 - The five steps, each with a box, all ticked when the page opens: Refresh, Run tests, Pictures,
   Viewpoints, Reports. A step that needs another is greyed and the grey line says why. Viewpoints
   and Reports need Run tests, and Pictures needs Reports (`NwfPageSteps`).
-- The Clash step's Reviewed boxes and the Outputs step's photo settings are read by this page's run
-  too (`ReportsWanted`). The tolerance is the drop down of this page. The grouping, the pack and the search set build are not on
-  this page.
+- The Clash step's Reviewed boxes are read by this page's run too (`ReportsWanted`). The tolerance is
+  the drop down of this page. The grouping, the pack and the search set build are not on this page.
 
 ### The confirm
 
 Pressing Run opens a confirm with Cancel as the default, and nothing is opened or changed before OK.
-It names the NWF, the steps that will run, the Backup folder where a copy is made first, and up to 12
-of the changed NWC files with a count of the rest. It states the tests that run again where they sit,
+It names how many NWFs of how many packages run, the steps that will run and the Backup folder of each
+package where a copy of each NWF is made first. It states the tests that run again where they sit,
 that a test whose two sides carry one set code is not run and one saved in the NWF keeps its earlier
 results there, that the viewpoint folder is deleted and made again, with how many viewpoints it holds
 and that one moved into it by hand goes with it, that everything else at the top of the viewpoint
 panel is deleted except the folder Comments, and how many old jpg files in the Clash report folder
 are written again or removed. A number it cannot read it says UNKNOWN (`RefreshConfirm.Text`). The
-old jpg files are counted by the same rule on this confirm and on the confirm of a run of packages,
-F217. The NWF page's own Run also asks, before anything is opened, about the open document that is
-about to go (`ConfirmTheOpenDocumentGoes`). The packages route asks nothing about it, since no
-package opens anything in the Navisworks the person started.
+old jpg files are counted across the Clash report folders of every ticked NWF, F217. It asks nothing
+about the document open, since every NWF opens in a Navisworks of its own and nothing open in the
+Navisworks the person started is touched.
 
 ### What the refresh does
 
@@ -119,24 +123,26 @@ will not open or is refused before the open is counted as a failed group in RESU
 
 ## Many communities at once, the packages
 
-The NWC page has the step 5 and the NWF page has a panel on its right. Both are bound to one tree, so
-the Parent folder, the Report folder and every tick read the same on both pages (F208).
+The NWC page's step 1 reads its tree off the parent folder and the NWF page reads its own off the
+Report folder, F208 and F232. The Report folder typed on one page reads the same on the other.
 
-- Read. The tree is read off the parent folder. The first level under it is a community, and every
-  folder below a community that holds NWC files directly is one package. A community holding its
-  files itself is the package named `<community> itself`. Nothing is ticked until you tick it. Run
-  refuses with the reason while nothing is ticked, and the log lists every package ticked and left
-  out, each with its full path.
+- Read. The NWC page's tree is read off the parent folder. The first level under it is a community, and
+  every folder below a community that holds NWC files directly is one package. A community holding its
+  files itself is the package named `<community> itself`, and a parent folder holding NWC files itself
+  is one package named after it, `<parent> itself` under the community of its name, F232. A folder under
+  the parent with the parent's name leaves the parent's own files out and says so, Q213. Nothing is
+  ticked until you tick it. Run refuses with the reason while nothing is ticked, and the log lists
+  every package ticked and left out, each with its full path.
 - Where a package writes. Under the Report folder and the package's own path from the parent, such as
   `Report\C06\Infrastructure`, its NWFs in a folder NWF and its NWDs in NWD, the Log and Clash report
   folders beside them, and the Backup folder for the NWF page's copies. A Report folder inside the
   parent folder is refused.
-- On the NWC page the button is Run ticked packages. On the NWF page it runs the NWFs found in the
-  package's NWF folder, in name order. A ticked package with no NWF is named and the others run.
+- On the NWC page Run builds the groups of the ticked packages that are ticked on step 2. On the NWF
+  page Run runs the ticked NWFs, in the tree's order.
 
 ### A fresh Navisworks for every group
 
-Pressing Run ticked packages on either page, once, plans and confirms as before, with one confirm
+Pressing Run on either page, once, plans and confirms as before, with one confirm
 that says each group runs in a fresh Navisworks of its own, F214 and F222 (Bader's answers to Q204
 and Q211). Then `Federator.Runner.exe` starts one Navisworks for each group in turn, the next only
 after the last has gone, runs the group in it, and quits it. A group that fails, crashes or hangs
@@ -146,9 +152,8 @@ that wrote no result. The window that started the run writes the four discipline
 package, and RESULT is written last. A package whose groups wrote no result is said so and never
 said as not run, because whether its groups wrote files before their Navisworks ended is UNKNOWN.
 
-The picked NWFs of the NWF page's own Run button and the scanned run of the NWC page's Run button
-are not fresh starts. They run every group in the Navisworks the person started
-(`RunPickedNwfs`, `RunJobs`).
+Since F232 each page has this one route. The run of the open file on the Clash step and the hand
+buttons still run in the Navisworks the person started.
 
 Whether a Navisworks the person started, and not the automation, can start the runner's Navisworks
 has the steps of F222 in steps\03_bader_next.md as its proof. How long a fresh start and quit cost on
@@ -203,8 +208,8 @@ puts it back exactly as it was.
 - Before each group's Navisworks starts it writes the switched off value and reads it back. At the
   end of the run it puts the first value back once, reads it back, and deletes the record only where
   the value reads as it was. A runner that died leaves the record, and the window puts it back.
-- The run in the Navisworks the person started, the picked NWFs and the open file run set the option
-  off as the run starts where it reads on, and set it back before RESULT. The hand buttons switch
+- The run inside a group's own Navisworks and the open file run set the option off as the run starts
+  where it reads on, and set it back before RESULT. The hand buttons switch
   nothing.
 - The log has an AUTOSAVE line for each of these.
 
@@ -324,14 +329,14 @@ clash for a person to look at.
                     named with the moment to the second, never over an earlier copy
 
 Under a package, all of these sit in the package's one folder of the Report folder. Reports never go
-inside the folder being scanned. A picked NWF that this tool did not build is run with its NWD beside
-it and its Log folder beside its folder, until one run has written its places into
-`nwf-places.tsv`, after which the NWD, the Log, the Backup and the Clash report folders stay the
-group's own, F189 and F158. A file this tool did not write is never listed as written. A size goes in
+inside the parent folder read. An NWF of the NWF page writes its NWD, its Log, its Backup and its
+Clash report folders into its package's folder, F208, and the open file run writes beside the open
+file, F158. A file this tool did not write is never listed as written. A size goes in
 the log only after the file is there and its real size is read back.
 
-The window keeps its own state in %LOCALAPPDATA%\ParsonsNwcFederator: `recent-nwfs.txt`,
-`nwf-places.tsv` and, during a run, `auto-save-to-put-back.txt`.
+The window keeps its own state in %LOCALAPPDATA%\ParsonsNwcFederator: `nwf-places.tsv` and, during a
+run, `auto-save-to-put-back.txt`. The list of NWFs last used, `recent-nwfs.txt`, is no longer read or
+written since F232.
 
 ## Where the models sit, F201
 
@@ -357,8 +362,8 @@ with the first step removed. There is no Decide, because the document is the fil
 appended and nothing is cleared, so the clash results inside it survive. It is always a Weekly run, or
 a Weekly run plus matrix where the built in matrix is read. There is no First run on that path, because
 the NWF already exists and is the document. Five things are checked before it runs and the first that
-fails is named in the window and the log, in `Federator.Core.Rerun.OpenDocumentJob`. The NWF page's
-picked NWFs run the same route one NWF at a time.
+fails is named in the window and the log, in `Federator.Core.Rerun.OpenDocumentJob`. Each ticked NWF
+of the NWF page runs the same route in a Navisworks of its own.
 
 ## The two hand buttons
 
@@ -373,7 +378,8 @@ Pictures are taken after the NWD is published, F182, one per clash row that take
 
 - A cap per test, F172, F175 and F190: at most the first 150 clashes of a test at priority A, 100 at
   B and 50 at C. A saved test the matrix does not name is C, and so is a test with no priority read.
-  The cap box on the Outputs step keeps its own job, and the lesser of the box and the rule holds.
+  The cap per test of `ImageOptions.CapPerTest`, off by default and with no box since F232, keeps its
+  own job, and the lesser of it and the rule holds.
   The clashes stay in the HTML, the Excel and the viewpoints. Only the picture is skipped.
 - Order, F203: tests whose waiting rows are at or under their cap are pictured first, then the ones
   over, so a stop takes the last pictures of the largest tests and not every picture of the small

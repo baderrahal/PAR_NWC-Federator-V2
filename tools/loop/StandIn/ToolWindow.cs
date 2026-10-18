@@ -212,8 +212,10 @@ namespace NwcFederatorLoop.StandIn
 
                 if (log != null)
                 {
-                    log.ScanStarted(folder, subfolders.IsChecked == true);
-                    log.ScanFinished(found.Length, found.Length, 0);
+                    // F232 took ScanStarted and ScanFinished out of RunLog with the Source step, so the stand-in writes the lines
+                    // they wrote itself, word for word, as the harness reads them.
+                    log.Line("SCAN     started  " + folder + (subfolders.IsChecked == true ? "  including subfolders" : "  top folder only"));
+                    log.Line("SCAN     finished " + found.Length + " found, " + found.Length + " readable, 0 that cannot be read");
                 }
 
                 steps.SelectedIndex = 1;
@@ -401,8 +403,8 @@ namespace NwcFederatorLoop.StandIn
                 }
             }
 
-            lines.Add(RunLog.UntickedGroupsLine(unticked));
-            log.Block(RunLog.GroupsSectionTitle, lines);
+            lines.Add(OldGroupLines.UntickedLine(unticked));
+            log.Block(OldGroupLines.Title, lines);
             log.RunStarted(groups.Count);
             log.RunFinished();
         }

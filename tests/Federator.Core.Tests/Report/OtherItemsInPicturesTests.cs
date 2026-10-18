@@ -30,26 +30,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheLabelAndItsGreyLineAreShortPlainAndClaimNothingUnmeasured()
-        {
-            Assert.That(OtherItemsInPictures.TickLabel.Split(' ').Length, Is.LessThanOrEqualTo(8));
-            Assert.That(OtherItemsInPictures.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
-            Assert.That(OtherItemsInPictures.TickLabel, Does.Not.Contain("GhostTheOtherItems"), "no code identifier in a label");
-            Assert.That(OtherItemsInPictures.HelpLine, Does.Not.Contain("HideOther"), "no code identifier in a label");
-            Assert.That(OtherItemsInPictures.HelpLine, Does.Not.Contain("every PC"), "a run has not measured that");
-
-            foreach (string word in OtherItemsInPictures.TickLabel.Split(' ').Concat(OtherItemsInPictures.HelpLine.Split(' ')))
-            {
-                string letters = word.Trim(',', '.');
-                bool shouted = letters.Length > 2 && letters == letters.ToUpperInvariant() && letters.Any(char.IsLetter);
-                Assert.That(shouted, Is.False, "no capitals for emphasis, " + word);
-            }
-
-            Assert.That(OtherItemsInPictures.TickLabel + OtherItemsInPictures.HelpLine, Does.Not.Contain(";"));
-            Assert.That(OtherItemsInPictures.TickLabel + OtherItemsInPictures.HelpLine, Does.Not.Contain(EmDash));
-        }
-
-        [Test]
         public void ReadOffItIsSetOnForThePicturesReadBackAndPutBack()
         {
             OtherItemsInPictures rule = new OtherItemsInPictures(false, new HideOtherAcrossTheRun());
@@ -102,8 +82,7 @@ namespace Federator.Core.Tests
             rule.ReadAfter(true);
             string said = rule.Line();
 
-            Assert.That(said, Does.Contain("asked off for the pictures, to show the other items, since the box \""
-                + OtherItemsInPictures.TickLabel + "\" is ticked"));
+            Assert.That(said, Does.Contain("asked off for the pictures, to show the other items, since the ghosted look is asked for"));
             Assert.That(said, Does.Contain("set off, and it read back off, then put back to on"));
         }
 

@@ -35,59 +35,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheNwcPageHoldsTheSourceTheGroupsTheOutputsAndTheRebuildAndNoNwfControl()
-        {
-            string xaml = Xaml();
-            int nwf = xaml.IndexOf("<TabItem Header=\"NWF\">", System.StringComparison.Ordinal);
-            string nwcPage = xaml.Substring(0, nwf);
-
-            foreach (string id in new[] { "SourceFolderBox", "GroupsGrid", "NwfFolderBox", "NwdFolderBox", "ToleranceBox", "RunButton", "RebuildExisting" })
-            {
-                Assert.That(nwcPage, Does.Contain("x:Name=\"" + id + "\""), id);
-            }
-
-            foreach (string id in new[] { "PickedNwfBox", "RunPickedNwfsButton", "NwfToleranceBox", "NwfTable" })
-            {
-                Assert.That(nwcPage, Does.Not.Contain("x:Name=\"" + id + "\""), id + " belongs to the NWF page");
-            }
-        }
-
-        [Test]
-        public void TheNwfPageHoldsThePickerTheChangedListTheToleranceTheFiveStepsTheRunAndTheTable()
-        {
-            string xaml = Xaml();
-            int nwf = xaml.IndexOf("<TabItem Header=\"NWF\">", System.StringComparison.Ordinal);
-            string page = xaml.Substring(nwf);
-
-            foreach (string id in new[]
-            {
-                "PickedNwfBox", "RecentNwfBox", "NwfChangedBox", "NwfToleranceBox", "NwfStepRefresh", "NwfStepTests",
-                "NwfStepPictures", "NwfStepViewpoints", "NwfStepReports", "RunPickedNwfsButton", "NwfTable"
-            })
-            {
-                Assert.That(page, Does.Contain("x:Name=\"" + id + "\""), id);
-            }
-
-            foreach (string id in new[] { "GroupsGrid", "GroupingModeBox", "SourceFolderBox", "PackBox" })
-            {
-                Assert.That(page, Does.Not.Contain("x:Name=\"" + id + "\""), "the grouping, the folder and the pack are hidden on this page: " + id);
-            }
-        }
-
-        [Test]
-        public void TheConfirmationOfARefreshAsksForCancelFirstAndTheTableIsFilledFromTheRun()
-        {
-            string page = Code("FederatorWindow.NwfPage.cs");
-            string window = Code("FederatorWindow.xaml.cs");
-
-            Assert.That(page, Does.Contain("MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel"));
-            Assert.That(window, Does.Contain("if (!ConfirmTheRefresh(plan, nwfSteps))"));
-            Assert.That(window, Does.Contain("ShowTheNwfTable(pickedOutcomes);"));
-            Assert.That(window, Does.Contain("nwfSteps.Apply(options);"));
-            Assert.That(window, Does.Contain("RememberTheNwfs(plan.Paths());"));
-        }
-
-        [Test]
         public void ARebuildIsConfirmedWithTheClashHistoryNamedAndCancelTheDefault()
         {
             string page = Code("FederatorWindow.NwfPage.cs");

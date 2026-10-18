@@ -2,6 +2,37 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F232, packages first, one route per page, fix 2
+
+Branch fix-F232 off main 6ef0139. Fix 2 of the round: the packages first on both pages, one route each.
+
+What was done. The NWC page has four steps, 1. Packages with the parent and Report folders, the tree and the findings under it,
+2. Grouping with one row per group of the ticked packages, 3. Outputs with the naming boxes and the logo only, 4. Clash as it
+was, and the one Run button in the bar under the steps, which runs each ticked group in its own Navisworks. A parent folder
+holding NWC files itself is one package named after it, Core's PackageTree.Read. A group of one discipline reads One
+discipline, not built with its box off and greyed, NwcPageRule.CanTick and StatusOf, and one whose NWF is there reads NWF
+exists. Use the NWF page. The NWF page reads a tree of community, package and NWF off the Report folder, PackageTree.ReadNwfs
+and NwfTicks, then the tolerance, the five step boxes and one Run. The Source step, step 5, the NWF and NWD folder boxes, More,
+rarely changed, the NWF picker, its File and Folder buttons, the Recent box and the panel on the right are gone, with every
+member and test only they used: the window's scanned run, the picked NWFs' plan, RecentNwfs, the names typed over, four picker
+kinds, ReportPaths.WhereTheyGo, the scan lines of RunLog, and the engine's scanned run constructor and preview. The reviewer
+and the breaker read it, and what they found of this change is fixed: a Report folder putting the parent's own package inside
+the parent is refused, a ticked NWF gone at Run is named, a row its rule left unticked is no person's untick, the loop's
+stand-in builds again, and the window's new words are Core's. docs\workflow.md, addin.md, core.md and the proof steps follow.
+
+What was proved here. Core tests 3441 passed before and 3403 after, 0 failed, 0 skipped, the drop the tests of the members
+that went. The solution and the stand-in built in Release, 0 errors, 0 warnings. On copies under C:\NWC-PC-Test\work\smoke232,
+build ab1c9167: the parent read as community Parent with package Parent itself, Run with nothing ticked refused, the findings
+over the 9 files of the ticked packages, step 2 with 1B06PG One discipline, not built and greyed, the NWC page 2 groups each
+in its own Navisworks, 2 DONE, 1B06PG named left out, the NWF page 2 NWFs read off the Report folder, 2 DONE each in its own
+Navisworks. Then on build 6c4f4318, with the fixes of the reviewer and the breaker, the NWC page again on a fresh Report folder, Report2: the same three rows, 2 groups DONE each in its own Navisworks, 1B06PG left out, and RUN SETTINGS saying include subfolders: yes, as the tree reads every depth. The desktop folder 0 lines differing, Navisworks' settings put back with 0 lines differing.
+
+What remains. Bader's proof steps of F232, Q213, Q214 and Q215. Known bugs: rows F232-R1 to R9, the loop's window driver and
+two probes naming the controls that went, the manifest one per package Log folder, rebuilt NWFs in dated folders, a run
+reading the last Read, the two groupings of one discipline groups, the discipline workbooks missing unread files, left out
+groups in no RESULT line, a drive root parent and a wide Report folder, ticks reset. What comes next: F233, one discipline
+groups not built on both pages.
+
 ## 2026-10-19 F231, the append measured against a manual Append, fix 1
 
 Branch fix-F231 off main f92023f. Fix 1 of the round: are the far models of 1B06BC, 1B06PS and 1B06K1 put there by the tool, or

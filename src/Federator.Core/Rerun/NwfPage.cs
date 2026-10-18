@@ -131,76 +131,6 @@ namespace Federator.Core.Rerun
     }
 
     /// <summary>
-    /// The NWFs last used, F188: a small list the page remembers in a settings file under
-    /// %LOCALAPPDATA%\ParsonsNwcFederator, most recent first, one path each, never more than Max, a path once.
-    /// The reading and the writing of the file are the add-in's. The rule is here so it is tested.
-    /// </summary>
-    public sealed class RecentNwfs
-    {
-        /// <summary>The most it remembers.</summary>
-        public const int Max = 10;
-
-        /// <summary>The file in the ParsonsNwcFederator folder under the local application data.</summary>
-        public const string FileName = "recent-nwfs.txt";
-
-        private readonly List<string> paths = new List<string>();
-
-        public ReadOnlyCollection<string> Paths
-        {
-            get { return new ReadOnlyCollection<string>(paths); }
-        }
-
-        /// <summary>Puts the path first. One already there moves to the top, compared without case as Windows does.</summary>
-        public void Remember(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return;
-            }
-
-            string clean = path.Trim();
-
-            for (int i = paths.Count - 1; i >= 0; i--)
-            {
-                if (string.Equals(paths[i], clean, StringComparison.OrdinalIgnoreCase))
-                {
-                    paths.RemoveAt(i);
-                }
-            }
-
-            paths.Insert(0, clean);
-
-            while (paths.Count > Max)
-            {
-                paths.RemoveAt(paths.Count - 1);
-            }
-        }
-
-        /// <summary>The list the lines give, in their order. A line that is empty is left out and a file that is not one reads empty.</summary>
-        public static RecentNwfs Read(IList<string> lines)
-        {
-            RecentNwfs list = new RecentNwfs();
-
-            if (lines == null)
-            {
-                return list;
-            }
-
-            for (int i = lines.Count - 1; i >= 0; i--)
-            {
-                list.Remember(lines[i]);
-            }
-
-            return list;
-        }
-
-        public IList<string> ToLines()
-        {
-            return new List<string>(paths);
-        }
-    }
-
-    /// <summary>
     /// The words the NWF page puts before a refresh, F188, Bader's order of 14 Oct 2026, task 9.4, and what the
     /// confirmation lists: the changed NWC files, the number of tests, the viewpoint folder that will be made again
     /// with how many viewpoints, and how many old jpg files will be removed. Cancel is the answer it asks for first.
@@ -351,10 +281,45 @@ namespace Federator.Core.Rerun
 
         public const string ExistsLine = "NWF exists. Use the NWF page.";
 
+        /// <summary>The status of a group of one discipline on the Grouping step, F232, Bader's round of 19 Oct 2026, fix 2.</summary>
+        public const string OneDiscipline = "One discipline, not built";
+
+        public const string Ready = "Ready";
+
+        public const string BlockedWord = "BLOCKED: ";
+
         /// <summary>Whether the group can be ticked: not blocked, and its NWF not already there unless Rebuild is ticked.</summary>
         public static bool CanRun(bool blocked, bool nwfExists, bool rebuildTicked)
         {
             return !blocked && (!nwfExists || rebuildTicked);
+        }
+
+        /// <summary>
+        /// Whether the group's box on the Grouping step can be ticked, F232: CanRun, and a group of one discipline never,
+        /// Rebuild or not, since it is not built, BuildingGroup.CannotClashWith.
+        /// </summary>
+        public static bool CanTick(bool blocked, int disciplines, bool nwfExists, bool rebuildTicked)
+        {
+            return CanRun(blocked, nwfExists, rebuildTicked) && !Grouping.BuildingGroup.CannotClashWith(disciplines);
+        }
+
+        /// <summary>
+        /// The Status column of the Grouping step, F232: blocked with why, one discipline not built, its NWF there and Rebuild
+        /// off, ExistsLine, or ready, so a row whose box is greyed always says why.
+        /// </summary>
+        public static string StatusOf(string blockedReason, int disciplines, bool nwfExists, bool rebuildTicked)
+        {
+            if (blockedReason != null)
+            {
+                return BlockedWord + blockedReason;
+            }
+
+            if (Grouping.BuildingGroup.CannotClashWith(disciplines))
+            {
+                return OneDiscipline;
+            }
+
+            return nwfExists && !rebuildTicked ? ExistsLine : Ready;
         }
 
         /// <summary>The words of the confirmation of a Rebuild, naming the groups it would build again.</summary>
@@ -385,13 +350,19 @@ namespace Federator.Core.Rerun
     /// </summary>
     public static class NwfPageWords
     {
-        public const string Heading = "The weekly work on an NWF that is built. Pick the NWF, see which NWC files changed, tick the steps and press Run. The NWC page builds an NWF once.";
-
-        public const string RecentLabel = "Last used";
-
         public const string ChangedHeading = "NWC files changed since the last run";
 
-        public const string NoNwfPicked = "Pick an NWF to see which NWC files changed.";
+        public const string NoNwfPicked = "Tick one NWF to see which NWC files changed.";
+
+        /// <summary>The changed files list where several NWFs are ticked, F232, Q214.</summary>
+        public static string SeveralNwfsTicked(int ticked)
+        {
+            return ticked.ToString(CultureInfo.InvariantCulture) + " NWFs are ticked. The list of changed NWC files is shown for one NWF at a time.";
+        }
+
+        public const string TickedNwfFolderNotRead = "The NWF folder of the ticked NWF could not be read. The log says why.";
+
+        public const string TickedNwfNoLongerThere = "The ticked NWF is no longer in its NWF folder. Read the Report folder again.";
 
         public const string NoManifest = "No earlier run of this NWF left a list of its NWC files, so what changed is UNKNOWN. The run writes one.";
 

@@ -7,7 +7,8 @@ namespace Federator.Core.Report
     /// accepted reports stays as one setting, ImageOptions.GhostTheOtherItems, off by default. The tool's
     /// picture call draws by Clash Detective's display settings, docs\history\scan.md 5z-ze, and those
     /// are per user. So for one group's picture pass the add-in sets Hide Other to the value asked for,
-    /// on where the box is unticked and off where it is ticked, and puts the user's value back after.
+    /// on where the ghosted look is not asked for and off where it is, ImageOptions.GhostTheOtherItems, which has had no box
+    /// since F232, and puts the user's value back after.
     ///
     /// This holds the rule of one group and its one IMAGES line. The add-in reads Hide Other once a
     /// stretch of the pass takes a picture and hands it to Read, sets it only where SetsIt says so and
@@ -25,12 +26,6 @@ namespace Federator.Core.Report
     /// </summary>
     public sealed class OtherItemsInPictures
     {
-        /// <summary>The tick box beside the photo settings, read off here and never typed into the window.</summary>
-        public const string TickLabel = "Ghost the other items in clash photos";
-
-        /// <summary>The grey line under it. It says asks, since whether the pictures follow is measured by a run.</summary>
-        public const string HelpLine = "Off asks Clash Detective to hide other items, on to show them";
-
         /// <summary>Where a person sets Hide Other by hand in Clash Detective, named where the tool could not put it back.</summary>
         internal const string WhereToSetIt = "Clash Detective, Results, Display Settings, Isolation";
 
@@ -205,7 +200,7 @@ namespace Federator.Core.Report
 
             said += Wanted
                 ? " asked on for the pictures, to hide the other items: "
-                : " asked off for the pictures, to show the other items, since the box \"" + TickLabel + "\" is ticked: ";
+                : " asked off for the pictures, to show the other items, since the ghosted look is asked for: ";
 
             if (!before.HasValue)
             {

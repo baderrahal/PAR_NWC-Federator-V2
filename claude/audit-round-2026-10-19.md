@@ -38,3 +38,29 @@ its root item's box, min to max. A difference is the largest of the nine numbers
 Largest difference 0.000 mm, 0 numbers UNKNOWN, the source file names and units of all 22 pairs the same.
 
 So the tool's append matches the manual Append, and the far models are in the NWC files themselves. No code changed.
+
+## F232, packages first, one route per page
+
+The NWC page has four steps, 1. Packages, 2. Grouping, 3. Outputs and 4. Clash, and the one Run button in the bar under the
+steps. The NWF page has its packages first, a tree of community, package and NWF read off the Report folder, then the
+tolerance, the five step boxes and one Run. Gone: the Source step, step 5 and its Run button, the NWF and NWD folder boxes,
+More, rarely changed, the NWF picker with its File and Folder buttons, the Recent box and the panel on the right, with every
+member and test only they used: the scanned run of the window, the picked NWFs' plan, the list of NWFs last used, the names
+typed over, four picker kinds, and the engine's scanned run constructor and preview. 47 files under src, tests and tools,
+2175 lines added and 4452 taken out.
+
+Proved on copies under C:\NWC-PC-Test\work\smoke232, a parent holding 1B06PS's three NWCs itself and C06 with 1B06BC's five
+and 1B06PG's one, the build ab1c9167: the tree read the parent as community Parent with package Parent itself, Run with
+nothing ticked was refused, the findings under the tree counted 9 files of the ticked packages, step 2 showed 1B06BC and 1B06PS
+ticked and 1B06PG reading One discipline, not built with its box off and greyed, the NWC page ran 2 groups each in its own
+Navisworks, 2 DONE, 1B06PG named left out, then the NWF page read 2 NWFs off the Report folder, ran both each in its own
+Navisworks, 2 DONE. The desktop folder 0 lines differing, Navisworks' settings put back with 0 lines differing.
+
+The reviewer and the breaker read the change. Fixed here: a Report folder that would put the parent's own package inside the
+parent is refused, a ticked NWF gone at Run is named, a row its rule left unticked is no person's untick, a group whose NWF is
+there reads NWF exists. Use the NWF page., the stand-in of the loop builds again, and the window's new words are Core's. Asked:
+Q213 a parent and a folder of its name, Q214 the changed files list and the table on the NWF page, Q215 where the one Run
+button sits. Open as rows F232-R1 to R9, most older than F232: the loop's window driver and two probes name the controls that
+went, one manifest per package Log folder, rebuilt NWFs in dated folders the tree does not show, a run reading the last Read,
+the two groupings that make one discipline groups, the discipline workbooks missing unread files, left out groups in no RESULT
+line, a drive root parent and a wide Report folder, ticks reset by a package ticked again.

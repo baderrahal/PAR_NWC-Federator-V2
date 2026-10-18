@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using Federator.Addin.Engine;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
+using Federator.Core.Findings;
 using Federator.Core.Grouping;
 using Federator.Core.Communities;
 using Federator.Core.Disciplines;
+using Federator.Core.Naming;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -18,25 +21,29 @@ using Federator.Core.Views;
 namespace Federator.Addin.Ui
 {
     /// <summary>
-    /// Many communities at once, F208, Bader's message of 17 Oct 2026. One parent folder, the first level under it the
-    /// communities, every folder below holding NWC files directly one package, a tree of them with a tick box each on the
-    /// NWC page's step 5 and on the NWF page, nothing ticked at the start. The NWC page builds each ticked package in turn
-    /// and the NWF page runs the NWFs each ticked package holds, every output under the package's own report folder. The
-    /// rules and the words are Core's, Federator.Core.Communities, and are tested there. This part reads the disk and the
-    /// controls, and calls the engine.
+    /// The packages, F208, and since F232, Bader's round of 19 Oct 2026, fix 2, the one route of each page. The NWC page's
+    /// step 1. Packages reads the tree off the parent folder, step 2. Grouping shows one row per group of the ticked packages,
+    /// and the one Run button, RunButton in the bar under the steps, runs the ticked groups, each in its own Navisworks. The NWF page reads a tree of
+    /// community, package and NWF off the Report folder and its Run runs the ticked NWFs, each in its own Navisworks. The rules
+    /// and the words are Core's, Federator.Core.Communities, and are tested there. This part reads the disk and the controls,
+    /// and calls the engine.
     /// </summary>
     public partial class FederatorWindow
     {
         private readonly PackagePanel packagePanel = new PackagePanel();
         private PackageTree packageTree;
         private PackageTicks packageTicks;
+        private PackageTree nwfTree;
+        private NwfTicks nwfTicks;
 
-        /// <summary>Called once from the constructor: both panels on the one data, the folders as they were last picked.</summary>
+        /// <summary>Called once from the constructor: both pages on the one data, the folders as they were last picked.</summary>
         private void StartThePackages()
         {
             PackagesPanel.DataContext = packagePanel;
             NwfPackagesPanel.DataContext = packagePanel;
             PackagesStep.Header = PackageWords.StepHeader;
+            OutputsHeading.Text = PackageWords.OutputsHeading;
+            RunNwfPackagesButton.Content = NwfPageWords.Run;
             packagePanel.Parent = folders.LastFor(PickerKind.PackageParent);
             packagePanel.Report = folders.LastFor(PickerKind.PackageReport);
         }
@@ -81,7 +88,7 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// Reads the tree off the parent folder and shows it with nothing ticked, and names it in the log, every community
-        /// and package with its path and what was left out.
+        /// and package with its path and what was left out. The groups of step 2 start empty, since nothing is ticked.
         /// </summary>
         private void ReadThePackages()
         {
@@ -97,9 +104,10 @@ namespace Federator.Addin.Ui
             }
 
             FillTheTree();
+            Regroup(false);
         }
 
-        /// <summary>The lines of both trees, made again from the tree read, each package with its files and its groups.</summary>
+        /// <summary>The lines of the tree, made again from the tree read, each package with its files and its groups.</summary>
         private void FillTheTree()
         {
             packagePanel.Nodes.Clear();
@@ -146,7 +154,7 @@ namespace Federator.Addin.Ui
             }
         }
 
-        /// <summary>The group counts again, when the packages step is shown, since the grouping may have changed since the Read.</summary>
+        /// <summary>The group counts again, when step 1 is shown, since the grouping may have changed since the Read.</summary>
         private void RefreshThePackageDetails()
         {
             if (packageTree == null)
@@ -175,7 +183,14 @@ namespace Federator.Addin.Ui
 
         private void TickIt(PackageNode node, bool on)
         {
-            if (packageTicks != null && !running)
+            // During a run a tick is not taken and nothing is planned again, the line only shows its tick as it stands.
+            if (running)
+            {
+                node.TickMoved();
+                return;
+            }
+
+            if (packageTicks != null)
             {
                 if (node.Package != null)
                 {
@@ -190,6 +205,7 @@ namespace Federator.Addin.Ui
             TheTicksMoved();
         }
 
+        /// <summary>The tree's ticks may have moved: the tree, the line under it and the groups of step 2 follow.</summary>
         private void TheTicksMoved()
         {
             foreach (PackageNode node in packagePanel.Nodes)
@@ -198,6 +214,7 @@ namespace Federator.Addin.Ui
             }
 
             packagePanel.Summary = PackageWords.Summary(packageTree, packageTicks);
+            Regroup(true);
         }
 
         private void OnTickAllPackages(object sender, RoutedEventArgs e)
@@ -219,7 +236,7 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// Why no run of packages can start, or null: no tree read, nothing ticked, or a Report folder the rule refuses.
+        /// Why no run of the NWC page can start, or null: no tree read, nothing ticked, or a Report folder the rule refuses.
         /// Said in the log and the warning before anything is opened.
         /// </summary>
         private string WhyThePackagesCannotRun()
@@ -236,13 +253,11 @@ namespace Federator.Addin.Ui
                 return why;
             }
 
-            return PackageOutput.WhyNot(packageTree.Parent, packagePanel.Report);
+            return PackageOutput.WhyNot(packageTree.Parent, packagePanel.Report, packageTicks.Ticked());
         }
 
-        private bool RefuseThePackages(string what)
+        private bool RefuseThe(string what, string why)
         {
-            string why = WhyThePackagesCannotRun();
-
             if (why == null)
             {
                 return false;
@@ -275,17 +290,225 @@ namespace Federator.Addin.Ui
             }
         }
 
+        // ---------- step 2, the groups of the ticked packages ----------
+
+        /// <summary>
+        /// The rows of step 2, F232: one per group of each ticked package, made by its plan, PackagePlan, with the grouping
+        /// and the names as they stand, a group the grouping blocked and every group of a package the name guard refuses
+        /// blocked with why, and the findings of step 1 over the files of the ticked packages. keepChoices keeps each row's
+        /// tick by its group's label, FR-153, and a Read or another grouping starts every group as its rule allows.
+        /// </summary>
+        private void Regroup(bool keepChoices)
+        {
+            if (GroupsGrid == null)
+            {
+                return;
+            }
+
+            KeptRunTicks runTicks = new KeptRunTicks();
+
+            if (keepChoices)
+            {
+                foreach (GroupRow row in groups)
+                {
+                    // A row its rule left unticked, a group of one discipline or one whose NWF is there, was never a person's untick.
+                    runTicks.Read(row.Label, row.IsBlocked || !row.CanInclude, row.Include);
+                }
+            }
+
+            groups.Clear();
+            runAnchor = null;
+
+            List<BuildingGroup> grouped = new List<BuildingGroup>();
+            int filesFound = 0;
+            int unreadable = 0;
+            GroupingMode mode = ChosenGrouping();
+
+            if (packageTicks != null)
+            {
+                ReadNaming();
+
+                foreach (Package package in packageTicks.Ticked())
+                {
+                    filesFound += package.Files.Count;
+                    PackagePlan plan;
+
+                    try
+                    {
+                        plan = PackagePlan.For(package, Trimmed(packagePanel.Report), mode, settings, naming, internalWorkbook, DateTime.Today);
+                    }
+                    catch (Exception error)
+                    {
+                        log.Failure("grouping the files of " + package.RelativePath, error, "kept going, its groups are not shown");
+                        continue;
+                    }
+
+                    unreadable += plan.Unreadable;
+                    grouped.AddRange(plan.Grouped);
+
+                    foreach (PackageGroup group in plan.Groups)
+                    {
+                        groups.Add(plan.WhyNot == null
+                            ? GroupRow.Usable(group)
+                            : GroupRow.Blocked(package, group.Building, group.Files.Count, group.Disciplines, plan.WhyNot));
+                    }
+
+                    foreach (SkippedBuildingGroup skipped in plan.Skipped)
+                    {
+                        groups.Add(GroupRow.Blocked(package, skipped.Building, skipped.Files.Count, new List<string>(), skipped.Reason));
+                    }
+                }
+            }
+
+            RefreshRunPaths();
+
+            foreach (GroupRow row in groups)
+            {
+                row.Include = runTicks.StartsTicked(row.Label);
+            }
+
+            int blocked = groups.Count(row => row.IsBlocked);
+            ShowGroupingSummary();
+            findings = ScanFindings.From(grouped);
+            ShowFindings(filesFound, filesFound - unreadable, groups.Count - blocked, blocked, mode);
+        }
+
+        /// <summary>
+        /// Which of the workflows each group of step 2 is expected to take, read off whether its NWF is already at the path its
+        /// plan gives it, through Federator.Core.Rerun.RunPath, and whether a matrix is built in. A group whose NWF is there is
+        /// run from the NWF page, unless Rebuild is ticked, F188. A group about to build an NWF beside a file whose name is
+        /// nearly the same says so, F71, each NWF folder listed once.
+        /// </summary>
+        private void RefreshRunPaths()
+        {
+            bool xmlPicked = MatrixIsBuiltIn();
+            Dictionary<string, IList<string>> namesIn = new Dictionary<string, IList<string>>(StringComparer.OrdinalIgnoreCase);
+            int nearby = 0;
+
+            foreach (GroupRow group in groups)
+            {
+                if (group.IsBlocked)
+                {
+                    continue;
+                }
+
+                bool nwfOnDisk;
+                string folder;
+
+                try
+                {
+                    nwfOnDisk = File.Exists(group.NwfPath);
+                    folder = Path.GetDirectoryName(group.NwfPath);
+                }
+                catch (Exception error)
+                {
+                    log.Failure("reading whether the NWF of " + group.Label + " is there", error, "its Run as reads UNKNOWN");
+                    group.RunAs = RunPath.Unknown;
+                    group.NearbyNwf = string.Empty;
+                    continue;
+                }
+
+                group.RunAs = RunPath.Expected(nwfOnDisk, xmlPicked);
+                group.NwfExists = nwfOnDisk;
+                group.RebuildAllowed = RebuildExisting.IsChecked == true;
+                group.AllowedMoved();
+
+                IList<string> names;
+
+                if (!namesIn.TryGetValue(folder ?? string.Empty, out names))
+                {
+                    names = NwfNamesIn(folder);
+                    namesIn[folder ?? string.Empty] = names;
+                }
+
+                string note = nwfOnDisk
+                    ? string.Empty
+                    : SimilarNames.Note(SimilarNames.ClosestIn(group.NwfName, names, settings));
+
+                group.NearbyNwf = note;
+
+                if (note.Length > 0)
+                {
+                    nearby++;
+                }
+            }
+
+            ShowNearbyNwfLine(nearby);
+        }
+
+        /// <summary>The line under the groups of step 2: the grouping, the groups, the blocked and how many are ticked.</summary>
+        private void ShowGroupingSummary()
+        {
+            int blocked = groups.Count(row => row.IsBlocked);
+            int ready = groups.Count - blocked;
+            int ticked = groups.Count(row => row.Include);
+
+            GroupingSummary.Text = GroupingModes.Describe(ChosenGrouping()) + ". "
+                + ready + (ready == 1 ? " group, " : " groups, ") + blocked + " blocked, " + ticked + " ticked to run.";
+        }
+
+        /// <summary>
+        /// The findings panel, under the tree of step 1 since F232, over the NWC files of the ticked packages. Nothing here
+        /// blocks a run or unticks anything. It is information and the decision stays with the person reading it.
+        /// </summary>
+        private void ShowFindings(int filesFound, int filesReadable, int ready, int blocked, GroupingMode mode)
+        {
+            counts = new ScanCounts();
+            counts.FilesFound = filesFound;
+            counts.FilesReadable = filesReadable;
+            counts.GroupingDescription = GroupingModes.Describe(mode);
+            counts.Groups = ready;
+            counts.BlockedGroups = blocked;
+            counts.Count(AllFindings());
+
+            FindingsHeading.Text = PackageWords.FindingsHeading(counts.TotalFindings);
+
+            List<string> lines = new List<string>(counts.Lines());
+            lines.Add(string.Empty);
+
+            foreach (ScanFinding finding in AllFindings())
+            {
+                lines.Add(finding.Label + "   " + finding.Sentence);
+
+                foreach (string file in finding.Files)
+                {
+                    lines.Add("      " + file);
+                }
+
+                lines.Add(string.Empty);
+            }
+
+            lines.Add(PackageWords.SourceFindingsInEachGroupLog);
+
+            FindingsBox.Text = string.Join(Environment.NewLine, lines.ToArray());
+        }
+
+        /// <summary>The row of step 2 a group of a plan was shown on, by its label, or null.</summary>
+        private GroupRow RowFor(PackageGroup group)
+        {
+            foreach (GroupRow row in groups)
+            {
+                if (string.Equals(row.Label, group.Label, StringComparison.Ordinal))
+                {
+                    return row;
+                }
+            }
+
+            return null;
+        }
+
         // ---------- the NWC page's route ----------
 
         /// <summary>
-        /// Builds every ticked package in turn, F208: each package's files grouped and named by steps 2 and 3, each group's
-        /// NWF and NWD in the package's own folders and its logs and reports in the package's Log folder, a group whose NWF
-        /// is already there left to the NWF page unless Rebuild is ticked. A package that cannot run is named and the others
-        /// run. Since F214 each package runs in its own Navisworks with its own engine, and one RESULT joins them.
+        /// The one Run button of the NWC page, RunButton in the bar under the steps, which Bader's words call the one at the top, Q215, F232: every group of the ticked packages that is ticked on step 2, each group's NWF and
+        /// NWD in the package's own folders and its logs and reports in the package's Log folder, a group whose NWF is already
+        /// there left to the NWF page unless Rebuild is ticked, a group of one discipline not built. A package that cannot run
+        /// is named and the others run. Each group runs in its own Navisworks with its own engine, F214 and F222, and one
+        /// RESULT joins them.
         /// </summary>
-        private void OnRunPackages(object sender, RoutedEventArgs e)
+        private void OnRun(object sender, RoutedEventArgs e)
         {
-            if (running || RefuseThePackages("the run of packages"))
+            if (running || RefuseThe("the run of packages", WhyThePackagesCannotRun()))
             {
                 return;
             }
@@ -297,6 +520,9 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // The groups again with the names, the grouping and the Report folder as they stand, each tick kept.
+            Regroup(true);
+
             ReadNaming();
             GroupingMode mode = ChosenGrouping();
             string report = Trimmed(packagePanel.Report);
@@ -307,12 +533,27 @@ namespace Federator.Addin.Ui
             List<Package> runnable = run.Runnable;
             List<string> planLines = new List<string>();
             int tickedFiles = 0;
+            bool rebuild = RebuildExisting.IsChecked == true;
 
             foreach (Package package in packageTicks.Ticked())
             {
                 tally.Expect(package);
                 tickedFiles += package.Files.Count;
-                PackagePlan plan = PackagePlan.For(package, report, mode, settings, naming, internalWorkbook, DateTime.Today);
+                PackagePlan plan;
+
+                try
+                {
+                    plan = PackagePlan.For(package, report, mode, settings, naming, internalWorkbook, DateTime.Today);
+                }
+                catch (Exception error)
+                {
+                    string why = "its files could not be grouped, " + error.GetType().Name + ": " + error.Message;
+                    log.Failure("grouping the files of " + package.RelativePath, error, "its groups are not run, the other packages run");
+                    tally.NotRun(package, why);
+                    planLines.Add(package.RelativePath + "  NOT RUN  " + why);
+                    continue;
+                }
+
                 run.Plans[package.RelativePath] = plan;
 
                 foreach (string line in plan.NotRun)
@@ -332,9 +573,25 @@ namespace Federator.Addin.Ui
 
                 foreach (PackageGroup group in plan.Groups)
                 {
-                    if (!NwcPageRule.CanRun(false, File.Exists(group.NwfPath), RebuildExisting.IsChecked == true))
+                    bool exists = File.Exists(group.NwfPath);
+
+                    if (!NwcPageRule.CanRun(false, exists, rebuild))
                     {
                         planLines.Add(group.Label + "  left out, " + NwcPageRule.ExistsLine + " " + group.NwfPath);
+                        continue;
+                    }
+
+                    if (BuildingGroup.CannotClashWith(group.Disciplines.Count))
+                    {
+                        planLines.Add(group.Label + "  left out, " + NwcPageRule.OneDiscipline);
+                        continue;
+                    }
+
+                    GroupRow row = RowFor(group);
+
+                    if (row != null && !row.Include)
+                    {
+                        planLines.Add(group.Label + "  left out, " + PackageWords.UntickedOnStep2);
                         continue;
                     }
 
@@ -352,7 +609,7 @@ namespace Federator.Addin.Ui
 
                 if (jobs.Count == before)
                 {
-                    tally.NotRun(package, "every group of it has an NWF already. " + NwcPageRule.ExistsLine);
+                    tally.NotRun(package, PackageWords.NoGroupOfItRuns);
                 }
                 else
                 {
@@ -363,6 +620,7 @@ namespace Federator.Addin.Ui
             log.Block(PackageWords.TreeTitle, packageTree.Lines());
             log.Block(PackageWords.ChosenTitle, packageTicks.Lines());
             log.Block("PACKAGE GROUPS", planLines);
+            log.Block(RunLog.FindingsSectionTitle, findings.Lines());
 
             // F222, Q211. A group's own Navisworks runs its one group, the one whose NWF the order names, and no other. Where its
             // package plans no group at all the refusal below gives the real reason.
@@ -399,7 +657,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            if (!ConfirmClear(labels, tolerance, true))
+            if (!ConfirmClear(labels, tolerance))
             {
                 Log("Run cancelled before anything was cleared.");
                 return;
@@ -407,7 +665,7 @@ namespace Federator.Addin.Ui
 
             log.RunSettings(
                 packageTree.Parent,
-                false,
+                true,
                 "the NWF folder of each package under " + report,
                 "the NWD folder of each package under " + report,
                 packageTree.FileCount,
@@ -437,11 +695,11 @@ namespace Federator.Addin.Ui
                     units.Add(new PackageRunUnit(job.Package, job.NwfPath, job.Building));
                 }
 
-                RunPackagesInFreshStarts(PackageRunOrder.NwcPage, run, units);
+                RunPackagesInFreshStarts(PackageRunOrder.NwcPage, packageTree.Parent, run, units);
                 return;
             }
 
-            RunJobs(jobs, null, null, tolerance, run);
+            RunJobs(jobs, tolerance, run);
         }
 
         /// <summary>
@@ -483,9 +741,9 @@ namespace Federator.Addin.Ui
                 try
                 {
                     PackagePlan plan;
-                    IList<DisciplineGroup> groups = PackageRunFacts.GroupsOf(
+                    IList<DisciplineGroup> groupsOfIt = PackageRunFacts.GroupsOf(
                         package, run.Plans.TryGetValue(package.RelativePath, out plan) ? plan : null, units, results, whys);
-                    WriteOnePackagesReports(package, groups, run.Report, run.Disciplines);
+                    WriteOnePackagesReports(package, groupsOfIt, run.Report, run.Disciplines);
                 }
                 catch (Exception error)
                 {
@@ -499,11 +757,11 @@ namespace Federator.Addin.Ui
         /// Each NWC's date off the disk. Each workbook under a name nothing in the folder holds, ReportPaths.FreeFilePath, its
         /// size read back by the log and its lines read back off the file.
         /// </summary>
-        private void WriteOnePackagesReports(Package package, IList<DisciplineGroup> groups, string report, DisciplineReportSettings disciplines)
+        private void WriteOnePackagesReports(Package package, IList<DisciplineGroup> groupsOfIt, string report, DisciplineReportSettings disciplines)
         {
             List<FileDate> dates = new List<FileDate>();
 
-            foreach (DisciplineGroup group in groups)
+            foreach (DisciplineGroup group in groupsOfIt)
             {
                 foreach (string file in group.Files)
                 {
@@ -518,7 +776,7 @@ namespace Federator.Addin.Ui
                 }
             }
 
-            DisciplineReport made = DisciplineReport.For(package.Community, package.RelativePath, groups, dates, DateTime.Now, disciplines, settings);
+            DisciplineReport made = DisciplineReport.For(package.Community, package.RelativePath, groupsOfIt, dates, DateTime.Now, disciplines, settings);
             log.Block("DISCIPLINE REPORT " + package.RelativePath, made.Lines());
             string folder = PackageOutput.FolderFor(report, package);
 
@@ -563,16 +821,194 @@ namespace Federator.Addin.Ui
             }
         }
 
+        // ---------- the NWF page's tree ----------
+
+        private void OnBrowseNwfReport(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            string picked = PickFolder(PackageWords.PickTheReport, StartFor(PickerKind.PackageReport, packagePanel.Report));
+
+            if (picked != null)
+            {
+                packagePanel.Report = picked;
+                ReadTheNwfs();
+            }
+        }
+
+        private void OnReadNwfPackages(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            ReadTheNwfs();
+        }
+
+        /// <summary>
+        /// Reads the NWF page's tree off the Report folder, F232, shows it with nothing ticked, and names it in the log,
+        /// every community, package and NWF and what was left out.
+        /// </summary>
+        private void ReadTheNwfs()
+        {
+            string report = Trimmed(packagePanel.Report);
+            string refused = PackageOutput.WhyNot(null, report);
+
+            // F232, the breaker's reading: a Report folder that is not a full path is refused before any folder is walked.
+            if (refused != null)
+            {
+                log.Line(PackageWords.Prefix + " the NWF tree was not read. " + refused);
+                Warn(refused);
+                return;
+            }
+
+            nwfTree = PackageTree.ReadNwfs(report);
+            nwfTicks = new NwfTicks(nwfTree);
+
+            log.Block(PackageWords.NwfTreeTitle, nwfTree.Lines());
+
+            if (nwfTree.WasRead)
+            {
+                RememberFolder(PickerKind.PackageReport, report);
+            }
+
+            FillTheNwfTree();
+            ShowTheNwfPreview();
+        }
+
+        private void FillTheNwfTree()
+        {
+            packagePanel.NwfNodes.Clear();
+
+            if (nwfTree == null)
+            {
+                packagePanel.NwfSummary = PackageWords.NwfNotReadYet;
+                return;
+            }
+
+            foreach (Community community in nwfTree.Communities)
+            {
+                PackageNode node = PackageNode.ForCommunity(
+                    community,
+                    PackageWords.CommunityDetail(community.Packages.Count, community.FileCount, nwfTree.Extension),
+                    NwfTickOf,
+                    NwfTickIt);
+
+                foreach (Package package in community.Packages)
+                {
+                    PackageNode line = PackageNode.ForPackage(package, PackageWords.FilesWord(package.Files.Count, nwfTree.Extension), NwfTickOf, NwfTickIt);
+
+                    foreach (string nwf in package.Files)
+                    {
+                        line.Children.Add(PackageNode.ForNwf(nwf, string.Empty, NwfTickOf, NwfTickIt));
+                    }
+
+                    node.Children.Add(line);
+                }
+
+                packagePanel.NwfNodes.Add(node);
+            }
+
+            packagePanel.NwfSummary = PackageWords.NwfSummary(nwfTree, nwfTicks);
+        }
+
+        private bool? NwfTickOf(PackageNode node)
+        {
+            if (nwfTicks == null)
+            {
+                return false;
+            }
+
+            if (node.Nwf != null)
+            {
+                return nwfTicks.IsTicked(node.Nwf);
+            }
+
+            return node.Package != null ? nwfTicks.StateOf(node.Package) : nwfTicks.StateOf(node.Community);
+        }
+
+        private void NwfTickIt(PackageNode node, bool on)
+        {
+            if (running)
+            {
+                node.TickMoved();
+                return;
+            }
+
+            if (nwfTicks != null)
+            {
+                if (node.Nwf != null)
+                {
+                    nwfTicks.Tick(node.Nwf, on);
+                }
+                else if (node.Package != null)
+                {
+                    nwfTicks.TickPackage(node.Package, on);
+                }
+                else
+                {
+                    nwfTicks.TickCommunity(node.Community, on);
+                }
+            }
+
+            TheNwfTicksMoved();
+        }
+
+        private void TheNwfTicksMoved()
+        {
+            foreach (PackageNode node in packagePanel.NwfNodes)
+            {
+                node.TickMoved();
+            }
+
+            packagePanel.NwfSummary = PackageWords.NwfSummary(nwfTree, nwfTicks);
+            ShowTheNwfPreview();
+        }
+
+        private void OnTickAllNwfs(object sender, RoutedEventArgs e)
+        {
+            if (nwfTicks != null && !running)
+            {
+                nwfTicks.TickAll();
+                TheNwfTicksMoved();
+            }
+        }
+
+        private void OnClearAllNwfs(object sender, RoutedEventArgs e)
+        {
+            if (nwfTicks != null && !running)
+            {
+                nwfTicks.ClearAll();
+                TheNwfTicksMoved();
+            }
+        }
+
+        /// <summary>Why no run of the NWF page can start, or null: no tree read, or no NWF ticked.</summary>
+        private string WhyTheNwfsCannotRun()
+        {
+            return nwfTicks == null ? PackageWords.NwfNotReadYet : nwfTicks.WhyNoRun();
+        }
+
+        /// <summary>The ticked NWFs of one package of the NWF tree, each with its NWD and Log folder, PackageNwfs.</summary>
+        private List<PackageNwf> TickedNwfsOf(string report, Package package)
+        {
+            return new List<PackageNwf>(PackageNwfs.For(report, package, NwfPickDisk.Real)).FindAll(nwf => nwfTicks.IsTicked(nwf.NwfPath));
+        }
+
         // ---------- the NWF page's route ----------
 
         /// <summary>
-        /// Runs the NWFs of every ticked package, F208: each NWF in the NWF folder under the package's report folder, opened
-        /// and run as a picked NWF is, its NWD and its logs written into the package's own folders. A ticked package holding
-        /// no NWF there is named and the others run. Since F214 each package runs in its own Navisworks, and one RESULT joins them.
+        /// The NWF page's Run, F208 and F232: every ticked NWF of the tree read off the Report folder, opened and run as a picked
+        /// NWF is, its NWD and its logs written into its package's own folders. Each NWF runs in its own Navisworks, F214 and
+        /// F222, and one RESULT joins them.
         /// </summary>
         private void OnRunNwfPackages(object sender, RoutedEventArgs e)
         {
-            if (running || RefuseThePackages("the run of packages on the NWF page"))
+            if (running || RefuseThe("the run of packages on the NWF page", WhyTheNwfsCannotRun()))
             {
                 return;
             }
@@ -587,7 +1023,7 @@ namespace Federator.Addin.Ui
             ReportOptions options = ReportsWanted(tolerance);
             NwfPageSteps nwfSteps = TheNwfSteps();
             nwfSteps.Apply(options);
-            string report = Trimmed(packagePanel.Report);
+            string report = nwfTree.Parent;
             PackageRun run = new PackageRun(report, options.Disciplines);
             PackageTally tally = run.Tally;
             List<string> nwfs = new List<string>();
@@ -595,14 +1031,14 @@ namespace Federator.Addin.Ui
             List<string> lines = new List<string>();
             int packagesWithNwfs = 0;
 
-            foreach (Package package in packageTicks.Ticked())
+            foreach (Package package in nwfTicks.PackagesTicked())
             {
                 tally.Expect(package);
-                IList<PackageNwf> found;
+                List<PackageNwf> found;
 
                 try
                 {
-                    found = PackageNwfs.For(report, package, NwfPickDisk.Real);
+                    found = TickedNwfsOf(report, package);
                 }
                 catch (Exception error)
                 {
@@ -610,6 +1046,17 @@ namespace Federator.Addin.Ui
                     tally.NotRun(package, why);
                     lines.Add(package.RelativePath + "  NOT RUN  " + why);
                     continue;
+                }
+
+                // F232, the breaker's reading: a ticked NWF that has gone since the Read is named and counted, never dropped in silence.
+                foreach (string ticked in package.Files)
+                {
+                    if (nwfTicks.IsTicked(ticked) && !found.Exists(nwf => string.Equals(nwf.NwfPath, ticked, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        string gone = PackageWords.TickedNwfGone(ticked);
+                        tally.NotRun(package, Path.GetFileNameWithoutExtension(ticked), gone);
+                        lines.Add(package.RelativePath + "  NOT RUN  " + gone);
+                    }
                 }
 
                 if (found.Count == 0)
@@ -631,8 +1078,8 @@ namespace Federator.Addin.Ui
                 }
             }
 
-            log.Block(PackageWords.TreeTitle, packageTree.Lines());
-            log.Block(PackageWords.ChosenTitle, packageTicks.Lines());
+            log.Block(PackageWords.NwfTreeTitle, nwfTree.Lines());
+            log.Block(PackageWords.NwfChosenTitle, nwfTicks.Lines());
             log.Block("PACKAGE NWFS", lines);
 
             // F222, Q211. A group's own Navisworks runs its one NWF, the one the order names, and no other. Where its package holds
@@ -652,15 +1099,14 @@ namespace Federator.Addin.Ui
 
             if (nwfs.Count == 0)
             {
-                log.Line(PackageWords.Prefix + " the run of packages on the NWF page refused before starting. No ticked package holds an NWF, each is named above");
-                Warn("No ticked package holds an NWF under the Report folder. Run the NWC page on them first.");
+                log.Line(PackageWords.Prefix + " the run of packages on the NWF page refused before starting. No ticked NWF is there, each package is named above");
+                Warn("No ticked NWF is there under the Report folder. Read the Report folder again.");
                 return;
             }
 
-            // F214. Nothing is asked about the document open here: since F214 every package opens its NWFs in its own fresh
-            // Navisworks, so what is open in this one is never touched.
-            // F217, Bader's F-R5. The old pictures counted across every NWF of the run, each in its own package's Clash
-            // report folder, where they were UNKNOWN.
+            // F214. Nothing is asked about the document open here: since F214 every NWF opens in its own fresh Navisworks, so
+            // what is open in this one is never touched. F217, Bader's F-R5. The old pictures counted across every NWF of the
+            // run, each in its own package's Clash report folder.
             List<string> pictureFolders = new List<string>();
 
             foreach (PackageNwf nwf in inPackages)
@@ -714,7 +1160,7 @@ namespace Federator.Addin.Ui
                     units.Add(new PackageRunUnit(nwf.Package.RelativePath, nwf.NwfPath, Path.GetFileNameWithoutExtension(nwf.NwfPath)));
                 }
 
-                RunPackagesInFreshStarts(PackageRunOrder.NwfPage, run, units);
+                RunPackagesInFreshStarts(PackageRunOrder.NwfPage, report, run, units);
                 return;
             }
 
@@ -732,9 +1178,8 @@ namespace Federator.Addin.Ui
                 autoSave = new AutoSaveOff(log.Line);
                 log.Block("RUN SETTINGS", new List<string>
                 {
-                    "parent folder    : " + packageTree.Parent,
                     "report folder    : " + report,
-                    "NWFs             : " + nwfs.Count + " in " + packagesWithNwfs + " of " + packageTicks.Ticked().Count + " ticked packages",
+                    "NWFs             : " + nwfs.Count + " in " + packagesWithNwfs + " of " + nwfTicks.PackagesTicked().Count + " packages with an NWF ticked",
                     "steps            : " + nwfSteps.Words()
                 });
                 SayTheRunsChoices(options.Tolerance);
@@ -776,7 +1221,7 @@ namespace Federator.Addin.Ui
                     autoSave.Dispose();
                 }
 
-                WriteTheResult(engine, null, tally.Lines());
+                WriteTheResult(engine, tally.Lines());
 
                 // F214. The NWFs this run ended with, those before a throw among them, for a package's own result.
                 lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
@@ -786,12 +1231,10 @@ namespace Federator.Addin.Ui
             }
         }
 
-        /// <summary>Every button that starts a run, off while one goes and on after, the packages' among them.</summary>
+        /// <summary>The two buttons that start a run of a page, off while one goes and on after.</summary>
         private void SetTheRunButtons(bool on)
         {
             RunButton.IsEnabled = on;
-            RunPickedNwfsButton.IsEnabled = on;
-            RunPackagesButton.IsEnabled = on;
             RunNwfPackagesButton.IsEnabled = on;
         }
     }

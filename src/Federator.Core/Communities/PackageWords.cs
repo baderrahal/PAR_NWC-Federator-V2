@@ -14,14 +14,44 @@ namespace Federator.Core.Communities
 
         public const string ChosenTitle = "PACKAGES TICKED";
 
-        public const string StepHeader = "5. Packages";
+        public const string StepHeader = "1. Packages";
 
-        public const string StepHeading = "Many communities at once. Pick the parent folder, whose first level holds the "
-            + "communities, and a Report folder outside it. Every folder below a community that holds NWC files directly "
-            + "is one package. The steps 2 to 4 apply to each. Nothing is ticked until you tick it.";
+        public const string StepHeading = "Pick the parent folder, whose first level holds the communities, and a Report folder "
+            + "outside it, and press Read. Every folder below a community that holds NWC files directly is one package, and a "
+            + "parent folder that holds NWC files itself is one package named after it. Nothing is ticked until you tick it. "
+            + "The steps 2. Grouping, 3. Outputs and 4. Clash apply to each ticked package. The findings below read the NWC "
+            + "files of the ticked packages.";
 
-        public const string NwfPageHeading = "Many communities at once, the tree of the NWC page. Each ticked package runs "
-            + "the NWFs in the NWF folder under its report folder.";
+        /// <summary>The heading of step 3. Outputs, F232: the naming boxes and the logo only, and where every output goes.</summary>
+        public const string OutputsHeading = "The names of the NWF, the NWD and the workbook of each group, and the logo of the "
+            + "report page. The name is project, originator, building, level, discipline, type, number. Every output goes under "
+            + "the Report folder at the package's path from the parent folder, in its NWF, NWD, Log and Clash report folders.";
+
+        /// <summary>The heading of the findings under the tree of step 1, F232, with how many things are worth a look.</summary>
+        public static string FindingsHeading(int worthALook)
+        {
+            return worthALook == 0
+                ? "What the NWC files of the ticked packages show"
+                : "What the NWC files of the ticked packages show, including " + Count(worthALook, "thing", "things")
+                    + " worth a look. None of it stops a run.";
+        }
+
+        /// <summary>
+        /// The last line of the findings, F232: since every group runs in its own Navisworks, the comparison of each NWC with the
+        /// Revit model it was published from is made there, and the window a person runs never holds it.
+        /// </summary>
+        public const string SourceFindingsInEachGroupLog = "The NWC files are compared against the Revit models they were published "
+            + "from in each group's own Navisworks, and each group's log names what it found under SOURCE FINDINGS.";
+
+        /// <summary>Why a group of a ticked package is left out of the run, F232: its box on step 2 is unticked.</summary>
+        public const string UntickedOnStep2 = "unticked on 2. Grouping";
+
+        /// <summary>Why a ticked package runs nothing, F232, each of its groups named with why in the PACKAGE GROUPS block.</summary>
+        public const string NoGroupOfItRuns = "no group of it runs, each is named with why in the PACKAGE GROUPS block";
+
+        /// <summary>The heading of the NWF page's packages, F232: the tree is read off the Report folder alone.</summary>
+        public const string NwfPageHeading = "Packages. Pick the Report folder the NWC page wrote into and press Read. Tick a "
+            + "community, a package or one NWF. Each ticked NWF runs in its own Navisworks.";
 
         public const string ParentLabel = "Parent folder";
 
@@ -33,8 +63,6 @@ namespace Federator.Core.Communities
 
         public const string ClearAllButton = "Clear all";
 
-        public const string RunButton = "Run ticked packages";
-
         public const string ReportHelp = "Each package writes under the same path, such as Report\\C06\\Infrastructure.";
 
         public const string PickTheParent = "Pick the parent folder first, the folder whose first level holds the communities.";
@@ -44,6 +72,18 @@ namespace Federator.Core.Communities
         public const string NothingTicked = "Nothing is ticked. Tick a community or a package first.";
 
         public const string NotReadYet = "Pick the parent folder and press Read.";
+
+        /// <summary>The line under the NWF page's tree before its Report folder is read, F232.</summary>
+        public const string NwfNotReadYet = "Pick the Report folder and press Read.";
+
+        /// <summary>The NWF page's refusal while no NWF is ticked, F232.</summary>
+        public const string NoNwfTicked = "Nothing is ticked. Tick a community, a package or an NWF first.";
+
+        public const string NwfTreeTitle = "NWF TREE";
+
+        public const string NwfChosenTitle = "NWFS TICKED";
+
+        public const string ReportWouldNotReadForALabel = "The Report folder could not be read. The log says why.";
 
         public const string TreeWouldNotReadForALabel = "The parent folder could not be read. The log says why.";
 
@@ -60,9 +100,24 @@ namespace Federator.Core.Communities
             return "The parent folder " + parent + " could not be read, " + Or(said, "UNKNOWN why");
         }
 
-        public static string InTheParentItself(int count, string extension)
+        /// <summary>
+        /// F232. The parent's own files would be a package named after it, and a folder under it carries that name too, so
+        /// the two would be one community twice. The files are left out and said, Q213.
+        /// </summary>
+        public static string ParentItselfNamedTwice(int count, string extension, string name)
         {
-            return FilesWord(count, extension) + " sit in the parent folder itself, in no community, so they are in no package";
+            return FilesWord(count, extension) + " sit in the parent folder itself, which would be the package " + name
+                + ", and a folder under it carries that name too, so they are in no package";
+        }
+
+        public static string ReportNotThere(string report)
+        {
+            return "The Report folder is not there: " + report;
+        }
+
+        public static string ReportWouldNotRead(string report, string said)
+        {
+            return "The Report folder " + report + " could not be read, " + Or(said, "UNKNOWN why");
         }
 
         public static string LinkNotFollowed(string path)
@@ -119,6 +174,34 @@ namespace Federator.Core.Communities
                 + FilesWord(tree.FileCount, tree.Extension) + ". "
                 + Count(ticked, "package", "packages") + " ticked."
                 + (tree.LeftOut.Count > 0 ? " " + Count(tree.LeftOut.Count, "thing", "things") + " left out, the log names each." : string.Empty);
+        }
+
+        /// <summary>The one line under the NWF page's tree, F232: what was read off the Report folder and how many NWFs are ticked.</summary>
+        public static string NwfSummary(PackageTree tree, NwfTicks ticks)
+        {
+            if (tree == null)
+            {
+                return NwfNotReadYet;
+            }
+
+            if (!tree.WasRead)
+            {
+                return tree.WhyNoTreeForALabel;
+            }
+
+            int ticked = ticks == null ? 0 : ticks.Ticked().Count;
+
+            return Count(tree.Communities.Count, "community", "communities") + ", "
+                + Count(tree.Packages().Count, "package", "packages") + ", "
+                + FilesWord(tree.FileCount, tree.Extension) + ". "
+                + FilesWord(ticked, tree.Extension) + " ticked."
+                + (tree.LeftOut.Count > 0 ? " " + Count(tree.LeftOut.Count, "thing", "things") + " left out, the log names each." : string.Empty);
+        }
+
+        /// <summary>The NWF page's line for an NWF ticked in the tree that is no longer in its NWF folder at Run, F232.</summary>
+        public static string TickedNwfGone(string nwf)
+        {
+            return nwf + " was ticked and is no longer in its NWF folder, so it was not run. Read the Report folder again";
         }
 
         /// <summary>The NWF page's line for a ticked package with no NWF in its NWF folder.</summary>

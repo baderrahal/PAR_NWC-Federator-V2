@@ -218,32 +218,9 @@ namespace Federator.Addin.Engine
         private string xmlFingerprint;
 
         /// <summary>
-        /// For a scanned run. The exchange document is whatever was picked in the Clash
-        /// step, read once. It can hold sets, tests, or both, and any of the three is a
-        /// normal case. Null when nothing was picked, and then no set is built and no test
-        /// is created. The Log folder, where the logs and the reports go, is worked out once,
-        /// from the NWF and the NWD folders, ReportPaths.LogFolder, so every group in the run
-        /// writes into the same place. The team map is the run's, TeamMapMemory.ForRun.
-        /// </summary>
-        public FederationEngine(
-            Action<string> progress,
-            RunLog log,
-            ExchangeDocument exchange,
-            TeamMap teams,
-            ReportOptions reports,
-            string nwfFolder,
-            string nwdFolder)
-            : this(progress, log, exchange, teams, reports)
-        {
-            this.reportFolder = string.IsNullOrEmpty(nwfFolder)
-                ? null
-                : this.reports.LogFolderFor(nwfFolder, nwdFolder);
-            NoteTheLogFolder(this.reportFolder);
-        }
-
-        /// <summary>
-        /// For the open file and for the two hand buttons on the Clash step. No folder is
-        /// handed in, because the report folder is read off the open file in
+        /// For every run, F232: a group of a package writes into the Log folder its job carries,
+        /// and for the open file and the two hand buttons on the Clash step no folder is
+        /// handed in either, because the report folder is read off the open file in
         /// RunOpenDocument through OpenDocumentJob.ReportFolder, the same rule the window
         /// uses for its line, and the hand buttons write no file at all. Handing a folder
         /// in here is what once wrote to Clash Reports\Clash Reports: the window passed the
@@ -578,16 +555,16 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Works through the jobs in order. Each group's NWF and NWD are written before
-        /// the next group starts, so a failure part way through keeps everything already
-        /// written.
-        /// </summary>
-        /// <summary>
         /// The groups of the last Run or RunPickedNwfs, the list itself as each group is added, F214, so a package's own
         /// Navisworks whose run threw part way still says how the groups before the throw ended. Null before either runs.
         /// </summary>
         public IList<JobOutcome> OutcomesSoFar { get; private set; }
 
+        /// <summary>
+        /// Works through the jobs in order. Each group's NWF and NWD are written before
+        /// the next group starts, so a failure part way through keeps everything already
+        /// written.
+        /// </summary>
         public IList<JobOutcome> Run(IList<FederationJob> jobs)
         {
             if (jobs == null)
@@ -790,24 +767,9 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The picked NWFs of the NWF page, F129 and F188, Bader's request 4 under Q112, one after
-        /// another, each opened where it sits and then run by the open file run's route,
-        /// RunAnOpenFile, so every rule of that route applies to each: the checks before
-        /// anything, the names off the file, nothing appended and nothing cleared, the tests of
-        /// the XML where one is picked and otherwise the tests saved inside, the workbook, the
-        /// NWD, and the NWF looked at once more. Each is one group in RESULT. Which NWFs the
-        /// pick gives and whether two would write one file is Federator.Core.Rerun.NwfPick,
-        /// decided before this is called.
-        /// </summary>
-        public IList<JobOutcome> RunPickedNwfs(IList<string> nwfs)
-        {
-            return RunPickedNwfs(nwfs, null);
-        }
-
-        /// <summary>
         /// The NWFs of ticked packages, F208, each run as a picked NWF is, its package named on its GROUP lines and its NWD
         /// and its logs written into the package's own folders, PackageNwfs. inPackages is the place of each NWF in the
-        /// order of nwfs, or null for a pick, where each NWF runs beside its file or where the run that built it wrote.
+        /// order of nwfs, never null since F232 took the picker out.
         /// </summary>
         public IList<JobOutcome> RunPickedNwfs(IList<string> nwfs, IList<PackageNwf> inPackages)
         {
@@ -816,12 +778,17 @@ namespace Federator.Addin.Engine
                 throw new ArgumentNullException("nwfs");
             }
 
-            if (inPackages != null && inPackages.Count != nwfs.Count)
+            if (inPackages == null)
+            {
+                throw new ArgumentNullException("inPackages");
+            }
+
+            if (inPackages.Count != nwfs.Count)
             {
                 throw new ArgumentException("one place for each NWF, in the same order", "inPackages");
             }
 
-            packagesRun = inPackages != null;
+            packagesRun = true;
 
             // One tally for this run, its count the picked NWFs, as Run makes one for a scan.
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
@@ -840,7 +807,7 @@ namespace Federator.Addin.Engine
             {
                 for (int i = 0; i < nwfs.Count; i++)
                 {
-                    outcomes.Add(RunAnOpenFile(nwfs[i], i + 1, nwfs.Count, true, summaries, inPackages == null ? null : inPackages[i]));
+                    outcomes.Add(RunAnOpenFile(nwfs[i], i + 1, nwfs.Count, true, summaries, inPackages[i]));
 
                     if (StopsTheRunAfter(i + 1, nwfs.Count))
                     {
@@ -2708,128 +2675,6 @@ namespace Federator.Addin.Engine
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// The label each group will take, worked out by opening each NWF that is on disk
-        /// and comparing its file list with the scan, BEFORE the confirm dialog, so the
-        /// dialog can count the Rebuilt groups and the list can show them. The window only
-        /// calls this when nothing open would be lost, because opening an NWF replaces the
-        /// open document and the person has not yet said yes.
-        ///
-        /// Every NWF is opened again by Decide in the run itself, and that is the read
-        /// that counts. This changes what the person is told and nothing else, so nothing
-        /// here records a Revit source or writes a holds line. A group that will not open
-        /// reads Unknown here and the run decides.
-        /// </summary>
-        public static IList<string> PreviewRunPaths(
-            IList<FederationJob> jobs, bool xmlPicked, RunLog log, Action<string> progress)
-        {
-            if (jobs == null)
-            {
-                throw new ArgumentNullException("jobs");
-            }
-
-            List<string> labels = new List<string>();
-            Stopwatch clock = Stopwatch.StartNew();
-            int opened = 0;
-
-            for (int i = 0; i < jobs.Count; i++)
-            {
-                FederationJob job = jobs[i];
-                string label;
-
-                try
-                {
-                    if (!File.Exists(job.NwfPath))
-                    {
-                        label = RunPath.FirstRun;
-                    }
-                    else
-                    {
-                        if (progress != null)
-                        {
-                            progress("Checking NWF " + (i + 1) + " of " + jobs.Count + ": " + job.Building);
-                        }
-
-                        Document document = NavisworksApplication.ActiveDocument;
-
-                        ModelLoadWait wait;
-
-                        if (document == null || !OpenAndWaitForTheModels(document, job.NwfPath, log, out wait))
-                        {
-                            label = RunPath.Unknown;
-                        }
-                        else if (wait.GaveUp && wait.LastCount == 0)
-                        {
-                            // F74. The same refusal the run makes, read through the same
-                            // two rules, or the confirm dialog says Rebuilt about a
-                            // healthy NWF.
-                            opened++;
-                            label = RunPath.AfterOpening(RerunDecision.Refused, xmlPicked);
-                        }
-                        else
-                        {
-                            opened++;
-                            NwfComparison comparison = NwfComparison.Compare(ModelFileList(document), job.Files);
-                            label = RunPath.AfterOpening(comparison.Decision, xmlPicked);
-                        }
-                    }
-                }
-                catch (Exception error)
-                {
-                    label = RunPath.Unknown;
-
-                    if (log != null)
-                    {
-                        log.Failure(
-                            "checking the NWF of " + job.Building + " before the run",
-                            error,
-                            "the group reads Unknown in the list and the run decides");
-                    }
-                }
-
-                labels.Add(label);
-
-                if (log != null)
-                {
-                    log.Line("PREVIEW  " + job.Building + "  " + label);
-                }
-            }
-
-            clock.Stop();
-
-            if (log != null)
-            {
-                log.Line("PREVIEW  opened " + opened + (opened == 1 ? " NWF" : " NWFs")
-                    + " before the confirm dialog in "
-                    + clock.Elapsed.TotalSeconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + "s");
-            }
-
-            return labels;
-        }
-
-        /// <summary>The NWC each model points at, with no logging and no recording. See FilesInsideTheOpenDocument.</summary>
-        private static IList<string> ModelFileList(Document document)
-        {
-            List<string> files = new List<string>();
-
-            if (document == null || document.Models == null)
-            {
-                return files;
-            }
-
-            foreach (Model model in document.Models)
-            {
-                string use = ModelFileNames.PathOf(model.FileName, model.SourceFileName);
-
-                if (!string.IsNullOrEmpty(use))
-                {
-                    files.Add(use);
-                }
-            }
-
-            return files;
         }
 
         /// <summary>

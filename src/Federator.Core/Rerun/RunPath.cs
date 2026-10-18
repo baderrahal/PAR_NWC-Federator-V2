@@ -91,19 +91,6 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// The label for a group whose NWF has been opened and compared but not yet run.
-        /// A comparison that reads Changed is going to be rebuilt, so it is shown as
-        /// Rebuilt, which is what the person is about to get. The other decisions read
-        /// exactly as Label reads them.
-        /// </summary>
-        public static string AfterOpening(RerunDecision comparison, bool xmlPicked)
-        {
-            return comparison == RerunDecision.Changed
-                ? Rebuilt
-                : Label(comparison, xmlPicked);
-        }
-
-        /// <summary>
         /// The label before any NWF is opened, from whether the NWF is already at its
         /// output path. Rebuilt can only be known once the NWF is opened and its file list
         /// read, so it never appears here. The window opens each NWF before the confirm

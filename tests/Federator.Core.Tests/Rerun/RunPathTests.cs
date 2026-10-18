@@ -49,16 +49,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void AfterOpeningAChangedNwfReadsRebuiltAndTheOthersReadAsBefore()
-        {
-            Assert.That(RunPath.AfterOpening(RerunDecision.Changed, false), Is.EqualTo(RunPath.Rebuilt));
-            Assert.That(RunPath.AfterOpening(RerunDecision.Changed, true), Is.EqualTo(RunPath.Rebuilt));
-            Assert.That(RunPath.AfterOpening(RerunDecision.Open, false), Is.EqualTo(RunPath.WeeklyRun));
-            Assert.That(RunPath.AfterOpening(RerunDecision.Open, true), Is.EqualTo(RunPath.WeeklyRunPlusMatrix));
-            Assert.That(RunPath.AfterOpening(RerunDecision.Build, true), Is.EqualTo(RunPath.FirstRun));
-        }
-
-        [Test]
         public void TheConfirmLinesCountRebuiltGroupsAndSayTheNwfIsRebuiltFromTheScanFolder()
         {
             IList<string> lines = RunPath.ConfirmLines(new[] { RunPath.Rebuilt, RunPath.Rebuilt, RunPath.WeeklyRun });

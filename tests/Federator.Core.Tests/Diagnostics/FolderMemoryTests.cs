@@ -42,16 +42,12 @@ namespace Federator.Core.Tests
         {
             FolderMemory memory = FolderMemory.Load(file);
 
-            memory.Remember(PickerKind.Source, @"C:\in\nwc");
-            memory.Remember(PickerKind.Nwf, @"C:\out\nwf");
-            memory.Remember(PickerKind.Nwd, @"C:\out\nwd");
-            memory.Remember(PickerKind.PickedNwf, @"C:\out\reports");
+            memory.Remember(PickerKind.PackageParent, @"C:\in\nwc");
+            memory.Remember(PickerKind.PackageReport, @"C:\out\reports");
             memory.Remember(PickerKind.Logo, @"C:\in\logo");
 
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(@"C:\in\nwc"));
-            Assert.That(memory.LastFor(PickerKind.Nwf), Is.EqualTo(@"C:\out\nwf"));
-            Assert.That(memory.LastFor(PickerKind.Nwd), Is.EqualTo(@"C:\out\nwd"));
-            Assert.That(memory.LastFor(PickerKind.PickedNwf), Is.EqualTo(@"C:\out\reports"));
+            Assert.That(memory.LastFor(PickerKind.PackageParent), Is.EqualTo(@"C:\in\nwc"));
+            Assert.That(memory.LastFor(PickerKind.PackageReport), Is.EqualTo(@"C:\out\reports"));
             Assert.That(memory.LastFor(PickerKind.Logo), Is.EqualTo(@"C:\in\logo"));
         }
 
@@ -59,12 +55,12 @@ namespace Federator.Core.Tests
         public void RememberingOneDoesNotMoveTheOthers()
         {
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Source, @"C:\in\nwc");
-            memory.Remember(PickerKind.Nwd, @"C:\out\nwd");
+            memory.Remember(PickerKind.PackageParent, @"C:\in\nwc");
+            memory.Remember(PickerKind.Logo, @"C:\out\nwd");
 
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(@"C:\in\nwc"),
-                "picking an NWD folder moved the source picker");
-            Assert.That(memory.LastFor(PickerKind.Nwf), Is.EqualTo(string.Empty));
+            Assert.That(memory.LastFor(PickerKind.PackageParent), Is.EqualTo(@"C:\in\nwc"),
+                "picking the logo moved the parent folder picker");
+            Assert.That(memory.LastFor(PickerKind.PackageReport), Is.EqualTo(string.Empty));
         }
 
         // ---------- it survives a restart ----------
@@ -74,17 +70,17 @@ namespace Federator.Core.Tests
         public void WhatWasRememberedSurvivesARestart()
         {
             FolderMemory before = FolderMemory.Load(file);
-            before.Remember(PickerKind.Source, @"C:\in\nwc");
-            before.Remember(PickerKind.PickedNwf, @"C:\out\reports");
+            before.Remember(PickerKind.PackageParent, @"C:\in\nwc");
+            before.Remember(PickerKind.Logo, @"C:\out\reports");
 
             Assert.That(File.Exists(file), Is.True, "nothing was written, so nothing can survive");
 
             // A new window, a new process, the same file.
             FolderMemory after = FolderMemory.Load(file);
 
-            Assert.That(after.LastFor(PickerKind.Source), Is.EqualTo(@"C:\in\nwc"));
-            Assert.That(after.LastFor(PickerKind.PickedNwf), Is.EqualTo(@"C:\out\reports"));
-            Assert.That(after.LastFor(PickerKind.Nwf), Is.EqualTo(string.Empty));
+            Assert.That(after.LastFor(PickerKind.PackageParent), Is.EqualTo(@"C:\in\nwc"));
+            Assert.That(after.LastFor(PickerKind.Logo), Is.EqualTo(@"C:\out\reports"));
+            Assert.That(after.LastFor(PickerKind.PackageReport), Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -92,8 +88,8 @@ namespace Federator.Core.Tests
         {
             FolderMemory memory = FolderMemory.Load(file);
 
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(string.Empty));
-            Assert.That(memory.OpenAt(PickerKind.Source), Is.EqualTo(string.Empty));
+            Assert.That(memory.LastFor(PickerKind.PackageParent), Is.EqualTo(string.Empty));
+            Assert.That(memory.OpenAt(PickerKind.PackageParent), Is.EqualTo(string.Empty));
             Assert.That(string.Join("\n", new System.Collections.Generic.List<string>(memory.Lines()).ToArray()),
                 Does.Contain("Nothing remembered yet"));
         }
@@ -121,11 +117,11 @@ namespace Federator.Core.Tests
             string child = Path.Combine(parent, "gone", "deeper");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Nwf, child);
+            memory.Remember(PickerKind.PackageReport, child);
 
-            Assert.That(memory.LastFor(PickerKind.Nwf), Is.EqualTo(child),
+            Assert.That(memory.LastFor(PickerKind.PackageReport), Is.EqualTo(child),
                 "what was remembered is kept exactly as it was");
-            Assert.That(memory.OpenAt(PickerKind.Nwf), Is.EqualTo(parent),
+            Assert.That(memory.OpenAt(PickerKind.PackageReport), Is.EqualTo(parent),
                 "it should open at the nearest folder that is still there");
         }
 
@@ -135,9 +131,9 @@ namespace Federator.Core.Tests
             string real = Make("real");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Source, real);
+            memory.Remember(PickerKind.PackageParent, real);
 
-            Assert.That(memory.OpenAt(PickerKind.Source), Is.EqualTo(real));
+            Assert.That(memory.OpenAt(PickerKind.PackageParent), Is.EqualTo(real));
         }
 
         [Test]
@@ -181,7 +177,7 @@ namespace Federator.Core.Tests
             string parent = Make("here");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Nwd, Path.Combine(parent, "gone"));
+            memory.Remember(PickerKind.Logo, Path.Combine(parent, "gone"));
 
             string block = string.Join(
                 "\n", new System.Collections.Generic.List<string>(memory.Lines()).ToArray());
@@ -204,9 +200,9 @@ namespace Federator.Core.Tests
             string remembered = TestPaths.At("in", "nwc");
 
             FolderMemory memory = FolderMemory.Load(unwritable);
-            memory.Remember(PickerKind.Source, remembered);
+            memory.Remember(PickerKind.PackageParent, remembered);
 
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(remembered),
+            Assert.That(memory.LastFor(PickerKind.PackageParent), Is.EqualTo(remembered),
                 "it should still remember for this session");
             Assert.That(memory.Save(), Is.False);
             Assert.That(memory.DisabledReason, Is.Not.Null.And.Not.Empty);
@@ -225,10 +221,10 @@ namespace Federator.Core.Tests
             string unwritable = Path.Combine(here, "folders.txt");
 
             FolderMemory memory = FolderMemory.Load(unwritable);
-            string said = memory.Remember(PickerKind.Source, TestPaths.At("in", "nwc"));
+            string said = memory.Remember(PickerKind.PackageParent, TestPaths.At("in", "nwc"));
 
             Assert.That(said, Is.Not.Null.And.Not.Empty, "a save that failed has to be said");
-            Assert.That(said, Does.Contain("Source"));
+            Assert.That(said, Does.Contain("PackageParent"));
             Assert.That(said, Does.Contain(unwritable));
             Assert.That(said, Does.Contain(memory.DisabledReason));
         }
@@ -245,21 +241,21 @@ namespace Federator.Core.Tests
 
             FolderMemory memory = FolderMemory.Load(Path.Combine(here, "folders.txt"));
 
-            Assert.That(memory.Remember(PickerKind.Source, TestPaths.At("in", "nwc")), Is.Not.Null);
-            Assert.That(memory.Remember(PickerKind.Nwf, TestPaths.At("out", "nwf")), Is.Null,
+            Assert.That(memory.Remember(PickerKind.PackageParent, TestPaths.At("in", "nwc")), Is.Not.Null);
+            Assert.That(memory.Remember(PickerKind.PackageReport, TestPaths.At("out", "nwf")), Is.Null,
                 "the same failure a second time");
 
             File.Delete(here);
             Directory.CreateDirectory(here);
 
-            Assert.That(memory.Remember(PickerKind.Nwd, TestPaths.At("out", "nwd")), Is.Null, "a save that worked");
+            Assert.That(memory.Remember(PickerKind.Logo, TestPaths.At("out", "nwd")), Is.Null, "a save that worked");
 
             Directory.Delete(here, true);
             File.WriteAllText(here, "a file, not a folder");
 
-            Assert.That(memory.Remember(PickerKind.PickedNwf, TestPaths.At("out", "xlsx")), Is.Not.Null,
+            Assert.That(memory.Remember(PickerKind.Logo, TestPaths.At("out", "xlsx")), Is.Not.Null,
                 "failing again after a save that worked is new");
-            Assert.That(FolderMemory.Load(file).Remember(PickerKind.Source, TestPaths.At("in", "nwc")), Is.Null,
+            Assert.That(FolderMemory.Load(file).Remember(PickerKind.PackageParent, TestPaths.At("in", "nwc")), Is.Null,
                 "a writable file says nothing");
         }
 
@@ -317,20 +313,20 @@ namespace Federator.Core.Tests
 
             FolderMemory memory = FolderMemory.Load(file);
 
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(string.Empty));
+            Assert.That(memory.LastFor(PickerKind.PackageParent), Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void AnEmptyFolderIsNotRemembered()
         {
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Source, string.Empty);
-            memory.Remember(PickerKind.Nwf, null);
-            memory.Remember(PickerKind.Nwd, "   ");
+            memory.Remember(PickerKind.PackageParent, string.Empty);
+            memory.Remember(PickerKind.PackageReport, null);
+            memory.Remember(PickerKind.Logo, "   ");
 
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(string.Empty));
-            Assert.That(memory.LastFor(PickerKind.Nwf), Is.EqualTo(string.Empty));
-            Assert.That(memory.LastFor(PickerKind.Nwd), Is.EqualTo(string.Empty));
+            Assert.That(memory.LastFor(PickerKind.PackageParent), Is.EqualTo(string.Empty));
+            Assert.That(memory.LastFor(PickerKind.PackageReport), Is.EqualTo(string.Empty));
+            Assert.That(memory.LastFor(PickerKind.Logo), Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -339,7 +335,7 @@ namespace Federator.Core.Tests
             // Seven: nine since F129 added the existing NWF picker on the Source step, less the priority
             // and by design pickers F154 took out and the clash XML picker F155 took out, all three built in, and the Excel folder picker F158 took out,
             // then the parent and Report folders of the packages F208 added.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(7));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(3));
             Assert.That(FolderMemory.AllKinds().Length,
                 Is.EqualTo(Enum.GetValues(typeof(PickerKind)).Length),
                 "a picker was added and the memory does not know about it");

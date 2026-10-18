@@ -134,39 +134,15 @@ namespace Federator.Core.Tests
 
             Assert.That(memory.LastFor(PickerKind.PackageParent), Is.EqualTo(TestPaths.At("Work", "Parent")));
             Assert.That(memory.LastFor(PickerKind.PackageReport), Is.EqualTo(TestPaths.At("Work", "Report")));
-            Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(string.Empty));
+            Assert.That(memory.LastFor(PickerKind.Logo), Is.EqualTo(string.Empty));
             Assert.That(FolderMemory.AllKinds(), Has.Member(PickerKind.PackageParent));
             Assert.That(FolderMemory.AllKinds(), Has.Member(PickerKind.PackageReport));
         }
 
         [Test]
-        public void TheTreeIsOnBothPagesWithItsButtonsAndOneTemplate()
-        {
-            string xaml = Xaml();
-            int nwf = xaml.IndexOf("<TabItem Header=\"NWF\">", StringComparison.Ordinal);
-            string nwcPage = xaml.Substring(0, nwf);
-            string nwfPage = xaml.Substring(nwf);
-
-            foreach (string id in new[] { "PackagesStep", "PackageParentBox", "PackageReportBox", "ReadPackagesButton", "TickAllPackagesButton", "ClearAllPackagesButton", "RunPackagesButton", "PackagesTree" })
-            {
-                Assert.That(nwcPage, Does.Contain("x:Name=\"" + id + "\""), id);
-            }
-
-            foreach (string id in new[] { "NwfPackageParentBox", "NwfPackageReportBox", "NwfReadPackagesButton", "NwfTickAllPackagesButton", "NwfClearAllPackagesButton", "RunNwfPackagesButton", "NwfPackagesTree" })
-            {
-                Assert.That(nwfPage, Does.Contain("x:Name=\"" + id + "\""), id);
-            }
-
-            Assert.That(nwcPage, Does.Contain("Click=\"OnRunPackages\""));
-            Assert.That(nwfPage, Does.Contain("Click=\"OnRunNwfPackages\""));
-            Assert.That(xaml.Split(new[] { "ItemTemplate=\"{StaticResource PackageLine}\"" }, StringSplitOptions.None).Length - 1, Is.EqualTo(2),
-                "both trees draw a line one way");
-        }
-
-        [Test]
         public void TheWordsOfTheStepKeepTheTickBoxRule()
         {
-            foreach (string label in new[] { PackageWords.TickAllButton, PackageWords.ClearAllButton, PackageWords.RunButton, PackageWords.ReadButton, PackageWords.ParentLabel, PackageWords.ReportLabel })
+            foreach (string label in new[] { PackageWords.TickAllButton, PackageWords.ClearAllButton, PackageWords.ReadButton, PackageWords.ParentLabel, PackageWords.ReportLabel })
             {
                 Assert.That(label.Split(' ').Length, Is.LessThanOrEqualTo(8), label);
             }

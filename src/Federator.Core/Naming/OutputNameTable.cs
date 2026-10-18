@@ -16,16 +16,12 @@ namespace Federator.Core.Naming
     }
 
     /// <summary>
-    /// One group's three output names, each of which can be typed over.
-    ///
-    /// A name that was typed over is never refilled by a pattern change. That is the whole
-    /// point of the table: the patterns are a starting point, and a name someone corrected
-    /// by hand stays corrected.
+    /// One group's three output names, each made by its pattern. Since F232 no name is typed over: the Outputs step
+    /// holds the naming boxes and the logo only, Bader's round of 19 Oct 2026, fix 2.
     /// </summary>
     public sealed class OutputNameRow
     {
         private readonly string[] names = new string[3];
-        private readonly bool[] byHand = new bool[3];
 
         internal OutputNameRow(string group, BuildingGroup source)
         {
@@ -36,7 +32,7 @@ namespace Federator.Core.Naming
         /// <summary>The group this row names, as the Grouping step calls it.</summary>
         public string Group { get; private set; }
 
-        /// <summary>The group itself, so a refill can rebuild from the pattern.</summary>
+        /// <summary>The group itself, which the patterns name.</summary>
         public BuildingGroup Source { get; private set; }
 
         public string NwfName
@@ -59,52 +55,6 @@ namespace Federator.Core.Naming
             return names[(int)kind] ?? string.Empty;
         }
 
-        /// <summary>True when this name was typed over rather than filled from a pattern.</summary>
-        public bool IsByHand(OutputKind kind)
-        {
-            return byHand[(int)kind];
-        }
-
-        /// <summary>True when any of the three was typed over.</summary>
-        public bool WasEdited
-        {
-            get { return byHand[0] || byHand[1] || byHand[2]; }
-        }
-
-        /// <summary>
-        /// Types over one name. Setting it back to what the pattern produced still counts
-        /// as by hand, because the person meant that value and a later pattern change must
-        /// not take it away.
-        /// </summary>
-        public void SetByHand(OutputKind kind, string name)
-        {
-            names[(int)kind] = name == null ? string.Empty : name.Trim();
-            byHand[(int)kind] = true;
-        }
-
-        /// <summary>Puts a name back under the pattern's control.</summary>
-        public void ReleaseToPattern(OutputKind kind)
-        {
-            byHand[(int)kind] = false;
-        }
-
-        /// <summary>
-        /// A name typed into its cell in the group table, FR-160. A cell cleared to nothing gives
-        /// the name back to the pattern, and the next Refill builds it again. Before, the cleared
-        /// cell was pinned as an empty name typed over, which no pattern change could fill and
-        /// only a regroup undid. Anything else is typed over, as SetByHand says.
-        /// </summary>
-        public void Typed(OutputKind kind, string typed)
-        {
-            if (string.IsNullOrWhiteSpace(typed))
-            {
-                ReleaseToPattern(kind);
-                return;
-            }
-
-            SetByHand(kind, typed);
-        }
-
         internal void Fill(OutputKind kind, string name)
         {
             names[(int)kind] = name;
@@ -117,11 +67,7 @@ namespace Federator.Core.Naming
     }
 
     /// <summary>
-    /// One row per group, filled from the patterns and editable in place.
-    ///
-    /// The global pattern fields stay as the starting point. Changing one refills every
-    /// name that has not been typed over and leaves the rest exactly as they are, and it
-    /// says how many it kept, so nobody has to guess whether their edit survived.
+    /// One row per group, filled from the patterns, and the guard that refuses a run where two groups would share a name.
     /// </summary>
     public sealed class OutputNameTable
     {
@@ -151,12 +97,6 @@ namespace Federator.Core.Naming
         public DateTime Today { get; set; }
 
         public static OutputNameTable From(
-            IEnumerable<BuildingGroup> groups, OutputNaming naming, ContainerNameSettings settings)
-        {
-            return From(groups, naming, settings, DateTime.Today);
-        }
-
-        public static OutputNameTable From(
             IEnumerable<BuildingGroup> groups,
             OutputNaming naming,
             ContainerNameSettings settings,
@@ -175,92 +115,26 @@ namespace Federator.Core.Naming
                 table.rows.Add(new OutputNameRow(group.Building, group));
             }
 
-            table.Refill(naming, settings);
+            table.FillFromThePatterns(naming, settings);
             return table;
         }
 
-        /// <summary>
-        /// Carries the names typed over by hand in the table before a regroup onto this one, FR-153,
-        /// each by its group's key, so unticking one file no longer throws away every name typed in
-        /// every other group. A name of a group the regroup took away goes nowhere, and a name under
-        /// the pattern stays as this table built it. A kept name is still typed over, so the next
-        /// pattern change leaves it alone.
-        /// </summary>
-        public void KeepTypedFrom(OutputNameTable before)
-        {
-            if (before == null)
-            {
-                throw new ArgumentNullException("before");
-            }
-
-            foreach (OutputNameRow row in rows)
-            {
-                OutputNameRow was = before.Find(row.Group);
-
-                if (was == null)
-                {
-                    continue;
-                }
-
-                foreach (OutputKind kind in AllKinds())
-                {
-                    if (was.IsByHand(kind))
-                    {
-                        row.SetByHand(kind, was.Get(kind));
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Rebuilds every name that has not been typed over, and returns how many rows were
-        /// left alone because they had been.
-        /// </summary>
-        public int Refill(OutputNaming naming, ContainerNameSettings settings)
+        /// <summary>Builds every name of every row from its pattern.</summary>
+        private void FillFromThePatterns(OutputNaming naming, ContainerNameSettings settings)
         {
             if (naming == null)
             {
                 throw new ArgumentNullException("naming");
             }
 
-            int kept = 0;
-
             foreach (OutputNameRow row in rows)
             {
                 foreach (OutputKind kind in AllKinds())
                 {
-                    if (row.IsByHand(kind))
-                    {
-                        kept++;
-                        continue;
-                    }
-
                     row.Fill(kind, Build(
                         PatternFor(naming, kind), row.Source, settings, DateFor(naming, kind)));
                 }
             }
-
-            return kept;
-        }
-
-        /// <summary>
-        /// What a pattern change would say. Worded here rather than in the window so the
-        /// message and the count cannot drift apart.
-        /// </summary>
-        public static string DescribeRefill(int rowCount, int kept)
-        {
-            if (kept == 0)
-            {
-                return rowCount + (rowCount == 1 ? " row" : " rows") + " refilled, every name of each.";
-            }
-
-            // Counted in names, FR-130. A row with one name typed over has its other names refilled,
-            // so a count of rows said a whole row was left alone.
-            int names = rowCount * AllKinds().Length;
-
-            return (names - kept) + " of " + names + " names refilled. "
-                + kept + (kept == 1 ? " name was" : " names were")
-                + " typed over by hand and left alone.";
         }
 
         public static NamePattern PatternFor(OutputNaming naming, OutputKind kind)
@@ -521,8 +395,8 @@ namespace Federator.Core.Naming
                 return ". " + name.Substring(CannotBeNamed.Length);
             }
 
-            // A name typed over by hand can hold what Windows refuses in a file name, which the pattern
-            // would have refused itself. FileNames names the characters, not the running platform.
+            // A name can hold what Windows refuses in a file name, a character typed into a naming field.
+            // FileNames names the characters, not the running platform.
             int at = name.IndexOfAny(FileNames.Refused);
 
             if (at < 0)
@@ -533,22 +407,5 @@ namespace Federator.Core.Naming
             return ", it holds " + FileNames.Name(name[at]) + ", which Windows does not allow in a file name.";
         }
 
-        /// <summary>Only the rows that will actually run, for the collision check.</summary>
-        public OutputNameTable Only(IEnumerable<string> groups)
-        {
-            HashSet<string> wanted = new HashSet<string>(groups, StringComparer.Ordinal);
-            OutputNameTable some = new OutputNameTable();
-            some.Today = Today;
-
-            foreach (OutputNameRow row in rows)
-            {
-                if (wanted.Contains(row.Group))
-                {
-                    some.rows.Add(row);
-                }
-            }
-
-            return some;
-        }
     }
 }

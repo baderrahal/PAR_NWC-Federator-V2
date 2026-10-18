@@ -97,45 +97,6 @@ namespace Federator.Core.Report
         public const string XmlExtension = ".xml";
 
         /// <summary>
-        /// Where the logs and the reports will go, in words a person would say, for the line under
-        /// the Outputs step. Never throws and never shows a code identifier.
-        ///
-        /// It said "Workbooks go in UNKNOWN" before a scan, with "Parameter name: nwfFolder" behind
-        /// it, because the empty NWF folder threw and the exception message went straight to the
-        /// label. Nothing is wrong at that point. The folder has simply not been picked yet.
-        /// </summary>
-        public static string WhereTheyGo(string nwfFolder, string nwdFolder, string sourceFolder)
-        {
-            string nwf = nwfFolder == null ? string.Empty : nwfFolder.Trim();
-
-            if (nwf.Length == 0)
-            {
-                return "beside the NWF and NWD folders, in a folder called " + Subfolder
-                    + ", once the NWF folder is picked on this step";
-            }
-
-            try
-            {
-                return LogFolder(nwf, nwdFolder, sourceFolder);
-            }
-            catch (ArgumentException error) when (error.ParamName == "nwfFolder")
-            {
-                // The refusal LogFolder throws on purpose, its first line only, since the rest is
-                // the framework's parameter name and a label carries none.
-                string first = error.Message.Split(new[] { '\r', '\n' }, 2)[0];
-
-                return first.Length > 0
-                    ? first
-                    : "not worked out yet, the NWF folder on this step cannot be read";
-            }
-            catch (Exception)
-            {
-                // A label carries no framework message, so what it threw is not shown.
-                return "not worked out yet, the NWF folder on this step cannot be read";
-            }
-        }
-
-        /// <summary>
         /// The Log folder for a run: beside the NWF and the NWD folders, inside the same group area,
         /// which is the deepest folder that holds both. Where the two are one folder, or one holds
         /// the other, it is the folder above, so the Log folder is never inside the folder the NWF

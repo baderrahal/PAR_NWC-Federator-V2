@@ -26,9 +26,6 @@ namespace Federator.Core.Tests
             "1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
         };
 
-        /// <summary>The folder with the one file of 1C07K1 unticked, so that group is gone after a regroup.</summary>
-        private static readonly string[] FolderWithoutK1 = { Folder[0], Folder[1], Folder[3] };
-
         private static OutputNameTable Table(OutputNaming naming)
         {
             return TableOf(Folder, naming);
@@ -56,297 +53,6 @@ namespace Federator.Core.Tests
             Assert.That(table.Find("1C07BC").WorkbookName, Is.EqualTo(table.Find("1C07BC").NwfName));
         }
 
-        [Test]
-        public void NothingStartsOutTypedOver()
-        {
-            foreach (OutputNameRow row in Table(new OutputNaming()).Rows)
-            {
-                Assert.That(row.WasEdited, Is.False);
-
-                foreach (OutputKind kind in OutputNameTable.AllKinds())
-                {
-                    Assert.That(row.IsByHand(kind), Is.False);
-                }
-            }
-        }
-
-        // ---------- editing one row changes only that row ----------
-
-        [Test]
-        public void TypingOverOneNameChangesOnlyThatName()
-        {
-            OutputNameTable table = Table(new OutputNaming());
-            string before = table.Find("1C07K1").NwfName;
-
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
-
-            Assert.That(table.Find("1C07BC").NwfName, Is.EqualTo("HAND-TYPED-NAME"));
-            Assert.That(table.Find("1C07K1").NwfName, Is.EqualTo(before),
-                "editing one row changed another");
-            Assert.That(table.Find("1C07BC").NwdName,
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"),
-                "editing the NWF name changed the NWD name");
-        }
-
-        // ---------- a pattern change refills only what was not typed over ----------
-
-        // The one the brief asks for by name.
-        [Test]
-        public void APatternChangeRefillsOnlyTheRowsNotTypedOver()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
-
-            naming.Nwf.TypeCode = "FED";
-            int kept = table.Refill(naming, Settings);
-
-            Assert.That(kept, Is.EqualTo(1), "one row had been typed over");
-            Assert.That(table.Find("1C07BC").NwfName, Is.EqualTo("HAND-TYPED-NAME"),
-                "a hand typed name was overwritten by a pattern change");
-            Assert.That(table.Find("1C07K1").NwfName,
-                Is.EqualTo("1104-PAR-1C07K1-ZZZ-BM-FED-000001"),
-                "a row that was not typed over should have been refilled");
-        }
-
-        [Test]
-        public void OnlyTheNameThatWasTypedOverIsHeld()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
-
-            naming.Nwf.TypeCode = "FED";
-            naming.Nwd.TypeCode = "PUB";
-            table.Refill(naming, Settings);
-
-            Assert.That(table.Find("1C07BC").NwfName, Is.EqualTo("HAND-TYPED-NAME"));
-            Assert.That(table.Find("1C07BC").NwdName,
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-PUB-000001"),
-                "the NWD name was held even though only the NWF name was typed over");
-        }
-
-        [Test]
-        public void TheRefillSaysHowManyItKept()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
-            Assert.That(OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings)),
-                Does.Contain("3 rows refilled, every name of each."));
-
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "A");
-            table.Find("1C07K1").SetByHand(OutputKind.Nwd, "B");
-
-            string said = OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings));
-
-            Assert.That(said, Is.EqualTo("7 of 9 names refilled. 2 names were typed over by hand and left alone."));
-        }
-
-        /// <summary>
-        /// FR-130. A row with only its NWF name typed over has two of its three names refilled, and the
-        /// message counted rows, so it said a whole row was left alone. It counts names, and one row
-        /// with nothing kept is not said to be one name refilled.
-        /// </summary>
-        [Test]
-        public void TheRefillCountsNamesAndNeverCallsThreeNamesOne()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "A");
-
-            Assert.That(OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings)),
-                Is.EqualTo("8 of 9 names refilled. 1 name was typed over by hand and left alone."));
-            Assert.That(OutputNameTable.DescribeRefill(1, 0), Is.EqualTo("1 row refilled, every name of each."));
-            Assert.That(OutputNameTable.DescribeRefill(1, 0), Does.Not.Contain("1 name refilled"));
-            Assert.That(OutputNameTable.DescribeRefill(1, 1), Is.EqualTo("2 of 3 names refilled. 1 name was typed over by hand and left alone."));
-        }
-
-        // Setting a name back to what the pattern gives still counts as by hand, because
-        // the person meant that value.
-        [Test]
-        public void TypingTheSameValueStillHoldsItAgainstAPatternChange()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
-            string same = table.Find("1C07BC").NwfName;
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, same);
-
-            naming.Nwf.TypeCode = "FED";
-            table.Refill(naming, Settings);
-
-            Assert.That(table.Find("1C07BC").NwfName, Is.EqualTo(same));
-        }
-
-        [Test]
-        public void AHandTypedNameCanBeGivenBackToThePattern()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
-            table.Find("1C07BC").ReleaseToPattern(OutputKind.Nwf);
-
-            naming.Nwf.TypeCode = "FED";
-            table.Refill(naming, Settings);
-
-            Assert.That(table.Find("1C07BC").NwfName,
-                Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-FED-000001"));
-        }
-
-        // ---------- a cell cleared in the grid, FR-160 ----------
-
-        /// <summary>
-        /// FR-160, Q24. A name cell cleared in the group table pinned an empty name as typed over, so
-        /// no pattern change could fill it and only a regroup got the pattern back. A cleared cell,
-        /// empty, spaces or nothing at all, now gives the name back to the pattern, the next refill
-        /// builds it, and the run is no longer refused for an empty name.
-        /// </summary>
-        [Test]
-        public void AClearedCellGivesTheNameBackToThePattern()
-        {
-            foreach (string cleared in new[] { string.Empty, "   ", null })
-            {
-                OutputNaming naming = new OutputNaming();
-                OutputNameTable table = Table(naming);
-                OutputNameRow row = table.Find("1C07BC");
-
-                row.Typed(OutputKind.Nwf, "HAND-TYPED-NAME");
-                row.Typed(OutputKind.Nwf, cleared);
-
-                Assert.That(row.IsByHand(OutputKind.Nwf), Is.False, "cleared to \"" + cleared + "\"");
-
-                naming.Nwf.TypeCode = "FED";
-                table.Refill(naming, Settings);
-
-                Assert.That(row.NwfName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-FED-000001"), "cleared to \"" + cleared + "\"");
-                Assert.That(table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(Internal), Is.Null,
-                    "cleared to \"" + cleared + "\"");
-            }
-        }
-
-        /// <summary>Clearing one cell gives back that one name and leaves the row's other typed names typed.</summary>
-        [Test]
-        public void AClearedCellLeavesTheRowsOtherTypedNamesAlone()
-        {
-            OutputNameTable table = Table(new OutputNaming());
-            OutputNameRow row = table.Find("1C07BC");
-
-            row.Typed(OutputKind.Nwd, "HAND-TYPED-NWD");
-            row.Typed(OutputKind.Nwf, "HAND-TYPED-NAME");
-            row.Typed(OutputKind.Nwf, string.Empty);
-
-            Assert.That(row.IsByHand(OutputKind.Nwf), Is.False);
-            Assert.That(row.IsByHand(OutputKind.Nwd), Is.True);
-            Assert.That(row.NwdName, Is.EqualTo("HAND-TYPED-NWD"));
-            Assert.That(row.WasEdited, Is.True);
-        }
-
-        /// <summary>A name typed into a cell is trimmed and held against a pattern change, as before FR-160.</summary>
-        [Test]
-        public void ANameTypedIntoACellIsTrimmedAndHeld()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
-            table.Find("1C07BC").Typed(OutputKind.Workbook, "  HAND-TYPED-BOOK  ");
-
-            naming.Workbook.TypeCode = "FED";
-            table.Refill(naming, Settings);
-
-            Assert.That(table.Find("1C07BC").WorkbookName, Is.EqualTo("HAND-TYPED-BOOK"));
-            Assert.That(table.Find("1C07BC").IsByHand(OutputKind.Workbook), Is.True);
-        }
-
-        // ---------- a regroup keeps what was typed, FR-153 ----------
-
-        /// <summary>
-        /// FR-153. Unticking one file rebuilt the table from fresh rows, so every name typed over in
-        /// every other group was lost. A name typed over is kept by its group, and a name of a group
-        /// still under the pattern is built from the pattern.
-        /// </summary>
-        [Test]
-        public void ATypedNameSurvivesARegroupByItsGroup()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable before = Table(naming);
-            before.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
-            before.Find("1B06BS").SetByHand(OutputKind.Workbook, "HAND-TYPED-BOOK");
-
-            OutputNameTable after = TableOf(FolderWithoutK1, naming);
-            after.KeepTypedFrom(before);
-
-            Assert.That(after.Find("1C07BC").NwfName, Is.EqualTo("HAND-TYPED-NAME"));
-            Assert.That(after.Find("1C07BC").IsByHand(OutputKind.Nwf), Is.True);
-            Assert.That(after.Find("1B06BS").WorkbookName, Is.EqualTo("HAND-TYPED-BOOK"));
-            Assert.That(after.Find("1C07BC").NwdName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-            Assert.That(after.Find("1C07BC").IsByHand(OutputKind.Nwd), Is.False);
-        }
-
-        /// <summary>A kept name is still typed over, so the next pattern change leaves it alone and refills the rest.</summary>
-        [Test]
-        public void AKeptNameStillHoldsAgainstAPatternChange()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable before = Table(naming);
-            before.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
-
-            OutputNameTable after = TableOf(FolderWithoutK1, naming);
-            after.KeepTypedFrom(before);
-
-            naming.Nwf.TypeCode = "FED";
-            int kept = after.Refill(naming, Settings);
-
-            Assert.That(kept, Is.EqualTo(1));
-            Assert.That(after.Find("1C07BC").NwfName, Is.EqualTo("HAND-TYPED-NAME"));
-            Assert.That(after.Find("1B06BS").NwfName, Does.Contain("-FED-"));
-        }
-
-        /// <summary>A name typed for a group the regroup took away goes to no other group.</summary>
-        [Test]
-        public void ANameTypedForAGroupThatIsGoneGoesNowhere()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable before = Table(naming);
-            before.Find("1C07K1").SetByHand(OutputKind.Nwf, "HAND-TYPED-K1");
-
-            OutputNameTable after = TableOf(FolderWithoutK1, naming);
-            after.KeepTypedFrom(before);
-
-            Assert.That(after.Find("1C07K1"), Is.Null);
-
-            foreach (OutputNameRow row in after.Rows)
-            {
-                Assert.That(row.WasEdited, Is.False, row.Group);
-            }
-        }
-
-        /// <summary>A name given back to the pattern before the regroup is built from the pattern after it.</summary>
-        [Test]
-        public void ANameGivenBackBeforeARegroupIsNotKept()
-        {
-            OutputNaming naming = new OutputNaming();
-            OutputNameTable before = Table(naming);
-            before.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
-            before.Find("1C07BC").ReleaseToPattern(OutputKind.Nwf);
-
-            OutputNameTable after = TableOf(FolderWithoutK1, naming);
-            after.KeepTypedFrom(before);
-
-            Assert.That(after.Find("1C07BC").IsByHand(OutputKind.Nwf), Is.False);
-            Assert.That(after.Find("1C07BC").NwfName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
-        }
-
-        [Test]
-        public void KeepingFromNoTableIsRefused()
-        {
-            Assert.Throws<ArgumentNullException>(delegate { Table(new OutputNaming()).KeepTypedFrom(null); });
-        }
-
         // ---------- two rows on one name stops the run ----------
 
         // The one the brief asks for by name.
@@ -358,7 +64,7 @@ namespace Federator.Core.Tests
             Assert.That(table.WhyTheRunCannotStart(Internal), Is.Null, "it should start out clean");
 
             // Typing a name that another row already has is exactly how this happens.
-            table.Find("1C07K1").SetByHand(
+            table.Find("1C07K1").Fill(
                 OutputKind.Nwf, table.Find("1C07BC").NwfName);
 
             string why = table.WhyTheRunCannotStart(Internal);
@@ -374,7 +80,7 @@ namespace Federator.Core.Tests
         public void ACollisionInTheWorkbookNameAloneStillStopsTheRun()
         {
             OutputNameTable table = Table(new OutputNaming());
-            table.Find("1C07K1").SetByHand(
+            table.Find("1C07K1").Fill(
                 OutputKind.Workbook, table.Find("1C07BC").WorkbookName);
 
             IList<NameCollision> collisions = table.Collisions();
@@ -383,22 +89,6 @@ namespace Federator.Core.Tests
             Assert.That(collisions[0].Kind, Is.EqualTo("Workbook"));
             Assert.That(table.WhyTheRunCannotStart(Internal), Is.Not.Null);
         }
-
-        // Only the ticked rows matter. A name shared with a group nobody ticked is not a
-        // collision, because only one of them is going to be written.
-        [Test]
-        public void ACollisionWithAGroupNobodyTickedIsNotACollision()
-        {
-            OutputNameTable table = Table(new OutputNaming());
-            table.Find("1C07K1").SetByHand(OutputKind.Nwf, table.Find("1C07BC").NwfName);
-
-            Assert.That(table.WhyTheRunCannotStart(Internal), Is.Not.Null);
-            Assert.That(
-                table.Only(new[] { "1C07BC", "1B06BS" }).WhyTheRunCannotStart(Internal),
-                Is.Null,
-                "a group nobody ticked was counted as a collision");
-        }
-
         // ---------- a workbook named as another group's internal workbook stops the run, F127-R5 ----------
 
         /// <summary>
@@ -412,7 +102,7 @@ namespace Federator.Core.Tests
             OutputNameTable table = Table(new OutputNaming());
             string internalName = Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName);
 
-            table.Find("1C07K1").SetByHand(OutputKind.Workbook, internalName);
+            table.Find("1C07K1").Fill(OutputKind.Workbook, internalName);
 
             Assert.That(table.Collisions(), Is.Empty, "no two rows share a name, so the three kinds alone see nothing");
             Assert.That(table.WhyTheRunCannotStart(Internal), Is.EqualTo(
@@ -427,7 +117,7 @@ namespace Federator.Core.Tests
             OutputNameTable table = Table(new OutputNaming());
             string internalName = Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName);
 
-            table.Find("1C07K1").SetByHand(OutputKind.Workbook, internalName.ToLowerInvariant());
+            table.Find("1C07K1").Fill(OutputKind.Workbook, internalName.ToLowerInvariant());
 
             Assert.That(table.WhyTheRunCannotStart(Internal), Does.Contain("would both be written as " + internalName + "."));
         }
@@ -440,24 +130,13 @@ namespace Federator.Core.Tests
             GenericModelsSettings other = new GenericModelsSettings();
             other.WorkbookSuffix = "Checks";
 
-            table.Find("1C07K1").SetByHand(OutputKind.Workbook, Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName));
+            table.Find("1C07K1").Fill(OutputKind.Workbook, Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName));
 
             Assert.That(table.WhyTheRunCannotStart(other), Is.Null, "the default suffix was read in place of the setting");
 
-            table.Find("1C07K1").SetByHand(OutputKind.Workbook, other.WorkbookNameFor(table.Find("1C07BC").WorkbookName));
+            table.Find("1C07K1").Fill(OutputKind.Workbook, other.WorkbookNameFor(table.Find("1C07BC").WorkbookName));
 
             Assert.That(table.WhyTheRunCannotStart(other), Does.Contain("The internal workbook of 1C07BC and the workbook of 1C07K1"));
-        }
-
-        /// <summary>Only the ticked rows are written, so a group nobody ticked is not in the way.</summary>
-        [Test]
-        public void AnInternalWorkbookOnAGroupNobodyTickedIsNotACollision()
-        {
-            OutputNameTable table = Table(new OutputNaming());
-
-            table.Find("1C07K1").SetByHand(OutputKind.Workbook, Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName));
-
-            Assert.That(table.Only(new[] { "1C07BC", "1B06BS" }).WhyTheRunCannotStart(Internal), Is.Null);
         }
 
         [Test]
@@ -477,10 +156,8 @@ namespace Federator.Core.Tests
         public void AnEmptiedPatternFieldIsNamedAndIsNeverACollision()
         {
             OutputNaming naming = new OutputNaming();
-            OutputNameTable table = Table(naming);
-
             naming.Nwf.Level = string.Empty;
-            table.Refill(naming, Settings);
+            OutputNameTable table = Table(naming);
 
             string all = table.WhyTheRunCannotStart(Internal);
 
@@ -490,7 +167,7 @@ namespace Federator.Core.Tests
                 + " They are 1B06BS, 1C07BC, 1C07K1. The run does not start."));
             Assert.That(all, Does.Not.Contain("would be written to the same"));
 
-            string one = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(Internal);
+            string one = TableOf(new[] { Folder[0], Folder[1] }, naming).WhyTheRunCannotStart(Internal);
 
             Assert.That(one, Is.Not.Null, "one ticked group passed the check with its name a sentence");
             Assert.That(one, Is.EqualTo(
@@ -514,10 +191,8 @@ namespace Federator.Core.Tests
 
             OutputNaming naming = new OutputNaming();
             BuildingGroupingResult result = BuildingGrouping.GroupNames(files.ToArray(), Settings, GroupingMode.PerBuilding);
-            OutputNameTable table = OutputNameTable.From(result.Groups, naming, Settings, Friday);
-
             naming.Nwf.Level = string.Empty;
-            table.Refill(naming, Settings);
+            OutputNameTable table = OutputNameTable.From(result.Groups, naming, Settings, Friday);
 
             string all = table.WhyTheRunCannotStart(Internal);
 
@@ -535,9 +210,9 @@ namespace Federator.Core.Tests
                 foreach (string cleared in new[] { string.Empty, "   " })
                 {
                     OutputNameTable table = Table(new OutputNaming());
-                    table.Find("1C07BC").SetByHand(kind, cleared);
+                    table.Find("1C07BC").Fill(kind, cleared);
 
-                    string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(Internal);
+                    string why = table.WhyTheRunCannotStart(Internal);
 
                     Assert.That(why, Is.Not.Null, kind + " cleared to \"" + cleared + "\"");
                     Assert.That(why, Is.EqualTo(
@@ -558,9 +233,9 @@ namespace Federator.Core.Tests
             foreach (char refused in FileNames.RefusedPrintable)
             {
                 OutputNameTable table = Table(new OutputNaming());
-                table.Find("1C07BC").SetByHand(OutputKind.Nwd, "Tower " + refused + " east");
+                table.Find("1C07BC").Fill(OutputKind.Nwd, "Tower " + refused + " east");
 
-                string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(Internal);
+                string why = table.WhyTheRunCannotStart(Internal);
 
                 Assert.That(why, Is.EqualTo(
                     "The NWD name of 1C07BC cannot be used, it holds \"" + refused
@@ -573,9 +248,9 @@ namespace Federator.Core.Tests
         public void AControlCharacterInAHandTypedNameIsNamedByItsCode()
         {
             OutputNameTable table = Table(new OutputNaming());
-            table.Find("1C07BC").SetByHand(OutputKind.Workbook, "Tower\teast");
+            table.Find("1C07BC").Fill(OutputKind.Workbook, "Tower\teast");
 
-            string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(Internal);
+            string why = table.WhyTheRunCannotStart(Internal);
 
             Assert.That(why, Does.Contain("a control character (U+0009)"));
             Assert.That(why, Does.Not.Contain("\t"));
@@ -585,9 +260,9 @@ namespace Federator.Core.Tests
         public void AnOrdinaryHandTypedNameStillStarts()
         {
             OutputNameTable table = Table(new OutputNaming());
-            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "Tower East - rev 2 (final)");
+            table.Find("1C07BC").Fill(OutputKind.Nwf, "Tower East - rev 2 (final)");
 
-            Assert.That(table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(Internal), Is.Null);
+            Assert.That(table.WhyTheRunCannotStart(Internal), Is.Null);
         }
 
         /// <summary>
@@ -610,7 +285,7 @@ namespace Federator.Core.Tests
 
             foreach (string building in new[] { "1A01AA", "1A02AA", "1A03AA", "1A04AA", "1A05AA", "1A06AA", "1A07AA", "1A08AA" })
             {
-                table.Find(building).SetByHand(OutputKind.Nwf, "SameName");
+                table.Find(building).Fill(OutputKind.Nwf, "SameName");
             }
 
             IList<NameCollision> collisions = table.Collisions();
@@ -630,7 +305,7 @@ namespace Federator.Core.Tests
 
             Assert.That(table.WhyTheRunCannotStart(Internal), Is.Null);
 
-            table.Find("1C07K1").SetByHand(OutputKind.Nwf, table.Find("1C07BC").NwfName);
+            table.Find("1C07K1").Fill(OutputKind.Nwf, table.Find("1C07BC").NwfName);
 
             Assert.That(table.WhyTheRunCannotStart(Internal), Does.Contain("would be written to the same"));
             Assert.That(table.WhyTheRunCannotStart(Internal), Does.Not.Contain("cannot be used"));
@@ -771,9 +446,9 @@ namespace Federator.Core.Tests
         public void NoGroupsOrNoNamingIsRefusedRatherThanBuilt()
         {
             Assert.Throws<ArgumentNullException>(
-                delegate { OutputNameTable.From(null, new OutputNaming(), Settings); });
+                delegate { OutputNameTable.From(null, new OutputNaming(), Settings, Friday); });
             Assert.Throws<ArgumentNullException>(
-                delegate { new OutputNameTable().Refill(null, Settings); });
+                delegate { OutputNameTable.From(new List<BuildingGroup>(), null, Settings, Friday); });
         }
 
         [Test]
