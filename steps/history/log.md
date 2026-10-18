@@ -2,6 +2,43 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F233, one discipline groups are not built, fix 3
+
+Branch fix-F233 off main 66bc601. Fix 3 of the round: a group of one discipline is not built, on both pages.
+
+What was done. Core's OneDisciplineGroups holds the words: one NOT BUILT line a group naming its community, building,
+discipline and file names and one discipline, not built, the words being the grid's status word, a second line naming an NWF
+an earlier run left, never deleted and never run, and RESULT's not built line per community. PackageTally.NotBuilt counts
+them in no count of done, partial or failed, and the joined RESULT says them on its own one discipline line so its counts
+add up. On the NWC page such a group is left out before any job is planned, said and counted once by the window a person
+runs, and a run whose every group is of one discipline still writes RESULT. On the NWF page each NWF's disciplines are read
+off its models' own file names once it opens, whatever steps are ticked, and a group of one stops before the refresh,
+RunLog.GroupNotBuilt closing it on one GROUP line, its line carried to the window that started the run, which names it and
+the earlier NWF. An NWF linking a file not on the disk is not judged, NOT JUDGED, the breaker's finding, so a model
+Navisworks could not load is never read as a missing discipline. The live line says the groups not built apart and never
+warns of them. The SINGLE DISCIPLINE finding says the federation is not built. The reviewer and the breaker read it, and
+what they found of this change is fixed: no RESULT on a run of such groups only, the count repeated in each group's own
+RESULT, the earlier NWF not named in the log Bader reads, a missing link read as one discipline, the counts not adding up,
+the community worked out twice, a catch that kept nothing and a comment on the wrong member. The rest are rows F233-R1 to
+R10 and Q217. docs\workflow.md, addin.md, core.md and the proof steps follow.
+
+What was proved here. Core tests 3403 passed before and 3415 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors, 0 warnings. On copies under C:\NWC-PC-Test\work, build e909a622: the NWC page on smoke232\Parent ran 1B06BC DONE
+and wrote both NOT BUILT lines and RESULT's not built C06 line for 1B06PG, the NWF page on Report3 stopped 1B06PG after its
+open with its NWF the same SHA-256 and no NWD. Then build 280e2f04, with the fixes: the NWC page on a parent holding 1B06PG
+alone wrote both NOT BUILT lines and a RESULT with not built C06 : 1 group, the earlier NWF the same SHA-256 and no file
+written, and the NWF page on Report3 with one NWC of 1B06BC renamed for the run wrote NOT JUDGED for 1B06BC, which then
+stopped FAILED on the missing file with nothing saved, both NOT BUILT lines for 1B06PG in the log of the window that started
+the run, one discipline : 1 group in RESULT, both NWFs the same SHA-256 and one new Backup copy of 1B06PG's NWF, which Q217
+asks about. The desktop folder 0 lines differing after every run, Navisworks' settings put back with 0 lines differing. The
+live line's words are proved by tests and were not read off the window.
+
+What remains. Bader's proof steps of F233, Q216 and Q217. Known bugs: rows F233-R1 to R10, the Backup copy of a one
+discipline NWF, its discipline facts and those of a package of such groups alone, which F234 takes, a partner file whose
+name does not read, the open file run, the federated discipline a constant, the building of an NWF of several buildings, the
+skip paths no longer reached, a link Navisworks leaves out with the refresh off, and the FINDINGS sentence with nothing
+between two words. What comes next: F234, the discipline report rewritten.
+
 ## 2026-10-19 F232, packages first, one route per page, fix 2
 
 Branch fix-F232 off main 6ef0139. Fix 2 of the round: the packages first on both pages, one route each.

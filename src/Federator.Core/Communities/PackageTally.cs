@@ -76,6 +76,7 @@ namespace Federator.Core.Communities
 
         private readonly List<GroupEnd> ends = new List<GroupEnd>();
         private readonly List<NoEnd> noEnds = new List<NoEnd>();
+        private readonly List<NoEnd> notBuilt = new List<NoEnd>();
         private readonly List<Package> order = new List<Package>();
         private readonly Dictionary<string, string> notRun = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
@@ -129,6 +130,27 @@ namespace Federator.Core.Communities
         public void NotRun(Package package, string group, string why)
         {
             AddNoEnd(package, group, PackageRunWords.GroupNotRun(why), false);
+        }
+
+        /// <summary>
+        /// A group of one discipline, not built, F233, Bader's round of 19 Oct 2026, fix 3: named on its own line and counted
+        /// per community, never among the groups done, partial or failed, and never as a group with no end to count.
+        /// </summary>
+        public void NotBuilt(Package package, string group)
+        {
+            if (package == null)
+            {
+                throw new ArgumentNullException("package");
+            }
+
+            Expect(package);
+            notBuilt.Add(new NoEnd { Package = package, Group = group ?? string.Empty, Words = OneDisciplineGroups.Words });
+        }
+
+        /// <summary>How many groups were not built for one discipline, F233.</summary>
+        public int NotBuiltCount
+        {
+            get { return notBuilt.Count; }
         }
 
         private void AddNoEnd(Package package, string group, string words, bool noResult)
@@ -187,6 +209,11 @@ namespace Federator.Core.Communities
                 lines.Add("group          " + end.Package.RelativePath + "  " + end.Group + "  " + end.Words);
             }
 
+            foreach (NoEnd end in notBuilt)
+            {
+                lines.Add("group          " + end.Package.RelativePath + "  " + end.Group + "  " + end.Words);
+            }
+
             Dictionary<string, Totals> byCommunity = new Dictionary<string, Totals>(StringComparer.OrdinalIgnoreCase);
             List<string> communities = new List<string>();
             Totals run = new Totals();
@@ -237,6 +264,17 @@ namespace Federator.Core.Communities
                 Totals community = byCommunity[name];
                 lines.Add("community      " + name + " : " + PackageWords.Count(community.Packages.Count, "package", "packages")
                     + ", " + community.Words() + NoEndWords(noEnds.FindAll(end => string.Equals(end.Package.Community, name, StringComparison.OrdinalIgnoreCase)).Count));
+            }
+
+            // F233. One line per community that holds a group of one discipline, with the count.
+            foreach (string name in communities)
+            {
+                int count = notBuilt.FindAll(end => string.Equals(end.Package.Community, name, StringComparison.OrdinalIgnoreCase)).Count;
+
+                if (count > 0)
+                {
+                    lines.Add(OneDisciplineGroups.ResultLine(name, count));
+                }
             }
 
             lines.Add("run            : " + PackageWords.Count(communities.Count, "community", "communities") + ", "

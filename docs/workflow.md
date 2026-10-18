@@ -169,11 +169,20 @@ large real NWC opens such a box is UNKNOWN until the proof run.
 The tool reports what it noticed and never acts on it, except for these two rules, which Bader
 decided.
 
-- A group of one discipline runs none of its tests, on either page, Q203 (F77 and F219). A group of
-  one NWC and a group of two NWCs of the same discipline are the same case. On the NWC page its tests
-  are not created either. On the NWF page it is judged once the NWF opens, off each model's own file
-  name, and where the disciplines cannot be read the count is UNKNOWN and the tests run as before.
-  Both pages write one line saying which discipline it holds.
+- A group of one discipline is not built, on either page, F233 (Bader's round of 19 Oct 2026, fix 3,
+  after Q203, F77 and F219). A group of one NWC and a group of two NWCs of the same discipline are the
+  same case. Nothing of it is appended and it gets no NWF, NWD, Excel, Internal Excel, HTML, picture
+  folder or viewpoints. The log names it in one line, `NOT BUILT  <community>  <building>  <discipline>
+  <files>  one discipline, not built`, and RESULT counts them, one `not built` line per community. An
+  NWF of such a group an earlier run left is not deleted and not run, and a second NOT BUILT line
+  names it. On the NWC page the group is greyed on step 2 and left out of the run. On the NWF page it
+  is judged once its NWF opens, off each model's own file name, before the refresh, so nothing is
+  refreshed, saved or written, its GROUP line reads `not built` and it is in no count of done, partial
+  or failed. The Backup copy the page makes of every NWF before it opens it is made for such an NWF
+  too. Where the disciplines cannot be read, or a file the NWF links is not on the disk, the count is
+  UNKNOWN and the NWF runs as before, a NOT JUDGED line saying why. RESULT says how many groups were
+  not built on its `one discipline :` line, and the line under the Run button says them apart from
+  the groups that ran.
 - A test whose two sides carry the same set code is neither created nor run, on both pages, in
   every group of two disciplines or more, Q209 (F224). BLD-ST against BLD-ST is left out. BLD-PL
   against BLD-DR still runs. A side whose set name carries no code, such as BLD-Security Devices,

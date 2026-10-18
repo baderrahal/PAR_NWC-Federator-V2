@@ -64,3 +64,31 @@ button sits. Open as rows F232-R1 to R9, most older than F232: the loop's window
 went, one manifest per package Log folder, rebuilt NWFs in dated folders the tree does not show, a run reading the last Read,
 the two groupings that make one discipline groups, the discipline workbooks missing unread files, left out groups in no RESULT
 line, a drive root parent and a wide Report folder, ticks reset by a package ticked again.
+
+## F233, one discipline groups are not built
+
+A group of one discipline is not appended and gets no NWF, NWD, Excel, Internal Excel, HTML, picture folder or viewpoints, on
+both pages. The log names it in one line, `NOT BUILT  C06  1B06PG  EL  1104-PAR-1B06PG-ZZZ-EL-MOD-000001.nwc  one discipline,
+not built`, an NWF of it an earlier run left in a second, never deleted and never run, and RESULT counts them, `not built
+C06 : 1 group not built for one discipline`, with a `one discipline :` line so the counts of done, partial and failed add up.
+On the NWF page the disciplines are read off the models once the NWF opens, before the refresh, and an NWF linking a file not
+on the disk is not judged.
+
+Proved on copies under C:\NWC-PC-Test\work, build 280e2f04, after the first pass on e909a622:
+
+| run | what was read | what it showed |
+|---|---|---|
+| NWC page, a parent holding 1B06PG alone, its NWF of an earlier run in the Report folder | the log, the Report folder, the NWF's SHA-256 | both NOT BUILT lines, a RESULT with the not built C06 line, no file written, the NWF 01894da6... before and after |
+| NWF page, 1B06BC and 1B06PG ticked, one NWC of 1B06BC renamed for the run | the log of the window that started the run and each group's | NOT JUDGED for 1B06BC, then FAILED on the missing file with nothing saved, both NOT BUILT lines for 1B06PG in the first log, one discipline : 1 group, both NWFs the same SHA-256, one new Backup copy of 1B06PG's NWF and no NWD |
+
+Core tests 3403 before and 3415 after, 0 failed, 0 skipped. The desktop folder 0 lines differing after every run, Navisworks'
+settings put back with 0 lines differing.
+
+The reviewer and the breaker read the change and what they found of it is fixed: no RESULT on a run of such groups only, the
+count repeated in each group's own RESULT, the earlier NWF named only in a group's own log, a missing link read as one
+discipline, the counts not adding up and the live line calling such a group run, the community read by a second rule, a catch
+that kept nothing, and a comment on the wrong member. Asked: Q217, the Backup copy the NWF page makes of every NWF before its
+open, one discipline or not. Open as rows F233-R1 to R10: the Backup and Log folder copies of such an NWF, its discipline
+facts and those of a package of such groups alone, which F234 takes, a partner file whose name does not read, the open file
+run of the Clash step, the federated discipline a constant, the building of an NWF of several buildings, the skip paths no
+longer reached, a link Navisworks leaves out with the refresh off, and the FINDINGS sentence with nothing between two words.

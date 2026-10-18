@@ -575,15 +575,32 @@ namespace Federator.Addin.Ui
                 {
                     bool exists = File.Exists(group.NwfPath);
 
-                    if (!NwcPageRule.CanRun(false, exists, rebuild))
-                    {
-                        planLines.Add(group.Label + "  left out, " + NwcPageRule.ExistsLine + " " + group.NwfPath);
-                        continue;
-                    }
-
+                    // F233, Bader's round of 19 Oct 2026, fix 3. A group of one discipline is not built: its one line, the line
+                    // of an NWF an earlier run left, never deleted and never run, and its count in RESULT.
                     if (BuildingGroup.CannotClashWith(group.Disciplines.Count))
                     {
                         planLines.Add(group.Label + "  left out, " + NwcPageRule.OneDiscipline);
+
+                        // Said and counted once, by the window that started the run, and not again in each group's own Navisworks,
+                        // whose RESULT the joined RESULT nests under its group.
+                        if (child == null)
+                        {
+                            log.Line(OneDisciplineGroups.Line(package.Community, group.Building, group.Disciplines.Count == 0 ? null : group.Disciplines[0], group.Files));
+
+                            if (exists)
+                            {
+                                log.Line(OneDisciplineGroups.EarlierNwfLine(group.NwfPath));
+                            }
+
+                            tally.NotBuilt(package, group.Building);
+                        }
+
+                        continue;
+                    }
+
+                    if (!NwcPageRule.CanRun(false, exists, rebuild))
+                    {
+                        planLines.Add(group.Label + "  left out, " + NwcPageRule.ExistsLine + " " + group.NwfPath);
                         continue;
                     }
 
@@ -639,6 +656,13 @@ namespace Federator.Addin.Ui
             if (jobs.Count == 0)
             {
                 log.Line(PackageWords.Prefix + " the run of packages refused before starting. No group of the ticked packages can run, each is named above");
+
+                // F233. A run whose every group is of one discipline still writes RESULT, its line per community with the count.
+                if (child == null && tally.NotBuiltCount > 0)
+                {
+                    WriteTheResult(null, tally.Lines());
+                }
+
                 Warn("No group of the ticked packages can run. The log names each and why.");
                 return;
             }
@@ -1195,6 +1219,14 @@ namespace Federator.Addin.Ui
                 for (int i = 0; i < outcomes.Count && i < inPackages.Count; i++)
                 {
                     JobOutcome outcome = outcomes[i];
+
+                    // F233. An NWF of a group of one discipline was opened and not built, so it is counted as that.
+                    if (outcome != null && outcome.NotBuiltBecause != null)
+                    {
+                        tally.NotBuilt(inPackages[i].Package, outcome.Job == null ? inPackages[i].NwfPath : outcome.Job.Building);
+                        continue;
+                    }
+
                     tally.Add(
                         inPackages[i].Package,
                         outcome == null || outcome.Job == null ? inPackages[i].NwfPath : outcome.Job.Building,

@@ -169,13 +169,17 @@ namespace Federator.Addin.Ui
             {
                 PackageRunResult result = new PackageRunResult(child.Package, log.IsWritingToDisk ? log.Path : null);
 
-                if (lastOutcomes == null || lastOutcomes.Count == 0)
+                // F233. A group of one discipline was opened and not built, so it ends with no group and its one line.
+                List<JobOutcome> built = lastOutcomes == null ? new List<JobOutcome>() : new List<JobOutcome>(lastOutcomes).FindAll(o => o == null || o.NotBuiltBecause == null);
+                JobOutcome notBuilt = lastOutcomes == null ? null : new List<JobOutcome>(lastOutcomes).Find(o => o != null && o.NotBuiltBecause != null);
+
+                if (built.Count == 0)
                 {
-                    result.NoGroupBecause = childRanNoGroupBecause ?? "no group of it ran, its log says why";
+                    result.NoGroupBecause = notBuilt != null ? notBuilt.NotBuiltBecause : childRanNoGroupBecause ?? "no group of it ran, its log says why";
                 }
                 else
                 {
-                    foreach (JobOutcome outcome in lastOutcomes)
+                    foreach (JobOutcome outcome in built)
                     {
                         result.Groups.Add(TheGroupsEnd(outcome));
                     }
@@ -461,6 +465,7 @@ namespace Federator.Addin.Ui
             List<PackageRunResult> results = new List<PackageRunResult>();
             List<string> whys = new List<string>();
             int ran = 0;
+            int notBuilt = 0;
             PackageTally tally = run.Tally;
 
             // F222. The packages the run planned, never the tree read again, which a person may have read off another folder.
@@ -479,10 +484,15 @@ namespace Federator.Addin.Ui
                 results.Add(result);
                 whys.Add(why);
 
-                // F222. A result naming no group is a group that ran nothing, and the live line never says it ran.
+                // F222. A result naming no group is a group that ran nothing, and the live line never says it ran. F233, a group
+                // of one discipline not built is counted apart, never as ran and never warned of.
                 if (result != null && result.Groups.Count > 0)
                 {
                     ran++;
+                }
+                else if (result != null && OneDisciplineGroups.IsTheLine(result.NoGroupBecause))
+                {
+                    notBuilt++;
                 }
 
                 try
@@ -500,7 +510,19 @@ namespace Federator.Addin.Ui
                         tally.Add(package, group.Group, group.Outcome, group.Clashes);
                     }
 
-                    if (result.Groups.Count == 0)
+                    if (result.Groups.Count == 0 && OneDisciplineGroups.IsTheLine(result.NoGroupBecause))
+                    {
+                        // F233. The NWF page's group is its NWF, which an earlier run left, so this log names it as the group's own did.
+                        log.Line(result.NoGroupBecause);
+
+                        if (File.Exists(unit.Group))
+                        {
+                            log.Line(OneDisciplineGroups.EarlierNwfLine(unit.Group));
+                        }
+
+                        tally.NotBuilt(package, unit.Name);
+                    }
+                    else if (result.Groups.Count == 0)
                     {
                         tally.NotRun(package, unit.Name, result.NoGroupBecause);
                     }
@@ -523,8 +545,8 @@ namespace Federator.Addin.Ui
                 log.Failure("joining the results of the groups", error, "each group's own log still holds its RESULT");
             }
 
-            SetProgress(PackageRunWords.Finished(ran, order.Units.Count));
-            string warning = PackageRunWords.Warning(ran, order.Units.Count);
+            SetProgress(PackageRunWords.Finished(ran, notBuilt, order.Units.Count));
+            string warning = PackageRunWords.Warning(ran, notBuilt, order.Units.Count);
 
             if (warning != null)
             {

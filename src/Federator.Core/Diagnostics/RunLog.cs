@@ -1622,6 +1622,23 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
+        /// F233, Bader's round of 19 Oct 2026, fix 3. A group of one discipline, found so once its NWF opened, is not built and
+        /// not run: its steps are closed and one GROUP line says so with why, and it is in no count of done, partial or failed.
+        /// </summary>
+        public void GroupNotBuilt(string building, double seconds, string why)
+        {
+            CloseTheGroupsSteps();
+
+            lock (gate)
+            {
+                currentGroup = null;
+            }
+
+            Line("GROUP    not built " + building + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s  "
+                + Words.Or(why, "UNKNOWN why"));
+        }
+
+        /// <summary>
         /// Records how one group ended, with the reason when it did not end cleanly, and
         /// the GROUP finished line that carries which of the two workflows it took, in the
         /// words of Federator.Core.Rerun.RunPath. The label goes on the line and into the
