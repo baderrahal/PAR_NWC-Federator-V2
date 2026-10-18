@@ -39,14 +39,23 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
 
     src\Federator.Core      every rule a test can prove, no Navisworks type in it
     src\Federator.Addin     the window, the engine and every call into Navisworks
-    src\Federator.Runner    the program that gives each package of a run its own Navisworks, F214
+    src\Federator.Runner    the program that gives each group of a run its own Navisworks, F214 and F222
     tests\Federator.Core.Tests  NUnit, one folder per Core folder. Samples.cs at the root
                             holds the sample files, the path helper and the temp folder
-    build\install.ps1       the only way the bundle reaches the 27 machines
-    tools\probes            PowerShell that measures the install or the window
+    build\install.ps1       installs and checks the bundle on this machine
+    build\package.ps1       makes the team zip, only when Bader writes make the team package, Q149
+    build\team-install.ps1  with build\team's two .cmd files, how the zip reaches the 27 machines
+    build\install-common.ps1  what install.ps1 and the team install both hold to, written once
+    Directory.Build.targets the build stamp, the commit and the moment of the build
+    tools\probes            PowerShell and C# probes that measure the install, the window
+                            or Navisworks, each result beside its probe
     tools\checks            what can be checked without Navisworks, run by Actions
     tools\loop              the loop's scripts. Its README says what each writes outside
-    docs\workflow.md        the two workflows, the labels and the open file run
+    tools\tracker           the scripts that make and check steps\tracker.md and the counts
+    claude                  the audits of a round, written at its end
+    .github                 the Actions workflow that runs the checks and the Core tests
+    .githooks               the pre-commit hook, on once per clone by core.hooksPath
+    docs\workflow.md        the two pages, the packages, the labels and the open file run
     docs\history            measurements and old rules, never current
     samples                 real files from the project, read by tests, never edited
     exchange                what this tool wrote from a sample, such as the corrected
@@ -56,6 +65,8 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
                             questions, Bader's steps and the tracker
     steps\history           loop.md and log.md, the long history, opened for a line
     steps\runs              the loop's run evidence, one folder per run set
+    steps\logs              logs and .tsv of runs on the local machine, files only added
+    steps\notes             the designs and drafts of past fixes, read for a line
     bundle                  one hand written manifest, PackageContents.xml, copied by
                             install.ps1. Not build output and not edited in a fix
     artifacts               where install.ps1 assembles the bundle. Written by the build

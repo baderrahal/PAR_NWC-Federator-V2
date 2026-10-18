@@ -1789,3 +1789,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's answer to Q210 of 18 Oct 2026: PictureLimits A 150, B 100, C 50, GdiStop 9000 and MemoryStopBytes 12 GB, and ClashRunner.ProgressEvery, ExportCheck.NamesShown and AppendBoxWatch.PressesBeforeSaying become settings with today's defaults, the 27 members only tests read become internal and keep their tests, and TestRefresh.BeforeTotal and AfterTotal are deleted.
 - DONE 2026-10-18, merged in 307. The picture caps, the two stops, the running count, the export check's names and the append watch's presses are settings with today's defaults, 27 members internal, the totals of TestRefresh deleted, the cap box's label read off Core, a run of three C06 groups reading as before, 3441 Core tests passed.
+
+## F228 the documents of the audit of 18 Oct
+
+- The round of 18 Oct 2026, item 7: claudeudit-round-2026-10-18.md items 15 and 16, docs\workflow.md for the NWC page and the NWF page with the packages, item 18, CLAUDE.md's folder list, and item 19, a rule file for src\Federator.Runner and for build. The manifest's path of item 25 in a pull request of its own, FR-204.
+- DONE 2026-10-18, merged in 308. docs\workflow.md written for the two pages and the packages, CLAUDE.md's folder list made whole, runner.md and build.md holding the rules moved out of addin.md, 3441 Core tests passed.
