@@ -2,6 +2,41 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F225, F219-R1 with Q209, a test a rule left out that an NWF still holds is not run by the rule and never FAILED
+
+Branch fix-F225 off main 50d3056. The round's item 4: an NWF refreshed before holds the results of tests the rule no longer
+runs. Never delete a test from an NWF, count them in the log as not run by the rule, never read them as FAILED in COVERAGE, and
+ask Bader whether to remove them, Q212.
+
+What was done. Core: the count check, `CountCheck`, reads a test the rule of one discipline, Q203, or of two set codes, Q209,
+left out of this run, that the document holds with no block of this run's workbook, read already there, or of a presence
+UNKNOWN where the rule of two set codes left it out of the plan, as NOT COMPARED with its rule's words and what Clash Detective
+still holds for it, an NWF's test saved before the rule and kept, `CountedTest.KeptFromAnEarlierRun`, so a COVERAGE FAILED
+line never names it. A test created this run, one of one discipline with no record of where it is, one walked for and not
+found, and one a block of this run's workbook names are judged as before. Each group's COVERAGE block writes one line after
+its count line, `CountCheck.LeftOutByARuleLine`, the tests a rule left out counted by what the check read of each, still held
+from an earlier run with how many clashes, held by neither side, FAILED, and the rest whose holding is UNKNOWN, and that
+whether those held are removed is Bader's, Q212, written in steps\02_questions.md with its measured counts. The reviewer and
+the breaker read the first pass, and their findings were taken: the line said none held where the check never looked, the
+workbook or the document not read, a count not taken or a name on two tests, a held by neither branch that copied a rule and
+widened it to a test of one discipline with no record, a block of this run's workbook no longer compared, the class summary,
+a typed test path, a test written twice and two helpers made internal for no test. Rows F225-R1 to R3 hold what is left, and
+row F219-R1 is closed by this fix with Q212 open.
+
+What was proved here. Core tests 3422 passed before on main, 3427 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors. Of the 5 Core tests added, in LeftOutByARuleTests, each breaks one thing: a test no rule left out still FAILED, a
+holding not read is UNKNOWN, only what the record proves is kept, a workbook block compared. On Navisworks, the NWF page on the
+NWFs of C:\NWC-PC-Test\work\smoke223b, built by F223's smoke before F224, community S1, each NWF in its own Navisworks:
+run-20261018-181625 on b9d9a4e6, the first pass, evidence in C:\NWC-PC-Test\work\run-evidence\2026-10-18-F225-smoke-nwf, and
+run-20261018-183751 on fd2e74cc, evidence in ...-F225-smoke-nwf-c, each 3 DONE and 60 clashes, the 8 and 52 of F224's NWC
+page. In the second, 1B06BS, one discipline, said 28 left out, 28 still held with 0 clashes, 1B06M1 284 left out, 14 still
+held with 22 clashes and 270 held by neither side, 1B06PE 284, 32 still held with 16 clashes and 252 held by neither side,
+each 0 UNKNOWN and 0 COVERAGE FAILED, the 22 and the 16 being the clashes F224 took from 1B06M1's 30 and 1B06PE's 68. A first
+run on fd2e74cc stopped before any press, the launcher handed fd2e74c4 as the stamp, and its window was ended idle by the
+monitor, nothing written.
+
+What remains. Q212, Bader's to answer. Known bugs: rows F225-R1 to R3. What comes next: F226, Q208.
+
 ## 2026-10-18 F224, Q209, only tests across two set codes run, on both pages
 
 Branch fix-F224 off main 54fcf1a, rebased onto e28a53d once F223 merged. Bader's answer to Q209: run only tests across two

@@ -16,8 +16,10 @@ namespace Federator.Core.Coverage
             bool inWorkbook,
             int workbookRows,
             int workbookClashes,
-            string why)
+            string why,
+            bool keptFromAnEarlierRun = false)
         {
+            KeptFromAnEarlierRun = keptFromAnEarlierRun;
             Name = name ?? string.Empty;
             Verdict = verdict;
             InDocument = inDocument;
@@ -53,5 +55,11 @@ namespace Federator.Core.Coverage
 
         /// <summary>Why it failed where that is known, or why it was not compared.</summary>
         public string Why { get; private set; }
+
+        /// <summary>
+        /// F225. A test a rule left out of this run that Clash Detective still holds, from an NWF saved before the rule,
+        /// kept there and not compared, counted on its own line per group.
+        /// </summary>
+        public bool KeptFromAnEarlierRun { get; private set; }
     }
 }

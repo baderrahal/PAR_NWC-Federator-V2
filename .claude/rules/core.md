@@ -3097,6 +3097,21 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   rule planned and AddTo refused at run time keeps both blocks and names no test, so it is
   compared like any other test and a real difference is a FAILED line, which a test breaks. A
   merge never makes a COVERAGE FAILED line
+- A TEST A RULE LEFT OUT THAT CLASH DETECTIVE STILL HOLDS IS NOT RUN BY THE RULE AND NEVER FAILED, F225, row F219-R1 with
+  Bader's answer to Q209, Q212 open. A test the rule of one discipline, Q203, or of two set codes, Q209, left out of this
+  run, read already there, or of a presence UNKNOWN where the rule of two set codes left it out of the plan, that the
+  document holds and this run's workbook has no block for, is an NWF's test saved before the rule with an earlier run's
+  results, kept and never deleted. `CountCheck` reads it NOT COMPARED with its rule's words and what Clash Detective still
+  holds for it, and marks it `CountedTest.KeptFromAnEarlierRun`, so a COVERAGE FAILED line never names it. One the document
+  does not hold, left out of a plan before any test was looked for, is held by neither side by the rule the run did not
+  create it. One created this run, one of one discipline with no record of where it is, one the run walked the document for
+  and did not find, and one a block of this run's workbook names, which the writer never makes, are judged as before. The
+  COVERAGE block of each group writes one line after its count line, `CountCheck.LeftOutByARuleLine`, how many tests a rule
+  left out, counted by what the check read of each: still held from an earlier run and with how many clashes, held by
+  neither side, FAILED, and the rest whose holding is UNKNOWN, a side or a count not read or a name on two tests, never a
+  none the check did not read, the reviewer's and the breaker's finding, then that whether those held are removed is
+  Bader's, Q212. None where no rule left a test out. Measured on the NWF page on 18 Oct over NWFs built before F224, its
+  first pass: 1B06BS held 28 with no result, 1B06M1 14 with 22 clashes and 1B06PE 32 with 16, 0 FAILED. Rows F225-R1 to R3 hold what is left
 - THE CLIENT'S SHEET IS READ BACK BY ITS NAME, `WorkbookTests.ReadFile`, the name the writer
   gives it, `SheetNames.ForReport` of the report's output name, and never by its place, the
   readers' point that a sheet put before it would be read in its stead. No file or no sheet of
