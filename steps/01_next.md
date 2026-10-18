@@ -1788,3 +1788,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F227 Q210, the eight numbers become settings, 27 members internal
 
 - Bader's answer to Q210 of 18 Oct 2026: PictureLimits A 150, B 100, C 50, GdiStop 9000 and MemoryStopBytes 12 GB, and ClashRunner.ProgressEvery, ExportCheck.NamesShown and AppendBoxWatch.PressesBeforeSaying become settings with today's defaults, the 27 members only tests read become internal and keep their tests, and TestRefresh.BeforeTotal and AfterTotal are deleted.
+- DONE 2026-10-18, merged in 307. The picture caps, the two stops, the running count, the export check's names and the append watch's presses are settings with today's defaults, 27 members internal, the totals of TestRefresh deleted, the cap box's label read off Core, a run of three C06 groups reading as before, 3441 Core tests passed.
