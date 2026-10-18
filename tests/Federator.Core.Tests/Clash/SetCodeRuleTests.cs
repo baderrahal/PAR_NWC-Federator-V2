@@ -131,7 +131,8 @@ namespace Federator.Core.Tests
 
                 CountCheck saved = CountCheck.Judge(new List<TestCoverage> { one },
                     new List<DocumentTestCount> { new DocumentTestCount(one.Name, "Tests", 3, 5) }, workbook, null, -1);
-                Assert.That(saved.Tests[0].Why, Does.Contain("earlier run's"), "an NWF saved before the rule says why it holds results");
+                Assert.That(saved.Tests[0].Verdict, Is.EqualTo(CountVerdict.NotCompared), "F225, an NWF saved before the rule holds it, never FAILED");
+                Assert.That(saved.Tests[0].Why, Does.Contain("from an earlier run"));
             }
             finally
             {

@@ -56,6 +56,7 @@ namespace Federator.Core.Coverage
 
         private readonly List<CountedTest> tests = new List<CountedTest>();
         private readonly List<string> notInTheXml = new List<string>();
+        private int leftOutByARule;
 
         private CountCheck()
         {
@@ -120,6 +121,11 @@ namespace Federator.Core.Coverage
             foreach (TestCoverage test in tests)
             {
                 inTheXml.Add(test.Name);
+
+                if (!test.Ran && LeftOutByARule(test.Reason))
+                {
+                    check.leftOutByARule++;
+                }
 
                 // A name on two tests of the clash matrix is judged on neither, since both would be set
                 // beside the one test of the document and the one block of the workbook, and the totals
@@ -188,6 +194,39 @@ namespace Federator.Core.Coverage
             }
 
             return count;
+        }
+
+        /// <summary>
+        /// F225, row F219-R1. The one line counting the tests a rule left out of this group's run, how many of them Clash
+        /// Detective still holds from an earlier run and with how many clashes, kept in the NWF and never deleted, never
+        /// FAILED, or null where no rule left a test out.
+        /// </summary>
+        public string LeftOutByARuleLine()
+        {
+            if (leftOutByARule == 0)
+            {
+                return null;
+            }
+
+            int kept = 0;
+            int clashes = 0;
+
+            foreach (CountedTest test in tests)
+            {
+                if (test.KeptFromAnEarlierRun)
+                {
+                    kept++;
+                    clashes += Math.Max(0, test.DocumentLeaves);
+                }
+            }
+
+            return "not run by the rule : " + Words.Counted(leftOutByARule, "test", "tests")
+                + " left out by the rule of one discipline or of two set codes, "
+                + (kept == 0
+                    ? "none of them held in Clash Detective"
+                    : kept + " of them still held in Clash Detective from an earlier run with "
+                        + Words.Counted(clashes, "clash", "clashes") + ", kept in the NWF and never deleted, not compared and never FAILED")
+                + ", whether they are removed is Bader's to decide, Q212";
         }
 
         /// <summary>Every FAILED line of this check, in the order of the file.</summary>
@@ -287,6 +326,26 @@ namespace Federator.Core.Coverage
                     "its block could not be read whole");
             }
 
+            // F225, row F219-R1. A test a rule left out of this run, one discipline, Q203, or one set code on both sides, Q209,
+            // did not run, and one an NWF saved before the rule still holds there with an earlier run's results, kept and
+            // never deleted, so its count beside a workbook of this run is never FAILED. One created this run holds no earlier
+            // run's results, and one the run walked the document for and did not find is judged as before.
+            if (!test.Ran && LeftOutByARule(test.Reason)
+                && (test.Presence == TestPresence.AlreadyThere || test.Presence == TestPresence.Unknown))
+            {
+                if (d != null)
+                {
+                    return new CountedTest(test.Name, CountVerdict.NotCompared, true, top, leaves, inWorkbook, rows, clashes,
+                        LeftOutWhy(test.Reason, d), true);
+                }
+
+                // Left out of the plan before any test was looked for, so the run knows it did not create it.
+                if (test.Presence == TestPresence.Unknown && w.Rows == 0 && w.Clashes == 0)
+                {
+                    return new CountedTest(test.Name, CountVerdict.HeldByNeither, false, -1, -1, inWorkbook, rows, clashes, string.Empty);
+                }
+            }
+
             if (d == null)
             {
                 if (w.Rows != 0 || w.Clashes != 0)
@@ -379,6 +438,27 @@ namespace Federator.Core.Coverage
             }
 
             return string.Empty;
+        }
+
+        /// <summary>Whether a rule of what runs left the test out, one discipline in the group, Q203, or one set code on both sides, Q209.</summary>
+        internal static bool LeftOutByARule(CoverageReason reason)
+        {
+            return reason == CoverageReason.OneDiscipline || reason == CoverageReason.SameSetCode;
+        }
+
+        /// <summary>
+        /// Why a test a rule left out that Clash Detective still holds is not compared, its rule and what it holds said, and
+        /// that it is kept, row F219-R1 and Q212.
+        /// </summary>
+        internal static string LeftOutWhy(CoverageReason reason, DocumentTestCount d)
+        {
+            string holds = d.TopLevel > 0 || d.Leaves > 0
+                ? "Clash Detective still holds " + Words.Counted(d.TopLevel, "result", "results") + " and "
+                    + Words.Counted(d.Leaves, "clash", "clashes") + " for it from an earlier run"
+                : "Clash Detective holds the test with no result";
+
+            return "not run by the rule, " + CoverageWords.For(reason) + ", and " + holds
+                + ", kept in the NWF and never deleted, so it is not compared";
         }
 
         /// <summary>

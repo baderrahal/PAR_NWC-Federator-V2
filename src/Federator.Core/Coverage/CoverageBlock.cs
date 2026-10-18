@@ -148,6 +148,13 @@ namespace Federator.Core.Coverage
                 + ", " + agree + " agree, " + failed + " FAILED, " + notCompared + " not compared, "
                 + neither + " held by neither side");
 
+            string leftOut = check.LeftOutByARuleLine();
+
+            if (leftOut != null)
+            {
+                lines.Add(leftOut);
+            }
+
             int shown = 0;
 
             foreach (CountedTest test in check.Tests)
