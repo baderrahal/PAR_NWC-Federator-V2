@@ -2362,10 +2362,8 @@ namespace Federator.Addin.Ui
 
                 if (packages != null)
                 {
+                    // F222. The discipline workbooks are written by the window that started the run, off this group's result.
                     CountThePackageGroups(packages.Tally, outcomes);
-
-                    // F209. One workbook per discipline of every package that ran, once all its groups have.
-                    WriteTheDisciplineReports(packages, outcomes, options.Disciplines);
                 }
 
                 // What each group actually did, in the list. A group that was rebuilt

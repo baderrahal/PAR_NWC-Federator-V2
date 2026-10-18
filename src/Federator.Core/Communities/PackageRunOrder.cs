@@ -37,16 +37,50 @@ namespace Federator.Core.Communities
     }
 
     /// <summary>
+    /// One group of a run of packages and the fresh Navisworks it runs in, F222, Bader's answer to Q211 of 18 Oct 2026: its
+    /// package by its path from the parent, the group by the path of its NWF, which no two groups of a run share, and the
+    /// name the lines give it, the building on the NWC page and the NWF's name on the NWF page.
+    /// </summary>
+    public sealed class PackageRunUnit
+    {
+        public PackageRunUnit(string package, string group, string name)
+        {
+            if (string.IsNullOrEmpty(package) || string.IsNullOrEmpty(group))
+            {
+                throw new ArgumentException("a group of a run names its package and its NWF");
+            }
+
+            Package = package;
+            Group = group;
+            Name = string.IsNullOrEmpty(name) ? group : name;
+        }
+
+        public string Package { get; private set; }
+
+        /// <summary>The group's NWF, the one key a group's own Navisworks finds its group by.</summary>
+        public string Group { get; private set; }
+
+        public string Name { get; private set; }
+
+        /// <summary>The package and the group, the words every line about this group's Navisworks names it by.</summary>
+        public string Label
+        {
+            get { return Package + "  " + Name; }
+        }
+    }
+
+    /// <summary>
     /// What the window hands each fresh Navisworks of a run of packages, F214, Bader's answer to Q204 of 18 Oct 2026: the
-    /// page, the parent folder, the Report folder, the packages in the order they run, every setting of the window as the
-    /// person left it, the folder the results go in, the plugin to run and the ceiling. Written once by the parent before
-    /// the runner starts, read by the runner and by each package's Navisworks, never changed after. The window's settings
-    /// are its controls by name, so every rule a run reads off the window reads the same in each package's Navisworks.
+    /// page, the parent folder, the Report folder, the groups in the order they run, every setting of the window as the
+    /// person left it, the folder the results go in, the plugin to run and the ceiling. Since F222, Q211, each Navisworks
+    /// runs one group of a package and not the whole package. Written once by the parent before the runner starts, read by
+    /// the runner and by each group's Navisworks, never changed after. The window's settings are its controls by name, so
+    /// every rule a run reads off the window reads the same in each group's Navisworks.
     /// </summary>
     public sealed class PackageRunOrder
     {
-        /// <summary>The first line of an order file.</summary>
-        public const string Header = "parsons nwc federator, the order of a run of packages, 1";
+        /// <summary>The first line of an order file, its last word the shape, 2 since F222 named a group a line.</summary>
+        public const string Header = "parsons nwc federator, the order of a run of packages, 2";
 
         /// <summary>The name of the order file in its run's folder.</summary>
         public const string FileName = "order.txt";
@@ -65,7 +99,7 @@ namespace Federator.Core.Communities
 
         public PackageRunOrder()
         {
-            Packages = new List<string>();
+            Units = new List<PackageRunUnit>();
             Controls = new List<ControlValue>();
             Settings = new PackageRunSettings();
         }
@@ -86,8 +120,24 @@ namespace Federator.Core.Communities
         /// <summary>The parent's own log, named in each package's log.</summary>
         public string ParentLog { get; set; }
 
-        /// <summary>Each package by its path from the parent, in the order it runs.</summary>
-        public IList<string> Packages { get; private set; }
+        /// <summary>Each group in the order it runs, a package's groups together and the packages in the tree's order.</summary>
+        public IList<PackageRunUnit> Units { get; private set; }
+
+        /// <summary>How many packages the groups belong to, for the lines that count both.</summary>
+        public int PackageCount
+        {
+            get
+            {
+                HashSet<string> packages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (PackageRunUnit unit in Units)
+                {
+                    packages.Add(unit.Package);
+                }
+
+                return packages.Count;
+            }
+        }
 
         /// <summary>The window's controls, the text boxes first, then the tick boxes, then the drop downs.</summary>
         public IList<ControlValue> Controls { get; private set; }
@@ -104,7 +154,7 @@ namespace Federator.Core.Communities
             get { return Path.Combine(Folder, StatusFileName); }
         }
 
-        /// <summary>Where the package at this index, counted from nought, writes its result.</summary>
+        /// <summary>Where the group at this index, counted from nought, writes its result.</summary>
         public string ResultPathFor(int index)
         {
             return Path.Combine(Folder, "result-" + (index + 1).ToString("000", CultureInfo.InvariantCulture) + ".txt");
@@ -140,9 +190,9 @@ namespace Federator.Core.Communities
                 return "the order names no parent folder, Report folder, run folder or plugin";
             }
 
-            if (Packages.Count == 0)
+            if (Units.Count == 0)
             {
-                return "the order names no package";
+                return "the order names no group";
             }
 
             return null;
@@ -170,9 +220,9 @@ namespace Federator.Core.Communities
                 PackageRunFile.Line("poll", Settings.PollMilliseconds.ToString(CultureInfo.InvariantCulture))
             };
 
-            foreach (string package in Packages)
+            foreach (PackageRunUnit unit in Units)
             {
-                lines.Add(PackageRunFile.Line("package", package));
+                lines.Add(PackageRunFile.Line("unit", unit.Package, unit.Group, unit.Name));
             }
 
             foreach (ControlValue control in Controls)
@@ -236,6 +286,24 @@ namespace Federator.Core.Communities
                 }
             }
 
+            if (key == "unit")
+            {
+                if (values != 3)
+                {
+                    return "a unit line holds " + values + " values where it holds 3";
+                }
+
+                try
+                {
+                    Units.Add(new PackageRunUnit(line[1], line[2], line[3]));
+                    return null;
+                }
+                catch (ArgumentException error)
+                {
+                    return error.Message;
+                }
+            }
+
             if (values != 1)
             {
                 return "the line " + key + " holds " + values + " values where it holds 1";
@@ -262,9 +330,6 @@ namespace Federator.Core.Communities
                     return null;
                 case "parentlog":
                     ParentLog = value.Length == 0 ? null : value;
-                    return null;
-                case "package":
-                    Packages.Add(value);
                     return null;
                 case "ceiling":
                 case "gone":

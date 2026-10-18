@@ -2,18 +2,56 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Federator.Core.Diagnostics;
+using Federator.Core.Disciplines;
 
 namespace Federator.Core.Communities
 {
-    /// <summary>How one group of a package ended in that package's own Navisworks.</summary>
+    /// <summary>
+    /// How one group of a package ended in its own Navisworks, and since F222 what its run read for the discipline reports,
+    /// its files and the facts of its models, so the window that started the run writes each package's workbooks once every
+    /// group of it has run in a Navisworks of its own.
+    /// </summary>
     public sealed class PackageRunGroup
     {
+        private readonly List<string> files = new List<string>();
+        private List<ModelFacts> facts;
+
         public PackageRunGroup(string group, GroupOutcome outcome, long clashes, string reason)
         {
             Group = group ?? string.Empty;
             Outcome = outcome;
             Clashes = clashes;
             Reason = reason;
+            FactsNotRead = "UNKNOWN, no facts were handed in";
+        }
+
+        /// <summary>The NWC files the group's run was handed or read at the open.</summary>
+        public IList<string> Files
+        {
+            get { return files; }
+        }
+
+        /// <summary>The facts read off the group's models for the discipline reports, or null with FactsNotRead.</summary>
+        public IList<ModelFacts> Facts
+        {
+            get { return facts == null ? null : facts.AsReadOnly(); }
+        }
+
+        /// <summary>Why no facts were read, or null where they were.</summary>
+        public string FactsNotRead { get; private set; }
+
+        public PackageRunGroup WithFacts(IEnumerable<ModelFacts> read)
+        {
+            facts = new List<ModelFacts>(read ?? new List<ModelFacts>());
+            FactsNotRead = null;
+            return this;
+        }
+
+        public PackageRunGroup FactsNot(string why)
+        {
+            facts = null;
+            FactsNotRead = string.IsNullOrEmpty(why) ? "UNKNOWN why" : why;
+            return this;
         }
 
         /// <summary>The group as the package tally names it, the building on the NWC page and the NWF on the NWF page.</summary>
@@ -29,14 +67,18 @@ namespace Federator.Core.Communities
     }
 
     /// <summary>
-    /// What one package's Navisworks wrote once its run ended, F214: the package, its own log, every group with how it
-    /// ended, and the lines of its own RESULT block, so the parent joins them into one RESULT. A package whose Navisworks
-    /// ended before it wrote this has no result, and the parent says so with why.
+    /// What one group's Navisworks wrote once its run ended, F214 and since F222 one group a Navisworks: the package, its
+    /// own log, the group with how it ended and what it read for the discipline reports, and the lines of its own RESULT
+    /// block, so the parent joins them into one RESULT. A Navisworks that ended before it wrote this has no result, and the
+    /// parent says so with why.
     /// </summary>
     public sealed class PackageRunResult
     {
-        /// <summary>The first line of a result file.</summary>
-        public const string Header = "parsons nwc federator, the result of one package of a run of packages, 1";
+        /// <summary>The first line of a result file, its last word the shape, 2 since F222 carried the discipline facts.</summary>
+        public const string Header = "parsons nwc federator, the result of one group of a run of packages, 2";
+
+        private const string ReadWord = "read";
+        private const string NotReadWord = "not";
 
         public PackageRunResult(string package, string log)
         {
@@ -120,6 +162,7 @@ namespace Federator.Core.Communities
                     group.Outcome.ToString(),
                     group.Clashes.ToString(CultureInfo.InvariantCulture),
                     group.Reason ?? string.Empty));
+                WriteTheFactsOf(group, lines);
             }
 
             foreach (string line in ResultLines)
@@ -129,6 +172,222 @@ namespace Federator.Core.Communities
 
             lines.Add(PackageRunFile.Line("end", "written whole"));
             PackageRunFile.Write(path, Header, lines);
+        }
+
+        /// <summary>
+        /// F222. The lines under a group line: each file, then whether the facts were read, then a model line each and the
+        /// CAD and Generic Models lines of the model above them. A value not read is written with the word not and its why,
+        /// so a box, a site or a walk not read never reads back as a zero or as none found.
+        /// </summary>
+        private static void WriteTheFactsOf(PackageRunGroup group, List<string> lines)
+        {
+            foreach (string file in group.Files)
+            {
+                lines.Add(PackageRunFile.Line("file", file));
+            }
+
+            if (group.Facts == null)
+            {
+                lines.Add(PackageRunFile.Line("facts", NotReadWord, group.FactsNotRead));
+                return;
+            }
+
+            lines.Add(PackageRunFile.Line("facts", ReadWord, string.Empty));
+
+            foreach (ModelFacts model in group.Facts)
+            {
+                lines.Add(PackageRunFile.Line(
+                    "model",
+                    model.File,
+                    model.HasBox ? ReadWord : NotReadWord,
+                    model.BoxNotRead ?? string.Empty,
+                    Number(model.MinX),
+                    Number(model.MinY),
+                    Number(model.MinZ),
+                    Number(model.MaxX),
+                    Number(model.MaxY),
+                    Number(model.MaxZ),
+                    model.SiteNotRead == null ? ReadWord : NotReadWord,
+                    model.SiteNotRead ?? model.Site,
+                    model.CadNotRead == null ? ReadWord : NotReadWord,
+                    model.CadNotRead ?? string.Empty,
+                    model.GenericNotRead == null ? ReadWord : NotReadWord,
+                    model.GenericNotRead ?? string.Empty));
+
+                foreach (ElementFact cad in model.Cad)
+                {
+                    lines.Add(ElementLine("cad", cad));
+                }
+
+                foreach (ElementFact generic in model.Generic)
+                {
+                    lines.Add(ElementLine("generic", generic));
+                }
+            }
+        }
+
+        private static string ElementLine(string key, ElementFact element)
+        {
+            return PackageRunFile.Line(key, element.ElementId, element.Name, element.Family, element.Type, element.Level);
+        }
+
+        private static string Number(double value)
+        {
+            return value.ToString("R", CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>One model read back, its CAD and Generic Models lines gathered until the result has been read whole.</summary>
+        private sealed class ModelRead
+        {
+            public ModelFacts Model;
+            public string CadWhy;
+            public string GenericWhy;
+            public readonly List<ElementFact> Cad = new List<ElementFact>();
+            public readonly List<ElementFact> Generic = new List<ElementFact>();
+        }
+
+        /// <summary>One group's facts read back, null models where its facts line said not read.</summary>
+        private sealed class FactsRead
+        {
+            public PackageRunGroup Group;
+            public List<ModelRead> Models;
+        }
+
+        /// <summary>The fault of a line under a group, or null where it read into the group above it.</summary>
+        private static string TakeAFactsLine(string[] line, PackageRunGroup group, Dictionary<PackageRunGroup, FactsRead> facts)
+        {
+            string key = line[0];
+
+            if (group == null)
+            {
+                return "a " + key + " line comes before any group line";
+            }
+
+            FactsRead read;
+            facts.TryGetValue(group, out read);
+
+            if (key == "file")
+            {
+                if (line.Length != 2)
+                {
+                    return "a file line holds " + (line.Length - 1) + " values where it holds 1";
+                }
+
+                group.Files.Add(line[1]);
+                return null;
+            }
+
+            if (key == "facts")
+            {
+                if (line.Length != 3 || (line[1] != ReadWord && line[1] != NotReadWord))
+                {
+                    return "a facts line reads " + string.Join(" ", line, 1, line.Length - 1) + " where it reads read or not and why";
+                }
+
+                if (read != null)
+                {
+                    return "the group " + group.Group + " has two facts lines";
+                }
+
+                facts.Add(group, new FactsRead { Group = group, Models = line[1] == ReadWord ? new List<ModelRead>() : null });
+
+                if (line[1] == NotReadWord)
+                {
+                    group.FactsNot(line[2]);
+                }
+
+                return null;
+            }
+
+            if (read == null || read.Models == null)
+            {
+                return "a " + key + " line of " + group.Group + " comes with no facts line saying its facts were read";
+            }
+
+            if (key == "model")
+            {
+                if (line.Length != 16)
+                {
+                    return "a model line holds " + (line.Length - 1) + " values where it holds 15";
+                }
+
+                double[] box = new double[6];
+
+                for (int i = 0; i < 6; i++)
+                {
+                    if (!double.TryParse(line[4 + i], NumberStyles.Float, CultureInfo.InvariantCulture, out box[i]))
+                    {
+                        return "the box of " + line[1] + " holds " + line[4 + i] + ", not a number";
+                    }
+                }
+
+                foreach (int flag in new[] { 2, 10, 12, 14 })
+                {
+                    if (line[flag] != ReadWord && line[flag] != NotReadWord)
+                    {
+                        return "the model line of " + line[1] + " reads " + line[flag] + " where it reads read or not";
+                    }
+                }
+
+                ModelFacts model = new ModelFacts(line[1]);
+                model = line[2] == ReadWord ? model.WithBox(box[0], box[1], box[2], box[3], box[4], box[5]) : model.BoxNot(line[3]);
+                model = line[10] == ReadWord ? model.WithSite(line[11]) : model.SiteNot(line[11]);
+                read.Models.Add(new ModelRead
+                {
+                    Model = model,
+                    CadWhy = line[12] == ReadWord ? null : line[13],
+                    GenericWhy = line[14] == ReadWord ? null : line[15]
+                });
+                return null;
+            }
+
+            if (key == "cad" || key == "generic")
+            {
+                if (line.Length != 6)
+                {
+                    return "a " + key + " line holds " + (line.Length - 1) + " values where it holds 5";
+                }
+
+                if (read.Models.Count == 0)
+                {
+                    return "a " + key + " line of " + group.Group + " comes before any model line";
+                }
+
+                ModelRead last = read.Models[read.Models.Count - 1];
+                ElementFact element = new ElementFact(line[1], line[2], line[3], line[4], line[5]);
+
+                if ((key == "cad" ? last.CadWhy : last.GenericWhy) != null)
+                {
+                    return "a " + key + " line of " + last.Model.File + " comes where its walk was not read";
+                }
+
+                (key == "cad" ? last.Cad : last.Generic).Add(element);
+                return null;
+            }
+
+            return "the key " + key + " is not one a result holds";
+        }
+
+        /// <summary>Each group's facts put together once the result has been read whole, every walk with what it found.</summary>
+        private static void PutTheFactsOn(Dictionary<PackageRunGroup, FactsRead> facts)
+        {
+            foreach (FactsRead read in facts.Values)
+            {
+                if (read.Models == null)
+                {
+                    continue;
+                }
+
+                List<ModelFacts> models = new List<ModelFacts>();
+
+                foreach (ModelRead model in read.Models)
+                {
+                    ModelFacts whole = model.CadWhy == null ? model.Model.WithCad(model.Cad) : model.Model.CadNot(model.CadWhy);
+                    models.Add(model.GenericWhy == null ? whole.WithGeneric(model.Generic) : whole.GenericNot(model.GenericWhy));
+                }
+
+                read.Group.WithFacts(models);
+            }
         }
 
         /// <summary>
@@ -150,12 +409,17 @@ namespace Federator.Core.Communities
             bool ended = false;
             List<PackageRunGroup> groups = new List<PackageRunGroup>();
             List<string> result = new List<string>();
+            Dictionary<PackageRunGroup, FactsRead> facts = new Dictionary<PackageRunGroup, FactsRead>();
 
             foreach (string[] line in lines)
             {
                 string fault = null;
 
-                if (line[0] == "group")
+                if (line[0] == "file" || line[0] == "facts" || line[0] == "model" || line[0] == "cad" || line[0] == "generic")
+                {
+                    fault = TakeAFactsLine(line, groups.Count == 0 ? null : groups[groups.Count - 1], facts);
+                }
+                else if (line[0] == "group")
                 {
                     GroupOutcome outcome;
                     long clashes;
@@ -220,6 +484,7 @@ namespace Federator.Core.Communities
                 return null;
             }
 
+            PutTheFactsOn(facts);
             PackageRunResult read = new PackageRunResult(package, log) { NoGroupBecause = noGroup };
 
             foreach (PackageRunGroup group in groups)

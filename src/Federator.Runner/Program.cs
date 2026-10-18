@@ -11,16 +11,17 @@ using Federator.Core.Communities;
 namespace Federator.Runner
 {
     /// <summary>
-    /// F214, Bader's answer to Q204 of 18 Oct 2026: a fresh Navisworks per package, Run pressed once, the next starting
-    /// only after the last closed. Started by the window of a run of packages with the Navisworks install folder and the
-    /// order. For each package of the order in turn it starts one Navisworks through the Automation API, read by
-    /// reflection off the install folder as scan.md 5z-zj measured, takes the one Roamer new since before as its own,
-    /// sets it visible, runs the installed add-in there with the order and the package's index, quits it by Dispose and
-    /// waits for its process to be gone, ending it past the order's wait, before the next package starts. The order's
-    /// ceiling runs from before the start to after the wait, so a start, a run or a quit that hangs is ended too. A
-    /// package whose Navisworks cannot be told from another is not run, since the runner never ends what it cannot tell
-    /// is its own. A package that throws, crashes or passes the ceiling is said and the next one runs. Every step is one
-    /// line of the status file, which the window copies into its log.
+    /// F214, Bader's answer to Q204 of 18 Oct 2026, and F222, his answer to Q211: a fresh Navisworks per group, Run pressed
+    /// once, the next starting only after the last closed. Started by the window of a run of packages with the Navisworks
+    /// install folder and the order. For each group of the order in turn it starts one Navisworks through the Automation
+    /// API, read by reflection off the install folder as scan.md 5z-zj measured, takes the one Roamer new since before as
+    /// its own, sets it visible, runs the installed add-in there with the order and the group's index, quits it by Dispose
+    /// and waits for its process to be gone, ending it past the order's wait, before the next group starts. The order's
+    /// ceiling runs from before the start to after the wait, so a start, a run or a quit that hangs is ended too. A group
+    /// whose Navisworks cannot be told from another is not run, since the runner never ends what it cannot tell is its
+    /// own. A group that throws, crashes or passes the ceiling is said and the next one runs. Every step is one line of the
+    /// status file, which the window copies into its log, each start and each quit with its seconds and the last line with
+    /// both added up.
     ///
     ///     Federator.Runner.exe navisworksFolder orderPath
     /// </summary>
@@ -36,6 +37,12 @@ namespace Federator.Runner
         private static string status;
         private static int linesLost;
         private static int poll = PackageRunSettings.DefaultPollMilliseconds;
+
+        /// <summary>The starts told and their seconds added up, and the quits seen through to a process gone, F222.</summary>
+        private static int starts;
+        private static double startSeconds;
+        private static int quits;
+        private static double quitSeconds;
 
         /// <summary>The Navisworks one package runs in, read by the ceiling's timer on its own thread.</summary>
         private sealed class Started
@@ -70,7 +77,7 @@ namespace Federator.Runner
             status = order.StatusPath;
             poll = order.Settings.PollMilliseconds;
             Stopwatch clock = Stopwatch.StartNew();
-            Say(PackageRunWords.RunnerStarted(order.Packages.Count, order.OrderPath));
+            Say(PackageRunWords.RunnerStarted(order.Units.Count, order.PackageCount, order.OrderPath));
 
             Type type;
 
@@ -85,20 +92,21 @@ namespace Federator.Runner
                 return 1;
             }
 
-            for (int i = 0; i < order.Packages.Count; i++)
+            for (int i = 0; i < order.Units.Count; i++)
             {
                 RunOne(type, order, i);
             }
 
-            Say(PackageRunWords.RunnerEnded(order.Packages.Count, clock.Elapsed.TotalSeconds));
+            Say(PackageRunWords.RunnerEnded(order.Units.Count, order.PackageCount, clock.Elapsed.TotalSeconds,
+                starts, startSeconds, quits, quitSeconds));
             return 0;
         }
 
-        /// <summary>One package in one fresh Navisworks, from before its start to its process gone. Never throws.</summary>
+        /// <summary>One group in one fresh Navisworks, from before its start to its process gone. Never throws.</summary>
         private static void RunOne(Type type, PackageRunOrder order, int index)
         {
-            string package = order.Packages[index];
-            Say(PackageRunWords.Starting(index, order.Packages.Count, package));
+            string package = order.Units[index].Label;
+            Say(PackageRunWords.Starting(index, order.Units.Count, package));
             HashSet<int> before = Roamers();
             Started started = new Started();
             object app = null;
@@ -128,6 +136,8 @@ namespace Federator.Runner
                 Stopwatch step = Stopwatch.StartNew();
                 app = Activator.CreateInstance(type);
                 started.Pid = TheOneNew(before);
+                starts++;
+                startSeconds += step.Elapsed.TotalSeconds;
                 Say(PackageRunWords.Started(package, started.Pid, step.Elapsed.TotalSeconds));
 
                 if (started.Pid <= 0)
@@ -156,11 +166,13 @@ namespace Federator.Runner
                     started.Pid = TheOneNew(before);
                 }
 
+                // F222. The quit is timed from the call that tells it to quit to its process gone.
+                Stopwatch quit = Stopwatch.StartNew();
                 Quit(app, package);
 
                 if (started.Pid > 0)
                 {
-                    WaitGone(started.Pid, package, order.Settings.GoneWithinSeconds);
+                    WaitGone(started.Pid, package, order.Settings.GoneWithinSeconds, quit);
                 }
                 else
                 {
@@ -189,7 +201,7 @@ namespace Federator.Runner
             }
         }
 
-        private static void WaitGone(int pid, string package, int seconds)
+        private static void WaitGone(int pid, string package, int seconds, Stopwatch quit)
         {
             Stopwatch wait = Stopwatch.StartNew();
 
@@ -197,7 +209,9 @@ namespace Federator.Runner
             {
                 if (IsGone(pid))
                 {
-                    Say(PackageRunWords.Gone(package, wait.Elapsed.TotalSeconds));
+                    quits++;
+                    quitSeconds += quit.Elapsed.TotalSeconds;
+                    Say(PackageRunWords.Gone(package, quit.Elapsed.TotalSeconds));
                     return;
                 }
 

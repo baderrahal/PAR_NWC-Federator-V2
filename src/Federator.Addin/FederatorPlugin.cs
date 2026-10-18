@@ -87,7 +87,7 @@ namespace Federator.Addin
             {
                 log.Failure("starting the add-in", error, "stopped, the window never opened");
 
-                // F214. Nobody is at a package's own Navisworks, so the log carries it and the runner goes on.
+                // F214. Nobody is at a group's own Navisworks, so the log carries it and the runner goes on.
                 if (IsAPackageRun(parameters))
                 {
                     return 1;
@@ -117,7 +117,7 @@ namespace Federator.Addin
             return parameters != null && parameters.Length > 0 && parameters[0] == PackageRunOrder.ChildMode;
         }
 
-        /// <summary>The package this Navisworks was started to run, or null where it was not, or where the order would not read, said.</summary>
+        /// <summary>The group this Navisworks was started to run, or null where it was not, or where the order would not read, said.</summary>
         private static PackageRunChild ThePackageToRun(string[] parameters, RunLog log)
         {
             if (!IsAPackageRun(parameters))
@@ -130,7 +130,7 @@ namespace Federator.Addin
             if (parameters.Length != 3
                 || !int.TryParse(parameters[2], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out index))
             {
-                log.Line(PackageRunWords.Prefix + " this Navisworks was started for a package with " + (parameters.Length - 1)
+                log.Line(PackageRunWords.Prefix + " this Navisworks was started for a group with " + (parameters.Length - 1)
                     + " arguments where it takes the order and the index, so nothing runs");
                 return null;
             }
@@ -138,10 +138,10 @@ namespace Federator.Addin
             string why;
             PackageRunOrder order = PackageRunOrder.Read(parameters[1], out why);
 
-            if (order == null || index >= order.Packages.Count)
+            if (order == null || index >= order.Units.Count)
             {
                 log.Line(PackageRunWords.Prefix + " the order of this package does not read, "
-                    + (why ?? "it holds no package of index " + index) + ", so nothing runs");
+                    + (why ?? "it holds no group of index " + index) + ", so nothing runs");
                 return null;
             }
 

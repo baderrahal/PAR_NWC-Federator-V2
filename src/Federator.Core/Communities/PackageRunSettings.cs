@@ -4,7 +4,7 @@ namespace Federator.Core.Communities
 {
     /// <summary>
     /// The numbers of a run of packages in fresh starts, F214, Bader's answer to Q204 of 18 Oct 2026: a fresh Navisworks
-    /// per package, the next starting only after the last closed. Each is a setting, refused where it is set when it
+    /// per package, since F222 per group, the next starting only after the last closed. Each is a setting, refused where it is set when it
     /// cannot work, and none is measured: the ceiling is chosen over the longest package read so far, the C06 and C07
     /// run of 18 Oct whose 42 groups took 60 min in one start, and the wait over the 1.55 s scan.md 5z-zj read.
     /// </summary>
@@ -37,17 +37,17 @@ namespace Federator.Core.Communities
         }
 
         /// <summary>
-        /// How long the window waits on the runner before it ends it, every package's ceiling and wait added up and a minute
+        /// How long the window waits on the runner before it ends it, every group's ceiling and wait added up and a minute
         /// more each, so a runner that can no longer end its own Navisworks never keeps the window waiting for ever.
         /// </summary>
-        public int RunnerLimitMinutes(int packages)
+        public int RunnerLimitMinutes(int groups)
         {
-            return Math.Max(1, packages) * (ceilingMinutes + (goneWithinSeconds + 59) / 60 + 1);
+            return Math.Max(1, groups) * (ceilingMinutes + (goneWithinSeconds + 59) / 60 + 1);
         }
 
         /// <summary>
-        /// How long one package's Navisworks may run before the runner ends it and goes on to the next, so a package that
-        /// hangs never stops the packages after it. Refuses less than one minute.
+        /// How long one group's Navisworks may run before the runner ends it and goes on to the next, so a group that
+        /// hangs never stops the groups after it. Refuses less than one minute.
         /// </summary>
         public int CeilingMinutes
         {
@@ -56,7 +56,7 @@ namespace Federator.Core.Communities
             {
                 if (value < 1)
                 {
-                    throw new ArgumentOutOfRangeException("value", value, "a package needs at least one minute");
+                    throw new ArgumentOutOfRangeException("value", value, "a group needs at least one minute");
                 }
 
                 ceilingMinutes = value;
@@ -64,8 +64,8 @@ namespace Federator.Core.Communities
         }
 
         /// <summary>
-        /// How long the runner waits for a package's Navisworks to be gone after it was told to quit, before it ends it,
-        /// so the next package starts only once the last has closed. Refuses less than one second.
+        /// How long the runner waits for a group's Navisworks to be gone after it was told to quit, before it ends it,
+        /// so the next group starts only once the last has closed. Refuses less than one second.
         /// </summary>
         public int GoneWithinSeconds
         {

@@ -2552,6 +2552,23 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   its groups may have written files before its Navisworks ended, and whether any did is UNKNOWN. The live line counts the
   packages that wrote a result, `Finished`, and `Warning` is the window's warning where one did not. Proved by
   `PackageFreshStartTests`
+- A FRESH NAVISWORKS PER GROUP, F222, Bader's answer to Q211 of 18 Oct 2026, not only per package, on both pages, Run
+  pressed once. The order names each GROUP of the run, `PackageRunUnit`: its package, its NWF, which no two groups of a run
+  share and which is the one key a group's own Navisworks finds its group by, and its name, the building on the NWC page and
+  the NWF's name on the NWF page, a package's groups together in the tree's order. The order's first line names its shape, 2,
+  so an order of the shape before is refused. Every count and word above that read a package now reads a group: one result
+  file a group, `ResultPathFor`, the runner's lines, `Starting`, `Started`, `Gone`, the live line, the warning, and the
+  joined RESULT, which names every group under its package and name, `JoinedResult` over the units. A GROUP WITH NO RESULT
+  IS NAMED ON ITS OWN LINE AND NEVER AS NOT RUN, `PackageTally.NoResult(package, group, why)`, and one whose Navisworks ran
+  nothing on its own, `NotRun(package, group, why)`, and its package line adds how many groups have no end to count. The
+  runner's last line adds up the seconds of every start, from the call that makes the Navisworks to its process told, and of
+  every quit, from the call that tells it to quit to its process gone, `RunnerEnded`. THE DISCIPLINE REPORTS ARE WRITTEN BY
+  THE WINDOW THAT STARTED THE RUN, since no Navisworks holds every group of a package: each group's result carries its files
+  and the facts of its models, `PackageRunGroup.Files`, `Facts` and `FactsNotRead`, a value not read written with the word
+  not and its why so it never reads back as a zero or as none found, and `PackageRunFacts.GroupsOf` turns the results of a
+  package into the groups its workbooks read, on the NWC page every group of its plan by its NWF and on the NWF page every
+  group of the run in that package, a group with no facts kept with its files and why. A facts line out of its place, of the
+  wrong count or a number that is not one makes the whole result no result. Proved by `FreshNavisworksPerGroupTests`
 
 ## The discipline reports, F209
 
