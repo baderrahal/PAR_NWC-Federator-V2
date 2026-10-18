@@ -1773,3 +1773,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F224 Q209, only tests across two set codes run
 
 - Bader's answer to Q209 of 18 Oct 2026: run only tests across two different set codes, BLD-ST against BLD-ST and BLD-AR against BLD-AR not run, BLD-PL against BLD-DR and BLD-HV against BLD-FP still run, the same rule on both pages, a group of one set code running nothing as Q203 keeps, and per group how many tests the rule left out in the log. A test is left out only where both sides read a code and the two are the same, a side of no code never left out on a guess.
+- DONE 2026-10-18, merged in 304. The built in matrix loses its 284 tests of one set code, 1B06M1 and 1B06PE of C06 each left out 284 of 1830 and found 8 and 52 clashes where they found 30 and 68, the group of one discipline said the rule is not read, 0 FAILED in the count check, 3422 Core tests passed.
