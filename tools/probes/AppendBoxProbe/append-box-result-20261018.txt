@@ -1,0 +1,217 @@
+MACHINE   [machine]   2026-10-18 09:51:07
+HOST      powershell 5.1.26100.9711, 64 bit process True, apartment STA, pid 21328
+SCRIPT    <a path outside the loop folder, file probe-append-box.ps1, sha1 4F4E1B28FB25>, sha256 9376ACE68F7F134E104D3624F49601A20CD5DEF01B20D315BC4A0AA5628B7CB1
+GUARD     tools\loop\nw-guard.ps1, sha256 349551F8A3784C002A48192CB6321D6443027529BC65844B710A4E836C966888
+PROCESS   powershell.exe pid 21328, started to run -File C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\tools\probes\AppendBoxProbe\probe-append-box.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 338
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 110698 bytes
+  read key by key: 279 keys, 1149 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 8 files copied to the work folder and read back with their source's sha256, 0 not backed up, 62 AutoSave files listed and not copied
+  the tool's own logs folder listed: 62 files
+
+==== THE COPIES, made before anything starts, one folder per building ====
+  append-box-source  1-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc, 355861 bytes, sha256 CA6DE4F9096CD1F7738719ECD8916E40A0B40062E8BD9F1B84EE61F898B4F2E8, its copy matches
+  append-box-source  2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc, 200000 bytes, sha256 994AF58AC1C24FBDFC9E75C3EA6E3ABA837AF2FA7D901458B8CF206A8DBCADF8, its copy matches
+  append-box-source  3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc, 177930 bytes, sha256 D2D3B3A249084BBE630D6BBA5BAB8A5B041DC374893CE471130A5A434749FC73, its copy matches
+  append-box-source  4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc, 355861 bytes, sha256 CA6DE4F9096CD1F7738719ECD8916E40A0B40062E8BD9F1B84EE61F898B4F2E8, its copy matches
+  append-box-source  5-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc, 355861 bytes, sha256 CA6DE4F9096CD1F7738719ECD8916E40A0B40062E8BD9F1B84EE61F898B4F2E8, its copy matches
+  append-box-source: 5 NWCs copied into "%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source"
+  the probe <a path outside the loop folder, file AppendBoxProbe.dll, sha1 79DE29E694DB>, 14848 bytes, written 2026-10-18 09:51:02, sha256 8089FD0D77480FD9D425C4D3590A117649EDFFC819832DD4926E31B72AE21C59, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  09:51:15.409  t+7.9s  calling new NavisworksApplication()
+  09:51:19.754  t+12.3s  the constructor RETURNED after 4.34 s
+  Roamer processes new since step 2: 1
+    pid 4368, started 09:51:15.419, parent 1784 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 4368, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 4368, started 2026-10-18 09:51:15.419, start ticks UTC 639279030754197289
+  09:51:22.108  t+14.6s  Visible set True, read back True
+  visible top level windows of 4368: 1, hidden: 72, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  09:51:22.242  t+14.8s  AddPluginAssembly RETURNED after 0.017 s
+
+==== STEP 5. ExecuteAddInPlugin once per folder, the mode append-box on the copies, which it appends and does not save ====
+---- append-box-source ----
+  09:51:22.247  t+14.8s  calling ExecuteAddInPlugin(AppendBoxProbe.PARS, append-box, the plugin's output file, the folder of copies append-box-source)
+  09:51:34.364  t+26.9s  ExecuteAddInPlugin RETURNED 0 after 12.12 s
+  visible top level windows of 4368: 1, hidden: 78, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+---- the plugin's output for append-box-source, every line ----
+  | probe started, mode append-box, folder %LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source, pid 4368, main thread 1, apartment STA
+  | NWC copies in it: 5
+  | 
+  | ==== 1-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc ====
+  | length 355861 bytes, first 16 bytes 23 4C 63 55 53 74 72 65 61 6D 2D 56 31 2E 31 20  "#LcUStream-V1.1 "
+  | cleared, models 0
+  | TryAppendFile 1-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc: True after 0.096 s, dispatcher timer passes 0, thread pool passes 0, boxes seen 0
+  | models after 1
+  | 
+  | ==== 2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc ====
+  | length 200000 bytes, first 16 bytes C6 CA 1C 76 DA AC 0D 26 C8 EA 9D C3 8D 55 08 CC  "...v...&.....U.."
+  | cleared, models 0
+  |   BOX seen by the dispatcher timer on the main thread, thread 1 at 217 ms: caption "Autodesk Navisworks Manage 2025", children 3: Button id 2 "OK" | Static id 20 "" | Static id 65535 "2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be opened because the contents are corrupt or it is currently unavailable.\n\nIt is recommended to re-open your model to avoid data loss.\n\n\n%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc"
+  |   BOX answered WM_COMMAND IDOK by the dispatcher timer on the main thread, thread 1 at 1245 ms, after it stood 1028 ms, posted True
+  |   BOX STILL THERE, answered WM_COMMAND IDCANCEL by the dispatcher timer on the main thread, thread 1 at 2862 ms, after it stood 2645 ms, posted True
+  | TryAppendFile 2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc: False after 2.934 s, dispatcher timer passes 14, thread pool passes 5, boxes seen 1
+  | models after 0
+  |   BOX seen by the dispatcher timer on the main thread, thread 1 at 205 ms: caption "Autodesk Navisworks Manage 2025", children 3: Button id 2 "OK" | Static id 20 "" | Static id 65535 "2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be opened because the contents are corrupt or it is currently unavailable.\n\nIt is recommended to re-open your model to avoid data loss.\n\n\n%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc"
+  |   BOX answered WM_COMMAND IDOK by the dispatcher timer on the main thread, thread 1 at 1217 ms, after it stood 1012 ms, posted True
+  |   BOX STILL THERE, answered WM_COMMAND IDCANCEL by the dispatcher timer on the main thread, thread 1 at 2856 ms, after it stood 2651 ms, posted True
+  | AppendFile 2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc: THREW Autodesk.Navisworks.Api.DocumentFileException: 2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be opened because the contents are corrupt or it is currently unavailable.
+  | 
+  | It is recommended to re-open your model to avoid data loss.
+  |  after 2.944 s, dispatcher timer passes 14, thread pool passes 5, boxes seen 1
+  | models after 0
+  | 
+  | ==== 3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc ====
+  | length 177930 bytes, first 16 bytes 23 4C 63 55 53 74 72 65 61 6D 2D 56 31 2E 31 20  "#LcUStream-V1.1 "
+  | cleared, models 0
+  |   BOX seen by the dispatcher timer on the main thread, thread 1 at 198 ms: caption "Autodesk Navisworks Manage 2025", children 3: Button id 2 "OK" | Static id 20 "" | Static id 65535 "3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc could not be opened because the contents are corrupt or it is currently unavailable.\n\nIt is recommended to re-open your model to avoid data loss.\n\n\n%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
+  |   BOX answered WM_COMMAND IDOK by the dispatcher timer on the main thread, thread 1 at 1222 ms, after it stood 1024 ms, posted True
+  |   BOX STILL THERE, answered WM_COMMAND IDCANCEL by the dispatcher timer on the main thread, thread 1 at 2846 ms, after it stood 2648 ms, posted True
+  | TryAppendFile 3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc: False after 2.923 s, dispatcher timer passes 14, thread pool passes 5, boxes seen 1
+  | models after 0
+  | 
+  | ==== 4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc ====
+  | length 355861 bytes, first 16 bytes 23 4C 63 55 53 74 72 65 61 6D 2D 56 31 2E 31 20  "#LcUStream-V1.1 "
+  | cleared, models 0
+  | held open by the probe with FileShare.None for the append
+  |   BOX seen by the dispatcher timer on the main thread, thread 1 at 205 ms: caption "Autodesk Navisworks Manage 2025", children 3: Button id 2 "OK" | Static id 20 "" | Static id 65535 "4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc could not be opened or is unavailable.\n\nIt is recommended to re-open your model to avoid data loss.\n\n\n%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
+  |   BOX answered WM_COMMAND IDOK by the dispatcher timer on the main thread, thread 1 at 1219 ms, after it stood 1014 ms, posted True
+  |   BOX STILL THERE, answered WM_COMMAND IDCANCEL by the dispatcher timer on the main thread, thread 1 at 2857 ms, after it stood 2652 ms, posted True
+  | TryAppendFile 4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc: False after 2.937 s, dispatcher timer passes 14, thread pool passes 5, boxes seen 1
+  | models after 0
+  | 
+  | ==== 5-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc ====
+  | length 355861 bytes, first 16 bytes 23 4C 63 55 53 74 72 65 61 6D 2D 56 31 2E 31 20  "#LcUStream-V1.1 "
+  | cleared, models 0
+  | TryAppendFile 5-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc: True after 0.064 s, dispatcher timer passes 0, thread pool passes 0, boxes seen 0
+  | models after 1
+  | probe finished, code 0
+  the plugin's output "%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\plugin-output-append-box-source.txt", 5604 bytes, sha256 01DFC5175344F9171BBDB229631FE09B61C36EF4D828945000F36F1D43EA45AE
+
+
+==== STEP 6. Quit through the API ====
+  09:51:34.798  t+27.3s  Dispose RETURNED after 0.34 s
+  09:51:36.394  t+28.9s  pid 4368 state gone, 1.6 s after Dispose returned, not forced
+
+==== FINALLY ====
+  09:51:36.397  t+28.9s  pid 4368 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 41, longest pass 611 ms, longest gap between the starts of two passes 1124 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  09:51:13.820  t+6.3s  watchdog started
+  09:51:16.377  t+8.9s  new process Roamer pid 4368, parent 1784 svchost.exe, started 09:51:15.419, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  09:51:16.490  t+9.0s  Roamer 4368 visible top level windows: none
+  09:51:17.151  t+9.7s  new process AdskLicensingAgent pid 7264, parent 4368 Roamer.exe, started 09:51:15.925, command line holds the word embedding or automation: no
+  09:51:17.349  t+9.9s  new process AdskLicensingAgent pid 22584, parent 4368 Roamer.exe, started 09:51:16.008, command line holds the word embedding or automation: no
+  09:51:17.562  t+10.1s  new process AdskLicensingAgent pid 30300, parent 4368 Roamer.exe, started 09:51:16.131, command line holds the word embedding or automation: no
+  09:51:18.636  t+11.2s  Roamer 4368 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] ""
+  09:51:19.695  t+12.2s  Roamer 4368 visible top level windows: none
+  09:51:20.236  t+12.8s  Roamer 4368 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  09:51:21.327  t+13.8s  Roamer 4368 visible top level windows: none
+  09:51:21.896  t+14.4s  Roamer 4368 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  09:51:23.001  t+15.5s  Roamer 4368 visible top level windows: [#32770] "Autodesk Navisworks Manage 2025" text: "OK" "2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be opened because the contents are corrupt or it is currently unavailable.  It is recommended to re-open your model to avoid data loss.   C:\Users\bader\AppData\Local\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc" | [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  09:51:28.327  t+20.8s  Roamer 4368 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;1b753687-df0e-48d5-b790-3f1c99903af3]] "Working..." text:  | [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  09:51:28.859  t+21.4s  Roamer 4368 visible top level windows: [#32770] "Autodesk Navisworks Manage 2025" text: "OK" "3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc could not be opened because the contents are corrupt or it is currently unavailable.  It is recommended to re-open your model to avoid data loss.   C:\Users\bader\AppData\Local\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc" | [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  09:51:31.509  t+24.0s  Roamer 4368 visible top level windows: [#32770] "Autodesk Navisworks Manage 2025" text: "OK" "4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc could not be opened or is unavailable.  It is recommended to re-open your model to avoid data loss.   C:\Users\bader\AppData\Local\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc" | [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  09:51:34.690  t+27.2s  Roamer 4368 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  09:51:35.221  t+27.7s  Roamer 4368 visible top level windows: none
+  09:51:36.821  t+29.3s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 4368, parent 1784 svchost.exe: exited
+  AdskLicensingAgent pid 7264, parent 4368 Roamer.exe: STILL RUNNING
+  AdskLicensingAgent pid 22584, parent 4368 Roamer.exe: exited
+  AdskLicensingAgent pid 30300, parent 4368 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 2354598857902  new QWord 2354798890613
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 220  new DWord 221
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 237  new DWord 238
+  22.0\CER\22.5.1433.58  uptime  old QWord 736985625000  new QWord 737058906250
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\MainWindow  Placement  old String "2,144,77,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "lcodpody"  new String "LcOpNwcPlugin"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd"  new String "5-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\1  LastOpened  old QWord 134367795369173616  new QWord 134367798943432623
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd, sha1 44CB16BB32FE>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\5-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  LastOpened  old QWord 134367607279233114  new QWord 134367610456785382
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwf, sha1 226B011D24E1>  new String <a path outside the loop folder, file 1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf, sha1 5B3FA1579939>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf"  new String "1-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134367618182029715  new QWord 134367798823873140
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf, sha1 3D9555738BF5>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\append-box-20261018-095107\append-box-source\1-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"  new String "1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\3  LastOpened  old QWord 134367618144428714  new QWord 134367795369173616
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc, sha1 1548D123D2F1>  new String <a path outside the loop folder, file 1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd, sha1 44CB16BB32FE>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\4  LastOpened  old QWord 134367614822303416  new QWord 134367618182029715
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf, sha1 946F4AF43C57>  new String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf, sha1 3D9555738BF5>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134367613879514795  new QWord 134367618144428714
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf, sha1 B3E161F25CE1>  new String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc, sha1 1548D123D2F1>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\6  LastOpened  old QWord 134367612481368815  new QWord 134367614822303416
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf, sha1 183EEB1C5932>  new String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf, sha1 946F4AF43C57>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\7  LastOpened  old QWord 134367611329287909  new QWord 134367613879514795
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf, sha1 0E96E36B8AD4>  new String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf, sha1 B3E161F25CE1>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\8  LastOpened  old QWord 134367610456785382  new QWord 134367612481368815
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf, sha1 5B3FA1579939>  new String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf, sha1 183EEB1C5932>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\9  LastOpened  old QWord 134367608750204945  new QWord 134367611329287909
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf, sha1 8545A3DB7824>  new String <a path outside the loop folder, file 1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf, sha1 0E96E36B8AD4>
+  registry: 37 values or keys differ from the backup
+  registry: 37 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 50277 bytes, sha256 ECFF30E54C87, written 2026-10-18 09:45:36  new 51532 bytes, sha256 9B7ADC888B24, written 2026-10-18 09:51:22
+  file CHANGED LastSession.xml  old 39290 bytes, sha256 2303BACEC462, written 2026-10-18 09:46:52  new 39289 bytes, sha256 E25F063BC9E7, written 2026-10-18 09:51:34
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWCs the copies were made from, at the end ----
+  append-box-source  1-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc  sha256 CA6DE4F9096CD1F7738719ECD8916E40A0B40062E8BD9F1B84EE61F898B4F2E8, the same as before the start
+  append-box-source  2-random-1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc  sha256 994AF58AC1C24FBDFC9E75C3EA6E3ABA837AF2FA7D901458B8CF206A8DBCADF8, the same as before the start
+  append-box-source  3-cut-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc  sha256 D2D3B3A249084BBE630D6BBA5BAB8A5B041DC374893CE471130A5A434749FC73, the same as before the start
+  append-box-source  4-locked-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc  sha256 CA6DE4F9096CD1F7738719ECD8916E40A0B40062E8BD9F1B84EE61F898B4F2E8, the same as before the start
+  append-box-source  5-good-1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc  sha256 CA6DE4F9096CD1F7738719ECD8916E40A0B40062E8BD9F1B84EE61F898B4F2E8, the same as before the start
+---- the work folder at the end, sorted by name ----
+  AppendBoxProbe.dll  14848 bytes
+  hkcu-navisworks-manage-22.0-before.reg  110698 bytes
+  mypid.txt  35 bytes
+  plugin-output-append-box-source.txt  5604 bytes
+  watch.txt  3539 bytes
+  append-box-source\  5 files
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, append-box-source returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-18 09:51:37, 30 s in all

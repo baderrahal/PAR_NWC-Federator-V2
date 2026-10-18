@@ -2,6 +2,53 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F213, F210-R6, a bad NWC never stops an unattended run
+
+Branch fix-F213 off main 5b49d2b. Bader's F-R6: the options measured first and the safest picked, the group FAILED with
+the file and the reason, proved with the random bytes NWC and a real NWC cut short, the run finishing unattended.
+
+What was done.
+- Measured first, tools\probes\AppendBoxProbe, docs\history\scan.md 5z-zi. The three options were a check of the file's
+  first bytes, a Navisworks option and a closer of the box. Every real NWC begins #LcUStream-V1.1, so a byte check tells the
+  random file alone and lets a file cut short or held open through. A Navisworks option was not tried, Bader's rule of Q202
+  being that the tool changes no setting to append, so whether one exists is UNKNOWN. The box is a #32770 window with one Button of id 2. A DispatcherTimer
+  on the main thread fires inside it, WM_COMMAND 2 closes it and TryAppendFile returns false, where IDOK leaves it standing.
+  So the closer was taken: it changes no setting, starts no thread, calls no Navisworks member and touches only a box that
+  names the file being appended.
+- Core: AppendBox, the one rule of which window is a box, IsAMessageBox, which box is the file's, IsTheBoxOf with the name
+  matched whole, what it is answered with, ButtonToAnswer, what Navisworks said, Reason, the first line, and the words of the
+  log and the group. AppendBoxSettings, every 200 ms, refusing less than 50. GroupFacts.FilesNavisworksRefused, judged FAILED
+  straight after the errors and said beside them.
+- Add-in: AppendBoxWatch around every TryAppendFile in AppendOne. A box is marked pressed only once the press was posted,
+  pressed again while it stands and said once after ten. The file goes on JobOutcome.FilesNavisworksRefused only where the
+  append returned false or threw after the answer, never on the errors.
+- The breaker and the reviewer read the first pass, d578a8b. The second pass, 7ee7e9c, takes every finding but two: adding
+  the box to the errors stopped a rebuilt group before its clash and its NWD while its NWF was saved, so the refusal is a fact
+  and not an error, the error is added only where the append failed, a box is tried again, the class read is handed to Core,
+  the name is matched whole, the reason is the first line, the group's words carry the full path with no stop and never claim
+  no one was at the machine, CoverageBlock.OneLine replaces a second copy, a box left alone is said once a session and the
+  Process is disposed. The reshape's missing APPEND FAILED line is older than F213 and left. An NWF opened that links a bad
+  NWC is not watched, row F213-R1.
+- Core tests: 3345 passed before, 3363 after, 0 failed, 0 skipped. dotnet build of the solution: 0 errors, 0 warnings.
+
+What was proved here, on this machine, Navisworks Manage 2025, nobody answering anything.
+- run-20261018-095853 on d578a8b5, packages A random bytes and B cut short, C a good NWC: A and B FAILED with the box
+  answered in 205 and 218 ms, C DONE, 10 s. steps\logs\2026-10-18-F213-corrupt-and-cut-nwc-run-20261018-095853.
+- run-20261018-102034 on 64ea80e6, C:\NWC-PC-Test\work\r6b, four packages: A random bytes and B cut short FAILED, each
+  box pressed in 221 and 212 ms with the full path in RESULT. C, 1B06PK ME, the largest NWC of C06 at 25,979,204 bytes,
+  appended in 0.31 s with no box, DONE. D, a good 1B06PS ST beside a random AR, pressed in 200 ms, the ST appended, the group
+  went on to its NWD, 2,964,578 bytes, and ended FAILED naming the AR alone. 26 s, the window closed by the launcher, Auto-Save
+  put back. steps\logs\2026-10-18-F213-four-packages-run-20261018-102034. A first try of this run was refused by the driver
+  because the install was built beside untracked files and read +edits, and nothing ran.
+
+What remains. The rebuild and reshape routes were not run with a bad file: the NWC page leaves a group whose NWF is there
+to the NWF page, and a rebuild goes to a new dated folder, so both build. Whether a larger NWC than 26 MB raises a box is
+UNKNOWN.
+
+Known bugs. F213-R1 an NWF that links a bad NWC is not watched. F213-R2 a reason ending with a stop reads written., and.
+
+What comes next. F214, a fresh Navisworks per package, its probe measured in 5z-zj on its branch.
+
 ## 2026-10-18 The plan of the round of Bader's answers to Q202 to Q206, F212 to F221
 
 Bader's message of 18 Oct 2026, his answers to Q202 to Q206, F210-R6, R1, R3, R4 and R5, and a test again on copies of C06

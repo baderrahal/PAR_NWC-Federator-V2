@@ -15,6 +15,7 @@ namespace Federator.Addin.Engine
     public sealed class JobOutcome
     {
         private readonly List<string> errors = new List<string>();
+        private readonly List<string> refused = new List<string>();
 
         public JobOutcome(FederationJob job)
         {
@@ -69,6 +70,23 @@ namespace Federator.Addin.Engine
         public bool HasErrors
         {
             get { return errors.Count > 0; }
+        }
+
+        /// <summary>
+        /// The files whose append opened Navisworks' message box, answered by the tool, and that did not append, each in
+        /// AppendBox.GroupError's words, F213. Judged FAILED by GroupJudgement and never an error, so no step stops on it.
+        /// </summary>
+        public IList<string> FilesNavisworksRefused
+        {
+            get { return refused; }
+        }
+
+        public void AddFileNavisworksRefused(string words)
+        {
+            if (!string.IsNullOrEmpty(words))
+            {
+                refused.Add(words);
+            }
         }
 
         /// <summary>
@@ -174,6 +192,11 @@ namespace Federator.Addin.Engine
             foreach (string error in errors)
             {
                 facts.AddError(error);
+            }
+
+            foreach (string words in refused)
+            {
+                facts.AddFileNavisworksRefused(words);
             }
 
             return facts;

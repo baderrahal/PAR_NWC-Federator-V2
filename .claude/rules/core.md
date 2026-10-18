@@ -1061,6 +1061,22 @@ and 6 does not read as broken.
   character Windows refuses in a file name falls back to the number. Anything else is
   used as typed, because the format is the person's setting and their mistakes should
   be visible in the preview rather than silently corrected
+- THE MESSAGE BOX OF A BAD NWC IS ANSWERED AND ITS GROUP ENDS FAILED, F213, F210-R6, Bader's message of
+  18 Oct 2026. `Federator.Core.Rerun.AppendBox` is the rule the add-in's watch reads: a window is a message
+  box only where its class is #32770, `IsAMessageBox`, the one test of the class, and it is the box an append
+  of a file opened only where it is one, holds exactly one Button and a Static whose text names the file as a
+  whole name, compared without case, `IsTheBoxOf`, so a box of my-a.nwc is never the box of a.nwc. It is
+  answered with that button's control id, `ButtonToAnswer`, never IDOK, which scan.md 5z-zi measured leaving
+  the box standing. A box of two buttons asks a choice and no box naming another file is answered. `Reason`
+  is what Navisworks said, the first line of the text with the file's name taken off, UNKNOWN and never empty
+  where it cannot be read, and `GroupError` names the full path, the reason and that the tool answered, with
+  no stop at its end. A FILE NAVISWORKS REFUSED IS A FACT AND NOT AN ERROR,
+  `GroupFacts.FilesNavisworksRefused`, judged FAILED by `GroupJudgement` straight after the errors and said
+  beside them, so no step of a group stops on it and a rebuilt group goes on to its clash, its NWD and its
+  reports as it did with the file missing, the breaker's and the reviewer's finding on F213's first attempt.
+  `AppendBoxSettings.EveryMilliseconds`, 200, refuses less than 50. Proved by `AppendBoxTests` on the two
+  texts of 5z-zi, the random file and the cut file giving one and the held file the other, and by
+  `GroupJudgementTests`
 - A group ends in one of three states, and the test is always what was ASKED FOR,
   never what happens to be on disk. A step deliberately switched off is not a
   failure. Judging a group by whether an NWD existed, with republishing switched

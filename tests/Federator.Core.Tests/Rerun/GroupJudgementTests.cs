@@ -139,6 +139,48 @@ namespace Federator.Core.Tests
 
         // ---------- FAILED ----------
 
+        // F213. A file Navisworks refused through its message box makes a group that otherwise went right FAILED with
+        // the file named, where a file that would not append is PARTIAL, Bader's words of 18 Oct 2026.
+        [Test]
+        public void AFileNavisworksRefusedIsFailedWithTheFileNamedWhereAFileNotAppendedAloneIsPartial()
+        {
+            GroupFacts facts = Clean();
+            facts.AppendedCount = 3;
+            facts.FailedFileCount = 1;
+            facts.AddFileNavisworksRefused(@"C:\in\a.nwc could not be appended, Navisworks said the file could not be opened");
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.StartWith(@"C:\in\a.nwc could not be appended"));
+            Assert.That(facts.HasErrors, Is.False, "the refusal is a fact of its own and never an error, so no step stops on it");
+        }
+
+        [Test]
+        public void EveryFileNavisworksRefusedIsNamedAndSoIsAnyErrorBesideThem()
+        {
+            GroupFacts facts = Clean();
+            facts.AddFileNavisworksRefused("a.nwc refused");
+            facts.AddFileNavisworksRefused("b.nwc refused");
+
+            Assert.That(GroupJudgement.ReasonFor(facts), Is.EqualTo("a.nwc refused, and b.nwc refused"));
+
+            facts.AddError("the clash step threw");
+            Assert.That(GroupJudgement.ReasonFor(facts), Is.EqualTo("the clash step threw, and a.nwc refused, and b.nwc refused"),
+                "an error does not hide a refused file, nor a refused file an error");
+        }
+
+        [Test]
+        public void ARefusalWithNoWordsIsNotRecorded()
+        {
+            GroupFacts facts = Clean();
+            facts.AddFileNavisworksRefused(null);
+            facts.AddFileNavisworksRefused(string.Empty);
+
+            Assert.That(facts.FilesNavisworksRefused.Count, Is.EqualTo(0));
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
+        }
+
         [Test]
         public void SomethingThatThrewIsFailedAndKeepsItsMessage()
         {
