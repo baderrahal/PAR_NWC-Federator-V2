@@ -1713,3 +1713,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F212 Bader's answers to Q202 to Q206
 
 - Bader's message of 18 Oct 2026. His answers written under Q202 to Q206 as answered that day, with their rows. His standing rule with Q202, a model appended the way a manual Append does it and no setting changed to append, written into .claude\rules\addin.md after the code was read: nothing in src sets anything before or during an append, so nothing is removed, and the loop's Auto-Save switch, which run.ps1 writes before every loop start, is put to him as Q207. Q205: addin.md counts 20 named tick boxes, 11 under no expander, read off FederatorWindow.xaml. The map of the seven C02 bugs to the chat audit's items in claude\audit-multi-2026-10-17.md. Q206: 28 merged branches deleted on GitHub and 21 on this PC, each read as merged into main by git merge-base first, main and the six unmerged kept.
+- DONE 2026-10-18, merged in 292.
