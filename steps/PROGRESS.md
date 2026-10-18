@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 11:25, last run 94/item1-C02, the round of F212 to F221, F216 to merge, F214 proof running
+STATE OPEN, 2026-10-18 11:32, last run 94/item1-C02, the round of F212 to F221, F218 to merge, F214 proof running
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,8 +16,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 284 | 16 | 0 | 19 | 67 | 7 | 393 |
-| total | 487 | 24 | 0 | 19 | 168 | 18 | 716 |
+| outside the waves | 284 | 16 | 1 | 19 | 67 | 7 | 394 |
+| total | 487 | 24 | 1 | 19 | 168 | 18 | 717 |
 <!-- the end of the counts -->
 
 ## Now
