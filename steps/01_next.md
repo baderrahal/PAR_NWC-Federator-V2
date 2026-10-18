@@ -1723,6 +1723,7 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F214 F210-R1, a fresh Navisworks per package
 
 - Bader's answer to Q204 of 18 Oct 2026, F-R1: a fresh Navisworks start per package, Run pressed once, the next starting only after the last closed, measured first, one package failing or crashing never stopping the next, one RESULT joining every package, proved on the flat C06 and C07 run where C07 gets its pictures. Measured by tools\probes\PackageStartProbe, docs\history\scan.md 5z-zj: a plugin inside one Navisworks starts a helper program, which starts a second Navisworks through the Automation API, hands the plugin there its arguments and waits for it to be gone. So the window plans and confirms as before, writes an order and starts Federator.Runner.exe from the bundle, which gives each package its own Navisworks where the add-in runs that package alone with no box and writes its result, and the window joins the results into one RESULT.
+- DONE 2026-10-18, merged in 296. run-20261018-110838 on 3244079: C06 and C07 each in its own Navisworks, 42 of 42 groups DONE, C07 3642 pictures where one start gave it 1.
 
 ## F216 F210-R4, the full path on every package line
 

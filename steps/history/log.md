@@ -26,18 +26,21 @@ What was done.
   left its Navisworks, a throw in the window's wait read the results while the runner ran, the live line said every package ran
   whatever happened, the confirm named a discard that no longer happens, the RESULT hid a package that ran nothing and called a
   package with no result not run, the drop down of recent NWFs read another NWF in a child, the counts were made twice, the
-  RESULT title and rule typed twice, and seven checks had no test. What it does not close is rows F214-R1 to R5.
+  RESULT title and rule typed twice, and seven checks had no test. These are proved by the code and the Core tests alone, since
+  the runs after them took the normal path and met none of those cases. What it does not close is rows F214-R1 to R5.
 - Core tests: 3363 passed before, 3381 after on the branch, 3382 with F218 merged in, 0 failed, 0 skipped. dotnet build of the
   solution: 0 errors, 0 warnings.
 
-What was proved here, Navisworks Manage 2025 started by the loop's launcher, nobody answering anything.
+What was proved here, Navisworks Manage 2025 started through the Automation API by the session's launcher script, kept in
+its scratchpad, which pressed Run and OK on the one confirm and answered nothing else, its record and its driver's for the C06
+and C07 run masked in steps\logs as 2026-10-18-F214-C06-C07-flat-launcher-record.txt and -driver-record.txt.
 - run-20261018-104535 on 28a8228 and run-20261018-110625 on 3244079, C:\NWC-PC-Test\work\r6b, four packages: each in its own
   Navisworks, started in 4.1 to 5.5 s, gone 1.2 to 1.8 s after the quit, the next only then, A and B FAILED on their bad NWC,
   C DONE, D FAILED naming its bad AR, one RESULT with every package's own RESULT under it.
 - run-20261018-110838 on 3244079, the flat copies of C06 and C07, C:\NWC-PC-Test\work\multi\flat\Parent into a fresh
   Report-F214: C06 in its own Navisworks 697.2 s, C07 in its own 745.0 s, each gone 2.4 to 2.7 s after the quit, 42 of 42 groups
-  DONE, 12414 clashes, C06 3656 pictures and C07 3642, where the one start of F210 gave C07 1 picture of 6207. 24.4 min in all
-  against 60.0 min in one start. Logs masked in steps\logs as 2026-10-18-F214-*.
+  DONE, 12414 clashes, C06 3656 pictures and C07 3642, where the one start of F210 gave C07 1 picture of 6207. The runner took
+  1464.2 s, 24.4 min, against 59.8 min from RUN started to RUN finished in F210's one start, run-20261018-010353. Logs masked in steps\logs as 2026-10-18-F214-*.
 
 What remains. Whether a Navisworks a person started can start the runner's is UNKNOWN, step 1 of steps\03_bader_next.md. The
 memory stop still fires in the last 6 or 7 groups of a package of 21, row F214-R5.

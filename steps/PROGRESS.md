@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 11:45, last run 94/item1-C02, the round of F212 to F221, F214 proved on C06 and C07, its PR next
+STATE OPEN, 2026-10-18 12:05, last run 94/item1-C02, the round of F212 to F221, F214 PR 296 merging, then F215
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,13 +16,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 285 | 16 | 2 | 19 | 71 | 7 | 400 |
-| total | 488 | 24 | 2 | 19 | 172 | 18 | 723 |
+| outside the waves | 287 | 16 | 0 | 19 | 71 | 7 | 400 |
+| total | 490 | 24 | 0 | 19 | 172 | 18 | 723 |
 <!-- the end of the counts -->
 
 ## Now
 - 18 Oct, Bader's answers to Q202 to Q206, F212 to F221, plan atop steps\history\log.md. Merged: F212 292, F213 293, F216 294, F218 295.
-  F214 proved: C06 and C07 each in its own Navisworks, 42 of 42 DONE, C07 3642 pictures, 24.4 min. Its PR next
+  F214 proved: C06 and C07 each in its own Navisworks, 42 of 42 DONE, C07 3642 pictures, 24.4 min. PR 296
 - 18 Oct before: F208 to F211, 288 to 291, the packages, the discipline reports, the test on C06 and C07 and the audit
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
