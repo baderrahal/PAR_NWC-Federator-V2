@@ -392,22 +392,8 @@ namespace Federator.Addin.Ui
             NwcManifest last = null;
             ManifestComparison changes = plan.Paths().Count == 1 ? ReadWhatChanged(nwf, out last) : null;
 
-            int oldPictures = -1;
             int toolViews = last == null ? -1 : (int)last.Fact("toolviews");
-
-            if (logFolder != null)
-            {
-                try
-                {
-                    string files = Path.Combine(
-                        ReportPaths.ClashReportFolder(logFolder), Path.GetFileNameWithoutExtension(nwf) + "_files");
-                    oldPictures = Directory.Exists(files) ? Directory.GetFiles(files, "cd*.jpg").Length : 0;
-                }
-                catch (Exception)
-                {
-                    oldPictures = -1;
-                }
-            }
+            int oldPictures = logFolder == null ? -1 : OldPicturesIn(new[] { RefreshConfirm.PicturesFolderOf(logFolder, nwf) });
 
             string text = RefreshConfirm.Text(
                 name,
@@ -425,6 +411,15 @@ namespace Federator.Addin.Ui
                 this, text, RefreshConfirm.Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
 
             return answer == MessageBoxResult.OK;
+        }
+
+        /// <summary>
+        /// The old pictures in these folders, F217, by Core's rule, `RefreshConfirm.OldPictures`, read off the disk, minus one
+        /// where a folder would not read, which the confirm says UNKNOWN.
+        /// </summary>
+        private static int OldPicturesIn(IEnumerable<string> folders)
+        {
+            return RefreshConfirm.OldPictures(folders, folder => Directory.Exists(folder) ? Directory.GetFiles(folder) : null);
         }
 
         /// <summary>Puts the table of what each test did on the NWF page, the tests that moved, from every NWF the run refreshed.</summary>

@@ -270,6 +270,64 @@ namespace Federator.Core.Rerun
 
         /// <summary>The window's title of the confirmation and the words of the rule it states once more.</summary>
         public const string Title = "Parsons NWC Federator";
+
+        /// <summary>
+        /// Where an NWF's pictures sit, F217: its Log folder's Clash report folder, then the NWF's name with _files, the
+        /// folder the one NWF's confirm and the confirm of a run of packages both count in.
+        /// </summary>
+        public static string PicturesFolderOf(string logFolder, string nwf)
+        {
+            return System.IO.Path.Combine(ReportPaths.ClashReportFolder(logFolder), System.IO.Path.GetFileNameWithoutExtension(nwf) + "_files");
+        }
+
+        /// <summary>
+        /// The old pictures a refresh writes again or removes, F217, Bader's F-R5 of 18 Oct 2026: across every folder, the
+        /// files named as the tool names its pictures, `LeftoverPictures.IsOurPictureName`, the rule F177's removal reads,
+        /// so the number is the files the run can write over or remove. filesIn gives a folder's file names, or null where
+        /// the folder is not there, which holds none. Minus one, said UNKNOWN, where a folder could not be read.
+        /// </summary>
+        public static int OldPictures(IEnumerable<string> folders, Func<string, IEnumerable<string>> filesIn)
+        {
+            if (folders == null || filesIn == null)
+            {
+                return -1;
+            }
+
+            int count = 0;
+
+            foreach (string folder in folders)
+            {
+                IEnumerable<string> files;
+
+                try
+                {
+                    files = filesIn(folder);
+                }
+                catch (System.IO.IOException)
+                {
+                    return -1;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return -1;
+                }
+
+                if (files == null)
+                {
+                    continue;
+                }
+
+                foreach (string file in files)
+                {
+                    if (LeftoverPictures.IsOurPictureName(System.IO.Path.GetFileName(file)))
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
     }
 
     /// <summary>
