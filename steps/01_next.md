@@ -1818,3 +1818,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F233 one discipline groups are not built
 
 - The round of 19 Oct 2026, fix 3: a group of one discipline is not appended and gets no NWF, NWD, Excel, Internal Excel, HTML, picture folder or viewpoints, on both pages, one log line naming its community, building, discipline and file names and one discipline, not built, one RESULT line per community with the count, an NWF of such a group from an earlier run not deleted and not run and named in the log. Its discipline report rows are F234's.
+- DONE 2026-10-19, merged in 314. A group of one discipline not built on both pages, its NOT BUILT line, the line of an NWF an earlier run left, RESULT's not built line per community and its one discipline count, an NWF linking a file not on the disk not judged, proved on copies at 280e2f04 on both pages with every NWF the same SHA-256 after, 3415 Core tests passed.
