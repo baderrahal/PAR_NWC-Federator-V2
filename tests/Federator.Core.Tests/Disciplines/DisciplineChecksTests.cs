@@ -124,6 +124,30 @@ namespace Federator.Core.Tests
             Assert.That(rows.All(r => r.Result == CheckWords.NotRead && r.Value.EndsWith("its NWF would not open")), Is.True);
         }
 
+        /// <summary>The EL model of a group whose box starts this many metres east of the AR box, every other side lined up.</summary>
+        private static string ResultAtAGapOf(double metres)
+        {
+            DisciplineGroup group = new DisciplineGroup("G", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL") },
+                new[]
+                {
+                    new ModelFacts(Nwc("1B06BC", "AR")).WithBox(0, 0, 0, 10, 10, 10).WithSite("S"),
+                    new ModelFacts(Nwc("1B06BC", "EL")).WithBox(10 + metres, 0, 0, 20 + metres, 10, 10).WithSite("S")
+                },
+                null);
+
+            return CoordinatesCheck.Rows("C", "C", group, new DisciplineReportSettings(), Names).Single(r => r.Discipline == "EL").Result;
+        }
+
+        // F218, Bader's answer to Q202 of 18 Oct 2026: far is more than 30 m from the reference discipline, 30 m the default.
+        [Test]
+        public void FarIsMoreThanThirtyMetresByDefaultSoThirtyItselfIsNear()
+        {
+            Assert.That(DisciplineReportSettings.DefaultFarMetres, Is.EqualTo(30.0));
+            Assert.That(ResultAtAGapOf(29.9), Is.EqualTo(CheckWords.Near));
+            Assert.That(ResultAtAGapOf(30.0), Is.EqualTo(CheckWords.Near), "far is more than 30 m, so exactly 30 m is near");
+            Assert.That(ResultAtAGapOf(30.1), Is.EqualTo(CheckWords.Far));
+        }
+
         [Test]
         public void TheFarSettingDecidesFarOrNear()
         {
