@@ -1700,10 +1700,25 @@ and 6 does not read as broken.
   picture and again after each picture is saved and disposed, `ClashImages.Write`, and past 9000 no more
   are made: a NOTICE with the picture number and the count, the pass stops asking for rows, and the run
   goes on, the NWF and the NWD being already written since F182. It is not the pictures' guard, which stops
-  the run. The only Bitmap the picture step receives is the one of `TestsImageForResult`, disposed in a
+  the run. The Bitmaps the picture step receives are the one of `TestsImageForResult` and, since F226, a retake's, each disposed in a
   finally on every path. The GDI split line, the MEMORY line, the RATE line of F157 and F161 and the
   texture cache line of F147 are kept. The texture cache is read and reported and no new clearing is made
   by F175.
+- THE RETAKE OF A PICTURE THAT DRAWS NO ITEM OF ITS CLASH, F226, Bader's answer to Q208 of 18 Oct 2026, so no Image cell
+  shows only sky, measured in scan.md 5z-zm, `Federator.Core.Report.PictureRetake`. A picture draws an item of its clash where
+  any pixel read, every `PictureRetakeSettings.Every` pixel of every such row, 2, reads red or green above `Bright`, 180, with
+  the other two channels below `Dark`, 110, count-sky-pictures.ps1's measure, `ItemPixels`. A picture shows only the sky where
+  at least `SkyShare`, 95 percent, of the pixels read are the sky's blue, blue the largest channel, green over red, blue at
+  least `SkyBlueAtLeast`, 200, and over red by `SkyBlueOverRed`, 40, `OnlyTheSky`, since the sky runs from 108,144,230 at the
+  top to 209,238,254 at the bottom of a picture of 1024 by 1024 and no one colour names it, which F226's first smoke run read
+  when its first pass looked for 136,169,238 at the middle and kept 4 pictures of only the sky. The retake's camera is the
+  clash's own moved back along the line from the clash's centre through it to `LeastMillimetres`, 9144, 30 ft, where it
+  stands closer, `BackedOff`, and left where it stands farther or on the centre. `Choose` keeps the tool's picture where it
+  draws an item, the retake where it draws one, the tool's where it is not only the sky and the retake draws none, the retake
+  where only the tool's is the sky, and none where both are, so a picture of only the sky is never written. `RetakeTally`
+  counts the pictures drawing no item, those taken again with their seconds, those drawing their items, those still drawing
+  none, those not taken again and those left with no picture, on one RETAKE line a group, a nought and the setting off each
+  said apart. `ImageOptions.Retake` carries the settings, on by default, each refused where it is set if it cannot work
 - THE TESTS AT OR UNDER THEIR CAP ARE PICTURED FIRST, F203, PictureWalk.Of(report, readFrom, limitOf). The walk
   takes every test whose rows waiting for a picture are no more than its cap first, then every test over its cap,
   each part in report order, so the memory stop of F182 takes the last pictures of the largest tests and not every

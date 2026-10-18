@@ -1779,3 +1779,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - The round of 18 Oct 2026, item 4: an NWF refreshed before holds the results of tests the rule no longer runs. Never delete a test from an NWF, count them in the log as not run by the rule, never read them as FAILED in COVERAGE, and ask Bader whether to remove them, Q212.
 - DONE 2026-10-18, merged in 305. A test a rule left out that an NWF still holds read not run by the rule and never FAILED, counted per group by what was read of it, 1B06BS 28 held, 1B06M1 14 held with 22 clashes and 1B06PE 32 with 16 on NWFs built before F224, 0 FAILED, Q212 asked, 3427 Core tests passed.
+
+## F226 Q208, a picture that draws no item of its clash taken again
+
+- Bader's answer to Q208 of 18 Oct 2026: retake each picture that draws no item of its clash through the active view, from the clash's own camera moved back to 30 ft where it stands closer, its two items red and green, other models hidden, measured first on copies of 1B06BC and 1B06P1, one IMAGES line with the count retaken and the count still empty, and no Image cell showing only sky.
+- DONE 2026-10-18, merged in 306. A picture that draws no item of its clash taken again through the active view, 1B06BC 19 of 173 retaken and 15 drawing their items, 0 pictures of only the sky in 1B06BC and 1B06P1, measured in scan.md 5z-zm on 76 and 25, 3433 Core tests passed.

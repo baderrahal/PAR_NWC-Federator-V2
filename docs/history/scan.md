@@ -9055,3 +9055,49 @@ read for autosave files dated during it, row F223-R1.
 16:51:39 and 16:52:05 while it ran, and it said Auto-Save was left off for Bader. Those three started with the switch at "3 0".
 The session wrote "0" back by hand at 17:05 once no Navisworks ran, read back "0", and left every other value of the 35 the guard
 named, the recent files and the session counters of Bader's own starts, as they were.
+
+## 5z-zm. A PICTURE THAT DRAWS NO ITEM OF ITS CLASH, TAKEN AGAIN THROUGH THE ACTIVE VIEW, MEASURED 2026-10-18
+
+F226, Bader's answer to Q208 of 18 Oct 2026: retake each picture that draws no item of its clash through the active view, from
+the clash's own camera moved back to 30 ft where it stands closer, its two items red and green, other models hidden, measured
+first on copies of 1B06BC and 1B06P1. `tools\probes\SkyProbe\probe-sky.ps1` with the new mode retake of `SkyProbePlugin.cs`, the
+guard of tools\loop\nw-guard.ps1 untouched at sha256 349551F8, and -HideOther, so Clash Detective's Hide Other was on as the tool
+asks it for its pictures. Two runs, 17:07 on the copy of 1B06BC and 17:09 on the copy of 1B06P1, both NWFs of the C06 flat run of
+F210 that 5z-zk read, 1B06BC at sha256 3E69F1B0, every test of each, `-Tests *`, at most 400 clashes a test, 64 s and 45 s by
+the probe's own clock, each Navisworks quit by Dispose, Bader's settings put back, 35 registry values with 0 still differing. The results, the
+machine's name masked, are sky-retake-1B06BC-20261018.txt and sky-retake-1B06P1-20261018.txt in tools\probes\SkyProbe, the
+pictures under %LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-170714 and sky-20261018-170918.
+
+**HOW.** For each clash the picture is taken the tool's way, `TestsImageForResult` at 1024 by 600 with every model but the two
+items' models hidden, and measured with count-sky-pictures.ps1's own rule, pixels of every 2nd of every 2nd row reading red or
+green above 180 with the other two below 110. Where it holds none the clash's own viewpoint, `TestsViewpointForResult`, is
+copied and its position moved back along the line from the clash's centre through it to 30 ft where it stood closer, the first
+item coloured red and the second green by `OverrideTemporaryColor`, every other model hidden, the camera set on the active view
+by `CopyViewpointFrom` with a jump cut, and `View.GenerateImage` at 1024 by 600 measured the same way. `ResetAllTemporaryMaterials`
+and `ResetAllHidden` after each.
+
+**WHAT IT GAVE.** 1B06BC: 512 pictures taken the tool's way, 76 of them drawing no item, the 76 of the audit, 72 of those drawing
+their items when retaken and 4 still none, 7.872 s for the 76 retakes. 1B06P1: 374 pictures, 25 drawing no item, the 25 of 5z-zk,
+all 25 drawing their items when retaken, 2.54 s for the 25. The clash's camera stood 2.61 to 154.929 ft from its centre, 72 of
+1B06BC's retakes moved back to 30 ft and the rest taken where they stood. No retaken picture has the sky's colour, 136,169,238,
+at its middle, in either group. THE 4 OF 1B06BC are two of BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls and two of
+BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls, each grey at the middle, 168,168,168, a solid of a shown model between the camera
+moved back and the clash, read off the picture of the first of them. Each picture keeps the grid label of the overlay, and the
+retake shows the other items of the shown models in their own colours, since Hide Other is Clash Detective's and not the active
+view's.
+
+**IN THE TOOL, F226.** The NWC page on copies of the 9 NWCs of 1B06BC and 1B06P1, community SKY of
+C:\NWC-PC-Test\work\smoke226, each group in its own Navisworks, the window of the tool open over Navisworks as it is during
+every run. run-20261018-185113 on b481c5dd: 1B06BC 173 pictures, 19 drawing no item of their clash, all 19 taken again in 1.0 s,
+15 of them drawing their items and 4 still none, and 1B06P1 269 pictures, none drawing no item, since its 25 of 5z-zk all
+belong to tests of one set code, which F224 no longer runs. count-sky-pictures.ps1 over the written pictures still read 4 of
+1B06BC with the sky at x 512 y 300 and no item: the tool's own pictures kept, since the first pass read the sky as 136,169,238
+at the middle, and the tool's pictures are 1024 by 1024, where the sky runs from 108,144,230 at the top through 158,189,243 at
+the middle to 209,238,254 at the bottom, so the middle read not the sky and the tool's picture won over a retake drawing a
+wall. The sky is read since by the share of the pixels read that are its blue, 95 percent, blue the largest channel, green
+over red, blue at least 200 and over red by 40. run-20261018-190355 on a6db644b: the same 19, 15 and 4, and the counter read 0
+pictures of only the sky in both groups, the 4 now the retakes of a grey wall, 168,168,168 at the middle.
+
+**UNKNOWN.** Whether a retake from 30 ft draws its items where a run takes pictures one after another for 3000 clashes, since
+the probe took 101 and the tool 19. What Navisworks' own export would give the 4. Whether the client accepts a retaken picture
+in place of Clash Detective's, Q208 says retake.

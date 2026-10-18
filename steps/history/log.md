@@ -2,6 +2,56 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F226, Q208, a picture that draws no item of its clash taken again, so no Image cell shows only sky
+
+Branch fix-F226 off main, rebased onto 8923d21 once F225 merged. Bader's answer to Q208: retake each picture that draws no item
+of its clash through the active view, from the clash's own camera moved back to 30 ft where it stands closer, its two items
+red and green, other models hidden, measured first on copies of 1B06BC and 1B06P1, one IMAGES line with the count retaken and
+the count still empty, and no Image cell showing only sky.
+
+What was measured first, docs\history\scan.md 5z-zm. The mode retake of `tools\probes\SkyProbe` on the copies of the C06 flat
+run's NWFs that 5z-zk read, every test of each: 1B06BC 512 pictures, 76 drawing no item, the audit's 76, 72 of them drawing
+their items when retaken and 4 none, a solid between the camera and the clash, 1B06P1 374 pictures, 25 drawing no item, the 25
+of 5z-zk, all 25 drawing them when retaken, no retake with the sky at its middle, 7.9 s and 2.5 s for the retakes.
+
+What was done. Core: `PictureRetake` reads a picture's red and green and whether it shows only the sky, moves the camera back,
+chooses the picture kept, and `RetakeTally` writes the one RETAKE line, every number a setting on `ImageOptions.Retake`. The
+add-in: `ClashImages` measures each picture once through LockBits and, where it draws no item, takes it again through the
+active view as Q208 says, puts back only the colours, the hidden models and the camera it changed, keeps what Core chooses,
+writes no picture where both show only the sky and releases its number, and the runner writes the group's RETAKE line once the
+picture pass ends. The first smoke run read 4 written pictures of only the sky, since the first pass looked for the sky's
+colour of 5z-zk, 136,169,238, at the middle, and the tool's pictures of 1024 by 1024 read 158,189,243 there, the sky running
+down the picture, so the tool's own picture won over a retake drawing a wall. The sky is read since by the share of the pixels
+read that are its blue. The reviewer and the breaker read that pass, and their findings were taken: a retake that threw, a
+result group or a document in a unit the table does not know dropped a picture of only the sky where it now keeps the tool's
+picture as before F226, said and counted, the four put backs shared one finally where each now has its own try and the hiding
+moved inside the try, the models were matched by their display name where they are now matched by Model.FileName off the
+views' one walk, SavedViewpoints.ModelFileOf, the colours were typed again where ViewpointColour holds them, the item, parent
+and point wrappers were left undisposed, each picture's bytes took a new 4 MB array where one buffer now serves the group and
+a bottom up bitmap is never read, five settings refused nothing, the line had a double negative, said both where no retake
+was taken and gave no whole beside its part, where it now reads N of the M pictures read, the line could be lost where the
+pass threw and wrote no .tsv row, where it is now numbered in the pass's finally, and four comments and rules said the pass
+moves no camera and receives one bitmap. Each picture left with no picture is named on its own line. Rows F226-R1 to R5 hold
+what is left.
+
+What was proved here. Core tests 3427 passed before on main, 3433 after, 0 failed, 0 skipped. The solution built in Release,
+0 errors, check-locals and check-imports clean. Of the 6 Core tests added, in PictureRetakeTests, each breaks one thing: a red
+or green item against the sky and a shaded pixel, a sky of any row against a wall and a label, the camera moved back only where
+it stands closer, the picture kept with a retake not taken keeping the tool's, the line beside the whole with a nought and the
+setting off, and a number that cannot work, NaN among them. On Navisworks, the NWC page on copies of the 9 NWCs
+of 1B06BC and 1B06P1 of C06, community SKY of C:\NWC-PC-Test\work\smoke226, each group in its own Navisworks:
+run-20261018-185113 on b481c5dd, evidence in C:\NWC-PC-Test\work\run-evidence\2026-10-18-F226-smoke-nwc, 1B06BC 173 clashes and
+pictures, 19 drawing no item, 19 retaken in 1.0 s, 15 drawing their items and 4 none, 1B06P1 269, none to retake, its 25 of
+5z-zk belonging to tests of one set code F224 no longer runs, and count-sky-pictures.ps1 read 4 written pictures of only the
+sky. run-20261018-190355 on a6db644b, evidence in ...-F226-smoke-nwc-b, the same 19, 15 and 4, and the counter read 0 pictures
+of only the sky of 173 and 269, the 4 the retakes of a grey wall, 168,168,168 at the middle. run-20261018-193316 on 3b7aa874,
+the readers' findings taken, its stamp reading +edits for the agents' worktrees under .claude\worktrees, untracked, evidence
+in ...-F226-smoke-nwc-c: 1B06BC 19 of the 173 pictures read drawing no item, 19 retaken in 1.0 s, 15 drawing their items, 4
+still none, 0 not taken again and 0 left with no picture, and 1B06P1 every one of its 269 drawing an item. 2 DONE, 442
+clashes, every run.
+
+What remains. The RETAKE line of every group of C06 and C07, F229. Known bugs: rows F226-R1 to R5. What comes next: F227, Q210.
+
 ## 2026-10-18 F225, F219-R1 with Q209, a test a rule left out that an NWF still holds is not run by the rule and never FAILED
 
 Branch fix-F225 off main 50d3056. The round's item 4: an NWF refreshed before holds the results of tests the rule no longer

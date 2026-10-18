@@ -34,10 +34,17 @@ namespace SkyProbe
         private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
 
         private StreamWriter results;
+        private bool retaking;
+        private double backFeet = 30.0;
+        private int tookAll;
+        private int emptyAll;
+        private int retakenDrew;
+        private int retakenEmpty;
+        private double retakeSeconds;
 
         public override int Execute(params string[] parameters)
         {
-            if (parameters == null || parameters.Length < 6 || parameters[0] != "sky")
+            if (parameters == null || parameters.Length < 6 || (parameters[0] != "sky" && parameters[0] != "retake"))
             {
                 return 2;
             }
@@ -45,11 +52,24 @@ namespace SkyProbe
             using (results = new StreamWriter(parameters[1], true, new UTF8Encoding(false)))
             {
                 results.AutoFlush = true;
-                Say("probe started, mode sky");
+                Say("probe started, mode " + parameters[0]);
 
                 try
                 {
+                    if (parameters[0] == "retake")
+                    {
+                        backFeet = parameters.Length > 6 ? double.Parse(parameters[6], Inv) : 30.0;
+                        retaking = true;
+                    }
+
                     Measure(parameters[2], parameters[3].Split('|'), int.Parse(parameters[4], Inv), parameters[5]);
+
+                    if (retaking)
+                    {
+                        Say("RETAKE TOTAL  " + tookAll + " pictures taken the tool's way, " + emptyAll + " of them drew no item of its clash, "
+                            + retakenDrew + " of those drew an item when retaken, " + retakenEmpty + " still drew none, " + N(retakeSeconds)
+                            + " s in the retakes, from " + N(backFeet) + " ft at the nearest");
+                    }
                 }
                 catch (Exception error)
                 {
@@ -121,6 +141,14 @@ namespace SkyProbe
             Directory.CreateDirectory(pictures);
             DocumentClashTests clashTests = document.GetClash().TestsData;
 
+            if (tests.Length == 1 && tests[0] == "*")
+            {
+                List<string> every = new List<string>();
+                Names(clashTests.Tests, every);
+                tests = every.ToArray();
+                Say("every test of the document, " + tests.Length);
+            }
+
             foreach (string name in tests)
             {
                 ClashTest test = Find(clashTests.Tests, name);
@@ -134,6 +162,24 @@ namespace SkyProbe
 
             document.Models.ResetAllHidden();
             Say("every item shown again, as the probe leaves it, the NWF not saved");
+        }
+
+        private static void Names(SavedItemCollection items, List<string> names)
+        {
+            foreach (SavedItem item in items)
+            {
+                if (item is ClashTest)
+                {
+                    names.Add(item.DisplayName);
+                }
+
+                GroupItem group = item as GroupItem;
+
+                if (group != null && !(item is ClashTest))
+                {
+                    Names(group.Children, names);
+                }
+            }
         }
 
         private static ClashTest Find(SavedItemCollection items, string name)
@@ -202,6 +248,13 @@ namespace SkyProbe
                 ClashResult clash = clashes[i];
                 string tag = Safe(test.DisplayName) + "-" + (i + 1).ToString("000", Inv);
                 Point3D centre = clash.Center;
+
+                if (retaking)
+                {
+                    Retake(document, clashTests, clash, centre, pictures, tag);
+                    continue;
+                }
+
                 Say("-- clash " + (i + 1) + "  '" + clash.DisplayName + "'  status " + clash.Status + "  distance " + N(clash.Distance)
                     + "  centre " + P(centre));
                 Say("     item 1 in " + ModelOf(document, clash.Item1) + ", item 2 in " + ModelOf(document, clash.Item2));
@@ -265,6 +318,139 @@ namespace SkyProbe
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// F226, Bader's answer to Q208: the picture taken the tool's way, TestsImageForResult with only its items' models
+        /// shown, measured for the red and green of its two items, and where it draws neither, taken again through the active
+        /// view from the clash's own camera, moved back along the line from the centre through it to backFeet where it stands
+        /// closer, its first item red and its second green by OverrideTemporaryColor, every other model hidden, and measured
+        /// the same way. The colours and the hiding are taken off after each.
+        /// </summary>
+        private void Retake(Document document, DocumentClashTests clashTests, ClashResult clash, Point3D centre, string pictures, string tag)
+        {
+            List<ModelItem> others = OtherRoots(document, clash);
+            document.Models.SetHidden(others, true);
+            int toolItems;
+
+            try
+            {
+                using (Bitmap bitmap = clashTests.TestsImageForResult(clash, ImageGenerationStyle.ScenePlusOverlay, 1024, 600))
+                {
+                    if (bitmap == null)
+                    {
+                        Say("     the tool's picture: none returned");
+                        return;
+                    }
+
+                    bitmap.Save(Path.Combine(pictures, tag + "-tool.jpg"), ImageFormat.Jpeg);
+                    toolItems = ItemPixels(bitmap);
+                    Say("     the tool's picture: " + toolItems + " item pixels, " + N(Differs(bitmap)) + " percent differs, " + tag + "-tool.jpg");
+                }
+            }
+            finally
+            {
+                document.Models.ResetAllHidden();
+            }
+
+            tookAll++;
+
+            if (toolItems > 0)
+            {
+                return;
+            }
+
+            emptyAll++;
+            System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+            View active = document.ActiveView;
+
+            using (Viewpoint own = clashTests.TestsViewpointForResult(clash))
+            using (Viewpoint moved = own.CreateCopy())
+            {
+                Point3D at = own.Position;
+                double dx = at.X - centre.X;
+                double dy = at.Y - centre.Y;
+                double dz = at.Z - centre.Z;
+                double length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                double feet = Math.Max(length, backFeet);
+
+                if (length > 0 && feet > length)
+                {
+                    double k = feet / length;
+                    moved.Position = new Point3D(centre.X + dx * k, centre.Y + dy * k, centre.Z + dz * k);
+                }
+
+                ModelItemCollection first = new ModelItemCollection();
+                ModelItemCollection second = new ModelItemCollection();
+
+                if (clash.Item1 != null)
+                {
+                    first.Add(clash.Item1);
+                }
+
+                if (clash.Item2 != null)
+                {
+                    second.Add(clash.Item2);
+                }
+
+                try
+                {
+                    document.Models.SetHidden(OtherRoots(document, clash), true);
+                    document.Models.OverrideTemporaryColor(first, new Autodesk.Navisworks.Api.Color(1, 0, 0));
+                    document.Models.OverrideTemporaryColor(second, new Autodesk.Navisworks.Api.Color(0, 1, 0));
+                    active.CopyViewpointFrom(moved, ViewChange.JumpCut);
+
+                    using (Bitmap bitmap = active.GenerateImage(ImageGenerationStyle.ScenePlusOverlay, 1024, 600, false))
+                    {
+                        bitmap.Save(Path.Combine(pictures, tag + "-retaken.jpg"), ImageFormat.Jpeg);
+                        int items = ItemPixels(bitmap);
+                        Color middle = bitmap.GetPixel(bitmap.Width / 2, bitmap.Height / 2);
+
+                        if (items > 0)
+                        {
+                            retakenDrew++;
+                        }
+                        else
+                        {
+                            retakenEmpty++;
+                        }
+
+                        Say("     RETAKEN from " + N(feet) + " ft, its camera " + N(length) + " ft from the centre: " + items + " item pixels, "
+                            + N(Differs(bitmap)) + " percent differs, colour at the middle " + middle.R + "," + middle.G + "," + middle.B
+                            + ", " + tag + "-retaken.jpg");
+                    }
+                }
+                finally
+                {
+                    document.Models.ResetAllTemporaryMaterials();
+                    document.Models.ResetAllHidden();
+                    first.Dispose();
+                    second.Dispose();
+                }
+            }
+
+            retakeSeconds += watch.Elapsed.TotalSeconds;
+        }
+
+        /// <summary>The pixels, every 2nd of every 2nd row, that read as a clashing item's red or green, count-sky-pictures.ps1's measure.</summary>
+        private static int ItemPixels(Bitmap bitmap)
+        {
+            int items = 0;
+
+            for (int y = 0; y < bitmap.Height; y += 2)
+            {
+                for (int x = 0; x < bitmap.Width; x += 2)
+                {
+                    Color p = bitmap.GetPixel(x, y);
+
+                    if ((p.R > 180 && p.G < 110 && p.B < 110) || (p.G > 180 && p.R < 110 && p.B < 110))
+                    {
+                        items++;
+                    }
+                }
+            }
+
+            return items;
         }
 
         private void Picture(Document document, DocumentClashTests clashTests, ClashResult clash, Point3D centre, string path, string how)

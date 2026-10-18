@@ -2639,9 +2639,10 @@ namespace Federator.Addin.Engine
         /// modelsShown.Dispose in Run's finally runs after the undo is on again. One line reads
         /// IsUndoDisabled and the name of the step Undo would take next before and after the pass, a
         /// name and not the depth of the stack. The texture cache is watched across the pass by Core's
-        /// TextureCacheWatch. Every picture is already disposed as its save returns, and the pass moves
-        /// no camera, TestsImageForResult taking none, so there is no camera change to make a jump cut.
-        /// Every call here is on the main thread.
+        /// TextureCacheWatch. Every picture is already disposed as its save returns. The pass moves no
+        /// camera of its own, TestsImageForResult taking none, but the retake of F226 sets the active
+        /// view's camera for a picture that drew no item of its clash, by a jump cut, and puts back the
+        /// camera the view held. Every call here is on the main thread.
         /// </summary>
         private void RenderThePicturesWaiting(Document document, DocumentClashTests clashTests)
         {
@@ -2695,6 +2696,12 @@ namespace Federator.Addin.Engine
                     {
                         log.Line("IMAGES   " + textures.AtTheEnd());
                     }
+
+                    // F226, Bader's answer to Q208. The one line of the pictures taken again, the count retaken and the count
+                    // still empty, with its .tsv row, whichever way the pass ended.
+                    string retake = Images.RetakeLine();
+                    log.Numbered("IMAGES   " + retake, "retake", Report.Building,
+                        Images.RetakesDrewNothing.ToString(System.Globalization.CultureInfo.InvariantCulture), retake);
 
                     // F147, Bader's answer to Q155. Read by this pass alone, so released as it ends.
                     picturesWaiting.Clear();

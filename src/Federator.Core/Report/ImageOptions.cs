@@ -101,6 +101,9 @@ namespace Federator.Core.Report
         /// <summary>How many pictures between two MEMORY and RATE lines in the picture pass, 250, F157.</summary>
         public int LogEveryPictures { get; set; }
 
+        /// <summary>F226, Bader's answer to Q208: the retake of a picture that draws no item of its clash, on, from 30 ft at the nearest.</summary>
+        public PictureRetakeSettings Retake { get; } = new PictureRetakeSettings();
+
         /// <summary>Is this clash one to render.</summary>
         public bool Wants(ClashStatus status)
         {
