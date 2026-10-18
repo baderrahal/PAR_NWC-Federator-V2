@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F230, the audit of the round of 18 Oct evening, and the round's closing entry
+
+Branch fix-F230 off main b5cecfe. The round's end: the findings in claude\audit-round-2026-10-18b.md, what each fix proved, the
+counts per package, the pictures against the clashes per group, the run time against F220 and the bugs, the proof steps in
+steps\03_bader_next.md in one order, a full audit and QA after the last merge listing the contradictions with CLAUDE.md, and
+this closing entry, no pull request left open.
+
+What was done. claude\audit-round-2026-10-18b.md holds the table of the round's fixes and their pull requests, 302 to 310, what
+F229's test proved on each page with the counts per package, a table of every group of the NWC page with its clashes, its
+pictures, its retakes, the tests Q209 left out and F220's clashes, the bugs found as tracker rows, the checks that pass, and the
+audit agent's reading of main e38344c against CLAUDE.md and the eight rule files: 35 contradictions, 25 of this round's fixes,
+10 older, and the morning's 26, of which 16 are closed, 1 came back and 9 are open. The ten that were text are fixed here: the
+ceiling runner.md named in the wrong file, the comments of AutoSaveSwitch, PictureRetake.Choose and PictureLimits.BoxLabel,
+workflow.md's sky pictures still pending, addin.md's Browse and Read, PROGRESS.md rewritten for the round, F229's and F230's
+sections and rows, a control byte in 01_next.md and a Look for line of F227. The rest are listed for Bader. The proof steps of
+F222 to F227 stand at the top of 03_bader_next.md in the order to run them.
+
+What was proved here. Core tests 3441 passed before and after, 0 failed, 0 skipped. The comments changed are the only code, so
+the solution was built again, 0 errors.
+
+The round, F222 to F230 and FR-204, all merged, 302 to 310: a fresh Navisworks per group on both pages, Auto-Save off while the
+tool works and put back as it was off a record kept on disk, only tests across two set codes run, a test a rule left out that
+an NWF still holds never FAILED, a picture that draws no item of its clash taken again so no Image cell shows only sky, the
+eight numbers of Q210 settings with 27 members internal, the documents of the morning's audit, and F229's test on C06, C07 and
+SKY with 46 of 46 DONE on each page, 5895 clashes, no memory stop, Q209 removing 3576 of F220's 9029 clashes, 0 pictures of
+only the sky, and the desktop folder of real files 0 lines differing.
+
+What remains. Bader's steps of the round, Q212, and the contradictions listed. Known bugs: the rows F222-R1 to R4, F223-R1 to
+R4, F224-R1 to R4, F225-R1 to R3, F226-R1 to R5 and F229-R1. What comes next: Bader's answers.
+
 ## 2026-10-18 F229, the test of the round on multi3, C06, C07 and a package of 1B06BC and 1B06P1, both pages
 
 Branch fix-F229 off main e38344c. The round's TEST: main built and installed, C06 and C07 copied from the desktop folder of

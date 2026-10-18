@@ -121,7 +121,7 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The label beside the box of a cap per test on the Clash step, the three caps read off the options, F227 on the
+        /// The label beside the box of a cap per test on the Outputs step, under More, the three caps read off the options, F227 on the
         /// reviewer's finding, where the XAML typed them.
         /// </summary>
         public static string BoxLabel(ImageOptions options)

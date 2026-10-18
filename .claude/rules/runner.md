@@ -30,7 +30,7 @@ Two rules are one rule each with a half in the window and a half here, so each i
 whole, never copied here:
 
 - addin.md, A fresh Navisworks per group, F222: one Navisworks a group, the seconds of each start and each quit and the
-  runner's last line adding them up, and the ceiling of one group, 30 minutes.
+  runner's last line adding them up. The ceiling of one group, 30 minutes, is core.md's, A FRESH NAVISWORKS PER GROUP.
 - addin.md, AUTO-SAVE IS OFF WHILE THE TOOL WORKS AND PUT BACK EXACTLY AS IT WAS, F223: the value before kept on its record
   as the runner starts, "3 0" before every group inside its try, and the one put back in Main's finally, deleting the record
   only where it reads as it was and no Navisworks new since the run began still runs.

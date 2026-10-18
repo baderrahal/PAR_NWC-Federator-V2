@@ -96,7 +96,7 @@ Navisworks session. F222 first, since every later run goes through it.
 ### F227, the eight numbers are settings with today's defaults
 
 1. Run any package on the NWC page as in F222's steps.
-   Look for: the run reading as before, every group's IMAGES settings line ending `every test gets pictures for at most its
+   Look for: the run reading as before, every group's IMAGES settings line holding `every test gets pictures for at most its
    first 150 clashes at priority A, 100 at priority B and 50 at priority C`.
 2. Open one group's own log.
    Look for: the running count lines every 25 tests as before, `CLASH    ... 25 of`, and the EXPORT CHECK block listing at most

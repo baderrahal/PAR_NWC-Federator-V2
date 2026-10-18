@@ -1186,7 +1186,7 @@ discipline facts its models gave or why none were read. It writes no discipline 
 reads every group's result, fills the package tally, writes each package's four discipline workbooks off the facts with
 `PackageRunFacts.GroupsOf`, each package in a try of its own, and only then writes the joined RESULT, so RESULT stays the
 last block. It counts a group as ran only where its result names a group, and joins the results against the packages
-the run planned and never the tree read again, a group counted in a try of its own, while Browse and Read refuse during the
+the run planned and never the tree read again, a group counted in a try of its own, while the Browse of the parent folder and Read refuse during the
 run. A group's own Navisworks opens its log with `RunLog.KeepEveryLog`, so it deletes no log the joined RESULT names, and
 where its package plans no group at all its result gives the package's own refusal and never `NotTheGroup`. A group's own
 window is a fresh engine, so the guard of 50 failures and Clash Detective's Hide Other baseline of F150 are each one group's,
