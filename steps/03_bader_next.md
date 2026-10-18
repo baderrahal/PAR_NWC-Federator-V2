@@ -1,5 +1,29 @@
 # 03 Bader next
 
+## The round of 18 Oct evening, F222 to F230
+
+Simple words. Each fix of this round adds its steps here as it merges, and F230 orders them for one build, one install and one
+Navisworks session. F222 first, since every later run goes through it.
+
+### F222, a fresh Navisworks for every group
+
+1. Start Navisworks Manage 2025 from the Start menu, as you always do, and open the tool.
+2. On the NWC page, step 5, type a parent folder of copies holding one community of three or more groups and an empty Report
+   folder, press Read and tick the community.
+   Look for: the tree naming the community with its files and groups, nothing ticked until you tick it.
+3. Press Run ticked packages and OK on the one confirm, and click nothing more.
+   Look for: a second Navisworks opening, working and closing once for each group, the next only after the last has gone, and
+   the confirm saying each group runs in a fresh Navisworks of its own.
+4. When the live line says the run finished, open the log with Open log folder.
+   Look for: one line `group N of M, <package>  <group>, starting a fresh Navisworks` a group, each with `Navisworks started in`
+   and `its Navisworks is gone ... after it was told to quit`, and the line `the runner ended after M groups of 1 package in ...,
+   M starts took ... in all and M quits ...`.
+5. Read RESULT at the end of that log.
+   Look for: `fresh starts   : M groups of 1 package`, one `group` line a group with DONE and its clashes, and one `GROUP <package>
+   <group> : its own RESULT` block a group.
+6. Open the four checks workbooks in the package's folder of the Report folder.
+   Look for: one Missing discipline line a discipline, and a group that did not run said `not read`, never `missing`.
+
 ## The round of 18 Oct, F212 to F221
 
 Simple words. Every fix of this round but two was seen on Navisworks by F220, F212 being a rule read off the code and F215 a measurement left UNKNOWN for Q208, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.

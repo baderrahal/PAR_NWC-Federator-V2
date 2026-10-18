@@ -2,6 +2,44 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F222, Q211, a fresh Navisworks per group on both pages
+
+Branch fix-F222 off main 7acbb0e. Bader's answer to Q211: a fresh Navisworks per group, not only per package, on both pages,
+Run pressed once, one group failing or crashing never stopping the next, RESULT joining every group, the seconds of each start
+and quit and the total in the log. Bader's answers to Q207 to Q211 are written under each in steps\02_questions.md by this pull
+request, Q211 written as asked in the round since no item 211 was in the file.
+
+What was done. Core: the order names one `PackageRunUnit` a group, its package, its NWF and its name, its shape 2 so an order
+of the shape before is refused, two groups of one NWF refused, and `IsTheGroupOf` the one rule a group is found by. Each group's
+result carries its end, its files and the discipline facts of its models, every value not read written with why, the box in
+G17, and `PackageRunFacts.GroupsOf` turns the results of a package into the groups its four workbooks read. The tally names a
+group with no result or that ran nothing on its own line, and the package, community and run lines say their clashes are then
+at least the total. The runner starts one Navisworks a group, counts a start once its process is told and a quit once it is
+gone after being told, says the Navisworks it had to end, and its last line adds them up. The ceiling is one group's, 30
+minutes, over the 139.7 s of F220's longest group. The add-in: a group's own window keeps its one job or NWF and writes no
+workbook, its log deletes no log, `RunLog.KeepEveryLog`, and the window a person runs reads every result against the packages
+it planned, each group in a try of its own, writes the discipline workbooks and then the joined RESULT. Browse refuses during a
+run. The missing discipline check says a group whose files were not read is not read, never missing a discipline. The reviewer
+and the breaker read the first pass, and their findings were taken: wrong missing rows on the NWF page, one throw losing RESULT,
+the rule written three times, the ceiling of a package, R against G17, untested reader checks, the unenforced unique NWF, the
+runner's counts, stale words, children pruning the logs RESULT names, exact totals over groups with no end, a group that ran
+nothing counted as ran and a misleading reason. Rows F222-R1 to R4 hold what is left.
+
+What was proved here. Core tests 3392 passed before on main, 3406 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors. check-locals and check-imports clean. On Navisworks, run-20261018-153025 on 68b08888, the first pass, the NWC page on a
+copy of three small groups of C06, 1B06BS, 1B06M1 and 1B06PE: each group in its own Navisworks, starts 4.0 to 4.3 s, quits 1.8
+to 2.2 s, the runner's line 3 starts 12.5 s and 3 quits 6.0 s, 3 groups DONE, 98 clashes, the four discipline workbooks written
+by the parent off the facts and read back whole. run-20261018-153325, the NWF page on the same NWFs: 3 NWFs each in its own
+Navisworks, 3 DONE, 98 clashes, starts 13.0 s and quits 5.5 s in all. A third run on 3c9ad2ae stopped before any press,
+since the build read +edits from the untracked probe folder of F223 and the driver refuses another stamp. Bader saw that
+Navisworks open with nothing happening. Its window was closed, the launcher quit its Navisworks and put the Auto-Save switch
+back, and the run was made again from a clean tree.
+
+What remains. The whole C06 and C07 in F229. The second pass was seen on Navisworks, run-20261018-155152 on 3c9ad2ae: the
+same three groups each in its own Navisworks, 3 starts 13.0 s and 3 quits 6.2 s, 3 DONE, 98 clashes, the group logs deleting
+no log, 33 left where 30 are kept. Known bugs: rows
+F222-R1 to R4. What comes next: F223, Q207.
+
 ## 2026-10-18 The round of F222 to F230, the plan, written before the first edit
 
 Bader's round of 18 Oct 2026 after his answers to Q207 to Q211, the recommended choice on each: apply them, close the docs
