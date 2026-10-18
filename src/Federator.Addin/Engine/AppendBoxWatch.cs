@@ -13,34 +13,49 @@ namespace Federator.Addin.Engine
     /// Watches the windows of this process while one file is appended, F213, F210-R6, and answers the message box a bad
     /// NWC opens inside TryAppendFile, so an unattended run goes on. Measured first, scan.md 5z-zi: a DispatcherTimer on
     /// Navisworks' main thread fires inside the box, and WM_COMMAND with the id of the box's one button closes it the way
-    /// a click on OK does, after which the append returns false. Which window is answered and with what is Core's,
-    /// AppendBox, and no other window is touched. Nothing here starts a thread and nothing here calls Navisworks: the
-    /// timer runs on the thread the run is on, and the only calls are Windows' own, reading windows and posting one
-    /// message. No setting is changed, Bader's rule of 18 Oct 2026 that the tool changes no setting to append.
+    /// a click on OK does, after which the append returns false. Which window is a box, which box is answered and with
+    /// what are Core's, AppendBox, handed the class and the children read here, and no other window is touched. A box of
+    /// the file is pressed again on every tick while it stands, and said once where it still stands after ten presses.
+    /// Nothing here starts a thread and nothing here calls Navisworks: the timer runs on the thread the run is on, and
+    /// the only calls are Windows' own, reading windows and posting one message. No setting is changed, Bader's rule of
+    /// 18 Oct 2026 that the tool changes no setting to append.
     /// </summary>
     internal sealed class AppendBoxWatch : IDisposable
     {
         private const int WmCommand = 0x0111;
+        private const int PressesBeforeSaying = 10;
+
+        /// <summary>
+        /// The boxes left alone this session, each said once, since a box that is not the file's, the window's own
+        /// warning among them, would otherwise be said again by the watch of every later file.
+        /// </summary>
+        private static readonly HashSet<IntPtr> LeftAlone = new HashSet<IntPtr>();
 
         private readonly string file;
         private readonly RunLog log;
         private readonly uint processId;
         private readonly DispatcherTimer timer;
         private readonly Stopwatch clock = Stopwatch.StartNew();
-        private readonly HashSet<IntPtr> seen = new HashSet<IntPtr>();
+        private readonly Dictionary<IntPtr, int> presses = new Dictionary<IntPtr, int>();
+        private bool readFailureSaid;
 
         public AppendBoxWatch(string file, int everyMilliseconds, RunLog log)
         {
             this.file = file;
             this.log = log;
-            processId = (uint)Process.GetCurrentProcess().Id;
+
+            using (Process self = Process.GetCurrentProcess())
+            {
+                processId = (uint)self.Id;
+            }
+
             timer = new DispatcherTimer(DispatcherPriority.Normal, Dispatcher.CurrentDispatcher);
             timer.Interval = TimeSpan.FromMilliseconds(everyMilliseconds);
             timer.Tick += OnTick;
             timer.Start();
         }
 
-        /// <summary>What Navisworks said is wrong with the file, read off the box this watch answered, or null where none was.</summary>
+        /// <summary>What Navisworks said is wrong with the file, read off the box this watch pressed, or null where none was.</summary>
         public string AnsweredReason { get; private set; }
 
         public void Dispose()
@@ -56,37 +71,67 @@ namespace Federator.Addin.Engine
             {
                 foreach (IntPtr box in BoxesOfThisProcess())
                 {
-                    if (!seen.Add(box))
-                    {
-                        continue;
-                    }
-
                     List<BoxPart> parts = PartsOf(box);
 
-                    if (!AppendBox.IsTheBoxOf(file, AppendBox.BoxClass, parts))
+                    if (!AppendBox.IsTheBoxOf(file, ClassOf(box), parts))
                     {
-                        Say(AppendBox.LeftAloneLine(file, TextsOf(parts)));
+                        if (LeftAlone.Add(box))
+                        {
+                            Say(AppendBox.LeftAloneLine(file, TextsOf(parts)));
+                        }
+
                         continue;
                     }
 
-                    int? button = AppendBox.ButtonToAnswer(parts);
-
-                    if (button == null || !PostMessage(box, WmCommand, new IntPtr(button.Value), IntPtr.Zero))
-                    {
-                        // A box of the file that would not take the answer is said and left, so a person still sees it.
-                        Say("APPEND   the message box on " + file + " could not be answered, its button id "
-                            + (button == null ? "UNKNOWN" : button.Value.ToString()) + ", the run waits for a person");
-                        continue;
-                    }
-
-                    AnsweredReason = AppendBox.Reason(file, parts);
-                    Say(AppendBox.AnsweredLine(file, AnsweredReason, clock.ElapsedMilliseconds));
+                    Press(box, parts);
                 }
             }
             catch (Exception error)
             {
-                // The watch never stops a run: a read of the windows that threw is said and the next tick reads again.
-                Say("APPEND   the windows could not be read while " + file + " was appended, " + error.GetType().Name + ": " + error.Message);
+                // The watch never stops a run: a read of the windows that threw is said once and the next tick reads again.
+                if (!readFailureSaid)
+                {
+                    readFailureSaid = true;
+                    Say("APPEND   the windows could not be read while " + file + " was appended, " + error.GetType().Name + ": "
+                        + error.Message + ". The watch reads them again on every tick and says no more of it");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Presses the one button of the file's box, and marks it pressed only once the press was posted, so a box whose
+        /// read or post failed is tried again on the next tick.
+        /// </summary>
+        private void Press(IntPtr box, List<BoxPart> parts)
+        {
+            int? button = AppendBox.ButtonToAnswer(parts);
+
+            if (button == null || !PostMessage(box, WmCommand, new IntPtr(button.Value), IntPtr.Zero))
+            {
+                if (!presses.ContainsKey(box))
+                {
+                    presses[box] = 0;
+                    Say("APPEND   the message box on " + file + " could not be answered, its button id "
+                        + (button == null ? "UNKNOWN" : button.Value.ToString()) + ", the watch tries again on every tick");
+                }
+
+                return;
+            }
+
+            int pressed;
+            presses.TryGetValue(box, out pressed);
+            pressed++;
+            presses[box] = pressed;
+
+            if (AnsweredReason == null)
+            {
+                AnsweredReason = AppendBox.Reason(file, parts);
+                Say(AppendBox.AnsweredLine(file, button.Value, AnsweredReason, clock.ElapsedMilliseconds));
+            }
+
+            if (pressed == PressesBeforeSaying)
+            {
+                Say(AppendBox.StillStandsLine(file, pressed));
             }
         }
 
@@ -98,6 +143,7 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>The visible top level windows of this process that Core calls a message box, by the class read off each.</summary>
         private List<IntPtr> BoxesOfThisProcess()
         {
             List<IntPtr> found = new List<IntPtr>();
@@ -107,7 +153,7 @@ namespace Federator.Addin.Engine
                 uint owner;
                 GetWindowThreadProcessId(hwnd, out owner);
 
-                if (owner == processId && IsWindowVisible(hwnd) && ClassOf(hwnd) == AppendBox.BoxClass)
+                if (owner == processId && IsWindowVisible(hwnd) && AppendBox.IsAMessageBox(ClassOf(hwnd)))
                 {
                     found.Add(hwnd);
                 }

@@ -2795,13 +2795,18 @@ namespace Federator.Addin.Engine
         /// keeps one broken NWC from stopping the group. It can still throw on something
         /// it did not expect, so that is caught too. A bad file opens a Navisworks message
         /// box inside the call that waits for a person, scan.md 5z-zh and 5z-zi, so the call
-        /// is made under an AppendBoxWatch, which answers that box and nothing else, F213,
-        /// and the file and what Navisworks said go on the group's errors, so it ends FAILED
-        /// with the file named, Bader's words of 18 Oct 2026. The append itself is the
-        /// manual Append's, no setting changed.
+        /// is made under an AppendBoxWatch, which answers that box and nothing else, F213.
+        /// A file whose box was answered and that did not append goes on the group's files
+        /// Navisworks refused, with what Navisworks said, so the group ends FAILED with the
+        /// file named, Bader's words of 18 Oct 2026, and it is a fact and not an error, so
+        /// every step after the append runs as it did with the file missing. The append
+        /// itself is the manual Append's, no setting changed.
         /// </summary>
         private bool AppendOne(Document document, string file, JobOutcome outcome)
         {
+            AppendBoxWatch watch = null;
+            bool appended = false;
+
             try
             {
                 if (!File.Exists(file))
@@ -2810,25 +2815,33 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
-                using (AppendBoxWatch watch = new AppendBoxWatch(file, reports.AppendBox.EveryMilliseconds, log))
-                {
-                    bool appended = document.TryAppendFile(file);
-
-                    if (watch.AnsweredReason != null)
-                    {
-                        outcome.AddError(AppendBox.GroupError(file, watch.AnsweredReason));
-                    }
-
-                    return appended;
-                }
+                watch = new AppendBoxWatch(file, reports.AppendBox.EveryMilliseconds, log);
+                appended = document.TryAppendFile(file);
+                return appended;
             }
             catch (Exception error)
             {
                 log.Failure(
                     "appending " + file,
                     error,
-                    "kept going with the rest of the group, this group will be marked partial");
+                    "kept going with the rest of the group, the file is counted as not appended");
                 return false;
+            }
+            finally
+            {
+                if (watch != null)
+                {
+                    watch.Dispose();
+
+                    if (watch.AnsweredReason != null && appended)
+                    {
+                        log.Line(AppendBox.AnsweredAndAppendedLine(file));
+                    }
+                    else if (watch.AnsweredReason != null)
+                    {
+                        outcome.AddFileNavisworksRefused(AppendBox.GroupError(file, watch.AnsweredReason));
+                    }
+                }
             }
         }
 

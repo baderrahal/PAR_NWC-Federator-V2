@@ -12,6 +12,7 @@ namespace Federator.Core.Rerun
     public sealed class GroupFacts
     {
         private readonly List<string> errors = new List<string>();
+        private readonly List<string> refused = new List<string>();
 
         public GroupFacts()
         {
@@ -74,6 +75,26 @@ namespace Federator.Core.Rerun
 
         /// <summary>How many of them would not append.</summary>
         public int FailedFileCount { get; set; }
+
+        /// <summary>
+        /// The files whose append opened Navisworks' message box, answered by the tool, each with what Navisworks said,
+        /// AppendBox.GroupError, F213. Any one makes the group FAILED, Bader's words of 18 Oct 2026, and it is a fact and
+        /// not an error, so no step of the group stops on it: a rebuilt or reshaped group goes on to its clash, its
+        /// views, its NWD and its reports with the files that did append, as it did before the box was answered.
+        /// </summary>
+        public IList<string> FilesNavisworksRefused
+        {
+            get { return refused; }
+        }
+
+        /// <summary>Records one file Navisworks refused, in AppendBox.GroupError's words. An empty one is ignored.</summary>
+        public void AddFileNavisworksRefused(string words)
+        {
+            if (!string.IsNullOrEmpty(words))
+            {
+                refused.Add(words);
+            }
+        }
 
         /// <summary>
         /// Whether this run was asked to put viewpoints in. F52. A run that was not asked
@@ -174,10 +195,25 @@ namespace Federator.Core.Rerun
         /// <summary>How the steps of the group went. Where its models sit is not one of them.</summary>
         private static GroupOutcome JudgeTheSteps(GroupFacts facts, out string reason)
         {
-            // FAILED. Something requested threw, or produced nothing.
+            // FAILED. Something requested threw, or produced nothing. A file Navisworks refused is said beside the
+            // errors, F213, so neither hides the other.
             if (facts.HasErrors)
             {
                 reason = facts.DescribeErrors();
+
+                if (facts.FilesNavisworksRefused.Count > 0)
+                {
+                    reason += ", and " + string.Join(", and ", new List<string>(facts.FilesNavisworksRefused).ToArray());
+                }
+
+                return GroupOutcome.Failed;
+            }
+
+            // F213. A file whose append opened Navisworks' message box makes the group FAILED with the file named,
+            // judged here and not as an error, so every step of the group ran as it would have with the file missing.
+            if (facts.FilesNavisworksRefused.Count > 0)
+            {
+                reason = string.Join(", and ", new List<string>(facts.FilesNavisworksRefused).ToArray());
                 return GroupOutcome.Failed;
             }
 
