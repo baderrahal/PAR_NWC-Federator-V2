@@ -10,7 +10,7 @@ Bader or a later fix.
 
 | fix | what | pull request | proved here | waits for |
 |---|---|---|---|---|
-| F212 | Bader's answers to Q202 to Q206, the manual append rule in addin.md, 20 merged branches deleted, main kept | 292 | the rule read off src, nothing sets anything around an append | nothing |
+| F212 | Bader's answers to Q202 to Q206, the manual append rule in addin.md, 49 merged branches deleted, 28 on GitHub and 21 on this PC, main and the six unmerged kept | 292 | the rule read off src, nothing sets anything around an append | nothing |
 | F213 | a bad NWC never stops an unattended run, its message box answered, its group FAILED | 293 | probes 5z-zh and 5z-zi, a run on a random file, a cut file and a held file | seen in F220 |
 | F214 | a fresh Navisworks per package, Run pressed once | 296 | the flat C06 and C07 run, 42 of 42 DONE, C07 3642 pictures, 24.4 min | seen in F220 |
 | F215 | the sky-only pictures measured, cause UNKNOWN | 297 | SkyProbe, scan.md 5z-zk | Q208 |
@@ -30,7 +30,8 @@ Bader or a later fix.
     page with no memory stop. C06 3605 and 3623, the memory stop firing 7 and 8 times from its 11th group of 21 on
   - F216 seen: every package line of PACKAGE TREE and PACKAGES TICKED ends with its full path
   - F217 seen: the NWF page's confirm counted 6314 old jpg files, the 3605 and 2709 the NWC page wrote
-  - F218 seen: 49.055 m reads far and 23.963 m near in the discipline workbooks
+  - F218 seen: 49.055 m reads far and 23.963 m near in the discipline workbooks, every Coordinates row of them read out into
+    steps\logs\2026-10-18-C06-C07-F220-discipline-coordinates-rows.tsv
   - F219 seen: both pages skip the same 12 groups, 6 of C06 and 6 of C07, each with its discipline, and no NWF read UNKNOWN
   - both pages 6207 clashes in C06 and 2822 in C07. Clash Detective's own counts were not read against the workbooks
 
@@ -49,7 +50,7 @@ Bader or a later fix.
 - The solution builds in Release with --no-incremental, 0 warnings and 0 errors, on fix-F221 with main 4e705ce merged in.
 - Core tests 3392 passed, 0 failed, 0 skipped, on main before this branch and on it after.
 - check-locals and check-imports pass over src, and so do check-tracker and check-progress.
-- Every pull request of the round, 292 to 300, merged on green with its branch deleted, and none is left open.
+- Every pull request of the round, 292 to 300, merged on green with its branch deleted, and none of them is open.
 
 - No Navisworks type in src\Federator.Core or src\Federator.Runner. The Runner names the Automation DLL and its type
   only as strings, loaded by reflection from a joined path.
@@ -58,7 +59,7 @@ Bader or a later fix.
   docs\workflow.md or steps\PROGRESS.md.
 - The window holds 22 CheckBox elements, 20 named, 11 under no expander, as addin.md counts them since F212.
 - The bundle carries 3 files of the tool, 12 library DLLs and PackageContents.xml, 16, as addin.md says.
-- The far limit is 30 m everywhere, the setting, its test and core.md.
+- The far limit of the discipline reports is 30 m in the setting, its test and core.md. The ALIGNMENT check's far model, a separate rule, stays 1000 mm.
 
 ## Contradictions
 

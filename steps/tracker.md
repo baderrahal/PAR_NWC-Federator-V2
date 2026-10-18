@@ -825,7 +825,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F219-R1 | an NWF the NWF page refreshed before F219 holds the results of its one-discipline tests from that run, which now do not run, so Clash Detective keeps them, the Excel and the HTML carry none and the coverage says COVERAGE FAILED for them, about 3992 clashes in the flat C06 and C07 NWFs of F210, the reviewer's finding on F219 | F219 | register row | open | none | none | 2026-10-18 |
 | F220 | the test of the round on multi2, the NWC page on C06, C07 and a corrupt package, the NWF page on C06 and C07, each fix of the round seen, the real files 0 lines differ | F220 | fix | merged | 300 | none | 2026-10-18 |
 | Q210 | two rules the code does not keep, public members read only by tests or by nothing, and the picture limits written as constants, delete and make settings, all of them, or write the exceptions into CLAUDE.md | none | question | waiting for Bader | none | none | 2026-10-18 |
-| F221 | the audit of the round of 18 Oct, 25 contradictions with CLAUDE.md, the rule texts the code outgrew fixed, two members read by nothing deleted, Q210 | F221 | fix | merged | 301 | none | 2026-10-18 |
+| F221 | the audit of the round of 18 Oct, 26 contradictions with CLAUDE.md, the rule texts the code outgrew fixed, two members read by nothing deleted, Q210 | F221 | fix | merged | 301 | none | 2026-10-18 |
 
 ## outside the waves
 

@@ -1757,5 +1757,5 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 ## F221 the audit of the round of 18 Oct
 
-- Bader's round of 18 Oct 2026, the end: the findings, a full audit and QA of the repo listing every contradiction with CLAUDE.md, the proof steps with Look for lines and the closing entry. claude\audit-round-2026-10-18.md holds 25 contradictions, the rule texts the code has outgrown fixed in core.md and addin.md, two public members read by nothing deleted, and Q210 for the members read only by tests and the picture limits written as constants.
+- Bader's round of 18 Oct 2026, the end: the findings, a full audit and QA of the repo listing every contradiction with CLAUDE.md, the proof steps with Look for lines and the closing entry. claude\audit-round-2026-10-18.md holds 26 contradictions, the rule texts the code has outgrown fixed in core.md and addin.md, two public members read by nothing deleted, and Q210 for the members read only by tests and the picture limits written as constants.
 - DONE 2026-10-18, merged in 301. 26 contradictions, the rule texts the code outgrew fixed, two unread members deleted, Q210, nine proof steps, 3392 Core tests passed and the build 0 errors.

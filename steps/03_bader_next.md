@@ -2,22 +2,22 @@
 
 ## The round of 18 Oct, F212 to F221
 
-Simple words. Every fix of this round was seen on Navisworks by F220, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.
+Simple words. Every fix of this round but two was seen on Navisworks by F220, F212 being a rule read off the code and F215 a measurement left UNKNOWN for Q208, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.
 
 1. Start Navisworks Manage 2025 from the Start menu, as you always do, and open the tool.
 2. On the NWC page, step 5, type C:\NWC-PC-Test\work\multi2\Parent as the parent folder and a new empty folder as Report, and press Read.
-   Look for: each package line ending with its full path, such as `C06  64 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C06`. F216.
+   Look for: the tree showing C06 with 64 NWC files, C07 with 70 and Corrupt with 1.
 3. Tick C06 and Corrupt, press Run ticked packages and OK on the one confirm, and click nothing more.
    Look for: a second Navisworks opening for C06, working and closing, then one for Corrupt, and no message box waiting for you. F214 and F213.
 4. When the live line says the run finished, open the log with Open log folder.
-   Look for: `group          Corrupt  1B06KI  FAILED` and its why line naming the file and saying it could not be appended, and C06 with 21 groups, 21 done. F213.
-5. In the same log, under PACKAGE C06, or in C06's own log.
+   Look for: `group          Corrupt  1B06KI  FAILED` and its why line naming the file and saying it could not be appended, C06 with 21 groups, 21 done, and under PACKAGE TREE each package line ending with its full path, such as `C06  64 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C06`. F213 and F216.
+5. Open C06's own log, the one the line PACKAGE C06 of that RESULT names.
    Look for: `CLASH    C06  1B06BS holds one discipline, EL, so no test of it is run, Bader's answer to Q203`. F219.
 6. Open C06 EL checks.xlsx in the C06 folder of your Report folder and filter the Check column on Coordinates.
-   Look for: 1B06PO far, 49.055 m from AR. Under the old limit of 1000 m it read near. F218.
+   Look for: 1B06PO far, 49.055 m from AR, which the old limit of 1000 m read near. F218.
 7. On the NWF page, type the same parent and Report folders, press Read, tick C06 and press Run ticked packages.
    Look for: the confirm's Pictures line counting the old jpg files of step 3, about 3605, and not UNKNOWN. F217.
-8. Press OK and wait for the run to finish, then open its log.
+8. Press OK, wait for the run to finish, open its log and then C06's own log, the one its line PACKAGE C06 names.
    Look for: `CLASH    C06  1104-PAR-1B06BS-ZZZ-BM-MOD-000001 holds one discipline, EL, so no test of it is run, Bader's answer to Q203`, the same groups skipped as on the NWC page. F219.
 9. Answer Q207 to Q210 in steps\02_questions.md, or in the tab.
 

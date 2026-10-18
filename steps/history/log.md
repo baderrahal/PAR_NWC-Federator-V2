@@ -21,7 +21,9 @@ and the picture limits written as constants, Q210, docs\workflow.md behind the c
 for src\Federator.Runner or build, PROGRESS.md's shape against loop.md, the one-discipline rule against the tool never acting,
 Q209, the bundle's manifest naming docs\scan.md, and run.ps1 and the stand-in still saying no log copy is written, frozen by
 Q143. The proof steps of the round are at the top of steps\03_bader_next.md, nine steps on multi2, the first being a Navisworks
-Bader starts himself. The reviewer read the first pass and seven findings were taken, among them Q210's members, which read
+Bader starts himself. Every Coordinates row of F220's discipline workbooks is read out into steps\logs,
+2026-10-18-C06-C07-F220-discipline-coordinates-rows.tsv, so F218's 49.055 m far and 23.963 m near have a file behind them. The
+claim-checker read this entry, the audit and the steps and its findings were taken. The reviewer read the first pass and seven findings were taken, among them Q210's members, which read
 three as unread where two were and put MarkToolFolder and IndexAt among them, read by a test and a probe.
 
 What was proved here. Core tests 3392 passed before and after, 0 failed, 0 skipped. dotnet build of the solution with
@@ -70,9 +72,11 @@ What the runs showed.
   same words, CLASH    C06  1104-PAR-1B06BS-ZZZ-BM-MOD-000001 holds one discipline, EL, so no test of it is run, Bader's
   answer to Q203 on the NWF page. No NWF read UNKNOWN.
 - The desktop folder of real files was only read: 141 files and 25 folders before and after, 0 lines differ in name, size,
-  date or SHA-256. Its C07 holds 1C07, 1D07 and 1A07 files dated 09:41 on 18 Oct and its folder 09:42, a change no command of this session made, where the\n  F210 copy held 1B06 files.
+  date or SHA-256. Its C07 holds 1C07, 1D07 and 1A07 files dated 09:41 on 18 Oct and its folder 09:42, a change no command of
+  this session made, where the F210 copy held 1B06 files.
 
-What was proved here. No code changed. Core tests 3392 passed before and after, 0 failed, 0 skipped, the after read in the pre-commit of\nthis branch's commits. The evidence is 20 files, the largest 19,604,026 bytes,
+What was proved here. No code changed. Core tests 3392 passed before and after, 0 failed, 0 skipped, the after read in the pre-commit of
+this branch's commits. The evidence is 20 files, the largest 19,604,026 bytes,
 in steps\logs named 2026-10-18-C06-C07-F220, every log and tsv masked by mask-evidence.ps1 and read back with nothing left,
 the two listings, and the launcher and driver records.
 
