@@ -715,4 +715,4 @@ F213,"a bad NWC never stops an unattended run, its Navisworks message box answer
 F213-R1,"an NWF opened on the NWF page that links a corrupt NWC is not watched, so its message box would wait for a person, whether the open raises one is UNKNOWN",F213,none,register row,open,none,none,2026-10-18
 F213-R2,"a group error that ends with a full stop reads written., and in RESULT where another reason follows, No file in this group appended among them, run-20261018-102034",F213,none,register row,open,none,none,2026-10-18
 F216,"the full path on every package line in PACKAGE TREE and PACKAGES TICKED, PackageWords.PackageLine",F216,none,fix,merged,294,none,2026-10-18
-F218,"far is more than 30 m from the reference discipline, the default of DisciplineReportSettings.FarMetres, Bader's answer to Q202, tested at 29.9, 30 and 30.1 m",F218,none,fix,in review,UNKNOWN,none,2026-10-18
+F218,"far is more than 30 m from the reference discipline, the default of DisciplineReportSettings.FarMetres, Bader's answer to Q202, tested at 29.9, 30 and 30.1 m",F218,none,fix,merged,295,none,2026-10-18

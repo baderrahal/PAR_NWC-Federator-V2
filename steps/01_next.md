@@ -1728,3 +1728,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F218 Q202, far is more than 30 m from the reference discipline
 
 - Bader's answer to Q202 of 18 Oct 2026: far is more than 30 m from the reference discipline, 30 m the setting's default, with Core tests at 29.9, 30 and 30.1 m. DisciplineReportSettings.DefaultFarMetres is 30 m and the coordinates check reads far only above it.
+- DONE 2026-10-18, merged in 295. The test at 29.9, 30 and 30.1 m reads near, near and far.
