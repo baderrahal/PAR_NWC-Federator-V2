@@ -1793,3 +1793,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F228 the documents of the audit of 18 Oct
 
 - The round of 18 Oct 2026, item 7: claudeudit-round-2026-10-18.md items 15 and 16, docs\workflow.md for the NWC page and the NWF page with the packages, item 18, CLAUDE.md's folder list, and item 19, a rule file for src\Federator.Runner and for build. The manifest's path of item 25 in a pull request of its own, FR-204.
+- DONE 2026-10-18, merged in 308. docs\workflow.md written for the two pages and the packages, CLAUDE.md's folder list made whole, runner.md and build.md holding the rules moved out of addin.md, 3441 Core tests passed.
