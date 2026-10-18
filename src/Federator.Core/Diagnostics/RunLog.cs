@@ -156,7 +156,7 @@ namespace Federator.Core.Diagnostics
 
         /// <summary>
         /// The one line the window carries about the log. Here rather than in the window
-        /// because the words are a rule a test can read, the way ReportPaths.WhereTheyGo is.
+        /// because the words are a rule a test can read.
         /// </summary>
         public string WhereTheLogIs()
         {

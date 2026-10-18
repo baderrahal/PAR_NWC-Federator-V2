@@ -135,7 +135,7 @@ namespace Federator.Addin.Ui
             LogBox.AppendText(log.ReadAll());
             LogBox.ScrollToEnd();
 
-            // The words are in Core where a test reads them, the way ReportPaths.WhereTheyGo is.
+            // The words are in Core where a test reads them, RunLog.WhereTheLogIs.
             ProgressLine.Text = log.WhereTheLogIs();
         }
 

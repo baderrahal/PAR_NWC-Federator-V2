@@ -10,7 +10,7 @@ namespace Federator.Core.Tests
     /// hands the wording the very thing a label must not carry and asserts it is not in
     /// what comes back, because a test that reads only the good case proves nothing.
     ///
-    /// The words live in Core for this reason, the way ReportPaths.WhereTheyGo does.
+    /// The words live in Core for this reason, where a test reads them.
     /// </summary>
     [TestFixture]
     public class LabelWordsTests
