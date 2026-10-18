@@ -115,7 +115,7 @@ namespace Federator.Core.Views
         }
 
         /// <summary>Which property carried the largest size, or null where none did.</summary>
-        public static string LargestProperty(
+        internal static string LargestProperty(
             IDictionary<string, double> read, string unitEnumName, SizeSettings settings)
         {
             if (settings == null)

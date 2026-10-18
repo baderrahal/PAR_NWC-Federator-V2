@@ -105,6 +105,8 @@ namespace Federator.Addin.Engine
 
             this.log = log;
             this.options = options ?? new ImageOptions();
+            this.backstop = new GdiBackstop(this.options.GdiStop);
+            this.memoryStop = new MemoryBackstop(this.options.MemoryStopBytes);
             this.guard = guard;
             this.hideOther = hideOther ?? new HideOtherAcrossTheRun();
             this.seconds = new ImagesSeconds(() => log.ElapsedSeconds);
@@ -212,9 +214,9 @@ namespace Federator.Addin.Engine
             get { return memoryStop; }
         }
 
-        private readonly GdiBackstop backstop = new GdiBackstop();
+        private readonly GdiBackstop backstop;
 
-        private readonly MemoryBackstop memoryStop = new MemoryBackstop();
+        private readonly MemoryBackstop memoryStop;
 
         private int picturesMade;
 

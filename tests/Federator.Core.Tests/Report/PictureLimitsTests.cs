@@ -76,6 +76,12 @@ namespace Federator.Core.Tests
             return new ClashReport("1A04PK", "1104-PAR-1A04PK-ZZZ-BM-MOD-000001");
         }
 
+        /// <summary>The run's settings at their defaults with the box's cap per test set.</summary>
+        private static ImageOptions Box(int capPerTest)
+        {
+            return new ImageOptions { CapPerTest = capPerTest };
+        }
+
         private static void AssertTheFirstOnesHavePicturesAndNoOtherDoes(TestReport test, int expected)
         {
             Assert.That(test.ImageCount, Is.EqualTo(expected));
@@ -234,24 +240,140 @@ namespace Federator.Core.Tests
         [Test]
         public void TheCapsAreTheOnesBaderAnswered()
         {
-            Assert.That(PictureLimits.PicturesFor(ClashPriority.A), Is.EqualTo(150));
-            Assert.That(PictureLimits.PicturesFor(ClashPriority.B), Is.EqualTo(100));
-            Assert.That(PictureLimits.PicturesFor(ClashPriority.C), Is.EqualTo(50));
-            Assert.That(PictureLimits.PicturesFor(ClashPriority.None), Is.EqualTo(50));
-            Assert.That(PictureLimits.GdiStop, Is.EqualTo(9000));
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.A, new ImageOptions()), Is.EqualTo(150));
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.B, new ImageOptions()), Is.EqualTo(100));
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.C, new ImageOptions()), Is.EqualTo(50));
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.None, new ImageOptions()), Is.EqualTo(50));
+            Assert.That(PictureLimits.DefaultGdiStop, Is.EqualTo(9000));
+        }
+
+        /// <summary>
+        /// F227 on the reviewer's finding: the label beside the box of a cap per test reads the three caps off the options,
+        /// where the XAML typed them, so a cap changed is a label changed.
+        /// </summary>
+        [Test]
+        public void TheLabelOfTheCapBoxReadsTheCapsOffTheOptions()
+        {
+            ImageOptions options = new ImageOptions();
+            Assert.That(PictureLimits.BoxLabel(options),
+                Is.EqualTo("At most per test, 0 for none. Every test gets at most 150 at A, 100 at B, 50 at C"));
+
+            options.PicturesForB = 80;
+            Assert.That(PictureLimits.BoxLabel(options), Does.Contain("80 at B").And.Not.Contain("100"));
+            Assert.Throws<System.ArgumentNullException>(() => PictureLimits.BoxLabel(null));
+        }
+
+        /// <summary>
+        /// F227, Bader's answer to Q210. The five numbers are the run's settings on ImageOptions, his numbers of
+        /// Q171 and Q175 their defaults.
+        /// </summary>
+        [Test]
+        public void TheFiveLimitsAreSettingsOfTheRunWithBadersNumbersAsDefaults()
+        {
+            ImageOptions options = new ImageOptions();
+
+            Assert.That(options.PicturesForA, Is.EqualTo(150));
+            Assert.That(options.PicturesForB, Is.EqualTo(100));
+            Assert.That(options.PicturesForC, Is.EqualTo(50));
+            Assert.That(options.GdiStop, Is.EqualTo(9000));
+            Assert.That(options.MemoryStopBytes, Is.EqualTo(12L * 1024 * 1024 * 1024));
+            Assert.That(new ReportOptions().Images.PicturesForA, Is.EqualTo(PictureLimits.DefaultPicturesForA));
+        }
+
+        /// <summary>
+        /// F227. Caps set on the run are the ones the pass, the limit of a test and the words follow, so no reader
+        /// keeps a number of its own.
+        /// </summary>
+        [Test]
+        public void CapsSetOnTheRunAreTheOnesThePicturesAndTheWordsFollow()
+        {
+            ImageOptions options = new ImageOptions { PicturesForA = 20, PicturesForB = 10, PicturesForC = 5 };
+
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.A, options), Is.EqualTo(20));
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.B, options), Is.EqualTo(10));
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.C, options), Is.EqualTo(5));
+            Assert.That(PictureLimits.PicturesFor(ClashPriority.None, options), Is.EqualTo(5), "no priority is C");
+            Assert.That(PictureLimits.RuleInWords(options), Does.Contain("first 20 clashes at priority A, 10 at priority B and 5 at priority C"));
+            Assert.That(options.Describe(), Does.Contain("first 20 clashes at priority A"));
+
+            ClashReport report = Report();
+            TestReport a = AddTest(report, "A", 200, ClashPriority.A);
+            TestReport c = AddTest(report, "C", 200, ClashPriority.C);
+            int gdi;
+
+            Assert.That(Pass(report, options, null, 100, out gdi), Is.EqualTo(25));
+            Assert.That(a.ImageCount, Is.EqualTo(20));
+            Assert.That(c.ImageCount, Is.EqualTo(5));
+            Assert.That(options.LimitOf(a), Is.EqualTo(20));
+
+            options.CapPerTest = 8;
+            Assert.That(PictureLimits.LimitFor(ClashPriority.A, options), Is.EqualTo(8), "the box's cap still holds where it is the least");
+            Assert.That(PictureLimits.LimitFor(ClashPriority.C, options), Is.EqualTo(5));
+
+            options.PicturesForC = 0;
+            Assert.That(options.LimitOf(c), Is.EqualTo(0), "nought gives a test of C no picture");
+        }
+
+        /// <summary>F227. The two stops the add-in builds off the run's settings fire past the numbers set there.</summary>
+        [Test]
+        public void StopsSetOnTheRunAreTheOnesTheBackstopsFireAt()
+        {
+            ImageOptions options = new ImageOptions { GdiStop = 600, MemoryStopBytes = 2L * 1024 * 1024 * 1024 };
+            GdiBackstop gdi = new GdiBackstop(options.GdiStop);
+            MemoryBackstop memory = new MemoryBackstop(options.MemoryStopBytes);
+
+            Assert.That(gdi.Check(600, 1), Is.False);
+            Assert.That(gdi.Check(601, 2), Is.True);
+            Assert.That(gdi.Notice(), Does.Contain("past the 600 set").And.Contain("the limit of 10000"));
+            Assert.That(memory.Check(options.MemoryStopBytes, 1), Is.False);
+            Assert.That(memory.Check(options.MemoryStopBytes + 1, 2), Is.True);
+            Assert.That(memory.FiredLine(), Does.Contain("past the 2.0 GB set"));
+        }
+
+        /// <summary>
+        /// F227. Each of the five refuses where it is set what cannot work, and a refused number leaves the setting as
+        /// it was: a cap below nought, a GDI stop at nought or at the 10000 a process may hold, and a memory stop of no
+        /// bytes. A number one inside each edge is taken.
+        /// </summary>
+        [Test]
+        public void ALimitThatCannotWorkIsRefusedWhereItIsSet()
+        {
+            ImageOptions options = new ImageOptions();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => options.PicturesForA = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() => options.PicturesForB = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() => options.PicturesForC = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() => options.GdiStop = 0);
+            Assert.Throws<ArgumentOutOfRangeException>(() => options.GdiStop = PictureLimits.ProcessGdiLimit);
+            Assert.Throws<ArgumentOutOfRangeException>(() => options.MemoryStopBytes = 0);
+
+            Assert.That(options.PicturesForA, Is.EqualTo(150));
+            Assert.That(options.PicturesForB, Is.EqualTo(100));
+            Assert.That(options.PicturesForC, Is.EqualTo(50));
+            Assert.That(options.GdiStop, Is.EqualTo(9000));
+            Assert.That(options.MemoryStopBytes, Is.EqualTo(PictureLimits.DefaultMemoryStopBytes));
+
+            options.PicturesForA = 0;
+            options.GdiStop = 1;
+            options.GdiStop = PictureLimits.ProcessGdiLimit - 1;
+            options.MemoryStopBytes = 1;
+
+            Assert.That(options.PicturesForA, Is.EqualTo(0));
+            Assert.That(options.GdiStop, Is.EqualTo(9999));
+            Assert.That(options.MemoryStopBytes, Is.EqualTo(1));
         }
 
         [Test]
         public void TheBoxKeepsItsOwnJobAndTheLeastOfTheTwoHolds()
         {
-            Assert.That(PictureLimits.LimitFor(ClashPriority.A, 0), Is.EqualTo(150));
-            Assert.That(PictureLimits.LimitFor(ClashPriority.A, 300), Is.EqualTo(150), "the cap is there whatever the box says");
-            Assert.That(PictureLimits.LimitFor(ClashPriority.A, 120), Is.EqualTo(120));
-            Assert.That(PictureLimits.LimitFor(ClashPriority.B, 0), Is.EqualTo(100));
-            Assert.That(PictureLimits.LimitFor(ClashPriority.C, 80), Is.EqualTo(50));
-            Assert.That(PictureLimits.LimitFor(ClashPriority.C, 20), Is.EqualTo(20));
-            Assert.That(PictureLimits.LimitFor(ClashPriority.None, 0), Is.EqualTo(50), "a test with no priority is C");
-            Assert.That(PictureLimits.LimitFor(ClashPriority.None, 30), Is.EqualTo(30));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.A, Box(0)), Is.EqualTo(150));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.A, Box(300)), Is.EqualTo(150), "the cap is there whatever the box says");
+            Assert.That(PictureLimits.LimitFor(ClashPriority.A, Box(120)), Is.EqualTo(120));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.B, Box(0)), Is.EqualTo(100));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.C, Box(80)), Is.EqualTo(50));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.C, Box(20)), Is.EqualTo(20));
+            Assert.That(PictureLimits.LimitFor(ClashPriority.None, Box(0)), Is.EqualTo(50), "a test with no priority is C");
+            Assert.That(PictureLimits.LimitFor(ClashPriority.None, Box(30)), Is.EqualTo(30));
 
             ClashReport report = Report();
             TestReport small = AddTest(report, "SMALL", 200, ClashPriority.A);
@@ -284,7 +406,7 @@ namespace Federator.Core.Tests
                 AddTest(report, "T" + t, 160, ClashPriority.A);
             }
 
-            GdiBackstop backstop = new GdiBackstop();
+            GdiBackstop backstop = new GdiBackstop(PictureLimits.DefaultGdiStop);
             int gdiAtTheEnd;
             int made = Pass(report, new ImageOptions(), backstop, 500, out gdiAtTheEnd);
 
@@ -317,7 +439,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheBackstopFiresOnceAndANeverReadCountFiresNothing()
         {
-            GdiBackstop backstop = new GdiBackstop();
+            GdiBackstop backstop = new GdiBackstop(PictureLimits.DefaultGdiStop);
 
             Assert.That(backstop.Check(-1, 1), Is.False);
             Assert.That(backstop.Check(9000, 2), Is.False, "9000 is the limit and not past it");
@@ -389,16 +511,16 @@ namespace Federator.Core.Tests
         [Test]
         public void TheMemoryStopIs12GigabytesOfPrivateBytesAndReadsNothingItCouldNotRead()
         {
-            Assert.That(PictureLimits.MemoryStopBytes, Is.EqualTo(12L * 1024 * 1024 * 1024));
+            Assert.That(PictureLimits.DefaultMemoryStopBytes, Is.EqualTo(12L * 1024 * 1024 * 1024));
 
-            MemoryBackstop stop = new MemoryBackstop();
+            MemoryBackstop stop = new MemoryBackstop(PictureLimits.DefaultMemoryStopBytes);
 
             Assert.That(stop.Check(-1, 1), Is.False, "a count that could not be read fires nothing");
-            Assert.That(stop.Check(PictureLimits.MemoryStopBytes, 2), Is.False, "12 GB is the limit and not past it");
-            Assert.That(stop.Check(PictureLimits.MemoryStopBytes + 1, 3), Is.True);
-            Assert.That(stop.Check(PictureLimits.MemoryStopBytes * 2, 4), Is.False, "said once");
+            Assert.That(stop.Check(PictureLimits.DefaultMemoryStopBytes, 2), Is.False, "12 GB is the limit and not past it");
+            Assert.That(stop.Check(PictureLimits.DefaultMemoryStopBytes + 1, 3), Is.True);
+            Assert.That(stop.Check(PictureLimits.DefaultMemoryStopBytes * 2, 4), Is.False, "said once");
             Assert.That(stop.PictureNumber, Is.EqualTo(3));
-            Assert.That(stop.PrivateBytes, Is.EqualTo(PictureLimits.MemoryStopBytes + 1));
+            Assert.That(stop.PrivateBytes, Is.EqualTo(PictureLimits.DefaultMemoryStopBytes + 1));
         }
 
         [Test]
@@ -408,8 +530,8 @@ namespace Federator.Core.Tests
             // are wanted, so without the stop it would reach 53 GB. The GDI count starts low, so only the
             // memory stop can fire.
             ClashReport report = ManySmallTests();
-            GdiBackstop gdi = new GdiBackstop();
-            MemoryBackstop memory = new MemoryBackstop();
+            GdiBackstop gdi = new GdiBackstop(PictureLimits.DefaultGdiStop);
+            MemoryBackstop memory = new MemoryBackstop(PictureLimits.DefaultMemoryStopBytes);
             long perPicture = 3300 * 1024;
 
             int made = PassWithBothStops(report, gdi, memory, 500, 800 * Megabyte, perPicture);
@@ -418,8 +540,8 @@ namespace Federator.Core.Tests
             Assert.That(gdi.Fired, Is.False);
             Assert.That(made, Is.InRange(3400, 3600), "about 3500 pictures, as the run's own arithmetic gave");
             Assert.That(memory.PictureNumber, Is.EqualTo(made + 1), "the picture that was not made");
-            Assert.That(memory.PrivateBytes, Is.GreaterThan(PictureLimits.MemoryStopBytes));
-            Assert.That(memory.PrivateBytes - perPicture, Is.LessThanOrEqualTo(PictureLimits.MemoryStopBytes),
+            Assert.That(memory.PrivateBytes, Is.GreaterThan(PictureLimits.DefaultMemoryStopBytes));
+            Assert.That(memory.PrivateBytes - perPicture, Is.LessThanOrEqualTo(PictureLimits.DefaultMemoryStopBytes),
                 "it fired on the first reading past the limit");
 
             int empty = 0;
@@ -451,8 +573,8 @@ namespace Federator.Core.Tests
         {
             // Memory is low and the GDI count is high: the GDI stop fires first, as on the run of 14 Oct.
             ClashReport first = ManySmallTests();
-            GdiBackstop gdiFirst = new GdiBackstop();
-            MemoryBackstop memoryQuiet = new MemoryBackstop();
+            GdiBackstop gdiFirst = new GdiBackstop(PictureLimits.DefaultGdiStop);
+            MemoryBackstop memoryQuiet = new MemoryBackstop(PictureLimits.DefaultMemoryStopBytes);
             int madeByGdi = PassWithBothStops(first, gdiFirst, memoryQuiet, 8000, 800 * Megabyte, 1024);
 
             Assert.That(gdiFirst.Fired, Is.True);
@@ -461,8 +583,8 @@ namespace Federator.Core.Tests
 
             // Memory is high and the GDI count low: the memory stop fires first.
             ClashReport second = ManySmallTests();
-            GdiBackstop gdiQuiet = new GdiBackstop();
-            MemoryBackstop memoryFirst = new MemoryBackstop();
+            GdiBackstop gdiQuiet = new GdiBackstop(PictureLimits.DefaultGdiStop);
+            MemoryBackstop memoryFirst = new MemoryBackstop(PictureLimits.DefaultMemoryStopBytes);
             int madeByMemory = PassWithBothStops(second, gdiQuiet, memoryFirst, 500, 11 * 1024 * Megabyte, 3300 * 1024);
 
             Assert.That(memoryFirst.Fired, Is.True);
@@ -475,8 +597,8 @@ namespace Federator.Core.Tests
         {
             ClashReport report = Report();
             TestReport test = AddTest(report, "MANY-A", 400, ClashPriority.A);
-            GdiBackstop gdi = new GdiBackstop();
-            MemoryBackstop memory = new MemoryBackstop();
+            GdiBackstop gdi = new GdiBackstop(PictureLimits.DefaultGdiStop);
+            MemoryBackstop memory = new MemoryBackstop(PictureLimits.DefaultMemoryStopBytes);
 
             int made = PassWithBothStops(report, gdi, memory, 500, 800 * Megabyte, 1024);
 

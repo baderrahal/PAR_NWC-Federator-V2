@@ -1784,3 +1784,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's answer to Q208 of 18 Oct 2026: retake each picture that draws no item of its clash through the active view, from the clash's own camera moved back to 30 ft where it stands closer, its two items red and green, other models hidden, measured first on copies of 1B06BC and 1B06P1, one IMAGES line with the count retaken and the count still empty, and no Image cell showing only sky.
 - DONE 2026-10-18, merged in 306. A picture that draws no item of its clash taken again through the active view, 1B06BC 19 of 173 retaken and 15 drawing their items, 0 pictures of only the sky in 1B06BC and 1B06P1, measured in scan.md 5z-zm on 76 and 25, 3433 Core tests passed.
+
+## F227 Q210, the eight numbers become settings, 27 members internal
+
+- Bader's answer to Q210 of 18 Oct 2026: PictureLimits A 150, B 100, C 50, GdiStop 9000 and MemoryStopBytes 12 GB, and ClashRunner.ProgressEvery, ExportCheck.NamesShown and AppendBoxWatch.PressesBeforeSaying become settings with today's defaults, the 27 members only tests read become internal and keep their tests, and TestRefresh.BeforeTotal and AfterTotal are deleted.
+- DONE 2026-10-18, merged in 307. The picture caps, the two stops, the running count, the export check's names and the append watch's presses are settings with today's defaults, 27 members internal, the totals of TestRefresh deleted, the cap box's label read off Core, a run of three C06 groups reading as before, 3441 Core tests passed.

@@ -1891,6 +1891,9 @@ namespace Federator.Addin.Ui
             ImageCapBox.Text = defaults.CapPerTest.ToString(
                 System.Globalization.CultureInfo.InvariantCulture);
 
+            // F227. The three caps of the label read off the options, never typed into the XAML.
+            ImageCapLabel.Content = PictureLimits.BoxLabel(defaults);
+
             // F150. The label and the grey line read off Core, as AlignmentCheck.TickLabel is,
             // and the default off the options the run reads, never typed into the XAML.
             GhostOtherItems.Content = OtherItemsInPictures.TickLabel;

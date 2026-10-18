@@ -81,7 +81,7 @@ namespace Federator.Core.Clash
         /// Whether the two numbers are one this tool can account for. More rows than
         /// clashes is the only shape it cannot, and it is a finding rather than a failure.
         /// </summary>
-        public static bool NothingExplainsIt(int rowsForTheWorkbook, int clashesInTheDocument)
+        internal static bool NothingExplainsIt(int rowsForTheWorkbook, int clashesInTheDocument)
         {
             return rowsForTheWorkbook > clashesInTheDocument;
         }

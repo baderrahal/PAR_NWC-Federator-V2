@@ -206,20 +206,11 @@ namespace Federator.Core.Health
         /// it truncated rather than leaving a reader to wonder. Ten, taken when the block was
         /// written from the ten SetsAcrossTheRun named then. That number is no longer shared:
         /// since F127 SetsAcrossTheRun names every set that found nothing, through
-        /// CoverageSettings.SetsAtZeroNamedInTheRun, and this one stays ten.
+        /// CoverageSettings.SetsAtZeroNamedInTheRun, and this one stays ten. Since F227, Bader's
+        /// answer to Q210, it is the default of ReportOptions.ExportNamesShown, the setting the
+        /// engine hands in.
         /// </summary>
-        public const int NamesShown = 10;
-
-        /// <summary>
-        /// The block, written even when everything is right, because a missing block reads
-        /// as a check that did not run. The sets are those of the picked clash file, or
-        /// null where none was picked, and they are what the workset names are compared
-        /// with by letter case.
-        /// </summary>
-        public static IList<string> Lines(IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets)
-        {
-            return Lines(models, sets, NamesShown);
-        }
+        public const int DefaultNamesShown = 10;
 
         /// <summary>
         /// What one model carries, in the words of its line in the block, which the row
@@ -251,6 +242,13 @@ namespace Federator.Core.Health
             return model == null || !model.Counted ? string.Empty : EventRow.Count(model.Elements);
         }
 
+        /// <summary>
+        /// The block, written even when everything is right, because a missing block reads
+        /// as a check that did not run. The sets are those of the picked clash file, or
+        /// null where none was picked, and they are what the workset names are compared
+        /// with by letter case. namesShown is the run's ReportOptions.ExportNamesShown, nought
+        /// listing every name.
+        /// </summary>
         public static IList<string> Lines(
             IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets, int namesShown)
         {

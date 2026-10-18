@@ -167,7 +167,7 @@ namespace Federator.Core.Report
         /// for them would read as a count taken. Refused before AddTo has run, for the same
         /// reason.
         /// </summary>
-        public int? FoundByBoth
+        internal int? FoundByBoth
         {
             get { return Compared(counts => counts.Both); }
         }

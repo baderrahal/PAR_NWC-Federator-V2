@@ -30,6 +30,12 @@ namespace Federator.Core.Tests.Health
             return string.Join("\n", new List<string>(lines).ToArray());
         }
 
+        /// <summary>The block at the default count of names, F227, the count the run hands in by its options.</summary>
+        private static IList<string> AtTheDefault(IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets)
+        {
+            return ExportCheck.Lines(models, sets, ExportCheck.DefaultNamesShown);
+        }
+
         /// <summary>A run with no clash file picked, so no set says what it asks.</summary>
         private static readonly IList<SelectionSetDefinition> NoFile = null;
 
@@ -93,7 +99,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void EveryModelIsNamedWithItsElementsItsWorksetsAndItsIdShare()
         {
-            string block = Joined(ExportCheck.Lines(TheRealGroup(), NoFile));
+            string block = Joined(AtTheDefault(TheRealGroup(), NoFile));
 
             Assert.That(block, Does.Contain(
                 "AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   elements 86   with a workset 86   worksets 2   element id 100%"));
@@ -114,7 +120,7 @@ namespace Federator.Core.Tests.Health
         {
             IList<ModelExport> models = new List<ModelExport> { Model("ME", 1000, 1, 1000, "ME-Piping") };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Not.Contain("carry a workset on every element"));
             Assert.That(block, Does.Contain("elements 1000   with a workset 1   worksets 1"));
@@ -132,7 +138,7 @@ namespace Federator.Core.Tests.Health
                 Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted)
             };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Not.Contain("carry a workset on every element"));
             Assert.That(block, Does.Contain("with a workset UNKNOWN"));
@@ -145,7 +151,7 @@ namespace Federator.Core.Tests.Health
         {
             IList<ModelExport> models = new List<ModelExport> { Model("EL", 0, 0, 0) };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Not.Contain("carry a workset on every element"));
             Assert.That(block, Does.Contain("no item in this model is a Revit element, so it has no workset and no element id to check"));
@@ -185,7 +191,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void TheWorksetNamesAreListedAndASetAskingThemInAnotherCaseIsNamed()
         {
-            string block = Joined(ExportCheck.Lines(TheRealGroup(), SetsOf(Samples.Matrix())));
+            string block = Joined(AtTheDefault(TheRealGroup(), SetsOf(Samples.Matrix())));
 
             Assert.That(block, Does.Contain("worksets seen: AR-EXTERIOR, AR-INTERIOR, ME-Ductwork, ME-Piping, PL-Drainage"));
             Assert.That(block, Does.Contain(
@@ -208,7 +214,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning()
         {
-            string block = Joined(ExportCheck.Lines(TheRealGroup(), SetsOf(Samples.CorrectedMatrix())));
+            string block = Joined(AtTheDefault(TheRealGroup(), SetsOf(Samples.CorrectedMatrix())));
 
             Assert.That(block, Does.Not.Contain("CASE SENSITIVE"));
             Assert.That(block, Does.Not.Contain("the file asks for"));
@@ -237,14 +243,14 @@ namespace Federator.Core.Tests.Health
                 "BLD-ME-Mechanical Equipment", WorksetCondition(0, "ME-Equipment"),
                 "BLD-ME-Pipes&amp;Pipe Fittings", WorksetCondition(0, "ME-Piping"));
 
-            string block = Joined(ExportCheck.Lines(models, titleCase));
+            string block = Joined(AtTheDefault(models, titleCase));
 
             Assert.That(block, Does.Contain("3 pair(s) of workset names differ by letter case alone"));
             Assert.That(block, Does.Contain(
                 "the file asks for \"ME-Equipment\" in BLD-ME-Mechanical Equipment, and a model here carries \"ME-EQUIPMENT\""));
             Assert.That(block, Does.Contain("and a model here carries \"ME-DUCTWORK\""));
 
-            string corrected = Joined(ExportCheck.Lines(models, SetsOf(Samples.CorrectedMatrix())));
+            string corrected = Joined(AtTheDefault(models, SetsOf(Samples.CorrectedMatrix())));
 
             Assert.That(corrected, Does.Not.Contain("CASE SENSITIVE"), corrected);
             Assert.That(corrected, Does.Contain(
@@ -267,7 +273,7 @@ namespace Federator.Core.Tests.Health
                 "BLD-Capitals", WorksetCondition(0, "ME-DUCTWORK"),
                 "BLD-Negated", WorksetCondition(0, "ME-DUCTWORK") + WorksetCondition(32, "ME-Ductwork"));
 
-            string block = Joined(ExportCheck.Lines(TheRealGroup(), sets));
+            string block = Joined(AtTheDefault(TheRealGroup(), sets));
 
             Assert.That(block, Does.Contain("1 pair(s) of workset names differ by letter case alone"), block);
             Assert.That(block, Does.Contain(
@@ -278,7 +284,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void WithNoFilePickedNoNameIsComparedAndTheBlockSaysSo()
         {
-            string block = Joined(ExportCheck.Lines(TheRealGroup(), NoFile));
+            string block = Joined(AtTheDefault(TheRealGroup(), NoFile));
 
             Assert.That(block, Does.Not.Contain("CASE SENSITIVE"));
             Assert.That(block, Does.Contain(
@@ -288,7 +294,7 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void AFileWhoseSetsAskForNoWorksetSaysThereWasNothingToCompare()
         {
-            string block = Joined(ExportCheck.Lines(
+            string block = Joined(AtTheDefault(
                 TheRealGroup(), OneSet("BLD-AR-Walls", "equals", "LcRevitPropertyElementCategory", "Walls")));
 
             Assert.That(block, Does.Not.Contain("CASE SENSITIVE"));
@@ -299,9 +305,9 @@ namespace Federator.Core.Tests.Health
         [Test]
         public void AContainsConditionIsComparedAsPartOfAName()
         {
-            string named = Joined(ExportCheck.Lines(
+            string named = Joined(AtTheDefault(
                 TheRealGroup(), OneSet("BLD-ME-Ducts", "contains", "lcldrevit_parameter_-1002053", "DUCT")));
-            string matched = Joined(ExportCheck.Lines(
+            string matched = Joined(AtTheDefault(
                 TheRealGroup(), OneSet("BLD-ME-Ducts", "contains", "lcldrevit_parameter_-1002053", "Duct")));
 
             Assert.That(named, Does.Contain(
@@ -314,7 +320,7 @@ namespace Federator.Core.Tests.Health
         {
             IList<ModelExport> models = new List<ModelExport> { Model("EL", 494, 0, 494) };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Contain("worksets NONE"));
             Assert.That(block, Does.Contain("no element carries a workset. Every set that filters on workset will find nothing here"));
@@ -330,7 +336,7 @@ namespace Federator.Core.Tests.Health
         {
             IList<ModelExport> models = new List<ModelExport> { Model("ME", 790, 790, 598, "ME-Piping") };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Contain("element id 76%"));
             Assert.That(block, Does.Contain("re-export with Convert element Ids switched on"));
@@ -350,7 +356,7 @@ namespace Federator.Core.Tests.Health
         {
             IList<ModelExport> models = new List<ModelExport> { Model("ME", 1052, 1052, 1051, "ME-Piping") };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Contain(
                 "re-export with Convert element Ids switched on, or 1 element(s) reach the report with an empty id cell"));
@@ -371,7 +377,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(Model("ME", 1000, 1000, 1000).IdShare, Is.EqualTo(100));
             Assert.That(Model("ME", 1000, 1000, 0).IdShare, Is.EqualTo(0));
             Assert.That(Model("ME", 790, 790, 598).IdShare, Is.EqualTo(76));
-            Assert.That(Joined(ExportCheck.Lines(new List<ModelExport> { Model("ME", 1052, 1052, 1051) }, NoFile)),
+            Assert.That(Joined(AtTheDefault(new List<ModelExport> { Model("ME", 1052, 1052, 1051) }, NoFile)),
                 Does.Contain("element id 99%"));
         }
 
@@ -390,7 +396,7 @@ namespace Federator.Core.Tests.Health
         public void AGroupWithNothingWrongSaysSoRatherThanSayingNothing()
         {
             Assert.That(
-                Joined(ExportCheck.Lines(TheRealGroup(), NoFile)),
+                Joined(AtTheDefault(TheRealGroup(), NoFile)),
                 Does.Contain("all 2 model(s) carry a workset on every element and an element id on every element"));
         }
 
@@ -403,7 +409,7 @@ namespace Federator.Core.Tests.Health
                 Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted)
             };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Contain("elements UNKNOWN"));
             Assert.That(block, Does.Contain("element id UNKNOWN"));
@@ -426,7 +432,7 @@ namespace Federator.Core.Tests.Health
                 Model("ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, "ST-Framing")
             };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Contain("worksets UNKNOWN"));
             Assert.That(block, Does.Not.Contain("worksets NONE"));
@@ -450,7 +456,7 @@ namespace Federator.Core.Tests.Health
                 threw
             };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(threw.Worksets.Count, Is.EqualTo(0));
             Assert.That(block, Does.Contain("worksets seen: EL-Lightning Protection"));
@@ -472,7 +478,7 @@ namespace Federator.Core.Tests.Health
                 ExportCheck.Counts(real),
                 Is.EqualTo("elements 86   with a workset 86   worksets 2   element id 100%"));
             Assert.That(
-                Joined(ExportCheck.Lines(new List<ModelExport> { real }, NoFile)),
+                Joined(AtTheDefault(new List<ModelExport> { real }, NoFile)),
                 Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   " + ExportCheck.Counts(real)));
         }
 
@@ -508,7 +514,7 @@ namespace Federator.Core.Tests.Health
             run.Add(Model("AR", 86, 86, 86, "AR-EXTERIOR"));
 
             Assert.That(empty.HoldsNoElement, Is.True);
-            Assert.That(Joined(ExportCheck.Lines(new List<ModelExport> { empty }, NoFile)), Does.Contain("1 hold no Revit element"));
+            Assert.That(Joined(AtTheDefault(new List<ModelExport> { empty }, NoFile)), Does.Contain("1 hold no Revit element"));
             Assert.That(run.Line(), Is.EqualTo(
                 "EXPORT CHECK across the run: 0 model(s) carry no workset at all, 0 carry one on only some of their"
                 + " elements, 0 do not carry an element id on every element, 1 hold no Revit element, and 0 could not be"
@@ -581,11 +587,47 @@ namespace Federator.Core.Tests.Health
                 new ModelExport("a.nwc", "ME", 100, 100, 100, many)
             };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Contain("Juliett"));
             Assert.That(block, Does.Not.Contain("Kilo"));
             Assert.That(block, Does.Contain("and 4 more, counted and not listed"));
+        }
+
+        /// <summary>
+        /// F227, Bader's answer to Q210. How many names the block lists is the run's ReportOptions.ExportNamesShown,
+        /// ten by default, nought listing every one, and below nought is refused where it is set.
+        /// </summary>
+        [Test]
+        public void HowManyNamesTheBlockListsIsTheRunsSettingAndBelowNoughtIsRefused()
+        {
+            Federator.Core.Report.ReportOptions reports = new Federator.Core.Report.ReportOptions();
+
+            Assert.That(reports.ExportNamesShown, Is.EqualTo(10));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => reports.ExportNamesShown = -1);
+            Assert.That(reports.ExportNamesShown, Is.EqualTo(10), "a refused value leaves the setting as it was");
+
+            IList<ModelExport> models = new List<ModelExport>
+            {
+                new ModelExport("a.nwc", "ME", 100, 100, 100, new List<string>
+                {
+                    "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf",
+                    "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November"
+                })
+            };
+
+            reports.ExportNamesShown = 3;
+            string three = Joined(ExportCheck.Lines(models, NoFile, reports.ExportNamesShown));
+
+            Assert.That(three, Does.Contain("Charlie"));
+            Assert.That(three, Does.Not.Contain("Delta"));
+            Assert.That(three, Does.Contain("and 11 more, counted and not listed"));
+
+            reports.ExportNamesShown = 0;
+            string every = Joined(ExportCheck.Lines(models, NoFile, reports.ExportNamesShown));
+
+            Assert.That(every, Does.Contain("November"));
+            Assert.That(every, Does.Not.Contain("more, counted and not listed"));
         }
 
         /// <summary>
@@ -651,7 +693,7 @@ namespace Federator.Core.Tests.Health
         public void WithNoModelAtAllItSaysSoRatherThanWritingAnEmptyBlock()
         {
             Assert.That(
-                Joined(ExportCheck.Lines(new List<ModelExport>(), NoFile)),
+                Joined(AtTheDefault(new List<ModelExport>(), NoFile)),
                 Does.Contain("no model was read, so nothing could be checked"));
         }
 
@@ -672,7 +714,7 @@ namespace Federator.Core.Tests.Health
                 Model("AR", 86, 86, 86, "AR-EXTERIOR", "AR-INTERIOR")
             };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Not.Contain("\"AR-EXTERIOR\" in"),
                 "a person has already decided these are two different worksets");
@@ -691,7 +733,7 @@ namespace Federator.Core.Tests.Health
                 Model("EL", 308, 308, 308, "EL-Lightning Protection", "EL-Lightining Protection")
             };
 
-            string block = Joined(ExportCheck.Lines(models, NoFile));
+            string block = Joined(AtTheDefault(models, NoFile));
 
             Assert.That(block, Does.Contain("EL-Lightining Protection"));
             Assert.That(block, Does.Contain("1 pair(s) of workset names are close enough"));
@@ -711,8 +753,8 @@ namespace Federator.Core.Tests.Health
                 Model("AR", 86, 86, 86, "AR-EXTERIOR", "AR-INTERIOR")
             };
 
-            string unread = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.NamesShown, false));
-            string read = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.NamesShown, true));
+            string unread = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.DefaultNamesShown, false));
+            string read = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.DefaultNamesShown, true));
 
             Assert.That(unread, Does.Contain(
                 "the list of workset pairs a person decided are not typos could not be read out of Federator.Core.dll,"

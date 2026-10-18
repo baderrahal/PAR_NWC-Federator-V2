@@ -293,7 +293,9 @@ and 6 does not read as broken.
   an AR set finding items in a group holding no AR model, and those are the categories
   after the bar in the project's list, proved by a test against the logs they came from
 - THE ROW FILE NAMES EVERY WORKSET OF EVERY MODEL, one model worksets row each, because
-  the EXPORT CHECK block lists ten a group and counts the rest, and the spellings a run
+  the EXPORT CHECK block lists ten a group and counts the rest, ten being the default of the
+  setting `ReportOptions.ExportNamesShown` since F227, nought listing every one and below nought
+  refused, which the engine hands to `ExportCheck.Lines`, and the spellings a run
   shows are what the workset list is measured from. Where a model's element walk stopped
   part way, `ModelExport.WalkFinished` false, the row's number is empty and its text
   UNKNOWN, `ExportCheck.WorksetCount` and `EveryWorkset`, never the names seen before it
@@ -877,7 +879,8 @@ and 6 does not read as broken.
   reading
 - THE RUNNING COUNT IS TAKEN AFTER THE TEST IT NUMBERS, F113. `ClashRunOutcome
   .ProgressAfter` is the line the log carries at every twenty fifth test and at the last
-  one, so a group that runs to its end ends on a count, and it reads the counts as they stand.
+  one, twenty five being the default of the setting `ProgressSettings.CountEveryTests` since
+  F227, refused below one where it is set, which ClashRunner reads off its Progress, so a group that runs to its end ends on a count, and it reads the counts as they stand.
   A group with no test to run writes no count, and one the guard stops ends on RUN STOPPED. The
   runner took it BEFORE the test it numbered until F113, so on the run of 2026-10-01 the
   last count of all 22 groups was one test short of the block under it, and three were
@@ -1703,7 +1706,13 @@ and 6 does not read as broken.
   the run. The Bitmaps the picture step receives are the one of `TestsImageForResult` and, since F226, a retake's, each disposed in a
   finally on every path. The GDI split line, the MEMORY line, the RATE line of F157 and F161 and the
   texture cache line of F147 are kept. The texture cache is read and reported and no new clearing is made
-  by F175.
+  by F175. SINCE F227, Bader's answer to Q210, the three caps, the GDI stop and the memory stop are SETTINGS on
+  `ImageOptions`, `PicturesForA`, `PicturesForB`, `PicturesForC`, `GdiStop` and `MemoryStopBytes`, and the numbers
+  above are their defaults, `PictureLimits.DefaultPicturesForA` and the rest. Each refuses where it is set what
+  cannot work: a cap below nought, nought giving that priority no picture, a GDI stop at nought or below or at the
+  10000 a process may hold or past it, `PictureLimits.ProcessGdiLimit`, and a memory stop of nought bytes or below.
+  `PictureLimits.PicturesFor`, `LimitFor` and `RuleInWords` read the run's `ImageOptions`, and `ClashImages` builds
+  both stops off it, so no reader keeps a number of its own
 - THE RETAKE OF A PICTURE THAT DRAWS NO ITEM OF ITS CLASH, F226, Bader's answer to Q208 of 18 Oct 2026, so no Image cell
   shows only sky, measured in scan.md 5z-zm, `Federator.Core.Report.PictureRetake`. A picture draws an item of its clash where
   any pixel read, every `PictureRetakeSettings.Every` pixel of every such row, 2, reads red or green above `Bright`, 180, with
@@ -1714,8 +1723,9 @@ and 6 does not read as broken.
   when its first pass looked for 136,169,238 at the middle and kept 4 pictures of only the sky. The retake's camera is the
   clash's own moved back along the line from the clash's centre through it to `LeastMillimetres`, 9144, 30 ft, where it
   stands closer, `BackedOff`, and left where it stands farther or on the centre. `Choose` keeps the tool's picture where it
-  draws an item, the retake where it draws one, the tool's where it is not only the sky and the retake draws none, the retake
-  where only the tool's is the sky, and none where both are, so a picture of only the sky is never written. `RetakeTally`
+  draws an item or where no retake was taken, a result group or one that threw, so a throw never drops a picture, the retake
+  where it draws one, the tool's where it is not only the sky and the retake draws none, the retake
+  where only the tool's is the sky, and none where both are, so a retake never writes a picture of only the sky. `RetakeTally`
   counts the pictures drawing no item, those taken again with their seconds, those drawing their items, those still drawing
   none, those not taken again and those left with no picture, on one RETAKE line a group, a nought and the setting off each
   said apart. `ImageOptions.Retake` carries the settings, on by default, each refused where it is set if it cannot work
@@ -1727,11 +1737,11 @@ and 6 does not read as broken.
   out of report order is renamed by the renumber to its report order name, so the names and the links are as
   before. PictureWalkTests prove the order, a stop after four pictures in each order, and the rename
 - THE MEMORY STOP AND THE ORDER OF A GROUP, F182, Bader's answer C to Q175, `MemoryBackstop`,
-  `PictureLimits.MemoryStopBytes` and `GroupOrder`. Navisworks's private memory grew about 3.3 MB for each
+  `ImageOptions.MemoryStopBytes` and `GroupOrder`. Navisworks's private memory grew about 3.3 MB for each
   picture, to 26 GB on C04 on a PC with 15.8 GB of RAM, and the NWD publish after the pictures hung with a 0
   byte file. A SECOND STOP beside the GDI one: `ClashImages.Write` reads the private bytes of the process
-  before every picture and again after each is saved, `ProcessMemory.PrivateBytesNow`, and past 12 GB, the one
-  named constant, no more are made. One line says it at once, and once the pass ends a NOTICE says the picture
+  before every picture and again after each is saved, `ProcessMemory.PrivateBytesNow`, and past 12 GB, the
+  setting's default since F227, no more are made. One line says it at once, and once the pass ends a NOTICE says the picture
   number, the private bytes and how many pictures were skipped, `ClashImages.PicturesSkippedByTheStop`. The
   first of the two stops to fire ends the pictures, and a stop is a normal end of the picture step, so F177
   removes the leftover pictures after it as after a full pass, where a run that threw removes none. THE
@@ -3250,7 +3260,8 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   answer for that long, and null under the setting or for a length not known. `LongCall.Say` writes it
   with its .tsv row through RunLog.Numbered, the seconds as its number, and nothing with no log
 - THE NUMBERS ARE `ProgressSettings`: EverySeconds and LongCallSeconds, 30 each by his words. A long call
-  of nought or below is refused where it is set. The VIEWS step's default,
+  of nought or below is refused where it is set. Since F227 it also holds CountEveryTests, the clash step's
+  running count, 25, refused below one. The VIEWS step's default,
   `ViewpointSettings.DefaultProgressEverySeconds`, is `ProgressSettings.DefaultEverySeconds`, 60 s until
   F143
 

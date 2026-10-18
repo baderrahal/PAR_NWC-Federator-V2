@@ -135,7 +135,7 @@ namespace Federator.Core.Views
         }
 
         /// <summary>The result groups of that test that were read, whose clashes the plan holds at their own statuses.</summary>
-        public int GroupsReadOf(string test)
+        internal int GroupsReadOf(string test)
         {
             Entry entry;
             return entries.TryGetValue(test ?? string.Empty, out entry) ? entry.GroupsRead : 0;

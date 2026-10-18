@@ -72,7 +72,7 @@ namespace Federator.Core.Views
         public bool CreateComments { get; internal set; }
 
         /// <summary>Every viewpoint and folder the plan deletes, at any depth.</summary>
-        public int ItemsDeleted
+        internal int ItemsDeleted
         {
             get
             {

@@ -136,7 +136,7 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>How many pairs a person has decided about. Zero is a real answer.</summary>
-        public static int DecidedCount
+        internal static int DecidedCount
         {
             get
             {

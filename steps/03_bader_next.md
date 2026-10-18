@@ -93,6 +93,15 @@ Navisworks session. F222 first, since every later run goes through it.
    BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls.
    Look for: every Image cell linking a picture of that clash, none of only the sky.
 
+### F227, the eight numbers are settings with today's defaults
+
+1. Run any package on the NWC page as in F222's steps.
+   Look for: the run reading as before, every group's IMAGES settings line ending `every test gets pictures for at most its
+   first 150 clashes at priority A, 100 at priority B and 50 at priority C`.
+2. Open one group's own log.
+   Look for: the running count lines every 25 tests as before, `CLASH    ... 25 of`, and the EXPORT CHECK block listing at most
+   10 names a group as before.
+
 ## The round of 18 Oct, F212 to F221
 
 Simple words. Every fix of this round but two was seen on Navisworks by F220, F212 being a rule read off the code and F215 a measurement left UNKNOWN for Q208, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.

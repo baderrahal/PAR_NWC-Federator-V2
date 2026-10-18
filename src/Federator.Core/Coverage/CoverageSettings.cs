@@ -84,7 +84,7 @@ namespace Federator.Core.Coverage
         }
 
         /// <summary>The categories no set catches named in the log per model, one or more.</summary>
-        public int CategoriesNamedPerModel
+        internal int CategoriesNamedPerModel
         {
             get { return categoriesNamedPerModel; }
             set { categoriesNamedPerModel = AtLeast(1, value, "categories named for each model"); }

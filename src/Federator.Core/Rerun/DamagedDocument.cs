@@ -73,7 +73,7 @@ namespace Federator.Core.Rerun
         /// is handed, so it may only run over one nothing has touched. Over a damaged one
         /// it would read the damage as the starting state and report it as intact.
         /// </summary>
-        public static bool AFallbackMayRun(bool anythingWasChanged)
+        internal static bool AFallbackMayRun(bool anythingWasChanged)
         {
             return !anythingWasChanged;
         }
@@ -84,7 +84,7 @@ namespace Federator.Core.Rerun
         /// path saves after a failure is the engine's own. The set pair of Q74 saves nothing after one since F115
         /// R15 and R24, the engine stopping the group before the views and every save.
         /// </summary>
-        public static bool TheFileMayBeSaved(bool anythingWasChanged, bool everythingWorked)
+        internal static bool TheFileMayBeSaved(bool anythingWasChanged, bool everythingWorked)
         {
             return everythingWorked || !anythingWasChanged;
         }
