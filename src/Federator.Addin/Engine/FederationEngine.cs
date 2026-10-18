@@ -949,6 +949,14 @@ namespace Federator.Addin.Engine
                         }
                     }
 
+                    // F233, Bader's round of 19 Oct 2026, fix 3. An NWF's disciplines read off its models' own file names once it
+                    // opens, F219's reading, and a group of one discipline stops here: no refresh, no save, no NWD, no report, no
+                    // picture and no viewpoint, the NWF of the earlier run left as it is and named.
+                    if (ready && openItHere && TheGroupHoldsOneDiscipline(document, job, outcome))
+                    {
+                        return outcome;
+                    }
+
                     if (ready && refresh != null)
                     {
                         ready = InStepReturning(
@@ -965,22 +973,6 @@ namespace Federator.Addin.Engine
                         {
                             openFiles = FilesInsideTheOpenDocument(job.Building);
 
-                            // F219, Bader's answer to Q203. A picked NWF's disciplines read off each model's own file name,
-                            // never its source, so a group of one discipline runs its tests on neither page, and one whose
-                            // names will not read runs them as before. Read only where the tests are asked for.
-                            if (reports.RunTests)
-                            {
-                                string why;
-                                IList<string> codes = BuildingGroup.DisciplinesOf(
-                                    ModelFileNamesOf(document), reports.Names, NamePattern.DefaultDiscipline, out why);
-
-                                if (codes == null)
-                                {
-                                    log.Line(BuildingGroup.DisciplinesNotReadLine(job.Label, why));
-                                }
-
-                                job.ReadTheDisciplinesAtTheOpen(codes);
-                            }
                         }
 
                         // F75. Nothing is emptied on this path, so the census line says what
@@ -1048,40 +1040,82 @@ namespace Federator.Addin.Engine
             {
                 groupClock.Stop();
 
-                // F127b, as RunOne: the file is in RESULT's coverage count once, as not checked where it
-                // ended before its COVERAGE step.
-                InTheCoverage(job, outcome).NotChecked();
+                // F233. A group of one discipline was not built: one GROUP line, in no count and no coverage.
+                if (outcome.NotBuiltBecause != null)
+                {
+                    log.GroupNotBuilt(job.Label, groupClock.Elapsed.TotalSeconds, outcome.NotBuiltBecause);
+                    LetGoOfTheRows(outcome);
+                }
+                else
+                {
+                    // F127b, as RunOne: the file is in RESULT's coverage count once, as not checked where it
+                    // ended before its COVERAGE step.
+                    InTheCoverage(job, outcome).NotChecked();
 
-                // The open file is always a Weekly run. There is no First run on this
-                // path, because the NWF already exists and is the document. A picked NWF
-                // this run opened is labelled off how its open went, F129 attempt 2, so one
-                // that read empty is Stopped and RESULT counts it under NWF read empty.
-                log.GroupFinished(
-                    job.Label,
-                    outcome.Result,
-                    groupClock.Elapsed.TotalSeconds,
-                    outcome.Reason,
-                    RunPath.ForAnOpenFile(openItHere, outcome.Decision, exchange != null));
+                    // The open file is always a Weekly run. There is no First run on this
+                    // path, because the NWF already exists and is the document. A picked NWF
+                    // this run opened is labelled off how its open went, F129 attempt 2, so one
+                    // that read empty is Stopped and RESULT counts it under NWF read empty.
+                    log.GroupFinished(
+                        job.Label,
+                        outcome.Result,
+                        groupClock.Elapsed.TotalSeconds,
+                        outcome.Reason,
+                        RunPath.ForAnOpenFile(openItHere, outcome.Decision, exchange != null));
 
-                // Q101, the same block as the scanned run, its files the models the open
-                // document holds.
-                Sized(job.Label, openFiles, outcome, groupClock.Elapsed.TotalSeconds);
+                    // Q101, the same block as the scanned run, its files the models the open
+                    // document holds.
+                    Sized(job.Label, openFiles, outcome, groupClock.Elapsed.TotalSeconds);
 
-                // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
-                // where they apply, written once the run ends, just before the window
-                // writes RESULT.
-                summaries.Add(OpenDocumentJob.SummaryLines(
-                    open,
-                    exchange == null ? null : exchange.SourcePath,
-                    job.NwdPath,
-                    reportFolder,
-                    outcome.Clash == null ? null : outcome.Clash.Summary(),
-                    outcome.Result,
-                    outcome.Reason,
-                    openItHere));
+                    // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
+                    // where they apply, written once the run ends, just before the window
+                    // writes RESULT.
+                    summaries.Add(OpenDocumentJob.SummaryLines(
+                        open,
+                        exchange == null ? null : exchange.SourcePath,
+                        job.NwdPath,
+                        reportFolder,
+                        outcome.Clash == null ? null : outcome.Clash.Summary(),
+                        outcome.Result,
+                        outcome.Reason,
+                        openItHere));
 
-                LetGoOfTheRows(outcome);
+                    LetGoOfTheRows(outcome);
+                }
             }
+        }
+
+        /// <summary>
+        /// F219 and F233. The disciplines of an NWF opened on the NWF page, read off each model's own file name and never its
+        /// source, BuildingGroup.DisciplinesOf, handed to the job so its clash step reads them. Where they are one discipline
+        /// the group is not built: its one line and the line of its NWF of an earlier run are written, the outcome carries
+        /// the line, and true is returned, so nothing is refreshed, saved, published, reported, pictured or viewed. Where they
+        /// cannot be read the group runs as before and the line says so.
+        /// </summary>
+        private bool TheGroupHoldsOneDiscipline(Document document, FederationJob job, JobOutcome outcome)
+        {
+            string why;
+            IList<string> files = ModelFileNamesOf(document);
+            IList<string> codes = BuildingGroup.DisciplinesOf(files, reports.Names, NamePattern.DefaultDiscipline, out why);
+
+            if (codes == null)
+            {
+                log.Line(BuildingGroup.DisciplinesNotReadLine(job.Label, why));
+            }
+
+            job.ReadTheDisciplinesAtTheOpen(codes);
+
+            if (codes == null || codes.Count != 1)
+            {
+                return false;
+            }
+
+            string building = files.Count == 0 ? job.Building : ContainerName.Parse(files[0], reports.Names).Building;
+            string line = OneDisciplineGroups.Line(OneDisciplineGroups.CommunityOf(job.Package), building, codes[0], files);
+            log.Line(line);
+            log.Line(OneDisciplineGroups.EarlierNwfLine(job.NwfPath));
+            outcome.NotBuiltBecause = line;
+            return true;
         }
 
         /// <summary>

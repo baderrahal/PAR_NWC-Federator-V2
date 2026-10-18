@@ -1633,6 +1633,23 @@ namespace Federator.Core.Diagnostics
         /// thing that stops a run, and a substituted reason still keeps the RESULT block
         /// honest by naming the group and saying the reason is missing.
         /// </summary>
+        /// <summary>
+        /// F233, Bader's round of 19 Oct 2026, fix 3. A group of one discipline, found so once its NWF opened, is not built and
+        /// not run: its steps are closed and one GROUP line says so with why, and it is in no count of done, partial or failed.
+        /// </summary>
+        public void GroupNotBuilt(string building, double seconds, string why)
+        {
+            CloseTheGroupsSteps();
+
+            lock (gate)
+            {
+                currentGroup = null;
+            }
+
+            Line("GROUP    not built " + building + "  " + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s  "
+                + Words.Or(why, "UNKNOWN why"));
+        }
+
         public void GroupFinished(
             string building, GroupOutcome outcome, double seconds, string reason, string runPath)
         {

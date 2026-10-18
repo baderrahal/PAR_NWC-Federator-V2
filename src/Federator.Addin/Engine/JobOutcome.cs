@@ -148,6 +148,13 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// F233, Bader's round of 19 Oct 2026, fix 3. The one line of a group of one discipline, OneDisciplineGroups.Line, where
+        /// its NWF opened and its models hold one discipline, so it was not built and not run, or null. Such a group is in no
+        /// count of done, partial or failed.
+        /// </summary>
+        public string NotBuiltBecause { get; set; }
+
+        /// <summary>
         /// Why this group is not DONE, or null when it is. Comes out of the same pass that
         /// decides the outcome, so the two can never disagree and a FAILED group can never
         /// reach the log without a reason.

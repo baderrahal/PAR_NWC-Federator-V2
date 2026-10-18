@@ -378,6 +378,22 @@ namespace Federator.Core.Tests
         }
 
         [Test]
+        public void AGroupNotBuiltIsClosedOnOneLineAndInNoCount()
+        {
+            using (RunLog log = Start())
+            {
+                log.GroupStarted("C06  1B06PG", null);
+                log.GroupNotBuilt("C06  1B06PG", 4.5, "NOT BUILT  C06  1B06PG  EL  a.nwc  one discipline, not built");
+
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("GROUP    not built C06  1B06PG  4.500s  NOT BUILT  C06  1B06PG  EL  a.nwc  one discipline, not built"));
+                Assert.That(text, Does.Not.Contain("GROUP    finished C06  1B06PG"));
+                Assert.That(log.CountOf(GroupOutcome.Done) + log.CountOf(GroupOutcome.Partial) + log.CountOf(GroupOutcome.Failed), Is.EqualTo(0));
+            }
+        }
+
+        [Test]
         public void ABlockWithNoLinesStillWritesItsTitle()
         {
             using (RunLog log = Start())
