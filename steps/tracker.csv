@@ -702,7 +702,7 @@ F210-R2,"a group of one discipline runs no test on the NWC page while the NWF pa
 F210-R3,"76 of 399 pictures of 1B06BC and 13 of 374 of 1B06P1 show only the sky, the same on both pages and every run of C06 and C07, no model hidden, cause UNKNOWN",F210,none,register row,open,none,none,2026-10-18
 F210-R4,"the log names each package by its path from the parent under one line with the parent, where the message asks for the full path on each package line",F210,none,register row,open,none,none,2026-10-18
 F210-R5,"the NWF page confirm of a run of packages says UNKNOWN old jpg files where the confirm of one NWF counts them",F210,none,register row,open,none,none,2026-10-18
-F210-R6,"a corrupt NWC stops an unattended run, TryAppendFile opens a Navisworks message box and waits for a person, 100.7 s in run-20261018-044816, scan.md 5z-zh",F210,none,register row,open,none,none,2026-10-18
+F210-R6,"a corrupt NWC stops an unattended run, TryAppendFile opens a Navisworks message box and waits for a person, 100.7 s in run-20261018-044816, scan.md 5z-zh",F210,none,register row,in review,UNKNOWN,none,2026-10-18
 Q202,"the Coordinates check calls a model far over 1000 m between boxes, set 10 m, keep 1000 m or 1 m",none,none,question,merged,292,none,2026-10-18
 Q203,"a group of one discipline runs no test on the NWC page while 284 tests set a code against itself, run them as the NWF page does or skip them on both",none,none,question,merged,292,none,2026-10-18
 Q204,"the memory stop leaves the later packages of a long run without pictures, one community per start until measured, smaller pictures, or accept it",none,none,question,merged,292,none,2026-10-18
@@ -711,3 +711,5 @@ Q205,"the window holds 20 named tick boxes 11 up front where addin.md says 15 an
 Q206,"49 branches merged into main were kept, 21 on this PC and 28 on GitHub, delete them next round or keep them",none,none,question,merged,292,none,2026-10-18
 F212,"Bader's answers to Q202 to Q206 written, the rule that an append changes no setting in addin.md, the tick box count of Q205, the C02 map in the F210 audit, the merged branches deleted by Q206",F212,none,fix,merged,292,none,2026-10-18
 Q207,"the loop's run.ps1 writes the Auto-Save switch before every loop start by Q135, keep it as the loop's or take it out",none,none,question,waiting for Bader,none,none,2026-10-18
+F213,"a bad NWC never stops an unattended run, its Navisworks message box answered by a watch on the main thread, the group FAILED with the file named, measured first by AppendBoxProbe, scan.md 5z-zi",F213,none,fix,in review,UNKNOWN,none,2026-10-18
+F213-R1,"an NWF opened on the NWF page that links a corrupt NWC is not watched, so its message box would wait for a person, whether the open raises one is UNKNOWN",F213,none,register row,open,none,none,2026-10-18

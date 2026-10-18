@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 09:38, last run 94/item1-C02, the round of F212 to F221 on Bader's answers to Q202 to Q206
+STATE OPEN, 2026-10-18 10:25, last run 94/item1-C02, the round of F212 to F221, F213 second pass running on r6b
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,13 +16,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 280 | 16 | 0 | 19 | 67 | 7 | 389 |
-| total | 483 | 24 | 0 | 19 | 168 | 18 | 712 |
+| outside the waves | 280 | 16 | 2 | 19 | 67 | 7 | 391 |
+| total | 483 | 24 | 2 | 19 | 168 | 18 | 714 |
 <!-- the end of the counts -->
 
 ## Now
-- 18 Oct, Bader's answers to Q202 to Q206: the plan is the top entry of steps\history\log.md, F212 to F221. F212 his answers,
-  the rule that an append changes no setting, the tick box count, the C02 map and the merged branches deleted, in review
+- 18 Oct, Bader's answers to Q202 to Q206: the plan is the top entry of steps\history\log.md, F212 to F221. F212 merged, 292.
+  F213 on fix-F213, 7ee7e9c installed, the breaker's and the reviewer's findings folded in, its run on r6b A to D going
 - 18 Oct before: F208 to F211, 288 to 291, the packages, the discipline reports, the test on C06 and C07 and the audit
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
