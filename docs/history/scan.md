@@ -9102,7 +9102,7 @@ pictures of only the sky in both groups, the 4 now the retakes of a grey wall, 1
 the probe took 101 and the tool 19. What Navisworks' own export would give the 4. Whether the client accepts a retaken picture
 in place of Clash Detective's, Q208 says retake.
 
-## 5z-zn. THE TOOL'S APPEND AGAINST A MANUAL APPEND IN THE WINDOW OF NAVISWORKS, MEASURED 2026-10-19
+## 5z-zn. THE TOOL'S APPEND AGAINST A MANUAL APPEND IN THE WINDOW OF NAVISWORKS, MEASURED 2026-10-18 AND 2026-10-19
 
 F231, fix 1 of Bader's round of 19 Oct 2026: the far models of 1B06BC, 1B06PS and 1B06K1, the EL of 1B06BC at 1062619.41
 9039909.142 ft among them, are they put there by the tool or are they there in the NWCs. The NWCs of the three groups copied

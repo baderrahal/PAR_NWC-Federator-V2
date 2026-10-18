@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 00:50, last run multi3 run-20261018-205401, the round of F231 to F238, F231 the append measured and in review, F232 next
+STATE OPEN, 2026-10-19 01:10, last run multi3 run-20261018-205401, the round of F231 to F238, F231 merged in 312, F232 next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,8 +16,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 309 | 16 | 1 | 19 | 91 | 7 | 443 |
-| total | 513 | 24 | 1 | 19 | 191 | 18 | 766 |
+| outside the waves | 310 | 16 | 0 | 19 | 91 | 7 | 443 |
+| total | 514 | 24 | 0 | 19 | 191 | 18 | 766 |
 <!-- the end of the counts -->
 ## Now
 - 19 Oct, the round of F231 to F238 open, Bader's six fixes, the full run on final-2026-10-19 and the end, plan in log.md.
