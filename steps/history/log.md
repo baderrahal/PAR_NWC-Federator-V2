@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F215, F210-R3, the pictures that show only the sky, measured and left UNKNOWN
+
+Branch fix-F215 off main 99509de. Bader's F-R3: the sky-only pictures of 1B06BC and 1B06P1 probed on copies, the camera
+position against the clash point of an empty picture and a good one, fixed with 0 sky pictures on a rerun, or measured and left
+UNKNOWN. Measured, and left UNKNOWN, since what decides it was not found in this round.
+
+What was done. tools\probes\SkyProbe: the mode sky of SkyProbePlugin.cs, run by probe-sky.ps1, PictureSpeed's guarded runner
+with its inputs changed and its guard untouched, seven runs of 12 to 15 s on copies of the NWFs of 1B06BC, 1B06P1 and 1B06K1
+that F210's flat run of C06 built, every Navisworks quit by Dispose and Bader's settings put back. count-sky-pictures.ps1 reads
+every picture of a group. docs\history\scan.md 5z-zk holds what was read, the masked results beside the probe.
+
+What was measured. 76 of 1B06BC's 399 pictures and 25 of 1B06P1's 374 draw no item of their clash, the sky at the middle and no
+red or green pixel, the audit's 89 with its near-empty dozen. Four more of 1B06BC draw their two items small and are not empty,
+so the audit's sky count held them too. Clash Detective's own camera for an empty picture stands 2.6 to 208 ft from its clash, as
+for a good one, with the same rotation and clip planes, and from that same camera Navisworks' active view draws the clash, the EL
+conduits 2,774 km from AR among them. TestsImageForResult draws nothing for those tests with every model shown and with only
+its items' models, with Hide Other on and as the user has it. Not the distance from the origin, since 1B06K1's far AR and ME
+draw, not one model, not a model hidden, not the clip planes.
+
+What was proved here. No code of the tool changed. Core tests 3382 passed before and after, 0 failed, 0 skipped. The probe
+built with 0 errors and 0 warnings.
+
+What remains. The cause is UNKNOWN. Q208 asks Bader whether to retake a picture that draws no item through the active view,
+only count and name them, or leave them. Row F210-R3 stays open until he answers.
+
+Known bugs. F210-R3 as above. What comes next: F217, the old jpg count on the NWF page's confirm of a run of packages.
+
 ## 2026-10-18 F214, F210-R1, a fresh Navisworks per package
 
 Branch fix-F214 off main 4a5c515, main merged in after F216 and F218. Bader's answer to Q204: a fresh Navisworks start per

@@ -1,0 +1,210 @@
+MACHINE   [machine]   2026-10-18 11:52:02
+HOST      powershell 5.1.26100.9711, 64 bit process True, apartment STA, pid 34972
+SCRIPT    <a path outside the loop folder, file probe-sky.ps1, sha1 0657F3B397C9>, sha256 1B74490801B77BB1050A54DB79A9ACB0AB68682332D8AA541316C1D049F2BCBD
+GUARD     tools\loop\nw-guard.ps1, sha256 349551F8A3784C002A48192CB6321D6443027529BC65844B710A4E836C966888
+PROCESS   powershell.exe pid 34972, started to run -File C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\tools\probes\SkyProbe\probe-sky.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 348
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115202" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115202\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 110256 bytes
+  read key by key: 279 keys, 1149 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 8 files copied to the work folder and read back with their source's sha256, 0 not backed up, 62 AutoSave files listed and not copied
+  the tool's own logs folder listed: 62 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf, sha1 CE37B7011691>, 1001845 bytes, sha256 3E69F1B0D3CA79D1D79E4DE6B30DE66AB9F2FA4271762764D752FFE7ECB7931E
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115202\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe <a path outside the loop folder, file SkyProbe.dll, sha1 726771378441>, 14848 bytes, written 2026-10-18 11:51:54, sha256 8FF76D8F0B626B76491B00C4800584D05C9799A44219331D23617B99B896B180, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  11:52:03.138  t+1.0s  calling new NavisworksApplication()
+  11:52:07.560  t+5.5s  the constructor RETURNED after 4.42 s
+  Roamer processes new since step 2: 1
+    pid 24408, started 11:52:03.146, parent 1784 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 24408, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 24408, started 2026-10-18 11:52:03.146, start ticks UTC 639279103231464332
+  11:52:09.595  t+7.5s  Visible set True, read back True
+  visible top level windows of 24408: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  11:52:09.712  t+7.6s  AddPluginAssembly RETURNED after 0.030 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode sky on the copy ====
+  11:52:09.714  t+7.6s  calling ExecuteAddInPlugin(SkyProbe.PARS, sky, the plugin's output file, the NWF's copy, the tests BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment, 3 clashes a test, the pictures folder)
+  11:52:10.304  t+8.2s  ExecuteAddInPlugin RETURNED 0 after 0.59 s
+  visible top level windows of 24408: 1, hidden: 74, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 11:52:09.721  probe started, mode sky
+  | 11:52:09.723  opening 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+  | 11:52:10.110  TryOpenFile returned True, models 5, document units Feet
+  | 11:52:10.110  ==== THE MODELS, each root's box in the document's units ====
+  | 11:52:10.114     model 0  1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc'  box (-55.841, -50.496, -1.22) to (37.452, 25.679, 27.745)  hidden False
+  | <text holding a path, sha1 3108D8BD92DC>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (0.0000, 0.0000, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 11:52:10.119     model 1  1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'  box (1062558.234, 9039852.107, 21.661) to (1062736.284, 9039951.37, 61.447)  hidden False
+  | <text holding a path, sha1 784B9178E9C7>
+  | (0.0502, 0.9987, 0.0000, 0.0000)
+  | (0.0000, -0.0000, 1.0000, 0.0000)
+  | (1062619.4099, 9039909.1422, 36.1985, 1.0000)
+  | ; IsDisposed=False
+  | 11:52:10.119     model 2  1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'  box (-24.721, -30.085, -17.49) to (82.485, 22.7, 24.033)  hidden False
+  | <text holding a path, sha1 292415E75BBA>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (0.0000, 0.0000, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 11:52:10.119     model 3  1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc'  box (-55.034, -49.689, -6.89) to (36.645, 40.443, 26.247)  hidden False
+  | <text holding a path, sha1 4F1DAC725905>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (-111.4684, -5.3311, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 11:52:10.120     model 4  1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'  box (63.403, -33.13, -20.935) to (114.651, 3.944, 0.308)  hidden False
+  | <text holding a path, sha1 3AA0FCA22204>
+  | (-0.0000, -1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (112.1901, 1.4831, -14.2093, 1.0000)
+  | ; IsDisposed=False
+  | 11:52:10.120  roots hidden as the NWF opened: 0, every item shown now by ResetAllHidden
+  | 11:52:10.128  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment found, 30 results at its top level ====
+  | 11:52:10.131  -- clash 1  'Clash1'  status Active  distance -0.57  centre (1062616.077, 9039855.192, 33.404)
+  | 11:52:10.132       item 1 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'
+  | 11:52:10.136       its viewpoint: position (1062620.654, 9039850.614, 37.982)  focal 7.929  projection Perspective  camera to centre 7.929
+  | 11:52:10.141       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=2019910400; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=2019910776, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=7.92908737924651; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=3.17469805129549; VerticalExtentAtFocalDistance=6.56866954156934; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(1062620.654, 9039850.614, 37.982); IsDisposed=False
+  | 11:52:10.188       picture, every model shown: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-all.jpg
+  | 11:52:10.188       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 9101911.593
+  | 11:52:10.209       picture, only its items' models shown, 4 roots hidden: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-own.jpg
+  | 11:52:10.209       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 9101911.593
+  | 11:52:10.213  -- clash 2  'Clash2'  status Active  distance -0.568  centre (1062596.416, 9039856.181, 33.404)
+  | 11:52:10.213       item 1 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'
+  | 11:52:10.215       its viewpoint: position (1062600.995, 9039851.602, 37.983)  focal 7.931  projection Perspective  camera to centre 7.931
+  | 11:52:10.215       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=2019908912; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=2019909288, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=7.93063145255716; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=3.1753162771134; VerticalExtentAtFocalDistance=6.56994869348689; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(1062600.995, 9039851.602, 37.983); IsDisposed=False
+  | 11:52:10.233       picture, every model shown: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-all.jpg
+  | 11:52:10.233       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 9101910.28
+  | 11:52:10.251       picture, only its items' models shown, 4 roots hidden: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-own.jpg
+  | 11:52:10.251       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 9101910.28
+  | 11:52:10.256  -- clash 3  'Clash3'  status Active  distance -0.564  centre (1062640.372, 9039946.536, 33.404)
+  | 11:52:10.256       item 1 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'
+  | 11:52:10.258       its viewpoint: position (1062644.933, 9039941.974, 37.966)  focal 7.901  projection Perspective  camera to centre 7.901
+  | 11:52:10.258       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=2019907424; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=2019907800, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=7.90101367871406; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=3.16345772588221; VerticalExtentAtFocalDistance=6.54541253193046; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(1062644.933, 9039941.974, 37.966); IsDisposed=False
+  | 11:52:10.274       picture, every model shown: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-003-all.jpg
+  | 11:52:10.274       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 9102005.149
+  | 11:52:10.297       picture, only its items' models shown, 4 roots hidden: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-003-own.jpg
+  | 11:52:10.297       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 9102005.149
+  | 11:52:10.303  every item shown again, as the probe leaves it, the NWF not saved
+  | 11:52:10.303  probe finished
+
+==== STEP 6. Quit through the API ====
+  11:52:10.851  t+8.8s  Dispose RETURNED after 0.46 s
+  11:52:12.715  t+10.6s  pid 24408 state gone, 1.9 s after Dispose returned, not forced
+
+==== FINALLY ====
+  11:52:12.717  t+10.6s  pid 24408 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 18, longest pass 441 ms, longest gap between the starts of two passes 951 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  11:52:02.409  t+0.3s  watchdog started
+  11:52:03.757  t+1.7s  new process Roamer pid 24408, parent 1784 svchost.exe, started 11:52:03.146, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  11:52:03.843  t+1.7s  Roamer 24408 visible top level windows: none
+  11:52:04.526  t+2.4s  new process AdskLicensingAgent pid 6480, parent 24408 Roamer.exe, started 11:52:03.875, command line holds the word embedding or automation: no
+  11:52:04.665  t+2.6s  new process AdskLicensingAgent pid 15672, parent 24408 Roamer.exe, started 11:52:03.693, command line holds the word embedding or automation: no
+  11:52:04.779  t+2.7s  new process AdskLicensingAgent pid 20716, parent 24408 Roamer.exe, started 11:52:03.758, command line holds the word embedding or automation: no
+  11:52:05.859  t+3.8s  Roamer 24408 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] ""
+  11:52:07.449  t+5.3s  Roamer 24408 visible top level windows: none
+  11:52:07.987  t+5.9s  Roamer 24408 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  11:52:09.062  t+7.0s  Roamer 24408 visible top level windows: none
+  11:52:09.601  t+7.5s  Roamer 24408 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  11:52:10.140  t+8.0s  Roamer 24408 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  11:52:10.674  t+8.6s  Roamer 24408 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  11:52:11.200  t+9.1s  Roamer 24408 visible top level windows: none
+  11:52:12.770  t+10.7s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 24408, parent 1784 svchost.exe: exited
+  AdskLicensingAgent pid 6480, parent 24408 Roamer.exe: exited
+  AdskLicensingAgent pid 15672, parent 24408 Roamer.exe: STILL RUNNING
+  AdskLicensingAgent pid 20716, parent 24408 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 2390562065896  new QWord 2390647381564
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 236  new DWord 237
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 253  new DWord 254
+  22.0\CER\22.5.1433.58  uptime  old QWord 748645468750  new QWord 748714531250
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134367859910317088  new QWord 134367871301068749
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf, sha1 39DBB9363571>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115202\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc"  new String "1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  LastOpened  old QWord 134367858820207575  new QWord 134367858995865123
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc, sha1 9D13749EE560>  new String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf, sha1 CF2976A56694>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134367859883609264  new QWord 134367859910317088
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc, sha1 08D86211241E>  new String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf, sha1 39DBB9363571>
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134367859850675636  new QWord 134367859883609264
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf, sha1 76FB01665240>  new String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc, sha1 08D86211241E>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\4  LastOpened  old QWord 134367859785258286  new QWord 134367859850675636
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc, sha1 D771B3B95EC9>  new String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf, sha1 76FB01665240>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134367859749172581  new QWord 134367859785258286
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf, sha1 FCC212FB6934>  new String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc, sha1 D771B3B95EC9>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\6  LastOpened  old QWord 134367859438401347  new QWord 134367859749172581
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc, sha1 4A2B5FB5447B>  new String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf, sha1 FCC212FB6934>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134367859396189523  new QWord 134367859438401347
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf, sha1 2D890E5B9DF9>  new String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc, sha1 4A2B5FB5447B>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\8  LastOpened  old QWord 134367859055255924  new QWord 134367859396189523
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc, sha1 BF8E319A8DE6>  new String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf, sha1 2D890E5B9DF9>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134367858995865123  new QWord 134367859055255924
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf, sha1 CF2976A56694>  new String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc, sha1 BF8E319A8DE6>
+  registry: 35 values or keys differ from the backup
+  registry: 35 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 57842 bytes, sha256 3BB6C75981D2, written 2026-10-18 11:08:38  new 57987 bytes, sha256 5C899AA21F9D, written 2026-10-18 11:52:08
+  files: 1 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  files: 1 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 3E69F1B0D3CA79D1D79E4DE6B30DE66AB9F2FA4271762764D752FFE7ECB7931E, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf  1001845 bytes
+  hkcu-navisworks-manage-22.0-before.reg  110256 bytes
+  mypid.txt  36 bytes
+  plugin-output.txt  14244 bytes
+  SkyProbe.dll  14848 bytes
+  watch.txt  1865 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-18 11:52:13, 12 s in all

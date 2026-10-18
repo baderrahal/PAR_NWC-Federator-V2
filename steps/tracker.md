@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 723 rows: open 172, in progress 24, in review 0, merged 449, proven by a run 41, waiting for Bader 19, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 252, outside the waves 2, right after F133 merges 6
+- By status, of 725 rows: open 172, in progress 24, in review 1, merged 449, proven by a run 41, waiting for Bader 20, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 254, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader, 19 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201, Q207
+- Waits for Bader, 20 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201, Q207, Q208
 
 ## Wave 1
 
@@ -816,6 +816,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F216 | the full path on every package line in PACKAGE TREE and PACKAGES TICKED, PackageWords.PackageLine | F216 | fix | merged | 294 | none | 2026-10-18 |
 | F218 | far is more than 30 m from the reference discipline, the default of DisciplineReportSettings.FarMetres, Bader's answer to Q202, tested at 29.9, 30 and 30.1 m | F218 | fix | merged | 295 | none | 2026-10-18 |
 | F214-R5 | the memory stop still fires inside one package, in the last 6 of 21 groups of C06, 1B06PP to 1C06M2, and the last 7 of C07, 1B06PO to 1C06M2, at 12 GB, run-20261018-110838, where F214 ended it across packages | F214 | register row | open | none | none | 2026-10-18 |
+| F215 | the pictures of 1B06BC and 1B06P1 that show only the sky probed on copies, SkyProbe, scan.md 5z-zk: TestsImageForResult draws no item for 76 and 25 pictures while the active view draws them from the same camera, the cause UNKNOWN, Q208 | F215 | fix | in review | UNKNOWN | none | 2026-10-18 |
+| Q208 | the pictures in which Clash Detective's picture call draws no item of the clash, take them again through the active view, only count and name them, or leave them | none | question | waiting for Bader | none | none | 2026-10-18 |
 
 ## outside the waves
 

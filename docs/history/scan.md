@@ -8952,3 +8952,45 @@ arguments, quits it by Dispose and waits for its process to be gone before the n
 started through the API. Whether the bundle's plugin is found in the second Navisworks without AddPluginAssembly, which the loop's
 run.ps1 measures on every run since it calls ExecuteAddInPlugin on the installed plugin alone. What a second Navisworks costs in
 memory beside a first that holds a document, since the probe's first held none.
+
+## 5z-zk. WHY SOME CLASH PICTURES OF 1B06BC AND 1B06P1 SHOW ONLY THE SKY, MEASURED 2026-10-18, THE CAUSE UNKNOWN
+
+F215, F210-R3, Bader's message of 18 Oct 2026: the sky-only pictures of 1B06BC and 1B06P1 probed on copies, the camera
+position against the clash point of an empty picture and a good one, fixed with no sky picture on a rerun or measured and left
+UNKNOWN. Measured, and the cause is left UNKNOWN.
+
+**HOW.** `tools\probes\SkyProbe\probe-sky.ps1`, probe-picture-speed.ps1's guarded runner with the mode sky of
+`SkyProbePlugin.cs`, its guard untouched, opening a copy of the NWF the C06 flat run of F210 built and saved, holding its tests
+and results, run five times on 1B06BC, once on 1B06P1 and once on 1B06K1, 12 to 15 s each, every Navisworks quit by Dispose and
+Bader's settings put back. For the first clashes of each test named it reads the clash's centre and the camera of
+`TestsViewpointForResult`, every readable property of that viewpoint and of its clip planes, takes the picture the way the tool
+does, `TestsImageForResult` at 512 pixels, with every model shown and with only the models of its two items shown, and from the
+clash's own camera and that camera moved back along the same line to 30, 100 and 300 ft takes a picture of the active view,
+`CopyViewpointFrom` and `View.GenerateImage`. With `-HideOther` Clash Detective's Hide Other is set as the tool sets it for its
+pictures. `tools\probes\SkyProbe\count-sky-pictures.ps1` reads every picture of a group's _files folder. The results, the
+machine's name masked, are the sky-result-*-20261018.txt and sky-pictures-*-C06-20261018.tsv files in tools\probes\SkyProbe.
+
+**WHICH PICTURES ARE EMPTY.** Of the pictures the run wrote, those whose middle is the sky's colour, 136,169,238, and that hold
+no pixel of a clashing item's red or green: 76 of 1B06BC's 399 and 25 of 1B06P1's 374, which are the audit's 76 and its 13 with
+12 more near empty. Four more of 1B06BC have the sky at the middle and DO draw their two items, small, where Clash Detective's
+camera stands 47 to 340 ft back to frame a long beam, so they are not empty. The empty ones come mostly whole tests at a time:
+in 1B06BC every picture of 8 of the 12 tests holding one, all 30 of BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical
+Equipment and all 13 of BLD-FF-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings among them, and part of the other 4, in 1B06P1
+every picture of its 4 such tests.
+
+**THE CAMERA IS RIGHT.** For a picture with the sky at its middle the clash's own viewpoint stands where it should, 2.6 to
+208 ft from the centre over the 24 such clashes the probe read, 7.9 ft for the EL clashes, perspective, the same rotation as a
+good picture's, near and far types Auto, and the same clip planes as a good picture's. The document's own camera does not move when the picture is taken.
+
+**THE GEOMETRY IS THERE.** From that same camera the active view draws the clash: the EL conduits, the fitting and the box at
+2,774 km from AR, at 7.9 ft and at 30, 100 and 300 ft. It is `TestsImageForResult` that draws no item for these clashes, with
+every model shown and with only its items' models shown, with Hide Other set on and with it as the user has it.
+
+**WHAT IT IS NOT.** Not the distance from the origin: 1B06K1's AR and ME sit about 9.0 million feet out, as 1B06BC's EL does,
+and their pictures draw. Not one model: the empty tests' items are in AR, ME, both ST models and EL of 1B06BC, and in AR, ME and
+both ST of 1B06P1, while other tests whose items lie in the same models draw. Not a model hidden: every root reads shown. Not
+the clip planes, which read the same on an empty clash and a good one.
+
+**UNKNOWN.** What makes `TestsImageForResult` draw nothing for these tests. Whether a picture taken through the active view,
+which draws them, would be accepted in the client's report in place of Clash Detective's, since it is drawn by another call,
+Q208.
