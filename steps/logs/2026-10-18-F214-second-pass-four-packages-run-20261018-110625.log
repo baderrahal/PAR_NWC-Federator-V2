@@ -1,0 +1,410 @@
+﻿11:06:25.632  +0000.000s  Log opened at C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110625.log
+11:06:25.637  +0000.006s  ROWS     the machine readable log is C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110625.tsv
+11:06:25.643  +0000.011s  RETAIN   keeping 30 logs, deleted 1, could not delete 0, and 1 .tsv beside them
+
+================================================================
+SESSION
+================================================================
+11:06:25.653  +0000.022s  started        : 2026-10-18 11:06:25
+11:06:25.655  +0000.023s  plugin version : 1.0.0.0 32440799 built 2026-10-18 11:06:07
+11:06:25.656  +0000.024s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+11:06:25.657  +0000.025s  open document  : none, the document is clear
+11:06:25.658  +0000.026s  log file       : C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110625.log
+11:06:25.730  +0000.099s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+11:06:25.779  +0000.148s  Source    C:\Users\bader\Desktop\NM fed\NWC\C04
+11:06:25.779  +0000.149s  Nwf       C:\Users\bader\Desktop\NM fed\NWF\C04
+11:06:25.780  +0000.150s  Nwd       C:\Users\bader\Desktop\NM fed\NWD\C04
+11:06:25.782  +0000.150s  PickedNwf C:\Users\bader\Desktop\NM fed\NWF\C02
+11:06:25.782  +0000.151s  PackageParentC:\NWC-PC-Test\work\r6b\Parent
+11:06:25.985  +0000.354s  MATRIX   the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml holds 61 sets and 1830 tests.
+11:06:25.987  +0000.356s  TEAMS    the teams are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, the team map beside this file. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code
+11:06:25.988  +0000.357s  TEAMS    Architecture is AR
+11:06:25.989  +0000.358s  TEAMS    Structure is ST
+11:06:25.989  +0000.359s  TEAMS    Mechanical is HV, PL, FP, ME, DR and FF
+11:06:25.990  +0000.359s  TEAMS    Electrical is EL and EV
+11:06:25.990  +0000.360s  TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN
+11:06:25.991  +0000.361s  TEAMS    a pair holding Mechanical or Electrical carries the size folder
+11:06:25.994  +0000.363s  TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder above it in the clash XML's set tree names, unless a model of its group carries a code its name holds
+11:06:25.995  +0000.364s  MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+11:06:25.996  +0000.365s  MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  0 occurrences. this file does not hold that name
+11:06:25.996  +0000.366s  MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  0 occurrences. that set already asks exactly this, so it was left alone. contains, then one negated equals per category another set asks for, F87 since scan.md 5g
+11:06:25.997  +0000.366s  MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:06:25.998  +0000.367s  MATRIX   the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:06:25.999  +0000.368s  MATRIX   the value ME-PIPING is asked as ME-PIPING or ME-Piping, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:06:25.999  +0000.369s  MATRIX   the value FF-Fire Fighting is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+11:06:26.000  +0000.370s  MATRIX   the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+11:06:26.001  +0000.370s  MATRIX   the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:06:26.002  +0000.371s  MATRIX   the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it
+11:06:26.002  +0000.372s  MATRIX   every set beside those asking Source File contains -AR- whose category another discipline also uses asks it already  0 occurrences
+11:06:26.008  +0000.377s  MATRIX   a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box "Rebuild sets that drifted from the file" is ticked. The SETS block of each group names every such set as DRIFTED
+11:06:26.009  +0000.378s  MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change
+
+================================================================
+HEALTH 1104-PAR
+================================================================
+11:06:26.028  +0000.398s  Tests: 1830
+11:06:26.029  +0000.398s  Sets: 61
+11:06:26.030  +0000.399s  Locators resolved: 61 of 61
+11:06:26.031  +0000.400s  Tests with an unresolved side: 0
+11:06:26.031  +0000.401s  Conditions: 146 across 58 distinct rules
+11:06:26.032  +0000.401s  Sets at the root with no folder: 0
+11:06:26.033  +0000.402s  Duplicate set names: 0
+11:06:26.034  +0000.403s  Sets asking exactly the same question: 1
+11:06:26.034  +0000.404s      BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices
+11:06:26.035  +0000.404s  Revit categories known: 374, measured on the C02 folder only
+11:06:26.036  +0000.405s  Sets asking for a category no model carries: 13, against the list measured on the C02 folder only
+11:06:26.036  +0000.406s      BLD-AR-Ramps asks for "Ramps"
+11:06:26.037  +0000.406s      BLD-AR-Roofs asks for "Roofs"
+11:06:26.038  +0000.407s      BLD-AR-Columns asks for "Columns"
+11:06:26.039  +0000.408s      BLD-AR-Casework asks for "Casework"
+11:06:26.039  +0000.409s      BLD-AR-Parking asks for "Parking"
+11:06:26.040  +0000.409s      and 8 more, counted and not listed
+11:06:26.041  +0000.410s  Set names breaking their folder's pattern: 1
+11:06:26.041  +0000.411s      BLD-Security Devices reads BLD where 13 others in the same folder read BLD-EL
+
+================================================================
+PACKAGE TREE
+================================================================
+11:06:30.930  +0005.299s  parent      : C:\NWC-PC-Test\work\r6b\Parent
+11:06:30.931  +0005.300s  found       : 4 communities, 4 packages, 5 NWC files
+11:06:30.932  +0005.302s  community   A  1 package, 1 NWC file
+11:06:30.934  +0005.303s     package  A  1 NWC file
+11:06:30.935  +0005.304s  community   B  1 package, 1 NWC file
+11:06:30.937  +0005.305s     package  B  1 NWC file
+11:06:30.938  +0005.306s  community   C  1 package, 1 NWC file
+11:06:30.939  +0005.307s     package  C  1 NWC file
+11:06:30.940  +0005.309s  community   D  1 package, 2 NWC files
+11:06:30.941  +0005.310s     package  D  2 NWC files
+11:06:30.942  +0005.311s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+PACKAGE TREE
+================================================================
+11:06:40.292  +0014.661s  parent      : C:\NWC-PC-Test\work\r6b\Parent
+11:06:40.293  +0014.662s  found       : 4 communities, 4 packages, 5 NWC files
+11:06:40.294  +0014.663s  community   A  1 package, 1 NWC file
+11:06:40.295  +0014.664s     package  A  1 NWC file
+11:06:40.296  +0014.665s  community   B  1 package, 1 NWC file
+11:06:40.297  +0014.666s     package  B  1 NWC file
+11:06:40.298  +0014.667s  community   C  1 package, 1 NWC file
+11:06:40.299  +0014.668s     package  C  1 NWC file
+11:06:40.300  +0014.669s  community   D  1 package, 2 NWC files
+11:06:40.301  +0014.670s     package  D  2 NWC files
+11:06:40.302  +0014.671s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+PACKAGES TICKED
+================================================================
+11:06:40.312  +0014.682s  parent      : C:\NWC-PC-Test\work\r6b\Parent
+11:06:40.314  +0014.683s  ticked      A  1 NWC file
+11:06:40.315  +0014.684s  ticked      B  1 NWC file
+11:06:40.316  +0014.685s  ticked      C  1 NWC file
+11:06:40.318  +0014.686s  ticked      D  2 NWC files
+11:06:40.318  +0014.687s  ticked      : 4 packages holding 5 NWC files
+11:06:40.320  +0014.688s  left out    : 0 packages holding 0 NWC files
+
+================================================================
+PACKAGE GROUPS
+================================================================
+11:06:40.325  +0014.694s  A  1B06KI  runs, 1 files, NWF C:\NWC-PC-Test\work\r6b\Report3\A\NWF\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwf
+11:06:40.326  +0014.695s  B  1B06BS  runs, 1 files, NWF C:\NWC-PC-Test\work\r6b\Report3\B\NWF\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf
+11:06:40.327  +0014.696s  C  1B06PK  runs, 1 files, NWF C:\NWC-PC-Test\work\r6b\Report3\C\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf
+11:06:40.328  +0014.697s  D  1B06PS  runs, 2 files, NWF C:\NWC-PC-Test\work\r6b\Report3\D\NWF\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf
+
+================================================================
+RUN SETTINGS
+================================================================
+11:06:41.407  +0015.776s  source folder     : C:\NWC-PC-Test\work\r6b\Parent
+11:06:41.408  +0015.777s  include subfolders: no
+11:06:41.409  +0015.779s  NWF folder        : the NWF folder of each package under C:\NWC-PC-Test\work\r6b\Report3
+11:06:41.411  +0015.780s  NWD folder        : the NWD folder of each package under C:\NWC-PC-Test\work\r6b\Report3
+11:06:41.412  +0015.781s  files found       : 5
+11:06:41.414  +0015.782s  files ticked      : 5
+11:06:41.415  +0015.784s  groups built      : 4
+11:06:41.416  +0015.785s  grouping         : One file per building
+11:06:41.418  +0015.786s  apply file to old: no, differences are reported and nothing is changed
+11:06:41.419  +0015.788s  penetrations     : no, every clash keeps the status it has
+11:06:41.421  +0015.790s  clash tolerance  : 25 mm, chosen in the tool, the drop down being its only source, set on every test and beats the built in matrix and the document
+11:06:41.422  +0015.791s  priority         : built in, read off the matrix pack built into the tool, so a Priority column where the pack reads, which its PACK and PRIORITY lines say
+11:06:41.423  +0015.792s  by design        : no, the built in pairs are not read
+11:06:41.425  +0015.794s  viewpoints       : yes, saved viewpoints are made for the clashes
+11:06:41.426  +0015.796s  NWD naming       : overwrites, so only the latest week exists
+11:06:41.427  +0015.797s  republish NWD    : yes, fixed
+11:06:41.429  +0015.798s  model units      : as each NWC carries them, never set, F201
+11:06:41.430  +0015.799s  report units     : Meters (m), always, converted before anything is written
+11:06:41.432  +0015.801s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\A
+11:06:41.434  +0015.803s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\A\NWF
+11:06:41.436  +0015.804s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\A\NWD
+11:06:41.441  +0015.811s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\B
+11:06:41.443  +0015.812s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\B\NWF
+11:06:41.444  +0015.814s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\B\NWD
+11:06:41.446  +0015.815s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\C
+11:06:41.447  +0015.817s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\C\NWF
+11:06:41.449  +0015.818s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\C\NWD
+11:06:41.450  +0015.820s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\D
+11:06:41.452  +0015.821s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\D\NWF
+11:06:41.453  +0015.823s  PACKAGES folder made     C:\NWC-PC-Test\work\r6b\Report3\D\NWD
+11:06:41.460  +0015.829s  RUN      started, 4 packages
+11:06:41.503  +0015.872s  PACKAGES starting C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\Federator.Runner.exe for 4 packages, order C:\Users\bader\AppData\Local\ParsonsNwcFederator\package-runs\20261018-110641\order.txt. This window waits and answers while each package runs in its own Navisworks
+11:06:41.764  +0016.133s  PACKAGES 11:06:41.587  the runner started for 4 packages, each in a fresh Navisworks, the next only once the last has closed, order C:\Users\bader\AppData\Local\ParsonsNwcFederator\package-runs\20261018-110641\order.txt
+11:06:41.766  +0016.135s  PACKAGES 11:06:41.601  package 1 of 4, A, starting a fresh Navisworks
+11:06:45.820  +0020.189s  PACKAGES 11:06:45.759  A: Navisworks started in 4.1 s, pid 16996
+11:06:51.041  +0025.410s  PACKAGES 11:06:50.872  A: its run returned 0 after 3.2 s
+11:06:52.906  +0027.274s  PACKAGES 11:06:52.818  A: its Navisworks is gone 1.6 s after it was told to quit
+11:06:52.907  +0027.276s  PACKAGES 11:06:52.818  package 2 of 4, B, starting a fresh Navisworks
+11:06:56.912  +0031.281s  PACKAGES 11:06:56.884  B: Navisworks started in 4.1 s, pid 20500
+11:07:01.912  +0036.281s  PACKAGES 11:07:01.869  B: its run returned 0 after 3.2 s
+11:07:03.586  +0037.955s  PACKAGES 11:07:03.393  B: its Navisworks is gone 1.2 s after it was told to quit
+11:07:03.588  +0037.957s  PACKAGES 11:07:03.393  package 3 of 4, C, starting a fresh Navisworks
+11:07:07.612  +0041.981s  PACKAGES 11:07:07.536  C: Navisworks started in 4.1 s, pid 28780
+11:07:23.845  +0058.214s  PACKAGES 11:07:23.838  C: its run returned 0 after 14.5 s
+11:07:25.536  +0059.905s  PACKAGES 11:07:25.478  C: its Navisworks is gone 1.2 s after it was told to quit
+11:07:25.538  +0059.907s  PACKAGES 11:07:25.479  package 4 of 4, D, starting a fresh Navisworks
+11:07:29.759  +0064.127s  PACKAGES 11:07:29.690  D: Navisworks started in 4.2 s, pid 13592
+11:07:44.914  +0079.283s  PACKAGES 11:07:44.776  D: its run returned 0 after 13.3 s
+11:07:46.607  +0080.976s  PACKAGES 11:07:46.587  D: its Navisworks is gone 1.5 s after it was told to quit
+11:07:46.609  +0080.977s  PACKAGES 11:07:46.588  the runner ended after 4 packages in 65.0 s
+11:07:46.610  +0080.979s  PACKAGES the runner ended with code 0
+11:07:46.617  +0080.986s  RUN      finished
+
+================================================================
+RESULT
+================================================================
+11:07:46.632  +0081.000s  fresh starts   : 4 packages, each in its own Navisworks, one after the other
+11:07:46.633  +0081.001s  groups done    : 1
+11:07:46.634  +0081.002s  groups partial : 0
+11:07:46.635  +0081.004s  groups failed  : 3
+11:07:46.636  +0081.005s  
+11:07:46.637  +0081.006s  group          A  1B06KI  FAILED  clashes UNKNOWN
+11:07:46.638  +0081.007s  group          B  1B06BS  FAILED  clashes UNKNOWN
+11:07:46.639  +0081.008s  group          C  1B06PK  DONE  0 clashes
+11:07:46.641  +0081.009s  group          D  1B06PS  FAILED  8 clashes
+11:07:46.642  +0081.011s  package        A : 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.643  +0081.012s  package        B : 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.644  +0081.013s  package        C : 1 group, 1 done, 0 partial, 0 failed, 0 clashes
+11:07:46.645  +0081.014s  package        D : 1 group, 0 done, 0 partial, 1 failed, 8 clashes
+11:07:46.646  +0081.015s  community      A : 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.647  +0081.016s  community      B : 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.649  +0081.017s  community      C : 1 package, 1 group, 1 done, 0 partial, 0 failed, 0 clashes
+11:07:46.650  +0081.018s  community      D : 1 package, 1 group, 0 done, 0 partial, 1 failed, 8 clashes
+11:07:46.650  +0081.020s  run            : 4 communities, 4 packages, 4 groups, 1 done, 0 partial, 3 failed, at least 8 clashes, a count was not taken
+11:07:46.652  +0081.021s  why            A  1B06KI : No file in this group appended, so nothing was written., and C:\NWC-PC-Test\work\r6b\Parent\A\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+11:07:46.653  +0081.022s  why            B  1B06BS : No file in this group appended, so nothing was written., and C:\NWC-PC-Test\work\r6b\Parent\B\1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+11:07:46.654  +0081.024s  why            D  1B06PS : C:\NWC-PC-Test\work\r6b\Parent\D\1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+11:07:46.656  +0081.025s  
+11:07:46.658  +0081.026s  PACKAGE A : its own RESULT, from its log C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110647.log
+11:07:46.659  +0081.028s      11:06:50.738  +0003.042s  groups done    : 0
+11:07:46.660  +0081.029s      11:06:50.739  +0003.043s  groups partial : 0
+11:07:46.662  +0081.032s      11:06:50.740  +0003.044s  groups failed  : 1
+11:07:46.664  +0081.033s      
+11:07:46.665  +0081.034s      11:06:50.743  +0003.046s  group          A  1B06KI  FAILED  clashes UNKNOWN
+11:07:46.666  +0081.035s      11:06:50.744  +0003.047s  package        A : 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.668  +0081.037s      11:06:50.745  +0003.048s  community      A : 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.669  +0081.038s      11:06:50.746  +0003.049s  run            : 1 community, 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.670  +0081.039s      
+11:07:46.671  +0081.040s      11:06:50.749  +0003.052s  first run      : 1
+11:07:46.674  +0081.043s      11:06:50.750  +0003.053s  weekly run     : 0
+11:07:46.675  +0081.044s      11:06:50.752  +0003.054s  weekly + matrix: 0
+11:07:46.677  +0081.046s      11:06:50.752  +0003.055s  rebuilt        : 0
+11:07:46.678  +0081.047s      11:06:50.754  +0003.056s  skipped        : 0
+11:07:46.679  +0081.048s      
+11:07:46.680  +0081.049s      11:06:50.758  +0003.060s  clashes found  : UNKNOWN, no group reported a clash count
+11:07:46.681  +0081.050s      11:06:50.760  +0003.062s  clash skipped  : none, every clash is run whatever the coordinates are
+11:07:46.682  +0081.051s      11:06:50.761  +0003.063s  coordinates    : 0 of 1 group judged, 1 not reached, the run stopped or the group ended before its models were read
+11:07:46.684  +0081.053s      
+11:07:46.685  +0081.054s      11:06:50.765  +0003.068s  COVERAGE checked : UNKNOWN, 0 compared in 1 group, 0 not compared, 1 group not checked, its tests in none of these counts, so no count was checked
+11:07:46.686  +0081.055s      11:06:50.766  +0003.069s  generic models : UNKNOWN, no group reached the sets step, so nothing was counted
+11:07:46.688  +0081.057s      
+11:07:46.689  +0081.058s      
+11:07:46.690  +0081.059s      11:06:50.771  +0003.073s  pictures       : none written
+11:07:46.691  +0081.060s      11:06:50.772  +0003.074s  files written  : 5, every size read back off the disk
+11:07:46.692  +0081.061s                                LIST  C:\NWC-PC-Test\work\r6b\Report3\A\Log\Models not on the same shared coordinates, run 2026-10-18 110648.txt  313 bytes
+11:07:46.695  +0081.064s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\A\A AR checks.xlsx  8,172 bytes
+11:07:46.696  +0081.065s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\A\A ST checks.xlsx  7,900 bytes
+11:07:46.697  +0081.066s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\A\A ME checks.xlsx  7,899 bytes
+11:07:46.698  +0081.067s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\A\A EL checks.xlsx  7,900 bytes
+11:07:46.700  +0081.069s      
+11:07:46.701  +0081.070s      11:06:50.781  +0003.084s  errors         : 1, repeated here in full
+11:07:46.702  +0081.071s      
+11:07:46.703  +0081.072s      11:06:50.783  +0003.086s    [1] group A  1B06KI ended FAILED
+11:07:46.705  +0081.073s                                reason   : No file in this group appended, so nothing was written., and C:\NWC-PC-Test\work\r6b\Parent\A\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+11:07:46.706  +0081.075s      
+11:07:46.707  +0081.076s      11:06:50.788  +0003.090s  run time       : 2.248s
+11:07:46.708  +0081.077s      11:06:50.789  +0003.091s  waiting for the person : 0.721s, which is not work this tool did
+11:07:46.709  +0081.079s      11:06:50.790  +0003.092s  total elapsed  : 3.092s
+11:07:46.711  +0081.080s      11:06:50.800  +0003.103s  the .log so far: 31,497 bytes, read before this block finished writing
+11:07:46.714  +0081.083s      11:06:50.807  +0003.110s  the .tsv       : 2,451 bytes, which keeps every line the .log collapsed
+11:07:46.715  +0081.084s      11:06:50.817  +0003.120s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110647.log to C:\NWC-PC-Test\work\r6b\Report3\A\Log\run-20261018-110647.log, 31694 bytes
+11:07:46.716  +0081.085s      11:06:50.825  +0003.128s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110647.tsv to C:\NWC-PC-Test\work\r6b\Report3\A\Log\run-20261018-110647.tsv, 2451 bytes
+11:07:46.717  +0081.086s  
+11:07:46.719  +0081.088s  PACKAGE B : its own RESULT, from its log C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110658.log
+11:07:46.720  +0081.089s      11:07:01.738  +0002.991s  groups done    : 0
+11:07:46.721  +0081.090s      11:07:01.740  +0002.992s  groups partial : 0
+11:07:46.725  +0081.094s      11:07:01.741  +0002.993s  groups failed  : 1
+11:07:46.726  +0081.095s      
+11:07:46.727  +0081.096s      11:07:01.743  +0002.996s  group          B  1B06BS  FAILED  clashes UNKNOWN
+11:07:46.729  +0081.098s      11:07:01.744  +0002.997s  package        B : 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.730  +0081.099s      11:07:01.745  +0002.998s  community      B : 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.731  +0081.100s      11:07:01.746  +0002.999s  run            : 1 community, 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+11:07:46.733  +0081.102s      
+11:07:46.734  +0081.103s      11:07:01.749  +0003.002s  first run      : 1
+11:07:46.735  +0081.104s      11:07:01.750  +0003.003s  weekly run     : 0
+11:07:46.737  +0081.106s      11:07:01.751  +0003.004s  weekly + matrix: 0
+11:07:46.738  +0081.107s      11:07:01.752  +0003.005s  rebuilt        : 0
+11:07:46.740  +0081.108s      11:07:01.752  +0003.006s  skipped        : 0
+11:07:46.741  +0081.110s      
+11:07:46.742  +0081.111s      11:07:01.757  +0003.010s  clashes found  : UNKNOWN, no group reported a clash count
+11:07:46.744  +0081.112s      11:07:01.759  +0003.012s  clash skipped  : none, every clash is run whatever the coordinates are
+11:07:46.745  +0081.114s      11:07:01.760  +0003.013s  coordinates    : 0 of 1 group judged, 1 not reached, the run stopped or the group ended before its models were read
+11:07:46.747  +0081.115s      
+11:07:46.748  +0081.117s      11:07:01.764  +0003.017s  COVERAGE checked : UNKNOWN, 0 compared in 1 group, 0 not compared, 1 group not checked, its tests in none of these counts, so no count was checked
+11:07:46.749  +0081.118s      11:07:01.766  +0003.019s  generic models : UNKNOWN, no group reached the sets step, so nothing was counted
+11:07:46.752  +0081.121s      
+11:07:46.752  +0081.122s      
+11:07:46.755  +0081.124s      11:07:01.769  +0003.023s  pictures       : none written
+11:07:46.757  +0081.126s      11:07:01.770  +0003.024s  files written  : 5, every size read back off the disk
+11:07:46.758  +0081.127s                                LIST  C:\NWC-PC-Test\work\r6b\Report3\B\Log\Models not on the same shared coordinates, run 2026-10-18 110659.txt  313 bytes
+11:07:46.760  +0081.129s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\B\B AR checks.xlsx  7,843 bytes
+11:07:46.761  +0081.130s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\B\B ST checks.xlsx  7,843 bytes
+11:07:46.763  +0081.132s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\B\B ME checks.xlsx  7,843 bytes
+11:07:46.764  +0081.133s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\B\B EL checks.xlsx  8,132 bytes
+11:07:46.765  +0081.134s      
+11:07:46.767  +0081.136s      11:07:01.781  +0003.034s  errors         : 1, repeated here in full
+11:07:46.768  +0081.137s      
+11:07:46.769  +0081.138s      11:07:01.784  +0003.036s    [1] group B  1B06BS ended FAILED
+11:07:46.770  +0081.139s                                reason   : No file in this group appended, so nothing was written., and C:\NWC-PC-Test\work\r6b\Parent\B\1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+11:07:46.772  +0081.141s      
+11:07:46.773  +0081.142s      11:07:01.788  +0003.041s  run time       : 2.160s
+11:07:46.775  +0081.144s      11:07:01.788  +0003.042s  waiting for the person : 0.763s, which is not work this tool did
+11:07:46.776  +0081.145s      11:07:01.791  +0003.043s  total elapsed  : 3.043s
+11:07:46.778  +0081.147s      11:07:01.800  +0003.052s  the .log so far: 31,493 bytes, read before this block finished writing
+11:07:46.780  +0081.149s      11:07:01.807  +0003.060s  the .tsv       : 2,449 bytes, which keeps every line the .log collapsed
+11:07:46.781  +0081.150s      11:07:01.817  +0003.070s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110658.log to C:\NWC-PC-Test\work\r6b\Report3\B\Log\run-20261018-110658.log, 31690 bytes
+11:07:46.783  +0081.151s      11:07:01.823  +0003.076s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110658.tsv to C:\NWC-PC-Test\work\r6b\Report3\B\Log\run-20261018-110658.tsv, 2449 bytes
+11:07:46.784  +0081.153s  
+11:07:46.785  +0081.154s  PACKAGE C : its own RESULT, from its log C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110709.log
+11:07:46.787  +0081.156s      11:07:23.662  +0014.244s  groups done    : 1
+11:07:46.788  +0081.157s      11:07:23.663  +0014.246s  groups partial : 0
+11:07:46.789  +0081.158s      11:07:23.664  +0014.247s  groups failed  : 0
+11:07:46.790  +0081.159s      
+11:07:46.792  +0081.161s      11:07:23.666  +0014.249s  group          C  1B06PK  DONE  0 clashes
+11:07:46.793  +0081.162s      11:07:23.668  +0014.250s  package        C : 1 group, 1 done, 0 partial, 0 failed, 0 clashes
+11:07:46.794  +0081.163s      11:07:23.668  +0014.251s  community      C : 1 package, 1 group, 1 done, 0 partial, 0 failed, 0 clashes
+11:07:46.796  +0081.165s      11:07:23.668  +0014.252s  run            : 1 community, 1 package, 1 group, 1 done, 0 partial, 0 failed, 0 clashes
+11:07:46.797  +0081.166s      
+11:07:46.799  +0081.167s      11:07:23.673  +0014.255s  first run      : 1
+11:07:46.800  +0081.169s      11:07:23.674  +0014.256s  weekly run     : 0
+11:07:46.802  +0081.171s      11:07:23.675  +0014.257s  weekly + matrix: 0
+11:07:46.803  +0081.172s      11:07:23.676  +0014.258s  rebuilt        : 0
+11:07:46.805  +0081.173s      11:07:23.677  +0014.259s  skipped        : 0
+11:07:46.806  +0081.175s      
+11:07:46.807  +0081.176s      11:07:23.681  +0014.264s  clashes found  : 0 across 1 group, 1 of which ran no test
+11:07:46.808  +0081.177s      11:07:23.682  +0014.265s        C  1B06PK       0  no test ran
+11:07:46.810  +0081.179s      11:07:23.685  +0014.267s  clash skipped  : none, every clash is run whatever the coordinates are
+11:07:46.811  +0081.180s      11:07:23.686  +0014.268s  coordinates    : 1 of 1 group judged
+11:07:46.812  +0081.181s      
+11:07:46.813  +0081.182s      11:07:23.690  +0014.272s  COVERAGE tests counted            : 1830 names, each once across 1 group
+11:07:46.815  +0081.184s      11:07:23.691  +0014.274s  COVERAGE in the document in one group at least : 36, never in the document 1794
+11:07:46.816  +0081.185s      11:07:23.692  +0014.275s  COVERAGE run in one group at least : 0
+11:07:46.817  +0081.186s      11:07:23.693  +0014.276s  COVERAGE with clashes in one group at least : 0
+11:07:46.819  +0081.188s      11:07:23.694  +0014.277s  COVERAGE run, never with a clash  : 0
+11:07:46.820  +0081.189s      11:07:23.695  +0014.278s  COVERAGE over 1 group, added up : 1830 places, 36 created this run, 0 already there, 1794 not created, 0 run, 0 with clashes, 0 without, 36 in the document and not run
+11:07:46.821  +0081.190s      11:07:23.696  +0014.279s  COVERAGE checked : UNKNOWN, 0 compared in 1 group, 36 not compared, 1794 held by neither side, tests no count was set beside, so no count was checked
+11:07:46.823  +0081.192s      11:07:23.698  +0014.280s  generic models : 0 items in 0 models of 1 over 1 group, 1 at nought, 0 not counted
+11:07:46.825  +0081.194s      
+11:07:46.827  +0081.196s      11:07:23.701  +0014.283s  by priority    : A 0, B 0, C 0, No priority 0, 0 in all
+11:07:46.829  +0081.197s      
+11:07:46.830  +0081.198s      11:07:23.704  +0014.286s  pictures       : none written
+11:07:46.831  +0081.200s      11:07:23.705  +0014.287s  files written  : 10, every size read back off the disk
+11:07:46.832  +0081.201s                                NWF   C:\NWC-PC-Test\work\r6b\Report3\C\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf  190,788 bytes
+11:07:46.834  +0081.203s                                NWD   C:\NWC-PC-Test\work\r6b\Report3\C\NWD\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwd  18,463,655 bytes
+11:07:46.835  +0081.204s                                XLSX  C:\NWC-PC-Test\work\r6b\Report3\C\Log\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.xlsx  7,696 bytes
+11:07:46.837  +0081.205s                                HTML  C:\NWC-PC-Test\work\r6b\Report3\C\Clash report\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:07:46.838  +0081.207s                                INTERNAL C:\NWC-PC-Test\work\r6b\Report3\C\Log\1104-PAR-1B06PK-ZZZ-BM-MOD-000001 Internal.xlsx  138,824 bytes
+11:07:46.840  +0081.208s                                LIST  C:\NWC-PC-Test\work\r6b\Report3\C\Log\Models not on the same shared coordinates, run 2026-10-18 110710.txt  217 bytes
+11:07:46.841  +0081.210s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\C\C AR checks.xlsx  7,842 bytes
+11:07:46.842  +0081.211s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\C\C ST checks.xlsx  7,843 bytes
+11:07:46.843  +0081.212s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\C\C ME checks.xlsx  8,222 bytes
+11:07:46.844  +0081.214s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\C\C EL checks.xlsx  7,843 bytes
+11:07:46.846  +0081.216s      
+11:07:46.848  +0081.217s      11:07:23.718  +0014.301s  Nothing failed.
+11:07:46.849  +0081.219s      
+11:07:46.850  +0081.220s      11:07:23.721  +0014.304s  lines collapsed in this file, all of them kept in the .tsv beside it:
+11:07:46.852  +0081.221s      11:07:23.722  +0014.305s      CLASH created: 36 written as 5 and 31 counted. Every one is in the machine readable log
+11:07:46.854  +0081.222s      
+11:07:46.855  +0081.224s      11:07:23.724  +0014.307s  run time       : 13.485s
+11:07:46.857  +0081.225s      11:07:23.725  +0014.308s  waiting for the person : 0.695s, which is not work this tool did
+11:07:46.858  +0081.227s      11:07:23.726  +0014.309s  total elapsed  : 14.309s
+11:07:46.859  +0081.228s      11:07:23.736  +0014.319s  the .log so far: 195,135 bytes, read before this block finished writing
+11:07:46.861  +0081.229s      11:07:23.744  +0014.327s  the .tsv       : 828,480 bytes, which keeps every line the .log collapsed
+11:07:46.861  +0081.231s      11:07:23.756  +0014.338s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110709.log to C:\NWC-PC-Test\work\r6b\Report3\C\Log\run-20261018-110709.log, 195335 bytes
+11:07:46.863  +0081.232s      11:07:23.756  +0014.339s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110709.tsv to C:\NWC-PC-Test\work\r6b\Report3\C\Log\run-20261018-110709.tsv, 828480 bytes
+11:07:46.864  +0081.233s  
+11:07:46.866  +0081.235s  PACKAGE D : its own RESULT, from its log C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110731.log
+11:07:46.868  +0081.237s      11:07:44.597  +0013.049s  groups done    : 0
+11:07:46.869  +0081.238s      11:07:44.598  +0013.050s  groups partial : 0
+11:07:46.870  +0081.240s      11:07:44.599  +0013.051s  groups failed  : 1
+11:07:46.872  +0081.241s      
+11:07:46.874  +0081.242s      11:07:44.601  +0013.053s  group          D  1B06PS  FAILED  8 clashes
+11:07:46.875  +0081.244s      11:07:44.602  +0013.054s  package        D : 1 group, 0 done, 0 partial, 1 failed, 8 clashes
+11:07:46.877  +0081.245s      11:07:44.603  +0013.055s  community      D : 1 package, 1 group, 0 done, 0 partial, 1 failed, 8 clashes
+11:07:46.878  +0081.247s      11:07:44.604  +0013.056s  run            : 1 community, 1 package, 1 group, 0 done, 0 partial, 1 failed, 8 clashes
+11:07:46.879  +0081.248s      
+11:07:46.880  +0081.250s      11:07:44.607  +0013.058s  first run      : 1
+11:07:46.882  +0081.251s      11:07:44.608  +0013.059s  weekly run     : 0
+11:07:46.883  +0081.252s      11:07:44.609  +0013.060s  weekly + matrix: 0
+11:07:46.884  +0081.254s      11:07:44.610  +0013.061s  rebuilt        : 0
+11:07:46.887  +0081.256s      11:07:44.611  +0013.062s  skipped        : 0
+11:07:46.888  +0081.257s      
+11:07:46.889  +0081.259s      11:07:44.616  +0013.067s  clashes found  : 8 across 1 group
+11:07:46.891  +0081.260s      11:07:44.617  +0013.068s        D  1B06PS       8  from 1 test(s) that found something
+11:07:46.892  +0081.261s      11:07:44.618  +0013.070s  clash skipped  : none, every clash is run whatever the coordinates are. 1 group holds a model not on the same shared coordinates, so the clash results may be wrong for it
+11:07:46.893  +0081.263s      11:07:44.620  +0013.071s  coordinates    : 1 of 1 group judged
+11:07:46.895  +0081.264s      11:07:44.621  +0013.072s        D  1B06PS  1 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: ST  1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+11:07:46.896  +0081.266s      
+11:07:46.898  +0081.267s      11:07:44.625  +0013.076s  COVERAGE tests counted            : 1830 names, each once across 1 group
+11:07:46.899  +0081.269s      11:07:44.627  +0013.078s  COVERAGE in the document in one group at least : 6, never in the document 1824
+11:07:46.901  +0081.270s      11:07:44.628  +0013.079s  COVERAGE run in one group at least : 6
+11:07:46.902  +0081.271s      11:07:44.629  +0013.080s  COVERAGE with clashes in one group at least : 1
+11:07:46.904  +0081.273s      11:07:44.630  +0013.081s  COVERAGE run, never with a clash  : 5
+11:07:46.905  +0081.274s      11:07:44.631  +0013.082s  COVERAGE over 1 group, added up : 1830 places, 6 created this run, 0 already there, 1824 not created, 6 run, 1 with clashes, 5 without, 0 in the document and not run
+11:07:46.908  +0081.277s      11:07:44.632  +0013.083s  COVERAGE checked : 6 compared, 6 agree, 0 FAILED in 0 of 1 group, 0 not compared, 1824 held by neither side, tests no count was set beside, every group keeps its own result, 1830 test places in the groups checked, a test once for each group it is in
+11:07:46.909  +0081.278s      11:07:44.634  +0013.085s  generic models : 0 items in 0 models of 1 over 1 group, 1 at nought, 0 not counted
+11:07:46.911  +0081.280s      
+11:07:46.912  +0081.281s      11:07:44.636  +0013.087s  by priority    : A 8, B 0, C 0, No priority 0, 8 in all
+11:07:46.914  +0081.283s      
+11:07:46.915  +0081.284s      11:07:44.639  +0013.090s  pictures       : 8 written beside the files listed below, 0.43 MB, every size read back off the disk
+11:07:46.916  +0081.285s      11:07:44.640  +0013.091s                   counted and not listed one by one. The logo copied beside each report is not counted
+11:07:46.918  +0081.287s      11:07:44.641  +0013.092s  files written  : 10, every size read back off the disk
+11:07:46.919  +0081.288s                                NWF   C:\NWC-PC-Test\work\r6b\Report3\D\NWF\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf  17,819 bytes
+11:07:46.920  +0081.290s                                NWD   C:\NWC-PC-Test\work\r6b\Report3\D\NWD\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwd  2,964,578 bytes
+11:07:46.922  +0081.291s                                XLSX  C:\NWC-PC-Test\work\r6b\Report3\D\Log\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.xlsx  11,026 bytes
+11:07:46.924  +0081.293s                                HTML  C:\NWC-PC-Test\work\r6b\Report3\D\Clash report\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.html  3,862,178 bytes
+11:07:46.925  +0081.294s                                INTERNAL C:\NWC-PC-Test\work\r6b\Report3\D\Log\1104-PAR-1B06PS-ZZZ-BM-MOD-000001 Internal.xlsx  138,394 bytes
+11:07:46.928  +0081.297s                                LIST  C:\NWC-PC-Test\work\r6b\Report3\D\Log\Models not on the same shared coordinates, run 2026-10-18 110732.txt  877 bytes
+11:07:46.929  +0081.298s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\D\D AR checks.xlsx  8,002 bytes
+11:07:46.931  +0081.300s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\D\D ST checks.xlsx  8,326 bytes
+11:07:46.932  +0081.301s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\D\D ME checks.xlsx  7,898 bytes
+11:07:46.934  +0081.303s                                CHECKS C:\NWC-PC-Test\work\r6b\Report3\D\D EL checks.xlsx  7,900 bytes
+11:07:46.935  +0081.304s      
+11:07:46.936  +0081.305s      11:07:44.655  +0013.106s  errors         : 1, repeated here in full
+11:07:46.938  +0081.307s      
+11:07:46.938  +0081.308s      11:07:44.656  +0013.108s    [1] group D  1B06PS ended FAILED
+11:07:46.941  +0081.310s                                reason   : C:\NWC-PC-Test\work\r6b\Parent\D\1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+11:07:46.942  +0081.311s      
+11:07:46.943  +0081.313s      11:07:44.660  +0013.112s  lines collapsed in this file, all of them kept in the .tsv beside it:
+11:07:46.946  +0081.315s      11:07:44.661  +0013.113s      CLASH created: 6 written as 5 and 1 counted. Every one is in the machine readable log
+11:07:46.947  +0081.317s      11:07:44.663  +0013.114s      ROWS the two numbers agree: 6 written as 5 and 1 counted. Every one is in the machine readable log
+11:07:46.949  +0081.318s      
+11:07:46.950  +0081.319s      11:07:44.665  +0013.116s  run time       : 12.218s
+11:07:46.951  +0081.321s      11:07:44.666  +0013.117s  waiting for the person : 0.757s, which is not work this tool did
+11:07:46.954  +0081.322s      11:07:44.667  +0013.118s  total elapsed  : 13.118s
+11:07:46.955  +0081.324s      11:07:44.677  +0013.128s  the .log so far: 216,700 bytes, read before this block finished writing
+11:07:46.956  +0081.325s      11:07:44.685  +0013.136s  the .tsv       : 812,349 bytes, which keeps every line the .log collapsed
+11:07:46.957  +0081.326s      11:07:44.696  +0013.147s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110731.log to C:\NWC-PC-Test\work\r6b\Report3\D\Log\run-20261018-110731.log, 216900 bytes
+11:07:46.959  +0081.328s      11:07:44.703  +0013.154s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110731.tsv to C:\NWC-PC-Test\work\r6b\Report3\D\Log\run-20261018-110731.tsv, 812349 bytes
+11:08:12.549  +0106.918s  Window closed.

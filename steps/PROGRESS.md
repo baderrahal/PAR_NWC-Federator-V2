@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 10:47, last run 94/item1-C02, the round of F212 to F221, F213 merged 293, F214 running on r6b
+STATE OPEN, 2026-10-18 11:12, last run 94/item1-C02, the round of F212 to F221, F214 proof on flat C06 and C07 running
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->

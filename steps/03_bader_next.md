@@ -1,5 +1,21 @@
 # 03 Bader next
 
+## F214, a fresh Navisworks for every package
+
+Simple words. When you run ticked packages, your window plans them and asks once, as before. Then each package runs in a new Navisworks of its own, one after the other, and the next starts only once the last has closed, so a long run never fills one Navisworks's memory. One RESULT in your window's log joins them all. PROVEN on copies with Navisworks started by the loop. Not yet proven with a Navisworks you started yourself, which is step 1 and comes first because nothing else can show it.
+
+1. Start Navisworks Manage 2025 from the Start menu, as you always do, and open the tool.
+2. On the NWC page, step 5, pick a parent folder of copies and an empty Report folder, press Read, and tick two packages.
+3. Press Run ticked packages and OK on the one confirm.
+   Look for: the confirm saying each package runs in a fresh Navisworks of its own, so nothing open in this one is touched.
+4. Wait without clicking anything.
+   Look for: a second Navisworks window opening, working and closing, then another for the next package, and your own window still moving its live line.
+5. When the live line says Run finished, open the log with Open log folder.
+   Look for: RESULT starting with fresh starts : 2 packages, each in its own Navisworks, then the groups and one PACKAGE line for each with its own log.
+6. Open the Log folder under one package's Report folder.
+   Look for: that package's own run log, the one its PACKAGE line names.
+7. If any package says NO RESULT, send me both logs.
+
 ## F210, the test on C06 and C07, 18 Oct
 
 Simple words. PROVEN means a run on Navisworks showed it and I read the result. Every run was on copies under C:\NWC-PC-Test\work\multi, with main 14b434f4 installed. NM fed was only read, listed before and after with every file's SHA-256, 135 files both times and 0 lines differ. The whole report is claude\audit-multi-2026-10-17.md.
