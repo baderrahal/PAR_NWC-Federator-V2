@@ -134,6 +134,16 @@ namespace Federator.Core.Communities
             return trimmed.Length == 0 ? "matching" : trimmed.ToUpperInvariant();
         }
 
+        /// <summary>
+        /// One package on a line of the PACKAGE TREE and PACKAGES TICKED blocks: its path from the parent, which every group
+        /// line names it by, its files, then its full path, Bader's F-R4 of 18 Oct 2026, F216, so each line alone says where
+        /// the package is.
+        /// </summary>
+        public static string PackageLine(Package package, string extension)
+        {
+            return package.RelativePath + "  " + FilesWord(package.Files.Count, extension) + ", at " + package.FullPath;
+        }
+
         public static string FilesWord(int count, string extension)
         {
             return count.ToString(CultureInfo.InvariantCulture) + " " + KindOf(extension) + (count == 1 ? " file" : " files");
