@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 13:30, last run 94/item1-C02, the round of F212 to F221, F219 in review, then the F220 test on multi2
+STATE OPEN, 2026-10-18 14:10, last run 94/item1-C02, the round of F212 to F221, F219 merged in 299, the F220 test on multi2 next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,13 +16,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 290 | 16 | 2 | 21 | 71 | 7 | 407 |
-| total | 493 | 24 | 2 | 21 | 172 | 18 | 730 |
+| outside the waves | 292 | 16 | 0 | 21 | 71 | 7 | 407 |
+| total | 495 | 24 | 0 | 21 | 172 | 18 | 730 |
 <!-- the end of the counts -->
 
 ## Now
 - 18 Oct, Bader's answers to Q202 to Q206, F212 to F221, plan atop steps\history\log.md. Merged: F212 292, F213 293, F216 294, F218 295.
-  F214 296, F215 297, F217 298 merged. F215 sky pictures measured, cause UNKNOWN, Q208. F219 one discipline on both pages
+  F214 296, F215 297, F217 298, F219 299 merged. F215 sky pictures measured, cause UNKNOWN, Q208. Q209 self-pair tests counted
 - 18 Oct before: F208 to F211, 288 to 291, the packages, the discipline reports, the test on C06 and C07 and the audit
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -35,7 +35,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 01:04, C06 and C07 copy, 42 groups | 14b434f4, main after 289 | 3514, the memory stop in 22 groups | not run | none read | NWC page 60.0 min, NWF page 51.6 min |
 | 18 Oct 11:08, C06 and C07 copy, a Navisworks each | 3244079, F214 | 3656 and 3642, the stop in the last 6 or 7 groups of each | not run | none read | C06 11.6 min, C07 12.4 min |
 ## Next
-1. F219 its pull request and merge, then F220 the test on multi2, the real files listed before and after, then F221
+1. F220 the test on multi2, main built and installed, the real files listed before and after, then F221 the audit
 2. C07 in the desktop folder of real files changed at 09:41 on 18 Oct, outside this session, so F220 runs the real C07
 3. Bader answers Q207, Q208 and Q209 of this round
 4. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
