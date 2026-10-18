@@ -1,0 +1,355 @@
+﻿13:52:07.223  +0000.000s  Log opened at C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-135207.log
+13:52:07.230  +0000.006s  ROWS     the machine readable log is C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-135207.tsv
+13:52:07.234  +0000.011s  RETAIN   keeping 30 logs, deleted 1, could not delete 0, and 1 .tsv beside them
+
+================================================================
+SESSION
+================================================================
+13:52:07.244  +0000.020s  started        : 2026-10-18 13:52:07
+13:52:07.246  +0000.022s  plugin version : 1.0.0.0 026a1447 built 2026-10-18 13:13:43
+13:52:07.246  +0000.022s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+13:52:07.247  +0000.023s  open document  : none, the document is clear
+13:52:07.248  +0000.024s  log file       : C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-135207.log
+13:52:07.302  +0000.079s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+13:52:07.342  +0000.118s  Source    C:\Users\bader\Desktop\NM fed\NWC\C04
+13:52:07.343  +0000.119s  Nwf       C:\Users\bader\Desktop\NM fed\NWF\C04
+13:52:07.343  +0000.120s  Nwd       C:\Users\bader\Desktop\NM fed\NWD\C04
+13:52:07.344  +0000.120s  PickedNwf C:\Users\bader\Desktop\NM fed\NWF\C02
+13:52:07.345  +0000.121s  PackageParentC:\NWC-PC-Test\work\multi2\Parent
+13:52:07.514  +0000.290s  MATRIX   the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml holds 61 sets and 1830 tests.
+13:52:07.517  +0000.294s  TEAMS    the teams are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, the team map beside this file. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code
+13:52:07.518  +0000.294s  TEAMS    Architecture is AR
+13:52:07.519  +0000.295s  TEAMS    Structure is ST
+13:52:07.519  +0000.296s  TEAMS    Mechanical is HV, PL, FP, ME, DR and FF
+13:52:07.520  +0000.297s  TEAMS    Electrical is EL and EV
+13:52:07.521  +0000.298s  TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN
+13:52:07.522  +0000.298s  TEAMS    a pair holding Mechanical or Electrical carries the size folder
+13:52:07.524  +0000.301s  TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder above it in the clash XML's set tree names, unless a model of its group carries a code its name holds
+13:52:07.525  +0000.302s  MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+13:52:07.526  +0000.303s  MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  0 occurrences. this file does not hold that name
+13:52:07.527  +0000.303s  MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  0 occurrences. that set already asks exactly this, so it was left alone. contains, then one negated equals per category another set asks for, F87 since scan.md 5g
+13:52:07.527  +0000.304s  MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:07.528  +0000.305s  MATRIX   the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:07.529  +0000.305s  MATRIX   the value ME-PIPING is asked as ME-PIPING or ME-Piping, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:07.529  +0000.306s  MATRIX   the value FF-Fire Fighting is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+13:52:07.530  +0000.307s  MATRIX   the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+13:52:07.531  +0000.308s  MATRIX   the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:07.532  +0000.308s  MATRIX   the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it
+13:52:07.532  +0000.309s  MATRIX   every set beside those asking Source File contains -AR- whose category another discipline also uses asks it already  0 occurrences
+13:52:07.533  +0000.310s  MATRIX   a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box "Rebuild sets that drifted from the file" is ticked. The SETS block of each group names every such set as DRIFTED
+13:52:07.534  +0000.310s  MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change
+
+================================================================
+HEALTH 1104-PAR
+================================================================
+13:52:07.553  +0000.329s  Tests: 1830
+13:52:07.553  +0000.330s  Sets: 61
+13:52:07.554  +0000.331s  Locators resolved: 61 of 61
+13:52:07.555  +0000.332s  Tests with an unresolved side: 0
+13:52:07.555  +0000.332s  Conditions: 146 across 58 distinct rules
+13:52:07.557  +0000.333s  Sets at the root with no folder: 0
+13:52:07.557  +0000.334s  Duplicate set names: 0
+13:52:07.558  +0000.335s  Sets asking exactly the same question: 1
+13:52:07.559  +0000.336s      BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices
+13:52:07.559  +0000.336s  Revit categories known: 374, measured on the C02 folder only
+13:52:07.560  +0000.337s  Sets asking for a category no model carries: 13, against the list measured on the C02 folder only
+13:52:07.561  +0000.338s      BLD-AR-Ramps asks for "Ramps"
+13:52:07.561  +0000.338s      BLD-AR-Roofs asks for "Roofs"
+13:52:07.562  +0000.339s      BLD-AR-Columns asks for "Columns"
+13:52:07.563  +0000.340s      BLD-AR-Casework asks for "Casework"
+13:52:07.564  +0000.341s      BLD-AR-Parking asks for "Parking"
+13:52:07.564  +0000.341s      and 8 more, counted and not listed
+13:52:07.565  +0000.342s  Set names breaking their folder's pattern: 1
+13:52:07.566  +0000.343s      BLD-Security Devices reads BLD where 13 others in the same folder read BLD-EL
+13:52:07.832  +0000.608s  PACKAGES this Navisworks runs package 3 of 3, Corrupt, for the run whose log is C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-133029.log
+13:52:07.836  +0000.612s  PACKAGES 49 controls of the window set as the run that started it left them
+
+================================================================
+PACKAGE TREE
+================================================================
+13:52:07.856  +0000.633s  parent      : C:\NWC-PC-Test\work\multi2\Parent
+13:52:07.858  +0000.634s  found       : 3 communities, 3 packages, 135 NWC files
+13:52:07.860  +0000.637s  community   C06  1 package, 64 NWC files
+13:52:07.861  +0000.638s     package  C06  64 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C06
+13:52:07.863  +0000.639s  community   C07  1 package, 70 NWC files
+13:52:07.864  +0000.641s     package  C07  70 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C07
+13:52:07.865  +0000.642s  community   Corrupt  1 package, 1 NWC file
+13:52:07.866  +0000.643s     package  Corrupt  1 NWC file, at C:\NWC-PC-Test\work\multi2\Parent\Corrupt
+13:52:07.868  +0000.644s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+PACKAGE TREE
+================================================================
+13:52:07.906  +0000.683s  parent      : C:\NWC-PC-Test\work\multi2\Parent
+13:52:07.907  +0000.684s  found       : 3 communities, 3 packages, 135 NWC files
+13:52:07.909  +0000.686s  community   C06  1 package, 64 NWC files
+13:52:07.911  +0000.687s     package  C06  64 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C06
+13:52:07.912  +0000.688s  community   C07  1 package, 70 NWC files
+13:52:07.913  +0000.689s     package  C07  70 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C07
+13:52:07.914  +0000.691s  community   Corrupt  1 package, 1 NWC file
+13:52:07.915  +0000.692s     package  Corrupt  1 NWC file, at C:\NWC-PC-Test\work\multi2\Parent\Corrupt
+13:52:07.917  +0000.693s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+PACKAGES TICKED
+================================================================
+13:52:07.923  +0000.699s  parent      : C:\NWC-PC-Test\work\multi2\Parent
+13:52:07.924  +0000.700s  ticked      Corrupt  1 NWC file, at C:\NWC-PC-Test\work\multi2\Parent\Corrupt
+13:52:07.925  +0000.701s  left out    C06  64 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C06
+13:52:07.926  +0000.703s  left out    C07  70 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C07
+13:52:07.928  +0000.704s  ticked      : 1 package holding 1 NWC file
+13:52:07.929  +0000.705s  left out    : 2 packages holding 134 NWC files
+
+================================================================
+PACKAGE GROUPS
+================================================================
+13:52:07.934  +0000.710s  Corrupt  1B06KI  runs, 1 files, NWF C:\NWC-PC-Test\work\multi2\Report\Corrupt\NWF\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwf
+13:52:07.938  +0000.714s  PACKAGES The run was confirmed once in the window that started the run, so it is not asked again here
+
+================================================================
+RUN SETTINGS
+================================================================
+13:52:07.944  +0000.720s  source folder     : C:\NWC-PC-Test\work\multi2\Parent
+13:52:07.944  +0000.721s  include subfolders: no
+13:52:07.945  +0000.722s  NWF folder        : the NWF folder of each package under C:\NWC-PC-Test\work\multi2\Report
+13:52:07.946  +0000.723s  NWD folder        : the NWD folder of each package under C:\NWC-PC-Test\work\multi2\Report
+13:52:07.947  +0000.724s  files found       : 135
+13:52:07.949  +0000.726s  files ticked      : 1
+13:52:07.950  +0000.727s  groups built      : 1
+13:52:07.951  +0000.728s  grouping         : One file per building
+13:52:07.952  +0000.729s  apply file to old: no, differences are reported and nothing is changed
+13:52:07.954  +0000.730s  penetrations     : no, every clash keeps the status it has
+13:52:07.954  +0000.731s  clash tolerance  : 25 mm, chosen in the tool, the drop down being its only source, set on every test and beats the built in matrix and the document
+13:52:07.956  +0000.732s  priority         : built in, read off the matrix pack built into the tool, so a Priority column where the pack reads, which its PACK and PRIORITY lines say
+13:52:07.957  +0000.733s  by design        : no, the built in pairs are not read
+13:52:07.958  +0000.735s  viewpoints       : yes, saved viewpoints are made for the clashes
+13:52:07.960  +0000.736s  NWD naming       : overwrites, so only the latest week exists
+13:52:07.961  +0000.737s  republish NWD    : yes, fixed
+13:52:07.961  +0000.738s  model units      : as each NWC carries them, never set, F201
+13:52:07.963  +0000.739s  report units     : Meters (m), always, converted before anything is written
+13:52:07.965  +0000.741s  PACKAGES folder there    C:\NWC-PC-Test\work\multi2\Report\Corrupt
+13:52:07.966  +0000.743s  PACKAGES folder there    C:\NWC-PC-Test\work\multi2\Report\Corrupt\NWF
+13:52:07.968  +0000.744s  PACKAGES folder there    C:\NWC-PC-Test\work\multi2\Report\Corrupt\NWD
+13:52:07.972  +0000.748s  RUN      started, 1 group
+13:52:08.109  +0000.886s  RUN      the clash matrix is the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+13:52:08.111  +0000.888s  RUN      it holds 61 sets and 1830 tests
+13:52:08.112  +0000.889s  TEAMS    the teams are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, the team map beside this file. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code
+13:52:08.113  +0000.890s  TEAMS    Architecture is AR
+13:52:08.114  +0000.891s  TEAMS    Structure is ST
+13:52:08.115  +0000.892s  TEAMS    Mechanical is HV, PL, FP, ME, DR and FF
+13:52:08.117  +0000.893s  TEAMS    Electrical is EL and EV
+13:52:08.118  +0000.894s  TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN
+13:52:08.119  +0000.895s  TEAMS    a pair holding Mechanical or Electrical carries the size folder
+13:52:08.120  +0000.897s  TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder above it in the clash XML's set tree names, unless a model of its group carries a code its name holds
+13:52:08.121  +0000.898s  MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+13:52:08.122  +0000.899s  MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  0 occurrences. this file does not hold that name
+13:52:08.123  +0000.900s  MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  0 occurrences. that set already asks exactly this, so it was left alone. contains, then one negated equals per category another set asks for, F87 since scan.md 5g
+13:52:08.124  +0000.901s  MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:08.125  +0000.902s  MATRIX   the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:08.127  +0000.904s  MATRIX   the value ME-PIPING is asked as ME-PIPING or ME-Piping, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:08.128  +0000.905s  MATRIX   the value FF-Fire Fighting is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+13:52:08.129  +0000.906s  MATRIX   the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+13:52:08.130  +0000.907s  MATRIX   the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+13:52:08.131  +0000.908s  MATRIX   the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it
+13:52:08.132  +0000.909s  MATRIX   every set beside those asking Source File contains -AR- whose category another discipline also uses asks it already  0 occurrences
+13:52:08.134  +0000.910s  MATRIX   a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box "Rebuild sets that drifted from the file" is ticked. The SETS block of each group names every such set as DRIFTED
+13:52:08.135  +0000.912s  MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change
+13:52:08.136  +0000.913s  RUN      logs and reports go in the Log folder of each package, under its report folder beside its NWF and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone
+13:52:08.137  +0000.914s  RUN      the clash XML is off
+13:52:08.152  +0000.929s  COVERAGE the clash matrix the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml reads sha256 94897667adb466ae97a29b8df80b17b7fe52ac701f7f5ff174b975308471ebc9
+13:52:08.171  +0000.947s  GROUP    started  Corrupt  1B06KI  1 files
+                          file     : C:\NWC-PC-Test\work\multi2\Parent\Corrupt\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc
+13:52:08.179  +0000.956s  CLEAR    the document, at the top of 1B06KI, before Decide
+13:52:08.211  +0000.988s  CENSUS CLEAR  the document was emptied and every count read zero
+13:52:08.214  +0000.991s  STEP     DECIDE        started
+13:52:08.219  +0000.996s  CENSUS   before DECIDE  models 0  sets 0  tests 0  results 0  views 0
+13:52:08.234  +0001.011s  MEMORY   at the start of DECIDE, private bytes 825.3 MB, working set 698.2 MB, managed heap 79.4 MB
+13:52:08.271  +0001.048s  MEMORY   at the end of DECIDE, private bytes 825.5 MB up 0.2 MB, working set 698.6 MB up 0.4 MB, managed heap 79.7 MB up 0.2 MB
+13:52:08.274  +0001.050s  CENSUS   after  DECIDE  models 0  sets 0  tests 0  results 0  views 0
+13:52:08.283  +0001.059s  STEP     DECIDE        finished 0.051s  First run
+13:52:08.285  +0001.061s  BUILD    no NWF at C:\NWC-PC-Test\work\multi2\Report\Corrupt\NWF\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwf, building it from 1 file
+13:52:08.286  +0001.062s  CLEAR    the document, before building 1B06KI from scratch
+13:52:08.294  +0001.070s  STEP     APPEND        started
+13:52:08.296  +0001.072s  CENSUS   before APPEND  models 0  sets 0  tests 0  results 0  views 0
+13:52:08.304  +0001.080s  MEMORY   at the start of APPEND, private bytes 826.1 MB, working set 699.1 MB, managed heap 80.2 MB
+13:52:08.327  +0001.104s  APPEND   attempt  C:\NWC-PC-Test\work\multi2\Parent\Corrupt\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc
+13:52:08.537  +0001.313s  APPEND   Navisworks opened a message box on C:\NWC-PC-Test\work\multi2\Parent\Corrupt\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc and waited for a person. The tool pressed its one button, id 2, after 206 ms. Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable
+13:52:08.567  +0001.343s  APPEND   FAILED  C:\NWC-PC-Test\work\multi2\Parent\Corrupt\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc  200,000 bytes
+13:52:08.570  +0001.346s  APPEND   0 of 1 appended for 1B06KI
+13:52:08.571  +0001.347s  GROUP    1B06KI wrote nothing, every append failed
+13:52:08.578  +0001.354s  MEMORY   at the end of APPEND, private bytes 827.5 MB up 1.4 MB, working set 701.8 MB up 2.7 MB, managed heap 81.3 MB up 1.1 MB
+13:52:08.580  +0001.356s  CENSUS   after  APPEND  models 0  sets 0  tests 0  results 0  views 0
+13:52:08.585  +0001.362s  STEP     APPEND        finished 0.278s  0 of 1 appended
+13:52:08.596  +0001.373s  CENSUS   cost 0.000s over 4 counts in this group. That is inside the 1.000s a group is allowed
+13:52:08.597  +0001.374s  GROUP    finished Corrupt  1B06KI  FAILED  0.418s  First run  No file in this group appended, so nothing was written., and C:\NWC-PC-Test\work\multi2\Parent\Corrupt\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+
+================================================================
+TIMING Corrupt  1B06KI
+================================================================
+13:52:08.607  +0001.384s  APPEND                     0.278s   66.5%
+13:52:08.609  +0001.385s  DECIDE                     0.051s   12.2%
+13:52:08.610  +0001.387s  outside every step         0.089s   21.3%
+13:52:08.612  +0001.388s  
+13:52:08.613  +0001.389s  group total                0.418s
+13:52:08.614  +0001.390s  outside every step is the work between them and the work nothing times yet
+13:52:08.618  +0001.394s  GAPS     no group ran, so nothing was looked at
+13:52:08.620  +0001.397s  LIST     attempt  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Log\Models not on the same shared coordinates, run 2026-10-18 135208.txt
+13:52:08.633  +0001.409s  LIST     written  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Log\Models not on the same shared coordinates, run 2026-10-18 135208.txt  313 bytes
+
+================================================================
+TIMING BESIDE SIZE
+================================================================
+13:52:08.654  +0001.430s  by group, slowest first, with what each group held
+13:52:08.655  +0001.431s  Corrupt  1B06KI            0.418s  1 NWC file  200,000 bytes  UNKNOWN elements  UNKNOWN clashes  UNKNOWN viewpoints
+13:52:08.656  +0001.433s  
+13:52:08.657  +0001.434s  where each number comes from
+13:52:08.658  +0001.435s    seconds     the group's own clock, the number on its GROUP finished line
+13:52:08.660  +0001.436s    NWC         the files the group was handed, each sized on the disk when the group finished
+13:52:08.660  +0001.437s    elements    the Revit elements the EXPORT CHECK counted in the group's models
+13:52:08.661  +0001.438s    clashes     every clash of every test the group ran, as its CLASH finished line counts them
+13:52:08.663  +0001.439s    viewpoints  the viewpoints the VIEWS step created, as its VIEWS BUILT block counts them
+13:52:08.664  +0001.440s    UNKNOWN is a number that could not be read, and never a zero
+
+================================================================
+DISCIPLINE REPORT Corrupt
+================================================================
+13:52:08.692  +0001.469s  AR  6 lines, element ids not readable 0
+13:52:08.693  +0001.470s      Coordinates        1 not read
+13:52:08.694  +0001.471s      Missing discipline 1 none missing
+13:52:08.695  +0001.472s      Naming             1 the pattern
+13:52:08.696  +0001.473s      File age           1 within the limit
+13:52:08.697  +0001.474s      CAD                1 not read
+13:52:08.699  +0001.475s      Generic Models     1 not read
+13:52:08.700  +0001.476s  ST  2 lines, element ids not readable 0
+13:52:08.701  +0001.477s      Coordinates        no line
+13:52:08.702  +0001.478s      Missing discipline 1 not in this package
+13:52:08.703  +0001.479s      Naming             1 the pattern
+13:52:08.704  +0001.480s      File age           no line
+13:52:08.705  +0001.481s      CAD                no line
+13:52:08.706  +0001.482s      Generic Models     no line
+13:52:08.707  +0001.483s  ME  2 lines, element ids not readable 0
+13:52:08.708  +0001.484s      Coordinates        no line
+13:52:08.709  +0001.486s      Missing discipline 1 not in this package
+13:52:08.710  +0001.487s      Naming             1 the pattern
+13:52:08.711  +0001.488s      File age           no line
+13:52:08.712  +0001.489s      CAD                no line
+13:52:08.714  +0001.490s      Generic Models     no line
+13:52:08.715  +0001.491s  EL  2 lines, element ids not readable 0
+13:52:08.716  +0001.492s      Coordinates        no line
+13:52:08.717  +0001.493s      Missing discipline 1 not in this package
+13:52:08.717  +0001.494s      Naming             1 the pattern
+13:52:08.719  +0001.495s      File age           no line
+13:52:08.720  +0001.496s      CAD                no line
+13:52:08.720  +0001.497s      Generic Models     no line
+13:52:08.721  +0001.498s  left out  none, every line is in a workbook
+13:52:08.723  +0001.500s  CHECKS   attempt  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt AR checks.xlsx
+13:52:08.827  +0001.604s  BUNDLE   System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a resolved from C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\System.Numerics.Vectors.dll
+13:52:08.835  +0001.612s  BUNDLE   System.Memory was already loaded, that one was used
+13:52:08.842  +0001.619s  BUNDLE   System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a resolved from C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\System.Runtime.CompilerServices.Unsafe.dll
+13:52:08.865  +0001.642s  BUNDLE   System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51 resolved from C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\System.Buffers.dll
+13:52:09.637  +0002.413s  CHECKS   written  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt AR checks.xlsx  8,174 bytes
+13:52:10.343  +0003.120s  CHECKS   read back 6 of 6 lines, 0 element ids not readable, AR of Corrupt
+13:52:10.345  +0003.121s  CHECKS   attempt  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt ST checks.xlsx
+13:52:10.361  +0003.137s  CHECKS   written  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt ST checks.xlsx  7,902 bytes
+13:52:10.367  +0003.143s  CHECKS   read back 2 of 2 lines, 0 element ids not readable, ST of Corrupt
+13:52:10.368  +0003.145s  CHECKS   attempt  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt ME checks.xlsx
+13:52:10.378  +0003.155s  CHECKS   written  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt ME checks.xlsx  7,901 bytes
+13:52:10.383  +0003.160s  CHECKS   read back 2 of 2 lines, 0 element ids not readable, ME of Corrupt
+13:52:10.385  +0003.161s  CHECKS   attempt  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt EL checks.xlsx
+13:52:10.395  +0003.171s  CHECKS   written  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt EL checks.xlsx  7,902 bytes
+13:52:10.400  +0003.176s  CHECKS   read back 2 of 2 lines, 0 element ids not readable, EL of Corrupt
+
+================================================================
+SOURCE FINDINGS
+================================================================
+13:52:10.409  +0003.186s  0 NWC files were checked against the Revit model each was published from.
+13:52:10.410  +0003.187s  Every NWC came from a Revit model with the same building code, and no two NWC building codes were published from the same Revit building.
+
+================================================================
+SETS ACROSS THE RUN
+================================================================
+13:52:10.424  +0003.200s  groups in this run : 0
+13:52:10.425  +0003.201s  sets looked at     : 0
+13:52:10.426  +0003.202s  found nothing in every group : 0
+13:52:10.427  +0003.203s  No set was counted, so nothing is said of what the sets found.
+13:52:10.429  +0003.205s  ALIGNMENT across the run: 0 model(s) sit somewhere their group's reference model does not
+13:52:10.430  +0003.206s  EXPORT CHECK across the run: 0 model(s) carry no workset at all, 0 carry one on only some of their elements, 0 do not carry an element id on every element, 0 hold no Revit element, and 0 could not be counted
+13:52:10.432  +0003.208s  WORKBOOK 0 test blocks, 0 ran and 0 are tests that never ran. Where each block's tolerance was read is on the line below
+13:52:10.433  +0003.210s  TOLERANCE on the report, read off the clash test in the document for 0, chosen in the tool for 0, UNKNOWN for 0, 0 tests in all
+13:52:10.434  +0003.211s  RUN      finished
+
+================================================================
+TIMING, THE WHOLE RUN
+================================================================
+13:52:10.477  +0003.254s  session                 : 3 seconds, 3.2 seconds
+13:52:10.478  +0003.255s  waiting for the person  : 1 second, 0.7 seconds
+13:52:10.479  +0003.256s  the run                 : 2 seconds, 2.5 seconds
+13:52:10.480  +0003.257s  after the run finished  : 0 seconds, 0.0 seconds
+13:52:10.481  +0003.258s  the run is RUN started to RUN finished, and every share below is worked off it. The other two are not work this tool did
+13:52:10.482  +0003.259s  
+13:52:10.483  +0003.260s  by group, slowest first
+13:52:10.484  +0003.261s  Corrupt  1B06KI            0.418s   17.0%
+13:52:10.485  +0003.262s  outside every group        2.045s   83.0%
+13:52:10.486  +0003.263s  
+13:52:10.497  +0003.273s  run total                  2.463s
+13:52:10.498  +0003.275s  outside every group is the work between them and the work nothing times yet
+13:52:10.499  +0003.276s  
+13:52:10.500  +0003.277s  by step across every group, slowest first
+13:52:10.501  +0003.278s  APPEND                     0.278s   11.3%
+13:52:10.502  +0003.279s  DECIDE                     0.051s    2.1%
+13:52:10.503  +0003.280s  outside every step         2.134s   86.6%
+13:52:10.504  +0003.281s  
+13:52:10.505  +0003.282s  The run took 2 seconds, 2.463s. That is inside the 45 minutes 0 seconds a run has to finish in, by 44 minutes 58 seconds.
+
+================================================================
+RESULT
+================================================================
+13:52:10.511  +0003.287s  groups done    : 0
+13:52:10.512  +0003.288s  groups partial : 0
+13:52:10.513  +0003.289s  groups failed  : 1
+
+13:52:10.515  +0003.291s  group          Corrupt  1B06KI  FAILED  clashes UNKNOWN
+13:52:10.516  +0003.292s  package        Corrupt : 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+13:52:10.517  +0003.293s  community      Corrupt : 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+13:52:10.518  +0003.294s  run            : 1 community, 1 package, 1 group, 0 done, 0 partial, 1 failed, clashes UNKNOWN
+
+13:52:10.521  +0003.297s  first run      : 1
+13:52:10.522  +0003.298s  weekly run     : 0
+13:52:10.523  +0003.299s  weekly + matrix: 0
+13:52:10.524  +0003.300s  rebuilt        : 0
+13:52:10.525  +0003.301s  skipped        : 0
+
+13:52:10.529  +0003.305s  clashes found  : UNKNOWN, no group reported a clash count
+13:52:10.531  +0003.307s  clash skipped  : none, every clash is run whatever the coordinates are
+13:52:10.532  +0003.308s  coordinates    : 0 of 1 group judged, 1 not reached, the run stopped or the group ended before its models were read
+
+13:52:10.536  +0003.313s  COVERAGE checked : UNKNOWN, 0 compared in 1 group, 0 not compared, 1 group not checked, its tests in none of these counts, so no count was checked
+13:52:10.538  +0003.314s  generic models : UNKNOWN, no group reached the sets step, so nothing was counted
+
+
+13:52:10.542  +0003.318s  pictures       : none written
+13:52:10.543  +0003.320s  files written  : 5, every size read back off the disk
+                          LIST  C:\NWC-PC-Test\work\multi2\Report\Corrupt\Log\Models not on the same shared coordinates, run 2026-10-18 135208.txt  313 bytes
+                          CHECKS C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt AR checks.xlsx  8,174 bytes
+                          CHECKS C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt ST checks.xlsx  7,902 bytes
+                          CHECKS C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt ME checks.xlsx  7,901 bytes
+                          CHECKS C:\NWC-PC-Test\work\multi2\Report\Corrupt\Corrupt EL checks.xlsx  7,902 bytes
+
+13:52:10.551  +0003.327s  errors         : 1, repeated here in full
+
+13:52:10.554  +0003.330s    [1] group Corrupt  1B06KI ended FAILED
+                          reason   : No file in this group appended, so nothing was written., and C:\NWC-PC-Test\work\multi2\Parent\Corrupt\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc could not be appended, Navisworks said the file could not be opened because the contents are corrupt or it is currently unavailable and the tool answered its message box
+
+13:52:10.557  +0003.334s  run time       : 2.463s
+13:52:10.559  +0003.335s  waiting for the person : 0.748s, which is not work this tool did
+13:52:10.560  +0003.336s  total elapsed  : 3.336s
+13:52:10.569  +0003.345s  the .log so far: 32,062 bytes, read before this block finished writing
+13:52:10.577  +0003.354s  the .tsv       : 2,686 bytes, which keeps every line the .log collapsed
+13:52:10.587  +0003.364s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-135207.log to C:\NWC-PC-Test\work\multi2\Report\Corrupt\Log\run-20261018-135207.log, 32259 bytes
+13:52:10.589  +0003.365s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-135207.tsv to C:\NWC-PC-Test\work\multi2\Report\Corrupt\Log\run-20261018-135207.tsv, 2686 bytes
+13:52:10.604  +0003.381s  PACKAGES the result of this package is written to C:\Users\bader\AppData\Local\ParsonsNwcFederator\package-runs\20261018-133046\result-003.txt
+13:52:10.635  +0003.412s  Window closed.

@@ -1,0 +1,27 @@
+13:53:12.419  packages driver started, pid 33284, owner pid 3480, page NWF, stamp 026a1447
+13:53:14.686  the tool's window, handle 3608488, caption "Parsons NWC Federator   [1.0.0.0 026a1447 built 2026-10-18 13:13:43]"
+13:53:18.103  typed into NwfPackageParentBox: C:\NWC-PC-Test\work\multi2\Parent, it reads C:\NWC-PC-Test\work\multi2\Parent
+13:53:18.558  typed into NwfPackageReportBox: C:\NWC-PC-Test\work\multi2\Report, it reads C:\NWC-PC-Test\work\multi2\Report
+13:53:18.590  pressed NwfReadPackagesButton
+13:53:22.345  TREE after Read, nothing ticked:
+13:53:22.370    community  C06  [Off]  C06  |  1 package, 64 NWC files
+13:53:22.380       package  C06 itself  [Off]  C06 itself  |  64 NWC files, 21 groups
+13:53:22.386    community  C07  [Off]  C07  |  1 package, 70 NWC files
+13:53:22.399       package  C07 itself  [Off]  C07 itself  |  70 NWC files, 23 groups
+13:53:22.405    community  Corrupt  [Off]  Corrupt  |  1 package, 1 NWC file
+13:53:22.413       package  Corrupt itself  [Off]  Corrupt itself  |  1 NWC file, 1 group
+13:53:22.445  TREE after Read, nothing ticked holds 3 communities. The line under it reads: 3 communities, 3 packages, 135 NWC files. 0 packages ticked.
+13:53:23.739  ticked the community C06: before Off, after On, 1 toggles
+13:53:24.254  ticked the community C07: before Off, after On, 1 toggles
+13:53:25.290  TREE ticked, before Run:
+13:53:25.303    community  C06  [On]  C06  |  1 package, 64 NWC files
+13:53:25.315       package  C06 itself  [On]  C06 itself  |  64 NWC files, 21 groups
+13:53:25.322    community  C07  [On]  C07  |  1 package, 70 NWC files
+13:53:25.335       package  C07 itself  [On]  C07 itself  |  70 NWC files, 23 groups
+13:53:25.343    community  Corrupt  [Off]  Corrupt  |  1 package, 1 NWC file
+13:53:25.357       package  Corrupt itself  [Off]  Corrupt itself  |  1 NWC file, 1 group
+13:53:25.388  TREE ticked, before Run holds 3 communities. The line under it reads: 3 communities, 3 packages, 135 NWC files. 2 packages ticked.
+13:53:25.433  pressed RunNwfPackagesButton
+13:53:26.529  the confirm of pid 3480: caption "Parsons NWC Federator", every text: "OK" "Cancel" "This run refreshes 44 NWFs of 2 packages.  Steps: Refresh, Run tests, Pictures, Viewpoints, Reports.    A copy of the NWF is made first in the Backup folder under its package's report folder, one copy of each NWF.    NWC files changed since the last run:      UNKNOWN. No earlier run of this NWF left a list, so every file is read as it is.    Tests: the 1830 of the built in matrix, and the tests saved in the NWF, run again where they sit. Statuses, assigned to and comments of clashes still there are kept.  Viewpoints: the folder Clash Status with UNKNOWN viewpoints is deleted and made again. A viewpoint moved by hand into that folder is deleted with it.  ALL viewpoints and folders outside the tool folder Clash Status and the folder Comments will be deleted from the NWF. How many is UNKNOWN until the NWF opens, and the log says it. Put your own viewpoints in Comments.  Pictures: 6314 old jpg files in the Clash report folder are written again or removed.    Nothing is changed before OK. Cancel is the default."
+13:53:26.560  answered with OK, WM_COMMAND 1 posted to dialog 8982472, PostMessage True
+13:53:26.565  DRIVER EXIT 0 PRESSED: Run ticked packages on the NWF page, and OK on the confirm

@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 14:10, last run 94/item1-C02, the round of F212 to F221, F219 merged in 299, the F220 test on multi2 next
+STATE OPEN, 2026-10-18 14:30, last run 94/item1-C02, the round of F212 to F221, F220 the test on multi2 run and in review, F221 next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,8 +16,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 292 | 16 | 0 | 21 | 71 | 7 | 407 |
-| total | 495 | 24 | 0 | 21 | 172 | 18 | 730 |
+| outside the waves | 292 | 16 | 1 | 21 | 71 | 7 | 408 |
+| total | 495 | 24 | 1 | 21 | 172 | 18 | 731 |
 <!-- the end of the counts -->
 
 ## Now
@@ -35,8 +35,8 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 01:04, C06 and C07 copy, 42 groups | 14b434f4, main after 289 | 3514, the memory stop in 22 groups | not run | none read | NWC page 60.0 min, NWF page 51.6 min |
 | 18 Oct 11:08, C06 and C07 copy, a Navisworks each | 3244079, F214 | 3656 and 3642, the stop in the last 6 or 7 groups of each | not run | none read | C06 11.6 min, C07 12.4 min |
 ## Next
-1. F220 the test on multi2, main built and installed, the real files listed before and after, then F221 the audit
-2. C07 in the desktop folder of real files changed at 09:41 on 18 Oct, outside this session, so F220 runs the real C07
+1. F220 its pull request and merge, then F221 the audit, its proof steps and the closing entry
+2. F220: both pages 44 DONE, 9029 clashes, the corrupt package FAILED alone, the real files 0 lines differ
 3. Bader answers Q207, Q208 and Q209 of this round
 4. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
 5. F207-R1 on a copy of C04. C02 waits on Q191. tools\loop\prove-run.ps1 not run since F173, its window cases UNKNOWN
