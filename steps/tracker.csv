@@ -721,3 +721,4 @@ F214-R3,"the ceiling ends a package's Navisworks whatever it is doing, so an NWF
 F214-R4,"every Navisworks start of a run changes Navisworks' own session counts in the registry as a start by a person does, and in the probe one AdskLicensingAgent the first Navisworks started still ran after both were gone, scan.md 5z-zj",F214,none,register row,open,none,none,2026-10-18
 F216,"the full path on every package line in PACKAGE TREE and PACKAGES TICKED, PackageWords.PackageLine",F216,none,fix,merged,294,none,2026-10-18
 F218,"far is more than 30 m from the reference discipline, the default of DisciplineReportSettings.FarMetres, Bader's answer to Q202, tested at 29.9, 30 and 30.1 m",F218,none,fix,merged,295,none,2026-10-18
+F214-R5,"the memory stop still fires inside one package, in the last 6 or 7 of 21 groups of C06 and of C07, 1B06PP to 1C06M2, at 12 GB, run-20261018-110838, where F214 ended it across packages",F214,none,register row,open,none,none,2026-10-18

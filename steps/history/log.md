@@ -2,6 +2,51 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F214, F210-R1, a fresh Navisworks per package
+
+Branch fix-F214 off main 4a5c515, main merged in after F216 and F218. Bader's answer to Q204: a fresh Navisworks start per
+package, Run pressed once, the next starting only after the last closed, measured first, one package failing or crashing never
+stopping the next, one RESULT joining every package, proved on the flat C06 and C07 run where C07 gets its pictures.
+
+What was done.
+- Measured first, tools\probes\PackageStartProbe, docs\history\scan.md 5z-zj: a plugin inside one Navisworks started a helper
+  program, which started a second Navisworks through the Automation API in 4.31 s, handed the plugin there its arguments whole
+  by ExecuteAddInPlugin, quit it by Dispose and saw its process gone 1.55 s later, while the first pumped its window.
+- Core, Federator.Core.Communities: `PackageRunOrder` with `ControlValue`, `PackageRunResult`, `PackageRunSettings`,
+  `PackageRunWords`, the one file shape `PackageRunFile`, `PackageTally.NoResult` and `CountOf`, and in RunLog `ResultTitle`,
+  `SectionRule`, `WriteJoinedResult` and a `RunStarted` that names what it counts.
+- src\Federator.Runner, `Federator.Runner.exe`, carried in the bundle by install-common.ps1's list, whose references install.ps1
+  now reads too. It starts one Navisworks a package, runs the add-in there in the mode package-run, quits it and waits for it to
+  be gone, with a ceiling from before the start to after the wait, and never runs a package whose Navisworks it cannot tell.
+- The window: `RunPackagesInFreshStarts` on both pages after the one confirm, which now says nothing open here is touched, and
+  a package's own window, `PackageRunChild`, that copies the controls, runs its one package with no box shown and writes its
+  result. The engine's `OutcomesSoFar` so a run that threw still names its groups.
+- The reviewer and the breaker read the first pass, 28a8228. The second pass, 3244079, takes their findings: the Rebuild box's
+  confirm opened in a child and hung it until the ceiling, a Navisworks not told had no ceiling and no wait, a start that threw
+  left its Navisworks, a throw in the window's wait read the results while the runner ran, the live line said every package ran
+  whatever happened, the confirm named a discard that no longer happens, the RESULT hid a package that ran nothing and called a
+  package with no result not run, the drop down of recent NWFs read another NWF in a child, the counts were made twice, the
+  RESULT title and rule typed twice, and seven checks had no test. What it does not close is rows F214-R1 to R5.
+- Core tests: 3363 passed before, 3381 after on the branch, 3382 with F218 merged in, 0 failed, 0 skipped. dotnet build of the
+  solution: 0 errors, 0 warnings.
+
+What was proved here, Navisworks Manage 2025 started by the loop's launcher, nobody answering anything.
+- run-20261018-104535 on 28a8228 and run-20261018-110625 on 3244079, C:\NWC-PC-Test\work\r6b, four packages: each in its own
+  Navisworks, started in 4.1 to 5.5 s, gone 1.2 to 1.8 s after the quit, the next only then, A and B FAILED on their bad NWC,
+  C DONE, D FAILED naming its bad AR, one RESULT with every package's own RESULT under it.
+- run-20261018-110838 on 3244079, the flat copies of C06 and C07, C:\NWC-PC-Test\work\multi\flat\Parent into a fresh
+  Report-F214: C06 in its own Navisworks 697.2 s, C07 in its own 745.0 s, each gone 2.4 to 2.7 s after the quit, 42 of 42 groups
+  DONE, 12414 clashes, C06 3656 pictures and C07 3642, where the one start of F210 gave C07 1 picture of 6207. 24.4 min in all
+  against 60.0 min in one start. Logs masked in steps\logs as 2026-10-18-F214-*.
+
+What remains. Whether a Navisworks a person started can start the runner's is UNKNOWN, step 1 of steps\03_bader_next.md. The
+memory stop still fires in the last 6 or 7 groups of a package of 21, row F214-R5.
+
+Known bugs. F214-R1 the log keep of 30 against many packages, R2 a package planned again at its turn, R3 the ceiling's end of a
+save, R4 the starts' registry counts and a licensing agent left, R5 the memory stop inside a package.
+
+What comes next. F215, the sky pictures, probed on copies of the 1B06BC and 1B06P1 NWFs.
+
 ## 2026-10-18 F218, Q202, far is more than 30 m from the reference discipline
 
 Branch fix-F218 off main 38cc64f, worked while F214's proof run went, Core alone. Bader's answer to Q202: far is more than 30 m
