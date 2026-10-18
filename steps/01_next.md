@@ -1778,3 +1778,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F225 F219-R1 with Q209, a test a rule left out that an NWF still holds
 
 - The round of 18 Oct 2026, item 4: an NWF refreshed before holds the results of tests the rule no longer runs. Never delete a test from an NWF, count them in the log as not run by the rule, never read them as FAILED in COVERAGE, and ask Bader whether to remove them, Q212.
+- DONE 2026-10-18, merged in 305. A test a rule left out that an NWF still holds read not run by the rule and never FAILED, counted per group by what was read of it, 1B06BS 28 held, 1B06M1 14 held with 22 clashes and 1B06PE 32 with 16 on NWFs built before F224, 0 FAILED, Q212 asked, 3427 Core tests passed.
