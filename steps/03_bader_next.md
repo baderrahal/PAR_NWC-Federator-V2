@@ -40,7 +40,7 @@ Navisworks session. F222 first, since every later run goes through it.
    Look for: no file named auto-save-to-put-back.txt.
 5. Open one group's own log, the one its GROUP line names.
    Look for: `AUTOSAVE the option general.autosave.enable reads off as the run starts, left as it is`.
-6. On the NWF page pick one NWF of the run with File and press Run NWFs, in the Navisworks you started.
+6. On the NWF page pick one NWF of the run with File and press Run on the NWF page, in the Navisworks you started.
    Look for: `AUTOSAVE the option general.autosave.enable reads on as the run starts, switched off for the run` where step 1
    read ticked, and before RESULT `AUTOSAVE the option ... put back to on as the run ends`, then `... as it was before the run,
    ... auto-save-to-put-back.txt deleted`.
@@ -62,7 +62,7 @@ Navisworks session. F222 first, since every later run goes through it.
    still there where they found clashes.
 5. In Navisworks, open that group's NWF and Clash Detective.
    Look for: no test whose two sides carry one set code, and its clash counts equal to the workbook's.
-6. On the NWF page, pick an NWF refreshed before this fix and press Run NWFs.
+6. On the NWF page, pick an NWF refreshed before this fix and press Run on the NWF page.
    Look for: the confirm saying a test whose two sides carry one set code is not run and one saved in the NWF keeps its earlier
    results there, and in Clash Detective those tests still there with their results.
 
