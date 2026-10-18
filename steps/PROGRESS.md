@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 01:45, last run multi3 run-20261018-205401, the round of F231 to F238, F232 merged in 313, F233 next
+STATE OPEN, 2026-10-19 02:20, last run multi3 run-20261018-205401, the round of F231 to F238, F233 in review, F234 next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,13 +16,14 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 311 | 16 | 1 | 24 | 109 | 7 | 468 |
-| total | 515 | 24 | 1 | 24 | 209 | 18 | 791 |
+| outside the waves | 311 | 16 | 1 | 24 | 110 | 7 | 469 |
+| total | 515 | 24 | 1 | 24 | 210 | 18 | 792 |
 <!-- the end of the counts -->
 ## Now
 - 19 Oct, the round of F231 to F238 open, Bader's six fixes, the full run on final-2026-10-19 and the end, plan in log.md.
   F231 measured the append against a manual Append on 1B06BC, 1B06PS and 1B06K1, 0.000 mm after both pages, the far
-  models in the NWC files, no code changed, scan.md 5z-zn, claude\audit-round-2026-10-19.md
+  models in the NWC files, no code changed, scan.md 5z-zn, claude\audit-round-2026-10-19.md. F232 packages first, merged
+  in 313. F233 one discipline groups not built on both pages, proved on copies at 280e2f04, rows F233-R1 to R10
 - 18 Oct: F212 to F230, 292 to 311, a Navisworks per group, Auto-Save off, two set codes, the retake, the audits
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -33,12 +34,13 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 13:30, multi2, C06, C07, Corrupt, both pages | 026a1447, main after 299 | C06 3605 and 3623, C07 2709 twice, C06 stops from group 11 | not run | none read | NWC page 22.1 min, NWF page 19.6 min |
 | 18 Oct 20:24, multi3, C06, C07, SKY, both pages, a Navisworks a group | e38344c7, main after 309 | no stop in any of 46 groups, 1B06PK 4330 MB at most | not run | none read | NWC page 28.2 min, NWF page 26.4 min, 46 starts about 200 s and 46 quits 93 s a page |
 ## Next
-1. F231 merged, then F232, packages first and one route per page, then F233 one discipline groups not built
-2. F234 the discipline report, F235 Q187 and Q195 as answered in the round, F236 the clash count check
+1. F233 merged, then F234 the discipline report, with the one discipline rows and rows F233-R2 and R3
+2. F235 Q187 and Q195 as answered in the round, F236 the clash count check
 3. F237 the full run on final-2026-10-19, then F238 the audit, the proof steps and the closing entry
 
 ## Waiting for Bader
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
+- Q216 the two groupings by discipline build nothing, Q217 the Backup copy of an NWF of one discipline
 - Q212 the tests a rule left out still held in an NWF refreshed before it, leave them, delete once or a folder of their own
 - Q194 Approved pictures, Q195 the rule boxes on the NWF page, Q196 Layer, Q197 Item Name, Q198 logo, Q199 relative links
 - Q200 foundations, Q201 the look of the pictures. Q187 caps, Q188 512 pixels, Q189 by design pairs, Q190 folders, Q191 C02, Q192 numbers
