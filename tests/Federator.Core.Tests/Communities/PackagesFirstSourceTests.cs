@@ -74,7 +74,7 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheNwcPageHasOneRunButtonTheOneAtTheTopAndNoControlOfTheRemovedSteps()
+        public void TheNwcPageHasOneRunButtonInTheBarUnderTheStepsAndNoControlOfTheRemovedSteps()
         {
             string page = NwcPage(Xaml());
 

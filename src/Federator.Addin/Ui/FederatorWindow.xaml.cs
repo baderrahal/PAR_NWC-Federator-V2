@@ -1353,8 +1353,8 @@ namespace Federator.Addin.Ui
         /// The whole job on the file already open. No scan, no source folder, no grouping.
         ///
         /// HOW A PERSON TELLS THE TWO APART. The blue box on this step says what it will
-        /// run and where it will write, naming the open file. The Run button on the Source
-        /// step is the other path, and it says how many groups are ticked. One names a
+        /// run and where it will write, naming the open file. The Run button in the bar under
+        /// the steps is the other path, and it says how many groups are ticked. One names a
         /// file, the other names a count, so neither reads as the other.
         /// </summary>
         private void OnRunOpenDocument(object sender, RoutedEventArgs e)

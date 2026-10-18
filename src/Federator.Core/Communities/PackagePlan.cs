@@ -53,6 +53,41 @@ namespace Federator.Core.Communities
             return null;
         }
 
+        /// <summary>
+        /// WhyNot, and then, F232, the breaker's reading: a package's own report folder that would be the parent or inside it,
+        /// which the parent's own package can make, Report\Parent being the parent itself where the Report folder is the
+        /// parent's parent. Its Log folder would then sit in the folder read, so the run is refused here, before anything.
+        /// </summary>
+        public static string WhyNot(string parent, string reportRoot, IEnumerable<Package> packages)
+        {
+            string why = WhyNot(parent, reportRoot);
+
+            if (why != null || packages == null)
+            {
+                return why;
+            }
+
+            string from = parent == null ? string.Empty : parent.Trim();
+
+            if (from.Length == 0 || !IsFull(from))
+            {
+                return null;
+            }
+
+            foreach (Package package in packages)
+            {
+                string folder = FolderFor(reportRoot, package);
+
+                if (IsInsideOrSame(folder, from))
+                {
+                    return "The report folder of " + package.RelativePath + " would be " + folder + ", the parent folder or inside it, "
+                        + "so a report could be read as a package. Pick a Report folder outside " + from + ".";
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>The package's report folder, the Report folder and the package's path from the parent.</summary>
         public static string FolderFor(string reportRoot, Package package)
         {

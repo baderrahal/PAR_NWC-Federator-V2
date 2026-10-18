@@ -1,5 +1,40 @@
 # 03 Bader next
 
+## The round of 19 Oct, F231 to F238
+
+Simple words. Each fix of this round adds its steps here as it merges, and F238 orders them, its step 1 opening the Report
+folder of the full run. The steps of the round of 18 Oct below name step 5 and the NWF picker, which F232 took out: on this
+build step 5 is step 1. Packages and the picker is the NWF page's tree.
+
+### F232, packages first, one route per page
+
+1. Start Navisworks Manage 2025 from the Start menu and open the tool.
+   Look for: the NWC page with four tabs, 1. Packages, 2. Grouping, 3. Outputs, 4. Clash, and no Source tab.
+2. On 1. Packages type a parent folder of copies that holds NWC files itself and one community folder, and an empty Report
+   folder beside it, and press Read.
+   Look for: the parent named as a community with one package `<parent> itself`, the community with its package, nothing
+   ticked, and the Findings panel under the tree.
+3. Press Run, in the bar under the steps, with nothing ticked.
+   Look for: a box saying `Nothing is ticked. Tick a community or a package first.`
+4. Tick both communities.
+   Look for: the Findings panel counting the NWC files of the ticked packages and naming a group of one discipline.
+5. Open 2. Grouping.
+   Look for: one row per group with Community, Package, Building, Files, Disciplines, Run as and Status, and a group of one
+   discipline reading `One discipline, not built` with its box off and greyed.
+6. Open 3. Outputs.
+   Look for: the name fields and the Logo box only, no NWF folder, no NWD folder and no More, rarely changed.
+7. Press Run and OK on the confirm, and click nothing more.
+   Look for: one Navisworks opening and closing per ticked group, and in the log a PACKAGE GROUPS block naming the group of one
+   discipline `left out, One discipline, not built`.
+8. Open the NWF page.
+   Look for: the Report folder with Browse and Read at the top, then the tolerance, the five step boxes and one Run, and no
+   NWF picker, no File or Folder button, no Last used box and no panel on the right.
+9. Press Read on the NWF page.
+   Look for: a tree of community, package and NWF, one line per NWF the run of step 7 wrote, nothing ticked.
+10. Tick one community and one NWF of the other community, press Run and OK.
+   Look for: one Navisworks per ticked NWF, and RESULT with one GROUP block per NWF.
+11. Copy the tool's logs off this PC, as before, and send them.
+
 ## The round of 18 Oct evening, F222 to F230
 
 Simple words. Each fix of this round adds its steps here as it merges, and F230 orders them for one build, one install and one

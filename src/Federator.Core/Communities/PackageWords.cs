@@ -27,6 +27,22 @@ namespace Federator.Core.Communities
             + "report page. The name is project, originator, building, level, discipline, type, number. Every output goes under "
             + "the Report folder at the package's path from the parent folder, in its NWF, NWD, Log and Clash report folders.";
 
+        /// <summary>The heading of the findings under the tree of step 1, F232, with how many things are worth a look.</summary>
+        public static string FindingsHeading(int worthALook)
+        {
+            return worthALook == 0
+                ? "What the NWC files of the ticked packages show"
+                : "What the NWC files of the ticked packages show, including " + Count(worthALook, "thing", "things")
+                    + " worth a look. None of it stops a run.";
+        }
+
+        /// <summary>
+        /// The last line of the findings, F232: since every group runs in its own Navisworks, the comparison of each NWC with the
+        /// Revit model it was published from is made there, and the window a person runs never holds it.
+        /// </summary>
+        public const string SourceFindingsInEachGroupLog = "The NWC files are compared against the Revit models they were published "
+            + "from in each group's own Navisworks, and each group's log names what it found under SOURCE FINDINGS.";
+
         /// <summary>Why a group of a ticked package is left out of the run, F232: its box on step 2 is unticked.</summary>
         public const string UntickedOnStep2 = "unticked on 2. Grouping";
 
@@ -180,6 +196,12 @@ namespace Federator.Core.Communities
                 + FilesWord(tree.FileCount, tree.Extension) + ". "
                 + FilesWord(ticked, tree.Extension) + " ticked."
                 + (tree.LeftOut.Count > 0 ? " " + Count(tree.LeftOut.Count, "thing", "things") + " left out, the log names each." : string.Empty);
+        }
+
+        /// <summary>The NWF page's line for an NWF ticked in the tree that is no longer in its NWF folder at Run, F232.</summary>
+        public static string TickedNwfGone(string nwf)
+        {
+            return nwf + " was ticked and is no longer in its NWF folder, so it was not run. Read the Report folder again";
         }
 
         /// <summary>The NWF page's line for a ticked package with no NWF in its NWF folder.</summary>

@@ -303,15 +303,23 @@ namespace Federator.Core.Rerun
             return CanRun(blocked, nwfExists, rebuildTicked) && !Grouping.BuildingGroup.CannotClashWith(disciplines);
         }
 
-        /// <summary>The Status column of the Grouping step, F232: blocked with why, one discipline not built, or ready.</summary>
-        public static string StatusOf(string blockedReason, int disciplines)
+        /// <summary>
+        /// The Status column of the Grouping step, F232: blocked with why, one discipline not built, its NWF there and Rebuild
+        /// off, ExistsLine, or ready, so a row whose box is greyed always says why.
+        /// </summary>
+        public static string StatusOf(string blockedReason, int disciplines, bool nwfExists, bool rebuildTicked)
         {
             if (blockedReason != null)
             {
                 return BlockedWord + blockedReason;
             }
 
-            return Grouping.BuildingGroup.CannotClashWith(disciplines) ? OneDiscipline : Ready;
+            if (Grouping.BuildingGroup.CannotClashWith(disciplines))
+            {
+                return OneDiscipline;
+            }
+
+            return nwfExists && !rebuildTicked ? ExistsLine : Ready;
         }
 
         /// <summary>The words of the confirmation of a Rebuild, naming the groups it would build again.</summary>
@@ -345,6 +353,16 @@ namespace Federator.Core.Rerun
         public const string ChangedHeading = "NWC files changed since the last run";
 
         public const string NoNwfPicked = "Tick one NWF to see which NWC files changed.";
+
+        /// <summary>The changed files list where several NWFs are ticked, F232, Q214.</summary>
+        public static string SeveralNwfsTicked(int ticked)
+        {
+            return ticked.ToString(CultureInfo.InvariantCulture) + " NWFs are ticked. The list of changed NWC files is shown for one NWF at a time.";
+        }
+
+        public const string TickedNwfFolderNotRead = "The NWF folder of the ticked NWF could not be read. The log says why.";
+
+        public const string TickedNwfNoLongerThere = "The ticked NWF is no longer in its NWF folder. Read the Report folder again.";
 
         public const string NoManifest = "No earlier run of this NWF left a list of its NWC files, so what changed is UNKNOWN. The run writes one.";
 

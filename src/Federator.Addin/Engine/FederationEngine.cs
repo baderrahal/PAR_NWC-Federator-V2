@@ -555,16 +555,16 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Works through the jobs in order. Each group's NWF and NWD are written before
-        /// the next group starts, so a failure part way through keeps everything already
-        /// written.
-        /// </summary>
-        /// <summary>
         /// The groups of the last Run or RunPickedNwfs, the list itself as each group is added, F214, so a package's own
         /// Navisworks whose run threw part way still says how the groups before the throw ended. Null before either runs.
         /// </summary>
         public IList<JobOutcome> OutcomesSoFar { get; private set; }
 
+        /// <summary>
+        /// Works through the jobs in order. Each group's NWF and NWD are written before
+        /// the next group starts, so a failure part way through keeps everything already
+        /// written.
+        /// </summary>
         public IList<JobOutcome> Run(IList<FederationJob> jobs)
         {
             if (jobs == null)
@@ -769,7 +769,7 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// The NWFs of ticked packages, F208, each run as a picked NWF is, its package named on its GROUP lines and its NWD
         /// and its logs written into the package's own folders, PackageNwfs. inPackages is the place of each NWF in the
-        /// order of nwfs, or null for a pick, where each NWF runs beside its file or where the run that built it wrote.
+        /// order of nwfs, never null since F232 took the picker out.
         /// </summary>
         public IList<JobOutcome> RunPickedNwfs(IList<string> nwfs, IList<PackageNwf> inPackages)
         {
@@ -778,12 +778,17 @@ namespace Federator.Addin.Engine
                 throw new ArgumentNullException("nwfs");
             }
 
-            if (inPackages != null && inPackages.Count != nwfs.Count)
+            if (inPackages == null)
+            {
+                throw new ArgumentNullException("inPackages");
+            }
+
+            if (inPackages.Count != nwfs.Count)
             {
                 throw new ArgumentException("one place for each NWF, in the same order", "inPackages");
             }
 
-            packagesRun = inPackages != null;
+            packagesRun = true;
 
             // One tally for this run, its count the picked NWFs, as Run makes one for a scan.
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
@@ -802,7 +807,7 @@ namespace Federator.Addin.Engine
             {
                 for (int i = 0; i < nwfs.Count; i++)
                 {
-                    outcomes.Add(RunAnOpenFile(nwfs[i], i + 1, nwfs.Count, true, summaries, inPackages == null ? null : inPackages[i]));
+                    outcomes.Add(RunAnOpenFile(nwfs[i], i + 1, nwfs.Count, true, summaries, inPackages[i]));
 
                     if (StopsTheRunAfter(i + 1, nwfs.Count))
                     {

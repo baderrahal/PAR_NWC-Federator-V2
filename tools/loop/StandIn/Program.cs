@@ -166,8 +166,8 @@ namespace NwcFederatorLoop.StandIn
                 log.RunSettings(folder, true, folder, folder, 1, 1, 1);
                 List<string> groups = new List<string>();
                 groups.Add("run       STANDIN1    1 file   STANDIN");
-                groups.Add(RunLog.UntickedGroupsLine(unticked));
-                log.Block(RunLog.GroupsSectionTitle, groups);
+                groups.Add(OldGroupLines.UntickedLine(unticked));
+                log.Block(OldGroupLines.Title, groups);
                 log.RunStarted(1);
                 log.RunFinished();
 

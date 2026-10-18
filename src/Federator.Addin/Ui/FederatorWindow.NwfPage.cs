@@ -123,7 +123,7 @@ namespace Federator.Addin.Ui
         // ---------- the pages ----------
 
         /// <summary>
-        /// A page was shown. The NWC page keeps its Run button at the top and the NWF page has its own, so the one that
+        /// A page was shown. The NWC page keeps its one Run button, RunButton, in the bar under the steps, and the NWF page has its own, so the one that
         /// does not belong is hidden and a press can never start the other page's route.
         /// </summary>
         private void OnPageShown(object sender, SelectionChangedEventArgs e)
@@ -161,7 +161,7 @@ namespace Federator.Addin.Ui
 
             if (ticked.Count > 1)
             {
-                why = ticked.Count + " NWFs are ticked. The list of changed NWC files is shown for one NWF at a time.";
+                why = NwfPageWords.SeveralNwfsTicked(ticked.Count);
                 return null;
             }
 
@@ -175,13 +175,14 @@ namespace Federator.Addin.Ui
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                why = "The NWF folder of the ticked NWF could not be read.";
+                log.Failure("reading the NWF folder of the ticked NWF", error, "the changed files list says so");
+                why = NwfPageWords.TickedNwfFolderNotRead;
                 return null;
             }
 
-            why = "The ticked NWF is no longer in its NWF folder. Read the Report folder again.";
+            why = NwfPageWords.TickedNwfNoLongerThere;
             return null;
         }
 
@@ -353,7 +354,8 @@ namespace Federator.Addin.Ui
 
             foreach (GroupRow group in groups)
             {
-                if (group.NwfExists)
+                // A group of one discipline is never built, Rebuild or not, so it is not named as one Rebuild would build.
+                if (group.NwfExists && !group.IsSingleDiscipline)
                 {
                     names.Add(group.Label);
                 }
@@ -394,6 +396,8 @@ namespace Federator.Addin.Ui
                 group.RebuildAllowed = ticked;
                 group.AllowedMoved();
             }
+
+            ShowGroupingSummary();
         }
     }
 }

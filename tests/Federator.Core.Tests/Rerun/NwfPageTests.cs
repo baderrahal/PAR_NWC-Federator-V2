@@ -211,9 +211,12 @@ namespace Federator.Core.Tests
             Assert.That(NwcPageRule.CanTick(false, 1, false, false), Is.False);
             Assert.That(NwcPageRule.CanTick(false, 1, true, true), Is.False, "Rebuild never builds a group of one discipline");
             Assert.That(NwcPageRule.CanTick(false, 3, true, false), Is.False, "its NWF is there and Rebuild is off");
-            Assert.That(NwcPageRule.StatusOf(null, 1), Is.EqualTo("One discipline, not built"));
-            Assert.That(NwcPageRule.StatusOf(null, 4), Is.EqualTo("Ready"));
-            Assert.That(NwcPageRule.StatusOf("two project codes", 1), Is.EqualTo("BLOCKED: two project codes"));
+            Assert.That(NwcPageRule.StatusOf(null, 1, false, false), Is.EqualTo("One discipline, not built"));
+            Assert.That(NwcPageRule.StatusOf(null, 1, true, true), Is.EqualTo("One discipline, not built"), "Rebuild never builds it");
+            Assert.That(NwcPageRule.StatusOf(null, 4, false, false), Is.EqualTo("Ready"));
+            Assert.That(NwcPageRule.StatusOf(null, 4, true, false), Is.EqualTo("NWF exists. Use the NWF page."), "a greyed box says why");
+            Assert.That(NwcPageRule.StatusOf(null, 4, true, true), Is.EqualTo("Ready"));
+            Assert.That(NwcPageRule.StatusOf("two project codes", 1, true, false), Is.EqualTo("BLOCKED: two project codes"));
         }
 
         [Test]

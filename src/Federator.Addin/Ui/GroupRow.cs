@@ -16,11 +16,10 @@ namespace Federator.Addin.Ui
     {
         private bool include;
 
-        private GroupRow(Package package, string building, IList<string> files, int fileCount, IList<string> disciplines, PackageGroup group)
+        private GroupRow(Package package, string building, int fileCount, IList<string> disciplines, PackageGroup group)
         {
             Package = package;
             Building = building ?? string.Empty;
-            Files = files ?? new List<string>();
             FileCount = fileCount;
             DisciplineCodes = new List<string>(disciplines ?? new List<string>());
             Disciplines = string.Join(", ", new List<string>(DisciplineCodes).ToArray());
@@ -30,7 +29,7 @@ namespace Federator.Addin.Ui
         /// <summary>A group the plan runs. It starts ticked where it can be.</summary>
         public static GroupRow Usable(PackageGroup group)
         {
-            GroupRow row = new GroupRow(group.Package, group.Building, group.Files, group.Files.Count, group.Disciplines, group);
+            GroupRow row = new GroupRow(group.Package, group.Building, group.Files.Count, group.Disciplines, group);
             row.include = row.CanInclude;
             return row;
         }
@@ -38,7 +37,7 @@ namespace Federator.Addin.Ui
         /// <summary>A group the grouping blocked, or one of a package the name guard refuses, with why.</summary>
         public static GroupRow Blocked(Package package, string building, int fileCount, IList<string> disciplines, string reason)
         {
-            GroupRow row = new GroupRow(package, building, new List<string>(), fileCount, disciplines, null);
+            GroupRow row = new GroupRow(package, building, fileCount, disciplines, null);
             row.BlockedReason = reason ?? string.Empty;
             return row;
         }
@@ -66,9 +65,6 @@ namespace Federator.Addin.Ui
         {
             get { return PackagePlan.LabelFor(Package == null ? string.Empty : Package.RelativePath, Building); }
         }
-
-        /// <summary>Full paths, in the order the files will be appended.</summary>
-        public IList<string> Files { get; private set; }
 
         public int FileCount { get; private set; }
 
@@ -193,7 +189,7 @@ namespace Federator.Addin.Ui
 
         public string Status
         {
-            get { return NwcPageRule.StatusOf(BlockedReason, DisciplineCount); }
+            get { return NwcPageRule.StatusOf(BlockedReason, DisciplineCount, NwfExists, RebuildAllowed); }
         }
 
         /// <summary>Tells the grid the box may have moved, after the NWF or the Rebuild box changed what it allows.</summary>
@@ -206,6 +202,7 @@ namespace Federator.Addin.Ui
 
             Raise("Include");
             Raise("CanInclude");
+            Raise("Status");
         }
 
         public override string ToString()

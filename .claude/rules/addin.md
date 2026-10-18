@@ -509,17 +509,11 @@ well as to pass.
   RunPath.ForAnOpenFile, Stopped for one that read empty, never Weekly run, the DECIDE phrase
   NwfPick.DecidePhrase. The run stops after a group as the scanned run stops, through the
   one StopsTheRunAfter, and the gaps line, the list for the modellers, the timing beside size
-  and each file's block are written once after the last file, WriteTheEndOfAnOpenFileRun. The
-  window, OnRunPickedNwfs, reads the run settings first, refuses a tolerance that is not one, a
-  pick Core refuses and two NWFs writing one file before anything is opened, asks before the
-  open document goes, marks RUN started and finished, writes RUN SETTINGS with Core's lines and
-  the scanned run's own choices through the one SayTheRunsChoices, reads the clash file through
-  the open file run's ReadTheXmlForAnOpenFileRun, writes the lines across the run through the
-  one SayWhatAnOpenFileRunAddedUp and SETS ACROSS THE RUN, and RESULT with Core's line. Since
-  F151 no copy of the log goes beside the picked NWFs, and since F158 one goes into each Log
-  folder the run wrote into, as every run's does. The box and its two buttons, File and Folder,
-  sit in their own row on the NWF page, the label and grey line set off Core in the constructor. What a run of it reads on Navisworks is UNKNOWN
-  until the proof steps of steps\03_bader_next.md run
+  and each file's block are written once after the last file, WriteTheEndOfAnOpenFileRun. SINCE
+  F232, Bader's round of 19 Oct 2026, fix 2, THE PICKER IS GONE, its box, its File and Folder
+  buttons and the Recent box with it: the NWFs come from the NWF page's tree read off the Report
+  folder, `PackageTree.ReadNwfs` and `NwfTicks`, and each ticked NWF runs in a Navisworks of its
+  own, whose window runs `RunPickedNwfs` with that NWF's place, in the NWF page's route below
 - SINCE F114 A VIEW IS PER CLASH TEST, which replaces F85's viewpoint per clash, which had
   reversed what this rule said before it, that no clash is ever saved as a viewpoint.
   Bader's Q114: the thing a person presses is a test's open clashes framed together, since F186
@@ -641,9 +635,11 @@ well as to pass.
   cut off at all three, which is why the naming table could not be reached. The other three
   fit at all three sizes and are left alone, because a ScrollViewer around a step whose grid
   is meant to fill stops it filling
-- The scan and its checks live in the Source step, so pressing Scan reports what was
-  found and what is wrong with it in one place. A plain count line first, files found,
-  files readable, groups and the findings by kind, then the findings themselves
+- The findings live under the tree of step 1. Packages since F232, over the NWC files of the
+  ticked packages, made again whenever a tick moves, so what was found and what is wrong with it
+  are in one place. A plain count line first, files found, files readable, groups and the
+  findings by kind, then the findings themselves. The run writes them in a FINDINGS block after
+  PACKAGE GROUPS
 - Copy findings puts them on the clipboard as tab separated rows with a header, so
   pasting into Excel gives a table. A run with nothing odd still copies a header and
   one row saying so, because an empty clipboard reads as a failed copy
@@ -723,8 +719,8 @@ well as to pass.
   runner ends, puts back a record still there and deletes it, keeping it where the window ended the runner past its limit,
   since a Navisworks of the run may still run, `AutoSaveOff.PutBackWhatARunLeft`, and the window a person opens does the
   same as it starts, never in a group's own Navisworks, and where the record said on and this Navisworks reads the option
-  off it sets the option on too. THE RUN IN THE NAVISWORKS A PERSON STARTED, the scanned run, the picked NWFs, the open file
-  run, and the run inside a group's own Navisworks, makes one `AutoSaveOff` as the run starts: it reads the option
+  off it sets the option on too. THE RUN IN THE NAVISWORKS A PERSON STARTED, the open file run, and the run inside a group's
+  own Navisworks, makes one `AutoSaveOff` as the run starts: it reads the option
   general.autosave.enable through LcUOption and, where it reads on, keeps the registry's value on the record, counts the
   switch as made, sets it off and reads it back. It is disposed in the run's finally before RESULT, which sets back the value
   it read, reads it again and puts the registry back off the record, deleting it. Every line says what was read and what was
@@ -762,8 +758,9 @@ well as to pass.
   photos are fixed ON, because a weekly run wants all three every time. Client columns only
   is gone outright, dead since the workbook became one sheet with none of ours on it, and so
   is the thumbnail box, F152, since the pictures are linked in the client's form and never
-  pasted. Dating the NWD, the clash XML, the ghosted look and the five image status boxes are
-  collapsed under More, rarely changed. The one that destroys data, ApplyFileSettings, is collapsed on its
+  pasted. Dating the NWD, the clash XML, the ghosted look, the photo size, the cap per test and the five image
+  status boxes have no box since F232, Bader's words that step 3 holds the naming boxes and the logo only, and run at
+  the defaults of ReportOptions, OutputNaming and ImageOptions. The one that destroys data, ApplyFileSettings, is collapsed on its
   own under Things that destroy data, because it does not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
 - THE SIDE WALK OF THE LEFTOVERS, SetBuilder.CountSide, F115: the side's selection and every
@@ -1004,7 +1001,7 @@ well as to pass.
   to Include and raises Click into `OnRunBoxClicked`, which reads Keyboard.Modifiers at that
   click, hands `ShiftRange.Of` the rows of `GroupsGrid.Items`, the shown order, sets every row
   it hands back through Include, keeps the row clicked and its state as the anchor and calls
-  `RefreshOutputsSummary` once. The column is read only so the grid begins no edit that would
+  `ShowGroupingSummary` once. The column is read only so the grid begins no edit that would
   swap the box out under the click, and its SortMemberPath is Include so it sorts as before.
   The anchor is the window's and `Regroup` drops it, since every row is made again there. A
   plain click is meant to flip the box on the one click, where the stock column, read off its
@@ -1017,18 +1014,17 @@ well as to pass.
   allows and goes on as a click does, through `RunBoxFlipped`, the one path both share, Shift
   making a range. Space with the box itself focused is left to the box, which raises Click.
   The box has no x:Name and no label, so it is
-  not one of the twenty named tick boxes counted below. The window driver cannot carry Shift
+  not one of the named tick boxes counted below. The window driver cannot carry Shift
   without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
   steps\03_bader_next.md
-- A REGROUP KEEPS THE RUN TICKS AND THE TYPED NAMES, FR-153, the rule Core's, core.md, A
-  regroup keeps what was typed. `Regroup` reads every row's Run box into `KeptRunTicks`
-  before `groups.Clear()`, sets each usable row made again through Include off
-  `StartsTicked`, and builds the name table with `KeepTypedFrom` the table before. It clears
-  `lastRefill`, which described a refill of the table it replaced. A new Scan regroups too,
-  so a group whose key is the same keeps its tick and its typed names across a Scan
-- A CLEARED NAME CELL GOES BACK TO THE PATTERN, FR-160. `GroupRow.TypeOver` hands the cell to
-  `OutputNameRow.Typed`, and `OnNameEdited`, after the commit, refills the table and reads
-  the edited row back, so the cell shows the pattern's name at once
+- A REGROUP KEEPS THE RUN TICKS, FR-153, the rule Core's, `KeptRunTicks`. Since F232 the rows of
+  step 2 are the groups of the ticked packages, one `PackagePlan` a package, and `Regroup` reads
+  every row's Run box into `KeptRunTicks` by the row's label, its package's path and its group,
+  before `groups.Clear()`, and sets each row made again through Include off `StartsTicked`, which
+  `GroupRow.Include` holds to `NwcPageRule.CanTick`. A tick moved in the tree, the grouping changed,
+  step 2 shown and the Run pressed each regroup, the tick kept, and a Read starts every row as its
+  rule allows. No name is typed over since F232, the Outputs step holding the naming boxes and the
+  logo only, so the typed names of FR-153 and FR-160 went with the table
 - THE WINDOW REFUSES TO CLOSE WHILE ANYTHING RUNS, FR-163. The Closing event, `OnClosing`, is
   the one rule: while `running` it cancels and warns The run is still going. Let it finish,
   for the title bar close, Alt+F4 and the Close button alike, which now only calls Close.
@@ -1036,9 +1032,9 @@ well as to pass.
   under a run
 - ONLY A RUN THAT CREATES OR RUNS CLASH TESTS READS THE TOLERANCE, FR-166.
   `ToleranceOrSayWhyNot` reads the drop down through `ToleranceChoice.FromThePicker` and,
-  where it does not read, logs a TOLERANCE line and warns before anything starts. The scanned
-  run, the run of picked NWFs, the open file run and Run tests call it and hand the value to
-  `ReportsWanted`. Undo, Probe and Build sets never read it and hand
+  where it does not read, logs a TOLERANCE line and warns before anything starts. The NWC
+  page's Run, the open file run and Run tests call it, the NWF page's Run reads its own drop down
+  through `NwfToleranceOrSayWhyNot`, and each hands the value to `ReportsWanted`. Undo, Probe and Build sets never read it and hand
   `ToleranceChoice.Default()`, 25 mm, so the drop down never stops them
 
 ## What a tick box says
@@ -1060,17 +1056,15 @@ each and 213 took 17 seconds.
 There were fifteen, then eleven, and F72 made twelve, of which two were visible without
 opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash step, F150
 added GhostOtherItems under More, F152 took EmbedThumbnails out of it and F159 took SkipClashOffCoordinates out,
-F188 added RebuildExisting and the five step boxes of the NWF page, so
-src\Federator.Addin\Ui\FederatorWindow.xaml holds TWENTY named tick boxes, of which ELEVEN sit
-under no expander, by x:Name IncludeSubfolders on the Source step, RebuildExisting on the Grouping step, MarkPenetrations,
-MarkByDesign, RebuildDriftedSets and MakeViewpoints on the Clash step, and NwfStepRefresh, NwfStepTests,
-NwfStepPictures, NwfStepViewpoints and NwfStepReports on the NWF page, each picking a step of the weekly run.
-The other nine are eight under More, rarely changed, DateTheNwd, WriteClashXml,
-GhostOtherItems and the five Photo of boxes, and one under Things that destroy data,
-ApplyFileSettings, CompactResolved having gone with F185. Two CheckBox elements carry no name, the Run column's
-and the package tree's, and are not counted. Read off the XAML on 2026-10-18 by its CheckBox elements with an
-x:Name and the Expander above each, Bader's answer to Q205: the window stays as it is, eleven boxes up front.
-probe-window-labels.ps1 was not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
+F188 added RebuildExisting and the five step boxes of the NWF page, and F232, Bader's round of 19 Oct 2026, fix 2,
+took out IncludeSubfolders with the Source step and the eight boxes under More, rarely changed with it, step 3 holding
+the naming boxes and the logo only, so src\Federator.Addin\Ui\FederatorWindow.xaml holds ELEVEN named tick boxes, of
+which TEN sit under no expander, by x:Name RebuildExisting on the Grouping step, MarkPenetrations, MarkByDesign,
+RebuildDriftedSets and MakeViewpoints on the Clash step, and NwfStepRefresh, NwfStepTests, NwfStepPictures,
+NwfStepViewpoints and NwfStepReports on the NWF page, each picking a step of the weekly run. The one other is under
+Things that destroy data, ApplyFileSettings, CompactResolved having gone with F185. Two CheckBox elements carry no name,
+the Run column's and the trees', and are not counted. Read off the XAML on 2026-10-19 by its CheckBox elements with an
+x:Name and the Expander above each. probe-window-labels.ps1 was not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
 Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only
 record of what has been fixed, so a run has to be told to do that rather than told not to. Everything else became a
 fixed behaviour with the sensible answer chosen, or moved under an expander. The one that
@@ -1117,17 +1111,22 @@ neither the clash nor a view.
 ## The packages, F208
 
 MANY COMMUNITIES AT ONCE, Bader's message of 17 Oct 2026 late evening, feature 1. Every rule and every word is Core's,
-core.md Communities and packages. The NWC page has a step 5. Packages and the NWF page a panel on its right, and both
-are bound to ONE `PackagePanel`, so the parent and the Report folders typed and every tick read the same on both pages.
-The tree is a TreeView of `PackageNode` lines whose tick reads and sets Core's `PackageTicks` and holds none of its own,
-every line open so every tick box is in the visual tree, its AutomationProperties.Name its title. Read reads the tree off
-the parent folder, writes the PACKAGE TREE block and shows nothing ticked. Each package's line carries its files and the
-groups they make by steps 2 and 3, counted again when the step is shown.
+core.md Communities and packages. SINCE F232, Bader's round of 19 Oct 2026, fix 2, the packages are FIRST on both pages and
+each page has ONE ROUTE: the NWC page's step 1. Packages and the NWF page's top, both bound to ONE `PackagePanel`, so the
+Report folder typed reads the same on both pages. The NWC page's tree is a TreeView of `PackageNode` lines whose tick reads
+and sets Core's `PackageTicks` and holds none of its own, every line open so every tick box is in the visual tree, its
+AutomationProperties.Name its title. Read reads the tree off the parent folder, writes the PACKAGE TREE block and shows
+nothing ticked. Each package's line carries its files and the groups they make by steps 2 and 3, counted again when step 1
+is shown. Under the tree the findings, `ShowFindings`, over the NWC files of the ticked packages. Each tick moved makes the
+rows of step 2 again, `Regroup`, one a group of each ticked package by its plan, blocked with why where the grouping or the
+name guard refuses, a group of one discipline with its box off and greyed. The NWF page's tree is read off the Report
+folder, `PackageTree.ReadNwfs`, community, package and NWF, its ticks Core's `NwfTicks`, written as the NWF TREE block.
 
-THE NWC PAGE'S ROUTE, `OnRunPackages`: refused with Core's reason before anything is opened while no tree is read,
-nothing is ticked or the Report folder is refused, then one `PackagePlan` per ticked package, a group whose NWF is there
-left to the NWF page by `NwcPageRule`, the PACKAGES TICKED and PACKAGE GROUPS blocks, the pack choice and the confirm of
-the scanned run, the folders of each package that runs made and said, then, since F214, each package handed to its own
+THE NWC PAGE'S ROUTE, `OnRun`, the one Run of the page, RunButton in the bar under the steps, which Bader's words call the one at the top, Q215: refused with Core's reason before
+anything is opened while no tree is read, nothing is ticked or the Report folder is refused, then the rows made again, then
+one `PackagePlan` per ticked package, a group whose NWF is there left to the NWF page by `NwcPageRule`, a group of one
+discipline and a group unticked on step 2 left out, each named, the PACKAGES TICKED, PACKAGE GROUPS and FINDINGS blocks, the
+pack choice and the one confirm, the folders of each package that runs made and said, then, since F214, each package handed to its own
 Navisworks, below, whose window runs `RunJobs` with one engine for that package's groups.
 Each job carries its package and its package's Log folder, `FederationJob.InPackage`, the copy of a dated rebuild keeps
 both, and `RunOne` sets the Log folder off the job. The GROUP started and finished lines, the pace of the live line,
@@ -1135,8 +1134,8 @@ the coordinates tally and the clash totals read `FederationJob.Label`, so commun
 and in RESULT. The list of models off the shared coordinates goes into the Log folder of every package the run wrote, as
 the run log is copied into each.
 
-THE NWF PAGE'S ROUTE, `OnRunNwfPackages`: the same refusals, the NWFs of each ticked package by `PackageNwfs`, a package
-with none named and the others run, the refresh confirm, then, since F214, each package in
+THE NWF PAGE'S ROUTE, `OnRunNwfPackages`, its one Run: refused while no NWF is ticked, the ticked NWFs of each package by
+`PackageNwfs`, a package whose ticked NWF is gone named and the others run, the NWF TREE, NWFS TICKED and PACKAGE NWFS blocks, the refresh confirm, then, since F214, each package in
 its own Navisworks, whose window runs `RunPickedNwfs` with each NWF's place, `PackageNwf`, so its NWD, its Backup and its
 logs are written into its package's folders and not beside the file. One failure never stops the others: each group and each
 NWF is run in its own try, and since F214 the guard that stops a run after its first 50 tests all fail the same way stops
@@ -1151,8 +1150,7 @@ every refusal, the pack choice and the one confirm, which says nothing open here
 discard, and the NWF page asks nothing about the open document, since no package opens anything in this Navisworks. Then
 `RunPackagesInFreshStarts` writes the order into a folder of its own under package-runs beside the tool's logs folder, every
 control of the window by its name, the text boxes a person can type in, the tick boxes and the drop downs,
-`TheControlsAsTheyStand`, but the drop down of the NWFs last used, `NeverCopied`, whose items are each machine's history and
-whose choice reads another NWF, starts `Federator.Runner.exe` from the bundle with the folder of the Navisworks it runs in and
+`TheControlsAsTheyStand`, starts `Federator.Runner.exe` from the bundle with the folder of the Navisworks it runs in and
 the order, and `WaitForTheRunner` answers the window every poll and copies each new line of the status file into the log. A
 pass that throws is said once and the wait goes on, so the results are never read while the runner runs, and past every
 package's ceiling and wait added up, `RunnerLimitMinutes`, the window ends the runner, the one process it started. The live
@@ -1162,8 +1160,9 @@ never said as not run, writes the one RESULT through `RunLog.WriteJoinedResult`,
 RESULT does, sets the live line to the packages that wrote a result, and warns where one did not. THE RUNNER'S own rules
 are .claude\rules\runner.md's, moved there by F228. THE WINDOW OF A PACKAGE'S OWN NAVISWORKS, `FederatorPlugin` handed the mode, the order
 and the index, is made with a `PackageRunChild` and runs as soon as it is shown: it sets the controls in the order's order and
-runs nothing where any could not be set, reads the tree off the order's parent, ticks its one package and runs the route of its
-page, its own engine, groups, discipline reports and log, then writes its result and closes. Its groups are the engine's
+runs nothing where any could not be set, then on the NWC page reads the tree off the order's parent and ticks its one package,
+and on the NWF page, since F232, reads the tree off the order's Report folder and ticks its one NWF, whose order names the
+Report folder as its parent too, and runs the route of its page, its own engine, groups, discipline reports and log, then writes its result and closes. Its groups are the engine's
 `OutcomesSoFar`, so a run that threw part way still names the groups before the throw. In it no box is shown: `Warn` logs what
 it would have said and its first warning is the package's reason where no group ran, and the run's confirm, the confirm of what
 opening a file discards, the refresh confirm of the NWF page and the Rebuild box's confirm each log that the window that started
@@ -1190,8 +1189,8 @@ the run planned and never the tree read again, a group counted in a try of its o
 run. A group's own Navisworks opens its log with `RunLog.KeepEveryLog`, so it deletes no log the joined RESULT names, and
 where its package plans no group at all its result gives the package's own refusal and never `NotTheGroup`. A group's own
 window is a fresh engine, so the guard of 50 failures and Clash Detective's Hide Other baseline of F150 are each one group's,
-row F222-R3. The scanned run of the NWC page and the picked NWFs of the NWF page, which run in the Navisworks a person
-started, are unchanged and run every group there, as before F214. WHAT IS NOT MEASURED: what the starts and quits of one
+row F222-R3. The scanned run of the NWC page and the picked NWFs of the NWF page, which ran every group in the Navisworks a
+person started, are gone since F232, so each page has this route alone. WHAT IS NOT MEASURED: what the starts and quits of one
 Navisworks a group cost on a whole community, read off the first run of C06 and C07 since F222, steps\03_bader_next.md.
 ## The discipline reports, F209
 

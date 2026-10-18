@@ -246,6 +246,69 @@ namespace Federator.Core.Tests
         }
 
         [Test]
+        public void AnNwfFolderIsNotWalkedAgainSoANwfFolderInsideItIsNoPackage()
+        {
+            Nwf("C06", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf");
+            Nwf("C06", "NWF", "NWF", "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf");
+
+            PackageTree tree = PackageTree.ReadNwfs(Report);
+
+            Assert.That(tree.Packages().Count, Is.EqualTo(1));
+            Assert.That(tree.Packages()[0].RelativePath, Is.EqualTo("C06"));
+            Assert.That(tree.Packages()[0].Files.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TheNwfTreeNamesALinkAndAFolderThatWillNotReadAndReadsTheRest()
+        {
+            string report = TestPaths.At("Report");
+            string c06 = Path.Combine(report, "C06");
+            string c07 = Path.Combine(report, "C07");
+            string linked = Path.Combine(c06, "Linked");
+            string nwfFolder = Path.Combine(c07, "NWF");
+            string nwf = Path.Combine(nwfFolder, "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf");
+            Dictionary<string, string[]> folders = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
+            {
+                { report, new[] { c06, c07 } },
+                { c06, new[] { linked } },
+                { c07, new[] { nwfFolder } },
+                { nwfFolder, new string[0] }
+            };
+            NwfPickDisk disk = new NwfPickDisk(
+                path => path == nwf,
+                path => folders.ContainsKey(path) || path == linked,
+                path => path == nwfFolder ? (IList<string>)new[] { nwf } : new string[0],
+                path =>
+                {
+                    string[] under;
+                    return folders.TryGetValue(path, out under) ? (IList<string>)under : new string[0];
+                });
+
+            PackageTree tree = PackageTree.ReadNwfs(report, disk, path => path == linked);
+
+            Assert.That(tree.Packages().Single().Files.Single(), Is.EqualTo(nwf));
+            Assert.That(tree.LeftOut, Has.Member("C06" + Path.DirectorySeparatorChar + "Linked is a link or a junction and was not followed"));
+
+            NwfPickDisk throwing = new NwfPickDisk(
+                disk.IsFile,
+                disk.IsFolder,
+                disk.FilesIn,
+                path =>
+                {
+                    if (path == c07)
+                    {
+                        throw new IOException("denied");
+                    }
+
+                    return disk.FoldersIn(path);
+                });
+
+            PackageTree notRead = PackageTree.ReadNwfs(report, throwing, path => false);
+
+            Assert.That(notRead.LeftOut, Has.Member("C07 could not be read, denied, so nothing under it is in a package"));
+        }
+
+        [Test]
         public void ANwfTreeOfNoReportFolderSaysWhy()
         {
             Assert.That(PackageTree.ReadNwfs("  ").WhyNoTree, Is.EqualTo(PackageWords.PickTheReport));

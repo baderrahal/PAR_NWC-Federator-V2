@@ -395,8 +395,8 @@ namespace Federator.Core.Naming
                 return ". " + name.Substring(CannotBeNamed.Length);
             }
 
-            // A name typed over by hand can hold what Windows refuses in a file name, which the pattern
-            // would have refused itself. FileNames names the characters, not the running platform.
+            // A name can hold what Windows refuses in a file name, a character typed into a naming field.
+            // FileNames names the characters, not the running platform.
             int at = name.IndexOfAny(FileNames.Refused);
 
             if (at < 0)

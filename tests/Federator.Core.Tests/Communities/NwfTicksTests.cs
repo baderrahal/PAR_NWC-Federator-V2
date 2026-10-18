@@ -132,5 +132,28 @@ namespace Federator.Core.Tests
             Assert.That(lines[5], Is.EqualTo("left out    : 2 NWF files"));
             Assert.That(PackageWords.NwfSummary(ticks.Tree, ticks), Is.EqualTo("2 communities, 2 packages, 3 NWF files. 1 NWF file ticked."));
         }
+
+        [Test]
+        public void TheWordsOfTheFindingsAndTheChangedListNameNoCodeAndCountWhatTheySay()
+        {
+            Assert.That(PackageWords.FindingsHeading(0), Is.EqualTo("What the NWC files of the ticked packages show"));
+            Assert.That(PackageWords.FindingsHeading(1), Does.Contain("including 1 thing worth a look"));
+            Assert.That(PackageWords.FindingsHeading(3), Does.Contain("including 3 things worth a look"));
+            Assert.That(PackageWords.SourceFindingsInEachGroupLog, Does.Contain("SOURCE FINDINGS"));
+            Assert.That(PackageWords.SourceFindingsInEachGroupLog, Does.Not.Contain("after the first run"), "the window a person runs never holds the comparison");
+            Assert.That(Federator.Core.Rerun.NwfPageWords.SeveralNwfsTicked(2), Does.StartWith("2 NWFs are ticked."));
+
+            foreach (string words in new[] { PackageWords.FindingsHeading(2), PackageWords.SourceFindingsInEachGroupLog, Federator.Core.Rerun.NwfPageWords.TickedNwfFolderNotRead, Federator.Core.Rerun.NwfPageWords.TickedNwfNoLongerThere })
+            {
+                Assert.That(words, Does.Not.Contain(";"));
+                Assert.That(words, Does.Not.Contain("Exception"));
+            }
+        }
+
+        [Test]
+        public void ATickedNwfThatHasGoneIsNamedWithWhatToDo()
+        {
+            Assert.That(PackageWords.TickedNwfGone(a), Is.EqualTo(a + " was ticked and is no longer in its NWF folder, so it was not run. Read the Report folder again"));
+        }
     }
 }

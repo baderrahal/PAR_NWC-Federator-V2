@@ -24,7 +24,7 @@ namespace Federator.Core.Communities
             this.tree = tree;
         }
 
-        public PackageTree Tree
+        internal PackageTree Tree
         {
             get { return tree; }
         }

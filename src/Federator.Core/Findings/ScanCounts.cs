@@ -5,7 +5,7 @@ using System.Text;
 namespace Federator.Core.Findings
 {
     /// <summary>
-    /// The plain count line at the top of the Source step: what was found, what could be
+    /// The plain count line at the top of the findings under the tree of step 1. Packages: what was found, what could be
     /// read, how many groups it makes, and how many findings of each kind.
     /// </summary>
     public sealed class ScanCounts
