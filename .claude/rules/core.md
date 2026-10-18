@@ -1042,9 +1042,25 @@ and 6 does not read as broken.
   default, which holds disciplines its name does not say, the count is UNKNOWN, said on a CLASH
   line, `DisciplinesNotReadLine`, and its tests run as before. Both pages say why no test ran in
   one line, `BuildingGroup.OneDisciplineLine`, which names the discipline. A picked NWF refreshed
-  before F219 can still hold an earlier run's results for those tests, row F219-R1. Tests that set
-  a discipline against itself inside a group of two or more run on both pages, counted for Bader
-  in Q209
+  before F219 can still hold an earlier run's results for those tests, row F219-R1.
+  SINCE F224, BADER'S ANSWER TO Q209 OF 18 OCT 2026, ONLY TESTS ACROSS TWO SET CODES RUN, inside
+  a group of two or more as well, on both pages, by the one plan step the engine reads before it
+  creates any test, `ClashTestPlan.AcrossTwoSetCodes`. BLD-ST against BLD-ST and BLD-AR against
+  BLD-AR are left out, BLD-PL against BLD-DR and BLD-HV against BLD-FP still run. Each side's code
+  is read by `SetCodeRule.SameCodeOf` through the one reader, CodeOf.Set, off the set name, against
+  the codes the run knows, the team map's and the group's own models'. A test is left out only
+  where both sides read a code and the two are the same, so a side whose name carries no code,
+  such as BLD-Security Devices, leaves its test running, never left out on a guess. The reason is
+  SameSetCode, counted apart from SingleDiscipline, its coverage row says not created or run, and
+  every group writes one CLASH line, `SetCodeRule.Line`, saying how many of how many planned it
+  left out by code, a nought said and no code known said apart, and how many of the tests that run
+  have a side whose set name reads no code, `SetCodeRule.WithASideOfNoCode`, so a nought is never
+  read as every test judged. In a group of one discipline Q203 runs none of its tests, so the rule
+  is not read and its line says so, `SetCodeRule.NotReadInAGroupOfOne`. The run knows it did not
+  create a test the rule left out, so the count check reads it held by neither side where the
+  document does not hold it. The built in matrix loses exactly the 284 tests Q209 counted, AR 120,
+  EL 78, ME 36, ST 15, FF 15, PL 10, DR 10. The words of the workbook and the window carry no
+  question number
 - The reports never go inside the folder being scanned, whether it was picked or
   defaulted to. A run put the workbooks in the NWC folder it was reading, and the
   Clash step picks an XML at run time, so a report written there is a file a later run

@@ -120,6 +120,17 @@ namespace Federator.Core.Coverage
                 }
 
                 SkippedClashTest skipped = dropped[index];
+
+                // F224. A test the rule of two set codes left out keeps its own reason, whichever way the plan was made.
+                if (skipped.Kind == ClashSkipReason.SameSetCode)
+                {
+                    rows.Add(new TestCoverage(
+                        index + 1, skipped.Name, string.Empty, string.Empty, -1, -1,
+                        plan.Source == ClashPlanSource.Document ? TestPresence.AlreadyThere : TestPresence.Unknown,
+                        false, -1, CoverageReason.SameSetCode, skipped.Reason));
+                    continue;
+                }
+
                 rows.Add(plan.Source == ClashPlanSource.Document
                     ? new TestCoverage(
                         index + 1, skipped.Name, string.Empty, string.Empty, -1, -1,
@@ -220,6 +231,8 @@ namespace Federator.Core.Coverage
                     return CoverageReason.SideFoundNothing;
                 case ClashSkipReason.SingleDiscipline:
                     return CoverageReason.OneDiscipline;
+                case ClashSkipReason.SameSetCode:
+                    return CoverageReason.SameSetCode;
 
                 case ClashSkipReason.Failed:
                     return CoverageReason.Failed;

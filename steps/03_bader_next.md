@@ -47,6 +47,25 @@ Navisworks session. F222 first, since every later run goes through it.
 7. Close Navisworks, start it again from the Start menu and open Options, General, Auto-Save.
    Look for: Enable Auto-Save as you wrote it down in step 1.
 
+### F224, only tests across two set codes run
+
+1. On the NWC page, step 5, run one community of copies with Run ticked packages, into a new empty Report folder.
+   Look for: the confirm as before, and every group ending as it would have.
+2. Open one group's own log of a group of two disciplines or more, the one its GROUP line names.
+   Look for: `CLASH    the rule of two set codes left out 284 of the 1830 tests planned, each setting a set code against itself,
+   AR 120, DR 10, EL 78, FF 15, ME 36, PL 10, ST 15`, and how many of the tests that run have a side whose set name reads no
+   set code.
+3. Open the log of a group of one discipline, such as 1B06BS.
+   Look for: `CLASH    the rule of two set codes is not read, the group holds one discipline`.
+4. Open that group's clash workbook in its Log folder.
+   Look for: no block of a test such as BLD-ST-Walls-vs-BLD-ST-Foundation, and BLD-PL-Pipes & Pipe Fittings-vs-BLD-DR-... blocks
+   still there where they found clashes.
+5. In Navisworks, open that group's NWF and Clash Detective.
+   Look for: no test whose two sides carry one set code, and its clash counts equal to the workbook's.
+6. On the NWF page, pick an NWF refreshed before this fix and press Run NWFs.
+   Look for: the confirm saying a test whose two sides carry one set code is not run and one saved in the NWF keeps its earlier
+   results there, and in Clash Detective those tests still there with their results.
+
 ## The round of 18 Oct, F212 to F221
 
 Simple words. Every fix of this round but two was seen on Navisworks by F220, F212 being a rule read off the code and F215 a measurement left UNKNOWN for Q208, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.

@@ -37,6 +37,12 @@ namespace Federator.Core.Clash
         /// </summary>
         SingleDiscipline,
 
+        /// <summary>
+        /// F224, Bader's answer to Q209: both sides carry one set code, BLD-AR against BLD-AR, and only tests across two set
+        /// codes run, so it is neither created nor run, and a test saved in the NWF keeps its earlier results there.
+        /// </summary>
+        SameSetCode,
+
 
 
         /// <summary>Creating or running the test threw.</summary>

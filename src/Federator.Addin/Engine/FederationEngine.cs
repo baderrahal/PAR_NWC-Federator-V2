@@ -3785,6 +3785,9 @@ namespace Federator.Addin.Engine
                 runner.Live = live;
                 runner.SingleDisciplineGroup = job.IsSingleDiscipline;
 
+                // F224, Q209. The codes the rule of two set codes reads a side against, the map's and this group's own models'.
+                runner.SetCodes = teams == null ? job.Disciplines : teams.KnownCodes(job.Disciplines);
+
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
 
                 // F182, Bader's answer B to Q175. The group's pictures wait until the NWF is saved and the NWD

@@ -2,6 +2,44 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F224, Q209, only tests across two set codes run, on both pages
+
+Branch fix-F224 off main 54fcf1a, rebased onto e28a53d once F223 merged. Bader's answer to Q209: run only tests across two
+different set codes, BLD-ST against BLD-ST and BLD-AR against BLD-AR not run, BLD-PL against BLD-DR and BLD-HV against BLD-FP still run, the same rule on both pages, a
+group of one set code running nothing as Q203 keeps, and per group how many tests the rule left out in the log.
+
+What was done. Core: `SetCodeRule` reads each side's code off its set name through the one reader, CodeOf.Set, against the
+codes the run knows, and leaves a test out only where both sides read a code and the two are the same, so a side whose name
+carries no code, BLD-Security Devices or BLD-DRPipe Accessories with its dash missing, is never left out on a guess.
+`ClashTestPlan.AcrossTwoSetCodes` moves each such test to the skipped with the new reason SameSetCode and counts them by code.
+The coverage gives it its own row, not created or run, and the count check knows the run did not create it, so on a fresh NWF
+it is held by neither side. The NWF page's confirm says a test whose two sides carry one set code is not run and one saved in
+the NWF keeps its earlier results there. The add-in: `ClashRunner.SetCodes`, set by the engine to the team map's codes and the
+group's own, runs the plan through the rule after it is matched to the document's sets and before the mirrors are paired, on
+both kinds of plan, and writes one CLASH line, how many of how many planned it left out by code, a nought said, no code known
+said apart, and how many of the tests that run have a side reading no code. A group of one discipline does not read the rule,
+its line saying so, so every test of it keeps Q203's one reason. A test saved in the NWF that the matrix does not name passes
+the rule like any other, and its line names only the ones still run, with the count the rule left out. The words of the
+workbook and the window carry no question number. The reviewer and the breaker read the first pass, and their findings were
+taken: the count check that read a test the rule left out as FAILED with no reason or not compared where it should read held
+by neither, no test of the coverage path, the NWF page's confirm, the saved tests named as run then left out, a nought that
+could not tell checked from read nothing, the one-discipline group whose skip reasons the rule split, Q209 in the workbook's
+words, the count written as Q203's, and a side with no locator. Rows F224-R1 to R4 hold what is left.
+
+What was proved here. Core tests 3416 passed before on main, 3422 after, 0 failed, 0 skipped. The solution built in Release,
+0 errors. The built in matrix loses exactly the 284 tests Q209 counted, AR 120, EL 78, ME 36, ST 15, FF 15, PL 10, DR 10, PL
+against DR still runs, and every test that runs reads two codes or a side of none. On Navisworks, run-20261018-180531 on
+9a4382a7, the NWC page on the copy C:\NWC-PC-Test\work\smoke222b, community S1, the groups 1B06BS, 1B06M1 and 1B06PE of C06,
+each in its own Navisworks, evidence in C:\NWC-PC-Test\work\run-evidence\2026-10-18-F224-smoke-nwc: 1B06BS, one discipline,
+said the rule is not read and skipped its 28 tests created as Q203 does, and 1B06M1 and 1B06PE each said the rule left out
+284 of the 1830 tests planned, AR 120, DR 10, EL 78, FF 15, ME 36, PL 10, ST 15, and that 60 of the tests that run have a
+side whose set name reads no set code. Clashes 60 where F223's smoke on the same copies found 98, 1B06M1 8 where it found 30
+and 1B06PE 52 where it found 68, 3 DONE. The count check read 0 FAILED and 0 not compared in both groups, 31 and 121 agreeing
+and 1799 and 1709 held by neither side. The counts per community are read off F229's run.
+
+What remains. The run of F229. An NWF refreshed before this still holds the results of the tests the rule leaves out, which
+F225 reads. Known bugs: rows F224-R1 to R4. What comes next: F225, F219-R1 with Q209.
+
 ## 2026-10-18 F223, Q207, Auto-Save off while the tool works and put back as it was
 
 Branch fix-F223 off main 54fcf1a. Bader's answer to Q207: the loop's Auto-Save switch in tools\loop\run.ps1 stays, and the tool

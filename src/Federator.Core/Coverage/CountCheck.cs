@@ -381,10 +381,14 @@ namespace Federator.Core.Coverage
             return string.Empty;
         }
 
-        /// <summary>Whether the record shows the run did not create the test, the plan dropped it or no test resolved a set.</summary>
+        /// <summary>
+        /// Whether the record shows the run did not create the test, the plan dropped it, no test resolved a set, or the rule of
+        /// two set codes left it out, F224.
+        /// </summary>
         private static bool RunDidNotCreate(TestCoverage test)
         {
-            return test.Reason == CoverageReason.NotCreated || test.Reason == CoverageReason.NoTestResolvesASet;
+            return test.Reason == CoverageReason.NotCreated || test.Reason == CoverageReason.NoTestResolvesASet
+                || test.Reason == CoverageReason.SameSetCode;
         }
 
         private static CountedTest NotCompared(string name, string why)

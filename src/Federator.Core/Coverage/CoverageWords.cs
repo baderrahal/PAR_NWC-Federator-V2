@@ -45,6 +45,8 @@ namespace Federator.Core.Coverage
 
                 case CoverageReason.OneDiscipline:
                     return "not run, the group holds one discipline";
+                case CoverageReason.SameSetCode:
+                    return "not created or run, both sides carry one set code";
                 case CoverageReason.Failed:
                     return "creating it, running it or reading its results threw";
                 case CoverageReason.NotReached:
