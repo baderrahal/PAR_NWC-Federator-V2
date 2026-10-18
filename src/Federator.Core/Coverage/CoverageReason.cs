@@ -63,6 +63,9 @@ namespace Federator.Core.Coverage
         /// <summary>It was not run because the group holds one discipline.</summary>
         OneDiscipline,
 
+        /// <summary>F224, Q209. It was not created or run, both its sides carry one set code.</summary>
+        SameSetCode,
+
         /// <summary>
         /// The clash step threw on it, anywhere from creating it to counting its results, its
         /// harvest included, so whether it ran is not on the record.

@@ -604,6 +604,7 @@ namespace Federator.Core.Clash
                 new[]
                 {
                     ClashSkipReason.SingleDiscipline,
+                    ClashSkipReason.SameSetCode,
                     ClashSkipReason.EmptySide,
                     ClashSkipReason.LocatorNotResolved,
                     ClashSkipReason.UnknownTestType,

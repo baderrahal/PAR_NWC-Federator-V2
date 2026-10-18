@@ -313,6 +313,13 @@ namespace Federator.Addin.Engine
         public bool SingleDisciplineGroup { get; set; }
 
         /// <summary>
+        /// F224, Bader's answer to Q209. The set codes a side is read against, the team map's and the group's own models',
+        /// so the rule of two set codes leaves out a test whose two sides carry one of them. Null or empty reads no code and
+        /// leaves out nothing, and the CLASH line says so.
+        /// </summary>
+        public IList<string> SetCodes { get; set; }
+
+        /// <summary>
         /// Apply the file settings to tests already in the document. Off by default,
         /// because it changes WHICH CLASHES the test finds when it next runs, and a clash
         /// somebody marked Reviewed may then not come back, which is the only record of
@@ -584,6 +591,14 @@ namespace Federator.Addin.Engine
                             + (savedToo.Count > 10 ? " and " + (savedToo.Count - 10) + " more" : string.Empty));
                     }
                 }
+
+                // F224, Bader's answer to Q209. Only tests across two set codes run, on both pages, a test whose two sides carry
+                // one set code left out of the plan before the mirrors are paired, created and run by nothing, and said with its
+                // count on one CLASH line. One saved in the NWF keeps its earlier results there.
+                IDictionary<string, int> leftOutByCode;
+                int planned = resolved.Buildable.Count;
+                resolved = resolved.AcrossTwoSetCodes(SetCodes, new Federator.Core.Views.ViewpointSettings().SetNameSeparator, out leftOutByCode);
+                log.Line(SetCodeRule.Line(planned - resolved.Buildable.Count, planned, leftOutByCode, SetCodes != null && SetCodes.Count > 0));
 
                 // F132. The mirrored pairs among the tests to run, judged against the
                 // document and this group's sets build, their lines, then the renames of

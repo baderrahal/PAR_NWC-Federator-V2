@@ -465,6 +465,38 @@ namespace Federator.Core.Clash
                 Source, TestsInFile, DocumentUnits, named, new List<SkippedClashTest>(skipped), unknownTestTypes);
         }
 
+        /// <summary>
+        /// F224, Bader's answer to Q209: the same plan with every test whose two sides carry one set code moved to the skipped,
+        /// SameSetCode with the code named, by SetCodeRule, so it is neither created nor run, and how many each code lost. Made
+        /// before the mirrors are paired, so no mirror is paired with a test the rule leaves out. A test saved in the NWF that
+        /// the rule leaves out stays in the NWF with its results, since this changes the plan and never the document.
+        /// </summary>
+        public ClashTestPlan AcrossTwoSetCodes(IEnumerable<string> knownCodes, char separator, out IDictionary<string, int> leftOutByCode)
+        {
+            List<string> known = new List<string>(knownCodes ?? new string[0]);
+            List<PlannedClashTest> kept = new List<PlannedClashTest>();
+            List<SkippedClashTest> left = new List<SkippedClashTest>(skipped);
+            Dictionary<string, int> byCode = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            foreach (PlannedClashTest test in buildable)
+            {
+                string code = SetCodeRule.SameCodeOf(test, known, separator);
+
+                if (code == null)
+                {
+                    kept.Add(test);
+                    continue;
+                }
+
+                int seen;
+                byCode[code] = byCode.TryGetValue(code, out seen) ? seen + 1 : 1;
+                left.Add(new SkippedClashTest(test.Name, ClashSkipReason.SameSetCode, SetCodeRule.Reason(code), test.FileIndex));
+            }
+
+            leftOutByCode = byCode;
+            return new ClashTestPlan(Source, TestsInFile, DocumentUnits, kept, left, unknownTestTypes);
+        }
+
         private static string Unresolved(bool leftKnown, bool rightKnown, PlannedClashTest test)
         {
             if (!leftKnown && !rightKnown)
@@ -534,6 +566,8 @@ namespace Federator.Core.Clash
                     return "a side finds nothing in this model";
                 case ClashSkipReason.SingleDiscipline:
                     return "the group holds one discipline, so nothing in it can clash";
+                case ClashSkipReason.SameSetCode:
+                    return "both sides carry one set code, and only tests across two set codes run";
 
                 case ClashSkipReason.Failed:
                     return "creating or running it threw";
