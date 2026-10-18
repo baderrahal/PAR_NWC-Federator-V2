@@ -16,7 +16,7 @@ Simple words. PROVEN means a run on Navisworks showed it and I read the result. 
   files every time.
 - The message names claude\audit-c02-2026-10-17.md. It is on no branch, not on GitHub and nowhere on this PC. So the seven
   C02 bugs are read as the items of the chat audit of C02 kept at the top of steps\03_bader_next.md, all eleven checked
-  below, and which seven the message means is UNKNOWN.
+  below. Which seven the message means was UNKNOWN until Bader's message of 18 Oct gave the map, the section below.
 - Nothing under samples or steps\logs was changed. The new logs were added to steps\logs as new files only.
 
 ## The layouts, all copies under C:\NWC-PC-Test\work\multi
@@ -139,6 +139,21 @@ show it on C06 and C07. Gone means they show it is not there. Cannot tell means 
 | 10 | F206, pictures left empty by a model saved hidden | the cause is gone, empty pictures are not | No model was hidden whole in any run, every IMAGES HIDDEN line reads nothing hidden or 2 items and 0 of 5 models. Yet 76 of 399 pictures of 1B06BC and 13 of 374 of 1B06P1, with 12 more nearly empty, show only the sky, the same pictures on the NWC page and the NWF page. F210-R3 |
 | 11 | F207-R1, views check 4 | cannot tell | Check 4 held on every group of every run, 0 broke it. The C04 cause, models hidden in the NWF, is not in these NWFs, so whether the bug is gone is UNKNOWN |
 
+## The seven C02 bugs, mapped by Bader on 18 Oct
+
+The file claude\audit-c02-2026-10-17.md lives in Bader's chat project and not in the repo. His message of 18 Oct maps its
+seven bugs to the items of the table above, so each was checked on C06 and C07 by its item.
+
+| C02 bug | what it is | item above | on C06 and C07 |
+|---|---|---|---|
+| 1 | the tests show Old | 9 | cannot tell, and not a bug by his answer to Q193 |
+| 2 | no picture for an Approved clash | 1 | cannot tell, no clash is Approved in these copies, Q194 |
+| 3 | the dated Excel and XML | 2 | still there, as he ruled in Q173 |
+| 4 | Penetrations and By design off on the NWF page | 3 | still there, off by default, Q195 |
+| 5 | the Excel against the client's | 4 | still there, Q196, Q197, Q198 and Q201 |
+| 6 | the picture links written as full paths | 5 | still there, Q199 |
+| 7 | the foundation in the penetration rule | 6 | cannot tell, penetrations not ticked in any run, Q200 |
+
 ## Bugs and findings of this round
 
 Each is a row of steps\tracker.csv and a line of steps\01_next.md. None was fixed in this round, F210 only tests.
@@ -177,7 +192,6 @@ Two things found that are not bugs of the tool.
 
 ## What stays UNKNOWN
 
-- Which seven C02 bugs the message means, the file it names being nowhere.
 - Why 89 pictures of 1B06BC and 1B06P1 show only the sky.
 - Whether the memory comes back between groups in any way the tool can call, so many packages can run in one start.
 - How a CAD file linked or imported into a project itself shows, none being in C06, C07 or C02.

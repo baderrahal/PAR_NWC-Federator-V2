@@ -758,6 +758,14 @@ well as to pass.
   step reads them again before the NWD is written, one PLACE line a file from Core's
   `PlacementCheck`, held within PlacementToleranceMillimetres, 1 mm, or named. A Core test reads
   this folder and fails on SetModelUnitsAndTransform or OverridePermanentTransform
+- A MODEL IS APPENDED THE WAY A MANUAL APPEND DOES IT, Bader's standing rule of 18 Oct 2026, given with
+  his answer to Q202. The tool never changes any setting to append: no units, no origin, no transform, no
+  file option and no Navisworks option, before or during an append. An append is Document.Clear where the
+  group is built or rebuilt, then Document.TryAppendFile once per file, AppendOne, and nothing else. Read
+  off src on 2026-10-18 by F212: nothing sets anything around it, F201 having taken out the last setting,
+  SetModelUnitsAndTransform. What the tool sets it sets after the append and puts back, the hidden state,
+  the undo and Clash Detective's Hide Other, each in its own bullet here. A fix that wants an append to
+  behave otherwise, a corrupt file or a slow one, works around the append and never changes a setting for it
 - DocumentGuard reads IsClear, the file name and the model count, and hands each read that
   threw on with its reason to Core's `DiscardWarning`, FR-169, which words the warning
 - A tick box has to earn being a decision. How many there are and how many sit up front is
@@ -766,8 +774,8 @@ well as to pass.
   is gone outright, dead since the workbook became one sheet with none of ours on it, and so
   is the thumbnail box, F152, since the pictures are linked in the client's form and never
   pasted. Dating the NWD, the clash XML, the ghosted look and the five image status boxes are
-  collapsed under More, rarely changed. The two that destroy data are collapsed on their
-  own under Things that destroy data, because they do not belong beside ordinary output
+  collapsed under More, rarely changed. The one that destroys data, ApplyFileSettings, is collapsed on its
+  own under Things that destroy data, because it does not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
 - THE SIDE WALK OF THE LEFTOVERS, SetBuilder.CountSide, F115: the side's selection and every
   source read out of it are disposed, R1, sources that read as none count the side as not read,
@@ -1001,7 +1009,7 @@ well as to pass.
   allows and goes on as a click does, through `RunBoxFlipped`, the one path both share, Shift
   making a range. Space with the box itself focused is left to the box, which raises Click.
   The box has no x:Name and no label, so it is
-  not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
+  not one of the twenty named tick boxes counted below. The window driver cannot carry Shift
   without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
   steps\03_bader_next.md
 - A REGROUP KEEPS THE RUN TICKS AND THE TYPED NAMES, FR-153, the rule Core's, core.md, A
@@ -1035,7 +1043,7 @@ and they explained the off state as well as the on state, so nothing stood out.
 - one grey help line under it, at most TWELVE words, saying what it costs
 - no capitals for emphasis anywhere. Acronyms a person says out loud are fine
 - do not describe the off state unless it changes what someone would choose
-- the two that destroy something carry a red exclamation mark beside the label. A mark,
+- a box that destroys something carries a red exclamation mark beside the label. A mark,
   because when every label shouted, none of them did
 
 The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
@@ -1043,19 +1051,22 @@ each and 213 took 17 seconds.
 
 There were fifteen, then eleven, and F72 made twelve, of which two were visible without
 opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash step, F150
-added GhostOtherItems under More, F152 took EmbedThumbnails out of it and F159 took SkipClashOffCoordinates out, so
-src\Federator.Addin\Ui\FederatorWindow.xaml holds FIFTEEN named tick boxes, of which FIVE sit
-under no expander, by x:Name IncludeSubfolders on the Source step and MarkPenetrations,
-MarkByDesign, RebuildDriftedSets and MakeViewpoints on the Clash
-step. The other ten are eight under More, rarely changed, DateTheNwd, WriteClashXml,
-GhostOtherItems and the five Photo of boxes, and two under Things that destroy data,
-ApplyFileSettings, since F185 the only one, CompactResolved having gone. Read off the XAML on 2026-10-13 by its CheckBox
-elements with an x:Name, where main before F152 held seventeen. probe-window-labels.ps1 was
-not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
+added GhostOtherItems under More, F152 took EmbedThumbnails out of it and F159 took SkipClashOffCoordinates out,
+F188 added RebuildExisting and the five step boxes of the NWF page, so
+src\Federator.Addin\Ui\FederatorWindow.xaml holds TWENTY named tick boxes, of which ELEVEN sit
+under no expander, by x:Name IncludeSubfolders and RebuildExisting on the Source step, MarkPenetrations,
+MarkByDesign, RebuildDriftedSets and MakeViewpoints on the Clash step, and NwfStepRefresh, NwfStepTests,
+NwfStepPictures, NwfStepViewpoints and NwfStepReports on the NWF page, each picking a step of the weekly run.
+The other nine are eight under More, rarely changed, DateTheNwd, WriteClashXml,
+GhostOtherItems and the five Photo of boxes, and one under Things that destroy data,
+ApplyFileSettings, CompactResolved having gone with F185. Two CheckBox elements carry no name, the Run column's
+and the package tree's, and are not counted. Read off the XAML on 2026-10-18 by its CheckBox elements with an
+x:Name and the Expander above each, Bader's answer to Q205: the window stays as it is, eleven boxes up front.
+probe-window-labels.ps1 was not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
 Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only
 record of what has been fixed, so a run has to be told to do that rather than told not to. Everything else became a
-fixed behaviour with the sensible answer chosen, or moved under an expander. The two that
-destroy data are under one of their own, because they do not belong beside ordinary output
+fixed behaviour with the sensible answer chosen, or moved under an expander. The one that
+destroys data, since CompactResolved went, is under an expander of its own, because it does not belong beside ordinary output
 options. Which box went where and what each removed one was fixed to is in docs\history\scan.md 4q.
 
 tools\probes\probe-window-labels.ps1 reads every tick box out of the real window and checks all
