@@ -66,6 +66,18 @@ Navisworks session. F222 first, since every later run goes through it.
    Look for: the confirm saying a test whose two sides carry one set code is not run and one saved in the NWF keeps its earlier
    results there, and in Clash Detective those tests still there with their results.
 
+### F225, the tests a rule left out that an NWF still holds
+
+1. On the NWF page, pick a package whose NWFs were refreshed before F224 and press Run ticked packages.
+   Look for: the run ending as before, and no COVERAGE FAILED line naming a test such as BLD-ST-Walls-vs-BLD-ST-Foundation.
+2. Open one group's own log, the one its GROUP line names.
+   Look for: `not run by the rule : 284 tests left out by the rule of one discipline or of two set codes, N still held in Clash
+   Detective from an earlier run with M clashes`, then how many are held by neither side and `0 whose holding in Clash
+   Detective is UNKNOWN`.
+3. Open that group's NWF in Navisworks and Clash Detective.
+   Look for: those N tests still there with their clashes, since the tool deletes no test.
+4. Answer Q212 in steps\02_questions.md, or in the tab: leave them, delete them once, or move them into a folder of their own.
+
 ## The round of 18 Oct, F212 to F221
 
 Simple words. Every fix of this round but two was seen on Navisworks by F220, F212 being a rule read off the code and F215 a measurement left UNKNOWN for Q208, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.
