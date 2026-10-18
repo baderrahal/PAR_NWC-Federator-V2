@@ -1743,3 +1743,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F217 F210-R5, the old jpg files counted on the confirm of a run of packages
 
 - Bader's message of 18 Oct 2026, F-R5: the NWF page package confirm counts old jpgs in each package's Clash report folder. RefreshConfirm.PicturesFolderOf and OldPictures count, over every NWF of the run, the files named as the tool names its pictures, the rule F177 removes by, and the one-NWF confirm counts through the same rule.
+- DONE 2026-10-18, merged in 298. Three Core tests break the folder, the name rule and an unreadable folder. The count on a run is seen in F220.

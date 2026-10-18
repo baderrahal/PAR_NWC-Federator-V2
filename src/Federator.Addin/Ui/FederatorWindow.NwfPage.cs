@@ -393,7 +393,16 @@ namespace Federator.Addin.Ui
             ManifestComparison changes = plan.Paths().Count == 1 ? ReadWhatChanged(nwf, out last) : null;
 
             int toolViews = last == null ? -1 : (int)last.Fact("toolviews");
-            int oldPictures = logFolder == null ? -1 : OldPicturesIn(new[] { RefreshConfirm.PicturesFolderOf(logFolder, nwf) });
+
+            // F217. Every picked NWF's pictures folder, by its own Log folder, so a pick of several counts as one does.
+            List<string> pictureFolders = new List<string>();
+
+            foreach (string picked in plan.Paths())
+            {
+                pictureFolders.Add(RefreshConfirm.PicturesFolderOf(TheLogFolderOf(picked), picked));
+            }
+
+            int oldPictures = OldPicturesIn(pictureFolders);
 
             string text = RefreshConfirm.Text(
                 name,
@@ -417,9 +426,29 @@ namespace Federator.Addin.Ui
         /// The old pictures in these folders, F217, by Core's rule, `RefreshConfirm.OldPictures`, read off the disk, minus one
         /// where a folder would not read, which the confirm says UNKNOWN.
         /// </summary>
-        private static int OldPicturesIn(IEnumerable<string> folders)
+        private int OldPicturesIn(IEnumerable<string> folders)
         {
-            return RefreshConfirm.OldPictures(folders, folder => Directory.Exists(folder) ? Directory.GetFiles(folder) : null);
+            // A folder not there holds none. Any other failure to read it, denied or a drive gone, is thrown on, so the count is
+            // UNKNOWN and never a part: Directory.Exists says false for those too.
+            string why;
+            int count = RefreshConfirm.OldPictures(folders, folder =>
+            {
+                try
+                {
+                    return Directory.GetFiles(folder);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    return null;
+                }
+            }, out why);
+
+            if (count < 0)
+            {
+                log.Line("CONFIRM  the old jpg files are UNKNOWN, " + why);
+            }
+
+            return count;
         }
 
         /// <summary>Puts the table of what each test did on the NWF page, the tests that moved, from every NWF the run refreshed.</summary>

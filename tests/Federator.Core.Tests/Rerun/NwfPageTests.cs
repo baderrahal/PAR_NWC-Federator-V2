@@ -268,12 +268,17 @@ namespace Federator.Core.Tests
         // ---------- F217, the old pictures counted on the confirm of a run of packages too ----------
 
         [Test]
-        public void AnNwfsPicturesSitInItsClashReportFolderUnderItsName()
+        public void AnNwfsPicturesSitWhereTheEngineWritesThemForItsRun()
         {
             string log = TestPaths.At("Report", "C06", "Log");
+            string nwf = TestPaths.At("Report", "C06", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf");
 
-            Assert.That(RefreshConfirm.PicturesFolderOf(log, TestPaths.At("Report", "C06", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf")),
-                Is.EqualTo(System.IO.Path.Combine(ReportPaths.ClashReportFolder(log), "1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files")));
+            // The engine writes a picked NWF's pictures beside the page it names OpenDocumentJob.NameFrom of the NWF, in the
+            // Clash report folder of its Log folder, ImageNaming.FolderFor of that page. A change to any of the three moves both.
+            string engine = ImageNaming.FolderFor(ReportPaths.Workbook(ReportPaths.ClashReportFolder(log), OpenDocumentJob.NameFrom(nwf)));
+
+            Assert.That(RefreshConfirm.PicturesFolderOf(log, nwf), Is.EqualTo(engine));
+            Assert.That(System.IO.Path.GetFileName(engine), Does.StartWith("1104-PAR-1B06BC-ZZZ-BM-MOD-000001"));
         }
 
         [Test]
@@ -285,14 +290,17 @@ namespace Federator.Core.Tests
                 { "B", new[] { "cd000004.jpg" } }
             };
 
-            int count = RefreshConfirm.OldPictures(new[] { "A", "B", "gone" }, folder => disk.ContainsKey(folder) ? disk[folder] : null);
+            string why;
+            int count = RefreshConfirm.OldPictures(new[] { "A", "B", "gone" }, folder => disk.ContainsKey(folder) ? disk[folder] : null, out why);
 
             Assert.That(count, Is.EqualTo(3), "cd and six or more digits and .jpg, the names F177 removes, and no other file");
+            Assert.That(why, Is.Null);
         }
 
         [Test]
         public void AFolderThatWillNotReadMakesTheCountUnknownAndNeverAPartOfIt()
         {
+            string why;
             int count = RefreshConfirm.OldPictures(new[] { "A", "B" }, folder =>
             {
                 if (folder == "B")
@@ -301,9 +309,11 @@ namespace Federator.Core.Tests
                 }
 
                 return new[] { "cd000001.jpg" };
-            });
+            }, out why);
 
             Assert.That(count, Is.EqualTo(-1));
+            Assert.That(why, Does.StartWith("B could not be read").And.Contain("UnauthorizedAccessException").And.Contain("denied"),
+                "the log can say which folder and what the disk said");
             Assert.That(RefreshConfirm.Text("2 NWFs of 2 packages", "each", null, "Refresh", 1830, -1, -1, count, "Clash Status"),
                 Does.Contain("Pictures: UNKNOWN old jpg files"));
             Assert.That(RefreshConfirm.Text("2 NWFs of 2 packages", "each", null, "Refresh", 1830, -1, -1, 3, "Clash Status"),
