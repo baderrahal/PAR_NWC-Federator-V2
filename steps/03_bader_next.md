@@ -78,6 +78,21 @@ Navisworks session. F222 first, since every later run goes through it.
    Look for: those N tests still there with their clashes, since the tool deletes no test.
 4. Answer Q212 in steps\02_questions.md, or in the tab: leave them, delete them once, or move them into a folder of their own.
 
+### F226, a picture that draws no item of its clash taken again
+
+1. On the NWC page, step 5, run a community holding 1B06BC into a new empty Report folder, Run ticked packages, clicking nothing
+   more.
+   Look for: the run ending as before.
+2. Open 1B06BC's own log, the one its GROUP line names.
+   Look for: `IMAGES   RETAKE   N of the M pictures read drew no item of the clash, N taken again through the active view from
+   9.144 m, 30 ft, at the nearest`, then how many drew their items and how many still none.
+3. Open the Clash report folder's 1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files folder and look at the pictures.
+   Look for: no picture that shows only the sky and the grid label, and a few pictures with one item red and one green against
+   other models' items in their own colours, the ones taken again.
+4. Open the clash workbook in the Log folder and look at the Image column of a test such as
+   BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls.
+   Look for: every Image cell linking a picture of that clash, none of only the sky.
+
 ## The round of 18 Oct, F212 to F221
 
 Simple words. Every fix of this round but two was seen on Navisworks by F220, F212 being a rule read off the code and F215 a measurement left UNKNOWN for Q208, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.
