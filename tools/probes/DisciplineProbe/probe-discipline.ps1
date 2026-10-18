@@ -238,11 +238,12 @@ try {
   $failed5 = $false
   foreach ($b in $buildings) {
     Say ("---- " + $b.Leaf + " ----")
-    Say ("  " + (Stamp) + "  calling ExecuteAddInPlugin(" + $probeId + ", discipline, the plugin's output file, the folder of copies " + $b.Leaf + ", " + $b.Leaf + ")")
+    Say ("  " + (Stamp) + "  calling ExecuteAddInPlugin(" + $probeId + ", " + $Mode + ", the plugin's output file, the folder of copies " + $b.Leaf + ", " + $b.Leaf + $(if ($Mode -eq "find") { ", ids " + $Ids } else { "" }) + ")")
     $sw = [Diagnostics.Stopwatch]::StartNew()
     $err = $null; $ret = $null
     # F210. The mode find looks the element ids of -Ids up again in the copies, the ids a discipline report listed.
-    $pluginArgs = if ($Mode -eq "find") { [string[]]@("find", $b.Output, $b.CopyDir, $b.Leaf, $Ids) } else { [string[]]@("discipline", $b.Output, $b.CopyDir, $b.Leaf) }
+    # Typed, since an if that hands back an array makes an object[], which reaches the plugin as one joined string.
+    [string[]]$pluginArgs = if ($Mode -eq "find") { [string[]]@("find", $b.Output, $b.CopyDir, $b.Leaf, $Ids) } else { [string[]]@("discipline", $b.Output, $b.CopyDir, $b.Leaf) }
     try { $ret = $app.ExecuteAddInPlugin($probeId, $pluginArgs) } catch { $err = $_.Exception }
     Say ("  " + (Stamp) + "  ExecuteAddInPlugin " + $(if ($null -eq $err) { "RETURNED " + $ret } else { "THREW" }) + " after " + $sw.Elapsed.TotalSeconds.ToString("0.00") + " s")
     if ($null -ne $err) { Say ("    " + (Err $err)) }
