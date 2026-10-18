@@ -2,6 +2,135 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F231, the append measured against a manual Append, fix 1
+
+Branch fix-F231 off main f92023f. Fix 1 of the round: are the far models of 1B06BC, 1B06PS and 1B06K1 put there by the tool, or
+are they in the NWC files.
+
+What was done. The desktop folder listed with names, sizes, dates and SHA-256, the NWCs of the three groups copied into
+C:\NWC-PC-Test\work\append-check\<group>\NWC with their dates, the folder listed again, 141 files in 25 folders and 0 lines
+differing. Each group appended by hand in the window of one plain Navisworks Manage 2025, driven through UI Automation by
+tools\probes\AppendProbe\manual-append.ps1: New, Append with the NWCs in the tool's order, Save with Navisworks' own type,
+saved as <group> manual.nwf, no option touched. On 1B06BC the driver found no type box in Save As and stopped, and the same
+messages were sent by hand, the type box reading the same default. The 35 registry values that session moved put back and read
+back with 0 differing. Each group then built by the NWC page of main f92023f, each in its own Navisworks, all three DONE, and
+run on the NWF page, Refresh and UpdateFiles. tools\probes\AppendProbe, a plugin in the Automation host that saves nothing,
+read every NWF and NWD, the file name, source file name, units, the translation and the box per model, every file the same
+SHA-256 after. docs\history\scan.md 5z-zn, and the table in claude\audit-round-2026-10-19.md.
+
+What was proved here. All 11 models and the 3 NWDs within 0.000 mm of the manual Append after the NWC page and after the NWF
+page, 0 numbers UNKNOWN, the source file names and units of all 22 pairs the same. The append matches the manual Append and the
+far models are in the NWC files themselves, so no code changed. Core tests 3441 passed before and after, 0 failed, 0 skipped.
+The solution and the probe built in Release, 0 errors.
+
+What remains. Nothing of fix 1. Known bugs: none new, the rows carried in stand. What comes next: F232, packages first and one
+route per page.
+
+## 2026-10-18 The plan of the round of 19 Oct, F231 to F238, written before the first edit
+
+Bader's round headed WHAT CLAUDE FOUND, read off multi3 on 18 Oct, with his answers to Q187 and Q195 and six fixes in his
+order, then the full run for him and the end of the round. Read first, whole: CLAUDE.md, the eight files of .claude\rules,
+steps\PROGRESS.md, the F230 entry below, steps\01_next.md, Q187 and Q195 of steps\02_questions.md, docs\workflow.md and
+C:\NWC-PC-Test\work\claude-check-2026-10-18, pick.py, recon.py and clash-count-check.tsv. The session runs from the repo
+folder, so the walls and the Stop gate fire. Main is f92023f, no pull request open.
+
+THE NUMBERS. F231 to F238 are free, F230 the last on main. The questions go on from Q213, Q212 the last.
+
+    F231  Fix 1, the append measured against a manual Append
+    F232  Fix 2, packages first, one route per page
+    F233  Fix 3, one discipline groups are not built
+    F234  Fix 4, the discipline report written again
+    F235  Fix 5, pictures and penetrations, Q187 and Q195
+    F236  Fix 6, the clash count check file
+    F237  the full run for Bader on final-2026-10-19, after the last merge
+    F238  the audit of the round, the proof steps, the QA against CLAUDE.md and the closing entry
+
+HOW EACH FIX IS WORKED, in his order and one at a time, each merged before the next starts, since F232 to F236 all change
+the window, the engine or the discipline report. One branch fix-F<n> off main, its rows in steps\tracker.csv written in
+review and set merged with the number before the merge, tools\tracker\make-tracker.ps1 run, the DONE line under its section
+of steps\01_next.md, one entry here, PROGRESS rewritten, one draft pull request whose body says what was proved here and what
+waits, merged once Actions is green and its branch deleted. Every rule a test can prove goes into Core with a test that breaks
+one thing and asserts the check names it, the Core test counts kept before and after. Every add-in change is built in Release
+with 0 errors, read by the reviewer and the breaker before its merge, and proved by a run on a copy under C:\NWC-PC-Test\work,
+its proof steps written into steps\03_bader_next.md. The claim-checker reads each pull request body. No Navisworks behaviour
+is guessed: what is not known is measured by a probe under tools\probes and written into docs\history\scan.md. Where his words
+do not cover a case, that item stops, the case goes into steps\02_questions.md as the next question, and the next item goes on.
+Desktop's NM fed is only read, by copies of the read only listing and copy scripts F229 used, outside the repo: listed with
+names, sizes, dates and SHA-256 before and after every copy, 0 lines differing, every copy read back by its SHA-256.
+
+F231, FIX 1, FIRST. Copy the NWCs of 1B06BC, 1B06PS and 1B06K1 out of NM fed's NWC\C06 into
+C:\NWC-PC-Test\work\append-check\<group>\NWC, their file dates kept. For each group: a Navisworks started the plain way,
+driven through UI Automation, File, New, Append with the group's NWCs in the tool's order, the order the scan hands them,
+saved as <group> manual.nwf in append-check\<group>, no option touched. Then the same group built by the tool on the NWC page
+of main, the Source step reading append-check\<group>\NWC and the NWF and NWD folders append-check\<group>\NWF and NWD, then
+the NWF page run on the tool's NWF, so its Refresh and UpdateFiles run. A probe of its own under tools\probes opens each NWF
+read only in the Automation host and reads per model the file name, the source file name, the units, the transform's
+translation and the box's min and max, before and after the NWF page run, the NWD read too where the box moved. One table:
+model, manual, tool after the NWC page, tool after the NWF page, the difference in mm. Within 1 mm everywhere: the append
+matches the manual Append, the far models are in the NWCs, no code changed. Otherwise the step that moves a model is found by
+reading the box after APPEND, NWF SAVE, UpdateFiles and NWD, fixed so the tool matches the manual Append, and proved by the same
+table. The table goes in the pull request body and in claude\audit-round-2026-10-19.md.
+
+F232, FIX 2. The NWC page becomes four steps and one Run button, the one outside the steps, RunButton, which
+his words call the one at the top, the window holding no other bar: 1. Packages, the parent folder
+with Browse and Read, the Report folder with Browse, the tree with Tick all and Clear all, a parent holding NWC files itself
+one package named after that folder, and the Findings panel of today's Source step under the tree reading the NWC files of
+the ticked packages. 2. Grouping, the grouping choice and one row per group of the ticked packages with community, package,
+building, files, disciplines, run as and status, a group of one discipline reading One discipline, not built, its box off and
+greyed. 3. Outputs, the naming boxes and the logo, the NWF and NWD folder boxes and their Browse buttons gone, every output under
+Report\<path from the parent> as today. 4. Clash as today. Run runs the ticked packages, each group in its own Navisworks, as
+today. The Source step, the step 5 tab and its Run button go, with every member and test only they used. The NWF page: Packages
+first, the Report folder with Browse and Read, a tree of community, package and NWF with tick boxes, Tick all and Clear all, a
+community or a package ticking the NWFs under it and one NWF ticked alone, then the tolerance, the five step boxes and one Run
+as today, the Run going through the runner, each NWF in its own Navisworks, as the package route does today. The single NWF
+picker, its File and Folder buttons, the Recent box and the panel on the right go, with every member and test only they used.
+Window text and the log name each step so. docs\workflow.md, .claude\rules\addin.md and the proof steps follow. What stays and
+is not named, the Rebuild box among it, stays as it is, and a part his words leave open is a question.
+
+F233, FIX 3. A group of one discipline is not appended and writes no NWF, NWD, Excel, Internal Excel, HTML, picture folder or
+viewpoints, on both pages. One log line each, community, building, discipline, file names and one discipline, not built. One
+RESULT line per community with the count. Each goes into its discipline's report as F234 writes it. An NWF of such a group
+left by an earlier run is not deleted and not run, and the log names it.
+
+F234, FIX 4. The discipline report written again, one Excel file per discipline per package, one sheet, the file name as
+today, every cell from a rule in Core with tests: the three title rows, the summary table of the seven checks in his order,
+then the issues table under a frozen header row with a filter, his nine columns, severity filled, sorted by severity, building
+and file, a row only where action is needed. Coordinates measured as ALIGNMENT measures, the translation of each model against
+the reference, never the gap between boxes, far over the 30 m setting, the row in the far model's workbook, and the one row of a
+reference on Internal. Missing model for groups of two disciplines or more, One discipline group, Naming, File age, CAD and
+Generic Models, one row per file and CAD file, and per file, family and type, every element id in one cell. Widths, wrap, a bold
+grey header. Proved on C06 and C07: each workbook's summary counts equal its issue rows, and ST of 1B06BC shows its 34 m offset.
+
+F235, FIX 5. Q187 and Q195 written as answered, dated 2026-10-18, with their rows. The picture cap only for a test of more than
+750 clashes, 750 a setting, A 150, B 100 and C 50 as today, a test of 750 or fewer getting a picture for every clash, the GDI and
+the memory stops as they are, and the IMAGES line of each capped test naming its clashes and the 750 rule. Penetrations ticked by
+default on both pages, a pipe, duct, cable tray or conduit or their fittings of 150 mm or under against a wall, floor or roof
+Reviewed, larger left New, Reviewed the only status set, by design as it is. Proved by 1B06PK getting a picture for every clash
+of its tests of 750 or fewer, and small penetrations read Reviewed.
+
+F236, FIX 6. Every run writes <community> clash count check.xlsx in the community's report folder, every number read off the
+files the run wrote and none off memory: per group and test that found clashes the building, test, priority, clashes in Clash
+Detective off the group's .tsv, rows of the Excel, rows of the HTML, clashes in the viewpoints off the .tsv, pictures made and
+skipped and why, and the five statuses, a total per group and for the community, a red fill and a log line where the four counts
+differ, then the groups not built and the tests left out by the rule of one discipline or of two set codes, counted per group.
+The rule reads files and lives in Core with its tests. Compared with claude-check-2026-10-18\clash-count-check.tsv over the
+same copies, multi3's Report, each difference explained.
+
+F237, THE FULL RUN, after the last merge. main built and installed, the stamp read back. C06 and C07 of NM fed as they are now
+copied into C:\NWC-PC-Test\work\final-2026-10-19\Parent, file dates kept, with an empty Report\C06 and Report\C07. The NWC page
+with C06 and C07 ticked, Run pressed once and nothing answered by anyone, then the NWF page on the same Report folder. Five
+clashes per community picked at random from the Excel and each found in Navisworks by its two element ids by a probe reading
+the NWF, its test, status and picture confirmed. Each point of his list proved off the files. The output left in
+final-2026-10-19\Report, and the logs and .tsv copied into steps\logs as new files named 2026-10-19-C06-C07-final.
+
+F238, THE END. claude\audit-round-2026-10-19.md with the append table, each fix and its proof, the counts per community off the
+clash count check, the random picks and the bugs found. Numbered one action proof steps in steps\03_bader_next.md, each with its
+Look for line, step 1 opening final-2026-10-19\Report\C06 and its AR, ST, ME and EL workbooks. A full audit and QA of the repo
+after the last merge listing every contradiction with CLAUDE.md. The closing entry, no pull request left open.
+
+What remains before the first edit: nothing. Known bugs carried in: rows F222-R1 to R4, F223-R1 to R4, F224-R1 to R4, F225-R1
+to R3, F226-R1 to R5 and F229-R1. What comes next: F231.
+
 ## 2026-10-18 F230, the audit of the round of 18 Oct evening, and the round's closing entry
 
 Branch fix-F230 off main b5cecfe. The round's end: the findings in claude\audit-round-2026-10-18b.md, what each fix proved, the

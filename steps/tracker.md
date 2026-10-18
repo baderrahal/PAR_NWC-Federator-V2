@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 765 rows: open 191, in progress 24, in review 0, merged 472, proven by a run 41, waiting for Bader 19, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 294, outside the waves 2, right after F133 merges 6
+- By status, of 766 rows: open 191, in progress 24, in review 1, merged 472, proven by a run 41, waiting for Bader 19, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 295, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 19 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201, Q212
 
@@ -858,6 +858,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F229 | the test of the round on multi3, C06, C07 and a package of 1B06BC and 1B06P1, both pages, Run pressed once and no box answered | F229 | fix | merged | 310 | none | 2026-10-18 |
 | F229-R1 | the window a person runs opens its log and prunes the tool's logs folder to 30, so a run of 46 groups followed by another run deletes the first group logs of the run before, their copies kept in each package's Log folder, met on F229's NWF page | F229 | register row | open | none | none | 2026-10-18 |
 | F230 | the audit of the round of 18 Oct evening, the findings, the proof steps in one order, the contradictions with CLAUDE.md and the closing entry | F230 | fix | merged | 311 | none | 2026-10-18 |
+| F231 | the append measured against a manual Append on copies of 1B06BC, 1B06PS and 1B06K1, the tool after the NWC page and after the NWF page within 0.000 mm of the manual NWF, the far models in the NWC files, no code changed | F231 | fix | in review | UNKNOWN | none | 2026-10-19 |
 
 ## outside the waves
 

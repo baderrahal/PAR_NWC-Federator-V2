@@ -1804,3 +1804,7 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - The round of 18 Oct 2026, the end: the findings in claudeudit-round-2026-10-18b.md, the proof steps in one order, a full audit and QA after the last merge listing the contradictions with CLAUDE.md, and the closing entry, no pull request left open.
 - DONE 2026-10-18, merged in 311. claudeudit-round-2026-10-18b.md, 35 contradictions read on main and 10 of them fixed as text, the morning's 26 read again, PROGRESS.md rewritten, the closing entry, 3441 Core tests passed.
+
+## F231 the append measured against a manual Append
+
+- The round of 19 Oct 2026, fix 1: the NWCs of 1B06BC, 1B06PS and 1B06K1 copied into C:\NWC-PC-Test\work\append-check, each group appended by hand in the window of Navisworks with no option touched and saved as <group> manual.nwf, then built by the tool's NWC page and run on its NWF page, a probe reading per model the file name, source file name, units, translation and box, one table of the differences in mm. Within 1 mm the far models are in the NWCs and no code changes.

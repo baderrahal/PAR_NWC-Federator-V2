@@ -1,0 +1,21 @@
+23:57:49.209  manual Append of 5 files from C:\NWC-PC-Test\work\append-check\1B06BC\NWC into C:\NWC-PC-Test\work\append-check\1B06BC\1B06BC manual.nwf, Navisworks pid 30736
+23:57:49.216    in this order: 1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc
+23:57:49.217    in this order: 1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc
+23:57:49.217    in this order: 1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc
+23:57:49.217    in this order: 1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc
+23:57:49.217    in this order: 1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc
+23:57:49.281  main window: Untitled - Autodesk Navisworks Manage 2025
+23:57:57.956  File, New pressed, the quick access bar's New, RoamerGUI_FILE_NEW, main window now: Untitled - Autodesk Navisworks Manage 2025
+23:58:04.028  Append pressed, the Home tab's Append, RoamerGUI_FILE_APPEND, and its dialog is up
+23:58:04.039    its file type box reads '', left as it is
+23:58:04.051  typed the folder, the box reads C:\NWC-PC-Test\work\append-check\1B06BC\NWC
+23:58:06.069  typed the files, the box reads "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc" "1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc" "1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc" "1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc" "1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc"
+23:58:06.859  the Append dialog is gone, waiting 15 s for the models
+23:58:21.877  main window now: Untitled - Autodesk Navisworks Manage 2025
+23:58:30.291  Save pressed, the quick access bar's Save, and for an untitled document its Save As dialog is up
+23:58:30.295  STOP: save as type boxes found 0
+23:59:28.755  the Save As dialog read by hand from the session: its type box reads Navisworks 2016-2025 File Set (*.nwf), item 1 of 6, Navisworks' own default, left as it is
+23:59:28.793  the file name box reads 'Untitled.nwf' before typing
+23:59:28.800  typed the NWF path, the box reads C:\NWC-PC-Test\work\append-check\1B06BC\1B06BC manual.nwf
+23:59:34.080  Save pressed, the dialog is gone, main window now: 1B06BC manual.nwf - Autodesk Navisworks Manage 2025
+23:59:34.087  the NWF on disk: 4198 bytes, sha256 9B1D05AA293A072634898DEA5EE5FCE6CD017C04DA8A8211CF62D8DB5BAA8039

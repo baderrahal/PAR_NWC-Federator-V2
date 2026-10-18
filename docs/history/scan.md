@@ -9101,3 +9101,48 @@ pictures of only the sky in both groups, the 4 now the retakes of a grey wall, 1
 **UNKNOWN.** Whether a retake from 30 ft draws its items where a run takes pictures one after another for 3000 clashes, since
 the probe took 101 and the tool 19. What Navisworks' own export would give the 4. Whether the client accepts a retaken picture
 in place of Clash Detective's, Q208 says retake.
+
+## 5z-zn. THE TOOL'S APPEND AGAINST A MANUAL APPEND IN THE WINDOW OF NAVISWORKS, MEASURED 2026-10-19
+
+F231, fix 1 of Bader's round of 19 Oct 2026: the far models of 1B06BC, 1B06PS and 1B06K1, the EL of 1B06BC at 1062619.41
+9039909.142 ft among them, are they put there by the tool or are they there in the NWCs. The NWCs of the three groups copied
+out of the desktop folder's NWC\C06 into C:\NWC-PC-Test\work\append-check\<group>\NWC, their dates kept, the desktop folder
+listed with names, sizes, dates and SHA-256 before and after, 141 files in 25 folders and 0 lines differing.
+
+**THE MANUAL APPEND.** One Navisworks Manage 2025 started the plain way, Roamer.exe with no switch, driven by
+`tools\probes\AppendProbe\manual-append.ps1` through UI Automation, acting on the windows of that one process: the quick access
+bar's New, AutomationId RoamerGUI_FILE_NEW, then the Home tab's Append, RoamerGUI_FILE_APPEND, its dialog given the folder and
+the group's file names in the order the tool's scan hands them, AR, EL, ME, then ST-000001 and ST-000002 by name, then Save,
+whose Save As dialog for an untitled document reads Navisworks 2016-2025 File Set (*.nwf), item 1 of 6, Navisworks' own default,
+left as it is, saved as <group> manual.nwf in append-check\<group>. The application File button has no UI Automation element,
+which is why New is the quick access bar's. The two file dialogs show their controls to UI Automation as panes with no pattern,
+so they were worked by WM_SETTEXT into the file name box, id 1148 in Append and 1001 in Save As, read back by WM_GETTEXT, and
+WM_COMMAND with IDOK. No option of Navisworks was touched. On the first group the driver found no type box and stopped before
+typing the name, and the same messages were sent by hand from the session, the type box read the same default, as
+manual-append-1B06BC-20261019.txt says. 1B06BC manual.nwf 4198 bytes, 1B06PS 4018, 1B06K1 3996. The session moved 35 registry
+values of Navisworks, its counters, DefaultPromptDir and the recent files, the same 279 keys, put back off the export taken before
+it and read back with 0 lines differing, and the Auto-Save values read the same after as before.
+
+**THE TOOL.** main f92023f, installed by build\install.ps1 from a clean worktree, each group on the NWC page, the Source step
+reading append-check\<group>\NWC and the NWF and NWD folders append-check\<group>\NWF and NWD, each in its own Navisworks, all
+three DONE, PLACE 5 of 5 held on 1B06BC. Then the NWF page on each tool NWF, its Refresh run and UpdateFiles returning False,
+units and origin unchanged.
+
+**THE READ.** `tools\probes\AppendProbe`, a plugin in the Automation host, the guards of tools\loop\nw-guard.ps1 unchanged, opens
+each NWF and NWD with TryOpenFile and saves nothing, and per model writes the file name, the source file name, the model's units,
+the translation of `Model.Transform` and the min and max of `RootItem.BoundingBox()`, in the document's units and in mm through
+UnitConversion.ScaleFactor. Every file read had the same SHA-256 after as before. Two reads: the manual NWFs with the tool's NWFs
+and NWDs after the NWC page, and the tool's NWFs and NWDs after the NWF page. append-table.ps1 sets each model's nine numbers
+against the manual one and an NWD, which reads as one model, against the union of the manual boxes.
+
+**WHAT IT GAVE.** All 11 models and all 3 NWDs within 0.000 mm of the manual Append after the NWC page and after the NWF page,
+0 numbers UNKNOWN, and the source file names and units of all 22 pairs the same. The model order of each manual NWF is the
+tool's. So the tool's append puts every model where a manual Append puts it, and the far models are in the NWC files themselves:
+1B06BC EL at translation 323886.396 2755364.307 11.033 m, 1B06PS AR at 660063.927 2744376.693 675.667 m and EL at the same
+translation as 1B06BC's EL, and 1B06K1 AR and ME at 658144.9 2746014.8 683.828 m while its ST stands at 0. The table is
+append-result-20261019.txt beside the probe, the two reads append-read-after-nwc-page-20261019.txt and
+append-read-after-nwf-page-20261019.txt, and the three manual records manual-append-<group>-20261019.txt, the machine's name
+masked.
+
+**UNKNOWN.** Whether a manual Append with a model order other than the tool's places the models the same, since only the tool's
+order was appended. Whether the other groups of C06 and C07 read the same, since three were measured.
