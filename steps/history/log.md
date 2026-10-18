@@ -2,6 +2,43 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F210 the test on C06 and C07, two layouts, both pages
+
+Branch fix-F210 off main 14b434f. Bader's message of 17 Oct 2026 late evening, the test.
+
+What was done. Copies of NM fed's C06 and C07 under C:\NWC-PC-Test\work\multi in the flat layout and the ACC layout, each
+with a Report folder holding empty C06 and C07 and a dummy community of one copied NWC left unticked, and one copy in C07
+dated back 10 days. Six runs of the installed main 14b434f4 through the real window, driven by the window driver: the flat
+layout on the NWC page then the NWF page, 42 groups each, one ACC package ticked alone on the NWC page, the ACC layout on
+the NWC page then the NWF page, and a package of one corrupt NWC before a good one. Each run but the single package and the
+corrupt one pressed Run with nothing ticked first. Every point of the message's list read off the logs, the folders and the
+workbooks, and 7 element ids, 3 CAD and 4 Generic Models, found again in Navisworks by tools\probes\DisciplineProbe in a new
+mode find. The chat audit of C02 read item by item on C06 and C07. The findings are claude\audit-multi-2026-10-17.md.
+
+Proved. Both features on both layouts and both pages, every group of the five full runs done: the tree levels, the refusal,
+a single package running alone, the unticked community never run and given no folder, the report folders mirroring the
+path, community and package on every group line with totals per package, per community and for the run, one Excel per
+discipline per package in the right folder, 5376 rows each in its own package's workbook, and every check firing on real
+data. The counts agree across the layouts, C06 6207 clashes on the NWC page in one package or two and 8203 on the NWF page.
+
+The probe's mode find returned 2 on its first two starts. Its runner set the arguments from an if, which hands back an
+object[], and a params string[] then receives one joined string, measured with a small method, 1 argument against 5. Typed
+as strings, 9e1dad5, the third start found all 7 ids. A corrupt NWC opened a Navisworks message box in the middle of
+TryAppendFile and the run waited 100.7 s for my OK, written into docs\history\scan.md 5z-zh as measured by the run.
+
+What remains. Six findings, none fixed here, F210-R1 to F210-R6, and Q202 to Q204. Which seven C02 bugs the message means
+is UNKNOWN, the file it names being nowhere. Why 89 pictures of 1B06BC and 1B06P1 show only the sky is UNKNOWN.
+
+Known bugs. F210-R1 the memory stop fires in every later package of a long run, so C07 got 1 picture of 6207. F210-R2 a
+group of one discipline runs no test on the NWC page and finds 1996 clashes per community on the NWF page. F210-R3 the
+pictures that show only the sky. F210-R4 the log names a package by its path from the parent. F210-R5 the package confirm
+on the NWF page says UNKNOWN old jpg files. F210-R6 a corrupt NWC stops an unattended run at a message box.
+
+What comes next. F211, the audit of the repo against CLAUDE.md after this merge. Then Bader's answers to Q202 to Q204.
+
+Core tests 3345 before and 3345 after, 0 failed, 0 skipped, no code of the tool changed. NM fed 135 files before and after,
+0 lines differ.
+
 ## 2026-10-18 F209 one Excel per discipline per package
 
 Branch fix-F209 off main 14a6e4e. Bader's message of 17 Oct 2026 late evening, feature 2.

@@ -1,0 +1,25 @@
+workbook	community	package	group	file	check	result	value	elementid
+A Broken AR checks.xlsx	A	A\Broken	1B06KI	1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc	Coordinates	not read	the models of this group were not read, the group ended before its models were read	
+A Broken AR checks.xlsx	A	A\Broken			Missing discipline	none missing	AR is in every group of this package, 1 group	
+A Broken AR checks.xlsx	A	A\Broken			Naming	the pattern	learned from 1 AR names, 7 parts split on -: part 1 1104, part 2 PAR, part 3 1B06KI, part 4 ZZZ, part 5 the discipline, part 6 MOD, part 7 shaped like 000001	
+A Broken AR checks.xlsx	A	A\Broken	1B06KI	1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc	File age	within the limit	written 2026-10-18 02:10, 0 days old, the limit 7 days	
+A Broken AR checks.xlsx	A	A\Broken	1B06KI	1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc	CAD	not read	the models of this group were not read, the group ended before its models were read	
+A Broken AR checks.xlsx	A	A\Broken	1B06KI	1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc	Generic Models	not read	the models of this group were not read, the group ended before its models were read	
+A Broken EL checks.xlsx	A	A\Broken			Missing discipline	not in this package	EL is in no group of this package, so no group misses it against the others	
+A Broken EL checks.xlsx	A	A\Broken			Naming	the pattern	learned from 1 AR names, 7 parts split on -: part 1 1104, part 2 PAR, part 3 1B06KI, part 4 ZZZ, part 5 the discipline, part 6 MOD, part 7 shaped like 000001	
+A Broken ME checks.xlsx	A	A\Broken			Missing discipline	not in this package	ME is in no group of this package, so no group misses it against the others	
+A Broken ME checks.xlsx	A	A\Broken			Naming	the pattern	learned from 1 AR names, 7 parts split on -: part 1 1104, part 2 PAR, part 3 1B06KI, part 4 ZZZ, part 5 the discipline, part 6 MOD, part 7 shaped like 000001	
+A Broken ST checks.xlsx	A	A\Broken			Missing discipline	not in this package	ST is in no group of this package, so no group misses it against the others	
+A Broken ST checks.xlsx	A	A\Broken			Naming	the pattern	learned from 1 AR names, 7 parts split on -: part 1 1104, part 2 PAR, part 3 1B06KI, part 4 ZZZ, part 5 the discipline, part 6 MOD, part 7 shaped like 000001	
+B Good AR checks.xlsx	B	B\Good			Missing discipline	not in this package	AR is in no group of this package, so no group misses it against the others	
+B Good AR checks.xlsx	B	B\Good			Naming	no pattern	no AR file in this package, so no pattern was learned and no name was checked	
+B Good EL checks.xlsx	B	B\Good	1B06BS	1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site Community-4-BS4, no discipline of the group is far from it	
+B Good EL checks.xlsx	B	B\Good			Missing discipline	none missing	EL is in every group of this package, 1 group	
+B Good EL checks.xlsx	B	B\Good			Naming	no pattern	no AR file in this package, so no pattern was learned and no name was checked	
+B Good EL checks.xlsx	B	B\Good	1B06BS	1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc	File age	within the limit	written 2026-10-17 23:08, 0 days old, the limit 7 days	
+B Good EL checks.xlsx	B	B\Good	1B06BS	1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc	CAD	none found	no imported or linked CAD file found in it	
+B Good EL checks.xlsx	B	B\Good	1B06BS	1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc	Generic Models	none found	no element of the category Generic Models found in it	
+B Good ME checks.xlsx	B	B\Good			Missing discipline	not in this package	ME is in no group of this package, so no group misses it against the others	
+B Good ME checks.xlsx	B	B\Good			Naming	no pattern	no AR file in this package, so no pattern was learned and no name was checked	
+B Good ST checks.xlsx	B	B\Good			Missing discipline	not in this package	ST is in no group of this package, so no group misses it against the others	
+B Good ST checks.xlsx	B	B\Good			Naming	no pattern	no AR file in this package, so no pattern was learned and no name was checked	
