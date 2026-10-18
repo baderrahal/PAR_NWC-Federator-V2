@@ -766,6 +766,18 @@ well as to pass.
   SetModelUnitsAndTransform. What the tool sets it sets after the append and puts back, the hidden state,
   the undo and Clash Detective's Hide Other, each in its own bullet here. A fix that wants an append to
   behave otherwise, a corrupt file or a slow one, works around the append and never changes a setting for it
+- A BAD NWC NEVER STOPS AN UNATTENDED RUN, F213, F210-R6. TryAppendFile on a random file, a file cut short
+  or a file another program holds opens a Navisworks message box inside the call and waits for a person,
+  scan.md 5z-zh and 5z-zi. So `AppendOne` makes every TryAppendFile under an `AppendBoxWatch`, a
+  DispatcherTimer on the run's own thread, every `ReportOptions.AppendBox.EveryMilliseconds`, 200, which
+  reads the windows of the process and answers a box only where Core's `AppendBox.IsTheBoxOf` says it is
+  the box of that file, a #32770 window with one button whose text names the file, by WM_COMMAND with that
+  button's id, 2, the click a person makes on OK. IDOK did not close it, measured. The append then returns
+  false, the APPEND line says what Navisworks said, and `AppendBox.GroupError` goes on the group's errors,
+  so the group ends FAILED with the file named and the run goes on. A box that does not name the file is
+  left alone and said. No thread is started, no Navisworks call is made by the watch and no setting is
+  changed. A check of the file's first bytes was measured and not taken: every real NWC begins
+  #LcUStream-V1.1, which tells the random file alone, and a file cut short or held open passes it
 - DocumentGuard reads IsClear, the file name and the model count, and hands each read that
   threw on with its reason to Core's `DiscardWarning`, FR-169, which words the warning
 - A tick box has to earn being a decision. How many there are and how many sit up front is

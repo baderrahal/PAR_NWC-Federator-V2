@@ -8868,3 +8868,51 @@ an unattended run, since the box waits for a person. F210-R6.
 
 **UNKNOWN.** Whether a truncated real NWC, or one another program holds open, shows the same box. Whether any setting or any
 check before the append avoids it. A probe under tools\probes measures that before a fix.
+
+## 5z-zi. WHICH WAYS KEEP THE MESSAGE BOX OF A BAD NWC FROM STOPPING A RUN, MEASURED 2026-10-18
+
+F213, F210-R6, Bader's message of 18 Oct 2026: measure which ways exist to keep the box of 5z-zh from appearing or to answer
+it, a check of the file before the append, a Navisworks option, or the box closed from outside. The option was not tried, his
+rule of the same day being that the tool changes no setting to append.
+
+**HOW.** `tools\probes\AppendBoxProbe\probe-append-box.ps1`, DisciplineProbe's guarded runner with its plugin and arguments
+changed, its guard untouched. One Navisworks started through the Automation API and adopted, pid 4368, quit by Dispose and gone
+1.6 s later, not forced, Bader's settings put back, 37 registry values and 2 files, 0 still differ. The plugin
+`tools\probes\AppendBoxProbe\AppendBoxProbePlugin.cs` cleared the document and appended five copies in name order by
+TryAppendFile, while a DispatcherTimer on Navisworks' own main thread read the windows of the process every 200 ms, wrote each
+window of the class #32770 once with its caption and every child, answered it by WM_COMMAND IDOK after it stood 1 s and by
+IDCANCEL if it stood 1.5 s more, and a thread pool timer watched as a backstop that answers only after 20 s. The copies: a real
+NWC, 1B06BS EL of C06, 355861 bytes, the 200000 random bytes of F210, the same real NWC cut to its first 177930 bytes, the real
+NWC held open by the plugin with FileShare.None, and the real NWC again. The result, the machine's name masked:
+`tools\probes\AppendBoxProbe\append-box-result-20261018.txt`, 30 s in all.
+
+**A CHECK OF THE FILE BEFORE THE APPEND TELLS ONLY THE RANDOM FILE.** Every one of the 64 NWCs of C06 begins with the same 16
+bytes, `#LcUStream-V1.1 `, read with no Navisworks on 18 Oct, and so do the cut copy and the held copy. The random file does not.
+So a check of the first bytes would refuse the random file alone, and a cut file and a file another program holds both pass it
+and open the box.
+
+**EVERY BAD FILE OPENS THE SAME BOX, AND A TIMER ON THE MAIN THREAD ANSWERS IT.** The random file, the cut file and the held file
+each opened, inside TryAppendFile, one window of the class #32770 captioned Autodesk Navisworks Manage 2025, with three children:
+one Button, control id 2, text OK, an empty Static, id 20, and a Static, id 65535, holding the text. The texts:
+
+    2-random-...nwc could not be opened because the contents are corrupt or it is currently unavailable.
+    3-cut-...nwc could not be opened because the contents are corrupt or it is currently unavailable.
+    4-locked-...nwc could not be opened or is unavailable.
+
+each followed by a blank line, It is recommended to re-open your model to avoid data loss., and the full path of the file. The
+DispatcherTimer fired inside the box, 14 passes in each, and saw the box 198 to 217 ms after the call began. WM_COMMAND IDOK,
+posted True, did NOT close it: the box still stood 1.6 s later. WM_COMMAND 2, the control id of its one button, IDCANCEL, closed
+it at once, as the answer of F210's run did. TryAppendFile then returned False after 2.9 s, the document holding 0 models, and the
+next good file appended True with 1 model, so nothing was left behind. AppendFile, the form that throws, opened the same box on
+the random file and, once it was answered, threw `Autodesk.Navisworks.Api.DocumentFileException` with the box's text as its
+message. The good files opened no box and the timer never fired, the append taking 0.06 to 0.10 s.
+
+**WHAT THIS DECIDES.** The box is answered from inside the process, by a DispatcherTimer on the main thread running only while
+TryAppendFile runs, which posts WM_COMMAND with the control id of the box's one button, the click a person makes on OK, to a
+window of the class #32770 of this process whose text names the file being appended. It covers every bad file measured, where a
+check of the bytes covers one, it needs no thread and no Navisworks call off the main thread, it changes no setting, and the
+append then returns False as it did after a person's answer. The box's text is the reason the group names.
+
+**UNKNOWN.** Whether a file on a drive that is gone, or an NWC of another version, opens a box of another shape. Whether a box
+opened by TryOpenFile of an NWF, on the NWF page, has this shape. Neither is answered by this tool, since the rule answers only a
+box naming the file being appended.

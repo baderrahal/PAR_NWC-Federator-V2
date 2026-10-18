@@ -1061,6 +1061,16 @@ and 6 does not read as broken.
   character Windows refuses in a file name falls back to the number. Anything else is
   used as typed, because the format is the person's setting and their mistakes should
   be visible in the preview rather than silently corrected
+- THE MESSAGE BOX OF A BAD NWC IS ANSWERED AND ITS GROUP ENDS FAILED, F213, F210-R6, Bader's message of
+  18 Oct 2026. `Federator.Core.Rerun.AppendBox` is the rule the add-in's watch reads: a window is the box an
+  append of a file opened only where its class is #32770, it holds exactly one Button and a Static whose
+  text names the file, compared without case, `IsTheBoxOf`, and it is answered with that button's control
+  id, `ButtonToAnswer`, never IDOK, which scan.md 5z-zi measured leaving the box standing. A box of two
+  buttons asks a choice and no box naming another file is answered. `Reason` is what Navisworks said, its
+  first paragraph with the file's name taken off, UNKNOWN and never empty where it cannot be read, and
+  `GroupError` names the file, the reason and that the tool answered, so the group is FAILED by its errors.
+  `AppendBoxSettings.EveryMilliseconds`, 200, refuses less than 50. Proved by `AppendBoxTests` on the three
+  texts the probe read
 - A group ends in one of three states, and the test is always what was ASKED FOR,
   never what happens to be on disk. A step deliberately switched off is not a
   failure. Judging a group by whether an NWD existed, with republishing switched

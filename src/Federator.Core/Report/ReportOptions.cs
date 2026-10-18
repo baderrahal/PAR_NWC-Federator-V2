@@ -46,7 +46,14 @@ namespace Federator.Core.Report
             GenericModels = new GenericModelsSettings();
             Coverage = new CoverageSettings();
             Disciplines = new Federator.Core.Disciplines.DisciplineReportSettings();
+            AppendBox = new Federator.Core.Rerun.AppendBoxSettings();
         }
+
+        /// <summary>
+        /// How often the windows are read while a file is appended, so the message box of a bad NWC is answered and an
+        /// unattended run goes on, F213. Read off Core here and never typed in the window.
+        /// </summary>
+        public Federator.Core.Rerun.AppendBoxSettings AppendBox { get; set; }
 
         /// <summary>
         /// The discipline reports of a run of packages, F209: which disciplines get a workbook, the reference discipline, the

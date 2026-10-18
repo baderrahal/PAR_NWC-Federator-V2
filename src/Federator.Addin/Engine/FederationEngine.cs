@@ -2087,7 +2087,7 @@ namespace Federator.Addin.Engine
             foreach (string file in job.Files)
             {
                 log.AppendAttempted(file);
-                bool appended = AppendOne(document, file);
+                bool appended = AppendOne(document, file, outcome);
                 log.AppendFinished(file, appended);
 
                 if (appended)
@@ -2287,7 +2287,7 @@ namespace Federator.Addin.Engine
             {
                 log.AppendAttempted(file);
 
-                if (AppendOne(document, file))
+                if (AppendOne(document, file, outcome))
                 {
                     appended++;
                 }
@@ -2793,9 +2793,14 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// TryAppendFile returns false rather than throwing on a bad file, which is what
         /// keeps one broken NWC from stopping the group. It can still throw on something
-        /// it did not expect, so that is caught too.
+        /// it did not expect, so that is caught too. A bad file opens a Navisworks message
+        /// box inside the call that waits for a person, scan.md 5z-zh and 5z-zi, so the call
+        /// is made under an AppendBoxWatch, which answers that box and nothing else, F213,
+        /// and the file and what Navisworks said go on the group's errors, so it ends FAILED
+        /// with the file named, Bader's words of 18 Oct 2026. The append itself is the
+        /// manual Append's, no setting changed.
         /// </summary>
-        private bool AppendOne(Document document, string file)
+        private bool AppendOne(Document document, string file, JobOutcome outcome)
         {
             try
             {
@@ -2805,7 +2810,17 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
-                return document.TryAppendFile(file);
+                using (AppendBoxWatch watch = new AppendBoxWatch(file, reports.AppendBox.EveryMilliseconds, log))
+                {
+                    bool appended = document.TryAppendFile(file);
+
+                    if (watch.AnsweredReason != null)
+                    {
+                        outcome.AddError(AppendBox.GroupError(file, watch.AnsweredReason));
+                    }
+
+                    return appended;
+                }
             }
             catch (Exception error)
             {
