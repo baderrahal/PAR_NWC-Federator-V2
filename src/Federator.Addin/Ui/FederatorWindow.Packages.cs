@@ -655,6 +655,15 @@ namespace Federator.Addin.Ui
 
             // F214. Nothing is asked about the document open here: since F214 every package opens its NWFs in its own fresh
             // Navisworks, so what is open in this one is never touched.
+            // F217, Bader's F-R5. The old pictures counted across every NWF of the run, each in its own package's Clash
+            // report folder, where they were UNKNOWN.
+            List<string> pictureFolders = new List<string>();
+
+            foreach (PackageNwf nwf in inPackages)
+            {
+                pictureFolders.Add(RefreshConfirm.PicturesFolderOf(nwf.LogFolder, nwf.NwfPath));
+            }
+
             string text = RefreshConfirm.Text(
                 nwfs.Count + " NWFs of " + packagesWithNwfs + " packages",
                 PackageWords.BackupOfEach,
@@ -663,7 +672,7 @@ namespace Federator.Addin.Ui
                 TestsInTheMatrix(),
                 -1,
                 -1,
-                -1,
+                OldPicturesIn(pictureFolders),
                 ToolViewFolder.Name);
 
             log.Block("CONFIRM packages", new List<string>(text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)));

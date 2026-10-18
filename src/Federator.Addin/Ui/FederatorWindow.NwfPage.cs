@@ -392,22 +392,17 @@ namespace Federator.Addin.Ui
             NwcManifest last = null;
             ManifestComparison changes = plan.Paths().Count == 1 ? ReadWhatChanged(nwf, out last) : null;
 
-            int oldPictures = -1;
             int toolViews = last == null ? -1 : (int)last.Fact("toolviews");
 
-            if (logFolder != null)
+            // F217. Every picked NWF's pictures folder, by its own Log folder, so a pick of several counts as one does.
+            List<string> pictureFolders = new List<string>();
+
+            foreach (string picked in plan.Paths())
             {
-                try
-                {
-                    string files = Path.Combine(
-                        ReportPaths.ClashReportFolder(logFolder), Path.GetFileNameWithoutExtension(nwf) + "_files");
-                    oldPictures = Directory.Exists(files) ? Directory.GetFiles(files, "cd*.jpg").Length : 0;
-                }
-                catch (Exception)
-                {
-                    oldPictures = -1;
-                }
+                pictureFolders.Add(RefreshConfirm.PicturesFolderOf(TheLogFolderOf(picked), picked));
             }
+
+            int oldPictures = OldPicturesIn(pictureFolders);
 
             string text = RefreshConfirm.Text(
                 name,
@@ -425,6 +420,35 @@ namespace Federator.Addin.Ui
                 this, text, RefreshConfirm.Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
 
             return answer == MessageBoxResult.OK;
+        }
+
+        /// <summary>
+        /// The old pictures in these folders, F217, by Core's rule, `RefreshConfirm.OldPictures`, read off the disk, minus one
+        /// where a folder would not read, which the confirm says UNKNOWN.
+        /// </summary>
+        private int OldPicturesIn(IEnumerable<string> folders)
+        {
+            // A folder not there holds none. Any other failure to read it, denied or a drive gone, is thrown on, so the count is
+            // UNKNOWN and never a part: Directory.Exists says false for those too.
+            string why;
+            int count = RefreshConfirm.OldPictures(folders, folder =>
+            {
+                try
+                {
+                    return Directory.GetFiles(folder);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    return null;
+                }
+            }, out why);
+
+            if (count < 0)
+            {
+                log.Line("CONFIRM  the old jpg files are UNKNOWN, " + why);
+            }
+
+            return count;
         }
 
         /// <summary>Puts the table of what each test did on the NWF page, the tests that moved, from every NWF the run refreshed.</summary>
