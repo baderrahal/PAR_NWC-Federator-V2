@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    F215, F210-R3, 2026-10-18. A probe that runs INSIDE Navisworks, started through the automation API by
+    tools\probes\SkyProbe\probe-sky.ps1. It opens a copy of an NWF the tool built and, for the first clashes of the tests
+    named, reads the clash's centre and the camera Clash Detective gives it, and takes and measures its picture with every
+    model shown and with only its items' models shown. It references no project of this repo and saves nothing.
+
+        dotnet build tools\probes\SkyProbe\SkyProbe.csproj -c Release
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>SkyProbe</AssemblyName>
+    <RootNamespace>SkyProbe</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+    <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
+    <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+    <NavisworksClashDll>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</NavisworksClashDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api">
+      <HintPath>$(NavisworksApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash">
+      <HintPath>$(NavisworksClashDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+  <Target Name="CheckNavisworks" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(NavisworksApiDll)')" Text="Autodesk.Navisworks.Api.dll was not found at $(NavisworksApiDll). Pass -p:NavisworksPath with the real install folder." />
+    <Error Condition="!Exists('$(NavisworksClashDll)')" Text="Autodesk.Navisworks.Clash.dll was not found at $(NavisworksClashDll). Pass -p:NavisworksPath with the real install folder." />
+  </Target>
+
+</Project>

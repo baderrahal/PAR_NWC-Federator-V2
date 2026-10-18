@@ -1,0 +1,413 @@
+MACHINE   [machine]   2026-10-18 11:56:38
+HOST      powershell 5.1.26100.9711, 64 bit process True, apartment STA, pid 8900
+SCRIPT    <a path outside the loop folder, file probe-sky.ps1, sha1 0657F3B397C9>, sha256 1B74490801B77BB1050A54DB79A9ACB0AB68682332D8AA541316C1D049F2BCBD
+GUARD     tools\loop\nw-guard.ps1, sha256 349551F8A3784C002A48192CB6321D6443027529BC65844B710A4E836C966888
+PROCESS   powershell.exe pid 8900, started to run -File C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\tools\probes\SkyProbe\probe-sky.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 349
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115638" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115638\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 110256 bytes
+  read key by key: 279 keys, 1149 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 8 files copied to the work folder and read back with their source's sha256, 0 not backed up, 62 AutoSave files listed and not copied
+  the tool's own logs folder listed: 62 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf, sha1 CE37B7011691>, 1001845 bytes, sha256 3E69F1B0D3CA79D1D79E4DE6B30DE66AB9F2FA4271762764D752FFE7ECB7931E
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115638\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe <a path outside the loop folder, file SkyProbe.dll, sha1 726771378441>, 15872 bytes, written 2026-10-18 11:53:22, sha256 935DD75BE4FE65C6103FDDDAA03D1C37E0A840F7E8E4F6686BD2A8C3EA2A6627, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+  Clash Detective's Hide Other written on for this start: hide_other under GlobalOptions\tools\clash\displaysettings written '3 1' and read back so, where it read '3 1'. Until the put back it reads so for Bader too
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  11:56:39.404  t+1.0s  calling new NavisworksApplication()
+  11:56:43.687  t+5.3s  the constructor RETURNED after 4.28 s
+  Roamer processes new since step 2: 1
+    pid 21552, started 11:56:39.414, parent 1784 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 21552, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 21552, started 2026-10-18 11:56:39.414, start ticks UTC 639279105994141971
+  11:56:45.787  t+7.4s  Visible set True, read back True
+  visible top level windows of 21552: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  11:56:45.898  t+7.5s  AddPluginAssembly RETURNED after 0.020 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode sky on the copy ====
+  11:56:45.899  t+7.5s  calling ExecuteAddInPlugin(SkyProbe.PARS, sky, the plugin's output file, the NWF's copy, the tests BLD-FF-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings|BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls|BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls|BLD-ST-Walls-vs-BLD-ST-Foundation|BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures|BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation|BLD-DR-Pipes & Pipe Fittings-vs-BLD-DR-Mechanical Equipment|BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories|BLD-PL-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment|BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation|BLD-AR-Railings-vs-BLD-AR-Walls, 2 clashes a test, the pictures folder)
+  11:56:49.830  t+11.5s  ExecuteAddInPlugin RETURNED 0 after 3.93 s
+  visible top level windows of 21552: 1, hidden: 74, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 11:56:45.906  probe started, mode sky
+  | 11:56:45.909  opening 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+  | 11:56:46.316  TryOpenFile returned True, models 5, document units Feet
+  | 11:56:46.316  ==== THE MODELS, each root's box in the document's units ====
+  | 11:56:46.319     model 0  1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc'  box (-55.841, -50.496, -1.22) to (37.452, 25.679, 27.745)  hidden False
+  | <text holding a path, sha1 289371873B77>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (0.0000, 0.0000, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 11:56:46.326     model 1  1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'  box (1062558.234, 9039852.107, 21.661) to (1062736.284, 9039951.37, 61.447)  hidden False
+  | <text holding a path, sha1 2F33FEAA61B4>
+  | (0.0502, 0.9987, 0.0000, 0.0000)
+  | (0.0000, -0.0000, 1.0000, 0.0000)
+  | (1062619.4099, 9039909.1422, 36.1985, 1.0000)
+  | ; IsDisposed=False
+  | 11:56:46.327     model 2  1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'  box (-24.721, -30.085, -17.49) to (82.485, 22.7, 24.033)  hidden False
+  | <text holding a path, sha1 BCFCB24EC8B8>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (0.0000, 0.0000, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 11:56:46.327     model 3  1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc'  box (-55.034, -49.689, -6.89) to (36.645, 40.443, 26.247)  hidden False
+  | <text holding a path, sha1 6A20EE1439F6>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (-111.4684, -5.3311, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 11:56:46.327     model 4  1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'  box (63.403, -33.13, -20.935) to (114.651, 3.944, 0.308)  hidden False
+  | <text holding a path, sha1 C0FB2E95B282>
+  | (-0.0000, -1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (112.1901, 1.4831, -14.2093, 1.0000)
+  | ; IsDisposed=False
+  | 11:56:46.327  roots hidden as the NWF opened: 0, every item shown now by ResetAllHidden
+  | 11:56:46.333  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings found, 13 results at its top level ====
+  | 11:56:46.336  -- clash 1  'Clash1'  status Active  distance -0.427  centre (67.29, -22.006, -5.116)
+  | 11:56:46.337       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'
+  | 11:56:46.342       its viewpoint: position (69.064, -23.78, -3.342)  focal 3.073  projection Perspective  camera to centre 3.073
+  | 11:56:46.345       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=1361142528; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=1361142904, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=3.07305532803137; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=1.23040928858467; VerticalExtentAtFocalDistance=2.54580180130582; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(69.064, -23.78, -3.342); IsDisposed=False
+  | 11:56:46.408       picture, every model shown: 1.385 percent differs from its row, centre colour 140,173,238, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-all.jpg
+  | 11:56:46.409       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 404.428
+  | 11:56:46.432       picture, only its items' models shown, 4 roots hidden: 1.385 percent differs from its row, centre colour 140,173,238, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-own.jpg
+  | 11:56:46.432       the document's camera after it: position (-239.193, 212.869, 115.15)  focal none  projection Perspective  camera to centre 404.428
+  | 11:56:46.506       active view from 3.073 ft back: 36.182 percent differs from its row, colour at the middle 92,92,92, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-back-3.jpg
+  | 11:56:46.628       active view from 30 ft back: 25.513 percent differs from its row, colour at the middle 168,168,168, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-back-30.jpg
+  | 11:56:46.768       active view from 100 ft back: 43.433 percent differs from its row, colour at the middle 168,168,168, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-back-100.jpg
+  | 11:56:46.855       active view from 300 ft back: 11.414 percent differs from its row, colour at the middle 168,168,168, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-back-300.jpg
+  | 11:56:46.855  -- clash 2  'Clash2'  status Active  distance -0.084  centre (69.393, -9.212, -10.735)
+  | 11:56:46.855       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'
+  | 11:56:46.858       its viewpoint: position (71.736, -11.555, -8.392)  focal 4.058  projection Perspective  camera to centre 4.058
+  | 11:56:46.859       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=1361135088; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=1361135464, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=4.05784630288416; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=1.62470611484762; VerticalExtentAtFocalDistance=3.3616291685586; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(71.736, -11.555, -8.392); IsDisposed=False
+  | 11:56:46.877       picture, every model shown: 1.428 percent differs from its row, centre colour 140,173,238, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-all.jpg
+  | 11:56:46.878       the document's camera after it: position (240.495, -195.211, 168.089)  focal 3.073  projection Perspective  camera to centre 309.596
+  | 11:56:46.899       picture, only its items' models shown, 4 roots hidden: 1.428 percent differs from its row, centre colour 140,173,238, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-own.jpg
+  | 11:56:46.900       the document's camera after it: position (240.495, -195.211, 168.089)  focal 3.073  projection Perspective  camera to centre 309.596
+  | 11:56:46.925       active view from 4.058 ft back: 22.375 percent differs from its row, colour at the middle 208,34,25, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-back-4.jpg
+  | 11:56:46.958       active view from 30 ft back: 7.336 percent differs from its row, colour at the middle 168,168,168, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-back-30.jpg
+  | 11:56:46.990       active view from 100 ft back: 36.682 percent differs from its row, colour at the middle 168,168,168, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-back-100.jpg
+  | 11:56:47.023       active view from 300 ft back: 11.938 percent differs from its row, colour at the middle 168,168,168, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-back-300.jpg
+  | 11:56:47.023  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls found, 8 results at its top level ====
+  | 11:56:47.023  -- clash 1  'Clash1'  status Active  distance -2.481  centre (80.53, -18.231, -6.124)
+  | 11:56:47.023       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'
+  | 11:56:47.027       its viewpoint: position (90.385, -28.085, 3.73)  focal 17.069  projection Perspective  camera to centre 17.069
+  | 11:56:47.028       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=1361130624; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=1361131000, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=17.068522334947; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=6.8340027046592; VerticalExtentAtFocalDistance=14.1400236141447; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(90.385, -28.085, 3.73); IsDisposed=False
+  | 11:56:47.045       picture, every model shown: 1.324 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-all.jpg
+  | 11:56:47.045       the document's camera after it: position (242.598, -182.417, 162.47)  focal 4.058  projection Perspective  camera to centre 285.74
+  | 11:56:47.069       picture, only its items' models shown, 3 roots hidden: 1.324 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-own.jpg
+  | 11:56:47.069       the document's camera after it: position (242.598, -182.417, 162.47)  focal 4.058  projection Perspective  camera to centre 285.74
+  | 11:56:47.109       active view from 17.069 ft back: 0.281 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-17.jpg
+  | 11:56:47.141       active view from 30 ft back: 7.428 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-30.jpg
+  | 11:56:47.173       active view from 100 ft back: 33.624 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-100.jpg
+  | 11:56:47.204       active view from 300 ft back: 10.999 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-300.jpg
+  | 11:56:47.204  -- clash 2  'Clash2'  status Active  distance -2.421  centre (74.487, 0.991, -5.178)
+  | 11:56:47.204       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'
+  | 11:56:47.207       its viewpoint: position (111.058, -35.58, 31.393)  focal 63.342  projection Perspective  camera to centre 63.342
+  | 11:56:47.208       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=1361126160; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=1361126536, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=63.3421463076207; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=25.3613283382414; VerticalExtentAtFocalDistance=52.4743400151602; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(111.058, -35.58, 31.393); IsDisposed=False
+  | 11:56:47.238       picture, every model shown: 1.575 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-all.jpg
+  | 11:56:47.238       the document's camera after it: position (253.735, -191.436, 167.081)  focal 17.069  projection Perspective  camera to centre 314.374
+  | 11:56:47.259       picture, only its items' models shown, 3 roots hidden: 1.575 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-own.jpg
+  | 11:56:47.259       the document's camera after it: position (253.735, -191.436, 167.081)  focal 17.069  projection Perspective  camera to centre 314.374
+  | 11:56:47.292       active view from 63.342 ft back: 16.315 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-63.jpg
+  | 11:56:47.320       active view from 30 ft back: 9.509 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-30.jpg
+  | 11:56:47.360       active view from 100 ft back: 29.749 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-100.jpg
+  | 11:56:47.390       active view from 300 ft back: 12.036 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-300.jpg
+  | 11:56:47.390  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls found, 8 results at its top level ====
+  | 11:56:47.390  -- clash 1  'Clash1'  status Active  distance -2.471  centre (19.185, -2.404, -1.863)
+  | 11:56:47.390       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc'
+  | 11:56:47.394       its viewpoint: position (94.135, -77.354, 73.087)  focal 129.817  projection Perspective  camera to centre 129.817
+  | 11:56:47.394       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=1361120208; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=1361120584, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=129.817191795724; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=51.9770266244314; VerticalExtentAtFocalDistance=107.54405809079; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(94.135, -77.354, 73.087); IsDisposed=False
+  | 11:56:47.414       picture, every model shown: 8.038 percent differs from its row, centre colour 56,224,45, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-all.jpg
+  | 11:56:47.414       the document's camera after it: position (247.692, -172.214, 168.028)  focal 63.342  projection Perspective  camera to centre 331.533
+  | 11:56:47.436       picture, only its items' models shown, 3 roots hidden: 8.038 percent differs from its row, centre colour 56,224,45, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-own.jpg
+  | 11:56:47.437       the document's camera after it: position (247.692, -172.214, 168.028)  focal 63.342  projection Perspective  camera to centre 331.533
+  | 11:56:47.487       active view from 129.817 ft back: 46.71 percent differs from its row, colour at the middle 212,212,192, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-130.jpg
+  | 11:56:47.521       active view from 30 ft back: 51.91 percent differs from its row, colour at the middle 212,212,192, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-30.jpg
+  | 11:56:47.562       active view from 100 ft back: 52.789 percent differs from its row, colour at the middle 212,212,192, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-100.jpg
+  | 11:56:47.588       active view from 300 ft back: 14.813 percent differs from its row, colour at the middle 212,212,192, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-back-300.jpg
+  | 11:56:47.588  -- clash 2  'Clash2'  status Active  distance -1.385  centre (79.546, -5.307, -5.583)
+  | 11:56:47.588       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'
+  | 11:56:47.590       its viewpoint: position (89.819, -15.58, 4.69)  focal 17.793  projection Perspective  camera to centre 17.793
+  | 11:56:47.591       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=1361117232; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=1361117608, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=17.7931206120131; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=7.12412193631187; VerticalExtentAtFocalDistance=14.7403003426993; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(89.819, -15.58, 4.69); IsDisposed=False
+  | 11:56:47.617       picture, every model shown: 1.526 percent differs from its row, centre colour 140,173,238, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-all.jpg
+  | 11:56:47.617       the document's camera after it: position (192.39, -175.609, 171.342)  focal 129.817  projection Perspective  camera to centre 270.257
+  | 11:56:47.639       picture, only its items' models shown, 3 roots hidden: 1.526 percent differs from its row, centre colour 140,173,238, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-own.jpg
+  | 11:56:47.639       the document's camera after it: position (192.39, -175.609, 171.342)  focal 129.817  projection Perspective  camera to centre 270.257
+  | 11:56:47.671       active view from 17.793 ft back: 3.363 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-18.jpg
+  | 11:56:47.692       active view from 30 ft back: 8.051 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-30.jpg
+  | 11:56:47.839       active view from 100 ft back: 33.453 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-100.jpg
+  | 11:56:47.864       active view from 300 ft back: 11.53 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-back-300.jpg
+  | 11:56:47.864  ==== TEST BLD-ST-Walls-vs-BLD-ST-Foundation found, 6 results at its top level ====
+  | 11:56:47.864  -- clash 1  'Clash1'  status Active  distance -1.804  centre (80.858, -31.489, -15.686)
+  | 11:56:47.864       item 1 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'
+  | 11:56:47.868       its viewpoint: position (93.288, -43.92, -3.255)  focal 21.53  projection Perspective  camera to centre 21.53
+  | 11:56:47.868       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=77128416; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=77128792, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=21.5297494696405; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=8.62021698298436; VerticalExtentAtFocalDistance=17.8358243281568; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(93.288, -43.92, -3.255); IsDisposed=False
+  | 11:56:47.885       picture, every model shown: 1.099 percent differs from its row, centre colour 140,173,238, BLD_ST_Walls_vs_BLD_ST_Foundation-001-all.jpg
+  | 11:56:47.885       the document's camera after it: position (252.751, -178.512, 167.622)  focal 17.793  projection Perspective  camera to centre 291.143
+  | 11:56:47.903       picture, only its items' models shown, 4 roots hidden: 1.099 percent differs from its row, centre colour 140,173,238, BLD_ST_Walls_vs_BLD_ST_Foundation-001-own.jpg
+  | 11:56:47.903       the document's camera after it: position (252.751, -178.512, 167.622)  focal 17.793  projection Perspective  camera to centre 291.143
+  | 11:56:47.929       active view from 21.53 ft back: 15.546 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-001-back-22.jpg
+  | 11:56:47.947       active view from 30 ft back: 19.025 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-001-back-30.jpg
+  | 11:56:47.978       active view from 100 ft back: 29.407 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-001-back-100.jpg
+  | 11:56:48.002       active view from 300 ft back: 10.59 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-001-back-300.jpg
+  | 11:56:48.002  -- clash 2  'Clash2'  status Active  distance -1.804  centre (74.953, -31.489, -15.686)
+  | 11:56:48.002       item 1 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'
+  | 11:56:48.005       its viewpoint: position (89.461, -45.997, -1.178)  focal 25.129  projection Perspective  camera to centre 25.129
+  | 11:56:48.005       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=77125440; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=77125816, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=25.1287183237539; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=10.0611948485748; VerticalExtentAtFocalDistance=20.8173070590632; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(89.461, -45.997, -1.178); IsDisposed=False
+  | 11:56:48.022       picture, every model shown: 1.099 percent differs from its row, centre colour 140,173,238, BLD_ST_Walls_vs_BLD_ST_Foundation-002-all.jpg
+  | 11:56:48.022       the document's camera after it: position (254.063, -204.694, 157.519)  focal 21.53  projection Perspective  camera to centre 303.448
+  | 11:56:48.041       picture, only its items' models shown, 4 roots hidden: 1.099 percent differs from its row, centre colour 140,173,238, BLD_ST_Walls_vs_BLD_ST_Foundation-002-own.jpg
+  | 11:56:48.041       the document's camera after it: position (254.063, -204.694, 157.519)  focal 21.53  projection Perspective  camera to centre 303.448
+  | 11:56:48.065       active view from 25.129 ft back: 26.666 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-002-back-25.jpg
+  | 11:56:48.085       active view from 30 ft back: 26.917 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-002-back-30.jpg
+  | 11:56:48.115       active view from 100 ft back: 32.66 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-002-back-100.jpg
+  | 11:56:48.140       active view from 300 ft back: 10.864 percent differs from its row, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-002-back-300.jpg
+  | 11:56:48.140  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures found, 5 results at its top level ====
+  | 11:56:48.140  -- clash 1  'Clash1'  status Active  distance -0.591  centre (1062574.355, 9039932.467, 33.827)
+  | 11:56:48.140       item 1 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'
+  | 11:56:48.143       its viewpoint: position (1062586.647, 9039920.176, 46.118)  focal 21.289  projection Perspective  camera to centre 21.289
+  | 11:56:48.144       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=77122464; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=77122840, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=21.2888851935334; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=8.52377822384226; VerticalExtentAtFocalDistance=17.6362858745565; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(1062586.647, 9039920.176, 46.118); IsDisposed=False
+  | 11:56:48.164       picture, every model shown: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-all.jpg
+  | 11:56:48.164       the document's camera after it: position (248.158, -204.694, 157.519)  focal 25.129  projection Perspective  camera to centre 9102341.285
+  | 11:56:48.184       picture, only its items' models shown, 4 roots hidden: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-own.jpg
+  | 11:56:48.184       the document's camera after it: position (248.158, -204.694, 157.519)  focal 25.129  projection Perspective  camera to centre 9102341.285
+  | 11:56:48.242       active view from 21.289 ft back: 19.904 percent differs from its row, colour at the middle 234,234,234, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-back-21.jpg
+  | 11:56:48.271       active view from 30 ft back: 19.281 percent differs from its row, colour at the middle 238,238,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-back-30.jpg
+  | 11:56:48.363       active view from 100 ft back: 5.994 percent differs from its row, colour at the middle 218,218,175, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-back-100.jpg
+  | 11:56:48.498       active view from 300 ft back: 4.492 percent differs from its row, colour at the middle 147,147,136, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-back-300.jpg
+  | 11:56:48.498  -- clash 2  'Clash2'  status Active  distance -0.328  centre (1062660.932, 9039936.214, 33.154)
+  | 11:56:48.498       item 1 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'
+  | 11:56:48.499       its viewpoint: position (1062674.48, 9039922.666, 46.702)  focal 23.466  projection Perspective  camera to centre 23.466
+  | 11:56:48.500       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=77077824; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=77078200, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=23.4661941036244; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=9.39554290788728; VerticalExtentAtFocalDistance=19.4400272178208; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(1062674.48, 9039922.666, 46.702); IsDisposed=False
+  | 11:56:48.517       picture, every model shown: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-all.jpg
+  | 11:56:48.517       the document's camera after it: position (1062747.56, 9039759.262, 207.032)  focal 21.289  projection Perspective  camera to centre 262.774
+  | 11:56:48.536       picture, only its items' models shown, 4 roots hidden: 2.399 percent differs from its row, centre colour 140,173,238, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-own.jpg
+  | 11:56:48.536       the document's camera after it: position (1062747.56, 9039759.262, 207.032)  focal 21.289  projection Perspective  camera to centre 262.774
+  | 11:56:48.563       active view from 23.466 ft back: 14.178 percent differs from its row, colour at the middle 201,201,120, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-back-23.jpg
+  | 11:56:48.581       active view from 30 ft back: 11.603 percent differs from its row, colour at the middle 201,201,120, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-back-30.jpg
+  | 11:56:48.602       active view from 100 ft back: 5.841 percent differs from its row, colour at the middle 232,232,222, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-back-100.jpg
+  | 11:56:48.634       active view from 300 ft back: 4.132 percent differs from its row, colour at the middle 128,128,128, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-back-300.jpg
+  | 11:56:48.635  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation found, 2 results at its top level ====
+  | 11:56:48.635  -- clash 1  'Clash1'  status Active  distance -0.912  centre (18.502, 6.338, -4.921)
+  | 11:56:48.635       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc'
+  | 11:56:48.636       its viewpoint: position (47.795, -22.955, 24.372)  focal 50.737  projection Perspective  camera to centre 50.737
+  | 11:56:48.636       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=77071872; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=77072248, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=50.7370050587225; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=20.3144023245462; VerticalExtentAtFocalDistance=42.0319015063434; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(47.795, -22.955, 24.372); IsDisposed=False
+  | 11:56:48.653       picture, every model shown: 1.733 percent differs from its row, centre colour 167,42,42, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-all.jpg
+  | 11:56:48.653       the document's camera after it: position (1062834.137, 9039763.009, 206.359)  focal 23.466  projection Perspective  camera to centre 9102020.533
+  | 11:56:48.678       picture, only its items' models shown, 3 roots hidden: 1.733 percent differs from its row, centre colour 167,42,42, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-own.jpg
+  | 11:56:48.679       the document's camera after it: position (1062834.137, 9039763.009, 206.359)  focal 23.466  projection Perspective  camera to centre 9102020.533
+  | 11:56:48.713       active view from 50.737 ft back: 59.875 percent differs from its row, colour at the middle 214,214,214, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-back-51.jpg
+  | 11:56:48.738       active view from 30 ft back: 53.064 percent differs from its row, colour at the middle 214,214,214, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-back-30.jpg
+  | 11:56:48.774       active view from 100 ft back: 52.563 percent differs from its row, colour at the middle 214,214,214, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-back-100.jpg
+  | 11:56:48.799       active view from 300 ft back: 15.558 percent differs from its row, colour at the middle 184,184,184, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-back-300.jpg
+  | 11:56:48.799  -- clash 2  'Clash2'  status Active  distance -0.64  centre (22.466, 6.209, -5.94)
+  | 11:56:48.799       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc'
+  | 11:56:48.802       its viewpoint: position (111.914, -83.239, 83.509)  focal 154.929  projection Perspective  camera to centre 154.929
+  | 11:56:48.802       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=289929760; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=289930136, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=154.929479567536; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=62.031642904914; VerticalExtentAtFocalDistance=128.347753638095; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(111.914, -83.239, 83.509); IsDisposed=False
+  | 11:56:48.820       picture, every model shown: 1.77 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-all.jpg
+  | 11:56:48.821       the document's camera after it: position (191.707, -166.867, 168.284)  focal 50.737  projection Perspective  camera to centre 298.248
+  | 11:56:48.842       picture, only its items' models shown, 3 roots hidden: 1.77 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-own.jpg
+  | 11:56:48.842       the document's camera after it: position (191.707, -166.867, 168.284)  focal 50.737  projection Perspective  camera to centre 298.248
+  | 11:56:48.876       active view from 154.929 ft back: 41.382 percent differs from its row, colour at the middle 120,120,255, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-back-155.jpg
+  | 11:56:48.902       active view from 30 ft back: 49.097 percent differs from its row, colour at the middle 112,112,255, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-back-30.jpg
+  | 11:56:48.935       active view from 100 ft back: 50 percent differs from its row, colour at the middle 132,132,255, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-back-100.jpg
+  | 11:56:48.960       active view from 300 ft back: 15.271 percent differs from its row, colour at the middle 104,104,255, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-back-300.jpg
+  | 11:56:48.960  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-DR-Mechanical Equipment found, 2 results at its top level ====
+  | 11:56:48.960  -- clash 1  'Clash1'  status Active  distance -0.284  centre (78.778, -29.645, -17.25)
+  | 11:56:48.960       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'
+  | 11:56:48.962       its viewpoint: position (81.883, -32.75, -14.145)  focal 5.378  projection Perspective  camera to centre 5.378
+  | 11:56:48.963       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=289926784; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=289927160, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=5.37752782432535; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=2.15308853189802; VerticalExtentAtFocalDistance=4.45488888431752; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(81.883, -32.75, -14.145); IsDisposed=False
+  | 11:56:48.980       picture, every model shown: 1.636 percent differs from its row, centre colour 140,173,238, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-all.jpg
+  | 11:56:48.980       the document's camera after it: position (195.671, -166.996, 167.265)  focal 154.929  projection Perspective  camera to centre 258.021
+  | 11:56:49.001       picture, only its items' models shown, 4 roots hidden: 1.636 percent differs from its row, centre colour 140,173,238, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-own.jpg
+  | 11:56:49.001       the document's camera after it: position (195.671, -166.996, 167.265)  focal 154.929  projection Perspective  camera to centre 258.021
+  | 11:56:49.022       active view from 5.378 ft back: 0.342 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-back-5.jpg
+  | 11:56:49.041       active view from 30 ft back: 18.378 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-back-30.jpg
+  | 11:56:49.066       active view from 100 ft back: 29.889 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-back-100.jpg
+  | 11:56:49.090       active view from 300 ft back: 10.803 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-back-300.jpg
+  | 11:56:49.090  -- clash 2  'Clash2'  status Active  distance -0.284  centre (77.253, -29.645, -17.25)
+  | 11:56:49.090       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'
+  | 11:56:49.093       its viewpoint: position (80.358, -32.75, -14.145)  focal 5.377  projection Perspective  camera to centre 5.377
+  | 11:56:49.093       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=289923808; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=289924184, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=5.37749050893686; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=2.15307359132725; VerticalExtentAtFocalDistance=4.45485797124467; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(80.358, -32.75, -14.145); IsDisposed=False
+  | 11:56:49.110       picture, every model shown: 1.636 percent differs from its row, centre colour 140,173,238, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-all.jpg
+  | 11:56:49.110       the document's camera after it: position (251.984, -202.85, 155.955)  focal 5.378  projection Perspective  camera to centre 300.883
+  | 11:56:49.131       picture, only its items' models shown, 4 roots hidden: 1.636 percent differs from its row, centre colour 140,173,238, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-own.jpg
+  | 11:56:49.131       the document's camera after it: position (251.984, -202.85, 155.955)  focal 5.378  projection Perspective  camera to centre 300.883
+  | 11:56:49.152       active view from 5.377 ft back: 0.342 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-back-5.jpg
+  | 11:56:49.170       active view from 30 ft back: 20.142 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-back-30.jpg
+  | 11:56:49.197       active view from 100 ft back: 30.713 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-back-100.jpg
+  | 11:56:49.227       active view from 300 ft back: 10.895 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-back-300.jpg
+  | 11:56:49.227  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories found, 1 results at its top level ====
+  | 11:56:49.228  -- clash 1  'Clash1'  status Active  distance -0.234  centre (74.496, -10.809, -5.229)
+  | 11:56:49.228       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'
+  | 11:56:49.231       its viewpoint: position (78.961, -15.274, -0.764)  focal 7.734  projection Perspective  camera to centre 7.734
+  | 11:56:49.231       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=289920832; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=289921208, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=7.73444623631852; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=3.09676640196435; VerticalExtentAtFocalDistance=6.40742357643674; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(78.961, -15.274, -0.764); IsDisposed=False
+  | 11:56:49.249       picture, every model shown: 1.282 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-all.jpg
+  | 11:56:49.249       the document's camera after it: position (250.458, -202.85, 155.955)  focal 5.377  projection Perspective  camera to centre 306.305
+  | 11:56:49.271       picture, only its items' models shown, 4 roots hidden: 1.282 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-own.jpg
+  | 11:56:49.271       the document's camera after it: position (250.458, -202.85, 155.955)  focal 5.377  projection Perspective  camera to centre 306.305
+  | 11:56:49.294       active view from 7.734 ft back: 0.238 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-back-8.jpg
+  | 11:56:49.316       active view from 30 ft back: 9.491 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-back-30.jpg
+  | 11:56:49.346       active view from 100 ft back: 36.255 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-back-100.jpg
+  | 11:56:49.371       active view from 300 ft back: 11.511 percent differs from its row, colour at the middle 168,167,165, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-back-300.jpg
+  | 11:56:49.371  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment found, 1 results at its top level ====
+  | 11:56:49.371  -- clash 1  'Clash1'  status Active  distance -0.089  centre (70.608, -26.894, -13.591)
+  | 11:56:49.371       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'
+  | 11:56:49.374       its viewpoint: position (72.648, -28.934, -11.551)  focal 3.533  projection Perspective  camera to centre 3.533
+  | 11:56:49.374       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=289917856; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=289918232, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=3.53341414250087; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=1.4147306563903; VerticalExtentAtFocalDistance=2.92717544220094; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(72.648, -28.934, -11.551); IsDisposed=False
+  | 11:56:49.392       picture, every model shown: 1.385 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-all.jpg
+  | 11:56:49.392       the document's camera after it: position (247.701, -184.014, 167.976)  focal 7.734  projection Perspective  camera to centre 298.354
+  | 11:56:49.412       picture, only its items' models shown, 4 roots hidden: 1.385 percent differs from its row, centre colour 140,173,238, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-own.jpg
+  | 11:56:49.414       the document's camera after it: position (247.701, -184.014, 167.976)  focal 7.734  projection Perspective  camera to centre 298.354
+  | 11:56:49.439       active view from 3.533 ft back: 24.084 percent differs from its row, colour at the middle 54,54,105, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-back-4.jpg
+  | 11:56:49.457       active view from 30 ft back: 25.922 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-back-30.jpg
+  | 11:56:49.491       active view from 100 ft back: 36.462 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-back-100.jpg
+  | 11:56:49.516       active view from 300 ft back: 11.206 percent differs from its row, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-back-300.jpg
+  | 11:56:49.517  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation found, 1 results at its top level ====
+  | 11:56:49.517  -- clash 1  'Clash1'  status Active  distance -0.226  centre (78.702, -26.896, -14.436)
+  | 11:56:49.517       item 1 in '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'
+  | 11:56:49.520       its viewpoint: position (80.209, -28.403, -12.929)  focal 2.61  projection Perspective  camera to centre 2.61
+  | 11:56:49.520       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=289914880; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=289915256, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=2.61049320170852; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=1.04520574487246; VerticalExtentAtFocalDistance=2.1626028775289; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(80.209, -28.403, -12.929); IsDisposed=False
+  | 11:56:49.539       picture, every model shown: 1.385 percent differs from its row, centre colour 140,173,238, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-all.jpg
+  | 11:56:49.539       the document's camera after it: position (243.813, -200.099, 159.614)  focal 3.533  projection Perspective  camera to centre 295.896
+  | 11:56:49.561       picture, only its items' models shown, 3 roots hidden: 1.385 percent differs from its row, centre colour 140,173,238, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-own.jpg
+  | 11:56:49.561       the document's camera after it: position (243.813, -200.099, 159.614)  focal 3.533  projection Perspective  camera to centre 295.896
+  | 11:56:49.584       active view from 2.61 ft back: 0.244 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-back-3.jpg
+  | 11:56:49.603       active view from 30 ft back: 16.199 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-back-30.jpg
+  | 11:56:49.631       active view from 100 ft back: 31.299 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-back-100.jpg
+  | 11:56:49.655       active view from 300 ft back: 10.84 percent differs from its row, colour at the middle 168,168,168, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-back-300.jpg
+  | 11:56:49.656  ==== TEST BLD-AR-Railings-vs-BLD-AR-Walls found, 1 results at its top level ====
+  | 11:56:49.656  -- clash 1  'Clash1'  status Active  distance -0.443  centre (-29.372, 23.754, 13.598)
+  | 11:56:49.656       item 1 in '1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc', item 2 in '1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc'
+  | 11:56:49.660       its viewpoint: position (90.526, -96.143, 133.496)  focal 207.669  projection Perspective  camera to centre 207.669
+  | 11:56:49.660       its viewpoint, every readable property: InternalViewpoint="Autodesk.Navisworks.Api.Interop.LcNvViewPoint", HashCode=289911904; ClipPlanes="Autodesk.Navisworks.Api.ClipPlaneSet", HashCode=289912280, ReadOnly; IsReadOnly=True; HasViewer=True; HasTool=True; HasRenderStyle=True; HasLighting=True; HasWorldUpVector=True; HasFocalDistance=True; HasLinearSpeed=False; HasAngularSpeed=False; ViewerCameraMode=FirstPerson; ViewerAvatar=; Tool=None; Lighting=Headlight; WorldUpVector=(0.0000000000000000, 0.0000000000000000, 1.0000000000000000); RenderStyle=Shaded; FocalDistance=207.668799609476; AngularSpeed threw NotSupportedException; LinearSpeed threw NotSupportedException; Rotation=(45.0000, 35.2644, 30.0000); Projection=Perspective; FarPlaneDistance=10; NearPlaneDistance=1; ShutterSpeed=0; ApertureDiameter=0; HorizontalScale=1; ImageFit=Vertical; FarDistanceType=Auto; FarDistance=0; NearDistanceType=Auto; NearDistance=0; RightOffsetAtFocalDistance=0; UpOffsetAtFocalDistance=0; RightOffsetFactor=0; UpOffsetFactor=0; HorizontalExtentAtFocalDistance=83.1477447405464; VerticalExtentAtFocalDistance=172.038426805515; HeightField=0.785398; AspectRatio=0.483309143686502; Position=(90.526, -96.143, 133.496); IsDisposed=False
+  | 11:56:49.678       picture, every model shown: 1.941 percent differs from its row, centre colour 140,173,238, BLD_AR_Railings_vs_BLD_AR_Walls-001-all.jpg
+  | 11:56:49.678       the document's camera after it: position (251.907, -200.101, 158.769)  focal 2.61  projection Perspective  camera to centre 387.69
+  | 11:56:49.699       picture, only its items' models shown, 4 roots hidden: 1.941 percent differs from its row, centre colour 140,173,238, BLD_AR_Railings_vs_BLD_AR_Walls-001-own.jpg
+  | 11:56:49.699       the document's camera after it: position (251.907, -200.101, 158.769)  focal 2.61  projection Perspective  camera to centre 387.69
+  | 11:56:49.739       active view from 207.669 ft back: 29.272 percent differs from its row, colour at the middle 105,105,105, BLD_AR_Railings_vs_BLD_AR_Walls-001-back-208.jpg
+  | 11:56:49.765       active view from 30 ft back: 27.429 percent differs from its row, colour at the middle 105,105,105, BLD_AR_Railings_vs_BLD_AR_Walls-001-back-30.jpg
+  | 11:56:49.800       active view from 100 ft back: 28.705 percent differs from its row, colour at the middle 105,105,105, BLD_AR_Railings_vs_BLD_AR_Walls-001-back-100.jpg
+  | 11:56:49.826       active view from 300 ft back: 18.378 percent differs from its row, colour at the middle 105,105,105, BLD_AR_Railings_vs_BLD_AR_Walls-001-back-300.jpg
+  | 11:56:49.829  every item shown again, as the probe leaves it, the NWF not saved
+  | 11:56:49.829  probe finished
+
+==== STEP 6. Quit through the API ====
+  11:56:50.370  t+12.0s  Dispose RETURNED after 0.38 s
+  11:56:51.708  t+13.3s  pid 21552 state gone, 1.3 s after Dispose returned, not forced
+
+==== FINALLY ====
+  11:56:51.710  t+13.3s  pid 21552 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 23, longest pass 497 ms, longest gap between the starts of two passes 1013 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  11:56:38.683  t+0.3s  watchdog started
+  11:56:40.058  t+1.7s  new process Roamer pid 21552, parent 1784 svchost.exe, started 11:56:39.414, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  11:56:40.136  t+1.8s  Roamer 21552 visible top level windows: none
+  11:56:40.826  t+2.5s  new process AdskLicensingAgent pid 28868, parent 21552 Roamer.exe, started 11:56:40.157, command line holds the word embedding or automation: no
+  11:56:40.962  t+2.6s  new process AdskLicensingAgent pid 32120, parent 21552 Roamer.exe, started 11:56:40.035, command line holds the word embedding or automation: no
+  11:56:41.103  t+2.7s  new process AdskLicensingAgent pid 34324, parent 21552 Roamer.exe, started 11:56:39.971, command line holds the word embedding or automation: no
+  11:56:42.247  t+3.9s  Roamer 21552 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] ""
+  11:56:43.316  t+5.0s  Roamer 21552 visible top level windows: none
+  11:56:44.393  t+6.0s  Roamer 21552 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  11:56:44.937  t+6.6s  Roamer 21552 visible top level windows: none
+  11:56:45.474  t+7.1s  Roamer 21552 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  11:56:46.544  t+8.2s  Roamer 21552 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  11:56:50.272  t+11.9s  Roamer 21552 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  11:56:50.800  t+12.4s  Roamer 21552 visible top level windows: none
+  11:56:51.871  t+13.5s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 21552, parent 1784 svchost.exe: exited
+  AdskLicensingAgent pid 28868, parent 21552 Roamer.exe: exited
+  AdskLicensingAgent pid 32120, parent 21552 Roamer.exe: exited
+  AdskLicensingAgent pid 34324, parent 21552 Roamer.exe: STILL RUNNING
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 2390562065896  new QWord 2390678583925
+  22.0\CER\22.5.1433.58  crashCount  old DWord 4  new DWord 5
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 253  new DWord 254
+  22.0\CER\22.5.1433.58  uptime  old QWord 748645468750  new QWord 748744218750
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134367859910317088  new QWord 134367874063133631
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf, sha1 39DBB9363571>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-115638\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc"  new String "1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  LastOpened  old QWord 134367858820207575  new QWord 134367858995865123
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc, sha1 9D13749EE560>  new String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf, sha1 CF2976A56694>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134367859883609264  new QWord 134367859910317088
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc, sha1 08D86211241E>  new String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf, sha1 39DBB9363571>
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134367859850675636  new QWord 134367859883609264
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf, sha1 76FB01665240>  new String <a path outside the loop folder, file 1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc, sha1 08D86211241E>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\4  LastOpened  old QWord 134367859785258286  new QWord 134367859850675636
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc, sha1 D771B3B95EC9>  new String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf, sha1 76FB01665240>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134367859749172581  new QWord 134367859785258286
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf, sha1 FCC212FB6934>  new String <a path outside the loop folder, file 1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc, sha1 D771B3B95EC9>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\6  LastOpened  old QWord 134367859438401347  new QWord 134367859749172581
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc, sha1 4A2B5FB5447B>  new String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf, sha1 FCC212FB6934>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134367859396189523  new QWord 134367859438401347
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf, sha1 2D890E5B9DF9>  new String <a path outside the loop folder, file 1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc, sha1 4A2B5FB5447B>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\8  LastOpened  old QWord 134367859055255924  new QWord 134367859396189523
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc, sha1 BF8E319A8DE6>  new String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf, sha1 2D890E5B9DF9>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134367858995865123  new QWord 134367859055255924
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf, sha1 CF2976A56694>  new String <a path outside the loop folder, file 1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc, sha1 BF8E319A8DE6>
+  registry: 35 values or keys differ from the backup
+  registry: 35 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 57842 bytes, sha256 3BB6C75981D2, written 2026-10-18 11:08:38  new 59104 bytes, sha256 8269CC6B1B9F, written 2026-10-18 11:56:50
+  files: 1 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  files: 1 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 3E69F1B0D3CA79D1D79E4DE6B30DE66AB9F2FA4271762764D752FFE7ECB7931E, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf  1001845 bytes
+  hkcu-navisworks-manage-22.0-before.reg  110256 bytes
+  mypid.txt  36 bytes
+  plugin-output.txt  61983 bytes
+  SkyProbe.dll  15872 bytes
+  watch.txt  1868 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-18 11:56:52, 15 s in all

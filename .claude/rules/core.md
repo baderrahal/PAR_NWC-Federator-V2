@@ -1791,7 +1791,11 @@ and 6 does not read as broken.
   and says why. The folder grouping, the matrix pack and the search set build are not on this page. The confirmation
   before the run, `RefreshConfirm`, lists the changed files, the tests, the tool viewpoint folder with its viewpoints
   and that a viewpoint moved into it by hand is deleted, and the old jpg files, with Cancel the default. Where a
-  number is not known it says UNKNOWN. After the run a table shows each test that moved, New, Active, Reviewed,
+  number is not known it says UNKNOWN. THE OLD JPG FILES ARE COUNTED BY ONE RULE ON BOTH CONFIRMS, F217, Bader's F-R5 of
+  18 Oct 2026: `RefreshConfirm.PicturesFolderOf` is where an NWF's pictures sit, composed as the engine composes them, ImageNaming.FolderFor of the page OpenDocumentJob names in its Clash report folder, and `RefreshConfirm.OldPictures` counts, across
+  every folder, the files named as the tool names its pictures, `LeftoverPictures.IsOurPictureName`, which is what F177's
+  removal reads, so the one NWF's confirm and the confirm of a run of packages, which said UNKNOWN until F217, count the
+  same files. A folder not there holds none, and one that will not read, denied or a drive gone, makes the count UNKNOWN, never a part, with the folder and what the disk said on a CONFIRM line. A pick of several NWFs counts every one. After the run a table shows each test that moved, New, Active, Reviewed,
   Approved and Resolved before > after, from `JobOutcome.RefreshResults`. The picked NWF route, the NWF page's run,
   keeps the pack choice by project code, the capped pictures, the stops and the order of F182. The words of the page
   are Core's, `NwfPageWords`, and what its controls hold is read off the XAML by a test.

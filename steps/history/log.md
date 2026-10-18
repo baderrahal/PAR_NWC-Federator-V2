@@ -2,6 +2,59 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F217, F210-R5, the old jpg files counted on the NWF page's confirm of a run of packages
+
+Branch fix-F217 off main 99509de, worked in a worktree while F215's claim check ran, main merged in after F215. Bader's F-R5:
+the NWF page's package confirm counts old jpgs in each package's Clash report folder.
+
+What was done. Core, beside `RefreshConfirm`: `PicturesFolderOf`, where an NWF's pictures sit, its Log folder's Clash report
+folder and its name with _files, and `OldPictures`, the count across every folder of the files named as the tool names its
+pictures, `LeftoverPictures.IsOurPictureName`, the rule F177's removal reads, a folder not there holding none and one that will
+not read making the count UNKNOWN, never a part. The add-in's one-NWF confirm, which counted cd*.jpg inline, and the confirm of a
+run of packages, which passed UNKNOWN, both count through it, the package route over every NWF it will run and a pick of several
+NWFs over each. Three Core tests in NwfPageTests break the folder, the name rule and an unreadable folder. The rule is in core.md
+beside the two pages. The reviewer read the first pass and three findings were taken: the folder is composed as the engine
+composes it, ImageNaming.FolderFor of the page OpenDocumentJob names, where it typed _files, a folder that will not read is
+UNKNOWN where Directory.Exists said none, and the CONFIRM line names the folder and what the disk said. A pick of several NWFs,
+which still said UNKNOWN, counts each. Its fourth finding, the count said whatever the steps ticked, is row F217-R1.
+
+What was proved here. Core tests 3382 passed before, 3385 after with main merged in, 0 failed, 0 skipped. dotnet build of the
+solution 0 errors, 0 warnings. No Navisworks run: the confirm is a box in the window a person runs, and its text is logged in
+the CONFIRM packages block, which F220's NWF page run writes.
+
+What remains. The count on a real run of packages, seen in F220. The one-NWF confirm counts one name rule stricter than cd*.jpg,
+the tool's own names alone, as F177 removes. Known bugs: none new. What comes next: F219.
+
+## 2026-10-18 F215, F210-R3, the pictures that show only the sky, measured and left UNKNOWN
+
+Branch fix-F215 off main 99509de. Bader's F-R3: the sky-only pictures of 1B06BC and 1B06P1 probed on copies, the camera
+position against the clash point of an empty picture and a good one, fixed with 0 sky pictures on a rerun, or measured and left
+UNKNOWN. Measured, and left UNKNOWN, since what decides it was not found in this round.
+
+What was done. tools\probes\SkyProbe: the mode sky of SkyProbePlugin.cs, run by probe-sky.ps1, PictureSpeed's guarded runner
+with its inputs changed and the guard file untouched, seven runs of 10.7 to 15.4 s on copies of the NWFs of 1B06BC, 1B06P1 and
+1B06K1 that F210's flat run of C06 built, every Navisworks quit by Dispose and Bader's settings put back. count-sky-pictures.ps1
+reads every picture of a group. docs\history\scan.md 5z-zk holds what was read, the masked results beside the probe. The
+claim-checker read the first draft of this entry and of 5z-zk and both were corrected on its findings.
+
+What was measured. 76 of 1B06BC's 399 pictures and 25 of 1B06P1's 374 draw no item of their clash, the sky at the middle and no
+red or green pixel. The 76 is the audit's. The 25 is as many as the audit's 13 and its 12 near empty, and whether they are the
+same pictures is not read. A few more of 1B06BC have the sky at the middle and draw their items small, from a camera 154 to 340
+ft back. For the clashes probed with the sky at the middle Clash Detective's own camera stands 2.61 to 207.67 ft from its clash,
+with the rotation every viewpoint read has. From 30, 100 and 300 ft back the active view draws something for every clash
+probed, and from the clash's own camera it draws the EL clashes, 2,774 km from AR, and almost nothing for 5 of 16 others.
+TestsImageForResult draws nothing for the empty clashes with every model shown and with only its items' models. Hide Other was
+on in every run, so the pictures with it off were not taken. Not the distance from the origin, since 1B06K1's far AR and ME
+draw, not one model, not a model hidden.
+
+What was proved here. No code of the tool changed. Core tests 3382 passed before and after, 0 failed, 0 skipped, read in this
+session. The last build of the probe, the committed source, built with 0 errors and 0 warnings.
+
+What remains. The cause is UNKNOWN. Q208 asks Bader whether to retake a picture that draws no item through the active view,
+only count and name them, or leave them. Row F210-R3 stays open until he answers.
+
+Known bugs. F210-R3 as above. What comes next: F217, the old jpg count on the NWF page's confirm of a run of packages.
+
 ## 2026-10-18 F214, F210-R1, a fresh Navisworks per package
 
 Branch fix-F214 off main 4a5c515, main merged in after F216 and F218. Bader's answer to Q204: a fresh Navisworks start per
