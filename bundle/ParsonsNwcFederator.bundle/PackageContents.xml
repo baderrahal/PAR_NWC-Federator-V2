@@ -6,7 +6,7 @@
 
   Two attributes here decide whether Navisworks even looks at the module, and both were
   wrong until 2026-08-30. Measured against the bundles that already load on this machine,
-  see docs\scan.md:
+  see docs\history\scan.md:
 
     Platform must be NAVMAN, the product token for Navisworks Manage. "Navisworks" is not
     a token the loader knows. RuntimeRequirements is what selects the Components block for
