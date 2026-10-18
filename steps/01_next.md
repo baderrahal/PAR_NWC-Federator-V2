@@ -1759,3 +1759,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's round of 18 Oct 2026, the end: the findings, a full audit and QA of the repo listing every contradiction with CLAUDE.md, the proof steps with Look for lines and the closing entry. claude\audit-round-2026-10-18.md holds 26 contradictions, the rule texts the code has outgrown fixed in core.md and addin.md, two public members read by nothing deleted, and Q210 for the members read only by tests and the picture limits written as constants.
 - DONE 2026-10-18, merged in 301. 26 contradictions, the rule texts the code outgrew fixed, two unread members deleted, Q210, nine proof steps, 3392 Core tests passed and the build 0 errors.
+
+## F222 Q211, a fresh Navisworks per group
+
+- Bader's answer to Q211 of 18 Oct 2026: a fresh Navisworks per group, not only per package, on both pages, Run pressed once, one group failing or crashing never stopping the next, RESULT joining every group as today, the seconds of each start and quit and the total in the log. The order names one unit a group, its package and its NWF, each group's own Navisworks runs its one group and writes its result with the facts its discipline reports need, and the window that started the run writes each package's discipline workbooks off them before the joined RESULT.
+- DONE 2026-10-18, merged in 302. Each group in its own Navisworks on both pages on a copy of three C06 groups, starts about 4.3 s and quits about 2 s each, 3 DONE and 98 clashes on each page, the discipline workbooks written by the parent off each group's facts, 3406 Core tests passed.

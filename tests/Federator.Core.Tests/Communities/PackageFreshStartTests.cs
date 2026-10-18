@@ -43,8 +43,9 @@ namespace Federator.Core.Tests
                 ParentLog = TestPaths.At("logs", "run-20261018-110000.log")
             };
 
-            order.Packages.Add("C06");
-            order.Packages.Add("C07\\Infrastructure and Roads");
+            order.Units.Add(new PackageRunUnit("C06", TestPaths.At("work", "multi2", "Report", "C06", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"), "1B06BC"));
+            order.Units.Add(new PackageRunUnit("C07\\Infrastructure and Roads",
+                TestPaths.At("work", "multi2", "Report", "C07", "Infrastructure and Roads", "NWF", "1104-PAR-1C07K1-ZZZ-BM-MOD-000001.nwf"), "1C07K1"));
             order.Controls.Add(new ControlValue(ControlValue.TextKind, "NwfLevel", "ZZZ"));
             order.Controls.Add(new ControlValue(ControlValue.TextKind, "LogoBox", "C:\\a\tb\\logo.jpg\r\nsecond line"));
             order.Controls.Add(new ControlValue(ControlValue.TickKind, "MakeViewpoints", "True"));
@@ -76,8 +77,11 @@ namespace Federator.Core.Tests
             Assert.That(read.ParentLog, Is.EqualTo(written.ParentLog));
             Assert.That(read.Settings.CeilingMinutes, Is.EqualTo(90));
             Assert.That(read.Settings.GoneWithinSeconds, Is.EqualTo(PackageRunSettings.DefaultGoneWithinSeconds));
-            Assert.That(read.Packages.Count, Is.EqualTo(2));
-            Assert.That(read.Packages[1], Is.EqualTo("C07\\Infrastructure and Roads"));
+            Assert.That(read.Units.Count, Is.EqualTo(2));
+            Assert.That(read.Units[1].Package, Is.EqualTo("C07\\Infrastructure and Roads"));
+            Assert.That(read.Units[1].Group, Is.EqualTo(written.Units[1].Group));
+            Assert.That(read.Units[1].Name, Is.EqualTo("1C07K1"));
+            Assert.That(read.PackageCount, Is.EqualTo(2));
             Assert.That(read.Controls.Count, Is.EqualTo(4));
 
             for (int i = 0; i < 4; i++)
@@ -112,9 +116,9 @@ namespace Federator.Core.Tests
         public void AnOrderThatCannotRunIsNeverWritten()
         {
             PackageRunOrder order = Order();
-            order.Packages.Clear();
+            order.Units.Clear();
 
-            Assert.That(order.WhyNot(), Does.Contain("no package"));
+            Assert.That(order.WhyNot(), Does.Contain("no group"));
             Assert.Throws<InvalidOperationException>(() => order.Write());
 
             order = Order();
@@ -163,7 +167,7 @@ namespace Federator.Core.Tests
         {
             PackageRunSettings settings = new PackageRunSettings();
 
-            Assert.That(settings.CeilingMinutes, Is.EqualTo(240));
+            Assert.That(settings.CeilingMinutes, Is.EqualTo(30), "F222, the ceiling of one group");
             Assert.That(settings.GoneWithinSeconds, Is.EqualTo(60));
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.CeilingMinutes = 0);
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.GoneWithinSeconds = 0);
@@ -276,11 +280,11 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheJoinedResultCountsOffTheTallyAndNamesAPackageWithNoResultAndOneThatRanNoGroup()
+        public void TheJoinedResultCountsOffTheTallyAndNamesAGroupWithNoResultAndOneThatRanNothing()
         {
             PackageTree tree = Tree();
             PackageRunResult c06 = Result();
-            PackageRunResult c07 = new PackageRunResult("C07", null) { NoGroupBecause = "every group of it has an NWF already" };
+            PackageRunResult c07 = new PackageRunResult("C07", null) { NoGroupBecause = "its NWF is there already" };
             PackageTally tally = new PackageTally();
 
             foreach (PackageRunGroup group in c06.Groups)
@@ -288,35 +292,44 @@ namespace Federator.Core.Tests
                 tally.Add(tree.Find("C06"), group.Group, group.Outcome, group.Clashes);
             }
 
-            tally.NotRun(tree.Find("C07"), c07.NoGroupBecause);
-            tally.NoResult(tree.Find("C08"), PackageRunWords.NoResult("C08", "the file is not there"));
+            tally.NotRun(tree.Find("C07"), "1C07K1", c07.NoGroupBecause);
+            tally.NoResult(tree.Find("C08"), "1C08BC", "the file is not there");
+
+            List<PackageRunUnit> units = new List<PackageRunUnit>
+            {
+                new PackageRunUnit("C06", TestPaths.At("Report", "C06", "NWF", "a.nwf"), "1B06BC"),
+                new PackageRunUnit("C07", TestPaths.At("Report", "C07", "NWF", "b.nwf"), "1C07K1"),
+                new PackageRunUnit("C08", TestPaths.At("Report", "C08", "NWF", "c.nwf"), "1C08BC")
+            };
 
             IList<string> lines = PackageRunWords.JoinedResult(
-                new List<string> { "C06", "C07", "C08" },
+                units,
                 new List<PackageRunResult> { c06, c07, null },
                 new List<string> { null, null, "its Navisworks ended before it wrote its result" },
                 tally);
             string all = string.Join("\n", lines);
 
+            Assert.That(lines[0], Is.EqualTo("fresh starts   : 3 groups of 3 packages, each group in its own Navisworks, one after the other"));
             Assert.That(lines, Does.Contain("groups done    : 1"));
             Assert.That(lines, Does.Contain("groups partial : 0"));
             Assert.That(lines, Does.Contain("groups failed  : 1"));
-            Assert.That(all, Does.Contain("no result      : 1 package"));
-            Assert.That(all, Does.Contain("ran no group   : 1 package"), "a package that ran nothing is never hidden behind clean counts");
-            Assert.That(all, Does.Contain("package        C08 : no result, the file is not there. Whether any group of C08 wrote files is UNKNOWN"));
-            Assert.That(all, Does.Not.Contain("C08 : not run"), "a package with no result may have run groups, so it is never said as not run");
-            Assert.That(all, Does.Contain("package        C07 : not run, every group of it has an NWF already"));
+            Assert.That(all, Does.Contain("no result      : 1 group"));
+            Assert.That(all, Does.Contain("ran nothing    : 1 group"), "a group that ran nothing is never hidden behind clean counts");
+            Assert.That(all, Does.Contain("group          C08  1C08BC  NO RESULT, the file is not there. Whether it wrote files is UNKNOWN"));
+            Assert.That(all, Does.Not.Contain("1C08BC  NOT RUN"), "a group with no result may have run, so it is never said as not run");
+            Assert.That(all, Does.Contain("group          C07  1C07K1  NOT RUN in its own Navisworks, its NWF is there already"));
+            Assert.That(all, Does.Contain("package        C08 : 0 groups, 0 done, 0 partial, 0 failed, 0 clashes, and 1 group with no end to count, each named above"));
             Assert.That(all, Does.Contain("why            C06  1B06KI : a.nwc could not be appended"));
             Assert.That(all, Does.Not.Contain("why            C06  1B06BC"), "a group that is DONE has no reason line");
-            Assert.That(lines, Does.Contain("PACKAGE C08 : NO RESULT, its Navisworks ended before it wrote its result"));
-            Assert.That(lines, Does.Contain("    no group of it ran, every group of it has an NWF already"));
+            Assert.That(lines, Does.Contain("GROUP C08  1C08BC : NO RESULT, its Navisworks ended before it wrote its result"));
+            Assert.That(lines, Does.Contain("    it ran nothing, its NWF is there already"));
             Assert.That(lines, Does.Contain("    its log holds no RESULT block"));
             Assert.That(lines, Does.Contain("    10:21:18.587  +0044.318s  groups failed  : 1"));
-            Assert.That(all, Does.Contain("C07 : its own RESULT, from its log UNKNOWN"));
+            Assert.That(all, Does.Contain("GROUP C07  1C07K1 : its own RESULT, from its log UNKNOWN"));
             Assert.Throws<ArgumentException>(() => PackageRunWords.JoinedResult(
-                new List<string> { "C06" }, new List<PackageRunResult>(), new List<string>(), tally));
+                units.GetRange(0, 1), new List<PackageRunResult>(), new List<string>(), tally));
             Assert.Throws<ArgumentException>(() => PackageRunWords.JoinedResult(
-                new List<string> { "C06" }, new List<PackageRunResult> { c06 }, new List<string> { null }, null));
+                units.GetRange(0, 1), new List<PackageRunResult> { c06 }, new List<string> { null }, null));
         }
 
         [Test]
@@ -415,9 +428,9 @@ namespace Federator.Core.Tests
 
             Assert.That(settings.PollMilliseconds, Is.EqualTo(200));
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.PollMilliseconds = 49);
-            Assert.That(settings.RunnerLimitMinutes(3), Is.EqualTo(3 * (240 + 1 + 1)),
-                "each package's ceiling, its wait rounded up to a minute, and a minute more");
-            Assert.That(settings.RunnerLimitMinutes(0), Is.EqualTo(242), "never less than one package's worth");
+            Assert.That(settings.RunnerLimitMinutes(3), Is.EqualTo(3 * (30 + 1 + 1)),
+                "each group's ceiling, its wait rounded up to a minute, and a minute more");
+            Assert.That(settings.RunnerLimitMinutes(0), Is.EqualTo(32), "never less than one group's worth");
 
             PackageRunOrder order = Order();
             order.Settings.PollMilliseconds = 500;
@@ -427,26 +440,26 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheRunnersLinesNameThePackageAndWhatHappened()
+        public void TheRunnersLinesNameTheGroupAndWhatHappened()
         {
-            Assert.That(PackageRunWords.Starting(0, 2, "C06"), Is.EqualTo("package 1 of 2, C06, starting a fresh Navisworks"));
-            Assert.That(PackageRunWords.Started("C06", 0, 4.31), Does.Contain("could not be told"));
-            Assert.That(PackageRunWords.Ceiling("C06", 240), Does.Contain("240 minutes").And.Contain("next package"));
-            Assert.That(PackageRunWords.Ended("C06", 60), Does.Contain("60 seconds").And.Contain("before the next package"));
-            Assert.That(PackageRunWords.Gone("C06", 1.55), Does.Contain("1.6 s"));
-            Assert.That(PackageRunWords.Threw("C06", "the run", "COMException", "gone\r\nnow"), Does.EndWith("The next package still runs"));
+            Assert.That(PackageRunWords.Starting(0, 2, "C06  1B06BC"), Is.EqualTo("group 1 of 2, C06  1B06BC, starting a fresh Navisworks"));
+            Assert.That(PackageRunWords.Started("C06  1B06BC", 0, 4.31), Does.Contain("could not be told"));
+            Assert.That(PackageRunWords.Ceiling("C06  1B06BC", 240), Does.Contain("240 minutes").And.Contain("next group"));
+            Assert.That(PackageRunWords.Ended("C06  1B06BC", 60), Does.Contain("60 seconds").And.Contain("before the next group"));
+            Assert.That(PackageRunWords.Gone("C06  1B06BC", 1.55), Does.Contain("1.6 s"));
+            Assert.That(PackageRunWords.Threw("C06", "the run", "COMException", "gone\r\nnow"), Does.EndWith("The next group still runs"));
             Assert.That(PackageRunWords.Threw("C06", "the run", "COMException", "gone\r\nnow"), Does.Not.Contain("\n"));
             Assert.That(PackageRunWords.NotTold("C06"), Does.Contain("not run").And.Contain("never ends"));
             Assert.That(PackageRunWords.CeilingNotTold("C06", 240), Does.Contain("none was ended"));
         }
 
         [Test]
-        public void TheLiveLineAndTheWarningCountOnlyThePackagesThatWroteAResult()
+        public void TheLiveLineAndTheWarningCountOnlyTheGroupsThatWroteAResult()
         {
-            Assert.That(PackageRunWords.Finished(3, 3), Does.Contain("3 packages ran"));
-            Assert.That(PackageRunWords.Finished(1, 3), Does.Contain("1 of 3 packages wrote a result").And.Not.Contain("ran,"));
+            Assert.That(PackageRunWords.Finished(3, 3), Does.Contain("3 groups ran"));
+            Assert.That(PackageRunWords.Finished(1, 3), Does.Contain("1 of 3 groups ran.").And.Not.Contain("ran,"));
             Assert.That(PackageRunWords.Warning(3, 3), Is.Null);
-            Assert.That(PackageRunWords.Warning(0, 2), Does.Contain("2 of 2 packages wrote no result"));
+            Assert.That(PackageRunWords.Warning(0, 2), Does.Contain("2 of 2 groups wrote no result or ran nothing"));
         }
     }
 }

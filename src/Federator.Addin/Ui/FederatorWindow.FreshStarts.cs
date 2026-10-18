@@ -9,11 +9,15 @@ using System.Windows.Threading;
 using Federator.Addin.Engine;
 using Federator.Core.Communities;
 using Federator.Core.Diagnostics;
+using Federator.Core.Disciplines;
 using Federator.Core.Rerun;
 
 namespace Federator.Addin.Ui
 {
-    /// <summary>The package a Navisworks started for one package runs, F214: the order and the package's place in it.</summary>
+    /// <summary>
+    /// The group a Navisworks started for one group runs, F214 and since F222 one group and not a package: the order and
+    /// the group's place in it.
+    /// </summary>
     public sealed class PackageRunChild
     {
         public PackageRunChild(PackageRunOrder order, int index)
@@ -23,9 +27,9 @@ namespace Federator.Addin.Ui
                 throw new ArgumentNullException("order");
             }
 
-            if (index < 0 || index >= order.Packages.Count)
+            if (index < 0 || index >= order.Units.Count)
             {
-                throw new ArgumentOutOfRangeException("index", index, "the order holds " + order.Packages.Count + " packages");
+                throw new ArgumentOutOfRangeException("index", index, "the order holds " + order.Units.Count + " groups");
             }
 
             Order = order;
@@ -36,28 +40,35 @@ namespace Federator.Addin.Ui
 
         public int Index { get; private set; }
 
+        public PackageRunUnit Unit
+        {
+            get { return Order.Units[Index]; }
+        }
+
         public string Package
         {
-            get { return Order.Packages[Index]; }
+            get { return Unit.Package; }
         }
     }
 
     /// <summary>
-    /// A fresh Navisworks per package, F214, Bader's answer to Q204 of 18 Oct 2026, measured in docs\history\scan.md 5z-zj.
-    /// Run pressed once: the window that a person runs plans and confirms the packages as before, then writes the order,
-    /// starts Federator.Runner.exe from the bundle and answers while it waits, copying the runner's status lines into its
-    /// log. The runner starts one Navisworks per package in turn and runs this add-in there with the order and the
-    /// package's index, and that window, a child, sets every control as the person left them, reads the tree, ticks its one
-    /// package, runs the route of its page with no box shown, writes its result and closes. One package failing, crashing
-    /// or passing the ceiling never stops the next, and the parent joins every result into one RESULT. The rules and the
-    /// words are Core's, Federator.Core.Communities.
+    /// A fresh Navisworks per package, F214, Bader's answer to Q204 of 18 Oct 2026, measured in docs\history\scan.md 5z-zj,
+    /// and since F222, his answer to Q211, a fresh Navisworks per group. Run pressed once: the window that a person runs
+    /// plans and confirms the packages as before, then writes the order, one unit a group, starts Federator.Runner.exe from
+    /// the bundle and answers while it waits, copying the runner's status lines into its log. The runner starts one
+    /// Navisworks per group in turn and runs this add-in there with the order and the group's index, and that window, a
+    /// child, sets every control as the person left them, reads the tree, ticks its one package, runs the route of its page
+    /// on its one group with no box shown, writes its result and the facts its discipline reports need, and closes. One
+    /// group failing, crashing or passing the ceiling never stops the next, and the parent writes each package's discipline
+    /// workbooks off the facts and joins every result into one RESULT. The rules and the words are Core's,
+    /// Federator.Core.Communities.
     /// </summary>
     public partial class FederatorWindow
     {
         /// <summary>The runner's file in the bundle, beside this add-in.</summary>
         private const string RunnerFile = "Federator.Runner.exe";
 
-        /// <summary>The package this window runs in its own Navisworks, or null in the window a person runs.</summary>
+        /// <summary>The group this window runs in its own Navisworks, or null in the window a person runs.</summary>
         private readonly PackageRunChild child;
 
         /// <summary>The groups the last run of this window ended with, read by a child to write its result.</summary>
@@ -66,7 +77,7 @@ namespace Federator.Addin.Ui
         /// <summary>Why a child ran no group, where it knows, or null.</summary>
         private string childRanNoGroupBecause;
 
-        /// <summary>The window of one package's own Navisworks, which runs that package as soon as it is shown and closes.</summary>
+        /// <summary>The window of one group's own Navisworks, which runs that group as soon as it is shown and closes.</summary>
         public FederatorWindow(RunLog log, PackageRunChild child)
             : this(log)
         {
@@ -88,7 +99,7 @@ namespace Federator.Addin.Ui
 
             try
             {
-                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ChildStarted(child.Index, order.Packages.Count, package, order.ParentLog));
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ChildStarted(child.Index, order.Units.Count, child.Unit.Label, order.ParentLog));
 
                 if (!SetTheControls(order.Controls))
                 {
@@ -124,7 +135,7 @@ namespace Federator.Addin.Ui
             catch (Exception error)
             {
                 childRanNoGroupBecause = "its run threw " + error.GetType().Name + ": " + error.Message;
-                log.Failure("the run of package " + package + " in its own Navisworks", error, "its result says so and the window closes");
+                log.Failure("the run of group " + child.Unit.Label + " in its own Navisworks", error, "its result says so and the window closes");
             }
             finally
             {
@@ -133,7 +144,10 @@ namespace Federator.Addin.Ui
             }
         }
 
-        /// <summary>The child's result: every group the run ended with, or why none ran, and its own RESULT block.</summary>
+        /// <summary>
+        /// The child's result: the group the run ended with and what it read for the discipline reports, its files and the
+        /// facts of its models, F222, or why none ran, and its own RESULT block.
+        /// </summary>
         private void WriteThePackagesResult()
         {
             string path = child.Order.ResultPathFor(child.Index);
@@ -150,9 +164,7 @@ namespace Federator.Addin.Ui
                 {
                     foreach (JobOutcome outcome in lastOutcomes)
                     {
-                        result.Groups.Add(outcome == null || outcome.Job == null
-                            ? new PackageRunGroup("UNKNOWN", GroupOutcome.Failed, -1, "the group's outcome was not kept")
-                            : new PackageRunGroup(outcome.Job.Building, outcome.Result, GroupSize.ClashesIn(outcome.Clash), outcome.Reason));
+                        result.Groups.Add(TheGroupsEnd(outcome));
                     }
                 }
 
@@ -172,8 +184,29 @@ namespace Federator.Addin.Ui
             }
             catch (Exception error)
             {
-                log.Failure("writing the result of package " + child.Package + " to " + path, error, "the window that started the run says it has no result");
+                log.Failure("writing the result of group " + child.Unit.Label + " to " + path, error, "the window that started the run says it has no result");
             }
+        }
+
+        /// <summary>One group's end for its result, with its files and the facts its run read, or why they were not read.</summary>
+        private PackageRunGroup TheGroupsEnd(JobOutcome outcome)
+        {
+            if (outcome == null || outcome.Job == null)
+            {
+                return new PackageRunGroup(child.Unit.Name, GroupOutcome.Failed, -1, "the group's outcome was not kept")
+                    .FactsNot("the group's outcome was not kept");
+            }
+
+            PackageRunGroup end = new PackageRunGroup(outcome.Job.Building, outcome.Result, GroupSize.ClashesIn(outcome.Clash), outcome.Reason);
+
+            foreach (string file in outcome.Job.Files)
+            {
+                end.Files.Add(file);
+            }
+
+            return outcome.DisciplineFacts != null
+                ? end.WithFacts(outcome.DisciplineFacts)
+                : end.FactsNot(outcome.DisciplineFactsNotRead ?? "the group ended before its models were read");
         }
 
         /// <summary>
@@ -236,7 +269,7 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// Each control of the order set by its name, in the order's order, one that cannot be set named. False where any
-        /// could not be set, and the package is then not run, so it never runs on settings the person did not choose.
+        /// could not be set, and the group is then not run, so it never runs on settings the person did not choose.
         /// </summary>
         private bool SetTheControls(IList<ControlValue> controls)
         {
@@ -286,28 +319,29 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The parent's half: the order written, the runner started, the window answering while it runs, the runner's
-        /// lines copied into the log, then every package's result read and joined into one RESULT. A package with no
-        /// result is named with why and never said as not run, and nothing here stops on one. A wait that throws is said
-        /// once and goes on, and a runner past every package's ceiling and wait added up is ended, so this window never
-        /// waits for ever and never reads the results while its runner still runs.
+        /// The parent's half: the order written, one unit a group, the runner started, the window answering while it runs,
+        /// the runner's lines copied into the log, then every group's result read, each package's discipline workbooks
+        /// written off the facts the results carried, F222, and the results joined into one RESULT. A group with no result
+        /// is named with why and never said as not run, and nothing here stops on one. A wait that throws is said once and
+        /// goes on, and a runner past every group's ceiling and wait added up is ended, so this window never waits for ever
+        /// and never reads the results while its runner still runs.
         /// </summary>
-        private void RunPackagesInFreshStarts(string page, IList<Package> packages, string report, PackageTally tally)
+        private void RunPackagesInFreshStarts(string page, PackageRun run, IList<PackageRunUnit> units)
         {
             PackageRunOrder order = new PackageRunOrder
             {
                 Page = page,
                 Parent = packageTree.Parent,
-                Report = report,
+                Report = run.Report,
                 PluginId = FederatorPlugin.PluginName + "." + FederatorPlugin.DeveloperCode,
                 ParentLog = log.IsWritingToDisk ? log.Path : null,
                 Folder = PackageRunOrder.FolderFor(
                     Path.Combine(Path.GetDirectoryName(RunLog.DefaultLogFolder()), PackageRunOrder.RunsFolderName), DateTime.Now, Directory.Exists)
             };
 
-            foreach (Package package in packages)
+            foreach (PackageRunUnit unit in units)
             {
-                order.Packages.Add(package.RelativePath);
+                order.Units.Add(unit);
             }
 
             foreach (ControlValue control in TheControlsAsTheyStand())
@@ -317,8 +351,8 @@ namespace Federator.Addin.Ui
 
             running = true;
             SetTheRunButtons(false);
-            log.RunStarted(packages.Count, "package", "packages");
-            SetProgress(PackageRunWords.Waiting(packages.Count));
+            log.RunStarted(units.Count, "group", "groups");
+            SetProgress(PackageRunWords.Waiting(units.Count));
 
             try
             {
@@ -333,7 +367,7 @@ namespace Federator.Addin.Ui
                     navisworks = Path.GetDirectoryName(self.MainModule.FileName);
                 }
 
-                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.RunnerStarting(runner, packages.Count, order.OrderPath));
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.RunnerStarting(runner, order.Units.Count, order.PackageCount, order.OrderPath));
 
                 if (!File.Exists(runner))
                 {
@@ -348,16 +382,16 @@ namespace Federator.Addin.Ui
 
                 using (Process process = Process.Start(start))
                 {
-                    WaitForTheRunner(process, order, packages.Count);
+                    WaitForTheRunner(process, order, order.Units.Count);
                 }
             }
             catch (Exception error)
             {
-                log.Failure("the run of packages, each in a fresh Navisworks", error, "every package with no result is named in RESULT");
+                log.Failure("the run of packages, each group in a fresh Navisworks", error, "every group with no result is named in RESULT");
             }
             finally
             {
-                JoinTheResults(order, packages, tally);
+                JoinTheResults(order, run);
                 running = false;
                 SetTheRunButtons(true);
             }
@@ -368,11 +402,11 @@ namespace Federator.Addin.Ui
         /// the results are never read while the runner still starts Navisworks, and past the order's limit the runner is
         /// ended, the one process this window started.
         /// </summary>
-        private void WaitForTheRunner(Process process, PackageRunOrder order, int packages)
+        private void WaitForTheRunner(Process process, PackageRunOrder order, int groups)
         {
             long read = 0;
             bool failureSaid = false;
-            int limit = order.Settings.RunnerLimitMinutes(packages);
+            int limit = order.Settings.RunnerLimitMinutes(groups);
             Stopwatch clock = Stopwatch.StartNew();
 
             while (!process.WaitForExit(order.Settings.PollMilliseconds))
@@ -405,56 +439,79 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// Every package's result read and the one RESULT written, a package with none named and never dropped. The live
-        /// line counts the packages that wrote a result, and where one did not the person is warned, since its groups may
-        /// have written files nobody is told of otherwise.
+        /// Every group's result read, each package's discipline workbooks written off the facts they carried, F222, and the
+        /// one RESULT written last, a group with none named and never dropped. The live line counts the groups that wrote a
+        /// result, and where one did not the person is warned, since it may have written files nobody is told of otherwise.
         /// </summary>
-        private void JoinTheResults(PackageRunOrder order, IList<Package> packages, PackageTally tally)
+        private void JoinTheResults(PackageRunOrder order, PackageRun run)
         {
             List<PackageRunResult> results = new List<PackageRunResult>();
             List<string> whys = new List<string>();
-            List<string> names = new List<string>();
-            int withResult = 0;
+            int ran = 0;
+            PackageTally tally = run.Tally;
 
-            try
+            // F222. The packages the run planned, never the tree read again, which a person may have read off another folder.
+            Dictionary<string, Package> packages = new Dictionary<string, Package>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Package package in run.Runnable)
             {
-                for (int i = 0; i < packages.Count; i++)
+                packages[package.RelativePath] = package;
+            }
+
+            for (int i = 0; i < order.Units.Count; i++)
+            {
+                PackageRunUnit unit = order.Units[i];
+                string why;
+                PackageRunResult result = PackageRunResult.Read(order.ResultPathFor(i), out why);
+                results.Add(result);
+                whys.Add(why);
+
+                // F222. A result naming no group is a group that ran nothing, and the live line never says it ran.
+                if (result != null && result.Groups.Count > 0)
                 {
-                    string why;
-                    PackageRunResult result = PackageRunResult.Read(order.ResultPathFor(i), out why);
-                    names.Add(packages[i].RelativePath);
-                    results.Add(result);
-                    whys.Add(why);
+                    ran++;
+                }
+
+                try
+                {
+                    Package package = packages[unit.Package];
 
                     if (result == null)
                     {
-                        tally.NoResult(packages[i], PackageRunWords.NoResult(packages[i].RelativePath, why));
+                        tally.NoResult(package, unit.Name, why);
                         continue;
                     }
 
-                    withResult++;
-
                     foreach (PackageRunGroup group in result.Groups)
                     {
-                        tally.Add(packages[i], group.Group, group.Outcome, group.Clashes);
+                        tally.Add(package, group.Group, group.Outcome, group.Clashes);
                     }
 
                     if (result.Groups.Count == 0)
                     {
-                        tally.NotRun(packages[i], result.NoGroupBecause);
+                        tally.NotRun(package, unit.Name, result.NoGroupBecause);
                     }
                 }
+                catch (Exception error)
+                {
+                    log.Failure("counting the group " + unit.Label, error, "the other groups are still counted and the RESULT still written");
+                }
+            }
 
+            try
+            {
+                // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
+                WriteTheDisciplineReports(run, order.Units, results, whys);
                 log.RunFinished();
-                log.WriteJoinedResult(PackageRunWords.JoinedResult(names, results, whys, tally));
+                log.WriteJoinedResult(PackageRunWords.JoinedResult(order.Units, results, whys, tally));
             }
             catch (Exception error)
             {
-                log.Failure("joining the results of the packages", error, "each package's own log still holds its RESULT");
+                log.Failure("joining the results of the groups", error, "each group's own log still holds its RESULT");
             }
 
-            SetProgress(PackageRunWords.Finished(withResult, packages.Count));
-            string warning = PackageRunWords.Warning(withResult, packages.Count);
+            SetProgress(PackageRunWords.Finished(ran, order.Units.Count));
+            string warning = PackageRunWords.Warning(ran, order.Units.Count);
 
             if (warning != null)
             {

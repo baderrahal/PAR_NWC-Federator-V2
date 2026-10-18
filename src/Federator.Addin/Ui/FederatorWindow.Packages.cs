@@ -43,6 +43,12 @@ namespace Federator.Addin.Ui
 
         private void OnBrowsePackageParent(object sender, RoutedEventArgs e)
         {
+            // F222. Read again during a run of packages the tree would no longer be the one the run joins its results against.
+            if (running)
+            {
+                return;
+            }
+
             string picked = PickFolder(PackageWords.PickTheParent, StartFor(PickerKind.PackageParent, packagePanel.Parent));
 
             if (picked != null)
@@ -295,7 +301,7 @@ namespace Federator.Addin.Ui
             GroupingMode mode = ChosenGrouping();
             string report = Trimmed(packagePanel.Report);
             ReportOptions options = ReportsWanted(tolerance);
-            PackageRun run = new PackageRun(report);
+            PackageRun run = new PackageRun(report, options.Disciplines);
             PackageTally tally = run.Tally;
             List<FederationJob> jobs = new List<FederationJob>();
             List<Package> runnable = run.Runnable;
@@ -358,6 +364,20 @@ namespace Federator.Addin.Ui
             log.Block(PackageWords.ChosenTitle, packageTicks.Lines());
             log.Block("PACKAGE GROUPS", planLines);
 
+            // F222, Q211. A group's own Navisworks runs its one group, the one whose NWF the order names, and no other. Where its
+            // package plans no group at all the refusal below gives the real reason.
+            if (child != null && jobs.Count > 0)
+            {
+                jobs = jobs.FindAll(job => child.Unit.IsTheGroupOf(job.NwfPath));
+
+                if (jobs.Count == 0)
+                {
+                    childRanNoGroupBecause = PackageRunWords.NotTheGroup(child.Unit.Label, child.Unit.Group);
+                    log.Line(PackageRunWords.Prefix + " " + childRanNoGroupBecause);
+                    return;
+                }
+            }
+
             if (jobs.Count == 0)
             {
                 log.Line(PackageWords.Prefix + " the run of packages refused before starting. No group of the ticked packages can run, each is named above");
@@ -407,10 +427,17 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            // F214. The window a person runs hands each package to a fresh Navisworks, and a package's own window runs it.
+            // F214 and F222. The window a person runs hands each group to a fresh Navisworks, and a group's own window runs it.
             if (child == null)
             {
-                RunPackagesInFreshStarts(PackageRunOrder.NwcPage, runnable, report, tally);
+                List<PackageRunUnit> units = new List<PackageRunUnit>();
+
+                foreach (FederationJob job in jobs)
+                {
+                    units.Add(new PackageRunUnit(job.Package, job.NwfPath, job.Building));
+                }
+
+                RunPackagesInFreshStarts(PackageRunOrder.NwcPage, run, units);
                 return;
             }
 
@@ -418,20 +445,24 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// One run of packages, F208 and F209: the Report folder, the tally RESULT reads, the packages that run on the NWC
-        /// page with the plan of each, by its path from the parent, for the discipline reports written once the groups end.
+        /// One run of packages, F208 and F209: the Report folder, the tally RESULT reads, the packages that run with the
+        /// plan of each on the NWC page, by its path from the parent, and the discipline settings, for the discipline
+        /// reports the window that started the run writes once every group has run, F222.
         /// </summary>
         private sealed class PackageRun
         {
-            public PackageRun(string report)
+            public PackageRun(string report, DisciplineReportSettings disciplines)
             {
                 Report = report;
+                Disciplines = disciplines;
                 Tally = new PackageTally();
                 Runnable = new List<Package>();
                 Plans = new Dictionary<string, PackagePlan>(StringComparer.OrdinalIgnoreCase);
             }
 
             public string Report { get; private set; }
+
+            public DisciplineReportSettings Disciplines { get; private set; }
 
             public PackageTally Tally { get; private set; }
 
@@ -441,17 +472,20 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// F209. The discipline workbooks of every package that ran, each package in a try of its own, so one package's
+        /// F209 and F222. The discipline workbooks of every package that ran, written by the window that started the run off
+        /// the facts each group's result carried, Core's PackageRunFacts, each package in a try of its own, so one package's
         /// fault never stops the others' reports, and every package's DISCIPLINE REPORT block in the log.
         /// </summary>
-        private void WriteTheDisciplineReports(PackageRun run, IList<JobOutcome> outcomes, DisciplineReportSettings disciplines)
+        private void WriteTheDisciplineReports(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> whys)
         {
             foreach (Package package in run.Runnable)
             {
                 try
                 {
                     PackagePlan plan;
-                    WriteOnePackagesReports(package, run.Plans.TryGetValue(package.RelativePath, out plan) ? plan : null, outcomes, run.Report, disciplines);
+                    IList<DisciplineGroup> groups = PackageRunFacts.GroupsOf(
+                        package, run.Plans.TryGetValue(package.RelativePath, out plan) ? plan : null, units, results, whys);
+                    WriteOnePackagesReports(package, groups, run.Report, run.Disciplines);
                 }
                 catch (Exception error)
                 {
@@ -461,57 +495,12 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// One package's four workbooks. On the NWC page every group of its plan, the facts of those that ran and the files
-        /// of those that did not, and on the NWF page every NWF that ran, its models' files and facts. Each NWC's date off the
-        /// disk. Each workbook under a name nothing in the folder holds, ReportPaths.FreeFilePath, its size read back by the
-        /// log and its lines read back off the file.
+        /// One package's four workbooks off its groups, each with its files and the facts of its models where they were read.
+        /// Each NWC's date off the disk. Each workbook under a name nothing in the folder holds, ReportPaths.FreeFilePath, its
+        /// size read back by the log and its lines read back off the file.
         /// </summary>
-        private void WriteOnePackagesReports(Package package, PackagePlan plan, IList<JobOutcome> outcomes, string report, DisciplineReportSettings disciplines)
+        private void WriteOnePackagesReports(Package package, IList<DisciplineGroup> groups, string report, DisciplineReportSettings disciplines)
         {
-            List<JobOutcome> mine = new List<JobOutcome>();
-
-            foreach (JobOutcome outcome in outcomes)
-            {
-                if (outcome != null && outcome.Job != null && string.Equals(outcome.Job.Package, package.RelativePath, StringComparison.OrdinalIgnoreCase))
-                {
-                    mine.Add(outcome);
-                }
-            }
-
-            List<DisciplineGroup> groups = new List<DisciplineGroup>();
-
-            if (plan != null)
-            {
-                foreach (PackageGroup group in plan.Groups)
-                {
-                    JobOutcome ran = mine.Find(o => string.Equals(o.Job.Building, group.Building, StringComparison.Ordinal));
-                    groups.Add(new DisciplineGroup(group.Building, group.Files, ran == null ? null : ran.DisciplineFacts,
-                        ran == null ? "this group did not run in this run" : (ran.DisciplineFactsNotRead ?? "the group ended before its models were read")));
-                }
-            }
-            else
-            {
-                foreach (JobOutcome ran in mine)
-                {
-                    List<string> files = new List<string>();
-
-                    if (ran.DisciplineFacts != null)
-                    {
-                        foreach (ModelFacts model in ran.DisciplineFacts)
-                        {
-                            files.Add(model.File);
-                        }
-                    }
-                    else
-                    {
-                        files.AddRange(ran.Job.Files);
-                    }
-
-                    groups.Add(new DisciplineGroup(ran.Job.Building, files, ran.DisciplineFacts,
-                        ran.DisciplineFactsNotRead ?? "the NWF ended before its models were read"));
-                }
-            }
-
             List<FileDate> dates = new List<FileDate>();
 
             foreach (DisciplineGroup group in groups)
@@ -599,7 +588,7 @@ namespace Federator.Addin.Ui
             NwfPageSteps nwfSteps = TheNwfSteps();
             nwfSteps.Apply(options);
             string report = Trimmed(packagePanel.Report);
-            PackageRun run = new PackageRun(report);
+            PackageRun run = new PackageRun(report, options.Disciplines);
             PackageTally tally = run.Tally;
             List<string> nwfs = new List<string>();
             List<PackageNwf> inPackages = new List<PackageNwf>();
@@ -645,6 +634,21 @@ namespace Federator.Addin.Ui
             log.Block(PackageWords.TreeTitle, packageTree.Lines());
             log.Block(PackageWords.ChosenTitle, packageTicks.Lines());
             log.Block("PACKAGE NWFS", lines);
+
+            // F222, Q211. A group's own Navisworks runs its one NWF, the one the order names, and no other. Where its package holds
+            // no NWF at all the refusal below gives the real reason.
+            if (child != null && nwfs.Count > 0)
+            {
+                inPackages = inPackages.FindAll(nwf => child.Unit.IsTheGroupOf(nwf.NwfPath));
+                nwfs = inPackages.ConvertAll(nwf => nwf.NwfPath);
+
+                if (nwfs.Count == 0)
+                {
+                    childRanNoGroupBecause = PackageRunWords.NotTheGroup(child.Unit.Label, child.Unit.Group);
+                    log.Line(PackageRunWords.Prefix + " " + childRanNoGroupBecause);
+                    return;
+                }
+            }
 
             if (nwfs.Count == 0)
             {
@@ -700,10 +704,17 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            // F214. The window a person runs hands each package to a fresh Navisworks, and a package's own window runs it.
+            // F214 and F222. The window a person runs hands each NWF to a fresh Navisworks, and a group's own window runs it.
             if (child == null)
             {
-                RunPackagesInFreshStarts(PackageRunOrder.NwfPage, run.Runnable, report, tally);
+                List<PackageRunUnit> units = new List<PackageRunUnit>();
+
+                foreach (PackageNwf nwf in inPackages)
+                {
+                    units.Add(new PackageRunUnit(nwf.Package.RelativePath, nwf.NwfPath, Path.GetFileNameWithoutExtension(nwf.NwfPath)));
+                }
+
+                RunPackagesInFreshStarts(PackageRunOrder.NwfPage, run, units);
                 return;
             }
 
@@ -742,9 +753,7 @@ namespace Federator.Addin.Ui
                         outcome == null ? -1 : GroupSize.ClashesIn(outcome.Clash));
                 }
 
-                // F209. One workbook per discipline of every package that ran, from the facts its NWFs' models gave.
-                WriteTheDisciplineReports(run, outcomes, options.Disciplines);
-
+                // F222. No discipline workbook is written here: the window that started the run writes them off this NWF's result.
                 SayWhatAnOpenFileRunAddedUp(engine);
                 log.Block(SetsAcrossTheRun.BlockTitle, engine.SetsAcrossTheRun.Lines());
                 log.RunFinished();

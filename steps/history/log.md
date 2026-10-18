@@ -2,6 +2,113 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F222, Q211, a fresh Navisworks per group on both pages
+
+Branch fix-F222 off main 7acbb0e. Bader's answer to Q211: a fresh Navisworks per group, not only per package, on both pages,
+Run pressed once, one group failing or crashing never stopping the next, RESULT joining every group, the seconds of each start
+and quit and the total in the log. Bader's answers to Q207 to Q211 are written under each in steps\02_questions.md by this pull
+request, Q211 written as asked in the round since no item 211 was in the file.
+
+What was done. Core: the order names one `PackageRunUnit` a group, its package, its NWF and its name, its shape 2 so an order
+of the shape before is refused, two groups of one NWF refused, and `IsTheGroupOf` the one rule a group is found by. Each group's
+result carries its end, its files and the discipline facts of its models, every value not read written with why, the box in
+G17, and `PackageRunFacts.GroupsOf` turns the results of a package into the groups its four workbooks read. The tally names a
+group with no result or that ran nothing on its own line, and the package, community and run lines say their clashes are then
+at least the total. The runner starts one Navisworks a group, counts a start once its process is told and a quit once it is
+gone after being told, says the Navisworks it had to end, and its last line adds them up. The ceiling is one group's, 30
+minutes, over the 139.7 s of F220's longest group. The add-in: a group's own window keeps its one job or NWF and writes no
+workbook, its log deletes no log, `RunLog.KeepEveryLog`, and the window a person runs reads every result against the packages
+it planned, each group in a try of its own, writes the discipline workbooks and then the joined RESULT. Browse refuses during a
+run. The missing discipline check says a group whose files were not read is not read, never missing a discipline. The reviewer
+and the breaker read the first pass, and their findings were taken: wrong missing rows on the NWF page, one throw losing RESULT,
+the rule written three times, the ceiling of a package, R against G17, untested reader checks, the unenforced unique NWF, the
+runner's counts, stale words, children pruning the logs RESULT names, exact totals over groups with no end, a group that ran
+nothing counted as ran and a misleading reason. Rows F222-R1 to R4 hold what is left.
+
+What was proved here. Core tests 3392 passed before on main, 3406 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors. check-locals and check-imports clean. On Navisworks, run-20261018-153025 on 68b08888, the first pass, the NWC page on a
+copy of three small groups of C06, 1B06BS, 1B06M1 and 1B06PE: each group in its own Navisworks, starts 4.0 to 4.3 s, quits 1.8
+to 2.2 s, the runner's line 3 starts 12.5 s and 3 quits 6.0 s, 3 groups DONE, 98 clashes, the four discipline workbooks written
+by the parent off the facts and read back whole. run-20261018-153325, the NWF page on the same NWFs: 3 NWFs each in its own
+Navisworks, 3 DONE, 98 clashes, starts 13.0 s and quits 5.5 s in all. A third run on 3c9ad2ae stopped before any press,
+since the build read +edits from the untracked probe folder tools\probes\AutoSaveProbe of F223 and the driver refuses another
+stamp. Bader said in the tab that Navisworks opened and nothing happened. The session closed that tool window by WM_CLOSE to
+the launcher's own Navisworks, the launcher quit it and put the Auto-Save switch back, the probe folder was held outside the
+tree, and the run was made again from a clean tree. The second pass was seen on Navisworks, run-20261018-155152 on 3c9ad2ae:
+the same three groups each in its own Navisworks, 3 starts 13.0 s and 3 quits 6.2 s, 3 DONE, 98 clashes, the group logs
+deleting no log, 33 left where 30 are kept. run-20261018-155943 on 3c9ad2ae, the NWF page on the same NWFs: 3 starts 13.1 s
+and 3 quits 5.7 s, 3 DONE, 98 clashes. Of the 14 Core tests added, 13 are in FreshNavisworksPerGroupTests and 1 in
+DisciplineChecksTests.
+
+What remains. The whole C06 and C07 in F229. Known bugs: rows F222-R1 to R4. What comes next: F223, Q207.
+
+## 2026-10-18 The round of F222 to F230, the plan, written before the first edit
+
+Bader's round of 18 Oct 2026 after his answers to Q207 to Q211, the recommended choice on each: apply them, close the docs
+part of the F221 audit, then test again on fresh copies of C06 and C07. The session runs from the repo folder on main
+7acbb0e, so the hooks of .claude\settings.json fire. Read before this plan: CLAUDE.md, the six files of .claude\rules,
+steps\PROGRESS.md, the F221 entry of this log, steps\01_next.md from its order to F221, steps\02_questions.md Q207 to Q210
+and Q30, claude\audit-round-2026-10-18.md, docs\history\scan.md 5z-zf and 5z-zh to 5z-zk, and the code each fix touches,
+the runner, the window's two package routes, ClashRunner's plan and skips, PackageRunOrder, PackageRunResult and
+PackageRunWords. steps\01_next.md is 571 KB and its sections before F211 were read as far as the order and not line by line.
+Q211 is in no file of the repo, so it is written as asked in this round and answered. The F numbers are F222 to F230, free in
+the tracker, the plan and this log.
+
+Bader's answers are written under Q207 to Q211 in steps\02_questions.md by F222's pull request, with the rows of Q207 to
+Q210, each naming the fix that carries it out.
+
+The fixes, in Bader's order, one branch and one pull request each, merged on green and the branch deleted:
+
+1. F222, Q211, a fresh Navisworks per group on both pages, first since it decides how every later fix runs. Core: the order
+   names each unit of the run, a package and one group of it, the NWC page's group by its building and the NWF page's by
+   its NWF, every unit writes its own result, the joined RESULT reads every group as today, and the runner's lines carry the
+   seconds of each start and each quit and the total. A unit's Navisworks runs its one group and nothing else. The
+   discipline reports need every group of a package, so each unit writes its group's discipline facts to a file of the run
+   and the window a person runs writes each package's four workbooks from them once its groups have run. One unit failing
+   or crashing never stops the next. Proved by Core tests and a short run of two groups on both pages before the pull request.
+2. F223, Q207, Auto-Save off while the tool works. Measured first by a probe under tools\probes, appended to scan.md: whether
+   LcUOption reads and sets general.autosave.enable in a running Navisworks, whether Navisworks then writes no autosave, and
+   what it writes into the registry at the quit. Then the tool reads the value as the run starts, logs it, sets it off, puts
+   it back in a finally as the run ends and logs the value put back, and the runner reads the registry value before each
+   start and puts it back after that Navisworks is gone where it differs, so a Navisworks that crashed or was ended leaves
+   it as it was. The words and the reading of the registry value are Core's with tests. run.ps1 keeps its own switch, Q207.
+3. F224, Q209, only tests across two set codes, both pages. Core: one rule, a test whose two sides read the same set code by
+   CodeOf.Set is left out of the plan before the mirrors are paired and before any test is created, with a skip reason of its
+   own, and one CLASH line per group counts the tests the rule left out. A group of one set code runs nothing, Q203 kept.
+4. F225, F219-R1 with Q209. A test the rule leaves out, or the one-discipline rule of Q203, is never deleted from an NWF. Its
+   earlier results stay, the log counts per group the tests left out that still hold results, and COVERAGE reads such a test as
+   not compared with its reason and never as FAILED. Q212 asks Bader whether the tool should remove them.
+5. F226, Q208, the empty picture taken again. Measured first on copies of 1B06BC and 1B06P1 with the sky probe grown by one
+   mode: the picture of each empty clash taken through the active view from the clash's own camera moved back to 30 ft where it
+   stands closer, its two items coloured red and green and the other models hidden, each read for its items. Then Core's rule
+   of a picture that draws no item, read off its pixels, and of the camera moved back, with tests, and the add-in's retake in
+   the picture pass, the active view's camera and the colours put back, one IMAGES line with the count taken again and the
+   count still empty. A picture still empty after its retake is taken off the disk and its Image cell left empty and named, so
+   no Image cell shows only the sky.
+6. F227, Q210. PictureLimits' A 150, B 100, C 50, the GDI stop 9000 and the memory stop 12 GB, ClashRunner.ProgressEvery,
+   ExportCheck.NamesShown and AppendBoxWatch.PressesBeforeSaying become settings with today's values as defaults. The 27
+   members of contradiction 13 read only by tests become internal and keep their tests, each read again by grep first.
+   TestRefresh.BeforeTotal and AfterTotal are deleted.
+7. F228, the docs part of the F221 audit: docs\workflow.md rewritten for the NWC page and the NWF page as they are now, with
+   packages and the fresh starts, items 15 and 16. CLAUDE.md's folder list, item 18. Rule files for src\Federator.Runner and
+   build, item 19. Q30 allows the manifest's line 9, in a pull request of its own and inside no fix, so that is one more pull
+   request, FR-204 under F123, changed by a command since the file tools are walled off bundle.
+8. F229, the test after the last merge. main built and installed. C06 and C07 copied from the real files as they are now into
+   C:\NWC-PC-Test\work\multi3 in the flat layout, a Report folder holding empty C06 and C07, and one package holding copies of
+   1B06BC and 1B06P1 for Q208. The real files listed by name, size, date and SHA-256 before and after, 0 lines differing. The NWC
+   page on all of them with Run pressed once and no box answered, then the NWF page on the same, driven through UI Automation as
+   F220 was. What it must show: a fresh Navisworks per group off the log, no memory stop in C06, Auto-Save off during the run and
+   put back, no same set code test run on either page with the count per group, 0 sky only pictures, the settings at their
+   defaults. The clash counts against F220 per community and how many Q209 removed. The logs and tsv into steps\logs named with
+   the date and C06-C07.
+9. F230, the end: claude\audit-round-2026-10-18b.md, the proof steps in steps\03_bader_next.md each with a Look for line, a full
+   audit and QA of the repo after the last merge listing every contradiction with CLAUDE.md, and the closing entry.
+
+How each fix is checked: the Core tests before and after, the solution built with 0 errors, a reviewer and a breaker reading
+every change before its pull request, the claim checker reading each pull request body and log entry, and a Navisworks run
+where the add-in changed, the short ones above and F229. Nothing in the desktop folder of real files is written, moved or saved
+over, and its listing is read before and after every copy. Plain Navisworks Manage 2025 only.
+
 ## 2026-10-18 F221, the audit of the round of 18 Oct, and the round's closing entry
 
 Branch fix-F221 off main 026a144, main 4e705ce merged in after F220 300. Bader's round of 18 Oct 2026, AT THE END: the

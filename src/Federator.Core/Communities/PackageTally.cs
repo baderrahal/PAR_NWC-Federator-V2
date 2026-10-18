@@ -65,10 +65,19 @@ namespace Federator.Core.Communities
             }
         }
 
+        /// <summary>A group that has no end to count, F222: its Navisworks wrote no result, or it ran nothing there.</summary>
+        private sealed class NoEnd
+        {
+            public Package Package;
+            public string Group;
+            public string Words;
+            public bool NoResult;
+        }
+
         private readonly List<GroupEnd> ends = new List<GroupEnd>();
+        private readonly List<NoEnd> noEnds = new List<NoEnd>();
         private readonly List<Package> order = new List<Package>();
         private readonly Dictionary<string, string> notRun = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, string> noResult = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>A package of the run, in the order it runs, so a package that ran nothing is still counted.</summary>
         public void Expect(Package package)
@@ -108,10 +117,21 @@ namespace Federator.Core.Communities
         }
 
         /// <summary>
-        /// A package whose own Navisworks wrote no result, F214, and why. It is never said as not run, since its groups may
-        /// have run and written files before its Navisworks ended. The first reason given is the one kept.
+        /// A group whose own Navisworks wrote no result, F214 and since F222 one group a Navisworks, and why. It is never
+        /// said as not run, since it may have run and written files before its Navisworks ended.
         /// </summary>
-        public void NoResult(Package package, string why)
+        public void NoResult(Package package, string group, string why)
+        {
+            AddNoEnd(package, group, PackageRunWords.NoResult(why), true);
+        }
+
+        /// <summary>A group whose own Navisworks ran nothing, F222, and why, its result read and naming no group.</summary>
+        public void NotRun(Package package, string group, string why)
+        {
+            AddNoEnd(package, group, PackageRunWords.GroupNotRun(why), false);
+        }
+
+        private void AddNoEnd(Package package, string group, string words, bool noResult)
         {
             if (package == null)
             {
@@ -119,16 +139,24 @@ namespace Federator.Core.Communities
             }
 
             Expect(package);
-
-            if (!noResult.ContainsKey(package.RelativePath))
-            {
-                noResult.Add(package.RelativePath, string.IsNullOrEmpty(why) ? "UNKNOWN why" : why);
-            }
+            noEnds.Add(new NoEnd { Package = package, Group = group ?? string.Empty, Words = words, NoResult = noResult });
         }
 
         public int GroupCount
         {
             get { return ends.Count; }
+        }
+
+        /// <summary>How many groups wrote no result, F222, read by the one RESULT of a run in fresh starts.</summary>
+        public int NoResultCount
+        {
+            get { return noEnds.FindAll(end => end.NoResult).Count; }
+        }
+
+        /// <summary>How many groups ran nothing in their own Navisworks, F222.</summary>
+        public int NotRunCount
+        {
+            get { return noEnds.FindAll(end => !end.NoResult).Count; }
         }
 
         /// <summary>How many of the groups ended this way, F214, read by the one RESULT of a run in fresh starts.</summary>
@@ -154,6 +182,11 @@ namespace Federator.Core.Communities
                     + end.Outcome.ToString().ToUpperInvariant() + "  " + ClashWords(end.Clashes, end.Clashes < 0));
             }
 
+            foreach (NoEnd end in noEnds)
+            {
+                lines.Add("group          " + end.Package.RelativePath + "  " + end.Group + "  " + end.Words);
+            }
+
             Dictionary<string, Totals> byCommunity = new Dictionary<string, Totals>(StringComparer.OrdinalIgnoreCase);
             List<string> communities = new List<string>();
             Totals run = new Totals();
@@ -171,11 +204,12 @@ namespace Federator.Core.Communities
                 }
 
                 string why;
-                string unknown;
+                int without = noEnds.FindAll(end => string.Equals(end.Package.RelativePath, package.RelativePath, StringComparison.OrdinalIgnoreCase)).Count;
                 lines.Add("package        " + package.RelativePath + " : "
-                    + (noResult.TryGetValue(package.RelativePath, out unknown) && totals.Groups == 0
-                        ? unknown
-                        : notRun.TryGetValue(package.RelativePath, out why) && totals.Groups == 0 ? "not run, " + why : totals.Words()));
+                    + (notRun.TryGetValue(package.RelativePath, out why) && totals.Groups == 0 && without == 0
+                        ? "not run, " + why
+                        : totals.Words() + (without == 0 ? string.Empty
+                            : ", and " + PackageWords.Count(without, "group", "groups") + " with no end to count, each named above")));
 
                 Totals community;
 
@@ -202,13 +236,24 @@ namespace Federator.Core.Communities
             {
                 Totals community = byCommunity[name];
                 lines.Add("community      " + name + " : " + PackageWords.Count(community.Packages.Count, "package", "packages")
-                    + ", " + community.Words());
+                    + ", " + community.Words() + NoEndWords(noEnds.FindAll(end => string.Equals(end.Package.Community, name, StringComparison.OrdinalIgnoreCase)).Count));
             }
 
             lines.Add("run            : " + PackageWords.Count(communities.Count, "community", "communities") + ", "
-                + PackageWords.Count(order.Count, "package", "packages") + ", " + run.Words());
+                + PackageWords.Count(order.Count, "package", "packages") + ", " + run.Words() + NoEndWords(noEnds.Count));
 
             return lines;
+        }
+
+        /// <summary>
+        /// F222. What a total of the community or the run leaves out: its groups with no end to count, which may hold clashes in
+        /// files on the disk, so the clashes of the total are a lower bound and never read as exact.
+        /// </summary>
+        private static string NoEndWords(int count)
+        {
+            return count == 0
+                ? string.Empty
+                : ", and " + PackageWords.Count(count, "group", "groups") + " with no end to count, each named above, so the clashes are at least that";
         }
 
         private static string ClashWords(long clashes, bool unknown)

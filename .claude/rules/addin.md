@@ -1153,7 +1153,7 @@ with none named and the others run, the refresh confirm, then, since F214, each 
 its own Navisworks, whose window runs `RunPickedNwfs` with each NWF's place, `PackageNwf`, so its NWD, its Backup and its
 logs are written into its package's folders and not beside the file. One failure never stops the others: each group and each
 NWF is run in its own try, and since F214 the guard that stops a run after its first 50 tests all fail the same way stops
-only the package it fired in, since the next package runs in a fresh Navisworks with a fresh engine.
+only the package it fired in, and since F222 only the group, since the next runs in a fresh Navisworks with a fresh engine.
 
 ## A fresh Navisworks per package, F214
 
@@ -1191,6 +1191,29 @@ opening a file discards, the refresh confirm of the NWF page and the Rebuild box
 the run confirmed it. A child whose order does not read runs nothing and says so. WHAT IS NOT MEASURED: whether a Navisworks a
 person started, and not the Automation API, can start the runner's Navisworks, which is step one of the proof in
 steps\03_bader_next.md. Rows F214-R1 to R4 hold what the readers found and this does not close.
+
+## A fresh Navisworks per group, F222
+
+Bader's answer to Q211 of 18 Oct 2026: a fresh Navisworks per group, not only per package, on both pages, Run pressed once,
+one group failing or crashing never stopping the next, RESULT joining every group, the seconds of each start and quit and the
+total logged. Every rule and every word is Core's, core.md A FRESH NAVISWORKS PER GROUP. The route of each page plans and
+confirms as before, then `RunPackagesInFreshStarts` hands the runner one `PackageRunUnit` a group: on the NWC page each job
+the plan lets run, by its NWF, its package and its building, and on the NWF page each NWF of the ticked packages. The runner
+runs them as it ran packages, one Navisworks each, the next only once the last is gone, and times each start and each quit.
+A GROUP'S OWN WINDOW RUNS ITS ONE GROUP: it plans its package as the person's window did, then keeps the one job, or the one
+NWF, whose NWF the order names, compared without case, and runs nothing where none is, its result saying why,
+`PackageRunWords.NotTheGroup`. Its result carries the group's end and, off its `JobOutcome`, the files it was handed and the
+discipline facts its models gave or why none were read. It writes no discipline workbook. THE WINDOW THAT STARTED THE RUN
+reads every group's result, fills the package tally, writes each package's four discipline workbooks off the facts with
+`PackageRunFacts.GroupsOf`, each package in a try of its own, and only then writes the joined RESULT, so RESULT stays the
+last block. It counts a group as ran only where its result names a group, and joins the results against the packages
+the run planned and never the tree read again, a group counted in a try of its own, while Browse and Read refuse during the
+run. A group's own Navisworks opens its log with `RunLog.KeepEveryLog`, so it deletes no log the joined RESULT names, and
+where its package plans no group at all its result gives the package's own refusal and never `NotTheGroup`. A group's own
+window is a fresh engine, so the guard of 50 failures and Clash Detective's Hide Other baseline of F150 are each one group's,
+row F222-R3. The scanned run of the NWC page and the picked NWFs of the NWF page, which run in the Navisworks a person
+started, are unchanged and run every group there, as before F214. WHAT IS NOT MEASURED: what the starts and quits of one
+Navisworks a group cost on a whole community, read off the first run of C06 and C07 since F222, steps\03_bader_next.md.
 ## The discipline reports, F209
 
 Every rule and every word is Core's, core.md The discipline reports. The add-in reads and writes only. FOR A GROUP OF A
@@ -1203,8 +1226,9 @@ setting's category is a Generic Models line, and a topmost item of the Item tab 
 element is the nearest item above it carrying the Element tab's Id. A part that would not read goes on with why. One
 DISCIPLINE line a group says what was read and in how long. The facts stay on `JobOutcome.DisciplineFacts`.
 
-THE WINDOW WRITES THE WORKBOOKS ONCE THE PACKAGE'S GROUPS HAVE RUN, `WriteTheDisciplineReports`, each package in a try of its
-own: on the NWC page every group of its plan, the facts of those that ran and the files alone of those left out, on the NWF
+THE WINDOW WRITES THE WORKBOOKS ONCE THE PACKAGE'S GROUPS HAVE RUN, `WriteTheDisciplineReports`, since F222 the window that
+started the run, off the facts each group's own Navisworks wrote into its result, `PackageRunFacts.GroupsOf`, each package in a
+try of its own: on the NWC page every group of its plan, the facts of those that ran and the files alone of those left out, on the NWF
 page every NWF that ran and its models' files, each NWC's date off the disk, then `DisciplineReport.For`, the DISCIPLINE
 REPORT block, and the four workbooks in the package's report folder, each one CHECKS attempt and written line with its size
 read back by the log and one line reading its rows back off the file.

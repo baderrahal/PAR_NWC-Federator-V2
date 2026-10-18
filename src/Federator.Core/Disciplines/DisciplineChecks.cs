@@ -288,25 +288,43 @@ namespace Federator.Core.Disciplines
                 codesOf[group] = codes;
             }
 
+            // F222. A group whose files were not read, its Navisworks writing no result or an NWF whose models never read, holds
+            // no file to judge, so whether it misses a discipline is UNKNOWN and it is never counted as missing one.
+            List<DisciplineGroup> known = new List<DisciplineGroup>(groups).FindAll(g => g.Files.Count > 0 || g.Models != null);
+
             foreach (string discipline in settings.Disciplines)
             {
-                List<DisciplineGroup> with = new List<DisciplineGroup>(groups).FindAll(g => codesOf[g].Contains(discipline));
+                foreach (DisciplineGroup group in groups)
+                {
+                    if (!known.Contains(group))
+                    {
+                        rows.Add(place.Row(discipline, group.Name, string.Empty, CheckWords.Missing, CheckWords.NotRead,
+                            "whether " + discipline + " is in " + group.Name + " is UNKNOWN, its files were not read, " + group.WhyNoModels, null));
+                    }
+                }
+
+                if (known.Count == 0)
+                {
+                    continue;
+                }
+
+                List<DisciplineGroup> with = known.FindAll(g => codesOf[g].Contains(discipline));
 
                 if (with.Count == 0)
                 {
                     rows.Add(place.Row(discipline, string.Empty, string.Empty, CheckWords.Missing, CheckWords.NotInThePackage,
-                        discipline + " is in no group of this package, so no group misses it against the others", null));
+                        discipline + " is in no group of this package" + (known.Count < groups.Count ? " whose files were read" : string.Empty) + ", so no group misses it against the others", null));
                     continue;
                 }
 
-                if (with.Count == groups.Count)
+                if (with.Count == known.Count)
                 {
                     rows.Add(place.Row(discipline, string.Empty, string.Empty, CheckWords.Missing, CheckWords.NoneMissing,
-                        discipline + " is in every group of this package, " + PackageCount(groups.Count), null));
+                        discipline + " is in every group of this package" + (known.Count < groups.Count ? " whose files were read" : string.Empty) + ", " + PackageCount(known.Count), null));
                     continue;
                 }
 
-                foreach (DisciplineGroup group in groups)
+                foreach (DisciplineGroup group in known)
                 {
                     if (codesOf[group].Contains(discipline))
                     {
@@ -314,7 +332,7 @@ namespace Federator.Core.Disciplines
                     }
 
                     rows.Add(place.Row(discipline, group.Name, string.Empty, CheckWords.Missing, CheckWords.MissingHere,
-                        discipline + " is in " + with.Count + " of " + groups.Count + " groups of this package and not in " + group.Name
+                        discipline + " is in " + with.Count + " of " + known.Count + " groups of this package" + (known.Count < groups.Count ? " whose files were read" : string.Empty) + " and not in " + group.Name
                             + ", which holds " + (codesOf[group].Count == 0 ? "no discipline that reads" : string.Join(", ", codesOf[group].ToArray())),
                         null));
                 }

@@ -2534,7 +2534,7 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   between the starts is Core's. `PackageRunOrder` is what the window a person runs hands every package's Navisworks: the
   page, the parent and Report folders, the packages in their order, every control of the window by name as `ControlValue`,
   text, tick or choice, the run's own folder named for its second by `FolderFor` and never one already there, the plugin and
-  the `PackageRunSettings`, a ceiling of 240 minutes a package, a wait of 60 s for a Navisworks to be gone and a poll of 200 ms,
+  the `PackageRunSettings`, a ceiling of 30 minutes a group since F222, 240 a package before it, a wait of 60 s for a Navisworks to be gone and a poll of 200 ms,
   all chosen and not measured, each refusing what cannot work, and `RunnerLimitMinutes`, every package's ceiling and wait added
   up, past which the window ends the runner. `PackageRunResult` is what each package's Navisworks writes back: its groups,
   each with its outcome, its clashes, minus one where not taken, and its reason, why none ran, its own log and the lines of its
@@ -2552,6 +2552,29 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   its groups may have written files before its Navisworks ended, and whether any did is UNKNOWN. The live line counts the
   packages that wrote a result, `Finished`, and `Warning` is the window's warning where one did not. Proved by
   `PackageFreshStartTests`
+- A FRESH NAVISWORKS PER GROUP, F222, Bader's answer to Q211 of 18 Oct 2026, not only per package, on both pages, Run
+  pressed once. The order names each GROUP of the run, `PackageRunUnit`: its package, its NWF, which no two groups of a run
+  share and which is the one key a group's own Navisworks finds its group by, and its name, the building on the NWC page and
+  the NWF's name on the NWF page, a package's groups together in the tree's order. The order's first line names its shape, 2,
+  so an order of the shape before is refused. Every count and word above that read a package now reads a group: one result
+  file a group, `ResultPathFor`, the runner's lines, `Starting`, `Started`, `Gone`, the live line, the warning, and the
+  joined RESULT, which names every group under its package and name, `JoinedResult` over the units. A GROUP WITH NO RESULT
+  IS NAMED ON ITS OWN LINE AND NEVER AS NOT RUN, `PackageTally.NoResult(package, group, why)`, and one whose Navisworks ran
+  nothing on its own, `NotRun(package, group, why)`, and its package, community and run lines add how many groups have no
+  end to count and that their clashes are then at least the total, never exact. An order of two groups writing one NWF is
+  refused, `WhyNot`, since neither could find its own, and the one rule a group is found by is `PackageRunUnit.IsTheGroupOf`,
+  without case. The live line and the warning count a group as ran only where its result names a group. A group whose files
+  were not read, its result missing or an NWF whose models never read, is said not read by the missing discipline check and
+  never missing a discipline, `MissingDisciplineCheck`. The ceiling is one group's since F222, 30 minutes over the 139.7 s
+  of the longest group of F220. The
+  runner's last line adds up the seconds of every start, from the call that makes the Navisworks to its process told, and of
+  every quit, from the call that tells it to quit to its process gone, `RunnerEnded`. THE DISCIPLINE REPORTS ARE WRITTEN BY
+  THE WINDOW THAT STARTED THE RUN, since no Navisworks holds every group of a package: each group's result carries its files
+  and the facts of its models, `PackageRunGroup.Files`, `Facts` and `FactsNotRead`, a value not read written with the word
+  not and its why so it never reads back as a zero or as none found, and `PackageRunFacts.GroupsOf` turns the results of a
+  package into the groups its workbooks read, on the NWC page every group of its plan by its NWF and on the NWF page every
+  group of the run in that package, a group with no facts kept with its files and why. A facts line out of its place, of the
+  wrong count or a number that is not one makes the whole result no result. Proved by `FreshNavisworksPerGroupTests`
 
 ## The discipline reports, F209
 
@@ -2632,7 +2655,8 @@ survive the crash rather than to be tidy.
   returns minus one and writes one NOT WRITTEN line saying whether a file of that name is at
   the path. The clash workbook and the internal workbook both write through it. FR-189 is the
   same fault for the NWD and FR-044 and FR-045 for the NWF, area F119
-- on start, the oldest logs are deleted until 30 remain, the live file included.
+- on start, the oldest logs are deleted until 30 remain, the live file included, bar the log of a group's own Navisworks of a
+  run of packages, which deletes none, `RunLog.KeepEveryLog`, F222, so a later group never deletes the log of one before it.
   The live file is never a candidate. A delete that fails writes one line naming
   the file and the reason. 30 is a setting, RunLog.KeepLogs, static because the log opens
   on the first line of the button handler before a window or any options object exists.
