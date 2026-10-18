@@ -176,6 +176,15 @@ namespace Federator.Addin.Ui
                 if (built.Count == 0)
                 {
                     result.NoGroupBecause = notBuilt != null ? notBuilt.NotBuiltBecause : childRanNoGroupBecause ?? "no group of it ran, its log says why";
+
+                    // F234 on row F233-R2. Its files, so its row of the discipline reports names them.
+                    if (notBuilt != null && notBuilt.NotBuiltFiles != null)
+                    {
+                        foreach (string file in notBuilt.NotBuiltFiles)
+                        {
+                            result.NotBuiltFiles.Add(file);
+                        }
+                    }
                 }
                 else
                 {

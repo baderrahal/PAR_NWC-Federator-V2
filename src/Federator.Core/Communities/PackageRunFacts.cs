@@ -74,6 +74,11 @@ namespace Federator.Core.Communities
                 {
                     files.AddRange(ran.Files);
                 }
+                else if (results[i] != null)
+                {
+                    // F234 on row F233-R2. A group of one discipline its Navisworks did not build keeps its files.
+                    files.AddRange(results[i].NotBuiltFiles);
+                }
 
                 groups.Add(new DisciplineGroup(ran == null ? units[i].Name : ran.Group, files, ran == null ? null : ran.Facts,
                     WhyNoFacts(results[i], noResultWhy[i], ran)));

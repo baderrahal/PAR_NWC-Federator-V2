@@ -154,6 +154,9 @@ namespace Federator.Addin.Engine
         /// </summary>
         public string NotBuiltBecause { get; set; }
 
+        /// <summary>F234 on row F233-R2. The NWC files of such a group, read off its NWF's models, for its row of the discipline reports.</summary>
+        public IList<string> NotBuiltFiles { get; set; }
+
         /// <summary>
         /// Why this group is not DONE, or null when it is. Comes out of the same pass that
         /// decides the outcome, so the two can never disagree and a FAILED group can never

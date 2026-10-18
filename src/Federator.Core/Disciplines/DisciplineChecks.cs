@@ -1,45 +1,64 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
+using Federator.Core.Grouping;
+using Federator.Core.Health;
 using Federator.Core.Naming;
 
 namespace Federator.Core.Disciplines
 {
-    /// <summary>The place a row is about, so each check writes its rows with the community and the package once.</summary>
-    internal sealed class RowPlace
+    /// <summary>
+    /// What one check of the discipline reports found over the groups of a package, F234: its rows, the files of each
+    /// discipline it read for the summary's Files checked, and the lines of what it could not read, which go in the log, since
+    /// the workbook holds only what needs action and a value not read is never called a pass.
+    /// </summary>
+    public sealed class CheckFindings
     {
-        public RowPlace(string community, string package)
+        private readonly List<DisciplineIssue> issues = new List<DisciplineIssue>();
+        private readonly Dictionary<string, int> filesChecked = new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly List<string> notes = new List<string>();
+
+        public CheckFindings(string check)
         {
-            Community = community ?? string.Empty;
-            Package = package ?? string.Empty;
+            Check = check ?? string.Empty;
         }
 
-        public string Community { get; private set; }
+        public string Check { get; private set; }
 
-        public string Package { get; private set; }
-
-        public CheckRow Row(string discipline, string group, string file, string check, string result, string value, string elementId)
+        public IList<DisciplineIssue> Issues
         {
-            return new CheckRow(discipline, Community, Package, group, FileName(file), check, result, value, elementId);
+            get { return issues.AsReadOnly(); }
         }
 
-        public static string FileName(string file)
+        /// <summary>The lines the log carries: what was not read and why, and what a check learned, such as the naming pattern.</summary>
+        public IList<string> Notes
         {
-            if (string.IsNullOrEmpty(file))
-            {
-                return string.Empty;
-            }
+            get { return notes.AsReadOnly(); }
+        }
 
-            try
-            {
-                return Path.GetFileName(file);
-            }
-            catch (ArgumentException)
-            {
-                return file;
-            }
+        /// <summary>How many files of a discipline the check read.</summary>
+        public int FilesCheckedFor(string discipline)
+        {
+            int count;
+            return filesChecked.TryGetValue(discipline ?? string.Empty, out count) ? count : 0;
+        }
+
+        internal void Read(string discipline, int files)
+        {
+            string key = discipline ?? string.Empty;
+            int was;
+            filesChecked[key] = (filesChecked.TryGetValue(key, out was) ? was : 0) + files;
+        }
+
+        internal void Add(DisciplineIssue issue)
+        {
+            issues.Add(issue);
+        }
+
+        internal void Note(string line)
+        {
+            notes.Add(Check + "  " + line);
         }
     }
 
@@ -56,295 +75,296 @@ namespace Federator.Core.Disciplines
             ParsedContainerName parsed = ContainerName.Parse(file, names);
             return parsed.IsReadable ? parsed.Discipline : null;
         }
+
+        /// <summary>The building code of a file by the naming settings, part 3 by default, or empty where the name does not read.</summary>
+        public static string Building(string file, ContainerNameSettings names)
+        {
+            if (string.IsNullOrEmpty(file) || names == null)
+            {
+                return string.Empty;
+            }
+
+            ParsedContainerName parsed = ContainerName.Parse(file, names);
+            return parsed.IsReadable ? parsed.Building : string.Empty;
+        }
+
+        /// <summary>The building codes of a group's files, each once in file order, joined by a comma, for a row about the group.</summary>
+        public static string BuildingsOf(DisciplineGroup group, ContainerNameSettings names)
+        {
+            List<string> codes = new List<string>();
+
+            foreach (string file in group.Files)
+            {
+                string code = Building(file, names);
+
+                if (code.Length > 0 && !codes.Contains(code))
+                {
+                    codes.Add(code);
+                }
+            }
+
+            return codes.Count == 0 ? group.Name : string.Join(", ", codes.ToArray());
+        }
+
+        /// <summary>The disciplines of a group's files that read, each once in file order.</summary>
+        public static IList<string> CodesOf(DisciplineGroup group, ContainerNameSettings names)
+        {
+            List<string> codes = new List<string>();
+
+            foreach (string file in group.Files)
+            {
+                string code = File(file, names);
+
+                if (code != null && !codes.Contains(code))
+                {
+                    codes.Add(code);
+                }
+            }
+
+            return codes;
+        }
+
+        /// <summary>The name after the last slash or backslash, read as text so no path is ever a throw.</summary>
+        public static string FileName(string file)
+        {
+            if (string.IsNullOrEmpty(file))
+            {
+                return string.Empty;
+            }
+
+            int at = file.LastIndexOfAny(new[] { '\\', '/' });
+            return at < 0 ? file : file.Substring(at + 1);
+        }
     }
 
     /// <summary>
-    /// Check 1, coordinates, F209. Each model's box is measured from the boxes of the reference discipline's models of its
-    /// group, AR by default, as the gap between the two boxes, nought where they overlap and the straight line of the gaps
-    /// on the three axes where they do not, and a model whose gap is over the setting is far. Each line names the distance
-    /// and both shared sites. A group with no reference model takes the discipline of its first model with a box, and the
-    /// line says so. Measured on C02 on 18 Oct 2026, scan.md 5z-zg: AR and ME near Revit's origin, EL and ST 2,823 km away.
+    /// Coordinates, F234, Bader's round of 19 Oct 2026, fix 4: ALIGNMENT's rule and numbers, never the box gap. Each model of a
+    /// group is placed by the translation of its transform, ModelPlacement, and measured from the group's reference model,
+    /// AlignmentCheck.ReferenceIn, by the straight line of the differences, AlignmentCheck.StraightLineMillimetres. A model
+    /// more than the setting from it, 30 m by Bader's answer to Q202, is a row in the far model's own workbook, the distance in
+    /// metres to three decimals and both shared sites. A reference model on Internal while another model of its group names a
+    /// shared site is one row in the reference discipline's workbook. ST of 1B06BC sits 34.014 m from AR, read off its ALIGNMENT
+    /// block of 19 Oct 2026.
     /// </summary>
     public static class CoordinatesCheck
     {
-        public static IList<CheckRow> Rows(
-            string community, string package, DisciplineGroup group, DisciplineReportSettings settings, ContainerNameSettings names)
+        public static CheckFindings Of(IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names)
         {
-            RowPlace place = new RowPlace(community, package);
-            List<CheckRow> rows = new List<CheckRow>();
+            CheckFindings found = new CheckFindings(CheckWords.Coordinates);
 
-            if (group.Models == null)
+            foreach (DisciplineGroup group in groups)
             {
-                foreach (string file in group.Files)
+                if (group.Models == null)
                 {
-                    rows.Add(place.Row(DisciplineOf.File(file, names), group.Name, file, CheckWords.Coordinates, CheckWords.NotRead,
-                        "the models of this group were not read, " + group.WhyNoModels, null));
+                    if (group.Files.Count > 0)
+                    {
+                        found.Note(group.Name + " not read, its models were not read, " + group.WhyNoModels);
+                    }
+
+                    continue;
                 }
 
-                return rows;
-            }
+                List<ModelPlacement> placements = new List<ModelPlacement>();
 
-            string reference = null;
-            bool fellBack = false;
-
-            foreach (ModelFacts model in group.Models)
-            {
-                if (model.HasBox && string.Equals(DisciplineOf.File(model.File, names), settings.Reference, StringComparison.Ordinal))
-                {
-                    reference = settings.Reference;
-                    break;
-                }
-            }
-
-            if (reference == null)
-            {
                 foreach (ModelFacts model in group.Models)
                 {
-                    string code = DisciplineOf.File(model.File, names);
+                    placements.Add(PlacementOf(model, names));
+                }
 
-                    if (model.HasBox && code != null)
+                ModelPlacement reference = AlignmentCheck.ReferenceIn(placements, settings.Reference);
+
+                if (reference == null)
+                {
+                    found.Note(group.Name + " not read, no model of it was placed, so nothing is measured");
+                    continue;
+                }
+
+                for (int i = 0; i < placements.Count; i++)
+                {
+                    ModelPlacement model = placements[i];
+
+                    if (!model.Placed)
                     {
-                        reference = code;
-                        fellBack = true;
-                        break;
+                        found.Note(group.Name + "  " + model.File + " not read, its placement was not read, " + group.Models[i].PlacementNotRead);
+                        continue;
+                    }
+
+                    found.Read(model.Discipline, 1);
+
+                    if (model == reference)
+                    {
+                        continue;
+                    }
+
+                    double millimetres = AlignmentCheck.StraightLineMillimetres(model, reference);
+
+                    if (millimetres > settings.FarMetres * 1000.0)
+                    {
+                        found.Add(new DisciplineIssue(
+                            model.Discipline,
+                            CheckWords.Coordinates,
+                            DisciplineOf.Building(model.File, names),
+                            model.File,
+                            CheckWords.FarFrom(settings.FarMetres, reference.Discipline),
+                            CheckWords.FarValue(millimetres, model.Discipline, AlignmentCheck.SiteName(model), reference.Discipline, AlignmentCheck.SiteName(reference)),
+                            CheckWords.ExportAgain,
+                            null));
+                    }
+                }
+
+                if (AlignmentCheck.NamesInternal(reference, AlignmentCheck.DefaultInternalName))
+                {
+                    List<string> others = new List<string>();
+
+                    foreach (ModelPlacement model in placements)
+                    {
+                        if (model != reference && model.NamesASharedCoordinate
+                            && !AlignmentCheck.NamesInternal(model, AlignmentCheck.DefaultInternalName) && !others.Contains(model.SharedCoordinate))
+                        {
+                            others.Add(model.SharedCoordinate);
+                        }
+                    }
+
+                    if (others.Count > 0)
+                    {
+                        found.Add(new DisciplineIssue(
+                            reference.Discipline,
+                            CheckWords.Coordinates,
+                            DisciplineOf.Building(reference.File, names),
+                            reference.File,
+                            CheckWords.OnInternal,
+                            CheckWords.OthersOn(others),
+                            CheckWords.ExportOnShared,
+                            null));
                     }
                 }
             }
 
-            List<ModelFacts> referenceModels = group.Models.Count == 0
-                ? new List<ModelFacts>()
-                : new List<ModelFacts>(group.Models).FindAll(m => m.HasBox && string.Equals(DisciplineOf.File(m.File, names), reference, StringComparison.Ordinal));
-
-            foreach (ModelFacts model in group.Models)
-            {
-                string code = DisciplineOf.File(model.File, names);
-
-                if (!model.HasBox)
-                {
-                    rows.Add(place.Row(code, group.Name, model.File, CheckWords.Coordinates, CheckWords.NotRead, "its box was not read, " + model.BoxNotRead, null));
-                    continue;
-                }
-
-                if (reference == null)
-                {
-                    rows.Add(place.Row(code, group.Name, model.File, CheckWords.Coordinates, CheckWords.NotRead,
-                        "no model of this group has a box and a discipline that reads, so nothing is measured from", null));
-                    continue;
-                }
-
-                if (string.Equals(code, reference, StringComparison.Ordinal))
-                {
-                    rows.Add(place.Row(code, group.Name, model.File, CheckWords.Coordinates, CheckWords.Reference,
-                        ReferenceWords(model, reference, fellBack, settings) + FarFromIt(group, reference, referenceModels, settings, names), null));
-                    continue;
-                }
-
-                double gap = GapToAll(model, referenceModels);
-                rows.Add(place.Row(code, group.Name, model.File, CheckWords.Coordinates,
-                    gap > settings.FarMetres ? CheckWords.Far : CheckWords.Near,
-                    Distance(gap) + " from " + reference + (fellBack ? ", the first discipline of the group with a box, since it holds no " + settings.Reference : string.Empty)
-                        + ", " + SiteWords(model) + ", " + reference + " " + Sites(referenceModels),
-                    null));
-            }
-
-            return rows;
+            return found;
         }
 
-        /// <summary>The gap between two boxes in metres, nought where they touch or overlap.</summary>
-        public static double Gap(ModelFacts a, ModelFacts b)
+        /// <summary>A model's facts as ALIGNMENT's placement, its name, its discipline, its site or not read and its translation or not read.</summary>
+        public static ModelPlacement PlacementOf(ModelFacts model, ContainerNameSettings names)
         {
-            double dx = Math.Max(0.0, Math.Max(a.MinX - b.MaxX, b.MinX - a.MaxX));
-            double dy = Math.Max(0.0, Math.Max(a.MinY - b.MaxY, b.MinY - a.MaxY));
-            double dz = Math.Max(0.0, Math.Max(a.MinZ - b.MaxZ, b.MinZ - a.MaxZ));
-            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
-        }
-
-        /// <summary>The distance in words, metres to three decimals and kilometres too from a thousand metres on.</summary>
-        public static string Distance(double metres)
-        {
-            string m = metres.ToString("0.000", CultureInfo.InvariantCulture) + " m";
-            return metres >= 1000.0 ? (metres / 1000.0).ToString("0.000", CultureInfo.InvariantCulture) + " km, " + m : m;
-        }
-
-        private static double GapToAll(ModelFacts model, IList<ModelFacts> references)
-        {
-            double nearest = double.MaxValue;
-
-            foreach (ModelFacts reference in references)
-            {
-                nearest = Math.Min(nearest, Gap(model, reference));
-            }
-
-            return nearest == double.MaxValue ? 0.0 : nearest;
-        }
-
-        private static string ReferenceWords(ModelFacts model, string reference, bool fellBack, DisciplineReportSettings settings)
-        {
-            return reference + " is the discipline the others are measured from"
-                + (fellBack ? ", the first of the group with a box, since it holds no " + settings.Reference : string.Empty)
-                + ", " + SiteWords(model);
-        }
-
-        private static string FarFromIt(
-            DisciplineGroup group, string reference, IList<ModelFacts> referenceModels, DisciplineReportSettings settings, ContainerNameSettings names)
-        {
-            Dictionary<string, double> far = new Dictionary<string, double>(StringComparer.Ordinal);
-            List<string> order = new List<string>();
-
-            foreach (ModelFacts model in group.Models)
-            {
-                string code = DisciplineOf.File(model.File, names);
-
-                if (!model.HasBox || code == null || string.Equals(code, reference, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
-                double gap = GapToAll(model, referenceModels);
-
-                if (gap <= settings.FarMetres)
-                {
-                    continue;
-                }
-
-                double was;
-
-                if (!far.TryGetValue(code, out was))
-                {
-                    order.Add(code);
-                    far[code] = gap;
-                }
-                else if (gap < was)
-                {
-                    far[code] = gap;
-                }
-            }
-
-            if (order.Count == 0)
-            {
-                return ", no discipline of the group is far from it";
-            }
-
-            List<string> words = order.ConvertAll(code => code + " " + Distance(far[code]));
-            return ", far from it: " + string.Join(", ", words.ToArray());
-        }
-
-        private static string SiteWords(ModelFacts model)
-        {
-            return "its site " + (model.SiteNotRead == null ? Quoted(model.Site) : "not read, " + model.SiteNotRead);
-        }
-
-        private static string Sites(IList<ModelFacts> models)
-        {
-            List<string> sites = new List<string>();
-
-            foreach (ModelFacts model in models)
-            {
-                string site = model.SiteNotRead == null ? Quoted(model.Site) : "not read";
-
-                if (!sites.Contains(site))
-                {
-                    sites.Add(site);
-                }
-            }
-
-            return (sites.Count == 1 ? "site " : "sites ") + string.Join(", ", sites.ToArray());
-        }
-
-        private static string Quoted(string site)
-        {
-            return string.IsNullOrEmpty(site) ? "named none" : site;
+            string file = DisciplineOf.FileName(model.File);
+            return new ModelPlacement(
+                file,
+                DisciplineOf.File(model.File, names) ?? string.Empty,
+                model.SiteNotRead == null ? model.Site : ModelPlacement.SiteNotRead,
+                model.IsPlaced ? model.X : ModelPlacement.NotRead,
+                model.IsPlaced ? model.Y : ModelPlacement.NotRead,
+                model.IsPlaced ? model.Z : ModelPlacement.NotRead);
         }
     }
 
     /// <summary>
-    /// Check 2, a missing discipline, F209: a discipline found in other groups of the package but not in this one, listed
-    /// by group in its own workbook, read off the file names. Bader's example: ME, EL and ST present and AR not there is
-    /// AR missing. A discipline in every group and one in no group of the package each get one line saying so.
+    /// Missing model and One discipline group, F234: read off the file names of each group. A group of two disciplines or more
+    /// gets one row in the workbook of each discipline of the setting it holds no file of. A group of one discipline, which
+    /// F233 does not build, gets a row in that discipline's workbook with its file names. A group whose files were not read,
+    /// its Navisworks writing no result, is said in the log and never counted as missing a discipline, F222.
     /// </summary>
-    public static class MissingDisciplineCheck
+    public static class GroupDisciplinesCheck
     {
-        public static IList<CheckRow> Rows(
-            string community, string package, IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names)
+        public static CheckFindings Missing(IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names)
         {
-            RowPlace place = new RowPlace(community, package);
-            List<CheckRow> rows = new List<CheckRow>();
-            Dictionary<DisciplineGroup, List<string>> codesOf = new Dictionary<DisciplineGroup, List<string>>();
+            CheckFindings found = new CheckFindings(CheckWords.Missing);
 
             foreach (DisciplineGroup group in groups)
             {
-                List<string> codes = new List<string>();
+                IList<string> codes = DisciplineOf.CodesOf(group, names);
+
+                if (group.Files.Count == 0)
+                {
+                    found.Note(group.Name + " not read, whether it misses a discipline is UNKNOWN, its files were not read, " + (group.WhyNoModels ?? "UNKNOWN why"));
+                    continue;
+                }
+
+                if (BuildingGroup.CannotClashWith(codes.Count))
+                {
+                    continue;
+                }
+
+                foreach (string discipline in settings.Disciplines)
+                {
+                    found.Read(discipline, group.Files.Count);
+
+                    if (codes.Contains(discipline))
+                    {
+                        continue;
+                    }
+
+                    found.Add(new DisciplineIssue(
+                        discipline,
+                        CheckWords.Missing,
+                        DisciplineOf.BuildingsOf(group, names),
+                        null,
+                        CheckWords.NoModel(discipline),
+                        string.Join(", ", new List<string>(codes).ToArray()),
+                        CheckWords.IssueTheModel(discipline),
+                        null));
+                }
+            }
+
+            return found;
+        }
+
+        public static CheckFindings OneDiscipline(IList<DisciplineGroup> groups, ContainerNameSettings names)
+        {
+            CheckFindings found = new CheckFindings(CheckWords.OneDiscipline);
+
+            foreach (DisciplineGroup group in groups)
+            {
+                IList<string> codes = DisciplineOf.CodesOf(group, names);
 
                 foreach (string file in group.Files)
                 {
                     string code = DisciplineOf.File(file, names);
 
-                    if (code != null && !codes.Contains(code))
+                    if (code != null)
                     {
-                        codes.Add(code);
+                        found.Read(code, 1);
                     }
                 }
 
-                codesOf[group] = codes;
+                if (codes.Count != 1)
+                {
+                    continue;
+                }
+
+                List<string> files = new List<string>();
+
+                foreach (string file in group.Files)
+                {
+                    files.Add(DisciplineOf.FileName(file));
+                }
+
+                found.Add(new DisciplineIssue(
+                    codes[0],
+                    CheckWords.OneDiscipline,
+                    DisciplineOf.BuildingsOf(group, names),
+                    null,
+                    CheckWords.OnlyDiscipline,
+                    string.Join(", ", files.ToArray()),
+                    null,
+                    null));
             }
 
-            // F222. A group whose files were not read, its Navisworks writing no result or an NWF whose models never read, holds
-            // no file to judge, so whether it misses a discipline is UNKNOWN and it is never counted as missing one.
-            List<DisciplineGroup> known = new List<DisciplineGroup>(groups).FindAll(g => g.Files.Count > 0 || g.Models != null);
-
-            foreach (string discipline in settings.Disciplines)
-            {
-                foreach (DisciplineGroup group in groups)
-                {
-                    if (!known.Contains(group))
-                    {
-                        rows.Add(place.Row(discipline, group.Name, string.Empty, CheckWords.Missing, CheckWords.NotRead,
-                            "whether " + discipline + " is in " + group.Name + " is UNKNOWN, its files were not read, " + group.WhyNoModels, null));
-                    }
-                }
-
-                if (known.Count == 0)
-                {
-                    continue;
-                }
-
-                List<DisciplineGroup> with = known.FindAll(g => codesOf[g].Contains(discipline));
-
-                if (with.Count == 0)
-                {
-                    rows.Add(place.Row(discipline, string.Empty, string.Empty, CheckWords.Missing, CheckWords.NotInThePackage,
-                        discipline + " is in no group of this package" + (known.Count < groups.Count ? " whose files were read" : string.Empty) + ", so no group misses it against the others", null));
-                    continue;
-                }
-
-                if (with.Count == known.Count)
-                {
-                    rows.Add(place.Row(discipline, string.Empty, string.Empty, CheckWords.Missing, CheckWords.NoneMissing,
-                        discipline + " is in every group of this package" + (known.Count < groups.Count ? " whose files were read" : string.Empty) + ", " + PackageCount(known.Count), null));
-                    continue;
-                }
-
-                foreach (DisciplineGroup group in known)
-                {
-                    if (codesOf[group].Contains(discipline))
-                    {
-                        continue;
-                    }
-
-                    rows.Add(place.Row(discipline, group.Name, string.Empty, CheckWords.Missing, CheckWords.MissingHere,
-                        discipline + " is in " + with.Count + " of " + known.Count + " groups of this package" + (known.Count < groups.Count ? " whose files were read" : string.Empty) + " and not in " + group.Name
-                            + ", which holds " + (codesOf[group].Count == 0 ? "no discipline that reads" : string.Join(", ", codesOf[group].ToArray())),
-                        null));
-                }
-            }
-
-            return rows;
+            return found;
         }
+    }
 
-        private static string PackageCount(int groups)
+    /// <summary>One part of a file name that breaks the reference's pattern: what the file holds there and what the reference has.</summary>
+    public sealed class NamingBreak
+    {
+        public NamingBreak(string whatIsWrong, string referenceHas)
         {
-            return groups + (groups == 1 ? " group" : " groups");
+            WhatIsWrong = whatIsWrong;
+            ReferenceHas = referenceHas;
         }
+
+        public string WhatIsWrong { get; private set; }
+
+        public string ReferenceHas { get; private set; }
     }
 
     /// <summary>
@@ -563,10 +583,10 @@ namespace Federator.Core.Disciplines
                 + (WithThatCount < NameCount ? " in " + WithThatCount + " of them" : string.Empty) + ": " + string.Join(", ", words.ToArray());
         }
 
-        /// <summary>Every part of a file's name that breaks the pattern, in words, or none where it follows it.</summary>
-        public IList<string> Breaks(string file)
+        /// <summary>Every part of a file's name that breaks the pattern, what it holds and what the reference has there, or none where it follows it.</summary>
+        public IList<NamingBreak> Breaks(string file)
         {
-            List<string> breaks = new List<string>();
+            List<NamingBreak> breaks = new List<NamingBreak>();
 
             if (!WasLearned)
             {
@@ -577,7 +597,8 @@ namespace Federator.Core.Disciplines
 
             if (split.Length != PartCount)
             {
-                breaks.Add("it has " + split.Length + " parts split on " + Separator + ", " + Reference + " names have " + PartCount);
+                breaks.Add(new NamingBreak(
+                    "it has " + split.Length + " parts split on " + Separator, Reference + " names have " + PartCount));
             }
 
             for (int i = 0; i < Math.Min(split.Length, PartCount); i++)
@@ -589,16 +610,17 @@ namespace Federator.Core.Disciplines
 
                 if (fixedValues[i] != null && !string.Equals(split[i], fixedValues[i], StringComparison.Ordinal))
                 {
-                    breaks.Add("part " + (i + 1) + " reads " + split[i] + ", " + Reference + " has " + fixedValues[i] + " there");
+                    breaks.Add(new NamingBreak("part " + (i + 1) + " reads " + split[i], Reference + " has " + fixedValues[i] + " there"));
                 }
                 else if (fixedValues[i] == null && shapes[i] != null && !Fits(split[i], shapes[i]))
                 {
-                    breaks.Add("part " + (i + 1) + " reads " + split[i] + ", " + Reference + " has a part shaped like " + examples[i] + " there");
+                    breaks.Add(new NamingBreak("part " + (i + 1) + " reads " + split[i], Reference + " has a part shaped like " + examples[i] + " there"));
                 }
             }
 
             return breaks;
         }
+
 
         private static bool AllLettersOrDigits(IList<string> parts, int at)
         {
@@ -615,15 +637,20 @@ namespace Federator.Core.Disciplines
 
         private static string Stem(string file)
         {
-            string name = RowPlace.FileName(file);
+            string name = DisciplineOf.FileName(file);
             int dot = name.LastIndexOf('.');
             return dot > 0 ? name.Substring(0, dot) : name;
         }
 
-        public static IList<CheckRow> Rows(
-            string community, string package, IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names)
+
+        /// <summary>
+        /// The naming rows of a package, F234: only the files of another discipline that break the pattern learned off the
+        /// reference's files, one row per part broken with what the reference has there. The pattern itself is a line of the
+        /// log, and the reference's own files are the pattern and are not judged.
+        /// </summary>
+        public static CheckFindings Of(IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names)
         {
-            RowPlace place = new RowPlace(community, package);
+            CheckFindings found = new CheckFindings(CheckWords.Naming);
             List<string> referenceFiles = new List<string>();
 
             foreach (DisciplineGroup group in groups)
@@ -638,17 +665,11 @@ namespace Federator.Core.Disciplines
             }
 
             ReferenceNaming naming = Learn(referenceFiles, settings, names);
-            List<CheckRow> rows = new List<CheckRow>();
-
-            foreach (string discipline in settings.Disciplines)
-            {
-                rows.Add(place.Row(discipline, string.Empty, string.Empty, CheckWords.Naming,
-                    naming.WasLearned ? CheckWords.Pattern : CheckWords.NoPattern, naming.Describe(), null));
-            }
+            found.Note(naming.Describe());
 
             if (!naming.WasLearned)
             {
-                return rows;
+                return found;
             }
 
             foreach (DisciplineGroup group in groups)
@@ -657,30 +678,38 @@ namespace Federator.Core.Disciplines
                 {
                     string code = DisciplineOf.File(file, names);
 
-                    if (code == null || string.Equals(code, settings.Reference, StringComparison.Ordinal))
+                    if (code == null)
+                    {
+                        found.Note(DisciplineOf.FileName(file) + " not judged, its name does not read");
+                        continue;
+                    }
+
+                    if (string.Equals(code, settings.Reference, StringComparison.Ordinal))
                     {
                         continue;
                     }
 
-                    IList<string> breaks = naming.Breaks(file);
-                    rows.Add(place.Row(code, group.Name, file, CheckWords.Naming, breaks.Count == 0 ? CheckWords.Follows : CheckWords.Breaks,
-                        breaks.Count == 0 ? "every part as " + settings.Reference + " names have it" : string.Join(", and ", new List<string>(breaks).ToArray()), null));
+                    found.Read(code, 1);
+
+                    foreach (NamingBreak broken in naming.Breaks(file))
+                    {
+                        found.Add(new DisciplineIssue(
+                            code, CheckWords.Naming, DisciplineOf.Building(file, names), DisciplineOf.FileName(file), broken.WhatIsWrong, broken.ReferenceHas, null, null));
+                    }
                 }
             }
 
-            return rows;
+            return found;
         }
     }
 
-    /// <summary>Check 4, file age, F209: each NWC with the date the disk gives it, flagged when older than the setting, 7 days.</summary>
+    /// <summary>File age, F234: only the NWC files older than the setting, 7 days, with the date the disk gives and the age in days.</summary>
     public static class FileAgeCheck
     {
-        public static IList<CheckRow> Rows(
-            string community, string package, IList<DisciplineGroup> groups, IList<FileDate> dates, DateTime now,
-            DisciplineReportSettings settings, ContainerNameSettings names)
+        public static CheckFindings Of(
+            IList<DisciplineGroup> groups, IList<FileDate> dates, DateTime now, DisciplineReportSettings settings, ContainerNameSettings names)
         {
-            RowPlace place = new RowPlace(community, package);
-            List<CheckRow> rows = new List<CheckRow>();
+            CheckFindings found = new CheckFindings(CheckWords.FileAge);
             Dictionary<string, FileDate> byFile = new Dictionary<string, FileDate>(StringComparer.OrdinalIgnoreCase);
 
             foreach (FileDate date in dates ?? new List<FileDate>())
@@ -697,93 +726,108 @@ namespace Federator.Core.Disciplines
 
                     if (!byFile.TryGetValue(file, out date) || !date.Written.HasValue)
                     {
-                        rows.Add(place.Row(code, group.Name, file, CheckWords.FileAge, CheckWords.NotRead,
-                            "its date was not read, " + (date == null ? "UNKNOWN why, no date was handed in" : date.WhyNotRead), null));
+                        found.Note(DisciplineOf.FileName(file) + " not read, its date was not read, " + (date == null ? "UNKNOWN why, no date was handed in" : date.WhyNotRead));
                         continue;
                     }
 
+                    found.Read(code, 1);
                     TimeSpan age = now - date.Written.Value;
-                    int days = (int)Math.Floor(age.TotalDays);
-                    bool older = age > TimeSpan.FromDays(settings.OlderThanDays);
-                    rows.Add(place.Row(code, group.Name, file, CheckWords.FileAge, older ? CheckWords.Older : CheckWords.Within,
-                        "written " + date.Written.Value.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) + ", " + days
-                            + (days == 1 ? " day" : " days") + " old, the limit " + settings.OlderThanDays + " days", null));
+
+                    if (age > TimeSpan.FromDays(settings.OlderThanDays))
+                    {
+                        found.Add(new DisciplineIssue(
+                            code,
+                            CheckWords.FileAge,
+                            DisciplineOf.Building(file, names),
+                            DisciplineOf.FileName(file),
+                            CheckWords.OlderThan(settings.OlderThanDays),
+                            CheckWords.Age(date.Written.Value, (int)Math.Floor(age.TotalDays)),
+                            null,
+                            null));
+                    }
                 }
             }
 
-            return rows;
+            return found;
         }
     }
 
     /// <summary>
-    /// Checks 5 and 6, the CAD files inside the NWC and the Generic Models elements, F209: one line per element the add-in
-    /// read, with its element id, and the setting's words where the id was not read, so no element is dropped in silence.
-    /// A model with none found says so, and a model whose items were not walked says not read with why.
+    /// CAD and Generic Models, F234: one row per file and CAD file name, and one per file, family and type, each with the
+    /// count in Value and every element id comma separated, the setting's words where an id was not read. A model whose items
+    /// were not walked is said in the log.
     /// </summary>
     public static class ElementChecks
     {
-        public static IList<CheckRow> Rows(
-            string community, string package, DisciplineGroup group, DisciplineReportSettings settings, ContainerNameSettings names)
+        public static CheckFindings Cad(IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names)
         {
-            RowPlace place = new RowPlace(community, package);
-            List<CheckRow> rows = new List<CheckRow>();
+            return Of(groups, settings, names, CheckWords.Cad, m => m.CadNotRead, m => m.Cad,
+                e => CheckWords.CadFile(e.Name ?? settings.NotReadable));
+        }
 
-            if (group.Models == null)
+        public static CheckFindings Generic(IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names)
+        {
+            return Of(groups, settings, names, CheckWords.Generic, m => m.GenericNotRead, m => m.Generic,
+                e => CheckWords.GenericFamily(e.Family ?? settings.NotReadable, e.Type ?? settings.NotReadable));
+        }
+
+        private static CheckFindings Of(
+            IList<DisciplineGroup> groups, DisciplineReportSettings settings, ContainerNameSettings names, string check,
+            Func<ModelFacts, string> notRead, Func<ModelFacts, IList<ElementFact>> elements, Func<ElementFact, string> what)
+        {
+            CheckFindings found = new CheckFindings(check);
+
+            foreach (DisciplineGroup group in groups)
             {
-                foreach (string file in group.Files)
+                if (group.Models == null)
                 {
-                    string code = DisciplineOf.File(file, names);
-                    rows.Add(place.Row(code, group.Name, file, CheckWords.Cad, CheckWords.NotRead, "the models of this group were not read, " + group.WhyNoModels, null));
-                    rows.Add(place.Row(code, group.Name, file, CheckWords.Generic, CheckWords.NotRead, "the models of this group were not read, " + group.WhyNoModels, null));
+                    if (group.Files.Count > 0)
+                    {
+                        found.Note(group.Name + " not read, its models were not read, " + group.WhyNoModels);
+                    }
+
+                    continue;
                 }
 
-                return rows;
+                foreach (ModelFacts model in group.Models)
+                {
+                    string code = DisciplineOf.File(model.File, names);
+                    string file = DisciplineOf.FileName(model.File);
+
+                    if (notRead(model) != null)
+                    {
+                        found.Note(file + " not read, its items were not walked, " + notRead(model));
+                        continue;
+                    }
+
+                    found.Read(code, 1);
+                    List<string> order = new List<string>();
+                    Dictionary<string, List<string>> ids = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+                    foreach (ElementFact element in elements(model))
+                    {
+                        string key = what(element);
+                        List<string> into;
+
+                        if (!ids.TryGetValue(key, out into))
+                        {
+                            into = new List<string>();
+                            ids.Add(key, into);
+                            order.Add(key);
+                        }
+
+                        into.Add(element.ElementId ?? settings.NotReadable);
+                    }
+
+                    foreach (string key in order)
+                    {
+                        found.Add(new DisciplineIssue(
+                            code, check, DisciplineOf.Building(model.File, names), file, key, CheckWords.Count(ids[key].Count), null, string.Join(", ", ids[key].ToArray())));
+                    }
+                }
             }
 
-            foreach (ModelFacts model in group.Models)
-            {
-                string code = DisciplineOf.File(model.File, names);
-                Add(rows, place, code, group.Name, model, CheckWords.Cad, model.CadNotRead, model.Cad, settings, Cad,
-                    "no imported or linked CAD file found in it");
-                Add(rows, place, code, group.Name, model, CheckWords.Generic, model.GenericNotRead, model.Generic, settings, Generic,
-                    "no element of the category " + settings.GenericCategory + " found in it");
-            }
-
-            return rows;
-        }
-
-        private static void Add(
-            List<CheckRow> rows, RowPlace place, string code, string group, ModelFacts model, string check, string notRead,
-            IList<ElementFact> found, DisciplineReportSettings settings, Func<ElementFact, DisciplineReportSettings, string> words, string none)
-        {
-            if (notRead != null)
-            {
-                rows.Add(place.Row(code, group, model.File, check, CheckWords.NotRead, "its items were not walked, " + notRead, null));
-                return;
-            }
-
-            if (found.Count == 0)
-            {
-                rows.Add(place.Row(code, group, model.File, check, CheckWords.NoneFound, none, null));
-                return;
-            }
-
-            foreach (ElementFact element in found)
-            {
-                rows.Add(place.Row(code, group, model.File, check, CheckWords.Found, words(element, settings), element.ElementId ?? settings.NotReadable));
-            }
-        }
-
-        private static string Cad(ElementFact element, DisciplineReportSettings settings)
-        {
-            return "CAD file " + (element.Name ?? settings.NotReadable) + ", in " + (element.Family ?? settings.NotReadable)
-                + " of type " + (element.Type ?? settings.NotReadable) + ", level " + (element.Level ?? settings.NotReadable);
-        }
-
-        private static string Generic(ElementFact element, DisciplineReportSettings settings)
-        {
-            return "family " + (element.Family ?? settings.NotReadable) + ", type " + (element.Type ?? settings.NotReadable)
-                + ", level " + (element.Level ?? settings.NotReadable);
+            return found;
         }
 
         /// <summary>

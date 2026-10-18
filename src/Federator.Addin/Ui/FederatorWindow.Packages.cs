@@ -593,6 +593,11 @@ namespace Federator.Addin.Ui
                             }
 
                             tally.NotBuilt(package, group.Building);
+
+                            if (!run.Runnable.Contains(package) && !run.NotBuiltOnly.Contains(package))
+                            {
+                                run.NotBuiltOnly.Add(package);
+                            }
                         }
 
                         continue;
@@ -631,6 +636,7 @@ namespace Federator.Addin.Ui
                 else
                 {
                     runnable.Add(package);
+                    run.NotBuiltOnly.Remove(package);
                 }
             }
 
@@ -657,9 +663,11 @@ namespace Federator.Addin.Ui
             {
                 log.Line(PackageWords.Prefix + " the run of packages refused before starting. No group of the ticked packages can run, each is named above");
 
-                // F233. A run whose every group is of one discipline still writes RESULT, its line per community with the count.
+                // F233. A run whose every group is of one discipline still writes RESULT, its line per community with the count,
+                // and F234 its discipline workbooks, where each such group is a row.
                 if (child == null && tally.NotBuiltCount > 0)
                 {
+                    WriteTheDisciplineReports(run, new List<PackageRunUnit>(), new List<PackageRunResult>(), new List<string>());
                     WriteTheResult(null, tally.Lines());
                 }
 
@@ -739,8 +747,12 @@ namespace Federator.Addin.Ui
                 Disciplines = disciplines;
                 Tally = new PackageTally();
                 Runnable = new List<Package>();
+                NotBuiltOnly = new List<Package>();
                 Plans = new Dictionary<string, PackagePlan>(StringComparer.OrdinalIgnoreCase);
             }
+
+            /// <summary>F234 on row F233-R3. The ticked packages whose every group is of one discipline, which run nothing and still get their workbooks.</summary>
+            public List<Package> NotBuiltOnly { get; private set; }
 
             public string Report { get; private set; }
 
@@ -760,10 +772,19 @@ namespace Federator.Addin.Ui
         /// </summary>
         private void WriteTheDisciplineReports(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> whys)
         {
-            foreach (Package package in run.Runnable)
+            List<Package> reported = new List<Package>(run.Runnable);
+            reported.AddRange(run.NotBuiltOnly);
+
+            foreach (Package package in reported)
             {
                 try
                 {
+                    // F234. A package of one discipline groups alone ran nothing, so its folders are made here for its workbooks.
+                    if (run.NotBuiltOnly.Contains(package))
+                    {
+                        MakeThePackageFolders(run.Report, new[] { package });
+                    }
+
                     PackagePlan plan;
                     IList<DisciplineGroup> groupsOfIt = PackageRunFacts.GroupsOf(
                         package, run.Plans.TryGetValue(package.RelativePath, out plan) ? plan : null, units, results, whys);
@@ -800,19 +821,19 @@ namespace Federator.Addin.Ui
                 }
             }
 
-            DisciplineReport made = DisciplineReport.For(package.Community, package.RelativePath, groupsOfIt, dates, DateTime.Now, disciplines, settings);
+            DisciplineReport made = DisciplineReport.For(package.Community, package.Name, groupsOfIt, dates, DateTime.Now, disciplines, settings);
             log.Block("DISCIPLINE REPORT " + package.RelativePath, made.Lines());
             string folder = PackageOutput.FolderFor(report, package);
 
             foreach (string discipline in made.Disciplines)
             {
                 string path = ReportPaths.FreeFilePath(folder, DisciplineWorkbook.NameFor(package.RelativePath, discipline, disciplines), DateTime.Now, null);
-                IList<CheckRow> rows = made.RowsFor(discipline);
+                IList<DisciplineIssue> rows = made.IssuesFor(discipline);
                 log.WriteAttempted("CHECKS", path);
 
                 try
                 {
-                    DisciplineWorkbook.Write(path, discipline, rows);
+                    DisciplineWorkbook.Write(path, made, discipline);
                 }
                 catch (Exception error)
                 {
@@ -823,11 +844,10 @@ namespace Federator.Addin.Ui
 
                 log.WriteFinished("CHECKS", path);
                 string why;
-                IList<IList<string>> back = DisciplineWorkbook.Read(path, out why);
+                DisciplineWorkbookRead back = DisciplineWorkbook.Read(path, out why);
                 log.Line(back == null
                     ? "CHECKS   read back FAILED  " + path + ", " + why
-                    : "CHECKS   read back " + back.Count + " of " + rows.Count + " lines, " + made.IdsNotReadable(discipline)
-                        + " element ids not readable, " + discipline + " of " + package.RelativePath);
+                    : DisciplineWorkbookWords.ReadBackLine(back, rows.Count, discipline, package.RelativePath));
             }
         }
 

@@ -1129,6 +1129,7 @@ namespace Federator.Addin.Engine
             log.Line(line);
             log.Line(OneDisciplineGroups.EarlierNwfLine(job.NwfPath));
             outcome.NotBuiltBecause = line;
+            outcome.NotBuiltFiles = files;
             return true;
         }
 
@@ -3014,7 +3015,7 @@ namespace Federator.Addin.Engine
             {
                 IList<Federator.Core.Disciplines.ModelFacts> facts = DisciplineFactsReader.Read(document, reports.Disciplines);
                 outcome.DisciplineFacts = facts;
-                int boxes = 0;
+                int placed = 0;
                 int sites = 0;
                 int cad = 0;
                 int generic = 0;
@@ -3022,7 +3023,7 @@ namespace Federator.Addin.Engine
 
                 foreach (Federator.Core.Disciplines.ModelFacts model in facts)
                 {
-                    boxes += model.HasBox ? 1 : 0;
+                    placed += model.IsPlaced ? 1 : 0;
                     sites += model.SiteNotRead == null ? 1 : 0;
                     cad += model.Cad.Count;
                     generic += model.Generic.Count;
@@ -3038,7 +3039,7 @@ namespace Federator.Addin.Engine
                     }
                 }
 
-                log.Line("DISCIPLINE " + job.Label + " read " + facts.Count + " models, " + boxes + " boxes, " + sites + " sites, "
+                log.Line("DISCIPLINE " + job.Label + " read " + facts.Count + " models, " + placed + " placements, " + sites + " sites, "
                     + cad + " CAD imports, " + generic + " " + reports.Disciplines.GenericCategory + " elements, " + noId
                     + " element ids not readable, in " + clock.Elapsed.TotalSeconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " s");
             }
