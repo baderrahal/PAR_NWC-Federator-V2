@@ -1737,4 +1737,5 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 ## F215 F210-R3, the pictures that show only the sky
 
-- Bader's message of 18 Oct 2026, F-R3: the sky-only pictures of 1B06BC and 1B06P1 probed on copies, the camera position against the clash point of an empty picture and a good one, fixed with 0 sky pictures on a rerun, or measured and left UNKNOWN. Measured by tools\probes\SkyProbe, docs\history\scan.md 5z-zk, and left UNKNOWN: TestsImageForResult draws no item for 76 pictures of 1B06BC and 25 of 1B06P1, while the active view draws them from the same camera. Q208 asks Bader whether to retake such pictures through the active view.
+- Bader's message of 18 Oct 2026, F-R3: the sky-only pictures of 1B06BC and 1B06P1 probed on copies, the camera position against the clash point of an empty picture and a good one, fixed with 0 sky pictures on a rerun, or measured and left UNKNOWN. Measured by tools\probes\SkyProbe, docs\history\scan.md 5z-zk, and left UNKNOWN: TestsImageForResult draws no item for 76 pictures of 1B06BC and 25 of 1B06P1, while the active view draws them from 30 ft back and further. Q208 asks Bader whether to retake such pictures through the active view.
+- DONE 2026-10-18, merged in 297, measured and left UNKNOWN by Bader's second choice, Q208 waiting for his answer.

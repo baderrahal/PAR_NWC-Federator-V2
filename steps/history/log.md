@@ -9,20 +9,23 @@ position against the clash point of an empty picture and a good one, fixed with 
 UNKNOWN. Measured, and left UNKNOWN, since what decides it was not found in this round.
 
 What was done. tools\probes\SkyProbe: the mode sky of SkyProbePlugin.cs, run by probe-sky.ps1, PictureSpeed's guarded runner
-with its inputs changed and its guard untouched, seven runs of 12 to 15 s on copies of the NWFs of 1B06BC, 1B06P1 and 1B06K1
-that F210's flat run of C06 built, every Navisworks quit by Dispose and Bader's settings put back. count-sky-pictures.ps1 reads
-every picture of a group. docs\history\scan.md 5z-zk holds what was read, the masked results beside the probe.
+with its inputs changed and the guard file untouched, seven runs of 10.7 to 15.4 s on copies of the NWFs of 1B06BC, 1B06P1 and
+1B06K1 that F210's flat run of C06 built, every Navisworks quit by Dispose and Bader's settings put back. count-sky-pictures.ps1
+reads every picture of a group. docs\history\scan.md 5z-zk holds what was read, the masked results beside the probe. The
+claim-checker read the first draft of this entry and of 5z-zk and both were corrected on its findings.
 
 What was measured. 76 of 1B06BC's 399 pictures and 25 of 1B06P1's 374 draw no item of their clash, the sky at the middle and no
-red or green pixel, the audit's 89 with its near-empty dozen. Four more of 1B06BC draw their two items small and are not empty,
-so the audit's sky count held them too. Clash Detective's own camera for an empty picture stands 2.6 to 208 ft from its clash, as
-for a good one, with the same rotation and clip planes, and from that same camera Navisworks' active view draws the clash, the EL
-conduits 2,774 km from AR among them. TestsImageForResult draws nothing for those tests with every model shown and with only
-its items' models, with Hide Other on and as the user has it. Not the distance from the origin, since 1B06K1's far AR and ME
-draw, not one model, not a model hidden, not the clip planes.
+red or green pixel. The 76 is the audit's. The 25 is as many as the audit's 13 and its 12 near empty, and whether they are the
+same pictures is not read. A few more of 1B06BC have the sky at the middle and draw their items small, from a camera 154 to 340
+ft back. For the clashes probed with the sky at the middle Clash Detective's own camera stands 2.61 to 207.67 ft from its clash,
+with the rotation every viewpoint read has. From 30, 100 and 300 ft back the active view draws something for every clash
+probed, and from the clash's own camera it draws the EL clashes, 2,774 km from AR, and almost nothing for 5 of 16 others.
+TestsImageForResult draws nothing for the empty clashes with every model shown and with only its items' models. Hide Other was
+on in every run, so the pictures with it off were not taken. Not the distance from the origin, since 1B06K1's far AR and ME
+draw, not one model, not a model hidden.
 
-What was proved here. No code of the tool changed. Core tests 3382 passed before and after, 0 failed, 0 skipped. The probe
-built with 0 errors and 0 warnings.
+What was proved here. No code of the tool changed. Core tests 3382 passed before and after, 0 failed, 0 skipped, read in this
+session. The last build of the probe, the committed source, built with 0 errors and 0 warnings.
 
 What remains. The cause is UNKNOWN. Q208 asks Bader whether to retake a picture that draws no item through the active view,
 only count and name them, or leave them. Row F210-R3 stays open until he answers.
