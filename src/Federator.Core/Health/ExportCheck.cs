@@ -213,15 +213,6 @@ namespace Federator.Core.Health
         public const int DefaultNamesShown = 10;
 
         /// <summary>
-        /// The block at the default count of names, as the tests read it. The run hands its own
-        /// count to the overload that takes one.
-        /// </summary>
-        internal static IList<string> Lines(IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets)
-        {
-            return Lines(models, sets, DefaultNamesShown);
-        }
-
-        /// <summary>
         /// What one model carries, in the words of its line in the block, which the row
         /// file carries too so the two cannot disagree. A count nobody took is UNKNOWN,
         /// never zero and never NONE, T1-S49: a model whose walk threw read worksets NONE

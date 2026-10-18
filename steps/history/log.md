@@ -2,6 +2,42 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F227, Q210, the eight numbers become settings, 27 members internal, the totals of TestRefresh deleted
+
+Branch fix-F227 off main 8923d21, rebased onto 63a2ef4 once F226 merged. Bader's answer to Q210: PictureLimits A 150, B 100, C
+50, GdiStop 9000 and MemoryStopBytes 12 GB, and ClashRunner.ProgressEvery, ExportCheck.NamesShown and
+AppendBoxWatch.PressesBeforeSaying become settings with today's defaults, the 27 members only tests read become internal and
+keep their tests, and TestRefresh.BeforeTotal and AfterTotal are deleted. The code was written by the loop's developer agent in
+a worktree of its own and read here.
+
+What was done. Core: the caps 150, 100 and 50, the GDI stop 9000 and the memory stop 12 GB are settings on the run's
+`ImageOptions`, those numbers kept as `PictureLimits.Default...`, a cap below nought, a GDI stop at nought or at the 10000 a
+process may hold, `PictureLimits.ProcessGdiLimit`, and a memory stop of nought bytes refused where they are set.
+`PictureLimits.PicturesFor`, `LimitFor` and `RuleInWords` read the run's options and `ClashImages` builds both stops off them,
+the stops' constructors with no number deleted since nothing called them. The running count every 25 tests is
+`ProgressSettings.CountEveryTests`, refused below one. The 10 names the export check lists is `ReportOptions.ExportNamesShown`,
+refused below nought, nought listing every name, which the engine hands in. The 10 presses before the append watch speaks is
+`AppendBoxSettings.PressesBeforeSaying`, refused below one. The 27 members, each searched first over src for a caller outside
+its class with none found, are internal and keep their tests, and so is the export check's overload with no count, which only
+the tests read now. The two totals of TestRefresh, read by nothing, are gone. core.md and addin.md say setting where they
+named the numbers. The rebase onto F226 kept both sides of ImageOptions and of core.md, and corrected F226's rule of Choose,
+which still said a retake not taken leaves no picture. The reviewer read it, and its findings were taken: the label beside the
+box of a cap per test typed the three caps in the XAML, where it is now named, ImageCapLabel, and set in the window's
+constructor off Core's `PictureLimits.BoxLabel`, which closes row F227-R1, and the export check's overload with no count, read
+only by tests once the engine hands its count, is deleted and its tests call a helper of their own handing the default.
+
+What was proved here. Core tests 3433 passed before on main, 3441 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors and 0 warnings, check-locals and check-imports clean. Of the 8 Core tests added, 7 the developer's, run against stubs
+that leave each rule out, 5 failing and 2 passing, the defaults and a stop firing at the number it is handed, and 1 the label's
+words off the options with a cap changed. On Navisworks, run-20261018-194659 on
+23902e1d, a clean stamp once the agents' worktrees were removed, the NWC page on the copy C:\NWC-PC-Test\work\smoke222b,
+community S1, each group in its own Navisworks, evidence in C:\NWC-PC-Test\work\run-evidence\2026-10-18-F227-smoke-nwc: 3 DONE,
+60 clashes, 1B06M1 8 and 1B06PE 52 as F224's smoke, the image settings line naming 150 at A, 100 at B and 50 at C off the
+settings.
+
+What remains. The label read off Core shown in the window, a run's sight of it. Known bugs: none new. What comes next: F228, the
+documents.
+
 ## 2026-10-18 F226, Q208, a picture that draws no item of its clash taken again, so no Image cell shows only sky
 
 Branch fix-F226 off main, rebased onto 8923d21 once F225 merged. Bader's answer to Q208: retake each picture that draws no item

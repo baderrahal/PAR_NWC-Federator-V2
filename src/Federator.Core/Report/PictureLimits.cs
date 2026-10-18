@@ -119,6 +119,22 @@ namespace Federator.Core.Report
                 + " clashes at priority A, " + options.PicturesForB.ToString(CultureInfo.InvariantCulture)
                 + " at priority B and " + options.PicturesForC.ToString(CultureInfo.InvariantCulture) + " at priority C";
         }
+
+        /// <summary>
+        /// The label beside the box of a cap per test on the Clash step, the three caps read off the options, F227 on the
+        /// reviewer's finding, where the XAML typed them.
+        /// </summary>
+        public static string BoxLabel(ImageOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options");
+            }
+
+            return "At most per test, 0 for none. Every test gets at most " + options.PicturesForA.ToString(CultureInfo.InvariantCulture)
+                + " at A, " + options.PicturesForB.ToString(CultureInfo.InvariantCulture) + " at B, "
+                + options.PicturesForC.ToString(CultureInfo.InvariantCulture) + " at C";
+        }
     }
 
     /// <summary>
