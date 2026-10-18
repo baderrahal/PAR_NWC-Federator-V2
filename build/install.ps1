@@ -304,7 +304,8 @@ $missing = @()
 $mismatched = @()
 $seen = @{}
 
-foreach ($f in (Get-ChildItem $installed -Filter *.dll | Sort-Object Name)) {
+# F214. The runner is an exe in the bundle, so what it needs is read as well as what each DLL needs.
+foreach ($f in (Get-ChildItem $installed -File | Where-Object { $_.Extension -eq ".dll" -or $_.Extension -eq ".exe" } | Sort-Object Name)) {
     try { $asm = [System.Reflection.Assembly]::ReflectionOnlyLoad([System.IO.File]::ReadAllBytes($f.FullName)) }
     catch { Write-Host ("  {0} could not be read as an assembly, so what it needs was not checked, {1}" -f $f.Name, (Why $_.Exception)); continue }
 
@@ -356,7 +357,7 @@ if ($missing.Count -gt 0) {
 }
 } catch { throw ("The new add-in failed its check, " + (Why $_.Exception)) }
 
-Write-Host ("  every reference is satisfied, {0} assemblies checked. Navisworks supplies its own." -f $inBundle.Count)
+Write-Host ("  every reference is satisfied, {0} assemblies checked. Navisworks supplies its own." -f @(Get-ChildItem $installed -File | Where-Object { $_.Extension -eq ".dll" -or $_.Extension -eq ".exe" }).Count)
 $checked = $true
 
 if ($mismatched.Count -gt 0) {

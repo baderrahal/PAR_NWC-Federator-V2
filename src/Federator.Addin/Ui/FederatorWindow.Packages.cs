@@ -379,7 +379,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            if (!ConfirmClear(labels, tolerance))
+            if (!ConfirmClear(labels, tolerance, true))
             {
                 Log("Run cancelled before anything was cleared.");
                 return;
@@ -653,12 +653,8 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            if (!ConfirmTheOpenDocumentGoes())
-            {
-                Log("Run cancelled before anything was opened.");
-                return;
-            }
-
+            // F214. Nothing is asked about the document open here: since F214 every package opens its NWFs in its own fresh
+            // Navisworks, so what is open in this one is never touched.
             string text = RefreshConfirm.Text(
                 nwfs.Count + " NWFs of " + packagesWithNwfs + " packages",
                 PackageWords.BackupOfEach,
@@ -725,7 +721,6 @@ namespace Federator.Addin.Ui
                 engine = new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.UsePack(chosenPack);
                 IList<JobOutcome> outcomes = engine.RunPickedNwfs(nwfs, inPackages);
-                lastOutcomes = outcomes;
                 ShowTheNwfTable(outcomes);
 
                 for (int i = 0; i < outcomes.Count && i < inPackages.Count; i++)
@@ -755,6 +750,9 @@ namespace Federator.Addin.Ui
             finally
             {
                 WriteTheResult(engine, null, tally.Lines());
+
+                // F214. The NWFs this run ended with, those before a throw among them, for a package's own result.
+                lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
                 running = false;
                 SetTheRunButtons(true);
                 ShowOpenDocument();

@@ -89,7 +89,12 @@ namespace Federator.Addin.Ui
             try
             {
                 log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ChildStarted(child.Index, order.Packages.Count, package, order.ParentLog));
-                SetTheControls(order.Controls);
+
+                if (!SetTheControls(order.Controls))
+                {
+                    return;
+                }
+
                 packagePanel.Parent = order.Parent;
                 packagePanel.Report = order.Report;
                 ReadThePackages();
@@ -172,6 +177,13 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
+        /// The one control never copied: the drop down of the NWFs last used, whose items are each machine's own history
+        /// and change as every package's run remembers its NWFs, and whose choice only fills the picked NWF box, which no
+        /// run of packages reads. Set in a child it would pick another NWF and read it, the breaker's finding on F214.
+        /// </summary>
+        private static readonly HashSet<string> NeverCopied = new HashSet<string>(StringComparer.Ordinal) { "RecentNwfBox" };
+
+        /// <summary>
         /// Every control of the window a run reads, by its name: each text box a person can type in, each tick box and each
         /// drop down, in that order, so a child sets the boxes the grouping reads before the drop down that regroups.
         /// </summary>
@@ -191,7 +203,7 @@ namespace Federator.Addin.Ui
         {
             FrameworkElement element = node as FrameworkElement;
 
-            if (element != null && !string.IsNullOrEmpty(element.Name) && seen.Add(element.Name))
+            if (element != null && !string.IsNullOrEmpty(element.Name) && !NeverCopied.Contains(element.Name) && seen.Add(element.Name))
             {
                 TextBox text = element as TextBox;
                 CheckBox tick = element as CheckBox;
@@ -222,8 +234,11 @@ namespace Federator.Addin.Ui
             }
         }
 
-        /// <summary>Each control of the order set by its name, in the order's order, one not in this window named and left.</summary>
-        private void SetTheControls(IList<ControlValue> controls)
+        /// <summary>
+        /// Each control of the order set by its name, in the order's order, one that cannot be set named. False where any
+        /// could not be set, and the package is then not run, so it never runs on settings the person did not choose.
+        /// </summary>
+        private bool SetTheControls(IList<ControlValue> controls)
         {
             int set = 0;
 
@@ -259,12 +274,23 @@ namespace Federator.Addin.Ui
             }
 
             log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ControlsCopied(set));
+
+            if (set == controls.Count)
+            {
+                return true;
+            }
+
+            childRanNoGroupBecause = PackageRunWords.ControlsNotAllSet(controls.Count - set, controls.Count);
+            log.Line(PackageRunWords.Prefix + " " + childRanNoGroupBecause);
+            return false;
         }
 
         /// <summary>
         /// The parent's half: the order written, the runner started, the window answering while it runs, the runner's
         /// lines copied into the log, then every package's result read and joined into one RESULT. A package with no
-        /// result is named with why and counted as not run, and nothing here stops on one.
+        /// result is named with why and never said as not run, and nothing here stops on one. A wait that throws is said
+        /// once and goes on, and a runner past every package's ceiling and wait added up is ended, so this window never
+        /// waits for ever and never reads the results while its runner still runs.
         /// </summary>
         private void RunPackagesInFreshStarts(string page, IList<Package> packages, string report, PackageTally tally)
         {
@@ -291,7 +317,7 @@ namespace Federator.Addin.Ui
 
             running = true;
             SetTheRunButtons(false);
-            log.RunStarted(packages.Count);
+            log.RunStarted(packages.Count, "package", "packages");
             SetProgress(PackageRunWords.Waiting(packages.Count));
 
             try
@@ -320,18 +346,9 @@ namespace Federator.Addin.Ui
                     CreateNoWindow = true
                 };
 
-                long read = 0;
-
                 using (Process process = Process.Start(start))
                 {
-                    while (!process.WaitForExit(200))
-                    {
-                        Pump();
-                        read = TheRunnersNewLines(order.StatusPath, read);
-                    }
-
-                    read = TheRunnersNewLines(order.StatusPath, read);
-                    log.Line(PackageRunWords.Prefix + " " + PackageRunWords.RunnerEndedWith(process.ExitCode));
+                    WaitForTheRunner(process, order, packages.Count);
                 }
             }
             catch (Exception error)
@@ -346,12 +363,58 @@ namespace Federator.Addin.Ui
             }
         }
 
-        /// <summary>Every package's result read and the one RESULT written, a package with none named and never dropped.</summary>
+        /// <summary>
+        /// Answers and copies the runner's lines until it ends. A pass that throws is said once and the wait goes on, so
+        /// the results are never read while the runner still starts Navisworks, and past the order's limit the runner is
+        /// ended, the one process this window started.
+        /// </summary>
+        private void WaitForTheRunner(Process process, PackageRunOrder order, int packages)
+        {
+            long read = 0;
+            bool failureSaid = false;
+            int limit = order.Settings.RunnerLimitMinutes(packages);
+            Stopwatch clock = Stopwatch.StartNew();
+
+            while (!process.WaitForExit(order.Settings.PollMilliseconds))
+            {
+                if (clock.Elapsed.TotalMinutes > limit)
+                {
+                    log.Line(PackageRunWords.Prefix + " " + PackageRunWords.RunnerPastItsLimit(limit));
+                    process.Kill();
+                    process.WaitForExit();
+                    break;
+                }
+
+                try
+                {
+                    Pump();
+                    read = TheRunnersNewLines(order.StatusPath, read);
+                }
+                catch (Exception error)
+                {
+                    if (!failureSaid)
+                    {
+                        failureSaid = true;
+                        log.Line(PackageRunWords.Prefix + " " + PackageRunWords.WaitFailed(error.GetType().Name, error.Message));
+                    }
+                }
+            }
+
+            TheRunnersNewLines(order.StatusPath, read);
+            log.Line(PackageRunWords.Prefix + " " + PackageRunWords.RunnerEndedWith(process.ExitCode));
+        }
+
+        /// <summary>
+        /// Every package's result read and the one RESULT written, a package with none named and never dropped. The live
+        /// line counts the packages that wrote a result, and where one did not the person is warned, since its groups may
+        /// have written files nobody is told of otherwise.
+        /// </summary>
         private void JoinTheResults(PackageRunOrder order, IList<Package> packages, PackageTally tally)
         {
             List<PackageRunResult> results = new List<PackageRunResult>();
             List<string> whys = new List<string>();
             List<string> names = new List<string>();
+            int withResult = 0;
 
             try
             {
@@ -365,9 +428,11 @@ namespace Federator.Addin.Ui
 
                     if (result == null)
                     {
-                        tally.NotRun(packages[i], PackageRunWords.NoResult(packages[i].RelativePath, why));
+                        tally.NoResult(packages[i], PackageRunWords.NoResult(packages[i].RelativePath, why));
                         continue;
                     }
+
+                    withResult++;
 
                     foreach (PackageRunGroup group in result.Groups)
                     {
@@ -381,22 +446,23 @@ namespace Federator.Addin.Ui
                 }
 
                 log.RunFinished();
-                log.Section(PackageRunResult.ResultTitle);
-
-                foreach (string line in PackageRunWords.JoinedResult(names, results, whys, tally.Lines()))
-                {
-                    log.Line(line);
-                }
-
-                SetProgress(PackageRunWords.Finished(packages.Count));
+                log.WriteJoinedResult(PackageRunWords.JoinedResult(names, results, whys, tally));
             }
             catch (Exception error)
             {
                 log.Failure("joining the results of the packages", error, "each package's own log still holds its RESULT");
             }
+
+            SetProgress(PackageRunWords.Finished(withResult, packages.Count));
+            string warning = PackageRunWords.Warning(withResult, packages.Count);
+
+            if (warning != null)
+            {
+                Warn(warning);
+            }
         }
 
-        /// <summary>The runner's lines written since the last read, each into the log and the last onto the live line.</summary>
+        /// <summary>The runner's lines written since the last read, each into the log, never onto the live line.</summary>
         private long TheRunnersNewLines(string path, long from)
         {
             try
@@ -416,7 +482,7 @@ namespace Federator.Addin.Ui
                     stream.Seek(from, SeekOrigin.Begin);
                     byte[] bytes = new byte[stream.Length - from];
                     int got = stream.Read(bytes, 0, bytes.Length);
-                    int end = Array.LastIndexOf(bytes, (byte)'\n', got - 1);
+                    int end = got <= 0 ? -1 : Array.LastIndexOf(bytes, (byte)'\n', got - 1);
 
                     if (end < 0)
                     {
@@ -436,12 +502,12 @@ namespace Federator.Addin.Ui
                     return from + end + 1;
                 }
             }
-            catch (IOException error)
+            catch (Exception error)
             {
                 if (!statusReadFailureSaid)
                 {
                     statusReadFailureSaid = true;
-                    log.Line(PackageRunWords.Prefix + " " + PackageRunWords.StatusNotRead(error.Message));
+                    log.Line(PackageRunWords.Prefix + " " + PackageRunWords.StatusNotRead(error.GetType().Name + ": " + error.Message));
                 }
 
                 return from;

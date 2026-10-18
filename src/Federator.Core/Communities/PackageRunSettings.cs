@@ -12,9 +12,38 @@ namespace Federator.Core.Communities
     {
         public const int DefaultCeilingMinutes = 240;
         public const int DefaultGoneWithinSeconds = 60;
+        public const int DefaultPollMilliseconds = 200;
 
         private int ceilingMinutes = DefaultCeilingMinutes;
         private int goneWithinSeconds = DefaultGoneWithinSeconds;
+        private int pollMilliseconds = DefaultPollMilliseconds;
+
+        /// <summary>
+        /// How often the window answers and reads the runner's status while it waits, and how often the runner looks for a
+        /// Navisworks to be gone, the 200 ms the probe's parent pumped at. Refuses less than 50.
+        /// </summary>
+        public int PollMilliseconds
+        {
+            get { return pollMilliseconds; }
+            set
+            {
+                if (value < 50)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "polling more often than every 50 ms is refused");
+                }
+
+                pollMilliseconds = value;
+            }
+        }
+
+        /// <summary>
+        /// How long the window waits on the runner before it ends it, every package's ceiling and wait added up and a minute
+        /// more each, so a runner that can no longer end its own Navisworks never keeps the window waiting for ever.
+        /// </summary>
+        public int RunnerLimitMinutes(int packages)
+        {
+            return Math.Max(1, packages) * (ceilingMinutes + (goneWithinSeconds + 59) / 60 + 1);
+        }
 
         /// <summary>
         /// How long one package's Navisworks may run before the runner ends it and goes on to the next, so a package that

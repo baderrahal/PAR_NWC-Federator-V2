@@ -166,7 +166,8 @@ namespace Federator.Core.Communities
                 PackageRunFile.Line("plugin", PluginId),
                 PackageRunFile.Line("parentlog", ParentLog ?? string.Empty),
                 PackageRunFile.Line("ceiling", Settings.CeilingMinutes.ToString(CultureInfo.InvariantCulture)),
-                PackageRunFile.Line("gone", Settings.GoneWithinSeconds.ToString(CultureInfo.InvariantCulture))
+                PackageRunFile.Line("gone", Settings.GoneWithinSeconds.ToString(CultureInfo.InvariantCulture)),
+                PackageRunFile.Line("poll", Settings.PollMilliseconds.ToString(CultureInfo.InvariantCulture))
             };
 
             foreach (string package in Packages)
@@ -267,6 +268,7 @@ namespace Federator.Core.Communities
                     return null;
                 case "ceiling":
                 case "gone":
+                case "poll":
                     int number;
 
                     if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out number))
@@ -280,9 +282,13 @@ namespace Federator.Core.Communities
                         {
                             Settings.CeilingMinutes = number;
                         }
-                        else
+                        else if (key == "gone")
                         {
                             Settings.GoneWithinSeconds = number;
+                        }
+                        else
+                        {
+                            Settings.PollMilliseconds = number;
                         }
                     }
                     catch (ArgumentOutOfRangeException)

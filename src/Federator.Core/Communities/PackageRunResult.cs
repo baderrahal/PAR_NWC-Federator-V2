@@ -38,9 +38,6 @@ namespace Federator.Core.Communities
         /// <summary>The first line of a result file.</summary>
         public const string Header = "parsons nwc federator, the result of one package of a run of packages, 1";
 
-        /// <summary>The line a RESULT block's title is written on, between two rules, RunLog.Section.</summary>
-        public const string ResultTitle = "RESULT";
-
         public PackageRunResult(string package, string log)
         {
             Package = package ?? string.Empty;
@@ -62,8 +59,8 @@ namespace Federator.Core.Communities
         public string NoGroupBecause { get; set; }
 
         /// <summary>
-        /// The lines of the last RESULT block of a log, every line after the rule under its title, or none where the log
-        /// holds no RESULT block.
+        /// The lines of the last RESULT block of a log, every line after the rule under its title, the title and the rule
+        /// RunLog.Section writes it with, or none where the log holds no RESULT block.
         /// </summary>
         public static IList<string> ResultLinesOf(IList<string> logLines)
         {
@@ -78,7 +75,7 @@ namespace Federator.Core.Communities
 
             for (int i = 1; i + 1 < logLines.Count; i++)
             {
-                if (logLines[i] == ResultTitle && IsARule(logLines[i - 1]) && IsARule(logLines[i + 1]))
+                if (logLines[i] == RunLog.ResultTitle && logLines[i - 1] == RunLog.SectionRule && logLines[i + 1] == RunLog.SectionRule)
                 {
                     start = i + 2;
                 }
@@ -100,11 +97,6 @@ namespace Federator.Core.Communities
             }
 
             return lines;
-        }
-
-        private static bool IsARule(string line)
-        {
-            return line != null && line.Length > 0 && line.Trim('=').Length == 0;
         }
 
         public void Write(string path)

@@ -581,6 +581,12 @@ namespace Federator.Addin.Engine
         /// the next group starts, so a failure part way through keeps everything already
         /// written.
         /// </summary>
+        /// <summary>
+        /// The groups of the last Run or RunPickedNwfs, the list itself as each group is added, F214, so a package's own
+        /// Navisworks whose run threw part way still says how the groups before the throw ended. Null before either runs.
+        /// </summary>
+        public IList<JobOutcome> OutcomesSoFar { get; private set; }
+
         public IList<JobOutcome> Run(IList<FederationJob> jobs)
         {
             if (jobs == null)
@@ -589,6 +595,7 @@ namespace Federator.Addin.Engine
             }
 
             List<JobOutcome> outcomes = new List<JobOutcome>();
+            OutcomesSoFar = outcomes;
 
             // Bader's answer to Q99 and Q100. One tally for this run, with this run's rule
             // state, start and count of groups, so the RESULT block and the list for the
@@ -825,6 +832,7 @@ namespace Federator.Addin.Engine
             FingerprintThePickedXml();
 
             List<JobOutcome> outcomes = new List<JobOutcome>();
+            OutcomesSoFar = outcomes;
             List<IList<string>> summaries = new List<IList<string>>();
 
             try

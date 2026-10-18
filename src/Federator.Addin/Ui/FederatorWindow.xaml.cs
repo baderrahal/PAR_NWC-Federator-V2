@@ -2209,6 +2209,15 @@ namespace Federator.Addin.Ui
         /// </summary>
         private bool ConfirmClear(IList<string> runPaths, ToleranceChoice tolerance)
         {
+            return ConfirmClear(runPaths, tolerance, false);
+        }
+
+        /// <summary>
+        /// The run's one confirm. inFreshStarts is true for a run of packages since F214, whose groups each run in a
+        /// Navisworks of their own, so what is open here is never discarded and the screen says so instead.
+        /// </summary>
+        private bool ConfirmClear(IList<string> runPaths, ToleranceChoice tolerance, bool inFreshStarts)
+        {
             if (child != null)
             {
                 log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ConfirmedByTheParent("The run"));
@@ -2262,7 +2271,11 @@ namespace Federator.Addin.Ui
                 message += Environment.NewLine + Environment.NewLine + byDesignLine;
             }
 
-            if (discarded != null)
+            if (inFreshStarts)
+            {
+                message += Environment.NewLine + Environment.NewLine + PackageRunWords.NothingHereIsTouched;
+            }
+            else if (discarded != null)
             {
                 message += Environment.NewLine + Environment.NewLine
                     + "This will be discarded without saving:" + Environment.NewLine
@@ -2346,7 +2359,6 @@ namespace Federator.Addin.Ui
                     : new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.UsePack(chosenPack);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
-                lastOutcomes = outcomes;
 
                 if (packages != null)
                 {
@@ -2419,6 +2431,9 @@ namespace Federator.Addin.Ui
                 // The result block is written whatever happened, so a run that stopped still
                 // leaves a readable log with its summary at the end.
                 WriteTheResult(engine, null, packages == null ? null : packages.Tally.Lines());
+
+                // F214. The groups this run ended with, those before a throw among them, for a package's own result.
+                lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
                 running = false;
                 SetTheRunButtons(true);
             }
@@ -3012,6 +3027,9 @@ namespace Federator.Addin.Ui
             if (child != null)
             {
                 log.Line(PackageRunWords.Prefix + " " + PackageRunWords.NoBox(text));
+
+                // A refusal before any group says why through this box, so the first one is the package's reason.
+                childRanNoGroupBecause = childRanNoGroupBecause ?? PackageRunWords.OneLine(text);
                 return;
             }
 

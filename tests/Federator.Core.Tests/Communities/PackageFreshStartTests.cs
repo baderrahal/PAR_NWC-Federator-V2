@@ -237,14 +237,14 @@ namespace Federator.Core.Tests
             {
                 "10:00:00.000  +0000.000s  GROUP    finished A",
                 string.Empty,
-                "================================================================",
-                "RESULT",
-                "================================================================",
+                RunLog.SectionRule,
+                RunLog.ResultTitle,
+                RunLog.SectionRule,
                 "first run's line",
                 string.Empty,
-                "================================================================",
-                "RESULT",
-                "================================================================",
+                RunLog.SectionRule,
+                RunLog.ResultTitle,
+                RunLog.SectionRule,
                 "groups done    : 3",
                 "files written  : 9",
                 string.Empty
@@ -262,30 +262,168 @@ namespace Federator.Core.Tests
             Assert.That(PackageRunResult.ResultLinesOf(null).Count, Is.EqualTo(0));
         }
 
-        [Test]
-        public void TheJoinedResultCountsEveryPackagesGroupsAndNamesAPackageWithNoResult()
+        /// <summary>Three packages of a tree made under the run's temp folder, C06, C07 and C08, each holding one NWC.</summary>
+        private PackageTree Tree()
         {
+            foreach (string community in new[] { "C06", "C07", "C08" })
+            {
+                string folder = Path.Combine(root, "tree", community);
+                Directory.CreateDirectory(folder);
+                File.WriteAllText(Path.Combine(folder, "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc"), "nwc");
+            }
+
+            return PackageTree.Read(Path.Combine(root, "tree"), ".nwc");
+        }
+
+        [Test]
+        public void TheJoinedResultCountsOffTheTallyAndNamesAPackageWithNoResultAndOneThatRanNoGroup()
+        {
+            PackageTree tree = Tree();
             PackageRunResult c06 = Result();
             PackageRunResult c07 = new PackageRunResult("C07", null) { NoGroupBecause = "every group of it has an NWF already" };
+            PackageTally tally = new PackageTally();
+
+            foreach (PackageRunGroup group in c06.Groups)
+            {
+                tally.Add(tree.Find("C06"), group.Group, group.Outcome, group.Clashes);
+            }
+
+            tally.NotRun(tree.Find("C07"), c07.NoGroupBecause);
+            tally.NoResult(tree.Find("C08"), PackageRunWords.NoResult("C08", "the file is not there"));
 
             IList<string> lines = PackageRunWords.JoinedResult(
                 new List<string> { "C06", "C07", "C08" },
                 new List<PackageRunResult> { c06, c07, null },
                 new List<string> { null, null, "its Navisworks ended before it wrote its result" },
-                new List<string> { "run            : 3 packages" });
+                tally);
+            string all = string.Join("\n", lines);
 
             Assert.That(lines, Does.Contain("groups done    : 1"));
             Assert.That(lines, Does.Contain("groups partial : 0"));
             Assert.That(lines, Does.Contain("groups failed  : 1"));
-            Assert.That(lines, Does.Contain("run            : 3 packages"));
-            Assert.That(string.Join("\n", lines), Does.Contain("no result      : 1 package"));
+            Assert.That(all, Does.Contain("no result      : 1 package"));
+            Assert.That(all, Does.Contain("ran no group   : 1 package"), "a package that ran nothing is never hidden behind clean counts");
+            Assert.That(all, Does.Contain("package        C08 : no result, the file is not there. Whether any group of C08 wrote files is UNKNOWN"));
+            Assert.That(all, Does.Not.Contain("C08 : not run"), "a package with no result may have run groups, so it is never said as not run");
+            Assert.That(all, Does.Contain("package        C07 : not run, every group of it has an NWF already"));
+            Assert.That(all, Does.Contain("why            C06  1B06KI : a.nwc could not be appended"));
+            Assert.That(all, Does.Not.Contain("why            C06  1B06BC"), "a group that is DONE has no reason line");
             Assert.That(lines, Does.Contain("PACKAGE C08 : NO RESULT, its Navisworks ended before it wrote its result"));
             Assert.That(lines, Does.Contain("    no group of it ran, every group of it has an NWF already"));
             Assert.That(lines, Does.Contain("    its log holds no RESULT block"));
             Assert.That(lines, Does.Contain("    10:21:18.587  +0044.318s  groups failed  : 1"));
-            Assert.That(string.Join("\n", lines), Does.Contain("C07 : its own RESULT, from its log UNKNOWN"));
+            Assert.That(all, Does.Contain("C07 : its own RESULT, from its log UNKNOWN"));
             Assert.Throws<ArgumentException>(() => PackageRunWords.JoinedResult(
-                new List<string> { "C06" }, new List<PackageRunResult>(), new List<string>(), null));
+                new List<string> { "C06" }, new List<PackageRunResult>(), new List<string>(), tally));
+            Assert.Throws<ArgumentException>(() => PackageRunWords.JoinedResult(
+                new List<string> { "C06" }, new List<PackageRunResult> { c06 }, new List<string> { null }, null));
+        }
+
+        [Test]
+        public void TheResultLinesAreReadOffARunLogsOwnResultBlock()
+        {
+            string logs = Path.Combine(root, "logs");
+
+            using (RunLog log = RunLog.Start(logs, new DateTime(2026, 10, 18, 11, 0, 0)))
+            {
+                log.WriteJoinedResult(new List<string> { "first block" });
+                log.WriteJoinedResult(new List<string> { "groups done    : 3", "files written  : 9" });
+
+                IList<string> lines = PackageRunResult.ResultLinesOf(log.ReadAll().Replace("\r\n", "\n").Split('\n'));
+
+                Assert.That(lines.Count, Is.EqualTo(2), "the last RESULT block alone, read in the shape RunLog writes it");
+                Assert.That(lines[0], Does.EndWith("groups done    : 3"));
+                Assert.That(lines[1], Does.EndWith("files written  : 9"));
+            }
+        }
+
+        [Test]
+        public void AnOrderMissingAnyOfItsFoldersOrItsPluginCannotRun()
+        {
+            PackageRunOrder order = Order();
+            order.Parent = null;
+            Assert.That(order.WhyNot(), Does.Contain("parent folder"));
+
+            order = Order();
+            order.Report = string.Empty;
+            Assert.That(order.WhyNot(), Is.Not.Null);
+
+            order = Order();
+            order.Folder = null;
+            Assert.That(order.WhyNot(), Is.Not.Null);
+
+            order = Order();
+            order.PluginId = null;
+            Assert.That(order.WhyNot(), Is.Not.Null);
+            Assert.That(Order().WhyNot(), Is.Null);
+        }
+
+        [Test]
+        public void AControlWithNoNameOrOfAKindNotKnownIsRefused()
+        {
+            Assert.Throws<ArgumentException>(() => new ControlValue(ControlValue.TickKind, string.Empty, "True"));
+            Assert.Throws<ArgumentException>(() => new ControlValue("slider", "Grouping", "1"));
+            Assert.That(new ControlValue(ControlValue.TextKind, "NwfLevel", null).Value, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void AnOrderWithAControlLineOfTheWrongCountOrBytesThatAreNotUtf8IsRefused()
+        {
+            PackageRunOrder order = Order();
+            order.Write();
+            string good = File.ReadAllText(order.OrderPath);
+            string why;
+
+            WriteOrderText(good.Replace("control\ttick\tMakeViewpoints\tTrue", "control\ttick\tMakeViewpoints"));
+            Assert.That(PackageRunOrder.Read(order.OrderPath, out why), Is.Null);
+            Assert.That(why, Does.Contain("holds 2 values where it holds 3"));
+
+            byte[] bytes = Encoding.UTF8.GetBytes(good);
+            byte[] broken = new byte[bytes.Length + 1];
+            Array.Copy(bytes, broken, bytes.Length);
+            broken[bytes.Length] = 0xFF;
+            File.WriteAllBytes(order.OrderPath, broken);
+            Assert.That(PackageRunOrder.Read(order.OrderPath, out why), Is.Null);
+            Assert.That(why, Does.Contain("could not be read"));
+        }
+
+        [Test]
+        public void AResultWithNoPackageLineAGroupOfTheWrongCountOrAKeyNotKnownIsNoResult()
+        {
+            string path = Path.Combine(root, "result-001.txt");
+            Result().Write(path);
+            string good = File.ReadAllText(path);
+            string why;
+
+            File.WriteAllText(path, good.Replace("package\tC06\r\n", string.Empty), new UTF8Encoding(false));
+            Assert.That(PackageRunResult.Read(path, out why), Is.Null);
+            Assert.That(why, Does.Contain("part way"));
+
+            File.WriteAllText(path, good.Replace("\t812\t", "\t"), new UTF8Encoding(false));
+            Assert.That(PackageRunResult.Read(path, out why), Is.Null);
+            Assert.That(why, Does.Contain("holds 3 values where it holds 4"));
+
+            File.WriteAllText(path, good.Replace("log\t", "logs\t"), new UTF8Encoding(false));
+            Assert.That(PackageRunResult.Read(path, out why), Is.Null);
+            Assert.That(why, Does.Contain("logs"));
+        }
+
+        [Test]
+        public void ThePollAndTheWindowsLimitOnTheRunnerAreSettings()
+        {
+            PackageRunSettings settings = new PackageRunSettings();
+
+            Assert.That(settings.PollMilliseconds, Is.EqualTo(200));
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.PollMilliseconds = 49);
+            Assert.That(settings.RunnerLimitMinutes(3), Is.EqualTo(3 * (240 + 1 + 1)),
+                "each package's ceiling, its wait rounded up to a minute, and a minute more");
+            Assert.That(settings.RunnerLimitMinutes(0), Is.EqualTo(242), "never less than one package's worth");
+
+            PackageRunOrder order = Order();
+            order.Settings.PollMilliseconds = 500;
+            order.Write();
+            string why;
+            Assert.That(PackageRunOrder.Read(order.OrderPath, out why).Settings.PollMilliseconds, Is.EqualTo(500));
         }
 
         [Test]
@@ -296,7 +434,19 @@ namespace Federator.Core.Tests
             Assert.That(PackageRunWords.Ceiling("C06", 240), Does.Contain("240 minutes").And.Contain("next package"));
             Assert.That(PackageRunWords.Ended("C06", 60), Does.Contain("60 seconds").And.Contain("before the next package"));
             Assert.That(PackageRunWords.Gone("C06", 1.55), Does.Contain("1.6 s"));
-            Assert.That(PackageRunWords.Threw("C06", "the run", "COMException", "gone"), Does.EndWith("The next package still runs"));
+            Assert.That(PackageRunWords.Threw("C06", "the run", "COMException", "gone\r\nnow"), Does.EndWith("The next package still runs"));
+            Assert.That(PackageRunWords.Threw("C06", "the run", "COMException", "gone\r\nnow"), Does.Not.Contain("\n"));
+            Assert.That(PackageRunWords.NotTold("C06"), Does.Contain("not run").And.Contain("never ends"));
+            Assert.That(PackageRunWords.CeilingNotTold("C06", 240), Does.Contain("none was ended"));
+        }
+
+        [Test]
+        public void TheLiveLineAndTheWarningCountOnlyThePackagesThatWroteAResult()
+        {
+            Assert.That(PackageRunWords.Finished(3, 3), Does.Contain("3 packages ran"));
+            Assert.That(PackageRunWords.Finished(1, 3), Does.Contain("1 of 3 packages wrote a result").And.Not.Contain("ran,"));
+            Assert.That(PackageRunWords.Warning(3, 3), Is.Null);
+            Assert.That(PackageRunWords.Warning(0, 2), Does.Contain("2 of 2 packages wrote no result"));
         }
     }
 }

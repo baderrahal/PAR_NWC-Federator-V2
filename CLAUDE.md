@@ -39,6 +39,7 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
 
     src\Federator.Core      every rule a test can prove, no Navisworks type in it
     src\Federator.Addin     the window, the engine and every call into Navisworks
+    src\Federator.Runner    the program that gives each package of a run its own Navisworks, F214
     tests\Federator.Core.Tests  NUnit, one folder per Core folder. Samples.cs at the root
                             holds the sample files, the path helper and the temp folder
     build\install.ps1       the only way the bundle reaches the 27 machines
