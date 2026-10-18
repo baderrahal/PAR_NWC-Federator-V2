@@ -1719,3 +1719,7 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's message of 18 Oct 2026, F-R6: a corrupt NWC never stops an unattended run, the options measured first and the safest picked, the group FAILED with the file and the reason, tested with the random bytes NWC and a real NWC cut short, the run finishing unattended. Measured by tools\probes\AppendBoxProbe, docs\history\scan.md 5z-zi: the box is a #32770 window with one Button of id 2, a DispatcherTimer on the main thread fires inside it, and WM_COMMAND 2 closes it and TryAppendFile returns false, where IDOK leaves it standing. A check of the first bytes tells the random file alone. So AppendOne appends under AppendBoxWatch, which answers only the box Core's AppendBox says is the file's, and the file goes on GroupFacts.FilesNavisworksRefused, judged FAILED and never an error, so every step after the append runs.
 - DONE 2026-10-18, merged in 293. run-20261018-102034 on 64ea80e6: three bad files FAILED with the full path, a 26 MB NWC appended with no box, a group with a bad file went on to its NWD.
+
+## F216 F210-R4, the full path on every package line
+
+- Bader's message of 18 Oct 2026, F-R4: the full path on every package line in PACKAGE TREE and PACKAGES TICKED. PackageWords.PackageLine is the one shape of a package's line in both blocks, its path from the parent, its files and its full path, and the two tests of the blocks assert it.

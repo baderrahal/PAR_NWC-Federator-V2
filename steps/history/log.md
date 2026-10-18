@@ -2,6 +2,21 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F216, F210-R4, the full path on every package line
+
+Branch fix-F216 off main 4a5c515, worked while F214's proof run on the flat C06 and C07 copies went, since it touches Core
+alone and needs no Navisworks. Bader's F-R4: the full path on every package line in PACKAGE TREE and PACKAGES TICKED.
+
+What was done. `PackageWords.PackageLine` is the one shape of a package's line in both blocks: its path from the parent, which
+every group line names it by, its files, then `, at` and its full path, `Package.FullPath`. `PackageTree.Lines` and
+`PackageTicks.Lines` both write it. The two tests that read the blocks now assert the full path on every package line, and fail
+on the code before. The rule is in .claude\rules\core.md beside PackageTicks.
+
+What was proved here. Core tests 3363 passed before and 3363 after, 0 failed, 0 skipped, the two tests changed and none added.
+No Navisworks run: the add-in only calls these two blocks, so the lines are proved by the tests and seen in F220's run.
+
+What remains. Nothing of F-R4. Known bugs: none new. What comes next: F214's merge once its proof run is read, then F215.
+
 ## 2026-10-18 F213, F210-R6, a bad NWC never stops an unattended run
 
 Branch fix-F213 off main 5b49d2b. Bader's F-R6: the options measured first and the safest picked, the group FAILED with

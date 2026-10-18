@@ -402,7 +402,7 @@ namespace Federator.Core.Communities
 
                 foreach (Package package in community.Packages)
                 {
-                    lines.Add("   package  " + package.RelativePath + "  " + PackageWords.FilesWord(package.Files.Count, Extension));
+                    lines.Add("   package  " + PackageWords.PackageLine(package, Extension));
                 }
             }
 

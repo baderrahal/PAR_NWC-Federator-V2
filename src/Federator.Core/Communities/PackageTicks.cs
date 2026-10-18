@@ -146,12 +146,12 @@ namespace Federator.Core.Communities
 
             foreach (Package package in on)
             {
-                lines.Add("ticked      " + package.RelativePath + "  " + PackageWords.FilesWord(package.Files.Count, tree.Extension));
+                lines.Add("ticked      " + PackageWords.PackageLine(package, tree.Extension));
             }
 
             foreach (Package package in off)
             {
-                lines.Add("left out    " + package.RelativePath + "  " + PackageWords.FilesWord(package.Files.Count, tree.Extension));
+                lines.Add("left out    " + PackageWords.PackageLine(package, tree.Extension));
             }
 
             lines.Add("ticked      : " + PackageWords.Count(on.Count, "package", "packages") + " holding "

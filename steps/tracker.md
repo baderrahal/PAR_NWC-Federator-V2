@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 715 rows: open 169, in progress 24, in review 0, merged 444, proven by a run 41, waiting for Bader 19, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 244, outside the waves 2, right after F133 merges 6
+- By status, of 716 rows: open 168, in progress 24, in review 2, merged 444, proven by a run 41, waiting for Bader 19, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 245, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 19 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201, Q207
 
@@ -794,7 +794,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F210-R1 | the memory stop fires in every later package of a long run, in 42 groups in one start C07 got 1 picture of its 6207 clashes, run-20261018-010353, Q204 | F210 | register row | open | none | none | 2026-10-18 |
 | F210-R2 | a group of one discipline runs no test on the NWC page while the NWF page finds its clashes, 1996 per community on C06 and C07, 284 of the 1830 tests set a code against itself, Q203 | F210 | register row | open | none | none | 2026-10-18 |
 | F210-R3 | 76 of 399 pictures of 1B06BC and 13 of 374 of 1B06P1 show only the sky, the same on both pages and every run of C06 and C07, no model hidden, cause UNKNOWN | F210 | register row | open | none | none | 2026-10-18 |
-| F210-R4 | the log names each package by its path from the parent under one line with the parent, where the message asks for the full path on each package line | F210 | register row | open | none | none | 2026-10-18 |
+| F210-R4 | the log names each package by its path from the parent under one line with the parent, where the message asks for the full path on each package line | F210 | register row | in review | UNKNOWN | none | 2026-10-18 |
 | F210-R5 | the NWF page confirm of a run of packages says UNKNOWN old jpg files where the confirm of one NWF counts them | F210 | register row | open | none | none | 2026-10-18 |
 | F210-R6 | a corrupt NWC stops an unattended run, TryAppendFile opens a Navisworks message box and waits for a person, 100.7 s in run-20261018-044816, scan.md 5z-zh | F210 | register row | merged | 293 | none | 2026-10-18 |
 | Q202 | the Coordinates check calls a model far over 1000 m between boxes, set 10 m, keep 1000 m or 1 m | none | question | merged | 292 | none | 2026-10-18 |
@@ -808,6 +808,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F213 | a bad NWC never stops an unattended run, its Navisworks message box answered by a watch on the main thread, the group FAILED with the file named, measured first by AppendBoxProbe, scan.md 5z-zi | F213 | fix | merged | 293 | none | 2026-10-18 |
 | F213-R1 | an NWF opened on the NWF page that links a corrupt NWC is not watched, so its message box would wait for a person, whether the open raises one is UNKNOWN | F213 | register row | open | none | none | 2026-10-18 |
 | F213-R2 | a group error that ends with a full stop reads written., and in RESULT where another reason follows, No file in this group appended among them, run-20261018-102034 | F213 | register row | open | none | none | 2026-10-18 |
+| F216 | the full path on every package line in PACKAGE TREE and PACKAGES TICKED, PackageWords.PackageLine | F216 | fix | in review | UNKNOWN | none | 2026-10-18 |
 
 ## outside the waves
 
