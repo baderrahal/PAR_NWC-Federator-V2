@@ -2,6 +2,76 @@
 
 Newest entry at the top.
 
+## 2026-10-18 The plan of the round of Bader's answers to Q202 to Q206, F212 to F221
+
+Bader's message of 18 Oct 2026, his answers to Q202 to Q206, F210-R6, R1, R3, R4 and R5, and a test again on copies of C06
+and C07. Written before the first edit, on branch fix-F212 off main 9b64b53, the session started from the repo folder so the
+hooks of .claude\settings.json fire.
+
+What was read first. CLAUDE.md, the six files under .claude\rules, addin, core, loop, steps, tests and tracker, whole.
+steps\PROGRESS.md, the top entry of this log, F211, steps\01_next.md whole, its newest sections F198 to F211, and
+steps\02_questions.md whole, its newest questions Q182 to Q206, so a new question is Q207. claude\audit-multi-2026-10-17.md and
+claude\audit-repo-2026-10-18.md. docs\history\scan.md 5z-d, 5z-f, 5z-k, 5z-zg and 5z-zh for what is measured of a start
+through the Automation API, the arguments ExecuteAddInPlugin hands a plugin, and the corrupt NWC. Core tests on main 9b64b53:
+3345 passed, 0 failed, 0 skipped. No Navisworks runs. No pull request is open.
+
+The F numbers. F212 the answers and the rules, F213 F210-R6, F214 F210-R1, F215 F210-R3, F216 F210-R4, F217 F210-R5, F218
+Q202, F219 Q203, F220 the test on copies of C06 and C07, F221 the audit of the repo and the closing entry. One branch off main
+and one pull request each, merged by the lead on green, the branch deleted after.
+
+THE APPEND, Bader's standing rule with Q202: a model is appended the way a manual Append does it and the tool changes no
+setting to append. Read off src on 9b64b53: the first build and the rebuild call Document.Clear and then
+Document.TryAppendFile once per file, FederationEngine.BuildFromScratch, AppendEveryFile and AppendOne, and the reshape calls
+the same AppendOne. Nothing is set before or during it: no units, no transform, no origin, no file option and no Navisworks
+option. F201 deleted the last one, SetModelUnitsAndTransform, and a Core test refuses it and OverridePermanentTransform in the
+add-in. What the tool does set it sets after the append and puts back, each named so the list is whole: the hidden state for
+the clash step and the pictures, F204 and F206, the undo switched off for the pictures, F147, and Clash Detective's Hide Other
+for the pictures, F150. During the open of an NWF on the NWF page the tool answers Navisworks' question about a linked file it
+cannot find, Ignore, F187, which is an answer and no setting. One thing outside the tool changes a setting before every
+append of a loop run: the loop's run.ps1 writes Navisworks' Auto-Save switch "3 0" before every start, Bader's order of Q135,
+and puts it back after. It sets nothing about the append, so it is listed here and left as he ordered, and Q207 asks him
+whether it goes. So nothing in src is removed for this rule, and the rule is written into .claude\rules\addin.md.
+
+The order.
+
+1. F212, the answers, branch fix-F212. Q202 to Q206 written as answered on 18 Oct with their tracker rows. The standing rule
+   of the append into addin.md. Q205: addin.md's tick box count read off FederatorWindow.xaml, 20 named, 11 under no expander,
+   both places that count them. The map of the seven C02 bugs to the chat audit's items into claude\audit-multi-2026-10-17.md,
+   closing its UNKNOWN. Q206: the live branch lists read with gh api and git, each branch tested as merged into main by git
+   merge-base, every merged one deleted on GitHub and on this PC, main and the six unmerged ones kept, both lists in the PR body.
+2. F213, F210-R6, a corrupt NWC never stops an unattended run. Measured first with a probe on copies, the random bytes NWC of
+   F210 and a real NWC cut short: whether each opens the box, whether a check of the file before the append tells a bad one,
+   whether the box can be answered from inside the process, and what TryAppendFile returns then. A Navisworks option that
+   silences the box is out by the rule of the append. Then the fix the probe picks, the reason in the PR body, the group FAILED
+   with the file and the reason, Core holding every rule a test can prove.
+3. F214, F210-R1, a fresh Navisworks start per package. Measured first, scan.md: a small helper outside Navisworks starting one
+   Navisworks through the Automation API, handing the installed add-in the package to run through ExecuteAddInPlugin, and
+   closing it with Dispose, with the process read gone before the next. Then the build: Bader presses Run once on either page,
+   the parent window does the refusals and the confirms as today and writes one run order, the helper starts one Navisworks per
+   ticked package in turn, each runs its package with no person and closes, one package failing or crashing never stops the
+   next, and the parent's log joins every package into one RESULT. The order, the result of each package and the joined
+   RESULT are Core with tests.
+4. F215, F210-R3, the pictures that show only the sky. A probe on copies of the NWFs of 1B06BC and 1B06P1 from F210 reads, for
+   each sky picture and a good one of the same test, the camera's position and the clash point, and the cause is fixed and
+   proved by a rerun at 0 sky pictures, or written as measured and left UNKNOWN.
+5. F216, F210-R4, every package line of PACKAGE TREE and PACKAGES TICKED carries its full path. Core with tests.
+6. F217, F210-R5, the confirm of a run of packages on the NWF page counts the old jpg files in each package's Clash report
+   folder as the confirm of one NWF does.
+7. F218, Q202, the far limit of the Coordinates check is 30 m by default, Core tests at 29.9 m, 30 m and 30.1 m.
+8. F219, Q203, a group of one discipline runs no test on the NWF page either, the log saying why on both pages, and a new
+   question putting to Bader the tests of the pack that set a discipline against itself inside groups of two or more
+   disciplines, with what each page does with them today. Q207 is taken by F212's question on the loop's Auto-Save switch.
+9. F220, the test after the last merge. Main built and installed. Copies of C06 and C07 under C:\NWC-PC-Test\work\multi2 in the
+   flat layout with a Report folder holding empty C06 and C07, and a package of the random bytes NWC. The NWC page on all three
+   with Run pressed once and no box answered, then the NWF page on C06 and C07. Every point of the message's list read off the
+   logs, the logs and tsv files into steps\logs named with the date and C06-C07, the desktop folder listed with SHA-256 before
+   and after with 0 differences, the findings in claude\audit-round-2026-10-18.md, the proof steps in steps\03_bader_next.md.
+10. F221, after the last merge: the audit and QA of the repo against CLAUDE.md and the closing entry here.
+
+Each add-in change is read by one reviewer, and by a breaker where it touches clash counts or pictures, F213, F214, F215 and
+F219, under Q143's limits. Navisworks is started only through the Automation API by a probe or the helper, never while
+another Navisworks runs, and nothing is written into the desktop folder of real files.
+
 ## 2026-10-18 F211 the audit of the repo, and the close of the round of F208 to F211
 
 Branch fix-F211 off main 0a22fe7, after the merge of 290. Bader's message of 17 Oct 2026 late evening, the end.

@@ -1,4 +1,4 @@
-STATE WAITING, 2026-10-18 05:40, the round of F208 to F211 closed, 288 to 291 merged, waiting for Q202 to Q206, run-20261018-010353 to 044816 on copies of C06 and C07, 14b434f4 of main installed
+STATE OPEN, 2026-10-18 09:38, last run 94/item1-C02, the round of F212 to F221 on Bader's answers to Q202 to Q206
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,14 +16,14 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 274 | 16 | 0 | 23 | 67 | 7 | 387 |
-| total | 477 | 24 | 0 | 23 | 168 | 18 | 710 |
+| outside the waves | 274 | 16 | 6 | 19 | 67 | 7 | 389 |
+| total | 477 | 24 | 6 | 19 | 168 | 18 | 712 |
 <!-- the end of the counts -->
 
 ## Now
-- 18 Oct, Bader's message of 17 Oct late evening: F208 many communities and nested packages 288, F209 one Excel per discipline per
-  package 289, F210 the test on C06 and C07, PROVEN, 290, F211 the audit of the repo, 11 contradictions, both in claude
-- 17 Oct: F207 the nine items of the chat audit, F206 pictures after the save show every item 286, F203 to F205 283 to 285
+- 18 Oct, Bader's answers to Q202 to Q206: the plan is the top entry of steps\history\log.md, F212 to F221. F212 his answers,
+  the rule that an append changes no setting, the tick box count, the C02 map and the merged branches deleted, in review
+- 18 Oct before: F208 to F211, 288 to 291, the packages, the discipline reports, the test on C06 and C07 and the audit
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
@@ -35,14 +35,14 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 01:04, C06 and C07 copy, 42 groups | 14b434f4, main after 289 | 3514, the memory stop in 22 groups | not run | none read | NWC page 60.0 min, NWF page 51.6 min |
 
 ## Next
-1. Bader answers Q202 to Q206, the far limit, the one discipline groups, the memory, the tick box count and the kept branches
-2. F210-R6 a probe for the message box of a corrupt NWC, then F210-R1 the memory across groups, then F210-R4 and R5
-3. Bader runs the F208 and F209 steps on his own parent folder, steps\03_bader_next.md
+1. F213 F210-R6 a probe for the message box of a corrupt NWC and its fix, then F214 F210-R1 a fresh Navisworks per package
+2. F215 the sky pictures, F216 full package paths, F217 the old jpg count, F218 the 30 m limit, F219 one discipline groups
+3. F220 the test on copies of C06 and C07 in C:\NWC-PC-Test\work\multi2, then F221 the audit of the repo
 4. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
 5. F207-R1 on a copy of C04. C02 waits on Q191. tools\loop\prove-run.ps1 not run since F173, its window cases UNKNOWN
 
 ## Waiting for Bader
-- Q202 the far limit of the Coordinates check, Q203 one discipline groups, Q204 the memory, Q205 tick boxes, Q206 branches
+- Q207 the loop's Auto-Save switch before every loop start, kept as the loop's or taken out
 - Q194 Approved pictures, Q195 the rule boxes on the NWF page, Q196 Layer, Q197 Item Name, Q198 logo, Q199 relative links
 - Q200 foundations, Q201 the look of the pictures. Q187 caps, Q188 512 pixels, Q189 by design pairs, Q190 folders, Q191 C02, Q192 numbers
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
