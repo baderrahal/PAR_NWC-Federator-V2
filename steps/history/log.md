@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F228, the documents part of F221's audit, the two pages, the folder list and the rule files of the runner and build
+
+Branch fix-F228 off main 63a2ef4, rebased onto f16c8ce once F227 merged. The round's item 7: claude\audit-round-2026-10-18.md
+items 15 and 16, docs\workflow.md for the NWC page and the NWF page with the packages, item 18, CLAUDE.md's folder list, and
+item 19, a rule file for src\Federator.Runner and for build. The manifest's path of item 25, Q30, goes in a pull request of
+its own, FR-204.
+
+What was done. docs\workflow.md is written again for the two pages as they are on main, by the loop's writer agent in a
+worktree of its own, each line read off the code and the rules: the NWC page's five steps and the first build of a group, the
+Rebuild box and its dated folder, the NWF page, its picker, its five steps and its confirm, Run pressed once with each group in
+a fresh Navisworks of its own and one joined RESULT, what a run leaves out, one discipline and one set code, with what an NWF
+refreshed before still holds and Q212 pending, Auto-Save off and put back, the seven labels, the thirteen service categories,
+the viewpoint tree, where every output goes, removing a model measured in scan.md 5c and 5x, a mirror not merged in no view,
+the size folder of C's Mechanical and Electrical, and a section of what is UNKNOWN. CLAUDE.md's folder list names
+build\package.ps1, build\team-install.ps1 with build\team, build\install-common.ps1, Directory.Build.targets, the C# probes,
+tools\tracker, claude, .github, .githooks, steps\logs and steps\notes, says install.ps1 installs and checks this machine and the
+team zip reaches the 27, Q149, and says the runner gives each group its own Navisworks. .claude\rules\runner.md, paths
+src/Federator.Runner/**, holds the runner's F214 paragraph moved out of addin.md and names the two rules each written once with
+the window's half, F222 and F223. .claude\rules\build.md, paths build/**, holds the ten install, team zip and team install
+bullets moved out of addin.md whole, a pointer left in their place in each. Two proof steps of F223 and F224 said press Run
+NWFs where the NWF page's button reads Run, the writer's finding, and say Run on the NWF page.
+
+What was proved here. Core tests 3441 passed before on main and after, 0 failed, 0 skipped, nothing of src changed. No test or
+script reads addin.md's text, searched. Nothing here runs on Navisworks.
+
+What remains. The manifest's path, FR-204, in a pull request of its own. The writer's notes: the Run as column of a group with
+Rebuild ticked reads the undated path, and whether a press of today's window still reaches the Rebuilt label is UNKNOWN, for
+F229's run to read. Known bugs: none new. What comes next: FR-204, then F229, the test of the round.
+
 ## 2026-10-18 F227, Q210, the eight numbers become settings, 27 members internal, the totals of TestRefresh deleted
 
 Branch fix-F227 off main 8923d21, rebased onto 63a2ef4 once F226 merged. Bader's answer to Q210: PictureLimits A 150, B 100, C
