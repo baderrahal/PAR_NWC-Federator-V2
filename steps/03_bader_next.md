@@ -24,6 +24,29 @@ Navisworks session. F222 first, since every later run goes through it.
 6. Open the four checks workbooks in the package's folder of the Report folder.
    Look for: one Missing discipline line a discipline, and a group that did not run said `not read`, never `missing`.
 
+### F223, Auto-Save off while the tool works and put back as it was
+
+1. In Navisworks, open Options, General, Auto-Save, and write down whether Enable Auto-Save is ticked. Close Options.
+2. Open the tool, and on the NWC page, step 5, run one community of copies with Run ticked packages, as in F222's steps 2 and
+   3, clicking nothing more.
+   Look for: each group's Navisworks opening and closing as in F222, and no autosave file of the copies in
+   %APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave dated during the run.
+3. When the live line says the run finished, open the log with Open log folder.
+   Look for: `AUTOSAVE the registry's switch reads '0', never set, so on by Navisworks' default, kept in
+   auto-save-to-put-back.txt` near the start, one `AUTOSAVE the registry's switch read '0', switched off for this group's
+   Navisworks` or `off already` line a group, and near the end `AUTOSAVE the registry's switch read '3 0', put back to '0', it
+   reads '0', auto-save-to-put-back.txt deleted`.
+4. Open the folder %LOCALAPPDATA%\ParsonsNwcFederator.
+   Look for: no file named auto-save-to-put-back.txt.
+5. Open one group's own log, the one its GROUP line names.
+   Look for: `AUTOSAVE the option general.autosave.enable reads off as the run starts, left as it is`.
+6. On the NWF page pick one NWF of the run with File and press Run NWFs, in the Navisworks you started.
+   Look for: `AUTOSAVE the option general.autosave.enable reads on as the run starts, switched off for the run` where step 1
+   read ticked, and before RESULT `AUTOSAVE the option ... put back to on as the run ends`, then `... as it was before the run,
+   ... auto-save-to-put-back.txt deleted`.
+7. Close Navisworks, start it again from the Start menu and open Options, General, Auto-Save.
+   Look for: Enable Auto-Save as you wrote it down in step 1.
+
 ## The round of 18 Oct, F212 to F221
 
 Simple words. Every fix of this round but two was seen on Navisworks by F220, F212 being a rule read off the code and F215 a measurement left UNKNOWN for Q208, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.
