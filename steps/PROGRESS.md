@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 12:20, last run 94/item1-C02, the round of F212 to F221, F215 measured, its PR next, then F217
+STATE OPEN, 2026-10-18 13:00, last run 94/item1-C02, the round of F212 to F221, F217 PR next, then F219, F220, F221
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,8 +16,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 288 | 16 | 0 | 20 | 71 | 7 | 402 |
-| total | 491 | 24 | 0 | 20 | 172 | 18 | 725 |
+| outside the waves | 288 | 16 | 2 | 20 | 70 | 7 | 403 |
+| total | 491 | 24 | 2 | 20 | 171 | 18 | 726 |
 <!-- the end of the counts -->
 
 ## Now
