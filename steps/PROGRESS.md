@@ -16,12 +16,12 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 308 | 16 | 1 | 19 | 91 | 7 | 442 |
-| total | 512 | 24 | 1 | 19 | 191 | 18 | 765 |
+| outside the waves | 309 | 16 | 0 | 19 | 91 | 7 | 442 |
+| total | 513 | 24 | 0 | 19 | 191 | 18 | 765 |
 <!-- the end of the counts -->
 ## Now
 - 18 Oct evening, the round of F222 to F230 closed: F222 302, F223 303, F224 304, F225 305, F226 306, F227 307, F228 308,
-  FR-204 309, F229 310, F230 the closing entry. F229 saw every fix on multi3, C06, C07 and SKY, the real files 0 lines differ.
+  FR-204 309, F229 310, F230 311. F229 saw every fix on multi3, C06, C07 and SKY, the real files 0 lines differ.
   claude\audit-round-2026-10-18b.md, the findings and 41 contradictions
 - 18 Oct before: F212 to F221, 292 to 301, a fresh Navisworks per package, the bad NWC, the one discipline rule and the audit
 ## Speed

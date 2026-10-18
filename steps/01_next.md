@@ -1803,3 +1803,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F230 the audit of the round of 18 Oct evening
 
 - The round of 18 Oct 2026, the end: the findings in claudeudit-round-2026-10-18b.md, the proof steps in one order, a full audit and QA after the last merge listing the contradictions with CLAUDE.md, and the closing entry, no pull request left open.
+- DONE 2026-10-18, merged in 311. claudeudit-round-2026-10-18b.md, 35 contradictions read on main and 10 of them fixed as text, the morning's 26 read again, PROGRESS.md rewritten, the closing entry, 3441 Core tests passed.
