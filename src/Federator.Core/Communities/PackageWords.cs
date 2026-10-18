@@ -14,8 +14,6 @@ namespace Federator.Core.Communities
 
         public const string ChosenTitle = "PACKAGES TICKED";
 
-        public const string AcrossTheRunTitle = "PACKAGES ACROSS THE RUN";
-
         public const string StepHeader = "5. Packages";
 
         public const string StepHeading = "Many communities at once. Pick the parent folder, whose first level holds the "

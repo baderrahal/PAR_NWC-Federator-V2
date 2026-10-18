@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F211 the audit of the repo, and the close of the round of F208 to F211
+
+Branch fix-F211 off main 0a22fe7, after the merge of 290. Bader's message of 17 Oct 2026 late evening, the end.
+
+What was done in F211. A full audit and QA of the repo against CLAUDE.md after the last merge, claude\audit-repo-2026-10-18.md.
+The solution builds in Release with 0 warnings and 0 errors, Core tests 3345, every project C# 7.3 on net48, no Navisworks
+type in Core, the checks of Actions and the tracker proofs clean, no pull request open. 11 contradictions listed with the
+file each is read off. One fixed here, PackageWords.AcrossTheRunTitle, added in F208 and read by nothing, deleted. Ten
+listed for Bader, Q205 the tick box count of addin.md and Q206 the 49 merged branches kept among them.
+
+What the round did. F208, 288, many communities and nested packages: one parent folder, the communities its first level, a
+package every folder holding NWC files directly, a tree with a tick box per community and package on both pages, each
+ticked package run in turn into its own report folder mirroring the path, community and package on every group line with
+totals per package, per community and for the run. F209, 289, one Excel per discipline per package, six checks from rules
+in Core, measured first by DisciplineProbe, scan.md 5z-zg. F210, 290, the test of both on copies of C06 and C07 in two
+layouts and on both pages, six runs, every group of the five full runs done, 7 element ids found again in Navisworks,
+claude\audit-multi-2026-10-17.md. F211, this audit. NM fed only read, 135 files before and after, 0 lines differ.
+
+What remains. Bader's answers to Q202 to Q206. Which seven C02 bugs the message means is UNKNOWN, the file it names being
+nowhere, so the eleven items of the chat audit were read instead. Why 89 pictures of 1B06BC and 1B06P1 show only the sky is
+UNKNOWN. How a CAD file linked into a project itself shows is UNKNOWN. probe-window-labels.ps1 was not run on the tick box
+count and prove-run.ps1 not since F173.
+
+Known bugs. F210-R1 the memory stop fires in every later package of a long run, so C07 got 1 picture of 6207, Q204. F210-R2
+a group of one discipline runs no test on the NWC page and finds 1996 clashes per community on the NWF page, Q203. F210-R3
+the pictures that show only the sky. F210-R4 the log names a package by its path from the parent, not its full path.
+F210-R5 the package confirm on the NWF page says UNKNOWN old jpg files. F210-R6 a corrupt NWC stops an unattended run at a
+Navisworks message box, scan.md 5z-zh. F207-R1 views check 4 on C04, as before.
+
+What comes next. Bader's answers to Q202 to Q206. Then F210-R6, measured first by a probe, since one corrupt NWC can hold an
+overnight run, and F210-R1 the memory across groups. Then F210-R4 and F210-R5, small, and F210-R2 once Q203 is answered.
+
+Core tests 3345 before and 3345 after, 0 failed, 0 skipped. The solution 0 warnings and 0 errors.
+
 ## 2026-10-18 F210 the test on C06 and C07, two layouts, both pages
 
 Branch fix-F210 off main 14b434f. Bader's message of 17 Oct 2026 late evening, the test.
