@@ -15,7 +15,7 @@ namespace Federator.Addin.Engine
         /// The workbook can carry a different name from the NWF, because the Outputs step
         /// holds one naming pattern for each of the three. The discipline count is what
         /// the scan found in this group, or null for the open file, where nothing was
-        /// scanned and the count is UNKNOWN.
+        /// scanned and the count is UNKNOWN, until F219 reads a picked NWF's at its open.
         /// </summary>
         public FederationJob(
             string building,
@@ -110,16 +110,16 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// How many disciplines the scan found in this group, or null where nothing was
-        /// scanned. Fewer than two and the clash step creates every test and runs none,
-        /// by BuildingGroup.CannotClashWith. D5.
+        /// How many disciplines the scan found in this group, or for a picked NWF its models'
+        /// names gave at its open, F219, or null where neither did. Fewer than two and the
+        /// clash step runs no test, by BuildingGroup.CannotClashWith. D5.
         /// </summary>
         public int? DisciplineCount { get; private set; }
 
         /// <summary>
-        /// The discipline codes in this group, which F52 makes one viewpoint folder from
-        /// each of. Empty for the open file, where nothing was scanned, and empty is a real
-        /// answer there rather than a gap.
+        /// The discipline codes in this group, from the scan or, for a picked NWF, from its
+        /// models' names at its open, F219. Empty for the document already open, where
+        /// nothing was read, and empty is a real answer there rather than a gap.
         /// </summary>
         public IList<string> Disciplines { get; private set; }
 

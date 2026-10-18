@@ -10,22 +10,28 @@ does, the log saying why on both, and a new question counting the tests of the 1
 itself inside groups of two or more disciplines and what each page does with them today, nothing changed.
 
 What was done. Core, `BuildingGroup.DisciplinesOf`: the disciplines of an NWF the NWF page opens, read off its models' file names
-by the scan's own parser, distinct and sorted, and null with why where a model has no name or a name will not read, so the count
-is UNKNOWN and no test is stopped on a guess. `OneDisciplineLine`, the one line both pages log for a group of one discipline,
-naming it, and `DisciplinesNotReadLine`. The add-in: `RunAnOpenFile` reads them once a picked NWF opens and hands them to the
-job, `FederationJob.ReadTheDisciplinesAtTheOpen`, so `IsSingleDiscipline` and the clash step's rule read them as a scanned
-group's, and the clash step logs Core's line where it typed its own. The document already open by hand stays unjudged.
-Four Core tests in OneDisciplineOnTheNwfPageTests. The rule is in core.md beside the one-discipline bullet.
+by the scan's own parser handed the whole path as the scan hands it, distinct and sorted, and null with why where a model has no
+name, a name will not read, the naming settings refuse, or a model carries BM, the tool's own name for a federated model, so the
+count is UNKNOWN and no test is stopped on a guess. `OneDisciplineLine`, the one line both pages log for a group of one
+discipline, naming it, and `DisciplinesNotReadLine`, with the parser's stop taken off its reason by `Words.TrimStop`. The add-in:
+`RunAnOpenFile` reads them once a picked NWF opens, only where tests are asked for, and hands them to the job,
+`FederationJob.ReadTheDisciplinesAtTheOpen`, so `IsSingleDiscipline` and the clash step's rule read them as a scanned group's,
+and the clash step logs Core's line where it typed its own. The document already open by hand stays unjudged. Seven Core tests
+in OneDisciplineOnTheNwfPageTests. The rule is in core.md beside the one-discipline bullet. The reviewer read the first pass and
+its findings were taken: the stem was taken a second time, so a dot in a building cut the name short, a BM model read as one
+discipline, a reason ended in a stop mid sentence, and the read ran with no test asked for. Row F219-R1: an NWF the NWF page
+refreshed before F219 keeps the results of its one-discipline tests, which COVERAGE then reads as FAILED.
 
-Q209. Counted off the pack's XML: of its 1830 tests 284 set a set code against the same code and 513 set one team of the pack's
-team map against itself, 120 Architecture, 15 Structure, 300 Mechanical and 78 Electrical, 60 more having a side whose set name
-carries no code. Off the COVERAGE rows of the flat C06 and C07 runs of F210: over the 30 groups of two or more disciplines both
-pages ran 1828 of them, 358 found clashes, 4906 of those groups' 12414 clashes. Both pages run them as any other test today.
+Q209. Counted off the pack's XML: of its 1830 tests 284 set a set code against the same code and 526 set one team against itself,
+the set code's team or its folder's where the name has none, 120 Architecture, 15 Structure, 300 Mechanical and 91 Electrical. Off
+the COVERAGE rows of the flat C06 and C07 runs of F210: over the 30 groups of two or more disciplines, 15 twice since C07 was a
+copy of C06, both pages ran 1914 of them, 360 found clashes, 4910 of those groups' 12414 clashes. Both pages run them as any
+other test today.
 
-What was proved here. Core tests 3382 passed before, 3386 after on the branch, 3389 with F217 merged in, 0 failed, 0 skipped. dotnet build of the solution
-0 errors, 0 warnings. No Navisworks run: the NWF page's skip is seen in F220's run of the NWF page on C06 and C07.
+What was proved here. Core tests 3385 passed before on main, 3392 after, 0 failed, 0 skipped. dotnet build of the solution 0
+errors, 0 warnings. No Navisworks run: the NWF page's skip is seen in F220's run of the NWF page on C06 and C07.
 
-What remains. Bader's answer to Q209. Known bugs: none new. What comes next: F220, the test on multi2.
+What remains. Bader's answer to Q209. Known bugs: row F219-R1. What comes next: F220, the test on multi2.
 
 ## 2026-10-18 F217, F210-R5, the old jpg files counted on the NWF page's confirm of a run of packages
 

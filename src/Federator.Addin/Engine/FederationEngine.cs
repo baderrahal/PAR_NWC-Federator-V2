@@ -998,17 +998,22 @@ namespace Federator.Addin.Engine
                         {
                             openFiles = FilesInsideTheOpenDocument(job.Building);
 
-                            // F219, Bader's answer to Q203. A picked NWF's disciplines read off its models' names, so a group of
-                            // one discipline runs its tests on neither page, and one whose names will not read runs them as before.
-                            string why;
-                            IList<string> codes = BuildingGroup.DisciplinesOf(openFiles, document.Models.Count, reports.Names, out why);
-
-                            if (codes == null)
+                            // F219, Bader's answer to Q203. A picked NWF's disciplines read off each model's own file name,
+                            // never its source, so a group of one discipline runs its tests on neither page, and one whose
+                            // names will not read runs them as before. Read only where the tests are asked for.
+                            if (reports.RunTests)
                             {
-                                log.Line(BuildingGroup.DisciplinesNotReadLine(job.Label, why));
-                            }
+                                string why;
+                                IList<string> codes = BuildingGroup.DisciplinesOf(
+                                    ModelFileNamesOf(document), reports.Names, NamePattern.DefaultDiscipline, out why);
 
-                            job.ReadTheDisciplinesAtTheOpen(codes);
+                                if (codes == null)
+                                {
+                                    log.Line(BuildingGroup.DisciplinesNotReadLine(job.Label, why));
+                                }
+
+                                job.ReadTheDisciplinesAtTheOpen(codes);
+                            }
                         }
 
                         // F75. Nothing is emptied on this path, so the census line says what
@@ -1983,6 +1988,22 @@ namespace Federator.Addin.Engine
         /// are logged whenever they disagree, which is what made this findable in the
         /// first place.
         /// </summary>
+        /// <summary>
+        /// F219. Each model's own file name, Model.FileName, empty where it has none, as the EXPORT CHECK and the model
+        /// teams read a model, and never the SourceFileName FilesInsideTheOpenDocument falls back to.
+        /// </summary>
+        private static IList<string> ModelFileNamesOf(Document document)
+        {
+            List<string> names = new List<string>();
+
+            foreach (Model model in document.Models)
+            {
+                names.Add(model.FileName ?? string.Empty);
+            }
+
+            return names;
+        }
+
         private IList<string> FilesInsideTheOpenDocument(string building)
         {
             List<string> files = new List<string>();
@@ -3812,7 +3833,6 @@ namespace Federator.Addin.Engine
                 {
                     log.Line(BuildingGroup.OneDisciplineLine(job.Label, job.Disciplines));
                 }
-
 
 
                 // Each output answers to its own flag. The report is built when the
