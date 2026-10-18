@@ -160,8 +160,8 @@ namespace Federator.Core.Report
         /// The pictures are counted and not listed, since 5679 paths would bury the 88 files a
         /// person looks for. Every size was read back off the disk by the writer, which counts
         /// a picture only once its file is there. The logo copied beside each report is on
-        /// neither list, and the line says so rather than leaving it to be guessed at. Since
-        /// F151 no copy of the log is written anywhere, so the line names none.
+        /// neither list, and the line says so rather than leaving it to be guessed at. The copies
+        /// of the log F158 makes are made after RESULT, so the line names none.
         /// </summary>
         public IList<string> ResultLines()
         {

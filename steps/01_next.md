@@ -1754,3 +1754,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's TEST of 18 Oct 2026: main built and installed, C06 and C07 copied flat into C:\NWC-PC-Test\work\multi2 with a package of one random bytes NWC, the NWC page on all three with Run pressed once and no box answered, then the NWF page on C06 and C07, each point proved and the logs and tsv in steps\logs.
 - DONE 2026-10-18, merged in 300. NWC page 45 groups, 44 DONE and the corrupt one FAILED, 22.1 min. NWF page 44 DONE, 19.6 min, 9029 clashes on both. F213, F214, F216, F217, F218 and F219 each seen, the real files 0 lines differ.
+
+## F221 the audit of the round of 18 Oct
+
+- Bader's round of 18 Oct 2026, the end: the findings, a full audit and QA of the repo listing every contradiction with CLAUDE.md, the proof steps with Look for lines and the closing entry. claude\audit-round-2026-10-18.md holds 26 contradictions, the rule texts the code has outgrown fixed in core.md and addin.md, two public members read by nothing deleted, and Q210 for the members read only by tests and the picture limits written as constants.
+- DONE 2026-10-18, merged in 301. 26 contradictions, the rule texts the code outgrew fixed, two unread members deleted, Q210, nine proof steps, 3392 Core tests passed and the build 0 errors.

@@ -850,7 +850,7 @@ and 6 does not read as broken.
   name the report carries twice is read once and named, `ReportClashesOutcome.NamedTwice`. The
   camera, the two items and the size are the document's, which the add-in reads off the result
   it resolves by the address the harvest recorded for the row. Test first, ReportClashesTests,
-  seven tests. THE BY DESIGN PASS SAYS WHERE ITS SIDES CAME FROM: on a run with no XML the
+  eight tests. THE BY DESIGN PASS SAYS WHERE ITS SIDES CAME FROM: on a run with no XML the
   add-in calls `ByDesignTally.SidesReadOffTheSavedTests` with the saved test count and the pairs
   in the file, and the block's first line reads `sides read off the NWF : the N tests saved in
   the document, no clash XML picked, so this pass acts on the saved tests, and they reached K of
@@ -990,7 +990,7 @@ and 6 does not read as broken.
 - Every picker returns a FOLDER to open at, including the one that chooses a file, and the
   caller never takes the parent of it. Doing that opened the clash XML picker one level
   above the folder it had remembered. The rule lives in
-  Federator.Core.Diagnostics.PickerStart so all six can be proved rather than clicked
+  Federator.Core.Diagnostics.PickerStart so all seven can be proved rather than clicked
 - Every picker remembers its own last folder, in a file beside the logs, and reopens
   there next time. Per picker and never one shared, because with one shared, picking an
   NWD folder moves the source picker to it and the next run reads the wrong folder. A
@@ -1195,17 +1195,13 @@ and 6 does not read as broken.
 - THE PICTURES ARE COUNTED BESIDE THE FILES WRITTEN AND NEVER LISTED, FR-059. Each group's
   `ImageTally` is added to `RunLog.PicturesAcrossTheRun` as its IMAGES lines are written, and
   RESULT says the count and the MB straight above files written, from sizes the writer read
-  back off the disk, and that the logo copies are on neither line. Since F151 no copy of the
-  log is written, so the line names none.
+  back off the disk, and that the logo copies are on neither line. The copies of the log F158
+  makes into each Log folder are made after RESULT, so the line names none.
   Set 03 said 88 files written and left out 5679 pictures, 1376 MB
 - THE CLASH TOTAL COUNTS A GROUP THAT RAN NO TEST APART, FR-060. `ClashesAcrossTheRun.Add`
   takes the tests run, and a group at zero clashes that ran none reads `of which ran no test`
   and its row `no test ran`, never `found none`, which is kept for a group that ran a test.
   Set 03 counted six one discipline groups, every block reading tests run : 0, as found none
-- THE UNITS LINES ARE CORE'S, `Federator.Core.Units.UnitsLines`, FR-062. Where the document's
-  units would not read again after the models were set, the read is a failure line and the
-  UNITS line names no unit as what the document shows, says UNKNOWN and names the units read
-  before as that, since whether the document follows its models is UNKNOWN
 - THE WARNING BEFORE A CLEAR IS CORE'S, `Federator.Core.Rerun.DiscardWarning`, FR-169. A file
   name or a model count that would not read is said with the reason the read gave, and a
   document whose name would not read is never called the current unsaved document
@@ -1784,7 +1780,7 @@ and 6 does not read as broken.
   the Log folder beside the NWF's folder and the NWD beside the NWF.
 - THE TWO PAGES, F188, Bader's answer 3 of Q174 and his order of 14 Oct 2026, task 9. The window is a TabControl,
   `Pages`, whose first page is NWC and whose second beside it is NWF. The NWC page holds the four steps it always had,
-  Source, Grouping, Outputs and Clash, in `Steps`, and is for the first build of a group. A group whose NWF is already
+  Source, Grouping, Outputs and Clash, and since F208 a fifth, Packages, in `Steps`, and is for the first build of a group. A group whose NWF is already
   there is not ticked and cannot be ticked, `NwcPageRule.CanRun`, unless the Rebuild box is ticked and confirmed with
   the clash history named, `NwcPageRule.RebuildConfirm`, Cancel the default. A rebuild goes into a new dated folder
   under the NWF's and the NWD's own folders, `RebuildFolder.Name`, and never over the files there,
@@ -2012,8 +2008,8 @@ and 6 does not read as broken.
   name, and that folder can be read from here. The NWD path is never the open path, read
   case blind, as a second lock on the same door. The rule lives in
   Federator.Core.Rerun.OpenDocumentJob so it can be tested without Navisworks
-- THE PICKED NWFS, F129, Bader's request 4 under Q112, FR-178. A third choice on the Source
-  step, beside the NWC folder, picks one NWF or a folder of NWFs, and each runs the way the
+- THE PICKED NWFS, F129, Bader's request 4 under Q112, FR-178. A choice on the NWF page since
+  F188, its File and Folder buttons, picks one NWF or a folder of NWFs, and each runs the way the
   open file run runs it, so every rule above applies to each. What the pick gives is
   Federator.Core.Rerun.NwfPick.From and nothing about it is decided in the add-in. A folder
   is read with no pattern and no wildcard, its files listed whole and an NWF judged by its
@@ -2086,7 +2082,7 @@ and 6 does not read as broken.
   And a block that was never written at all
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
-  above. Fourteen of them live in WorkbookCellCheckTests
+  above. They live in WorkbookCellCheckTests, fifteen tests read on 2026-10-18
 - F85'S PER CLASH VIEWPOINTS ARE WHAT F114 REPLACES, and `LegacyClashView` knows them by
   the strict shape F85's own plan wrote, so the inventory removes them once the new tree is
   written and read back and never a person's view: the folders an optional priority word,
@@ -2329,7 +2325,7 @@ and 6 does not read as broken.
   so a name with an extension and one without compare the same, because that file being
   there is what makes the group a Weekly run and not a finding. THE LABEL IS NEVER
   WIDENED: RunPath.Count maps a label it does not know onto Unknown and both the confirm
-  dialog and the RESULT block read those counts, so RunAs stays one of the six and the
+  dialog and the RESULT block read those counts, so RunAs stays one of the seven and the
   sentence rides beside it in RunAsShown, which is what the column and the group list
   block read. One grey line under the group table when any group is in that state, saying
   the NWF Name cell can be typed over. Nothing is auto corrected, nothing is unticked and
@@ -2350,10 +2346,9 @@ and 6 does not read as broken.
   comment at that one number says both readings side by side
 - A DUCT IS NOT ONE NUMBER. The penetration rule reads EVERY size property the item
   carries and takes the LARGEST, through SizeRule.LargestMillimetres, because a 600 by 150
-  duct has to fit a 600 through the wall and is a real coordination item. F53 takes the
-  FIRST property on the list instead, which is what a viewpoint wants: one representative
-  size in a rule nobody has to argue about. The two readings live beside each other in
-  SizeRule so neither can be mistaken for the other
+  duct has to fit a 600 through the wall and is a real coordination item. F53 took the
+  FIRST property on the list, and that reading went with its tests in F114, so the views
+  read the largest too, the one reading in SizeRule
 - THE UNREADABLE SIZE GOES THE OPPOSITE WAY IN THE TWO RULES ON PURPOSE. F53 INCLUDES an
   item whose size cannot be read, because a fitting usually carries no size property and
   the safe mistake there is showing something unnecessary in a viewpoint. F72 LEAVES ALONE
@@ -2618,10 +2613,13 @@ survive the crash rather than to be tidy.
   before the window opens, so a run that dies at startup still produces a file
 - ONE PLACE, the fixed path
   %LOCALAPPDATA%\ParsonsNwcFederator\logs\run-yyyyMMdd-HHmmss.log, which never depends
-  on a folder the user picked. No copy goes anywhere else, Bader's decision of
+  on a folder the user picked. No copy goes beside the NWF, Bader's decision of
   2026-10-13, F151, after his run of that day on 1A02MM wrote the copy into his NWF
-  folder. RunLog.TryCopyTo and NwfPick.LogFolder are gone, and the RESULT block is the
-  last thing a run writes
+  folder, and RunLog.TryCopyTo and NwfPick.LogFolder are gone. Since F158 the log and its
+  .tsv are copied into each Log folder the run wrote into, once the RESULT block is on the
+  disk, `LogCopy.Into`, so its LOGS lines come after RESULT. In a package's own Navisworks,
+  F214, one line naming the package's result file follows them and is not in the copy, and
+  the window a person runs for a run of packages copies nothing, its joined RESULT last
 - logging is never the thing that stops a run. That holds for retention and for the
   log file itself, which falls back to the temp folder and then to window only output
 - a size is only logged after File.Exists passes and the real size is read back.
@@ -2646,9 +2644,9 @@ Where the time went is the question the log exists to answer, and it can only an
 it if the same work carries the same name every time it is timed.
 
 - the step names live in `Federator.Core.Diagnostics.RunSteps` and nowhere else. Nothing
-  types a step name as a string. Nineteen of them, in the order a group meets them:
-  DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, PICTURES, IMAGES,
-  RENUMBER, VIEWS, WORKBOOK, HTML, XML, COVERAGE, INTERNAL, NWD, CONFIRM.
+  types a step name as a string. Twenty of them, in the order a group meets them since F182
+  and F187: DECIDE, REFRESH, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST,
+  VIEWS, NWD, CONFIRM, PICTURES, IMAGES, RENUMBER, WORKBOOK, HTML, XML, COVERAGE, INTERNAL.
   PICTURES is F149's, the picture pass once every test has run, which its attempt 1 ran
   inside no step. VIEWS is F85's and it was untimed before
   that: building the viewpoints was called outside every step, so its seconds came off
@@ -2690,8 +2688,8 @@ it if the same work carries the same name every time it is timed.
 ### The timing blocks, F60, which closes F21
 
 - a TIMING block per group, written straight after its GROUP finished line, and a
-  TIMING, THE WHOLE RUN block just before RESULT so RESULT stays the last thing in the
-  file. Both are `Federator.Core.Diagnostics.TimingBlock` and nothing else builds them
+  TIMING, THE WHOLE RUN block just before RESULT, so RESULT is the last block of the run,
+  the LOGS lines of F158 after it. Both are `Federator.Core.Diagnostics.TimingBlock` and nothing else builds them
 - every number is measured. The group total is the engine's own clock as GroupFinished
   read it, and the run total is the log's elapsed clock read where the block is written,
   NOT the groups added up, because the scan and the preview happen outside every group
@@ -2782,7 +2780,7 @@ moved where nothing should have moved it is named rather than discovered a week 
   could not take is never called a move, in either direction
 - `CensusRule` says which step may move which count, and the useful half is the
   refusals. DECIDE opens the NWF that is on disk, and opening a document replaces
-  everything in it, so all six may move there and only there. APPEND moves the models.
+  everything in it, so all five may move there and only there. APPEND moves the models.
   SETS the sets, TESTS CREATE the tests, TESTS RUN the results, VIEWS the viewpoints,
   F85. Every other step writes
   a FILE and not the document, so none of them may move anything

@@ -19,7 +19,7 @@ namespace Federator.Core.Diagnostics
         Logo,
 
         /// <summary>
-        /// The existing NWF or folder of NWFs on the Source step, F129. Its own kind and not
+        /// The existing NWF or folder of NWFs on the NWF page, F129 and F188. Its own kind and not
         /// the NWF output folder's, because the NWFs a person runs as they are and the folder
         /// a scanned run writes to are not the same place as often as not.
         /// </summary>

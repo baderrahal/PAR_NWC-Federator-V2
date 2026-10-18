@@ -275,7 +275,7 @@ namespace Federator.Addin.Ui
         /// Builds every ticked package in turn, F208: each package's files grouped and named by steps 2 and 3, each group's
         /// NWF and NWD in the package's own folders and its logs and reports in the package's Log folder, a group whose NWF
         /// is already there left to the NWF page unless Rebuild is ticked. A package that cannot run is named and the others
-        /// run. One engine for the whole run, so RESULT is one block with each group's community and package and the totals.
+        /// run. Since F214 each package runs in its own Navisworks with its own engine, and one RESULT joins them.
         /// </summary>
         private void OnRunPackages(object sender, RoutedEventArgs e)
         {
@@ -579,7 +579,7 @@ namespace Federator.Addin.Ui
         /// <summary>
         /// Runs the NWFs of every ticked package, F208: each NWF in the NWF folder under the package's report folder, opened
         /// and run as a picked NWF is, its NWD and its logs written into the package's own folders. A ticked package holding
-        /// no NWF there is named and the others run. One engine for the whole run, one RESULT with the totals.
+        /// no NWF there is named and the others run. Since F214 each package runs in its own Navisworks, and one RESULT joins them.
         /// </summary>
         private void OnRunNwfPackages(object sender, RoutedEventArgs e)
         {

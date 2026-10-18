@@ -1,0 +1,136 @@
+workbook	community	package	group	file	check	result	value	element id
+C06 AR checks.xlsx	C06	C06	1B06BC	1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site Internal, far from it: EL 2774.306 km, 2774306.482 m	
+C06 AR checks.xlsx	C06	C06	1B06G1	1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site Internal, no discipline of the group is far from it	
+C06 AR checks.xlsx	C06	C06	1B06K1	1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site COMMUNITY 4A, far from it: ST 2823.784 km, 2823784.299 m	
+C06 AR checks.xlsx	C06	C06	1B06P1	1104-PAR-1B06P1-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site COMMUNITY 4A, far from it: ST 2823.723 km, 2823722.534 m	
+C06 AR checks.xlsx	C06	C06	1B06PE	1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, no discipline of the group is far from it	
+C06 AR checks.xlsx	C06	C06	1B06PH	1104-PAR-1B06PH-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site PWPS_Shared_Location, far from it: EL 2029.248 km, 2029247.733 m	
+C06 AR checks.xlsx	C06	C06	1B06PO	1104-PAR-1B06PO-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, far from it: EL 49.055 m	
+C06 AR checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, far from it: ME 299.126 m	
+C06 AR checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-AR-MOD-000002.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site PWPS_Shared_Location, far from it: ME 299.126 m	
+C06 AR checks.xlsx	C06	C06	1B06PS	1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site Internal, far from it: EL 336.262 km, 336262.213 m, ST 2822.679 km, 2822679.151 m	
+C06 AR checks.xlsx	C06	C06	1B06WM	1104-PAR-1B06WM-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site BUL_0105_SharedCoordinate, no discipline of the group is far from it	
+C06 AR checks.xlsx	C06	C06	1B06WO	1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, no discipline of the group is far from it	
+C06 EL checks.xlsx	C06	C06	1B06BC	1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc	Coordinates	far	2774.306 km, 2774306.482 m from AR, its site SITEWIDE PHASE 3, AR site Internal	
+C06 EL checks.xlsx	C06	C06	1B06BS	1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site Community-4-BS4, no discipline of the group is far from it	
+C06 EL checks.xlsx	C06	C06	1B06KI	1104-PAR-1B06KI-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site KI, no discipline of the group is far from it	
+C06 EL checks.xlsx	C06	C06	1B06PE	1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site BUL_0105_SharedCoordinate, AR site IRPS-SharedCoordinate	
+C06 EL checks.xlsx	C06	C06	1B06PG	1104-PAR-1B06PG-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site SITEWIDE PHASE 03, no discipline of the group is far from it	
+C06 EL checks.xlsx	C06	C06	1B06PH	1104-PAR-1B06PH-ZZZ-EL-MOD-000001.nwc	Coordinates	far	2029.248 km, 2029247.733 m from AR, its site PW5_Shared_Location, AR site PWPS_Shared_Location	
+C06 EL checks.xlsx	C06	C06	1B06PO	1104-PAR-1B06PO-ZZZ-EL-MOD-000001.nwc	Coordinates	far	49.055 m from AR, its site BUL_0004_SharedCoordiante, AR site IRPS-SharedCoordinate	
+C06 EL checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site IP3_Shared_Location, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C06 EL checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-EL-MOD-000002.nwc	Coordinates	near	0.000 m from AR, its site IP3_Shared_Location, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C06 EL checks.xlsx	C06	C06	1B06PS	1104-PAR-1B06PS-ZZZ-EL-MOD-000001.nwc	Coordinates	far	336.262 km, 336262.213 m from AR, its site COMMUNITY 14, AR site Internal	
+C06 EL checks.xlsx	C06	C06	1B06PW	1104-PAR-1B06PW-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site PW, no discipline of the group is far from it	
+C06 EL checks.xlsx	C06	C06	1B06WL	1104-PAR-1B06WL-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site IGN2, no discipline of the group is far from it	
+C06 EL checks.xlsx	C06	C06	1B06WM	1104-PAR-1B06WM-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site LTB2, AR site BUL_0105_SharedCoordinate	
+C06 EL checks.xlsx	C06	C06	1B06WO	1104-PAR-1B06WO-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site BUL_0004_SharedCoordiante, AR site IRPS-SharedCoordinate	
+C06 ME checks.xlsx	C06	C06	1B06BC	1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR site Internal	
+C06 ME checks.xlsx	C06	C06	1B06G1	1104-PAR-1B06G1-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR site Internal	
+C06 ME checks.xlsx	C06	C06	1B06K1	1104-PAR-1B06K1-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR site COMMUNITY 4A	
+C06 ME checks.xlsx	C06	C06	1B06M1	1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc	Coordinates	reference	ME is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site PW3_Shared_Location, no discipline of the group is far from it	
+C06 ME checks.xlsx	C06	C06	1B06P1	1104-PAR-1B06P1-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR site COMMUNITY 4A	
+C06 ME checks.xlsx	C06	C06	1B06PE	1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW5_Shared_Location, AR site IRPS-SharedCoordinate	
+C06 ME checks.xlsx	C06	C06	1B06PH	1104-PAR-1B06PH-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW5_Shared_Location, AR site PWPS_Shared_Location	
+C06 ME checks.xlsx	C06	C06	1B06PH	1104-PAR-1B06PH-ZZZ-ME-MOD-000002.nwc	Coordinates	near	0.000 m from AR, its site ARD_PW_CHLOR BUILDING, AR site PWPS_Shared_Location	
+C06 ME checks.xlsx	C06	C06	1B06PK	1104-PAR-1B06PK-ZZZ-ME-MOD-000004.nwc	Coordinates	reference	ME is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site 16-S01, no discipline of the group is far from it	
+C06 ME checks.xlsx	C06	C06	1B06PO	1104-PAR-1B06PO-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW2_Shared_Location, AR site IRPS-SharedCoordinate	
+C06 ME checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW3_Shared_Location, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C06 ME checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-ME-MOD-000002.nwc	Coordinates	far	299.126 m from AR, its site 16-S01, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C06 ME checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-ME-MOD-000003.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C06 ME checks.xlsx	C06	C06	1B06WL	1104-PAR-1B06WL-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from EL, the first discipline of the group with a box, since it holds no AR, its site PW3_Shared_Location, EL site IGN2	
+C06 ME checks.xlsx	C06	C06	1B06WL	1104-PAR-1B06WL-ZZZ-ME-MOD-000002.nwc	Coordinates	near	0.000 m from EL, the first discipline of the group with a box, since it holds no AR, its site SWLS-02 MECH, EL site IGN2	
+C06 ME checks.xlsx	C06	C06	1B06WM	1104-PAR-1B06WM-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW3_Shared_Location, AR site BUL_0105_SharedCoordinate	
+C06 ME checks.xlsx	C06	C06	1B06WO	1104-PAR-1B06WO-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW2_Shared_Location, AR site IRPS-SharedCoordinate	
+C06 ME checks.xlsx	C06	C06	1C06M2	1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc	Coordinates	reference	ME is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site PW3_Shared_Location, no discipline of the group is far from it	
+C06 ST checks.xlsx	C06	C06	1B06BC	1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site T1, AR site Internal	
+C06 ST checks.xlsx	C06	C06	1B06BC	1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc	Coordinates	near	7.910 m from AR, its site BCTANK, AR site Internal	
+C06 ST checks.xlsx	C06	C06	1B06G1	1104-PAR-1B06G1-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site WT_1, AR site Internal	
+C06 ST checks.xlsx	C06	C06	1B06G1	1104-PAR-1B06G1-ZZZ-ST-MOD-000002.nwc	Coordinates	near	0.000 m from AR, its site WT, AR site Internal	
+C06 ST checks.xlsx	C06	C06	1B06K1	1104-PAR-1B06K1-ZZZ-ST-MOD-000001.nwc	Coordinates	far	2823.784 km, 2823784.299 m from AR, its site COMMUNITY 4A, AR site COMMUNITY 4A	
+C06 ST checks.xlsx	C06	C06	1B06M1	1104-PAR-1B06M1-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from ME, the first discipline of the group with a box, since it holds no AR, its site Internal, ME site PW3_Shared_Location	
+C06 ST checks.xlsx	C06	C06	1B06P1	1104-PAR-1B06P1-ZZZ-ST-MOD-000001.nwc	Coordinates	far	2823.723 km, 2823722.725 m from AR, its site DEFUALT, AR site COMMUNITY 4A	
+C06 ST checks.xlsx	C06	C06	1B06P1	1104-PAR-1B06P1-ZZZ-ST-MOD-000002.nwc	Coordinates	far	2823.723 km, 2823722.534 m from AR, its site ST_PW_WATER TANK, AR site COMMUNITY 4A	
+C06 ST checks.xlsx	C06	C06	1B06PE	1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site BUL_0105_SharedCoordinate, AR site IRPS-SharedCoordinate	
+C06 ST checks.xlsx	C06	C06	1B06PH	1104-PAR-1B06PH-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW5_CHLORINATION, AR site PWPS_Shared_Location	
+C06 ST checks.xlsx	C06	C06	1B06PK	1104-PAR-1B06PK-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from ME, the first discipline of the group with a box, since it holds no AR, its site IPS-A(1), ME site 16-S01	
+C06 ST checks.xlsx	C06	C06	1B06PO	1104-PAR-1B06PO-ZZZ-ST-MOD-000001.nwc	Coordinates	near	23.963 m from AR, its site ST_PW2_GUARD HOUSE, AR site IRPS-SharedCoordinate	
+C06 ST checks.xlsx	C06	C06	1B06PP	1104-PAR-1B06PP-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW3_PUMP HOUSE, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C06 ST checks.xlsx	C06	C06	1B06PS	1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc	Coordinates	far	2822.679 km, 2822679.151 m from AR, its site Internal, AR site Internal	
+C06 ST checks.xlsx	C06	C06	1B06PT	1104-PAR-1B06PT-ZZZ-ST-MOD-000001.nwc	Coordinates	reference	ST is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site WPS-B, no discipline of the group is far from it	
+C06 ST checks.xlsx	C06	C06	1B06WL	1104-PAR-1B06WL-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.330 m from EL, the first discipline of the group with a box, since it holds no AR, its site LS, EL site IGN2	
+C06 ST checks.xlsx	C06	C06	1B06WM	1104-PAR-1B06WM-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW5_CHLORINATION, AR site BUL_0105_SharedCoordinate	
+C06 ST checks.xlsx	C06	C06	1B06WO	1104-PAR-1B06WO-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW2_GUARD HOUSE, AR site IRPS-SharedCoordinate	
+C06 ST checks.xlsx	C06	C06	1C06M2	1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from ME, the first discipline of the group with a box, since it holds no AR, its site Internal, ME site PW3_Shared_Location	
+C06 ST checks.xlsx	C06	C06	1C06PK	1104-PAR-1C06PK-ZZZ-ST-MOD-000001.nwc	Coordinates	reference	ST is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site IPS-A(1), no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1C07BC	1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site Internal, far from it: EL 2774.306 km, 2774306.482 m	
+C07 AR checks.xlsx	C07	C07	1C07G1	1104-PAR-1C07G1-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site Internal, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1C07K1	1104-PAR-1C07K1-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site COMMUNITY 4A, far from it: ST 2823.784 km, 2823784.299 m	
+C07 AR checks.xlsx	C07	C07	1C07P1	1104-PAR-1C07P1-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site COMMUNITY 4A, far from it: ST 2823.723 km, 2823722.534 m	
+C07 AR checks.xlsx	C07	C07	1C07PS	1104-PAR-1C07PS-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site Internal, far from it: EL 336.262 km, 336262.213 m, ST 2822.679 km, 2822679.151 m	
+C07 AR checks.xlsx	C07	C07	1C07WE	1104-PAR-1C07WE-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1C07WM	1104-PAR-1C07WM-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site SWLS-04-SharedCoordinate, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1C07WO	1104-PAR-1C07WO-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1D07PE	1104-PAR-1D07PE-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1D07PH	1104-PAR-1D07PH-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site PWPS_Shared_Location, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1D07PN	1104-PAR-1D07PN-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site SWLS-04-SharedCoordinate, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1D07PO	1104-PAR-1D07PO-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, no discipline of the group is far from it	
+C07 AR checks.xlsx	C07	C07	1D07PP	1104-PAR-1D07PP-ZZZ-AR-MOD-000001.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site IRPS-SharedCoordinate, far from it: ME 337.604 m	
+C07 AR checks.xlsx	C07	C07	1D07PP	1104-PAR-1D07PP-ZZZ-AR-MOD-000002.nwc	Coordinates	reference	AR is the discipline the others are measured from, its site PWPS_Shared_Location, far from it: ME 337.604 m	
+C07 EL checks.xlsx	C07	C07	1C07BC	1104-PAR-1C07BC-ZZZ-EL-MOD-000001.nwc	Coordinates	far	2774.306 km, 2774306.482 m from AR, its site SITEWIDE PHASE 3, AR site Internal	
+C07 EL checks.xlsx	C07	C07	1C07BS	1104-PAR-1C07BS-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site Community-4-BS4, no discipline of the group is far from it	
+C07 EL checks.xlsx	C07	C07	1C07KI	1104-PAR-1C07KI-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site KI, no discipline of the group is far from it	
+C07 EL checks.xlsx	C07	C07	1C07PG	1104-PAR-1C07PG-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site SITEWIDE PHASE 03, far from it: ME 2838.636 km, 2838636.469 m	
+C07 EL checks.xlsx	C07	C07	1C07PS	1104-PAR-1C07PS-ZZZ-EL-MOD-000001.nwc	Coordinates	far	336.262 km, 336262.213 m from AR, its site COMMUNITY 14, AR site Internal	
+C07 EL checks.xlsx	C07	C07	1C07PW	1104-PAR-1C07PW-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site PW, no discipline of the group is far from it	
+C07 EL checks.xlsx	C07	C07	1C07WE	1104-PAR-1C07WE-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site C07-WE, AR site IRPS-SharedCoordinate	
+C07 EL checks.xlsx	C07	C07	1C07WL	1104-PAR-1C07WL-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site IGN2, no discipline of the group is far from it	
+C07 EL checks.xlsx	C07	C07	1C07WM	1104-PAR-1C07WM-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site C07-WM, AR site SWLS-04-SharedCoordinate	
+C07 EL checks.xlsx	C07	C07	1C07WN	1104-PAR-1C07WN-ZZZ-EL-MOD-000001.nwc	Coordinates	reference	EL is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site C07-WN, no discipline of the group is far from it	
+C07 EL checks.xlsx	C07	C07	1C07WO	1104-PAR-1C07WO-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site C07-WO, AR site IRPS-SharedCoordinate	
+C07 EL checks.xlsx	C07	C07	1D07PE	1104-PAR-1D07PE-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PE-C07, AR site IRPS-SharedCoordinate	
+C07 EL checks.xlsx	C07	C07	1D07PH	1104-PAR-1D07PH-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PH-C07, AR site PWPS_Shared_Location	
+C07 EL checks.xlsx	C07	C07	1D07PN	1104-PAR-1D07PN-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PN-C07, AR site SWLS-04-SharedCoordinate	
+C07 EL checks.xlsx	C07	C07	1D07PO	1104-PAR-1D07PO-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site BUL_0004_SharedCoordiante, AR site IRPS-SharedCoordinate	
+C07 EL checks.xlsx	C07	C07	1D07PP	1104-PAR-1D07PP-ZZZ-EL-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site IP3_Shared_Location, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C07 ME checks.xlsx	C07	C07	1A07PP	1104-PAR-1A07PP-ZZZ-ME-MOD-000003.nwc	Coordinates	reference	ME is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site 16-S01, no discipline of the group is far from it	
+C07 ME checks.xlsx	C07	C07	1C07BC	1104-PAR-1C07BC-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR site Internal	
+C07 ME checks.xlsx	C07	C07	1C07K1	1104-PAR-1C07K1-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR site COMMUNITY 4A	
+C07 ME checks.xlsx	C07	C07	1C07P1	1104-PAR-1C07P1-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site 16-S01, AR site COMMUNITY 4A	
+C07 ME checks.xlsx	C07	C07	1C07PG	1104-PAR-1C07PG-ZZZ-ME-MOD-000001.nwc	Coordinates	far	2838.636 km, 2838636.469 m from EL, the first discipline of the group with a box, since it holds no AR, its site 16-S01, EL site SITEWIDE PHASE 03	
+C07 ME checks.xlsx	C07	C07	1C07WE	1104-PAR-1C07WE-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW5_Shared_Location, AR site IRPS-SharedCoordinate	
+C07 ME checks.xlsx	C07	C07	1C07WL	1104-PAR-1C07WL-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from EL, the first discipline of the group with a box, since it holds no AR, its site PW3_Shared_Location, EL site IGN2	
+C07 ME checks.xlsx	C07	C07	1C07WL	1104-PAR-1C07WL-ZZZ-ME-MOD-000002.nwc	Coordinates	near	6.024 m from EL, the first discipline of the group with a box, since it holds no AR, its site SWLS-02 MECH, EL site IGN2	
+C07 ME checks.xlsx	C07	C07	1C07WM	1104-PAR-1C07WM-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW3_Shared_Location, AR site SWLS-04-SharedCoordinate	
+C07 ME checks.xlsx	C07	C07	1C07WO	1104-PAR-1C07WO-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW2_Shared_Location, AR site IRPS-SharedCoordinate	
+C07 ME checks.xlsx	C07	C07	1D07MM	1104-PAR-1D07MM-ZZZ-ME-MOD-000001.nwc	Coordinates	reference	ME is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site PW3_Shared_Location, no discipline of the group is far from it	
+C07 ME checks.xlsx	C07	C07	1D07PE	1104-PAR-1D07PE-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW5_Shared_Location, AR site IRPS-SharedCoordinate	
+C07 ME checks.xlsx	C07	C07	1D07PH	1104-PAR-1D07PH-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW5_Shared_Location, AR site PWPS_Shared_Location	
+C07 ME checks.xlsx	C07	C07	1D07PH	1104-PAR-1D07PH-ZZZ-ME-MOD-000002.nwc	Coordinates	near	0.000 m from AR, its site ARD_PW_CHLOR BUILDING, AR site PWPS_Shared_Location	
+C07 ME checks.xlsx	C07	C07	1D07PN	1104-PAR-1D07PN-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW5_Shared_Location, AR site SWLS-04-SharedCoordinate	
+C07 ME checks.xlsx	C07	C07	1D07PO	1104-PAR-1D07PO-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW2_Shared_Location, AR site IRPS-SharedCoordinate	
+C07 ME checks.xlsx	C07	C07	1D07PP	1104-PAR-1D07PP-ZZZ-ME-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site PW3_Shared_Location, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C07 ME checks.xlsx	C07	C07	1D07PP	1104-PAR-1D07PP-ZZZ-ME-MOD-000002.nwc	Coordinates	far	337.604 m from AR, its site 16-S01, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C07 ME checks.xlsx	C07	C07	1D07PP	1104-PAR-1D07PP-ZZZ-ME-MOD-000003.nwc	Coordinates	far	809.073 km, 809073.456 m from AR, its site 16-S01, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C07 ST checks.xlsx	C07	C07	1C07BC	1104-PAR-1C07BC-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site T1, AR site Internal	
+C07 ST checks.xlsx	C07	C07	1C07BC	1104-PAR-1C07BC-ZZZ-ST-MOD-000002.nwc	Coordinates	near	7.910 m from AR, its site BCTANK, AR site Internal	
+C07 ST checks.xlsx	C07	C07	1C07G1	1104-PAR-1C07G1-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site WT_1, AR site Internal	
+C07 ST checks.xlsx	C07	C07	1C07G1	1104-PAR-1C07G1-ZZZ-ST-MOD-000002.nwc	Coordinates	near	0.000 m from AR, its site WT, AR site Internal	
+C07 ST checks.xlsx	C07	C07	1C07K1	1104-PAR-1C07K1-ZZZ-ST-MOD-000001.nwc	Coordinates	far	2823.784 km, 2823784.299 m from AR, its site COMMUNITY 4A, AR site COMMUNITY 4A	
+C07 ST checks.xlsx	C07	C07	1C07P1	1104-PAR-1C07P1-ZZZ-ST-MOD-000001.nwc	Coordinates	far	2823.723 km, 2823722.725 m from AR, its site DEFUALT, AR site COMMUNITY 4A	
+C07 ST checks.xlsx	C07	C07	1C07P1	1104-PAR-1C07P1-ZZZ-ST-MOD-000002.nwc	Coordinates	far	2823.723 km, 2823722.534 m from AR, its site ST_PW_WATER TANK, AR site COMMUNITY 4A	
+C07 ST checks.xlsx	C07	C07	1C07PK	1104-PAR-1C07PK-ZZZ-ST-MOD-000001.nwc	Coordinates	reference	ST is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site IPS-A(1), no discipline of the group is far from it	
+C07 ST checks.xlsx	C07	C07	1C07PS	1104-PAR-1C07PS-ZZZ-ST-MOD-000001.nwc	Coordinates	far	2822.679 km, 2822679.151 m from AR, its site Internal, AR site Internal	
+C07 ST checks.xlsx	C07	C07	1C07WE	1104-PAR-1C07WE-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site BUL_0105_SharedCoordinate, AR site IRPS-SharedCoordinate	
+C07 ST checks.xlsx	C07	C07	1C07WL	1104-PAR-1C07WL-ZZZ-ST-MOD-000001.nwc	Coordinates	near	7.422 m from EL, the first discipline of the group with a box, since it holds no AR, its site LS, EL site IGN2	
+C07 ST checks.xlsx	C07	C07	1C07WM	1104-PAR-1C07WM-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW5_CHLORINATION, AR site SWLS-04-SharedCoordinate	
+C07 ST checks.xlsx	C07	C07	1C07WN	1104-PAR-1C07WN-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from EL, the first discipline of the group with a box, since it holds no AR, its site ST_PW5_CHLORINATION, EL site C07-WN	
+C07 ST checks.xlsx	C07	C07	1C07WO	1104-PAR-1C07WO-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW2_GUARD HOUSE, AR site IRPS-SharedCoordinate	
+C07 ST checks.xlsx	C07	C07	1D07MM	1104-PAR-1D07MM-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from ME, the first discipline of the group with a box, since it holds no AR, its site Internal, ME site PW3_Shared_Location	
+C07 ST checks.xlsx	C07	C07	1D07PE	1104-PAR-1D07PE-ZZZ-ST-MOD-000001.nwc	Coordinates	near	18.218 m from AR, its site BUL_0105_SharedCoordinate, AR site IRPS-SharedCoordinate	
+C07 ST checks.xlsx	C07	C07	1D07PH	1104-PAR-1D07PH-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW5_CHLORINATION, AR site PWPS_Shared_Location	
+C07 ST checks.xlsx	C07	C07	1D07PN	1104-PAR-1D07PN-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW5_CHLORINATION, AR site SWLS-04-SharedCoordinate	
+C07 ST checks.xlsx	C07	C07	1D07PO	1104-PAR-1D07PO-ZZZ-ST-MOD-000001.nwc	Coordinates	near	23.963 m from AR, its site ST_PW2_GUARD HOUSE, AR site IRPS-SharedCoordinate	
+C07 ST checks.xlsx	C07	C07	1D07PP	1104-PAR-1D07PP-ZZZ-ST-MOD-000001.nwc	Coordinates	near	0.000 m from AR, its site ST_PW3_PUMP HOUSE, AR sites IRPS-SharedCoordinate, PWPS_Shared_Location	
+C07 ST checks.xlsx	C07	C07	1D07PT	1104-PAR-1D07PT-ZZZ-ST-MOD-000001.nwc	Coordinates	reference	ST is the discipline the others are measured from, the first of the group with a box, since it holds no AR, its site IPS-A(1), no discipline of the group is far from it	
+Corrupt AR checks.xlsx	Corrupt	Corrupt	1B06KI	1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc	Coordinates	not read	the models of this group were not read, the group ended before its models were read	

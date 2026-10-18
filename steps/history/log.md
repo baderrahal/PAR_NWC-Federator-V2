@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F221, the audit of the round of 18 Oct, and the round's closing entry
+
+Branch fix-F221 off main 026a144, main 4e705ce merged in after F220 300. Bader's round of 18 Oct 2026, AT THE END: the
+findings, the proof steps with Look for lines, a full audit and QA of the repo listing every contradiction with CLAUDE.md, the
+final log entry and no pull request left open.
+
+What was done. claude\audit-round-2026-10-18.md: what each fix of the round did and proved, the findings of the round, the
+checks that pass, and 26 contradictions, each read off the file named. An Explore agent swept the repo against CLAUDE.md and its
+claims were checked against the files before any was written. Fixed here, the rule texts the code has outgrown: the log and its
+.tsv copied into each Log folder after RESULT since F158, with the line a package's own Navisworks writes after it, the 20 steps
+in RunSteps' order, COVERAGE after the NWD, the deleted UnitsLines bullet, the Compact box gone since F185, the picked NWF box on
+the NWF page with two buttons, the NWF page's packages confirm, RebuildExisting on the Grouping step, the NWC page's five steps,
+the size read as the largest property, five counts in core.md, and the comments that said the same old things in FolderMemory,
+ImageTally, NwfPick, RunLog, FederationEngine, the window and WrittenSizeTests' message. NwfPageWords.NwcPageName and NwfPageName,
+read by nothing and with no test, are deleted. Listed for Bader or a later fix: the members read only by tests or by nothing
+and the picture limits written as constants, Q210, docs\workflow.md behind the code since F188, Where things are, no rule file
+for src\Federator.Runner or build, PROGRESS.md's shape against loop.md, the one-discipline rule against the tool never acting,
+Q209, the bundle's manifest naming docs\scan.md, and run.ps1 and the stand-in still saying no log copy is written, frozen by
+Q143. The proof steps of the round are at the top of steps\03_bader_next.md, nine steps on multi2, the first being a Navisworks
+Bader starts himself. Every Coordinates row of F220's discipline workbooks is read out into steps\logs,
+2026-10-18-C06-C07-F220-discipline-coordinates-rows.tsv, so F218's 49.055 m far and 23.963 m near have a file behind them. The
+claim-checker read this entry, the audit and the steps and its findings were taken. The reviewer read the first pass and seven findings were taken, among them Q210's members, which read
+three as unread where two were and put MarkToolFolder and IndexAt among them, read by a test and a probe.
+
+What was proved here. Core tests 3392 passed before and after, 0 failed, 0 skipped. dotnet build of the solution with
+--no-incremental 0 errors, 0 warnings. check-locals, check-imports, check-tracker and check-progress clean. Pull requests 292 to
+300 each merged on green with its branch deleted, read by gh. No Navisworks run, since the add-in changed in comments alone.
+
+The round. F212 to F221 merged, 292 to 301. Every fix seen on Navisworks by F220 on multi2, but F215, measured and left UNKNOWN,
+and F212, a rule read off src. The real files only read, 0 lines differ.
+
+What remains. Bader's answers to Q207, Q208, Q209 and Q210, and the nine proof steps. Known bugs: rows F214-R5, F219-R1, F210-R3,
+F213-R1 and R2, F214-R1 to R4. What comes next: the next round, on Bader's word.
+
 ## 2026-10-18 F220, the test of the round on multi2, C06, C07 and a corrupt package
 
 Branch fix-F220 off main 026a144, after F219 299, the last merge of the round's fixes. Bader's TEST: build and install main,
@@ -38,9 +72,11 @@ What the runs showed.
   same words, CLASH    C06  1104-PAR-1B06BS-ZZZ-BM-MOD-000001 holds one discipline, EL, so no test of it is run, Bader's
   answer to Q203 on the NWF page. No NWF read UNKNOWN.
 - The desktop folder of real files was only read: 141 files and 25 folders before and after, 0 lines differ in name, size,
-  date or SHA-256. Its C07 holds 1C07, 1D07 and 1A07 files dated 09:41 on 18 Oct and its folder 09:42, a change no command of this session made, where the\n  F210 copy held 1B06 files.
+  date or SHA-256. Its C07 holds 1C07, 1D07 and 1A07 files dated 09:41 on 18 Oct and its folder 09:42, a change no command of
+  this session made, where the F210 copy held 1B06 files.
 
-What was proved here. No code changed. Core tests 3392 passed before and after, 0 failed, 0 skipped, the after read in the pre-commit of\nthis branch's commits. The evidence is 20 files, the largest 19,604,026 bytes,
+What was proved here. No code changed. Core tests 3392 passed before and after, 0 failed, 0 skipped, the after read in the pre-commit of
+this branch's commits. The evidence is 20 files, the largest 19,604,026 bytes,
 in steps\logs named 2026-10-18-C06-C07-F220, every log and tsv masked by mask-evidence.ps1 and read back with nothing left,
 the two listings, and the launcher and driver records.
 

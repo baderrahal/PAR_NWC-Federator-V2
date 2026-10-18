@@ -507,9 +507,9 @@ well as to pass.
   the scanned run's own choices through the one SayTheRunsChoices, reads the clash file through
   the open file run's ReadTheXmlForAnOpenFileRun, writes the lines across the run through the
   one SayWhatAnOpenFileRunAddedUp and SETS ACROSS THE RUN, and RESULT with Core's line. Since
-  F151 no copy of the log goes beside the picked NWFs or anywhere else. The box and
-  its three buttons sit in their own row on the Source step under the NWC folder, the label and
-  grey line set off Core in the constructor. What a run of it reads on Navisworks is UNKNOWN
+  F151 no copy of the log goes beside the picked NWFs, and since F158 one goes into each Log
+  folder the run wrote into, as every run's does. The box and its two buttons, File and Folder,
+  sit in their own row on the NWF page, the label and grey line set off Core in the constructor. What a run of it reads on Navisworks is UNKNOWN
   until the proof steps of steps\03_bader_next.md run
 - SINCE F114 A VIEW IS PER CLASH TEST, which replaces F85's viewpoint per clash, which had
   reversed what this rule said before it, that no clash is ever saved as a viewpoint.
@@ -573,13 +573,13 @@ well as to pass.
   and no sentence is put on it. Never translate Old into "your models have changed". The
   Status setter is public and nothing here writes it, because writing it would be
   claiming to know the rule that is UNKNOWN
-- Compact is reachable, DocumentClashTests.TestsCompactAllTests is public, and it is a
-  tick box off by default that runs after the tests and before the workbook is written.
-  Never compact silently. It removes every Resolved clash from the NWF, the NWF is the
-  only record of what has been fixed, and there is no second copy anywhere, so it cannot
-  be undone. The count is announced before it runs and the count removed is reported
-  after. The no argument form is used, because TestsCompactTest takes a ClashTest and is
-  a mutator, so the handle passed to it dies the way section 4g describes
+- Nothing compacts since F185, which took out the Compact resolved box and its call of
+  DocumentClashTests.TestsCompactAllTests. A compact removes every Resolved clash from the
+  NWF, the NWF is the only record of what has been fixed, and there is no second copy
+  anywhere, so it cannot be undone. A compact put back is never silent: its count is
+  announced before it runs and the count removed reported after. The rules above that
+  still reason about a compact, the views' sibling pick among them, describe a compact
+  that no longer runs, and ClashRunOutcome.Compacted is never set past minus one
 - A clash side is pointed at the saved set through CreateSelectionSource, not filled
   with a copy of the set's items. That is what Clash Detective does when a person
   picks a set in the panel, and it is what keeps the counts matching the panel. A
@@ -624,8 +624,9 @@ well as to pass.
   F112's second attempt, and the second run of a window listed the first run's groups again
   under the second run's rule state. RunJobs and OnRunOpenDocument hold the engine outside
   their try, so the finally passes engine.CoordinatesAcrossTheRun, or null where no engine
-  was made, to WriteTheResult, which since F151 writes the RESULT block and no copy of the
-  log, for the scanned run, the open file run and the picked NWFs alike
+  was made, to WriteTheResult, which writes the RESULT block and then, since F158, copies the
+  log and its .tsv into each Log folder the engine wrote into, for the scanned run, the open
+  file run and the picked NWFs alike
 - A step whose content is taller than the window scrolls. Only the Outputs step is,
   measured at 1024x680, 1280x800 and 1600x1000 with tools\probes\probe-window-scroll.ps1 and
   cut off at all three, which is why the naming table could not be reached. The other three
@@ -860,8 +861,8 @@ well as to pass.
   its sides, which the engine keeps on `JobOutcome.ClashPlan` in place of the plan it handed in,
   and `InAMerge`, the tests of every mirrored pair whose clashes `MirrorMerge.AddTo` merged,
   read off what the merge did and never off the plan. THE COVERAGE STEP,
-  `RunSteps.Coverage`, runs in FinishTheGroup after the clash workbook, its page and its XML and
-  before the internal workbook and the NWD, so the document is still open and the clash
+  `RunSteps.Coverage`, runs in FinishTheGroup after the NWD, since F182, and the clash workbook,
+  its page and its XML, and before the internal workbook, so the document is still open and the clash
   workbook is on the disk, for the scanned run and the open file run alike: `CoverageRule.For`
   over the plan and the runner's record with the group's codes off the EXPORT CHECK's models
   and the run's off the ticked groups of this run, Clash Detective's two counts of every test in
@@ -1074,7 +1075,7 @@ opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash s
 added GhostOtherItems under More, F152 took EmbedThumbnails out of it and F159 took SkipClashOffCoordinates out,
 F188 added RebuildExisting and the five step boxes of the NWF page, so
 src\Federator.Addin\Ui\FederatorWindow.xaml holds TWENTY named tick boxes, of which ELEVEN sit
-under no expander, by x:Name IncludeSubfolders and RebuildExisting on the Source step, MarkPenetrations,
+under no expander, by x:Name IncludeSubfolders on the Source step, RebuildExisting on the Grouping step, MarkPenetrations,
 MarkByDesign, RebuildDriftedSets and MakeViewpoints on the Clash step, and NwfStepRefresh, NwfStepTests,
 NwfStepPictures, NwfStepViewpoints and NwfStepReports on the NWF page, each picking a step of the weekly run.
 The other nine are eight under More, rarely changed, DateTheNwd, WriteClashXml,
@@ -1148,7 +1149,7 @@ and in RESULT. The list of models off the shared coordinates goes into the Log f
 the run log is copied into each.
 
 THE NWF PAGE'S ROUTE, `OnRunNwfPackages`: the same refusals, the NWFs of each ticked package by `PackageNwfs`, a package
-with none named and the others run, the open document's confirm and the refresh confirm, then, since F214, each package in
+with none named and the others run, the refresh confirm, then, since F214, each package in
 its own Navisworks, whose window runs `RunPickedNwfs` with each NWF's place, `PackageNwf`, so its NWD, its Backup and its
 logs are written into its package's folders and not beside the file. One failure never stops the others: each group and each
 NWF is run in its own try, and since F214 the guard that stops a run after its first 50 tests all fail the same way stops
