@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Federator.Core.Communities;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Runner
 {
@@ -21,7 +22,8 @@ namespace Federator.Runner
     /// whose Navisworks cannot be told from another is not run, since the runner never ends what it cannot tell is its
     /// own. A group that throws, crashes or passes the ceiling is said and the next one runs. Every step is one line of the
     /// status file, which the window copies into its log, each start and each quit with its seconds and the last line with
-    /// both added up.
+    /// both added up. F223, Bader's answer to Q207: Auto-Save is switched off in the registry before every group's start and put back
+    /// once as the run ends to the value it held before the run, kept on Core's record, AutoSaveKeeper, until it reads as it was.
     ///
     ///     Federator.Runner.exe navisworksFolder orderPath
     /// </summary>
@@ -46,6 +48,9 @@ namespace Federator.Runner
 
         /// <summary>The Navisworks the runner had to end, still there past the wait after they were told to quit.</summary>
         private static int ended;
+
+        /// <summary>The registry's Auto-Save switch across the run, F223, made once the order and the Automation DLL read.</summary>
+        private static AutoSaveKeeper autoSave;
 
         /// <summary>The Navisworks one group runs in, read by the ceiling's timer on its own thread.</summary>
         private sealed class Started
@@ -95,9 +100,28 @@ namespace Federator.Runner
                 return 1;
             }
 
-            for (int i = 0; i < order.Units.Count; i++)
+            // F223, Q207. The value the switch held before the run, kept on its record, and put back once as the run ends,
+            // with a Navisworks of the run still running said, so the record stays for the window to read again.
+            HashSet<int> atTheStart = RoamersOrNull();
+            autoSave = AutoSaveKeeper.Begin(new WindowsAutoSaveRegistry(), new FileAutoSaveRecord(AutoSaveKeeper.RecordPath()), Say);
+
+            try
             {
-                RunOne(type, order, i);
+                for (int i = 0; i < order.Units.Count; i++)
+                {
+                    try
+                    {
+                        RunOne(type, order, i);
+                    }
+                    catch (Exception error)
+                    {
+                        Say(PackageRunWords.Threw(order.Units[i].Label, "the runner", error.GetType().Name, error.Message));
+                    }
+                }
+            }
+            finally
+            {
+                autoSave.PutBack(StillRuns(atTheStart));
             }
 
             Say(PackageRunWords.RunnerEnded(order.Units.Count, order.PackageCount, clock.Elapsed.TotalSeconds,
@@ -105,7 +129,34 @@ namespace Federator.Runner
             return 0;
         }
 
-        /// <summary>One group in one fresh Navisworks, from before its start to its process gone. Never throws.</summary>
+        /// <summary>The Navisworks running now, or null where they could not be read.</summary>
+        private static HashSet<int> RoamersOrNull()
+        {
+            try
+            {
+                return Roamers();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>Whether a Navisworks the run started may still run, true where either reading could not be taken.</summary>
+        private static bool StillRuns(HashSet<int> atTheStart)
+        {
+            HashSet<int> now = RoamersOrNull();
+
+            if (atTheStart == null || now == null)
+            {
+                return true;
+            }
+
+            now.ExceptWith(atTheStart);
+            return now.Count > 0;
+        }
+
+        /// <summary>One group in one fresh Navisworks, from before its start to its process gone. A throw before its try, the read of the Navisworks running, goes to Main, which says it and runs the next.</summary>
         private static void RunOne(Type type, PackageRunOrder order, int index)
         {
             string package = order.Units[index].Label;
@@ -117,17 +168,25 @@ namespace Federator.Runner
             Timer ceiling = new Timer(
                 delegate
                 {
-                    int pid = started.Pid > 0 ? started.Pid : TheOneNew(before);
+                    // On a thread of the pool, where a throw would end the runner before its put back.
+                    try
+                    {
+                        int pid = started.Pid > 0 ? started.Pid : TheOneNew(before);
 
-                    if (pid > 0)
-                    {
-                        started.Pid = pid;
-                        Say(PackageRunWords.Ceiling(package, order.Settings.CeilingMinutes));
-                        End(pid);
+                        if (pid > 0)
+                        {
+                            started.Pid = pid;
+                            Say(PackageRunWords.Ceiling(package, order.Settings.CeilingMinutes));
+                            End(pid);
+                        }
+                        else
+                        {
+                            Say(PackageRunWords.CeilingNotTold(package, order.Settings.CeilingMinutes));
+                        }
                     }
-                    else
+                    catch (Exception error)
                     {
-                        Say(PackageRunWords.CeilingNotTold(package, order.Settings.CeilingMinutes));
+                        Say(PackageRunWords.Threw(package, "its ceiling", error.GetType().Name, error.Message));
                     }
                 },
                 null,
@@ -136,6 +195,8 @@ namespace Federator.Runner
 
             try
             {
+                // F223, Q207. The registry's switch off before this group's Navisworks starts and reads it.
+                autoSave.SwitchOffFor(package);
                 Stopwatch step = Stopwatch.StartNew();
                 app = Activator.CreateInstance(type);
                 started.Pid = TheOneNew(before);
@@ -187,6 +248,9 @@ namespace Federator.Runner
                 {
                     WaitAllNewGone(before, package, order.Settings.GoneWithinSeconds);
                 }
+
+                // F223. What the switch reads once its Navisworks is gone, which that Navisworks may have written as it quit.
+                autoSave.ReadAfter(package);
 
                 // Only now, so a quit or a wait that hangs still meets the ceiling.
                 ceiling.Dispose();

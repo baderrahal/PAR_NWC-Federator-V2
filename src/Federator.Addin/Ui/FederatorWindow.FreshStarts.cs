@@ -353,6 +353,7 @@ namespace Federator.Addin.Ui
             SetTheRunButtons(false);
             log.RunStarted(units.Count, "group", "groups");
             SetProgress(PackageRunWords.Waiting(units.Count));
+            bool runnerEnded = false;
 
             try
             {
@@ -382,7 +383,7 @@ namespace Federator.Addin.Ui
 
                 using (Process process = Process.Start(start))
                 {
-                    WaitForTheRunner(process, order, order.Units.Count);
+                    runnerEnded = WaitForTheRunner(process, order, order.Units.Count);
                 }
             }
             catch (Exception error)
@@ -391,6 +392,9 @@ namespace Federator.Addin.Ui
             }
             finally
             {
+                // F223. A runner that ended before its put back left its record, which is put back here, and kept where this
+                // window ended the runner, since a Navisworks of the run may still run.
+                AutoSaveOff.PutBackWhatARunLeft(log.Line, runnerEnded);
                 JoinTheResults(order, run);
                 running = false;
                 SetTheRunButtons(true);
@@ -402,8 +406,9 @@ namespace Federator.Addin.Ui
         /// the results are never read while the runner still starts Navisworks, and past the order's limit the runner is
         /// ended, the one process this window started.
         /// </summary>
-        private void WaitForTheRunner(Process process, PackageRunOrder order, int groups)
+        private bool WaitForTheRunner(Process process, PackageRunOrder order, int groups)
         {
+            bool ended = false;
             long read = 0;
             bool failureSaid = false;
             int limit = order.Settings.RunnerLimitMinutes(groups);
@@ -416,6 +421,7 @@ namespace Federator.Addin.Ui
                     log.Line(PackageRunWords.Prefix + " " + PackageRunWords.RunnerPastItsLimit(limit));
                     process.Kill();
                     process.WaitForExit();
+                    ended = true;
                     break;
                 }
 
@@ -436,6 +442,7 @@ namespace Federator.Addin.Ui
 
             TheRunnersNewLines(order.StatusPath, read);
             log.Line(PackageRunWords.Prefix + " " + PackageRunWords.RunnerEndedWith(process.ExitCode));
+            return ended;
         }
 
         /// <summary>

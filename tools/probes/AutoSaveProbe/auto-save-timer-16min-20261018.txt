@@ -1,0 +1,242 @@
+MACHINE   <the machine>   2026-10-18 16:15:44
+HOST      powershell 5.1.26100.9711, 64 bit process True, apartment STA, pid 3508
+SCRIPT    <a path outside the loop folder, file probe-auto-save.ps1, sha1 6E9D7746AFB7>, sha256 507562E9E4FA6CBBC4DC7FF875FD1D08E305442C4B3590DD76708064849A28E2
+GUARD     tools\loop\nw-guard.ps1, sha256 349551F8A3784C002A48192CB6321D6443027529BC65844B710A4E836C966888
+PROCESS   powershell.exe pid 3508, started to run -File C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\tools\probes\AutoSaveProbe\probe-auto-save.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 331
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 110148 bytes
+  read key by key: 279 keys, 1149 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 8 files copied to the work folder and read back with their source's sha256, 0 not backed up, 62 AutoSave files listed and not copied
+  the tool's own logs folder listed: 68 files
+
+==== THE COPIES, made before anything starts, one folder per building ====
+  autosave-input  1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc, 154671 bytes, sha256 9B349EC05B1F71D8A8D59413FC815A7B8527FB3EAE315F402556A457E4DED79B, its copy matches
+  autosave-input  1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc, 603405 bytes, sha256 EE0BC08D414F6FF3BB7C6A7DB934C9955BCF757B531BC58D75D991F83AA94787, its copy matches
+  autosave-input  1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc, 108564 bytes, sha256 93940CDBABA9D4131C54194A905A242137C27ED4970D044246ADEAFE78F34A6E, its copy matches
+  autosave-input  1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc, 40391 bytes, sha256 C7B02C158758533AE4EED82C5484F67FE6590F7EB796F3D1314D8C2D587211A0, its copy matches
+  autosave-input: 4 NWCs copied into "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\autosave-input"
+  the folder the timer mode points the autosaves at: "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\autosaves"
+  the probe <a path outside the loop folder, file AutoSaveProbe.dll, sha1 896E5889AAF2>, 16896 bytes, written 2026-10-18 16:09:08, sha256 759A6B9CA5D57EEF1153E0B9689731D0D481123CADE58EFA144AB273A43C5EDC, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  16:15:45.180  t+1.0s  calling new NavisworksApplication()
+  16:15:49.854  t+5.7s  the constructor RETURNED after 4.67 s
+  Roamer processes new since step 2: 1
+    pid 14048, started 16:15:45.189, parent 1784 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 14048, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 14048, started 2026-10-18 16:15:45.189, start ticks UTC 639279261451896844
+  16:15:51.965  t+7.8s  Visible set True, read back True
+  visible top level windows of 14048: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  16:15:52.078  t+7.9s  AddPluginAssembly RETURNED after 0.030 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode timer, which saves nothing ====
+---- autosave-input ----
+  16:15:52.083  t+7.9s  calling ExecuteAddInPlugin(AutoSaveProbe.PARS, timer, the plugin's output file, the folder of copies autosave-input, the autosaves folder, 960 s, enable, frequency.minutes, folder_opts.folder, -)
+  17:03:52.387  t+2888.2s  ExecuteAddInPlugin RETURNED 0 after 2880.31 s
+  visible top level windows of 14048: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+---- the plugin's output for autosave-input, every line ----
+  | 16:15:52.094  probe started, mode timer, pid 14048, main thread 1, apartment STA
+  | 16:15:52.098  REGISTRY  before,  = '0', enable = '3 0'
+  | 16:15:52.098  SET  general.autosave holds 4 options, as Navisworks started
+  | 16:15:52.100    option enable  Boolean  Boolean:False
+  | 16:15:52.100    option folder_opts  None  a set of 4 options
+  | 16:15:52.100    option folder_opts.folder_mode  Boolean  Boolean:True
+  | 16:15:52.101    option folder_opts.folder  DisplayString  DisplayString:%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave
+  | 16:15:52.101    option folder_opts.manage_disk_space  Boolean  Boolean:True
+  | 16:15:52.101    option folder_opts.mem_limit  Int32  Int32:512
+  | 16:15:52.101    option frequency  None  a set of 1 options
+  | 16:15:52.101    option frequency.minutes  Int32  Int32:15
+  | 16:15:52.101    option history  None  a set of 1 options
+  | 16:15:52.101    option history.size  Int32  Int32:3
+  | 16:15:52.102  READ  enable False, frequency.minutes 15, folder_opts.folder '%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave'
+  | 16:15:52.102  SET  folder_opts.folder to the probe's folder returned True
+  | 16:15:52.102  READ  folder_opts.folder now '%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\autosaves'
+  | 16:15:52.102  SET  frequency.minutes 1 returned True, reads 1
+  | 16:15:52.102  REGISTRY  with the location and the time set,  = '0', enable = '3 0'
+  | 16:15:52.228  TryAppendFile 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc returned True
+  | 16:15:52.252  TrySaveFile %LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\probe-document.nwf returned True, the document is now %LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\probe-document.nwf
+  | 16:15:52.253  
+  | 16:15:52.253  ==== STRETCH 1, the switch ON ====
+  | 16:15:52.254  SET  enable True returned True, reads True
+  | 16:15:52.254  REGISTRY  after the switch was set,  = '0', enable = '3 0'
+  | 16:15:52.293  TryAppendFile 1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc returned True after 0.04 s, the document holds 2 models
+  | 16:31:52.306  FOLDER after 960 s of pumped messages: 0 files, 0 new in this stretch
+  | 16:31:52.306  USER'S AUTOSAVE FOLDER 62 files before this stretch, 62 after, 0 new
+  | 16:31:52.306  
+  | 16:31:52.306  ==== STRETCH 2, the switch OFF ====
+  | 16:31:52.306  SET  enable False returned True, reads False
+  | 16:31:52.306  REGISTRY  after the switch was set,  = '0', enable = '3 0'
+  | 16:31:52.329  TryAppendFile 1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc returned True after 0.02 s, the document holds 3 models
+  | 16:47:52.327  FOLDER after 960 s of pumped messages: 0 files, 0 new in this stretch
+  | 16:47:52.329  USER'S AUTOSAVE FOLDER 62 files before this stretch, 62 after, 0 new
+  | 16:47:52.329  
+  | 16:47:52.329  ==== STRETCH 3, the switch ON again ====
+  | 16:47:52.329  SET  enable True returned True, reads True
+  | 16:47:52.329  REGISTRY  after the switch was set,  = '0', enable = '3 0'
+  | 16:47:52.352  TryAppendFile 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc returned True after 0.02 s, the document holds 4 models
+  | 17:03:52.376  FOLDER after 960 s of pumped messages: 0 files, 0 new in this stretch
+  | 17:03:52.376  USER'S AUTOSAVE FOLDER 62 files before this stretch, 62 after, 0 new
+  | 17:03:52.376  PUT BACK
+  | 17:03:52.376    enable False returned True, reads False
+  | 17:03:52.376    frequency.minutes 15 returned True, reads 15
+  | 17:03:52.376    folder_opts.folder returned True, reads '%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave'
+  | 17:03:52.376  SET  general.autosave holds 4 options, after the put back
+  | 17:03:52.376    option enable  Boolean  Boolean:False
+  | 17:03:52.376    option folder_opts  None  a set of 4 options
+  | 17:03:52.376    option folder_opts.folder_mode  Boolean  Boolean:True
+  | 17:03:52.376    option folder_opts.folder  DisplayString  DisplayString:%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave
+  | 17:03:52.376    option folder_opts.manage_disk_space  Boolean  Boolean:True
+  | 17:03:52.376    option folder_opts.mem_limit  Int32  Int32:512
+  | 17:03:52.376    option frequency  None  a set of 1 options
+  | 17:03:52.376    option frequency.minutes  Int32  Int32:15
+  | 17:03:52.376    option history  None  a set of 1 options
+  | 17:03:52.376    option history.size  Int32  Int32:3
+  | 17:03:52.376  REGISTRY  after the put back,  = '0', enable = '3 0'
+  | 17:03:52.387  the document cleared at the end
+  | 17:03:52.387  probe finished, code 0
+  the plugin's output "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\plugin-output-autosave-input.txt", 4447 bytes, sha256 69310EF222A1F6852369C104D8D53536E7B08D8A291B6CA8008CC2A79621F770
+
+
+==== STEP 6. Quit through the API ====
+  17:03:52.728  t+2888.5s  Dispose RETURNED after 0.25 s
+  17:03:54.039  t+2889.8s  pid 14048 state gone, 1.3 s after Dispose returned, not forced
+
+==== FINALLY ====
+  17:03:54.045  t+2889.9s  pid 14048 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 5440, longest pass 1077 ms, longest gap between the starts of two passes 1583 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  16:15:44.511  t+0.3s  watchdog started
+  16:15:45.821  t+1.6s  new process Roamer pid 14048, parent 1784 svchost.exe, started 16:15:45.189, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  16:15:45.904  t+1.7s  Roamer 14048 visible top level windows: none
+  16:15:46.627  t+2.4s  new process AdskLicensingAgent pid 9744, parent 14048 Roamer.exe, started 16:15:45.720, command line holds the word embedding or automation: no
+  16:15:46.843  t+2.6s  new process AdskLicensingAgent pid 24012, parent 14048 Roamer.exe, started 16:15:45.901, command line holds the word embedding or automation: no
+  16:15:47.022  t+2.8s  new process AdskLicensingAgent pid 34392, parent 14048 Roamer.exe, started 16:15:45.785, command line holds the word embedding or automation: no
+  16:15:48.109  t+3.9s  Roamer 14048 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] ""
+  16:15:49.690  t+5.5s  Roamer 14048 visible top level windows: none
+  16:15:51.277  t+7.1s  Roamer 14048 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "" text: 
+  16:15:51.836  t+7.6s  Roamer 14048 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:15:52.383  t+8.2s  Roamer 14048 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "probe-document.nwf - Autodesk Navisworks Manage 2025"
+  16:51:05.499  t+2121.3s  new process Roamer pid 27228, parent 9316 explorer.exe, started 16:51:04.665, command line holds the word embedding or automation: no, started by hand, left alone, not printed
+  16:51:06.403  t+2122.2s  new process AdskLicensingAgent pid 23488, parent 27228 Roamer.exe, started 16:51:06.071, command line holds the word embedding or automation: no
+  16:51:06.628  t+2122.4s  new process AdskLicensingAgent pid 29124, parent 27228 Roamer.exe, started 16:51:05.453, command line holds the word embedding or automation: no
+  16:51:40.464  t+2156.3s  new process Roamer pid 34276, parent 9316 explorer.exe, started 16:51:39.865, command line holds the word embedding or automation: no, started by hand, left alone, not printed
+  16:51:41.200  t+2157.0s  new process AdskLicensingAgent pid 24068, parent 34276 Roamer.exe, started 16:51:40.625, command line holds the word embedding or automation: no
+  16:51:41.400  t+2157.2s  new process AdskLicensingAgent pid 33368, parent 34276 Roamer.exe, started 16:51:40.950, command line holds the word embedding or automation: no
+  16:52:06.021  t+2181.8s  new process Roamer pid 35520, parent 9316 explorer.exe, started 16:52:05.789, command line holds the word embedding or automation: no, started by hand, left alone, not printed
+  16:52:06.861  t+2182.7s  new process AdskLicensingAgent pid 17440, parent 35520 Roamer.exe, started 16:52:06.350, command line holds the word embedding or automation: no
+  16:52:07.585  t+2183.4s  new process AdskLicensingAgent pid 12360, parent 35520 Roamer.exe, started 16:52:06.723, command line holds the word embedding or automation: no
+  17:03:52.412  t+2888.2s  Roamer 14048 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:03:52.933  t+2888.7s  Roamer 14048 visible top level windows: none
+  17:03:54.507  t+2890.3s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 14048, parent 1784 svchost.exe: exited
+  AdskLicensingAgent pid 9744, parent 14048 Roamer.exe: STILL RUNNING
+  AdskLicensingAgent pid 24012, parent 14048 Roamer.exe: exited
+  AdskLicensingAgent pid 34392, parent 14048 Roamer.exe: exited
+  Roamer pid 27228, parent 9316 explorer.exe: exited
+  AdskLicensingAgent pid 23488, parent 27228 Roamer.exe: exited
+  AdskLicensingAgent pid 29124, parent 27228 Roamer.exe: exited
+  Roamer pid 34276, parent 9316 explorer.exe: exited
+  AdskLicensingAgent pid 24068, parent 34276 Roamer.exe: exited
+  AdskLicensingAgent pid 33368, parent 34276 Roamer.exe: exited
+  Roamer pid 35520, parent 9316 explorer.exe: exited
+  AdskLicensingAgent pid 17440, parent 35520 Roamer.exe: exited
+  AdskLicensingAgent pid 12360, parent 35520 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  NOTHING IS PUT BACK AND NOTHING IS WRITTEN, because:
+    Roamer 35520 started 16:52:05.789 was new at a watchdog pass and is not the adopted one
+    Roamer 34276 started 16:51:39.865 was new at a watchdog pass and is not the adopted one
+    Roamer 27228 started 16:51:04.665 was new at a watchdog pass and is not the adopted one
+  the backup is kept in "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544"
+  22.0\CER\22.5.1433.58  calUptime  old QWord 2450366272507  new QWord 2479934293137
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 260  new DWord 264
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 279  new DWord 283
+  22.0\CER\22.5.1433.58  uptime  old QWord 766037031250  new QWord 766454531250
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1A07PP-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\1  LastOpened  old QWord 134368020543245119  new QWord 134368051319664699
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf, sha1 2462D16DEB87>  new String <a path outside the loop folder, file 1104-PAR-1A07PP-ZZZ-BM-MOD-000001.nwd, sha1 F35B929EABC3>
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134368002923187727  new QWord 134368015520288597
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc, sha1 0AEAD6898209>  new String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc, sha1 7E301F0326DC>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1C07BS-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\2  LastOpened  old QWord 134368020262367102  new QWord 134368051065137825
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf, sha1 02EF4C092E82>  new String <a path outside the loop folder, file 1104-PAR-1C07BS-ZZZ-BM-MOD-000001.nwd, sha1 711394FA8146>
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\3  LastOpened  old QWord 134368020053325283  new QWord 134368050726105912
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf, sha1 319E1734B000>  new String <a path outside the loop folder, file 1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwd, sha1 CC39AB26CDD9>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"  new String "probe-document.nwf"
+  22.0\Recent File List\4  LastOpened  old QWord 134368015737108762  new QWord 134368029522381512
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc, sha1 C303315D56FD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\probe-document.nwf"
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134368015520288597  new QWord 134368029522221497
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc, sha1 7E301F0326DC>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\autosave-input\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"  new String "1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\6  LastOpened  old QWord 134368015357279350  new QWord 134368020543245119
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc, sha1 DAA7F52D07CF>  new String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf, sha1 2462D16DEB87>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\7  LastOpened  old QWord 134368004801439957  new QWord 134368020262367102
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf, sha1 3DA53E819CC3>  new String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf, sha1 02EF4C092E82>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\8  LastOpened  old QWord 134368004517971979  new QWord 134368020053325283
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf, sha1 83614D80889E>  new String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf, sha1 319E1734B000>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134368004270801918  new QWord 134368015737108762
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf, sha1 9BB507E185CD>  new String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc, sha1 C303315D56FD>
+  registry: 35 values or keys differ from the backup
+  registry: nothing written
+  Auto-Save is LEFT OFF for Bader: enable under 22.0\GlobalOptions\general\autosave reads String "3 0" and the backup holds String "0". It must be put back by hand
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 69137 bytes, sha256 2CFC0390D9E6, written 2026-10-18 15:59:44  new 70392 bytes, sha256 3F92A92CEDC2, written 2026-10-18 16:15:52
+  file CHANGED LastSession.xml  old 39289 bytes, sha256 4E12E1DAC621, written 2026-10-18 16:01:31  new 39277 bytes, sha256 10CEA107737D, written 2026-10-18 17:03:52
+  files: 2 differ from the backup
+  files: nothing written
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWCs the copies were made from, at the end ----
+  autosave-input  1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc  sha256 9B349EC05B1F71D8A8D59413FC815A7B8527FB3EAE315F402556A457E4DED79B, the same as before the start
+  autosave-input  1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc  sha256 EE0BC08D414F6FF3BB7C6A7DB934C9955BCF757B531BC58D75D991F83AA94787, the same as before the start
+  autosave-input  1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc  sha256 93940CDBABA9D4131C54194A905A242137C27ED4970D044246ADEAFE78F34A6E, the same as before the start
+  autosave-input  1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc  sha256 C7B02C158758533AE4EED82C5484F67FE6590F7EB796F3D1314D8C2D587211A0, the same as before the start
+---- the autosaves folder of this probe at the end ----
+  0 files
+---- the work folder at the end, sorted by name ----
+  AutoSaveProbe.dll  16896 bytes
+  hkcu-navisworks-manage-22.0-before.reg  110148 bytes
+  mypid.txt  36 bytes
+  plugin-output-autosave-input.txt  4447 bytes
+  probe-document.nwf  3957 bytes
+  watch.txt  3383 bytes
+  autosave-input\  4 files
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, autosave-input returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-18 17:03:55, 2892 s in all

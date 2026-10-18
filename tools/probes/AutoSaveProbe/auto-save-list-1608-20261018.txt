@@ -1,0 +1,126 @@
+MACHINE   <the machine>   2026-10-18 16:08:00
+HOST      powershell 5.1.26100.9711, 64 bit process True, apartment STA, pid 30500
+SCRIPT    <a path outside the loop folder, file probe-auto-save.ps1, sha1 6E9D7746AFB7>, sha256 507562E9E4FA6CBBC4DC7FF875FD1D08E305442C4B3590DD76708064849A28E2
+GUARD     tools\loop\nw-guard.ps1, sha256 349551F8A3784C002A48192CB6321D6443027529BC65844B710A4E836C966888
+PROCESS   powershell.exe pid 30500, started to run -File C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\tools\probes\AutoSaveProbe\probe-auto-save.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 330
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-160800" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-160800\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 110148 bytes
+  read key by key: 279 keys, 1149 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 8 files copied to the work folder and read back with their source's sha256, 0 not backed up, 62 AutoSave files listed and not copied
+  the tool's own logs folder listed: 68 files
+
+==== THE COPIES, made before anything starts, one folder per building ====
+  the folder the timer mode points the autosaves at: "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-160800\autosaves"
+  the probe <a path outside the loop folder, file AutoSaveProbe.dll, sha1 896E5889AAF2>, 15872 bytes, written 2026-10-18 16:07:53, sha256 67D1C1B6B095AB994B87B1290A895B1CB531F5BBD8286BCC3CDA1835552BB6CF, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  16:08:01.475  t+1.0s  calling new NavisworksApplication()
+  16:08:06.293  t+5.8s  the constructor RETURNED after 4.82 s
+  Roamer processes new since step 2: 1
+    pid 29524, started 16:08:01.485, parent 1784 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 29524, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 29524, started 2026-10-18 16:08:01.485, start ticks UTC 639279256814853907
+  16:08:08.374  t+7.9s  Visible set True, read back True
+  visible top level windows of 29524: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  16:08:08.487  t+8.0s  AddPluginAssembly RETURNED after 0.032 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode list, which saves nothing ====
+---- list ----
+  16:08:08.497  t+8.0s  calling ExecuteAddInPlugin(AutoSaveProbe.PARS, list, the plugin's output file)
+  16:08:08.512  t+8.0s  ExecuteAddInPlugin RETURNED 0 after 0.01 s
+  visible top level windows of 29524: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+---- the plugin's output for list, every line ----
+  | 16:08:08.506  probe started, mode list, pid 29524, main thread 1, apartment STA
+  | 16:08:08.507  REGISTRY  before,  = '0', enable = '3 0'
+  | 16:08:08.508  SET  general.autosave holds 4 options, the set as Navisworks started
+  | 16:08:08.511    option enable  Boolean  Boolean:False
+  | 16:08:08.511    option folder_opts  None  a set of 4 options
+  | 16:08:08.511    option folder_opts.folder_mode  Boolean  Boolean:True
+  | 16:08:08.511    option folder_opts.folder  DisplayString  DisplayString:%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave
+  | 16:08:08.511    option folder_opts.manage_disk_space  Boolean  Boolean:True
+  | 16:08:08.511    option folder_opts.mem_limit  Int32  Int32:512
+  | 16:08:08.511    option frequency  None  a set of 1 options
+  | 16:08:08.511    option frequency.minutes  Int32  Int32:15
+  | 16:08:08.511    option history  None  a set of 1 options
+  | 16:08:08.511    option history.size  Int32  Int32:3
+  | 16:08:08.511  probe finished, code 0
+  the plugin's output "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-160800\plugin-output-list.txt", 963 bytes, sha256 5F8B3055F9C57C4A0BD053644527819CDFBCC514820A19B233D415181CC2B5C9
+
+
+==== STEP 6. Quit through the API ====
+  16:08:08.932  t+8.5s  Dispose RETURNED after 0.35 s
+  16:08:11.076  t+10.6s  pid 29524 state gone, 2.1 s after Dispose returned, not forced
+
+==== FINALLY ====
+  16:08:11.078  t+10.6s  pid 29524 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 18, longest pass 453 ms, longest gap between the starts of two passes 967 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  16:08:00.787  t+0.3s  watchdog started
+  16:08:02.118  t+1.6s  new process Roamer pid 29524, parent 1784 svchost.exe, started 16:08:01.485, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  16:08:02.191  t+1.7s  Roamer 29524 visible top level windows: none
+  16:08:02.843  t+2.4s  new process AdskLicensingAgent pid 10432, parent 29524 Roamer.exe, started 16:08:02.026, command line holds the word embedding or automation: no
+  16:08:03.032  t+2.6s  new process AdskLicensingAgent pid 11004, parent 29524 Roamer.exe, started 16:08:02.111, command line holds the word embedding or automation: no
+  16:08:03.144  t+2.7s  new process AdskLicensingAgent pid 17792, parent 29524 Roamer.exe, started 16:08:02.246, command line holds the word embedding or automation: no
+  16:08:04.790  t+4.3s  Roamer 29524 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] ""
+  16:08:06.387  t+5.9s  Roamer 29524 visible top level windows: none
+  16:08:06.925  t+6.4s  Roamer 29524 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:08:07.449  t+7.0s  Roamer 29524 visible top level windows: none
+  16:08:08.516  t+8.0s  Roamer 29524 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:08:09.065  t+8.6s  Roamer 29524 visible top level windows: none
+  16:08:11.155  t+10.7s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 29524, parent 1784 svchost.exe: exited
+  AdskLicensingAgent pid 10432, parent 29524 Roamer.exe: STILL RUNNING
+  AdskLicensingAgent pid 11004, parent 29524 Roamer.exe: exited
+  AdskLicensingAgent pid 17792, parent 29524 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 2450366272507  new QWord 2450451408600
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 260  new DWord 261
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 279  new DWord 280
+  22.0\CER\22.5.1433.58  uptime  old QWord 766037031250  new QWord 766102656250
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  registry: 5 values or keys differ from the backup
+  registry: 5 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 69137 bytes, sha256 2CFC0390D9E6, written 2026-10-18 15:59:44  new 69281 bytes, sha256 784E505E2334, written 2026-10-18 16:08:07
+  file CHANGED LastSession.xml  old 39289 bytes, sha256 4E12E1DAC621, written 2026-10-18 16:01:31  new 39289 bytes, sha256 E25F063BC9E7, written 2026-10-18 16:08:08
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWCs the copies were made from, at the end ----
+---- the autosaves folder of this probe at the end ----
+  0 files
+---- the work folder at the end, sorted by name ----
+  AutoSaveProbe.dll  15872 bytes
+  hkcu-navisworks-manage-22.0-before.reg  110148 bytes
+  mypid.txt  36 bytes
+  plugin-output-list.txt  963 bytes
+  watch.txt  1527 bytes

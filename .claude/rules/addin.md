@@ -766,8 +766,41 @@ well as to pass.
   group is built or rebuilt, then Document.TryAppendFile once per file, AppendOne, and nothing else. Read
   off src on 2026-10-18 by F212: nothing sets anything around it, F201 having taken out the last setting,
   SetModelUnitsAndTransform. What the tool sets it sets after the append and puts back, the hidden state,
-  the undo and Clash Detective's Hide Other, each in its own bullet here. A fix that wants an append to
+  the undo and Clash Detective's Hide Other, each in its own bullet here. Since F223 Auto-Save is off for the
+  whole run, before the first append, by Bader's answer to Q207, and it is no append setting: it is set for the
+  run and not to append, so no append behaves otherwise for it. A fix that wants an append to
   behave otherwise, a corrupt file or a slow one, works around the append and never changes a setting for it
+- AUTO-SAVE IS OFF WHILE THE TOOL WORKS AND PUT BACK EXACTLY AS IT WAS, F223, Bader's answer to Q207 of 18 Oct 2026. The
+  words are Core's, `AutoSaveSwitch`, and the rule of the value to put back is Core's, `AutoSaveKeeper`, proved on a fake
+  registry and a fake record. THE VALUE BEFORE IS KEPT ON DISK UNTIL IT IS PUT BACK, the breaker's and the reviewer's
+  finding on the first pass, where each group put back its own value read before its start, so a runner that died left
+  "3 0" and the next run read it as the person's own. The record is auto-save-to-put-back.txt under
+  %LOCALAPPDATA%\ParsonsNwcFederator, written whole through a file beside it. THE RUNNER, once the order and the Automation
+  DLL read, takes the value off a record that is there already, since a run that has the switch off or one that ended
+  before its put back wrote it, and otherwise off the value enable of GlobalOptions\general\autosave under the 22.0 key,
+  and writes the record before anything is switched. Nothing is switched for the whole run where the value or the record
+  could not be read, the record could not be written, or the value is of another kind than a string, since a switch with no
+  record could leave Auto-Save off for good. Before each group's Navisworks starts, inside its try, it writes "3 0" where it
+  reads otherwise and reads it back, writing the record again where another run deleted it, and once that Navisworks is gone
+  says what the switch reads, which that Navisworks may have written as it quit. In Main's finally, once every group ran or
+  threw, it puts the value back once, a value that was not there taken out, reads it back, and deletes the record only where
+  it reads as it was and no Navisworks new since the run began still runs. A key that is not there is never made. A throw
+  in a group, its ceiling's timer included, is said and the next group runs. THE WINDOW THAT STARTED THE RUN, once the
+  runner ends, puts back a record still there and deletes it, keeping it where the window ended the runner past its limit,
+  since a Navisworks of the run may still run, `AutoSaveOff.PutBackWhatARunLeft`, and the window a person opens does the
+  same as it starts, never in a group's own Navisworks, and where the record said on and this Navisworks reads the option
+  off it sets the option on too. THE RUN IN THE NAVISWORKS A PERSON STARTED, the scanned run, the picked NWFs, the open file
+  run, and the run inside a group's own Navisworks, makes one `AutoSaveOff` as the run starts: it reads the option
+  general.autosave.enable through LcUOption and, where it reads on, keeps the registry's value on the record, counts the
+  switch as made, sets it off and reads it back. It is disposed in the run's finally before RESULT, which sets back the value
+  it read, reads it again and puts the registry back off the record, deleting it. Every line says what was read and what was
+  put back, and a throw says what threw. In a group's own Navisworks the option reads off already and nothing changes. The
+  hand buttons, Build sets, Run tests, Undo and Probe, are not runs and switch nothing, row F223-R2. MEASURED, scan.md 5z-zl:
+  a value set in a session reaches no registry value while the session runs, and no start with "3 0" wrote an autosave in
+  its runs, while even the stretches set on wrote none, so why is UNKNOWN. WHAT IS NOT MEASURED, row F223-R1: whether the
+  option set off in a session started with Auto-Save on stops that session's autosaves, and what a Navisworks writes into
+  the registry as it quits. A second Navisworks started by hand during a run starts with Auto-Save off, as 5z-zl's guard
+  read. The loop's own switch in tools\loop\run.ps1 stays, Q207
 - A BAD NWC NEVER STOPS AN UNATTENDED RUN, F213, F210-R6. TryAppendFile on a random file, a file cut short
   or a file another program holds opens a Navisworks message box inside the call and waits for a person,
   scan.md 5z-zh and 5z-zi. So `AppendOne` makes every TryAppendFile under an `AppendBoxWatch`, a
