@@ -393,8 +393,12 @@ Pictures are taken after the NWD is published, F182, one per clash row that take
 - The clash step and the pictures both show every item, F204 and F206, because Clash Detective finds
   no clash on a hidden item. The tool reads what the document hid, shows everything, and puts the
   hidden state back after.
-- Pictures that show only the sky: 76 pictures of 1B06BC and 25 of 1B06P1 in F220 draw no item of their
-  clash. The cause is UNKNOWN and pending, Q208.
+- Pictures that show only the sky: 76 pictures of 1B06BC and 25 of 1B06P1 in F220 drew no item of their
+  clash, the cause UNKNOWN, scan.md 5z-zk. Since F226, Bader's answer to Q208, a picture that draws no item
+  of its clash is taken again through the active view from the clash's own camera moved back to 30 ft,
+  its two items red and green and the other models hidden, and no Image cell shows only the sky. Each
+  group writes one RETAKE line with the count retaken and the count still empty. F229's run of C06 and
+  C07 retook 57 pictures, 45 drawing their items, and left 0 of only the sky.
 
 ## The NWD in ACC, and why nothing appears beside the NWF
 
@@ -586,8 +590,8 @@ Each of these is said UNKNOWN in the code or the rules and waits for a run or fo
 - Whether the Auto-Save option set off in a session started with it on stops that session's autosaves,
   and what Navisworks writes into the registry as it quits, F223-R1. Why no autosave file was written
   in the measured runs.
-- Whether Hide Other draws the pictures as asked, and why 76 and 25 pictures draw only the sky, Q208
-  pending.
+- Whether Hide Other draws the pictures as asked, and why some pictures draw no item of their clash, which
+  F226 takes again.
 - Whether the memory stop still fires on a community of 21 groups when each group has its own Navisworks.
 - What puts a test into Old.
 - Whether the NWF belongs in ACC at all, Q32.

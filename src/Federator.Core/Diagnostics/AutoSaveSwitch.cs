@@ -27,7 +27,7 @@ namespace Federator.Core.Diagnostics
     /// running Navisworks, the option general.autosave.enable, read and set through LcUOption, a set value reaching no
     /// registry value while the session runs, 5z-zl, and whether it stops the autosaves of a session started on is UNKNOWN,
     /// row F223-R1. So the runner switches the registry off before each
-    /// group's Navisworks starts and puts it back once that Navisworks is gone, whichever way it ended, and the window switches
+    /// group's Navisworks starts and puts it back once, as the run ends, AutoSaveKeeper, and the window switches
     /// the option off for a run in the Navisworks a person started and puts it back as the run ends. Every line is made here.
     /// </summary>
     public static class AutoSaveSwitch

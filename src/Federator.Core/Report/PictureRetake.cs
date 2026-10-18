@@ -236,7 +236,7 @@ namespace Federator.Core.Report
             return new[] { centre[0] + dx * k, centre[1] + dy * k, centre[2] + dz * k };
         }
 
-        /// <summary>The picture a clash keeps. A retake not taken leaves the tool's, unless it is only the sky.</summary>
+        /// <summary>The picture a clash keeps. A retake not taken keeps the tool's, whatever it shows, so a throw never drops a picture.</summary>
         public static RetakeChoice Choose(bool toolDrew, bool toolSky, bool retaken, bool retakeDrew, bool retakeSky)
         {
             if (toolDrew)
