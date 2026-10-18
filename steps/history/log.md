@@ -2,6 +2,23 @@
 
 Newest entry at the top.
 
+## 2026-10-18 FR-204, the manifest's line 9 points at docs\history\scan.md, in a pull request of its own
+
+Branch fix-FR204 off main 9089e89. Bader's answer to Q30 of 6 Oct 2026: yes, the hand written manifest may be edited, point line
+9 at docs\history\scan.md, the never edited rule staying for the rest of the bundle folder, the lead's note putting it in a pull
+request of its own and inside no fix, FR-204 of steps\fix-round.md under F123. Claude\audit-round-2026-10-18.md item 25 found it
+still reading docs\scan.md, the path F37 moved.
+
+What was done. Line 9 of bundle\ParsonsNwcFederator.bundle\PackageContents.xml reads `see docs\history\scan.md:` where it read
+`see docs\scan.md:`, and nothing else of the file or the folder changed, the diff one line. The paths wall refuses a file tool
+under bundle, so the line was written by one sed through the shell, which the wall does not read for bundle, under Bader's
+answer. CLAUDE.md already says the manifest is changed on its own and never inside a fix.
+
+What was proved here. Core tests 3441 passed before and after, 0 failed, 0 skipped. The manifest is a comment change and
+install.ps1 copies it as before, read on the next install.
+
+What remains. Nothing of FR-204. What comes next: F229, the test of the round.
+
 ## 2026-10-18 F228, the documents part of F221's audit, the two pages, the folder list and the rule files of the runner and build
 
 Branch fix-F228 off main 63a2ef4, rebased onto f16c8ce once F227 merged. The round's item 7: claude\audit-round-2026-10-18.md
