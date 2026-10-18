@@ -73,6 +73,13 @@ namespace Federator.Addin
                     return 2;
                 }
 
+                // F223, Q207. A record of the Auto-Save switch that a run left, one that ended or crashed before its put back,
+                // is put back as the window a person opens starts, and never in a group's own Navisworks, whose runner holds it.
+                if (child == null)
+                {
+                    AutoSaveOff.PutBackWhatARunLeft(log.Line, false);
+                }
+
                 FederatorWindow window = child == null ? new FederatorWindow(log) : new FederatorWindow(log, child);
 
                 IntPtr owner = OwnerHandle();

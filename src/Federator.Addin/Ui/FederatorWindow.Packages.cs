@@ -722,10 +722,14 @@ namespace Federator.Addin.Ui
             running = true;
             SetTheRunButtons(false);
             FederationEngine engine = null;
+            AutoSaveOff autoSave = null;
 
             try
             {
                 log.RunStarted(nwfs.Count);
+
+                // F223, Q207. Auto-Save off while the run works, put back in the finally before RESULT.
+                autoSave = new AutoSaveOff(log.Line);
                 log.Block("RUN SETTINGS", new List<string>
                 {
                     "parent folder    : " + packageTree.Parent,
@@ -767,6 +771,11 @@ namespace Federator.Addin.Ui
             }
             finally
             {
+                if (autoSave != null)
+                {
+                    autoSave.Dispose();
+                }
+
                 WriteTheResult(engine, null, tally.Lines());
 
                 // F214. The NWFs this run ended with, those before a throw among them, for a package's own result.

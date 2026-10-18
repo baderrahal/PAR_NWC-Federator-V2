@@ -411,12 +411,16 @@ namespace Federator.Addin.Ui
 
             // Outside the try, for the same reason as the scanned run.
             FederationEngine engine = null;
+            AutoSaveOff autoSave = null;
 
             try
             {
                 // F80. The mark and the line together, so the run time in the timing block is
                 // RUN started to RUN finished, as the scanned run marks it.
                 log.RunStarted(plan.Nwfs.Count);
+
+                // F223, Q207. Auto-Save off while the run works, put back in the finally before RESULT.
+                autoSave = new AutoSaveOff(log.Line);
 
                 log.Block("RUN SETTINGS", plan.SettingsLines());
                 SayTheRunsChoices(options.Tolerance);
@@ -446,6 +450,11 @@ namespace Federator.Addin.Ui
             }
             finally
             {
+                if (autoSave != null)
+                {
+                    autoSave.Dispose();
+                }
+
                 log.Line(NwfPick.SourceFindingsSkipped);
                 WriteTheResult(engine, plan.ResultLine());
                 running = false;
@@ -2309,6 +2318,7 @@ namespace Federator.Addin.Ui
             // Outside the try, so the RESULT block written in the finally carries what the
             // shared coordinates rule did in THIS run, or nothing where no engine was made.
             FederationEngine engine = null;
+            AutoSaveOff autoSave = null;
 
             try
             {
@@ -2316,6 +2326,9 @@ namespace Federator.Addin.Ui
                 // so the run time in the timing block is RUN started to RUN finished and
                 // not the session, which carried 473 seconds of a person reading a table.
                 log.RunStarted(jobs.Count);
+
+                // F223, Q207. Auto-Save off while the run works, put back in the finally before RESULT.
+                autoSave = new AutoSaveOff(log.Line);
 
                 // Read once, before the first group, so a matrix that will not read stops
                 // the run here rather than part way through the second building. F155: the
@@ -2426,6 +2439,11 @@ namespace Federator.Addin.Ui
             }
             finally
             {
+                if (autoSave != null)
+                {
+                    autoSave.Dispose();
+                }
+
                 // The result block is written whatever happened, so a run that stopped still
                 // leaves a readable log with its summary at the end.
                 WriteTheResult(engine, null, packages == null ? null : packages.Tally.Lines());
@@ -2657,8 +2675,13 @@ namespace Federator.Addin.Ui
             // Outside the try, for the same reason as the scanned run.
             FederationEngine engine = null;
 
+            AutoSaveOff autoSave = null;
+
             try
             {
+                // F223, Q207. Auto-Save off while the run works, put back in the finally before RESULT.
+                autoSave = new AutoSaveOff(log.Line);
+
                 TeamMap teams;
                 ExchangeDocument exchange = ReadTheMatrixForAnOpenFileRun(out teams);
 
@@ -2705,6 +2728,11 @@ namespace Federator.Addin.Ui
                 // group and there is nothing to add up across groups.
                 log.Line("SETS     " + SetsAcrossTheRun.BlockTitle.ToLowerInvariant()
                     + " is not written for the open file run, one file is one group and there is nothing to add up across groups");
+
+                if (autoSave != null)
+                {
+                    autoSave.Dispose();
+                }
 
                 // The RESULT block is written whatever happened, the same as the scanned run.
                 // This used to be missing, so an open file run ended with no RESULT block.

@@ -2,6 +2,63 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F223, Q207, Auto-Save off while the tool works and put back as it was
+
+Branch fix-F223 off main 54fcf1a. Bader's answer to Q207: the loop's Auto-Save switch in tools\loop\run.ps1 stays, and the tool
+itself turns Navisworks Auto-Save off while it works and puts it back exactly as it was when the run ends, even when a group
+fails or Navisworks closes, the value read before logged and the value put back logged. Not an append setting, so the manual
+append rule of Q202 stands.
+
+What was measured first, docs\history\scan.md 5z-zl. `tools\probes\AutoSaveProbe`, four runs: the set general.autosave reads and
+sets through LcUOption, seven options, of which the probe set three, enable, frequency.minutes and folder_opts.folder, each read
+back, and enable set in a session reached no registry value while the session ran, the one registry value read. In two timer runs that started with the switch off, as the guard
+writes it, enable set on with a minute between saves wrote no autosave in stretches of 100 s and 960 s, so whether the option
+set off in a session started with it on stops its autosaves is UNKNOWN, row F223-R1. The guard of the run of 960 s stretches left Auto-Save
+off for Bader, since three Navisworks were started by hand while it ran, and the session wrote "0" back by hand at 17:05 once no
+Navisworks ran, read back "0".
+
+What was done. Core: `AutoSaveSwitch` reads the registry's value, "0" never set and on by default, "3 0" off, "3 1" on, and
+words every AUTOSAVE line, each with the value read before and the value put back. `AutoSaveKeeper` keeps the value before ON
+DISK until it is put back, in auto-save-to-put-back.txt under %LOCALAPPDATA%\ParsonsNwcFederator, written whole and before
+anything is switched, through a registry and a record it is handed, `WindowsAutoSaveRegistry` and `FileAutoSaveRecord`, which
+never make the key and never write a value of another kind than a string. The runner takes the value off a record that is
+there already, left by a run that has the switch off or one that ended before its put back, or otherwise off the registry,
+switches off before every group inside its try, says what the switch reads once each group's Navisworks is gone, and puts the
+value back once in Main's finally, a value that was not there taken out, deleting the record only where it reads as it was
+and no Navisworks new since the run began still runs. A throw in a group, its ceiling's timer included, is said and the next
+group runs. Nothing is switched where the value or the record cannot be kept. The add-in: the window that started the run
+puts back a record still there once the runner ends, keeping it where it ended the runner past its limit, and the window a
+person opens does the same as it starts, setting the option on too where the record said on and this Navisworks reads off.
+`AutoSaveOff` makes the run in the Navisworks a person started, the scanned run, the picked NWFs and the open file run, and a
+group's own run: where the option reads on it keeps the registry's value on the record, counts the switch as made, sets it
+off and reads it back, and in the run's finally before RESULT sets back what it read, reads it again and deletes the record.
+The breaker and the reviewer read the first pass, which put back each group's own value read before its start, and their
+findings were taken: a runner that died, was ended by the window or threw outside its try left "3 0", which the next group
+and the next run read as the person's own, a failed put back that carried into the next group, two runs at once, a put back
+made while a Navisworks still ran, a set that threw leaving the option off with no line, a window line claiming more than
+5z-zl measured, a value of another kind written back as a string, the append rule contradicting itself, the probe's headers
+and scan.md's counts. A first smoke run counted a Navisworks still running with every group's Navisworks read gone, so the
+runner now counts no listed process that reads exited, which one it was being UNKNOWN. Rows F223-R1 to R4 hold what is left.
+
+What was proved here. Core tests 3406 passed before on main, 3416 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors, check-locals and check-imports clean. Of the 10 Core tests added, in AutoSaveSwitchTests, 6 drive AutoSaveKeeper on a
+fake registry and a fake record, a runner that died, two runs at once, a Navisworks still running, a put back that throws, a
+value that was not there and a switch that will not read among them, 1 reads the record's text, 1 its file, 1 the registry's
+values and 1 the window's lines. On Navisworks, the session's launcher, a copy of F220's outside the repo, told to leave the
+switch as it is, the NWC page on the copy C:\NWC-PC-Test\work\smoke222b, community S1, the groups 1B06BS, 1B06M1 and 1B06PE of
+C06, each in its own Navisworks, evidence in C:\NWC-PC-Test\work\run-evidence\2026-10-18-F223-smoke-nwc and -nwc-b:
+run-20261018-173812 on eaac6f1e kept '0', switched '3 0'
+before the first group, found it off already before the other two, put '0' back and read '0', kept the record for the
+Navisworks it counted as running, and the window found the record, read '0' as it was before the run, wrote nothing and
+deleted it, 3 DONE and 98 clashes. run-20261018-174250 on 83c5350f, which counts no listed process that reads exited: the
+runner counted none still running, put '0' back, read '0' and deleted the record itself, which shows the count and not which
+process the first run counted, 3 DONE
+and 98 clashes. Both left the switch at '0' as before, wrote no autosave, 62 files in Bader's AutoSave folder before and after
+each, and left no record. The run in a Navisworks a person started, the window's own switch, was not run, steps\03_bader_next.md.
+
+What remains. The window's switch in a Navisworks a person started, its proof steps. Known bugs: rows F223-R1 to R4. What
+comes next: F224, Q209.
+
 ## 2026-10-18 F222, Q211, a fresh Navisworks per group on both pages
 
 Branch fix-F222 off main 7acbb0e. Bader's answer to Q211: a fresh Navisworks per group, not only per package, on both pages,

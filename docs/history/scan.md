@@ -9005,3 +9005,53 @@ shown.
 **UNKNOWN.** What makes `TestsImageForResult` draw nothing for these tests. What the active view draws with the items coloured
 and the other models hidden, as the tool's pictures are, since the probe took none that way. Whether such a picture would be
 accepted in the client's report in place of Clash Detective's, Q208.
+
+## 5z-zl. THE AUTO-SAVE SET THROUGH LCUOPTION, AND WHAT A VALUE SET IN A SESSION DOES, MEASURED 2026-10-18
+
+F223, Bader's answer to Q207 of 18 Oct 2026: the tool turns Navisworks Auto-Save off while it works and puts it back exactly
+as it was, measured first. Four runs of `tools\probes\AutoSaveProbe\probe-auto-save.ps1`, a copy of probe-append-box.ps1 with its
+plugin, mode and arguments changed and the guard of tools\loop\nw-guard.ps1 untouched, F138's SwitchAutoSaveOff included, so
+every start wrote the registry's switch "3 0" before Navisworks started and the guard's backup held "0". Two runs of the mode
+list, 15:40 and 16:08, and two of the mode timer, 16:09 with stretches of 100 s and 16:15 with stretches of 960 s. The results,
+the machine's name masked, are auto-save-list-1540-20261018.txt, auto-save-list-1608-20261018.txt, auto-save-timer-100s-20261018.txt and auto-save-timer-16min-20261018.txt
+in tools\probes\AutoSaveProbe.
+
+**THE SET.** `LcUOption` reads the set general.autosave as four entries, the option enable, Boolean, and the sets folder_opts,
+frequency and history, which hold six options more, seven in all: folder_opts.folder_mode Boolean True, folder_opts.folder,
+the string '%APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave', folder_opts.manage_disk_space Boolean True,
+folder_opts.mem_limit Int32 512, frequency.minutes Int32 15 and history.size Int32 3. With the registry's switch at "3 0" as
+Navisworks started, enable reads False. The probe set three of them, enable by `SetBoolean`, frequency.minutes by `SetInt32`
+and folder_opts.folder by `SetWideString`, and each set returned True and read back the value set. The other four were read
+and never set.
+
+**THE REGISTRY.** The value enable of HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\general\autosave read "0" on
+this machine before the probes, never set, and the guard writes "3 0", off. That "0" is Navisworks' default on is read off
+autosaves made on this machine before F223 and not off a start measured with it. A value set in a session reached no registry
+value while the session ran, for enable, the one registry value the plugin read: enable read "3 0" at all 12 of the plugin's
+reads in the two timer runs, 6 a run, one before any set, one after the location and the time were set, one after each of the
+three sets of the switch and one after the put back. The registry values of frequency.minutes and folder_opts.folder were not
+read. Whether Navisworks writes the set's options into the registry as it quits was not read, since each run put every option
+back before its quit.
+
+**THE TIMER.** Each timer run pointed folder_opts.folder at a folder of its own, read back so, set frequency.minutes to 1, read
+back 1, saved a document of one appended NWC as probe-document.nwf, then with enable set on, then off, then on again appended
+one more NWC, which the document took, and pumped the main thread's messages for the stretch. No autosave was written in any
+stretch: 0 files in the probe's folder after each of the six stretches, 100 s and 960 s, on and off, and 0 new files in Bader's
+own AutoSave folder, 62 before and 62 after each. So in a session that started with Auto-Save off, enable set on with a minute
+between saves wrote nothing in 16 minutes. Whether that is because the switch is read only as Navisworks starts, because the
+frequency is, because an autosave is not made while ExecuteAddInPlugin runs, or because the probe's document did not count as
+changed, is UNKNOWN. Bader's AutoSave folder holds autosaves of tool runs in his own Navisworks, 1104-PAR-1A02MM-ZZZ-BM-MOD-000001
+.Autosave7407.nwf of 17 Oct 14:17 among them, so autosaves are made while the tool runs in a Navisworks started with it on.
+
+**WHAT IT MEANS FOR F223.** A Navisworks started with the registry's switch at "3 0" wrote no autosave in any of these runs, the
+reading F138 relies on and the runner of F223 writes before each group's Navisworks starts, though since the stretches set on wrote
+none either, these runs do not show that the switch is what stopped them. Whether setting the option off in a
+session started with it on stops the autosaves of that session is UNKNOWN, since the guard starts every probe with it off and
+nothing here started one with it on. So the window's switch in a Navisworks a person started, `AutoSaveOff`, sets the option and
+puts it back as Bader asked, and whether it stops the timer is UNKNOWN until a run in a Navisworks started with Auto-Save on is
+read for autosave files dated during it, row F223-R1.
+
+**WHAT THE GUARD LEFT.** The guard of the run of 960 s stretches, 48 minutes in all, put nothing back, since three Navisworks were started by hand at 16:51:04,
+16:51:39 and 16:52:05 while it ran, and it said Auto-Save was left off for Bader. Those three started with the switch at "3 0".
+The session wrote "0" back by hand at 17:05 once no Navisworks ran, read back "0", and left every other value of the 35 the guard
+named, the recent files and the session counters of Bader's own starts, as they were.
