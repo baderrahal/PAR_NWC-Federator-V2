@@ -2,6 +2,58 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F229, the test of the round on multi3, C06, C07 and a package of 1B06BC and 1B06P1, both pages
+
+Branch fix-F229 off main e38344c. The round's TEST: main built and installed, C06 and C07 copied from the desktop folder of
+real files as they are now into C:\NWC-PC-Test\work\multi3 in the flat layout with a Report folder holding empty C06 and C07,
+one copy of 1B06BC and 1B06P1 in a package of their own for Q208, the NWC page on all with Run pressed once and no box answered
+by anyone, then the NWF page, each point proved off the logs, the clashes set beside F220's with how many Q209 removed per
+community, and the logs and .tsv copied into steps\logs.
+
+What was done. The bundle of e38344c installed, its stamp e38344c7 read off the installed add-in. The desktop folder listed
+before, 141 files and 25 folders, and C06's 64 and C07's 70 NWCs copied into multi3\Parent, each read back against the
+listing's SHA-256, 0 not matching, the 9 NWCs of 1B06BC and 1B06P1 copied from that copy into multi3\Parent\SKY. The session's
+launcher, a copy of F220's outside the repo, ran each page with the Auto-Save switch left as it read, '0', so the tool switched
+it itself, evidence in C:\NWC-PC-Test\work\run-evidence\2026-10-18-F229-nwc, -nwf and -logs. The desktop folder listed after,
+0 lines differing from the listing before.
+
+What was proved here, run-20261018-202457, the NWC page, 20:24 to 20:53, 28.2 min by the launcher's clock, and
+run-20261018-205401, the NWF page, 20:53 to 21:20, 26.4 min:
+- A fresh Navisworks per group, Q211: each page's runner line, the NWC page `the runner ended after 46 groups of 3 packages in
+  1644.6 s, 46 starts took 199.0 s in all and 46 quits 92.7 s`, the NWF page 1528.7 s, 202.3 s and 92.8 s. 46 groups, 46 DONE,
+  0 partial, 0 failed on each page, every group's clashes the same on both, C06 21 groups and 3904 clashes, C07 23 and 1549,
+  SKY 2 and 442, 5895 in all.
+- No memory stop in any group: 0 lines of the memory or the GDI stop in the 92 group logs, 1B06PK, C06's largest, reaching 4330
+  MB of private bytes over its 1036 pictures, where F220's Navisworks of all of C06 hit the stop from its 11th group on.
+- Auto-Save off during and put back after, Q207: each page kept '0' on its record, switched the registry to '3 0' before the
+  first group, found it off already before every other group, and put '0' back, read '0' and deleted the record. The launcher
+  read '0' before and after each page. No autosave written, the record gone.
+- No test of one set code on either page, Q209: every group of two disciplines or more said the rule left out 284 of the 1830
+  tests planned, AR 120, DR 10, EL 78, FF 15, ME 36, PL 10, ST 15, and that 60 of the tests that run have a side whose set name
+  reads no set code, and every group of one discipline said the rule is not read, 12 of the 46. 9656 tests left out on each
+  page. The NWF page's count check held 257 tests from the NWC page's run, the groups of one discipline's tests created and
+  never run, 0 clashes, 0 COVERAGE FAILED on either page.
+- 0 pictures of only the sky, Q208: 57 pictures of 1B06BC, 1C07BC and SKY's 1B06BC drew no item of their clash, 19 a group, all
+  57 retaken, 45 drawing their items and 12 still none, 0 left with no picture, and count-sky-pictures.ps1 read 0 pictures of
+  only the sky of the 173 of C06's 1B06BC, C07's 1C07BC and SKY's 1B06BC and the 269 of SKY's 1B06P1.
+- The settings of Q210 read with their defaults: the image settings line `every test gets pictures for at most its first 150
+  clashes at priority A, 100 at priority B and 50 at priority C`, the running count every 25 tests.
+- Against F220, on the same NWCs, the two listings equal by name, size and SHA-256: C06 3904 clashes where F220 found 6207, Q209
+  removing 2303, C07 1549 where F220 found 2822, Q209 removing 1273, 3576 of 9029 in all, about 40 percent, what Q209 counted.
+  1B06PK alone lost 1168 and 1B06PS and 1C07PS, whose every clash was of one set code, lost their 92 each.
+- The times against F220: the NWC page 28.2 min where F220's took 22.1, the NWF page 26.4 where F220's took 19.6, the 46
+  starts and quits of a page about 4.9 min of it, each page under the 45 minutes of criterion 2.
+
+Copied into steps\logs, 2026-10-18-C06-C07-F229-: each page's parent log and .tsv, which carry every group's own RESULT, the
+launcher's record of each, a table of every group of each page, the clashes set beside F220's, and the logs of C06's 1B06PK and
+1B06BC on the NWC page. The 92 group logs and their .tsv, 89 MB, stay in each package's Log folder under multi3\Report and in
+the evidence folder.
+
+Found: the NWF page's window opened its log while the NWC page's 46 group logs sat in the tool's logs folder and pruned the
+folder to its 30, so the first 18 group logs of C06 were deleted there, their copies kept whole in C06's Log folder, row F229-R1.
+
+What remains. F230. Known bugs: row F229-R1. What comes next: F230, the audit of the round and the closing entry.
+
 ## 2026-10-18 FR-204, the manifest's line 9 points at docs\history\scan.md, in a pull request of its own
 
 Branch fix-FR204 off main 9089e89. Bader's answer to Q30 of 6 Oct 2026: yes, the hand written manifest may be edited, point line

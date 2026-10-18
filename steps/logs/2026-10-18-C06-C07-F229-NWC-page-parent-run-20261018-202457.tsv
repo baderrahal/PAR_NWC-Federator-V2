@@ -1,0 +1,13 @@
+﻿time	seconds	group	step	event	name	number	text
+20:52:40.667	1662.798			written	CHECKS	10874	C:\\NWC-PC-Test\\work\\multi3\\Report\\C06\\C06 AR checks.xlsx
+20:52:41.203	1663.334			written	CHECKS	40175	C:\\NWC-PC-Test\\work\\multi3\\Report\\C06\\C06 ST checks.xlsx
+20:52:41.261	1663.391			written	CHECKS	13619	C:\\NWC-PC-Test\\work\\multi3\\Report\\C06\\C06 ME checks.xlsx
+20:52:41.288	1663.418			written	CHECKS	10965	C:\\NWC-PC-Test\\work\\multi3\\Report\\C06\\C06 EL checks.xlsx
+20:52:41.372	1663.502			written	CHECKS	11127	C:\\NWC-PC-Test\\work\\multi3\\Report\\C07\\C07 AR checks.xlsx
+20:52:41.419	1663.550			written	CHECKS	38537	C:\\NWC-PC-Test\\work\\multi3\\Report\\C07\\C07 ST checks.xlsx
+20:52:41.474	1663.604			written	CHECKS	15603	C:\\NWC-PC-Test\\work\\multi3\\Report\\C07\\C07 ME checks.xlsx
+20:52:41.501	1663.631			written	CHECKS	11284	C:\\NWC-PC-Test\\work\\multi3\\Report\\C07\\C07 EL checks.xlsx
+20:52:41.577	1663.708			written	CHECKS	8428	C:\\NWC-PC-Test\\work\\multi3\\Report\\SKY\\SKY AR checks.xlsx
+20:52:41.597	1663.727			written	CHECKS	9312	C:\\NWC-PC-Test\\work\\multi3\\Report\\SKY\\SKY ST checks.xlsx
+20:52:41.617	1663.747			written	CHECKS	8470	C:\\NWC-PC-Test\\work\\multi3\\Report\\SKY\\SKY ME checks.xlsx
+20:52:41.636	1663.767			written	CHECKS	8329	C:\\NWC-PC-Test\\work\\multi3\\Report\\SKY\\SKY EL checks.xlsx

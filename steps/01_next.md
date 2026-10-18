@@ -1794,3 +1794,7 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - The round of 18 Oct 2026, item 7: claudeudit-round-2026-10-18.md items 15 and 16, docs\workflow.md for the NWC page and the NWF page with the packages, item 18, CLAUDE.md's folder list, and item 19, a rule file for src\Federator.Runner and for build. The manifest's path of item 25 in a pull request of its own, FR-204.
 - DONE 2026-10-18, merged in 308. docs\workflow.md written for the two pages and the packages, CLAUDE.md's folder list made whole, runner.md and build.md holding the rules moved out of addin.md, 3441 Core tests passed.
+
+## F229 the test of the round of 18 Oct evening
+
+- The round of 18 Oct 2026, TEST: main built and installed, C06 and C07 copied from the desktop folder as they are now into C:\NWC-PC-Test\work\multi3 in the flat layout with a Report folder holding empty C06 and C07 and a package of one copy of 1B06BC and 1B06P1, the NWC page on all with Run pressed once and no box answered, then the NWF page, each point proved off the logs, the clashes against F220 and the logs and tsv in steps\logs.

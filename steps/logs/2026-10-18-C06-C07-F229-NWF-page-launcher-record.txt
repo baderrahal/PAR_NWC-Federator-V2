@@ -1,0 +1,31 @@
+20:53:54.864  launcher started, pid 34692, stamp e38344c7
+20:53:54.885  keep awake requested for this thread (ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
+20:53:54.904  reg export: The operation completed successfully.
+20:53:54.905  reg export: 
+20:53:54.923  AutoSave listing before: 62 files
+20:53:54.930  tool logs listing before: 154 files
+20:53:54.944  work listing before: 141 files
+20:53:54.952  texture cache folders before: C:\Users\bader\AppData\Local\Temp\ogs
+20:53:54.956  AutoSave enable reads '0', LEFT AS IT IS for this start, the tool switches it itself, F223
+20:53:55.255  free disk on C: 82.4 GB, installed RAM 15.8 GB, free RAM now 4.6 GB
+20:53:55.264  calling new NavisworksApplication() on the main thread
+20:53:59.690  Roamer processes after the constructor: 1
+20:53:59.697  ADOPTED Roamer pid 32904, started 20:53:55.275, held through its handle
+20:54:01.739  Visible set True, reads True
+20:54:01.826  driver started as pid 23784
+20:54:01.828  calling ExecuteAddInPlugin(ParsonsNwcFederator.PARS) on the main thread
+21:20:26.100  ExecuteAddInPlugin RETURNED 0 after 26.4 min
+21:20:26.102  the adopted Roamer reads same
+21:20:26.102  calling Dispose()
+21:20:26.570  Dispose returned after 0.5 s
+21:20:28.109  the adopted Roamer reads gone, exit code 0
+21:20:28.229  the driver exited with 0
+21:20:28.233  tool log used: C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-205401.log, RESULT seen True, WM_CLOSE posted True, monitor end reason: 
+21:20:28.260  AutoSave listing after: 62 files
+21:20:28.274  tool logs listing after: 154 files
+21:20:28.279  AutoSave enable reads '0' after the run, it read '0' before, THE SAME
+21:20:28.309  reg export: The operation completed successfully.
+21:20:28.310  reg export: 
+21:20:28.353  work listing after: 141 files
+21:20:28.371  texture cache folder after: C:\Users\bader\AppData\Local\Temp\ogs, 0 files, 0 bytes
+21:20:28.371  LAUNCHER DONE
