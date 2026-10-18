@@ -131,7 +131,8 @@ namespace Federator.Core.Tests
             Assert.That(PictureRetake.Choose(false, true, true, false, false), Is.EqualTo(RetakeChoice.TheRetake),
                 "the retake draws no item but is not the sky, the 4 of 1B06BC, so no Image cell shows only sky");
             Assert.That(PictureRetake.Choose(false, true, true, false, true), Is.EqualTo(RetakeChoice.NoPicture), "both only the sky, no picture");
-            Assert.That(PictureRetake.Choose(false, true, false, false, false), Is.EqualTo(RetakeChoice.NoPicture), "a sky picture whose retake threw is not kept");
+            Assert.That(PictureRetake.Choose(false, true, false, false, false), Is.EqualTo(RetakeChoice.TheTool),
+                "the breaker's finding: a sky picture whose retake threw or could not be taken keeps the tool's picture, never dropped");
             Assert.That(PictureRetake.Choose(false, false, true, false, true), Is.EqualTo(RetakeChoice.TheTool), "the tool's picture is kept where it is not the sky and the retake is");
             Assert.That(PictureRetake.Choose(false, false, false, false, false), Is.EqualTo(RetakeChoice.TheTool), "a result group, never taken again, keeps its picture");
         }
@@ -140,20 +141,27 @@ namespace Federator.Core.Tests
         public void TheLineSaysTheCountRetakenAndTheCountStillEmptyAndANoughtApart()
         {
             RetakeTally tally = new RetakeTally();
+
+            for (int i = 0; i < 10; i++)
+            {
+                tally.Took();
+            }
+
             Assert.That(tally.Line(PictureRetakeSettings.DefaultLeastMillimetres, true),
-                Is.EqualTo("RETAKE   no picture drew none of its clash's items, so none was taken again, Bader's answer to Q208"));
+                Is.EqualTo("RETAKE   every one of the 10 pictures read drew an item of its clash, so none was taken again, Bader's answer to Q208"));
             Assert.That(tally.Line(PictureRetakeSettings.DefaultLeastMillimetres, false), Does.Contain("is off"));
 
             tally.Add(true, true, RetakeChoice.TheRetake, 0.1);
             tally.Add(true, false, RetakeChoice.TheRetake, 0.1);
-            tally.Add(false, false, RetakeChoice.NoPicture, 0);
-            tally.Add(true, true, RetakeChoice.TheRetake, 0.1);
+            tally.Add(false, false, RetakeChoice.TheTool, 0);
+            tally.Add(true, false, RetakeChoice.NoPicture, 0.1);
 
             Assert.That(tally.Line(PictureRetakeSettings.DefaultLeastMillimetres, true), Is.EqualTo(
-                "RETAKE   4 pictures drew no item of the clash, 3 taken again through the active view from 9.144 m, 30 ft, at the nearest"
-                + " with the two items red and green and the other models hidden, in 0.3 s, 2 drawing their items and 1 still drawing none,"
-                + " 1 not taken again, a result group or a retake that threw, and 1 left with no picture as both showed only the sky,"
-                + " Bader's answer to Q208"));
+                "RETAKE   4 of the 10 pictures read drew no item of the clash, 3 taken again through the active view from 9.144 m, 30 ft,"
+                + " at the nearest with the two items red and green and the other models hidden, in 0.3 s, 1 drawing their items and 2"
+                + " still drawing none, 1 not taken again and kept as Clash Detective drew them, a result group or a retake that could not"
+                + " be taken, and 1 left with no picture as the tool's picture and its retake both showed only the sky, Bader's answer to Q208"),
+                "the whole beside the part, so every picture drawing nothing reads N of N, the breaker's finding");
         }
 
         [Test]
@@ -165,6 +173,14 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.LeastMillimetres = 0);
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.LeastMillimetres = double.NaN);
             Assert.Throws<ArgumentOutOfRangeException>(() => settings.Every = 0);
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.Bright = 256);
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.Dark = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.SkyBlueAtLeast = 300);
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.SkyBlueOverRed = -5);
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.SkyShare = 0, "a share of nought reads every picture as the sky");
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.SkyShare = 1.5);
+            Assert.That(PictureRetake.BackedOff(new[] { double.NaN, 0, 0 }, new double[] { 0, 0, 0 }, 30)[0], Is.NaN,
+                "a camera that reads NaN is left as it reads and never moved by a NaN factor");
             Assert.That(new ImageOptions().Retake.Retake, Is.True, "the pictures' options carry it");
         }
     }

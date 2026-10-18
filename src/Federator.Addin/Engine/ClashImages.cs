@@ -10,6 +10,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Report;
+using Federator.Core.Views;
 
 namespace Federator.Addin.Engine
 {
@@ -64,6 +65,13 @@ namespace Federator.Addin.Engine
         private readonly GdiSplit gdiSplit = new GdiSplit();
         private readonly RetakeTally retakes = new RetakeTally();
         private int retakeThrowsSaid;
+        private byte[] pixels;
+
+        /// <summary>How many pictures of the group drew no item of their clash, the number on the RETAKE line's row.</summary>
+        public int RetakesDrewNothing
+        {
+            get { return retakes.DrewNothing; }
+        }
 
         /// <summary>The group's one RETAKE line, F226, Bader's answer to Q208, the count retaken and the count still empty.</summary>
         public string RetakeLine()
@@ -444,8 +452,8 @@ namespace Federator.Addin.Engine
             noPicture = false;
             // F175, Bader's order. Everything between the render returning and the save sits inside one
             // try, so the bitmap is disposed on every path, the null one, a throw from the log or the
-            // count, and a throw from the save. It is the only Bitmap or Image the picture step receives,
-            // read off every System.Drawing use in src on 2026-10-14.
+            // count, and a throw from the save. It was the only Bitmap or Image the picture step received,
+            // read off every System.Drawing use in src on 2026-10-14, until F226's retake, whose bitmap TheRetake disposes.
             Bitmap bitmap = null;
             long gdiBefore = ProcessMemory.GdiObjectsNow();
             long gdiAfterRender;
@@ -504,14 +512,34 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// F226, Bader's answer to Q208. Where the tool's picture draws no item of its clash, by Core's PictureRetake, the
         /// picture is taken again through the active view, TakeAgain, and Core's Choose keeps the one that draws the clash, or
-        /// none where both show only the sky. The bitmap handed in is replaced or disposed and set to null accordingly, and a
-        /// retake that throws keeps the tool's picture, said for the first five and counted after.
+        /// none where both show only the sky. The bitmap handed in is replaced or disposed and set to null accordingly. A retake
+        /// not taken, a result group, a document in a unit the table does not know or a retake that threw, keeps the tool's
+        /// picture as before F226, said for the first five and counted after, so a throw never drops a picture.
         /// </summary>
         private RetakeChoice TheRetake(DocumentClashTests clashTests, IClashResult result, ref Bitmap bitmap, string on)
         {
-            bool toolDrew;
-            bool toolSky;
-            Measure(bitmap, out toolDrew, out toolSky);
+            bool toolDrew = true;
+            bool toolSky = false;
+            retakes.Took();
+
+            // A tool's picture that cannot be read is kept as it is, never lost to a throw of the reading.
+            try
+            {
+                if (!Measure(bitmap, out toolDrew, out toolSky))
+                {
+                    return RetakeChoice.TheTool;
+                }
+            }
+            catch (Exception error)
+            {
+                if (retakeThrowsSaid++ < RunLog.KeptOfARepeat)
+                {
+                    log.Line("IMAGE    RETAKE " + on + ": reading the tool's picture threw " + error.GetType().Name + ": " + error.Message
+                        + ", so the tool's picture is kept");
+                }
+
+                return RetakeChoice.TheTool;
+            }
 
             if (toolDrew)
             {
@@ -522,14 +550,17 @@ namespace Federator.Addin.Engine
             Bitmap again = null;
             bool retakeDrew = false;
             bool retakeSky = false;
+            string notTaken = null;
 
             try
             {
-                again = TakeAgain(clashTests, result as ClashResult);
+                again = TakeAgain(clashTests, result as ClashResult, out notTaken);
 
-                if (again != null)
+                if (again != null && !Measure(again, out retakeDrew, out retakeSky))
                 {
-                    Measure(again, out retakeDrew, out retakeSky);
+                    again.Dispose();
+                    again = null;
+                    notTaken = "its retake could not be read";
                 }
             }
             catch (Exception error)
@@ -540,11 +571,12 @@ namespace Federator.Addin.Engine
                     again = null;
                 }
 
-                if (retakeThrowsSaid++ < 5)
-                {
-                    log.Line("IMAGE    RETAKE " + on + ": taking the picture again threw " + error.GetType().Name + ": " + error.Message
-                        + ", so the tool's picture is kept");
-                }
+                notTaken = "taking the picture again threw " + error.GetType().Name + ": " + error.Message;
+            }
+
+            if (notTaken != null && retakeThrowsSaid++ < RunLog.KeptOfARepeat)
+            {
+                log.Line("IMAGE    RETAKE " + on + ": " + notTaken + ", so the tool's picture is kept");
             }
 
             RetakeChoice choice = PictureRetake.Choose(false, toolSky, again != null, retakeDrew, retakeSky);
@@ -558,6 +590,8 @@ namespace Federator.Addin.Engine
             }
             else if (choice == RetakeChoice.NoPicture)
             {
+                log.Line("IMAGE    RETAKE " + on + ": the tool's picture and its retake both showed only the sky, so no picture"
+                    + " is written and its Image cell is left empty, Bader's answer to Q208");
                 bitmap.Dispose();
                 bitmap = null;
             }
@@ -575,106 +609,168 @@ namespace Federator.Addin.Engine
         /// to the setting's least distance where it stands closer, its first item red and its second green by
         /// OverrideTemporaryColor, every model but the two items' hidden, and View.GenerateImage at the pictures' size. The
         /// colours come off those items alone, the models hidden here alone are shown again and the camera the view held is
-        /// put back, whichever way it ends. Null for a result group, which has no two items.
+        /// put back, each in a try of its own so one that throws leaves the rest done, whichever way it ends. Null with why for
+        /// a result group, which has no two items, a document in a unit the table does not know, or an item whose model's
+        /// name will not read, since hiding by an empty name would hide the clash's own model.
         /// </summary>
-        private Bitmap TakeAgain(DocumentClashTests clashTests, ClashResult clash)
+        private Bitmap TakeAgain(DocumentClashTests clashTests, ClashResult clash, out string notTaken)
         {
-            if (clash == null || clash.Item1 == null || clash.Item2 == null)
+            notTaken = null;
+
+            if (clash == null)
             {
+                notTaken = "a result group has no two items to take again";
                 return null;
             }
 
             Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
-            View active = document.ActiveView;
-            double least = ExchangeUnits.Convert(options.Retake.LeastMillimetres, "mm", ClashRunner.UnitName(document.Units));
+            string units = ClashRunner.UnitName(document.Units);
 
-            using (Viewpoint before = document.CurrentViewpoint.CreateCopy())
-            using (Viewpoint own = clashTests.TestsViewpointForResult(clash))
-            using (Viewpoint moved = own.CreateCopy())
-            using (ModelItemCollection first = new ModelItemCollection())
-            using (ModelItemCollection second = new ModelItemCollection())
+            if (units == null)
             {
-                Point3D at = own.Position;
-                Point3D centre = clash.Center;
-                double[] to = PictureRetake.BackedOff(new[] { at.X, at.Y, at.Z }, new[] { centre.X, centre.Y, centre.Z }, least);
-                moved.Position = new Point3D(to[0], to[1], to[2]);
-                first.Add(clash.Item1);
-                second.Add(clash.Item2);
-                List<ModelItem> hidden = HideTheOtherModels(document, clash);
+                notTaken = "the document's units, " + document.Units + ", are not in the unit table";
+                return null;
+            }
 
-                try
+            double least = ExchangeUnits.Convert(options.Retake.LeastMillimetres, "mm", units);
+            View active = document.ActiveView;
+
+            using (ModelItem one = clash.Item1)
+            using (ModelItem two = clash.Item2)
+            {
+                if (one == null || two == null)
                 {
-                    document.Models.OverrideTemporaryColor(first, new Autodesk.Navisworks.Api.Color(1, 0, 0));
-                    document.Models.OverrideTemporaryColor(second, new Autodesk.Navisworks.Api.Color(0, 1, 0));
-                    active.CopyViewpointFrom(moved, ViewChange.JumpCut);
-                    return active.GenerateImage(Style, options.Width, options.Height, false);
+                    notTaken = "an item of the clash did not read";
+                    return null;
                 }
-                finally
-                {
-                    document.Models.ResetTemporaryMaterials(first);
-                    document.Models.ResetTemporaryMaterials(second);
 
-                    if (hidden.Count > 0)
+                string a = SavedViewpoints.ModelFileOf(one);
+                string b = SavedViewpoints.ModelFileOf(two);
+
+                if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b))
+                {
+                    notTaken = "the model of an item did not read, so which models to keep shown is UNKNOWN";
+                    return null;
+                }
+
+                using (Viewpoint before = document.CurrentViewpoint.CreateCopy())
+                using (Viewpoint own = clashTests.TestsViewpointForResult(clash))
+                using (Viewpoint moved = own.CreateCopy())
+                using (ModelItemCollection first = new ModelItemCollection())
+                using (ModelItemCollection second = new ModelItemCollection())
+                using (ModelItemCollection hidden = new ModelItemCollection())
+                {
+                    double[] to;
+
+                    using (Point3D at = own.Position)
+                    using (Point3D centre = clash.Center)
                     {
-                        document.Models.SetHidden(hidden, false);
+                        to = PictureRetake.BackedOff(new[] { at.X, at.Y, at.Z }, new[] { centre.X, centre.Y, centre.Z }, least);
                     }
 
-                    active.CopyViewpointFrom(before, ViewChange.JumpCut);
+                    using (Point3D position = new Point3D(to[0], to[1], to[2]))
+                    {
+                        moved.Position = position;
+                    }
+
+                    first.Add(one);
+                    second.Add(two);
+                    ViewpointColour red = ViewpointColour.DefaultFirst();
+                    ViewpointColour green = ViewpointColour.DefaultSecond();
+
+                    try
+                    {
+                        HideTheOtherModels(document, a, b, hidden);
+                        document.Models.OverrideTemporaryColor(first, new Autodesk.Navisworks.Api.Color(red.Red, red.Green, red.Blue));
+                        document.Models.OverrideTemporaryColor(second, new Autodesk.Navisworks.Api.Color(green.Red, green.Green, green.Blue));
+                        active.CopyViewpointFrom(moved, ViewChange.JumpCut);
+                        return active.GenerateImage(Style, options.Width, options.Height, false);
+                    }
+                    finally
+                    {
+                        PutBack(() => document.Models.ResetTemporaryMaterials(first), "the first item's colour");
+                        PutBack(() => document.Models.ResetTemporaryMaterials(second), "the second item's colour");
+                        PutBack(() => { if (hidden.Count > 0) { document.Models.SetHidden(hidden, false); } }, "the models it hid");
+                        PutBack(() => active.CopyViewpointFrom(before, ViewChange.JumpCut), "the view's camera");
+                    }
                 }
+            }
+        }
+
+        /// <summary>One put back of a retake, a throw said and the rest still made.</summary>
+        private void PutBack(Action back, string what)
+        {
+            try
+            {
+                back();
+            }
+            catch (Exception error)
+            {
+                log.Line("IMAGE    RETAKE putting back " + what + " threw " + error.GetType().Name + ": " + error.Message);
             }
         }
 
         /// <summary>
-        /// Every model root shown now but those of the clash's two items, matched by the display name of each item's topmost
-        /// ancestor as 5z-zk and 5z-zm read them, hidden, and handed back so the caller shows those again and no other.
+        /// Every model shown now whose file is neither of the clash's two items' models, read by the views' one walk,
+        /// SavedViewpoints.ModelFileOf, compared on Model.FileName without case, its root added to the collection before the call
+        /// that hides it, so the caller shows those again and no other. Each Model and root wrapper is released as read, the
+        /// shape SavedViewpoints keeps.
         /// </summary>
-        private static List<ModelItem> HideTheOtherModels(Document document, ClashResult clash)
+        private static void HideTheOtherModels(Document document, string a, string b, ModelItemCollection hidden)
         {
-            string a = TopName(clash.Item1);
-            string b = TopName(clash.Item2);
-            List<ModelItem> others = new List<ModelItem>();
-
-            foreach (ModelItem root in document.Models.RootItems)
+            for (int i = 0; i < document.Models.Count; i++)
             {
-                if (!root.IsHidden && root.DisplayName != a && root.DisplayName != b)
+                using (Model model = document.Models[i])
+                using (ModelItem root = model.RootItem)
                 {
-                    others.Add(root);
+                    string file = model.FileName;
+
+                    if (root.IsHidden || string.Equals(file, a, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(file, b, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    hidden.Add(root);
                 }
             }
 
-            if (others.Count > 0)
+            if (hidden.Count > 0)
             {
-                document.Models.SetHidden(others, true);
+                document.Models.SetHidden(hidden, true);
             }
-
-            return others;
         }
 
-        private static string TopName(ModelItem item)
+        /// <summary>
+        /// Core's two readings of a picture, whether it draws an item of the clash and whether it shows only the sky, read
+        /// through one buffer kept for the group so a picture costs no new large array. False where the bitmap is laid out
+        /// bottom up, which is never read, so no picture is judged by bytes read the wrong way.
+        /// </summary>
+        private bool Measure(Bitmap bitmap, out bool drew, out bool sky)
         {
-            ModelItem top = item;
-
-            while (top.Parent != null)
-            {
-                top = top.Parent;
-            }
-
-            return top.DisplayName;
-        }
-
-        /// <summary>Core's two readings of a picture, whether it draws an item of the clash and whether it shows only the sky.</summary>
-        private void Measure(Bitmap bitmap, out bool drew, out bool sky)
-        {
+            drew = false;
+            sky = false;
             Rectangle all = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
             BitmapData data = bitmap.LockBits(all, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             try
             {
-                int stride = Math.Abs(data.Stride);
-                byte[] bytes = new byte[stride * data.Height];
-                System.Runtime.InteropServices.Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
-                drew = PictureRetake.ItemPixels(bytes, data.Width, data.Height, stride, options.Retake) > 0;
-                sky = PictureRetake.OnlyTheSky(bytes, data.Width, data.Height, stride, options.Retake);
+                if (data.Stride <= 0)
+                {
+                    return false;
+                }
+
+                int length = data.Stride * data.Height;
+
+                if (pixels == null || pixels.Length != length)
+                {
+                    pixels = new byte[length];
+                }
+
+                System.Runtime.InteropServices.Marshal.Copy(data.Scan0, pixels, 0, length);
+                drew = PictureRetake.ItemPixels(pixels, data.Width, data.Height, data.Stride, options.Retake) > 0;
+                sky = PictureRetake.OnlyTheSky(pixels, data.Width, data.Height, data.Stride, options.Retake);
+                return true;
             }
             finally
             {

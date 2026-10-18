@@ -1027,6 +1027,24 @@ well as to pass.
   ghosted look holds only where they read on. A STOP BETWEEN THE SET AND THE PUT BACK, Navisworks closed or
   killed in the pass, leaves the value set, and whether Navisworks keeps it for the user's next start is
   UNKNOWN, row F150-R1
+- A PICTURE THAT DRAWS NO ITEM OF ITS CLASH IS TAKEN AGAIN, F226, Bader's answer to Q208 of 18 Oct 2026, measured first in
+  scan.md 5z-zm on copies of 1B06BC and 1B06P1. Every rule and every word is Core's, core.md THE RETAKE OF A PICTURE. In
+  `ClashImages.Render`, once `TestsImageForResult` returns, `TheRetake` reads the bitmap's bytes once through LockBits,
+  `Measure`, for Core's two readings, an item drawn and only the sky, and a picture that draws an item is saved as before.
+  Otherwise `TakeAgain`, for a clash and never a result group, copies the clash's own viewpoint by `TestsViewpointForResult`,
+  moves its position to Core's `PictureRetake.BackedOff` at the setting's least distance in the document's units,
+  `ExchangeUnits` off `ClashRunner.UnitName`, colours the first item red and the second green by `OverrideTemporaryColor`,
+  hides every model root shown now but the two items' models, matched by the display name of each item's topmost ancestor as
+  5z-zk and 5z-zm read them, sets the camera on the active view by `CopyViewpointFrom` with a jump cut and takes
+  `View.GenerateImage` at the pictures' size. In its finally it takes the colour off those two items alone by
+  `ResetTemporaryMaterials`, never every temporary material, shows again the roots it hid and no other, and puts back the
+  camera the view held. Every Viewpoint and ModelItemCollection is in a using, and every Bitmap is disposed on every path.
+  Core's `PictureRetake.Choose` keeps the retake, the tool's picture, or no picture where both show only the sky, which
+  releases the picture's number, `ClashReport.ReleaseImageIndex`, leaves the cell empty and tells the guard nothing, since
+  nothing failed. A retake that throws keeps the tool's picture, said for the first five on an IMAGE line and counted after.
+  The group's one line is `ClashImages.RetakeLine`, written by `ClashRunner` once the picture pass ends, Core's `RetakeTally`.
+  WHAT IS NOT MEASURED: whether a retake from 30 ft draws its items where a run takes thousands of pictures, F226's runs took
+  19, and what the client makes of a retaken picture, read off F229's run
 - LONG RUNS KEPT FROM SLOWING, F147, Bader's order of 2026-10-11, Q152 item 2. RenderThePicturesWaiting
   switches the undo off for the whole PICTURES step by Document.StartDisableUndo and, in its finally, on
   again by the matched EndDisableUndo, a counter by the install's Autodesk.Navisworks.Api.xml read on
@@ -1039,7 +1057,7 @@ well as to pass.
   TextureCacheWatch watches the folder ogs under Path.GetTempPath across the pass, built inside the
   step's try, a temp folder that cannot be read or joined said and the cache left unchecked, and it is
   checked between two stretches, core.md, THE TEXTURE CACHE. Every picture is already disposed as its
-  save returns, and the pass moves no camera, so there is no camera change for a jump cut. Every call of
+  save returns. The pass moves no camera of its own, and the retake of F226 sets the active view's camera by a jump cut and puts it back, below. Every call of
   the pass is on the main thread. The views step keeps the undo on
 - WHAT EACH STEP HOLDS IS RELEASED AS IT ENDS, F147, Bader's answer to Q155 on 2026-10-12, item 2,
   read off every reader in src, no speculative rewrite. ClashRunner's picturesWaiting, one entry a row,

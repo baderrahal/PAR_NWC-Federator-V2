@@ -26,6 +26,11 @@ namespace Federator.Core.Report
 
         private double leastMillimetres = DefaultLeastMillimetres;
         private int every = DefaultEvery;
+        private int bright;
+        private int dark;
+        private double skyShare;
+        private int skyBlueAtLeast;
+        private int skyBlueOverRed;
 
         public PictureRetakeSettings()
         {
@@ -55,9 +60,9 @@ namespace Federator.Core.Report
             }
         }
 
-        public int Bright { get; set; }
+        public int Bright { get { return bright; } set { bright = Channel(value); } }
 
-        public int Dark { get; set; }
+        public int Dark { get { return dark; } set { dark = Channel(value); } }
 
         /// <summary>How many pixels apart a row and a column are read. Refused below one.</summary>
         public int Every
@@ -75,13 +80,36 @@ namespace Federator.Core.Report
         }
 
         /// <summary>The share of the pixels read that must be the sky's blue for a picture to show only the sky, 0.95.</summary>
-        public double SkyShare { get; set; }
+        public double SkyShare
+        {
+            get { return skyShare; }
+            set
+            {
+                if (!(value > 0) || value > 1)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "the share of the sky is above nought and at most one");
+                }
+
+                skyShare = value;
+            }
+        }
+
+        /// <summary>A channel of a colour, nought to 255, refused otherwise.</summary>
+        private static int Channel(int value)
+        {
+            if (value < 0 || value > 255)
+            {
+                throw new ArgumentOutOfRangeException("value", value, "a colour channel is nought to 255");
+            }
+
+            return value;
+        }
 
         /// <summary>The least blue of the sky, 200, under the 230 of its darkest row.</summary>
-        public int SkyBlueAtLeast { get; set; }
+        public int SkyBlueAtLeast { get { return skyBlueAtLeast; } set { skyBlueAtLeast = Channel(value); } }
 
         /// <summary>The least the sky's blue is over its red, 40, under the 45 of its palest row.</summary>
-        public int SkyBlueOverRed { get; set; }
+        public int SkyBlueOverRed { get { return skyBlueOverRed; } set { skyBlueOverRed = Channel(value); } }
     }
 
     /// <summary>Which picture a clash keeps once its retake was taken or not.</summary>
@@ -199,7 +227,7 @@ namespace Federator.Core.Report
             double dz = camera[2] - centre[2];
             double length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
 
-            if (length <= 0 || length >= least)
+            if (double.IsNaN(length) || double.IsNaN(least) || length <= 0 || length >= least)
             {
                 return new[] { camera[0], camera[1], camera[2] };
             }
@@ -216,7 +244,14 @@ namespace Federator.Core.Report
                 return RetakeChoice.TheTool;
             }
 
-            if (retaken && retakeDrew)
+            // A retake not taken, a result group or one that threw, keeps the tool's picture as before F226, the breaker's
+            // finding: a throw never drops a picture, whatever it shows, and the line counts it apart.
+            if (!retaken)
+            {
+                return RetakeChoice.TheTool;
+            }
+
+            if (retakeDrew)
             {
                 return RetakeChoice.TheRetake;
             }
@@ -226,13 +261,16 @@ namespace Federator.Core.Report
                 return RetakeChoice.TheTool;
             }
 
-            return retaken && !retakeSky ? RetakeChoice.TheRetake : RetakeChoice.NoPicture;
+            return retakeSky ? RetakeChoice.NoPicture : RetakeChoice.TheRetake;
         }
     }
 
     /// <summary>The retakes of one group's picture pass, written as one IMAGES line, Q208.</summary>
     public sealed class RetakeTally
     {
+        /// <summary>Every picture the tool's way read for its items, so a count drawing nothing is set beside the whole.</summary>
+        public int Read { get; private set; }
+
         public int DrewNothing { get; private set; }
 
         public int Retaken { get; private set; }
@@ -244,6 +282,12 @@ namespace Federator.Core.Report
         public int NoPicture { get; private set; }
 
         public double Seconds { get; private set; }
+
+        /// <summary>One picture taken the tool's way and read, whatever it drew.</summary>
+        public void Took()
+        {
+            Read++;
+        }
 
         /// <summary>A picture taken the tool's way that drew no item of its clash, and what came of it.</summary>
         public void Add(bool retaken, bool retakeDrew, RetakeChoice choice, double seconds)
@@ -281,15 +325,17 @@ namespace Federator.Core.Report
 
             if (DrewNothing == 0)
             {
-                return "RETAKE   no picture drew none of its clash's items, so none was taken again, Bader's answer to Q208";
+                return "RETAKE   every one of the " + Read + " pictures read drew an item of its clash, so none was taken again,"
+                    + " Bader's answer to Q208";
             }
 
-            return "RETAKE   " + DrewNothing + (DrewNothing == 1 ? " picture" : " pictures") + " drew no item of the clash, "
+            return "RETAKE   " + DrewNothing + " of the " + Read + " pictures read drew no item of the clash, "
                 + Retaken + " taken again through the active view from " + Metres(leastMillimetres) + " at the nearest with the two items"
                 + " red and green and the other models hidden, in " + Seconds.ToString("0.0", CultureInfo.InvariantCulture) + " s, "
                 + RetakeDrew + " drawing their items and " + (Retaken - RetakeDrew) + " still drawing none, "
-                + NotRetaken + " not taken again, a result group or a retake that threw, and " + NoPicture
-                + " left with no picture as both showed only the sky, Bader's answer to Q208";
+                + NotRetaken + " not taken again and kept as Clash Detective drew them, a result group or a retake that could not be"
+                + " taken, and " + NoPicture + " left with no picture as the tool's picture and its retake both showed only the sky,"
+                + " Bader's answer to Q208";
         }
 
         private static string Metres(double millimetres)
