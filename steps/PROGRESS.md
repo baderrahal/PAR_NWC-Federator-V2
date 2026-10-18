@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 10:25, last run 94/item1-C02, the round of F212 to F221, F213 second pass running on r6b
+STATE OPEN, 2026-10-18 10:24, last run 94/item1-C02, the round of F212 to F221, F213 proved on r6b, its PR next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,13 +16,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 280 | 16 | 2 | 19 | 67 | 7 | 391 |
-| total | 483 | 24 | 2 | 19 | 168 | 18 | 714 |
+| outside the waves | 280 | 16 | 2 | 19 | 68 | 7 | 392 |
+| total | 483 | 24 | 2 | 19 | 169 | 18 | 715 |
 <!-- the end of the counts -->
 
 ## Now
 - 18 Oct, Bader's answers to Q202 to Q206: the plan is the top entry of steps\history\log.md, F212 to F221. F212 merged, 292.
-  F213 on fix-F213, 7ee7e9c installed, the breaker's and the reviewer's findings folded in, its run on r6b A to D going
+  F213 on fix-F213, the readers' findings folded in, run-20261018-102034 on r6b: 3 bad files FAILED, 26 MB NWC no box
 - 18 Oct before: F208 to F211, 288 to 291, the packages, the discipline reports, the test on C06 and C07 and the audit
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -35,7 +35,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 01:04, C06 and C07 copy, 42 groups | 14b434f4, main after 289 | 3514, the memory stop in 22 groups | not run | none read | NWC page 60.0 min, NWF page 51.6 min |
 
 ## Next
-1. F213 F210-R6 a probe for the message box of a corrupt NWC and its fix, then F214 F210-R1 a fresh Navisworks per package
+1. F213 its pull request and merge, then F214 F210-R1 a fresh Navisworks per package, its probe measured
 2. F215 the sky pictures, F216 full package paths, F217 the old jpg count, F218 the 30 m limit, F219 one discipline groups
 3. F220 the test on copies of C06 and C07 in C:\NWC-PC-Test\work\multi2, then F221 the audit of the repo
 4. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
@@ -49,7 +49,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 
 ## Blockers and known bugs
 - F210-R1 the memory stop in every later package of a long run, C07 1 picture of 6207. F210-R2 one discipline groups, 1996 clashes
-- F210-R3 89 pictures of 1B06BC and 1B06P1 only sky. R4 package path in the log. R5 UNKNOWN old jpgs. R6 a corrupt NWC stops a run
+- F210-R3 89 pictures of 1B06BC and 1B06P1 only sky. R4 package path in the log. R5 UNKNOWN old jpgs. F213-R1, R2
 - F207-R1 views check 4 fails on C04 since the NWF holds hidden models, 2 painted items not its clashes in each view, UNKNOWN which
 - The memory stop still ends the pictures of the 20 largest C04 tests, 584 to 598 of 2350, a picture keeps 3.1 MB in Navisworks, Q188
 - One DIALOG finding at the close of set 94 UNKNOWN. T6-R-WPFBOX and F149-R1. The 0 byte NWD in NWD\C04\run 2026-10-14 1615, yours to delete
