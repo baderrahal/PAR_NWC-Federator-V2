@@ -70,6 +70,62 @@ namespace Federator.Core.Grouping
             return disciplineCount < 2;
         }
 
+        /// <summary>
+        /// The disciplines of an NWF opened on the NWF page, F219, Bader's answer to Q203 of 18 Oct 2026: a group of one
+        /// discipline runs its tests on neither page. Read off the file names of the NWF's models by the scan's own parser,
+        /// distinct and sorted, Ordinal, as a scanned group's are. Null with why where a model has no name, the names are
+        /// fewer than the models, or a name will not read, so the count is UNKNOWN and no test is stopped on a guess.
+        /// </summary>
+        public static IList<string> DisciplinesOf(IList<string> modelFiles, int modelCount, ContainerNameSettings settings, out string why)
+        {
+            why = null;
+
+            if (modelFiles == null || settings == null)
+            {
+                why = "the models' file names were not read";
+                return null;
+            }
+
+            if (modelFiles.Count < modelCount)
+            {
+                why = (modelCount - modelFiles.Count) + " of the " + modelCount + " models carry no file name";
+                return null;
+            }
+
+            SortedSet<string> codes = new SortedSet<string>(StringComparer.Ordinal);
+
+            foreach (string file in modelFiles)
+            {
+                ParsedContainerName parsed = ContainerName.Parse(System.IO.Path.GetFileNameWithoutExtension(file), settings);
+
+                if (!parsed.IsReadable)
+                {
+                    why = "the name of " + System.IO.Path.GetFileName(file) + " does not read, " + parsed.UnreadableReason;
+                    return null;
+                }
+
+                codes.Add(parsed.Discipline);
+            }
+
+            return new List<string>(codes);
+        }
+
+        /// <summary>The one line both pages log for a group of one discipline, so the log says why no test ran on either.</summary>
+        public static string OneDisciplineLine(string group, IList<string> disciplines)
+        {
+            return "CLASH    " + group + " holds one discipline, "
+                + (disciplines == null || disciplines.Count == 0 ? "UNKNOWN which" : string.Join(", ", new List<string>(disciplines).ToArray()))
+                + ", so no test is run, and only the tests whose sides both find something are created. One discipline cannot clash "
+                + "with itself, Bader's answer to Q203";
+        }
+
+        /// <summary>The line the NWF page logs where an NWF's disciplines could not be read, so its tests run as before.</summary>
+        public static string DisciplinesNotReadLine(string group, string why)
+        {
+            return "CLASH    " + group + ": how many disciplines its models hold is UNKNOWN, " + why
+                + ", so its tests run as they would in a group of two or more";
+        }
+
         /// <summary>The project code every file in this group agreed on.</summary>
         public string Project { get; private set; }
 

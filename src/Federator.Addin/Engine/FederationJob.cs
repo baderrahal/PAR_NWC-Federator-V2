@@ -124,8 +124,24 @@ namespace Federator.Addin.Engine
         public IList<string> Disciplines { get; private set; }
 
         /// <summary>
-        /// True where the scan found fewer than two disciplines. The open file is never
-        /// judged here, because its count is UNKNOWN and a guess would stop real tests.
+        /// F219, Bader's answer to Q203. The disciplines of a picked NWF, read off its models' names once it opened, where
+        /// no scan gave them. Set once and never over a scan's count.
+        /// </summary>
+        public void ReadTheDisciplinesAtTheOpen(IList<string> codes)
+        {
+            if (DisciplineCount.HasValue || codes == null)
+            {
+                return;
+            }
+
+            DisciplineCount = codes.Count;
+            Disciplines = codes;
+        }
+
+        /// <summary>
+        /// True where the scan, or since F219 the models of a picked NWF read at its open, found fewer than two
+        /// disciplines. The document already open is never judged here, because its count is UNKNOWN and a guess would
+        /// stop real tests.
         /// </summary>
         public bool IsSingleDiscipline
         {

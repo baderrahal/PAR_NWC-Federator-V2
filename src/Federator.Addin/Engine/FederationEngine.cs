@@ -14,6 +14,7 @@ using Federator.Core.Exchange;
 using Federator.Core.Findings;
 using Federator.Core.Generic;
 using Federator.Core.Health;
+using Federator.Core.Grouping;
 using Federator.Core.Naming;
 using Federator.Core.Communities;
 using Federator.Core.Probe;
@@ -996,6 +997,18 @@ namespace Federator.Addin.Engine
                         if (openItHere)
                         {
                             openFiles = FilesInsideTheOpenDocument(job.Building);
+
+                            // F219, Bader's answer to Q203. A picked NWF's disciplines read off its models' names, so a group of
+                            // one discipline runs its tests on neither page, and one whose names will not read runs them as before.
+                            string why;
+                            IList<string> codes = BuildingGroup.DisciplinesOf(openFiles, document.Models.Count, reports.Names, out why);
+
+                            if (codes == null)
+                            {
+                                log.Line(BuildingGroup.DisciplinesNotReadLine(job.Label, why));
+                            }
+
+                            job.ReadTheDisciplinesAtTheOpen(codes);
                         }
 
                         // F75. Nothing is emptied on this path, so the census line says what
@@ -3797,9 +3810,7 @@ namespace Federator.Addin.Engine
 
                 if (runner.SingleDisciplineGroup)
                 {
-                    log.Line("CLASH    " + job.Building + " holds one discipline, so no test is run, and "
-                        + "only the tests whose sides both find something are created. One discipline "
-                        + "cannot clash with itself.");
+                    log.Line(BuildingGroup.OneDisciplineLine(job.Label, job.Disciplines));
                 }
 
 
