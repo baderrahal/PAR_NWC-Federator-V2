@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 14:30, last run 94/item1-C02, the round of F212 to F221, F220 the test on multi2 run and in review, F221 next
+STATE OPEN, 2026-10-18 14:30, last run 94/item1-C02, the round of F212 to F221, F220 the test on multi2 merged in 300, F221 the audit next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,13 +16,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 292 | 16 | 1 | 21 | 71 | 7 | 408 |
-| total | 495 | 24 | 1 | 21 | 172 | 18 | 731 |
+| outside the waves | 293 | 16 | 0 | 21 | 71 | 7 | 408 |
+| total | 496 | 24 | 0 | 21 | 172 | 18 | 731 |
 <!-- the end of the counts -->
 
 ## Now
 - 18 Oct, Bader's answers to Q202 to Q206, F212 to F221, plan atop steps\history\log.md. Merged: F212 292, F213 293, F216 294, F218 295.
-  F214 296, F215 297, F217 298, F219 299 merged. F215 sky pictures measured, cause UNKNOWN, Q208. Q209 self-pair tests counted
+  F214 296, F215 297, F217 298, F219 299, F220 300 merged. F215 sky pictures measured, cause UNKNOWN, Q208. Q209 self-pair tests counted
 - 18 Oct before: F208 to F211, 288 to 291, the packages, the discipline reports, the test on C06 and C07 and the audit
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -35,7 +35,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 01:04, C06 and C07 copy, 42 groups | 14b434f4, main after 289 | 3514, the memory stop in 22 groups | not run | none read | NWC page 60.0 min, NWF page 51.6 min |
 | 18 Oct 11:08, C06 and C07 copy, a Navisworks each | 3244079, F214 | 3656 and 3642, the stop in the last 6 or 7 groups of each | not run | none read | C06 11.6 min, C07 12.4 min |
 ## Next
-1. F220 its pull request and merge, then F221 the audit, its proof steps and the closing entry
+1. F221 the audit, its proof steps and the closing entry, then the round is closed
 2. F220: both pages 44 DONE, 9029 clashes, the corrupt package FAILED alone, the real files 0 lines differ
 3. Bader answers Q207, Q208 and Q209 of this round
 4. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
