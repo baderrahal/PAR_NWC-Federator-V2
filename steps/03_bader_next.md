@@ -1,8 +1,18 @@
 # 03 Bader next
 
+## F210, the test on C06 and C07, 18 Oct
+
+Simple words. PROVEN means a run on Navisworks showed it and I read the result. Every run was on copies under C:\NWC-PC-Test\work\multi, with main 14b434f4 installed. NM fed was only read, listed before and after with every file's SHA-256, 135 files both times and 0 lines differ. The whole report is claude\audit-multi-2026-10-17.md.
+
+- Both features PROVEN on both layouts and both pages, five runs of 42, 42, 11, 31 and 42 groups, every group done, none partial, none failed, and a sixth run where a package of one corrupt NWC failed and the package after it still ran, once I answered the message box Navisworks opened about the corrupt file.
+- The tree levels, Run refused with nothing ticked, one package ticked alone running alone, the dummy community left unticked never run and no folder made for it, the report folders mirroring the path from the parent, community and package on every group line with totals per package, per community and for the run.
+- One Excel per discipline per package in the right folder, 5376 rows each in its own package's workbook, every check firing on real data, 7 ids found again in Navisworks by their Element Id, each as its line says.
+- The chat audit of C02 read on C06 and C07: still there 4, 5, 7 and 8, still there by your rule or by default 2 and 3, cannot tell 1, 6, 9 and 11, and 10 its cause gone but 89 pictures empty for another reason. Which seven the message means is UNKNOWN, the file it names is nowhere.
+- Found, not fixed: the memory stop leaves the later packages of a long run without pictures, Q204. A group of one discipline runs no test on the NWC page and finds clashes on the NWF page, Q203. 89 pictures of 1B06BC and 1B06P1 show only the sky, cause UNKNOWN. The log names each package by its path from the parent, not its full path. A corrupt NWC stops an unattended run at a message box. The far limit of the Coordinates check, Q202.
+
 ## F209, one Excel per discipline per package
 
-Simple words. Every line of these workbooks comes from a rule in the tool, and nothing in them is typed by a person or a model. The checks were measured first on copies of your C06 and C02 NWCs, docs\history\scan.md 5z-zg.
+Simple words. Every line of these workbooks comes from a rule in the tool, and nothing in them is typed by a person or a model. The checks were measured first on copies of your C06 and C02 NWCs, docs\history\scan.md 5z-zg. PROVEN on copies of C06 and C07 in F210.
 
 Your steps, after the F208 steps below.
 
@@ -21,10 +31,14 @@ Your steps, after the F208 steps below.
    Look for: one line per imported CAD file or Generic Models element with its element ID, or none found for each model.
 8. In Navisworks, find one listed element ID with Find Items on the Element tab's Id.
    Look for: the family and the level the line names.
+9. On C06, open the ST file of the package holding 1B06K1 and filter Result on far.
+   Look for: 1B06K1's ST model about 2823.784 km from AR, with both shared sites named.
+10. On C06, open the ME file of the package holding 1B06PP and filter on CAD, then find 6489702 in Navisworks as in step 8.
+   Look for: sewage-pump.dwg in a Submersible Pump on GROUND LEVEL, the same in both.
 
 ## F208, many communities and packages
 
-Simple words. PROVEN means a run showed it. Proved here on a copy, C:\NWC-PC-Test\work\multi\smoke, with the build c332da99, before the merge. The full test on C06 and C07 is F210, below once it runs.
+Simple words. PROVEN means a run showed it. Proved first on a copy, C:\NWC-PC-Test\work\multi\smoke, with the build c332da99, before the merge, then on copies of C06 and C07 in two layouts in F210.
 
 Your steps, in this order. The first proves the tree reads your own layout.
 
@@ -41,6 +55,12 @@ Your steps, in this order. The first proves the tree reads your own layout.
    Look for: a group line, a package line, a community line and a run line, each with its counts.
 8. Go to the NWF page. The same tree is on the right with your tick. Press Run ticked packages there, then OK.
    Look for: the NWF of that package refreshed, its NWD in the package's NWD folder, and a package with no NWF named as not run.
+9. Back on the NWC page, tick one package of a community that holds two.
+   Look for: the community's box shows a dash and the line under the tree reads 1 package ticked.
+10. Tick the whole community and press Run ticked packages, then OK.
+   Look for: the package already built named in the log as not run, NWF exists. Use the NWF page, and the other package run.
+11. Open your Report folder when it ends.
+   Look for: a folder only for each community you ticked, and none for a community you left unticked.
 
 ## Check round of 17 Oct evening, items 1 to 9 of the chat audit, and F206
 

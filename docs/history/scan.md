@@ -8848,3 +8848,23 @@ in 6.2 s.
 
 **UNKNOWN.** How a CAD file linked or imported into the project itself shows. Whether a Generic Models element of another
 exporter's NWC carries the same tabs, every one here being exported from Revit.
+
+## 5z-zh. A CORRUPT NWC STOPS TRYAPPENDFILE AT A MODAL MESSAGE, MEASURED 2026-10-18
+
+Measured by a run of the tool, not by a probe, in F210's test that one failing package never stops the others:
+run-20261018-044816 on main 14b434f4, a copy under C:\NWC-PC-Test\work\multi\fail, package A\Broken holding one file of
+200,000 random bytes named 1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc and package B\Good holding a copy of 1B06BS EL. The run
+evidence is C:\NWC-PC-Test\work\run-evidence\f210-t6-fail-nwc.
+
+**WHAT HAPPENED.** `Document.TryAppendFile` on the random file did not return. The log stood at APPEND attempt and the CPU of
+Roamer stood still at 7.6 s while it read as responding. The window list of the process, read by EnumWindows, held a
+message box of the class #32770, caption Autodesk Navisworks Manage 2025, one button OK, and the text: the file name, could
+not be opened because the contents are corrupt or it is currently unavailable. It is recommended to re-open your model to
+avoid data loss. Then the full path. Answered by WM_COMMAND 2 after 100.7 s, the call returned false, the group ended FAILED
+with No file in this group appended, so nothing was written, and B\Good ran DONE after it.
+
+**WHAT THIS DECIDES.** Nothing in code yet. The Try form keeps a corrupt NWC from throwing, as 4b says, but not from stopping
+an unattended run, since the box waits for a person. F210-R6.
+
+**UNKNOWN.** Whether a truncated real NWC, or one another program holds open, shows the same box. Whether any setting or any
+check before the append avoids it. A probe under tools\probes measures that before a fix.
