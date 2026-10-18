@@ -10,7 +10,8 @@ namespace Federator.Core.Tests
     /// now leaves out, one discipline, Q203, or one set code on both sides, Q209, with an earlier run's results. The tool never
     /// deletes a test from an NWF, so the count check reads each of them as not run by the rule, NOT COMPARED with the rule's
     /// reason and never FAILED, and the block counts them per group. Broken one thing at a time: a test the rule did not leave
-    /// out, a test created this run, a test the document does not hold.
+    /// out, a test the document does not hold, a holding the check did not read, a block of this run's workbook and a test
+    /// with no record of where it is. A test created this run is CountCheckTests' own.
     /// </summary>
     [TestFixture]
     public class LeftOutByARuleTests
@@ -90,11 +91,13 @@ namespace Federator.Core.Tests
             Assert.That(check.FailedLines("100000"), Is.Empty);
             Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(1));
             Assert.That(check.LeftOutByARuleLine(), Is.EqualTo(
-                "not run by the rule : 2 tests left out by the rule of one discipline or of two set codes, 2 of them still held in"
-                + " Clash Detective from an earlier run with 7 clashes, kept in the NWF and never deleted, not compared and never FAILED, whether they are removed is Bader's to decide, Q212"));
+                "not run by the rule : 2 tests left out by the rule of one discipline or of two set codes, 2 still held in"
+                + " Clash Detective from an earlier run with 7 clashes, kept in the NWF and never deleted, not compared and never FAILED,"
+                + " 0 held by neither side, 0 whose holding in Clash Detective is UNKNOWN, a side or a count not read or a name on two"
+                + " tests, whether those held are removed is Bader's to decide, Q212"));
 
             string block = string.Join("\n", CoverageBlock.Lines("100000",
-                new CoverageSheetData(@"C:pickedash.xml", "ab12", null, null, tests, check, null, null), new CoverageSettings()));
+                new CoverageSheetData(TestPaths.At("picked", "clash.xml"), "ab12", null, null, tests, check, null, null), new CoverageSettings()));
             Assert.That(block, Does.Contain(check.LeftOutByARuleLine()));
         }
 
@@ -115,21 +118,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void ATestCreatedThisRunIsNeverSaidToHoldAnEarlierRunsResults()
-        {
-            IList<TestCoverage> tests = new List<TestCoverage>
-            {
-                LeftOut("Made now", CoverageReason.OneDiscipline, TestPresence.CreatedThisRun),
-            };
-
-            CountCheck check = CountCheck.Judge(tests,
-                new List<DocumentTestCount> { new DocumentTestCount("Made now", "Tests", 2, 2) }, Workbook(), null, -1);
-
-            Assert.That(Judged(check, "Made now").Verdict, Is.EqualTo(CountVerdict.Failed));
-            Assert.That(Judged(check, "Made now").KeptFromAnEarlierRun, Is.False);
-        }
-
-        [Test]
         public void ATestTheRuleLeftOutOfAPlanAndNoDocumentHoldsIsHeldByNeither()
         {
             IList<TestCoverage> tests = new List<TestCoverage>
@@ -144,7 +132,62 @@ namespace Federator.Core.Tests
             Assert.That(Judged(check, "Walked for").Verdict, Is.EqualTo(CountVerdict.NotCompared),
                 "one the run holds as there and the read did not return is judged as before");
             Assert.That(Judged(check, "Walked for").Why, Does.Contain("did not return it"));
-            Assert.That(check.LeftOutByARuleLine(), Does.Contain("2 tests left out").And.Contain("none of them held in Clash Detective"));
+            Assert.That(check.LeftOutByARuleLine(), Does.Contain("2 tests left out").And.Contain(", 0 still held in")
+                .And.Contain("1 held by neither side").And.Contain("1 whose holding in Clash Detective is UNKNOWN"));
+        }
+
+        /// <summary>The reviewer's and the breaker's finding: a holding the check never read is UNKNOWN on the line, never none.</summary>
+        [Test]
+        public void AHoldingTheCheckDidNotReadIsUnknownAndNeverNone()
+        {
+            IList<TestCoverage> tests = new List<TestCoverage>
+            {
+                LeftOut("ST vs ST", CoverageReason.SameSetCode, TestPresence.AlreadyThere),
+                LeftOut("AR vs AR", CoverageReason.SameSetCode, TestPresence.Unknown),
+            };
+            List<DocumentTestCount> document = new List<DocumentTestCount> { new DocumentTestCount("ST vs ST", "Tests", 3, 5) };
+
+            string noWorkbook = CountCheck.Judge(tests, document, null, "the write threw", -1).LeftOutByARuleLine();
+            Assert.That(noWorkbook, Does.Contain(", 0 still held in").And.Contain("2 whose holding in Clash Detective is UNKNOWN"));
+
+            string noDocument = CountCheck.Judge(tests, null, Workbook(), null, -1).LeftOutByARuleLine();
+            Assert.That(noDocument, Does.Contain("2 whose holding in Clash Detective is UNKNOWN"));
+
+            List<DocumentTestCount> notCounted = new List<DocumentTestCount> { new DocumentTestCount("ST vs ST", "Tests", -1, -1) };
+            string countNotTaken = CountCheck.Judge(tests, notCounted, Workbook(), null, -1).LeftOutByARuleLine();
+            Assert.That(countNotTaken, Does.Contain(", 0 still held in").And.Contain("1 held by neither side").And.Contain("1 whose holding"));
+        }
+
+        /// <summary>
+        /// The reviewer's second finding: a test of one discipline with no record of whether it is in the document is never
+        /// said to hold an earlier run's results, and a block of this run's workbook for a test the rule left out is a writer's
+        /// fault, compared as before.
+        /// </summary>
+        [Test]
+        public void OnlyWhatTheRecordProvesIsKept()
+        {
+            IList<TestCoverage> tests = new List<TestCoverage>
+            {
+                LeftOut("No record", CoverageReason.OneDiscipline, TestPresence.Unknown),
+                LeftOut("Written", CoverageReason.SameSetCode, TestPresence.AlreadyThere),
+            };
+            List<DocumentTestCount> document = new List<DocumentTestCount>
+            {
+                new DocumentTestCount("No record", "Tests", 2, 2),
+                new DocumentTestCount("Written", "Tests", 3, 3),
+            };
+
+            ClashReport report = new ClashReport("100000", "1104-PAR-100000-ZZZ-BM-RPT-000001");
+            report.DocumentUnits = "m";
+            WorkbookTestsTests.AddTest(report, "Written", 2, 0);
+            WorkbookTests workbook = WorkbookTestsTests.ReadBack(WorkbookTestsTests.Write(report, folder));
+
+            CountCheck check = CountCheck.Judge(tests, document, workbook, null, -1);
+
+            Assert.That(Judged(check, "No record").KeptFromAnEarlierRun, Is.False);
+            Assert.That(Judged(check, "Written").KeptFromAnEarlierRun, Is.False);
+            Assert.That(Judged(check, "Written").Verdict, Is.EqualTo(CountVerdict.Failed), "a block for a test the rule left out is the writer's fault");
+            Assert.That(check.LeftOutByARuleLine(), Does.Contain(", 0 still held in"));
         }
     }
 }

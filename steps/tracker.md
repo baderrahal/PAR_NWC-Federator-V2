@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 748 rows: open 184, in progress 24, in review 0, merged 463, proven by a run 41, waiting for Bader 18, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 277, outside the waves 2, right after F133 merges 6
+- By status, of 753 rows: open 187, in progress 24, in review 1, merged 463, proven by a run 41, waiting for Bader 19, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 282, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader, 18 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201
+- Waits for Bader, 19 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201, Q212
 
 ## Wave 1
 
@@ -841,6 +841,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F224-R2 | the codes a side is read against differ by group, the map's and the group's own with a map and the group's alone without, so the count left out is not the same measure across groups, and a test left out reads SameSetCode where it would have read a side reason, the breaker's 6 on F224 | F224 | register row | open | none | none | 2026-10-18 |
 | F224-R3 | the Coverage sheet row of a test the rule left out carries no sets and no items, since the skipped record holds no locator, the reviewer's 4 on F224 | F224 | register row | open | none | none | 2026-10-18 |
 | F224-R4 | a mirror rule of the alike kind may pair a test the rule leaves out with one it keeps across two codes, so the kept test of a pair could change between weeks, not traced, the breaker's 9 on F224 | F224 | register row | open | none | none | 2026-10-18 |
+| Q212 | tests a rule now leaves out still held in an NWF refreshed before it with their earlier results, leave them, delete them once, or move them into a folder of their own | none | question | waiting for Bader | none | none | 2026-10-18 |
+| F225 | a test a rule left out that an NWF still holds with earlier results read as not run by the rule and not compared, never FAILED, counted per group, row F219-R1 with Q209, Q212 | F225 | fix | in review | UNKNOWN | none | 2026-10-18 |
+| F225-R1 | a test the rule left out whose name is also on a test that ran makes both read the name twice, so the one that ran reads not run and not compared and a real count difference on it can no longer be FAILED, the breaker's 2 on F225 | F225 | register row | open | none | none | 2026-10-18 |
+| F225-R2 | RESULT across the run counts a test the rule left out of a picked plan as never in the document, its presence UNKNOWN, while the group's block says Clash Detective still holds it, and RESULT carries no total of the tests kept from an earlier run, the breaker's 3 on F225 | F225 | register row | open | none | none | 2026-10-18 |
+| F225-R3 | the tests kept from an earlier run fill the five examples of not compared in a group's block, so a not compared a person must act on is only on the Coverage sheet, the breaker's 6 on F225 | F225 | register row | open | none | none | 2026-10-18 |
 
 ## outside the waves
 

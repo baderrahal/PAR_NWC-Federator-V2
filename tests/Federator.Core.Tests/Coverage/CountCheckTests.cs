@@ -461,6 +461,8 @@ namespace Federator.Core.Tests
 
             Assert.That(test.Verdict, Is.EqualTo(CountVerdict.Failed));
             Assert.That(test.Why, Does.Not.Contain("earlier run"));
+            Assert.That(test.KeptFromAnEarlierRun, Is.False, "F225, a test created this run holds no earlier run's results");
+            Assert.That(check.LeftOutByARuleLine(), Does.Contain("1 FAILED"));
         }
 
         // ---------- not compared, and never agree ----------
