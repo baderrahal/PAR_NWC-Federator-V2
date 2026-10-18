@@ -2887,6 +2887,9 @@ namespace Federator.Addin.Engine
 
             SayTheTestsOverTheLimit();
 
+            // F226, Bader's answer to Q208. The one line of the pictures taken again, the count retaken and the count still empty.
+            log.Line("IMAGES   " + Images.RetakeLine());
+
             if (Images.GdiBackstopFired)
             {
                 log.Line("IMAGES   " + GdiBackstop.LeftLine(Images.RowsLeftWithoutAPicture(Report)));

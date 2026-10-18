@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -7,6 +8,7 @@ using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
+using Federator.Core.Exchange;
 using Federator.Core.Report;
 
 namespace Federator.Addin.Engine
@@ -60,6 +62,14 @@ namespace Federator.Addin.Engine
         private readonly ImageCodecInfo jpeg;
         private readonly PictureNameWatch names = new PictureNameWatch();
         private readonly GdiSplit gdiSplit = new GdiSplit();
+        private readonly RetakeTally retakes = new RetakeTally();
+        private int retakeThrowsSaid;
+
+        /// <summary>The group's one RETAKE line, F226, Bader's answer to Q208, the count retaken and the count still empty.</summary>
+        public string RetakeLine()
+        {
+            return retakes.Line(options.Retake.LeastMillimetres, options.Retake.Retake);
+        }
 
         /// <summary>
         /// The line saying where the GDI objects went since the last one, F161, or null where no
@@ -358,7 +368,16 @@ namespace Federator.Addin.Engine
                         Directory.CreateDirectory(folder);
                     }
 
-                    long gdiAfterTheSave = Render(clashTests, result, path, test.Name + " " + row.Name);
+                    bool noPicture;
+                    long gdiAfterTheSave = Render(clashTests, result, path, test.Name + " " + row.Name, out noPicture);
+
+                    // F226, Q208. Both the tool's picture and its retake showed only the sky, so no picture is written and
+                    // the cell stays empty, counted on the RETAKE line and never told to the guard, since nothing failed.
+                    if (noPicture)
+                    {
+                        report.ReleaseImageIndex(test);
+                        return false;
+                    }
 
                     // The size is read back off the disk. A render that returned without
                     // writing anything must not be counted as a picture.
@@ -420,8 +439,9 @@ namespace Federator.Addin.Engine
         /// native image handle and one per clash across 1830 tests is how a run runs a
         /// machine out of memory. No copy of it is made on the way to the disk.
         /// </summary>
-        private long Render(DocumentClashTests clashTests, IClashResult result, string path, string on)
+        private long Render(DocumentClashTests clashTests, IClashResult result, string path, string on, out bool noPicture)
         {
+            noPicture = false;
             // F175, Bader's order. Everything between the render returning and the save sits inside one
             // try, so the bitmap is disposed on every path, the null one, a throw from the log or the
             // count, and a throw from the save. It is the only Bitmap or Image the picture step receives,
@@ -457,6 +477,12 @@ namespace Federator.Addin.Engine
                         "TestsImageForResult returned nothing for this clash.");
                 }
 
+                if (options.Retake.Retake && TheRetake(clashTests, result, ref bitmap, on) == RetakeChoice.NoPicture)
+                {
+                    noPicture = true;
+                    return ProcessMemory.GdiObjectsNow();
+                }
+
                 using (seconds.In(ImagesPart.Saving))
                 {
                     Save(bitmap, path);
@@ -473,6 +499,187 @@ namespace Federator.Addin.Engine
             long gdiAfterSave = ProcessMemory.GdiObjectsNow();
             gdiSplit.Add(gdiBefore, gdiAfterRender, gdiAfterSave);
             return gdiAfterSave;
+        }
+
+        /// <summary>
+        /// F226, Bader's answer to Q208. Where the tool's picture draws no item of its clash, by Core's PictureRetake, the
+        /// picture is taken again through the active view, TakeAgain, and Core's Choose keeps the one that draws the clash, or
+        /// none where both show only the sky. The bitmap handed in is replaced or disposed and set to null accordingly, and a
+        /// retake that throws keeps the tool's picture, said for the first five and counted after.
+        /// </summary>
+        private RetakeChoice TheRetake(DocumentClashTests clashTests, IClashResult result, ref Bitmap bitmap, string on)
+        {
+            bool toolDrew;
+            bool toolSky;
+            Measure(bitmap, out toolDrew, out toolSky);
+
+            if (toolDrew)
+            {
+                return RetakeChoice.TheTool;
+            }
+
+            Stopwatch watch = Stopwatch.StartNew();
+            Bitmap again = null;
+            bool retakeDrew = false;
+            bool retakeSky = false;
+
+            try
+            {
+                again = TakeAgain(clashTests, result as ClashResult);
+
+                if (again != null)
+                {
+                    Measure(again, out retakeDrew, out retakeSky);
+                }
+            }
+            catch (Exception error)
+            {
+                if (again != null)
+                {
+                    again.Dispose();
+                    again = null;
+                }
+
+                if (retakeThrowsSaid++ < 5)
+                {
+                    log.Line("IMAGE    RETAKE " + on + ": taking the picture again threw " + error.GetType().Name + ": " + error.Message
+                        + ", so the tool's picture is kept");
+                }
+            }
+
+            RetakeChoice choice = PictureRetake.Choose(false, toolSky, again != null, retakeDrew, retakeSky);
+            retakes.Add(again != null, retakeDrew, choice, watch.Elapsed.TotalSeconds);
+
+            if (choice == RetakeChoice.TheRetake)
+            {
+                bitmap.Dispose();
+                bitmap = again;
+                again = null;
+            }
+            else if (choice == RetakeChoice.NoPicture)
+            {
+                bitmap.Dispose();
+                bitmap = null;
+            }
+
+            if (again != null)
+            {
+                again.Dispose();
+            }
+
+            return choice;
+        }
+
+        /// <summary>
+        /// The picture of one clash taken again through the active view, scan.md 5z-zm: the clash's own camera, moved back
+        /// to the setting's least distance where it stands closer, its first item red and its second green by
+        /// OverrideTemporaryColor, every model but the two items' hidden, and View.GenerateImage at the pictures' size. The
+        /// colours come off those items alone, the models hidden here alone are shown again and the camera the view held is
+        /// put back, whichever way it ends. Null for a result group, which has no two items.
+        /// </summary>
+        private Bitmap TakeAgain(DocumentClashTests clashTests, ClashResult clash)
+        {
+            if (clash == null || clash.Item1 == null || clash.Item2 == null)
+            {
+                return null;
+            }
+
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+            View active = document.ActiveView;
+            double least = ExchangeUnits.Convert(options.Retake.LeastMillimetres, "mm", ClashRunner.UnitName(document.Units));
+
+            using (Viewpoint before = document.CurrentViewpoint.CreateCopy())
+            using (Viewpoint own = clashTests.TestsViewpointForResult(clash))
+            using (Viewpoint moved = own.CreateCopy())
+            using (ModelItemCollection first = new ModelItemCollection())
+            using (ModelItemCollection second = new ModelItemCollection())
+            {
+                Point3D at = own.Position;
+                Point3D centre = clash.Center;
+                double[] to = PictureRetake.BackedOff(new[] { at.X, at.Y, at.Z }, new[] { centre.X, centre.Y, centre.Z }, least);
+                moved.Position = new Point3D(to[0], to[1], to[2]);
+                first.Add(clash.Item1);
+                second.Add(clash.Item2);
+                List<ModelItem> hidden = HideTheOtherModels(document, clash);
+
+                try
+                {
+                    document.Models.OverrideTemporaryColor(first, new Autodesk.Navisworks.Api.Color(1, 0, 0));
+                    document.Models.OverrideTemporaryColor(second, new Autodesk.Navisworks.Api.Color(0, 1, 0));
+                    active.CopyViewpointFrom(moved, ViewChange.JumpCut);
+                    return active.GenerateImage(Style, options.Width, options.Height, false);
+                }
+                finally
+                {
+                    document.Models.ResetTemporaryMaterials(first);
+                    document.Models.ResetTemporaryMaterials(second);
+
+                    if (hidden.Count > 0)
+                    {
+                        document.Models.SetHidden(hidden, false);
+                    }
+
+                    active.CopyViewpointFrom(before, ViewChange.JumpCut);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Every model root shown now but those of the clash's two items, matched by the display name of each item's topmost
+        /// ancestor as 5z-zk and 5z-zm read them, hidden, and handed back so the caller shows those again and no other.
+        /// </summary>
+        private static List<ModelItem> HideTheOtherModels(Document document, ClashResult clash)
+        {
+            string a = TopName(clash.Item1);
+            string b = TopName(clash.Item2);
+            List<ModelItem> others = new List<ModelItem>();
+
+            foreach (ModelItem root in document.Models.RootItems)
+            {
+                if (!root.IsHidden && root.DisplayName != a && root.DisplayName != b)
+                {
+                    others.Add(root);
+                }
+            }
+
+            if (others.Count > 0)
+            {
+                document.Models.SetHidden(others, true);
+            }
+
+            return others;
+        }
+
+        private static string TopName(ModelItem item)
+        {
+            ModelItem top = item;
+
+            while (top.Parent != null)
+            {
+                top = top.Parent;
+            }
+
+            return top.DisplayName;
+        }
+
+        /// <summary>Core's two readings of a picture, whether it draws an item of the clash and whether its middle is the sky.</summary>
+        private void Measure(Bitmap bitmap, out bool drew, out bool sky)
+        {
+            Rectangle all = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData data = bitmap.LockBits(all, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+            try
+            {
+                int stride = Math.Abs(data.Stride);
+                byte[] bytes = new byte[stride * data.Height];
+                System.Runtime.InteropServices.Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
+                drew = PictureRetake.ItemPixels(bytes, data.Width, data.Height, stride, options.Retake) > 0;
+                sky = PictureRetake.MiddleIsTheSky(bytes, data.Width, data.Height, stride, options.Retake);
+            }
+            finally
+            {
+                bitmap.UnlockBits(data);
+            }
         }
 
         /// <summary>

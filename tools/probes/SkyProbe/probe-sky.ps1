@@ -5,6 +5,8 @@ param(
   [string]$Tests = "",
   [switch]$HideOther,
   [int]$Count = 10,
+  [ValidateSet("sky", "retake")][string]$Mode = "sky",
+  [double]$BackFeet = 30,
   [string]$PluginAssembly = "",
   [int]$QuitWaitSeconds = 60,
   [int]$ConstructorDeadlineSeconds = 300,
@@ -14,7 +16,9 @@ param(
 # copies. The mode sky of SkyProbe\SkyProbe opens a copy of -Nwf, an NWF the tool built holding its tests and results, and
 # for the first -Count clashes of each test of -Tests, joined by |, reads the clash's centre and the camera of its own
 # viewpoint, then takes and measures its picture with every model shown and with only its items' models shown, every
-# picture kept under the work folder's pictures. With -HideOther, Clash Detective's Hide Other is set on for the start, as
+# picture kept under the work folder's pictures. With -Mode retake, F226 and Q208, each picture that draws no item of
+# its clash is taken again through the active view from the clash's own camera moved back to -BackFeet where it stands
+# closer, its two items red and green and the other models hidden, and both are measured. With -HideOther, Clash Detective's Hide Other is set on for the start, as
 # the tool asks it for its pictures, F150.
 #
 # It is probe-picture-speed.ps1 with that mode, and the guards are P1's, from tools\loop\nw-guard.ps1, dot-sourced, in the
@@ -219,12 +223,12 @@ try {
   $outcome["4"] = "passed"
   Say ""
 
-  Say "==== STEP 5. ExecuteAddInPlugin, the mode sky on the copy ===="
+  Say ("==== STEP 5. ExecuteAddInPlugin, the mode " + $Mode + " on the copy ====")
   $currentStep = "5"; $outcome["5"] = "started, did not finish"
-  Say ("  " + (Stamp) + "  calling ExecuteAddInPlugin(" + $probeId + ", sky, the plugin's output file, the NWF's copy, the tests " + $Tests + ", " + $Count + " clashes a test, the pictures folder)")
+  Say ("  " + (Stamp) + "  calling ExecuteAddInPlugin(" + $probeId + ", " + $Mode + ", the plugin's output file, the NWF's copy, the tests " + $Tests + ", " + $Count + " clashes a test, the pictures folder)")
   $sw = [Diagnostics.Stopwatch]::StartNew()
   $err = $null; $ret = $null
-  try { $ret = $app.ExecuteAddInPlugin($probeId, [string[]]@("sky", $pluginOut, $nwfCopy, $Tests, [string]$Count, $pictures)) } catch { $err = $_.Exception }
+  try { $ret = $app.ExecuteAddInPlugin($probeId, [string[]]@($Mode, $pluginOut, $nwfCopy, $Tests, [string]$Count, $pictures, $BackFeet.ToString([Globalization.CultureInfo]::InvariantCulture))) } catch { $err = $_.Exception }
   Say ("  " + (Stamp) + "  ExecuteAddInPlugin " + $(if ($null -eq $err) { "RETURNED " + $ret } else { "THREW" }) + " after " + $sw.Elapsed.TotalSeconds.ToString("0.00") + " s")
   if ($null -ne $err) { Say ("    " + (Err $err)) }
   WindowsOf $myPid $myTicks

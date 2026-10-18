@@ -1,0 +1,1408 @@
+MACHINE   <the machine>   2026-10-18 17:07:14
+HOST      powershell 5.1.26100.9711, 64 bit process True, apartment STA, pid 13156
+SCRIPT    <a path outside the loop folder, file probe-sky.ps1, sha1 0657F3B397C9>, sha256 4C5335539B5FCB28822D882A7EDD260A35B1CAD7102E2552CCE60FDD4722C87F
+GUARD     tools\loop\nw-guard.ps1, sha256 349551F8A3784C002A48192CB6321D6443027529BC65844B710A4E836C966888
+PROCESS   powershell.exe pid 13156, started to run -File C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2\tools\probes\SkyProbe\probe-sky.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 327
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-170714" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-170714\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 110264 bytes
+  read key by key: 279 keys, 1149 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 8 files copied to the work folder and read back with their source's sha256, 0 not backed up, 62 AutoSave files listed and not copied
+  the tool's own logs folder listed: 68 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf, sha1 CE37B7011691>, 1001845 bytes, sha256 3E69F1B0D3CA79D1D79E4DE6B30DE66AB9F2FA4271762764D752FFE7ECB7931E
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-170714\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe <a path outside the loop folder, file SkyProbe.dll, sha1 726771378441>, 19456 bytes, written 2026-10-18 16:56:13, sha256 9A048D7667050547E7CFEB29D2A64EC6072878E24B8C54C131FCDCCB2E6215F6, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+  Clash Detective's Hide Other written on for this start: hide_other under GlobalOptions\tools\clash\displaysettings written '3 1' and read back so, where it read '3 1'. Until the put back it reads so for Bader too
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  17:07:15.849  t+1.0s  calling new NavisworksApplication()
+  17:07:20.348  t+5.5s  the constructor RETURNED after 4.50 s
+  Roamer processes new since step 2: 1
+    pid 17068, started 17:07:15.859, parent 1784 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 17068, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 17068, started 2026-10-18 17:07:15.859, start ticks UTC 639279292358591222
+  17:07:22.927  t+8.1s  Visible set True, read back True
+  visible top level windows of 17068: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  17:07:23.067  t+8.2s  AddPluginAssembly RETURNED after 0.026 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode retake on the copy ====
+  17:07:23.068  t+8.2s  calling ExecuteAddInPlugin(SkyProbe.PARS, retake, the plugin's output file, the NWF's copy, the tests *, 400 clashes a test, the pictures folder)
+  17:08:14.332  t+59.5s  ExecuteAddInPlugin RETURNED 0 after 51.26 s
+  visible top level windows of 17068: 1, hidden: 74, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 17:07:23.078  probe started, mode retake
+  | 17:07:23.080  opening 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+  | 17:07:23.731  TryOpenFile returned True, models 5, document units Feet
+  | 17:07:23.732  ==== THE MODELS, each root's box in the document's units ====
+  | 17:07:23.736     model 0  1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc'  box (-55.841, -50.496, -1.22) to (37.452, 25.679, 27.745)  hidden False
+  | <text holding a path, sha1 1C68D5FAB710>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (0.0000, 0.0000, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 17:07:23.748     model 1  1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc'  box (1062558.234, 9039852.107, 21.661) to (1062736.284, 9039951.37, 61.447)  hidden False
+  | <text holding a path, sha1 3A95D1403F4F>
+  | (0.0502, 0.9987, 0.0000, 0.0000)
+  | (0.0000, -0.0000, 1.0000, 0.0000)
+  | (1062619.4099, 9039909.1422, 36.1985, 1.0000)
+  | ; IsDisposed=False
+  | 17:07:23.748     model 2  1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc'  box (-24.721, -30.085, -17.49) to (82.485, 22.7, 24.033)  hidden False
+  | <text holding a path, sha1 E8AA2978B339>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (0.0000, 0.0000, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 17:07:23.749     model 3  1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc'  box (-55.034, -49.689, -6.89) to (36.645, 40.443, 26.247)  hidden False
+  | <text holding a path, sha1 1F5D9EDFA46E>
+  | (0.0000, 1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (-111.4684, -5.3311, 0.0000, 1.0000)
+  | ; IsDisposed=False
+  | 17:07:23.749     model 4  1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc  units Feet  root '1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc'  box (63.403, -33.13, -20.935) to (114.651, 3.944, 0.308)  hidden False
+  | <text holding a path, sha1 EB9FAB2ED829>
+  | (-0.0000, -1.0000, 0.0000, 0.0000)
+  | (0.0000, 0.0000, 1.0000, 0.0000)
+  | (112.1901, 1.4831, -14.2093, 1.0000)
+  | ; IsDisposed=False
+  | 17:07:23.750  roots hidden as the NWF opened: 0, every item shown now by ResetAllHidden
+  | 17:07:23.759  every test of the document, 630
+  | 17:07:23.759  ==== TEST BLD-AR-Stairs-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:23.763  ==== TEST BLD-AR-Columns-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:23.763  ==== TEST BLD-AR-Columns-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:23.763  ==== TEST BLD-AR-Walls-vs-BLD-AR-Floors found, 4 results at its top level ====
+  | 17:07:23.967       the tool's picture: 4927 item pixels, 3.924 percent differs, BLD_AR_Walls_vs_BLD_AR_Floors-001-tool.jpg
+  | 17:07:24.087       the tool's picture: 2253 item pixels, 2.219 percent differs, BLD_AR_Walls_vs_BLD_AR_Floors-002-tool.jpg
+  | 17:07:24.202       the tool's picture: 2236 item pixels, 2.224 percent differs, BLD_AR_Walls_vs_BLD_AR_Floors-003-tool.jpg
+  | 17:07:24.298       the tool's picture: 4910 item pixels, 3.945 percent differs, BLD_AR_Walls_vs_BLD_AR_Floors-004-tool.jpg
+  | 17:07:24.302  ==== TEST BLD-AR-Walls-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:24.302  ==== TEST BLD-AR-Walls-vs-BLD-AR-Columns found, 8 results at its top level ====
+  | 17:07:24.379       the tool's picture: 2923 item pixels, 2.391 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-001-tool.jpg
+  | 17:07:24.467       the tool's picture: 4662 item pixels, 3.779 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-002-tool.jpg
+  | 17:07:24.552       the tool's picture: 2047 item pixels, 2.016 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-003-tool.jpg
+  | 17:07:24.639       the tool's picture: 3197 item pixels, 2.711 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-004-tool.jpg
+  | 17:07:24.729       the tool's picture: 1358 item pixels, 1.466 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-005-tool.jpg
+  | 17:07:24.820       the tool's picture: 1994 item pixels, 2.055 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-006-tool.jpg
+  | 17:07:24.907       the tool's picture: 2601 item pixels, 2.393 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-007-tool.jpg
+  | 17:07:24.992       the tool's picture: 3324 item pixels, 2.813 percent differs, BLD_AR_Walls_vs_BLD_AR_Columns-008-tool.jpg
+  | 17:07:24.998  ==== TEST BLD-AR-Curtain Panels-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:24.998  ==== TEST BLD-AR-Curtain Panels-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:24.998  ==== TEST BLD-AR-Curtain Panels-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:24.998  ==== TEST BLD-AR-Curtain Panels-vs-BLD-AR-Walls found, 1 results at its top level ====
+  | 17:07:25.080       the tool's picture: 10233 item pixels, 7.266 percent differs, BLD_AR_Curtain_Panels_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:25.085  ==== TEST BLD-AR-Curtain Mullions-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:25.085  ==== TEST BLD-AR-Curtain Mullions-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:25.085  ==== TEST BLD-AR-Curtain Mullions-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:25.085  ==== TEST BLD-AR-Curtain Mullions-vs-BLD-AR-Walls found, 11 results at its top level ====
+  | 17:07:25.172       the tool's picture: 144145 item pixels, 6.091 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:25.266       the tool's picture: 58173 item pixels, 38.375 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-002-tool.jpg
+  | 17:07:25.348       the tool's picture: 149036 item pixels, 2.93 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-003-tool.jpg
+  | 17:07:25.431       the tool's picture: 59023 item pixels, 31.982 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-004-tool.jpg
+  | 17:07:25.518       the tool's picture: 149036 item pixels, 2.93 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-005-tool.jpg
+  | 17:07:25.600       the tool's picture: 58173 item pixels, 38.375 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-006-tool.jpg
+  | 17:07:25.681       the tool's picture: 99477 item pixels, 35.195 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-007-tool.jpg
+  | 17:07:25.763       the tool's picture: 142325 item pixels, 7.292 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-008-tool.jpg
+  | 17:07:25.847       the tool's picture: 63520 item pixels, 30.987 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-009-tool.jpg
+  | 17:07:25.930       the tool's picture: 51251 item pixels, 33.198 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-010-tool.jpg
+  | 17:07:26.012       the tool's picture: 42264 item pixels, 27.617 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Walls-011-tool.jpg
+  | 17:07:26.017  ==== TEST BLD-AR-Curtain Mullions-vs-BLD-AR-Curtain Panels found, 213 results at its top level ====
+  | 17:07:26.095       the tool's picture: 15295 item pixels, 10.492 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-001-tool.jpg
+  | 17:07:26.181       the tool's picture: 17169 item pixels, 11.669 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-002-tool.jpg
+  | 17:07:26.266       the tool's picture: 3030 item pixels, 2.396 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-003-tool.jpg
+  | 17:07:26.351       the tool's picture: 31160 item pixels, 20.859 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-004-tool.jpg
+  | 17:07:26.436       the tool's picture: 18071 item pixels, 12.328 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-005-tool.jpg
+  | 17:07:26.525       the tool's picture: 57017 item pixels, 36.466 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-006-tool.jpg
+  | 17:07:26.614       the tool's picture: 18700 item pixels, 12.753 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-007-tool.jpg
+  | 17:07:26.700       the tool's picture: 56278 item pixels, 36.326 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-008-tool.jpg
+  | 17:07:26.793       the tool's picture: 34356 item pixels, 22.766 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-009-tool.jpg
+  | 17:07:26.886       the tool's picture: 13546 item pixels, 9.479 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-010-tool.jpg
+  | 17:07:26.972       the tool's picture: 50526 item pixels, 33.521 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-011-tool.jpg
+  | 17:07:27.061       the tool's picture: 6410 item pixels, 4.711 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-012-tool.jpg
+  | 17:07:27.148       the tool's picture: 5079 item pixels, 3.862 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-013-tool.jpg
+  | 17:07:27.231       the tool's picture: 14548 item pixels, 10.026 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-014-tool.jpg
+  | 17:07:27.318       the tool's picture: 15336 item pixels, 10.409 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-015-tool.jpg
+  | 17:07:27.405       the tool's picture: 13229 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-016-tool.jpg
+  | 17:07:27.489       the tool's picture: 14265 item pixels, 9.94 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-017-tool.jpg
+  | 17:07:27.578       the tool's picture: 51136 item pixels, 33.802 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-018-tool.jpg
+  | 17:07:27.665       the tool's picture: 6666 item pixels, 4.786 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-019-tool.jpg
+  | 17:07:27.749       the tool's picture: 50858 item pixels, 33.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-020-tool.jpg
+  | 17:07:27.833       the tool's picture: 6661 item pixels, 4.938 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-021-tool.jpg
+  | 17:07:27.914       the tool's picture: 6869 item pixels, 5.117 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-022-tool.jpg
+  | 17:07:27.997       the tool's picture: 6600 item pixels, 4.742 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-023-tool.jpg
+  | 17:07:28.078       the tool's picture: 8659 item pixels, 6.284 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-024-tool.jpg
+  | 17:07:28.162       the tool's picture: 6767 item pixels, 4.964 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-025-tool.jpg
+  | 17:07:28.246       the tool's picture: 13229 item pixels, 9.266 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-026-tool.jpg
+  | 17:07:28.342       the tool's picture: 14316 item pixels, 9.901 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-027-tool.jpg
+  | 17:07:28.431       the tool's picture: 14047 item pixels, 9.734 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-028-tool.jpg
+  | 17:07:28.513       the tool's picture: 6661 item pixels, 4.865 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-029-tool.jpg
+  | 17:07:28.592       the tool's picture: 13229 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-030-tool.jpg
+  | 17:07:28.671       the tool's picture: 2723 item pixels, 2.219 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-031-tool.jpg
+  | 17:07:28.751       the tool's picture: 8659 item pixels, 6.315 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-032-tool.jpg
+  | 17:07:28.831       the tool's picture: 8659 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-033-tool.jpg
+  | 17:07:28.910       the tool's picture: 13865 item pixels, 9.56 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-034-tool.jpg
+  | 17:07:28.990       the tool's picture: 16051 item pixels, 11.005 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-035-tool.jpg
+  | 17:07:29.068       the tool's picture: 50858 item pixels, 33.622 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-036-tool.jpg
+  | 17:07:29.145       the tool's picture: 8494 item pixels, 6.18 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-037-tool.jpg
+  | 17:07:29.223       the tool's picture: 5013 item pixels, 3.802 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-038-tool.jpg
+  | 17:07:29.302       the tool's picture: 20313 item pixels, 13.771 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-039-tool.jpg
+  | 17:07:29.382       the tool's picture: 5013 item pixels, 3.714 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-040-tool.jpg
+  | 17:07:29.464       the tool's picture: 13229 item pixels, 9.297 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-041-tool.jpg
+  | 17:07:29.542       the tool's picture: 13898 item pixels, 9.711 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-042-tool.jpg
+  | 17:07:29.622       the tool's picture: 8659 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-043-tool.jpg
+  | 17:07:29.702       the tool's picture: 29686 item pixels, 20.073 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-044-tool.jpg
+  | 17:07:29.780       the tool's picture: 13228 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-045-tool.jpg
+  | 17:07:29.858       the tool's picture: 29686 item pixels, 20.044 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-046-tool.jpg
+  | 17:07:29.941       the tool's picture: 8684 item pixels, 6.268 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-047-tool.jpg
+  | 17:07:30.018       the tool's picture: 8969 item pixels, 6.484 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-048-tool.jpg
+  | 17:07:30.095       the tool's picture: 8659 item pixels, 6.315 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-049-tool.jpg
+  | 17:07:30.174       the tool's picture: 6600 item pixels, 4.742 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-050-tool.jpg
+  | 17:07:30.253       the tool's picture: 6661 item pixels, 4.859 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-051-tool.jpg
+  | 17:07:30.330       the tool's picture: 29686 item pixels, 20.073 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-052-tool.jpg
+  | 17:07:30.411       the tool's picture: 20510 item pixels, 13.859 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-053-tool.jpg
+  | 17:07:30.489       the tool's picture: 15882 item pixels, 10.987 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-054-tool.jpg
+  | 17:07:30.566       the tool's picture: 16229 item pixels, 11.229 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-055-tool.jpg
+  | 17:07:30.645       the tool's picture: 38128 item pixels, 25.318 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-056-tool.jpg
+  | 17:07:30.724       the tool's picture: 5013 item pixels, 3.818 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-057-tool.jpg
+  | 17:07:30.800       the tool's picture: 20510 item pixels, 13.961 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-058-tool.jpg
+  | 17:07:30.885       the tool's picture: 8659 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-059-tool.jpg
+  | 17:07:30.962       the tool's picture: 5592 item pixels, 4.188 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-060-tool.jpg
+  | 17:07:31.042       the tool's picture: 13908 item pixels, 9.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-061-tool.jpg
+  | 17:07:31.122       the tool's picture: 13228 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-062-tool.jpg
+  | 17:07:31.201       the tool's picture: 38152 item pixels, 25.479 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-063-tool.jpg
+  | 17:07:31.278       the tool's picture: 8564 item pixels, 6.115 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-064-tool.jpg
+  | 17:07:31.356       the tool's picture: 13228 item pixels, 9.297 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-065-tool.jpg
+  | 17:07:31.434       the tool's picture: 13212 item pixels, 9.237 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-066-tool.jpg
+  | 17:07:31.514       the tool's picture: 7171 item pixels, 5.125 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-067-tool.jpg
+  | 17:07:31.594       the tool's picture: 5204 item pixels, 3.849 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-068-tool.jpg
+  | 17:07:31.680       the tool's picture: 5013 item pixels, 3.714 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-069-tool.jpg
+  | 17:07:31.758       the tool's picture: 12598 item pixels, 8.763 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-070-tool.jpg
+  | 17:07:31.837       the tool's picture: 13865 item pixels, 9.664 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-071-tool.jpg
+  | 17:07:31.916       the tool's picture: 13534 item pixels, 9.469 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-072-tool.jpg
+  | 17:07:31.993       the tool's picture: 16234 item pixels, 11.18 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-073-tool.jpg
+  | 17:07:32.071       the tool's picture: 13534 item pixels, 9.349 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-074-tool.jpg
+  | 17:07:32.149       the tool's picture: 14040 item pixels, 9.674 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-075-tool.jpg
+  | 17:07:32.227       the tool's picture: 7975 item pixels, 5.651 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-076-tool.jpg
+  | 17:07:32.305       the tool's picture: 20510 item pixels, 13.94 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-077-tool.jpg
+  | 17:07:32.384       the tool's picture: 14316 item pixels, 9.789 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-078-tool.jpg
+  | 17:07:32.463       the tool's picture: 13530 item pixels, 9.362 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-079-tool.jpg
+  | 17:07:32.542       the tool's picture: 5013 item pixels, 3.714 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-080-tool.jpg
+  | 17:07:32.620       the tool's picture: 8973 item pixels, 6.385 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-081-tool.jpg
+  | 17:07:32.697       the tool's picture: 29686 item pixels, 20.044 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-082-tool.jpg
+  | 17:07:32.777       the tool's picture: 13224 item pixels, 9.263 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-083-tool.jpg
+  | 17:07:32.854       the tool's picture: 6661 item pixels, 4.958 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-084-tool.jpg
+  | 17:07:32.932       the tool's picture: 6661 item pixels, 4.859 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-085-tool.jpg
+  | 17:07:33.013       the tool's picture: 8659 item pixels, 6.284 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-086-tool.jpg
+  | 17:07:33.092       the tool's picture: 13312 item pixels, 9.224 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-087-tool.jpg
+  | 17:07:33.170       the tool's picture: 12349 item pixels, 8.719 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-088-tool.jpg
+  | 17:07:33.251       the tool's picture: 6600 item pixels, 4.828 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-089-tool.jpg
+  | 17:07:33.330       the tool's picture: 13560 item pixels, 9.253 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-090-tool.jpg
+  | 17:07:33.411       the tool's picture: 18530 item pixels, 12.674 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-091-tool.jpg
+  | 17:07:33.493       the tool's picture: 16503 item pixels, 11.255 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-092-tool.jpg
+  | 17:07:33.570       the tool's picture: 14316 item pixels, 9.88 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-093-tool.jpg
+  | 17:07:33.647       the tool's picture: 7268 item pixels, 5.281 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-094-tool.jpg
+  | 17:07:33.727       the tool's picture: 12598 item pixels, 8.883 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-095-tool.jpg
+  | 17:07:33.804       the tool's picture: 7171 item pixels, 5.125 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-096-tool.jpg
+  | 17:07:33.882       the tool's picture: 8564 item pixels, 6.214 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-097-tool.jpg
+  | 17:07:33.966       the tool's picture: 13534 item pixels, 9.438 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-098-tool.jpg
+  | 17:07:34.054       the tool's picture: 7171 item pixels, 5.125 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-099-tool.jpg
+  | 17:07:34.137       the tool's picture: 13908 item pixels, 9.74 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-100-tool.jpg
+  | 17:07:34.222       the tool's picture: 8659 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-101-tool.jpg
+  | 17:07:34.307       the tool's picture: 20509 item pixels, 13.852 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-102-tool.jpg
+  | 17:07:34.385       the tool's picture: 15622 item pixels, 10.807 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-103-tool.jpg
+  | 17:07:34.465       the tool's picture: 7171 item pixels, 5.229 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-104-tool.jpg
+  | 17:07:34.543       the tool's picture: 8659 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-105-tool.jpg
+  | 17:07:34.620       the tool's picture: 14163 item pixels, 9.76 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-106-tool.jpg
+  | 17:07:34.700       the tool's picture: 37431 item pixels, 25.01 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-107-tool.jpg
+  | 17:07:34.779       the tool's picture: 10741 item pixels, 7.536 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-108-tool.jpg
+  | 17:07:34.860       the tool's picture: 14316 item pixels, 9.799 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-109-tool.jpg
+  | 17:07:34.940       the tool's picture: 14316 item pixels, 9.88 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-110-tool.jpg
+  | 17:07:35.018       the tool's picture: 12599 item pixels, 8.763 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-111-tool.jpg
+  | 17:07:35.096       the tool's picture: 14442 item pixels, 10.042 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-112-tool.jpg
+  | 17:07:35.175       the tool's picture: 17588 item pixels, 12.013 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-113-tool.jpg
+  | 17:07:35.253       the tool's picture: 14489 item pixels, 10.096 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-114-tool.jpg
+  | 17:07:35.336       the tool's picture: 8564 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-115-tool.jpg
+  | 17:07:35.415       the tool's picture: 14912 item pixels, 10.391 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-116-tool.jpg
+  | 17:07:35.494       the tool's picture: 14887 item pixels, 10.302 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-117-tool.jpg
+  | 17:07:35.574       the tool's picture: 12697 item pixels, 8.802 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-118-tool.jpg
+  | 17:07:35.652       the tool's picture: 13312 item pixels, 9.32 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-119-tool.jpg
+  | 17:07:35.729       the tool's picture: 8474 item pixels, 6.164 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-120-tool.jpg
+  | 17:07:35.807       the tool's picture: 13908 item pixels, 9.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-121-tool.jpg
+  | 17:07:35.887       the tool's picture: 13908 item pixels, 9.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-122-tool.jpg
+  | 17:07:35.967       the tool's picture: 16989 item pixels, 11.641 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-123-tool.jpg
+  | 17:07:36.049       the tool's picture: 38152 item pixels, 25.479 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-124-tool.jpg
+  | 17:07:36.131       the tool's picture: 13908 item pixels, 9.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-125-tool.jpg
+  | 17:07:36.209       the tool's picture: 13908 item pixels, 9.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-126-tool.jpg
+  | 17:07:36.289       the tool's picture: 13229 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-127-tool.jpg
+  | 17:07:36.370       the tool's picture: 13229 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-128-tool.jpg
+  | 17:07:36.452       the tool's picture: 29686 item pixels, 19.958 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-129-tool.jpg
+  | 17:07:36.533       the tool's picture: 29686 item pixels, 20.073 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-130-tool.jpg
+  | 17:07:36.615       the tool's picture: 13229 item pixels, 9.297 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-131-tool.jpg
+  | 17:07:36.694       the tool's picture: 58974 item pixels, 17.313 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-132-tool.jpg
+  | 17:07:36.772       the tool's picture: 34738 item pixels, 22.893 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-133-tool.jpg
+  | 17:07:36.852       the tool's picture: 58974 item pixels, 17.185 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-134-tool.jpg
+  | 17:07:36.933       the tool's picture: 13229 item pixels, 9.266 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-135-tool.jpg
+  | 17:07:37.015       the tool's picture: 13229 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-136-tool.jpg
+  | 17:07:37.098       the tool's picture: 8659 item pixels, 6.315 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-137-tool.jpg
+  | 17:07:37.178       the tool's picture: 8659 item pixels, 6.315 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-138-tool.jpg
+  | 17:07:37.261       the tool's picture: 13224 item pixels, 9.104 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-139-tool.jpg
+  | 17:07:37.340       the tool's picture: 6600 item pixels, 4.836 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-140-tool.jpg
+  | 17:07:37.417       the tool's picture: 34199 item pixels, 22.896 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-141-tool.jpg
+  | 17:07:37.497       the tool's picture: 13586 item pixels, 9.294 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-142-tool.jpg
+  | 17:07:37.576       the tool's picture: 25565 item pixels, 17.354 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-143-tool.jpg
+  | 17:07:37.655       the tool's picture: 8659 item pixels, 6.315 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-144-tool.jpg
+  | 17:07:37.734       the tool's picture: 26278 item pixels, 17.714 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-145-tool.jpg
+  | 17:07:37.812       the tool's picture: 29686 item pixels, 20.044 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-146-tool.jpg
+  | 17:07:37.890       the tool's picture: 14537 item pixels, 10.091 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-147-tool.jpg
+  | 17:07:37.969       the tool's picture: 44635 item pixels, 29.104 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-148-tool.jpg
+  | 17:07:38.049       the tool's picture: 44635 item pixels, 29 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-149-tool.jpg
+  | 17:07:38.127       the tool's picture: 29686 item pixels, 19.958 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-150-tool.jpg
+  | 17:07:38.210       the tool's picture: 29686 item pixels, 19.958 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-151-tool.jpg
+  | 17:07:38.289       the tool's picture: 29686 item pixels, 20.073 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-152-tool.jpg
+  | 17:07:38.370       the tool's picture: 13229 item pixels, 9.297 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-153-tool.jpg
+  | 17:07:38.459       the tool's picture: 13908 item pixels, 9.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-154-tool.jpg
+  | 17:07:38.538       the tool's picture: 29686 item pixels, 19.958 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-155-tool.jpg
+  | 17:07:38.618       the tool's picture: 13311 item pixels, 9.201 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-156-tool.jpg
+  | 17:07:38.699       the tool's picture: 8659 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-157-tool.jpg
+  | 17:07:38.777       the tool's picture: 13908 item pixels, 9.708 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-158-tool.jpg
+  | 17:07:38.855       the tool's picture: 8659 item pixels, 6.193 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-159-tool.jpg
+  | 17:07:38.938       the tool's picture: 12599 item pixels, 8.763 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-160-tool.jpg
+  | 17:07:39.019       the tool's picture: 8659 item pixels, 6.315 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-161-tool.jpg
+  | 17:07:39.099       the tool's picture: 13312 item pixels, 9.224 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-162-tool.jpg
+  | 17:07:39.179       the tool's picture: 7171 item pixels, 5.229 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-163-tool.jpg
+  | 17:07:39.255       the tool's picture: 13534 item pixels, 9.438 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-164-tool.jpg
+  | 17:07:39.333       the tool's picture: 13215 item pixels, 9.154 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-165-tool.jpg
+  | 17:07:39.412       the tool's picture: 25565 item pixels, 17.333 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-166-tool.jpg
+  | 17:07:39.489       the tool's picture: 25390 item pixels, 17.135 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-167-tool.jpg
+  | 17:07:39.569       the tool's picture: 7171 item pixels, 5.214 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-168-tool.jpg
+  | 17:07:39.647       the tool's picture: 15547 item pixels, 10.56 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-169-tool.jpg
+  | 17:07:39.725       the tool's picture: 37511 item pixels, 25.099 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-170-tool.jpg
+  | 17:07:39.804       the tool's picture: 12556 item pixels, 8.732 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-171-tool.jpg
+  | 17:07:39.883       the tool's picture: 18530 item pixels, 12.674 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-172-tool.jpg
+  | 17:07:39.965       the tool's picture: 25565 item pixels, 17.354 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-173-tool.jpg
+  | 17:07:40.051       the tool's picture: 29610 item pixels, 19.685 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-174-tool.jpg
+  | 17:07:40.135       the tool's picture: 13957 item pixels, 9.729 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-175-tool.jpg
+  | 17:07:40.214       the tool's picture: 12598 item pixels, 8.763 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-176-tool.jpg
+  | 17:07:40.296       the tool's picture: 34037 item pixels, 22.784 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-177-tool.jpg
+  | 17:07:40.379       the tool's picture: 14163 item pixels, 9.849 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-178-tool.jpg
+  | 17:07:40.460       the tool's picture: 13554 item pixels, 9.479 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-179-tool.jpg
+  | 17:07:40.543       the tool's picture: 7972 item pixels, 5.732 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-180-tool.jpg
+  | 17:07:40.625       the tool's picture: 20510 item pixels, 13.961 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-181-tool.jpg
+  | 17:07:40.704       the tool's picture: 13865 item pixels, 9.643 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-182-tool.jpg
+  | 17:07:40.784       the tool's picture: 14548 item pixels, 10.133 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-183-tool.jpg
+  | 17:07:40.862       the tool's picture: 13213 item pixels, 9.195 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-184-tool.jpg
+  | 17:07:40.941       the tool's picture: 8659 item pixels, 6.284 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-185-tool.jpg
+  | 17:07:41.021       the tool's picture: 14312 item pixels, 10.008 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-186-tool.jpg
+  | 17:07:41.134       the tool's picture: 13908 item pixels, 9.708 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-187-tool.jpg
+  | 17:07:41.241       the tool's picture: 13229 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-188-tool.jpg
+  | 17:07:41.338       the tool's picture: 14548 item pixels, 10.029 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-189-tool.jpg
+  | 17:07:41.448       the tool's picture: 13229 item pixels, 9.182 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-190-tool.jpg
+  | 17:07:41.550       the tool's picture: 14867 item pixels, 10.146 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-191-tool.jpg
+  | 17:07:41.642       the tool's picture: 25565 item pixels, 17.255 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-192-tool.jpg
+  | 17:07:41.735       the tool's picture: 29686 item pixels, 20.044 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-193-tool.jpg
+  | 17:07:41.827       the tool's picture: 20511 item pixels, 13.852 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-194-tool.jpg
+  | 17:07:41.915       the tool's picture: 5013 item pixels, 3.818 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-195-tool.jpg
+  | 17:07:42.012       the tool's picture: 14317 item pixels, 9.88 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-196-tool.jpg
+  | 17:07:42.111       the tool's picture: 50858 item pixels, 33.698 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-197-tool.jpg
+  | 17:07:42.197       the tool's picture: 13908 item pixels, 9.62 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-198-tool.jpg
+  | 17:07:42.292       the tool's picture: 13456 item pixels, 9.417 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-199-tool.jpg
+  | 17:07:42.383       the tool's picture: 20510 item pixels, 13.852 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-200-tool.jpg
+  | 17:07:42.469       the tool's picture: 9697 item pixels, 6.93 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-201-tool.jpg
+  | 17:07:42.549       the tool's picture: 38152 item pixels, 25.479 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-202-tool.jpg
+  | 17:07:42.629       the tool's picture: 23023 item pixels, 15.586 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-203-tool.jpg
+  | 17:07:42.710       the tool's picture: 5079 item pixels, 3.846 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-204-tool.jpg
+  | 17:07:42.789       the tool's picture: 48054 item pixels, 31.862 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-205-tool.jpg
+  | 17:07:42.869       the tool's picture: 6797 item pixels, 4.971 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-206-tool.jpg
+  | 17:07:42.950       the tool's picture: 50858 item pixels, 33.729 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-207-tool.jpg
+  | 17:07:43.031       the tool's picture: 5824 item pixels, 4.234 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-208-tool.jpg
+  | 17:07:43.108       the tool's picture: 6600 item pixels, 4.742 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-209-tool.jpg
+  | 17:07:43.185       the tool's picture: 50858 item pixels, 33.729 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-210-tool.jpg
+  | 17:07:43.268       the tool's picture: 48308 item pixels, 32.029 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-211-tool.jpg
+  | 17:07:43.350       the tool's picture: 15914 item pixels, 11.003 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-212-tool.jpg
+  | 17:07:43.433       the tool's picture: 35105 item pixels, 23.552 percent differs, BLD_AR_Curtain_Mullions_vs_BLD_AR_Curtai-213-tool.jpg
+  | 17:07:43.436  ==== TEST BLD-AR-Doors-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:43.436  ==== TEST BLD-AR-Doors-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:43.436  ==== TEST BLD-AR-Doors-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:43.436  ==== TEST BLD-AR-Doors-vs-BLD-AR-Walls found, 3 results at its top level ====
+  | 17:07:43.519       the tool's picture: 66955 item pixels, 26.13 percent differs, BLD_AR_Doors_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:43.615       the tool's picture: 84273 item pixels, 28.281 percent differs, BLD_AR_Doors_vs_BLD_AR_Walls-002-tool.jpg
+  | 17:07:43.707       the tool's picture: 75080 item pixels, 29.914 percent differs, BLD_AR_Doors_vs_BLD_AR_Walls-003-tool.jpg
+  | 17:07:43.711  ==== TEST BLD-AR-Doors-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:43.711  ==== TEST BLD-AR-Doors-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:43.711  ==== TEST BLD-AR-Railings-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:43.711  ==== TEST BLD-AR-Railings-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:43.711  ==== TEST BLD-AR-Railings-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:43.711  ==== TEST BLD-AR-Railings-vs-BLD-AR-Walls found, 1 results at its top level ====
+  | 17:07:43.790       the tool's picture: 163 item pixels, 0.859 percent differs, BLD_AR_Railings_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:43.794  ==== TEST BLD-AR-Railings-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-AR-Railings-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-AR-Railings-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Foundation-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:43.794  ==== TEST BLD-ST-Columns-vs-BLD-AR-Floors found, 18 results at its top level ====
+  | 17:07:43.875       the tool's picture: 73309 item pixels, 27.867 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-001-tool.jpg
+  | 17:07:43.959       the tool's picture: 68463 item pixels, 30.974 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-002-tool.jpg
+  | 17:07:44.040       the tool's picture: 40726 item pixels, 26.336 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-003-tool.jpg
+  | 17:07:44.121       the tool's picture: 87118 item pixels, 20.221 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-004-tool.jpg
+  | 17:07:44.204       the tool's picture: 50107 item pixels, 29.513 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-005-tool.jpg
+  | 17:07:44.286       the tool's picture: 50107 item pixels, 29.513 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-006-tool.jpg
+  | 17:07:44.367       the tool's picture: 38437 item pixels, 20.534 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-007-tool.jpg
+  | 17:07:44.453       the tool's picture: 38437 item pixels, 20.534 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-008-tool.jpg
+  | 17:07:44.533       the tool's picture: 59998 item pixels, 26.826 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-009-tool.jpg
+  | 17:07:44.616       the tool's picture: 59998 item pixels, 26.826 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-010-tool.jpg
+  | 17:07:44.700       the tool's picture: 61209 item pixels, 14.432 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-011-tool.jpg
+  | 17:07:44.781       the tool's picture: 61209 item pixels, 14.432 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-012-tool.jpg
+  | 17:07:44.860       the tool's picture: 45787 item pixels, 30.432 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-013-tool.jpg
+  | 17:07:44.947       the tool's picture: 62469 item pixels, 35.237 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-014-tool.jpg
+  | 17:07:45.026       the tool's picture: 29301 item pixels, 19.721 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-015-tool.jpg
+  | 17:07:45.107       the tool's picture: 53555 item pixels, 13.354 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-016-tool.jpg
+  | 17:07:45.188       the tool's picture: 36716 item pixels, 17.333 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-017-tool.jpg
+  | 17:07:45.277       the tool's picture: 31843 item pixels, 20.458 percent differs, BLD_ST_Columns_vs_BLD_AR_Floors-018-tool.jpg
+  | 17:07:45.280  ==== TEST BLD-ST-Columns-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:45.280  ==== TEST BLD-ST-Columns-vs-BLD-AR-Columns found, 8 results at its top level ====
+  | 17:07:45.365       the tool's picture: 1468 item pixels, 1.607 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-001-tool.jpg
+  | 17:07:45.454       the tool's picture: 1469 item pixels, 1.607 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-002-tool.jpg
+  | 17:07:45.546       the tool's picture: 1187 item pixels, 1.422 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-003-tool.jpg
+  | 17:07:45.637       the tool's picture: 1142 item pixels, 1.375 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-004-tool.jpg
+  | 17:07:45.720       the tool's picture: 8138 item pixels, 5.945 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-005-tool.jpg
+  | 17:07:45.802       the tool's picture: 8123 item pixels, 5.854 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-006-tool.jpg
+  | 17:07:45.882       the tool's picture: 8156 item pixels, 5.849 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-007-tool.jpg
+  | 17:07:45.961       the tool's picture: 8077 item pixels, 5.911 percent differs, BLD_ST_Columns_vs_BLD_AR_Columns-008-tool.jpg
+  | 17:07:45.965  ==== TEST BLD-ST-Columns-vs-BLD-AR-Walls found, 10 results at its top level ====
+  | 17:07:46.039       the tool's picture: 5873 item pixels, 4.344 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:46.120       the tool's picture: 12330 item pixels, 8.523 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-002-tool.jpg
+  | 17:07:46.201       the tool's picture: 10345 item pixels, 7.38 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-003-tool.jpg
+  | 17:07:46.280       the tool's picture: 16788 item pixels, 11.56 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-004-tool.jpg
+  | 17:07:46.358       the tool's picture: 20738 item pixels, 14.034 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-005-tool.jpg
+  | 17:07:46.438       the tool's picture: 9487 item pixels, 6.82 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-006-tool.jpg
+  | 17:07:46.517       the tool's picture: 9092 item pixels, 6.568 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-007-tool.jpg
+  | 17:07:46.596       the tool's picture: 14471 item pixels, 9.927 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-008-tool.jpg
+  | 17:07:46.675       the tool's picture: 10150 item pixels, 7.253 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-009-tool.jpg
+  | 17:07:46.753       the tool's picture: 11843 item pixels, 8.208 percent differs, BLD_ST_Columns_vs_BLD_AR_Walls-010-tool.jpg
+  | 17:07:46.756  ==== TEST BLD-ST-Columns-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:46.756  ==== TEST BLD-ST-Columns-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:46.756  ==== TEST BLD-ST-Columns-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:46.756  ==== TEST BLD-ST-Columns-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:46.756  ==== TEST BLD-ST-Columns-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:46.756  ==== TEST BLD-ST-Framing-vs-BLD-AR-Floors found, 1 results at its top level ====
+  | 17:07:46.836       the tool's picture: 3233 item pixels, 2.859 percent differs, BLD_ST_Framing_vs_BLD_AR_Floors-001-tool.jpg
+  | 17:07:46.840  ==== TEST BLD-ST-Framing-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:46.840  ==== TEST BLD-ST-Framing-vs-BLD-AR-Columns found, 4 results at its top level ====
+  | 17:07:46.965       the tool's picture: 15150 item pixels, 10.599 percent differs, BLD_ST_Framing_vs_BLD_AR_Columns-001-tool.jpg
+  | 17:07:47.047       the tool's picture: 11895 item pixels, 8.26 percent differs, BLD_ST_Framing_vs_BLD_AR_Columns-002-tool.jpg
+  | 17:07:47.168       the tool's picture: 7630 item pixels, 5.661 percent differs, BLD_ST_Framing_vs_BLD_AR_Columns-003-tool.jpg
+  | 17:07:47.249       the tool's picture: 7300 item pixels, 5.482 percent differs, BLD_ST_Framing_vs_BLD_AR_Columns-004-tool.jpg
+  | 17:07:47.253  ==== TEST BLD-ST-Framing-vs-BLD-AR-Walls found, 9 results at its top level ====
+  | 17:07:47.328       the tool's picture: 460 item pixels, 1.057 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:47.408       the tool's picture: 1380 item pixels, 1.414 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-002-tool.jpg
+  | 17:07:47.486       the tool's picture: 199 item pixels, 0.891 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-003-tool.jpg
+  | 17:07:47.566       the tool's picture: 651 item pixels, 0.987 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-004-tool.jpg
+  | 17:07:47.646       the tool's picture: 447 item pixels, 0.935 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-005-tool.jpg
+  | 17:07:47.724       the tool's picture: 6960 item pixels, 5.185 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-006-tool.jpg
+  | 17:07:47.806       the tool's picture: 8711 item pixels, 6.299 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-007-tool.jpg
+  | 17:07:47.887       the tool's picture: 9720 item pixels, 6.828 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-008-tool.jpg
+  | 17:07:47.965       the tool's picture: 12526 item pixels, 8.701 percent differs, BLD_ST_Framing_vs_BLD_AR_Walls-009-tool.jpg
+  | 17:07:47.969  ==== TEST BLD-ST-Framing-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:47.969  ==== TEST BLD-ST-Framing-vs-BLD-AR-Curtain Mullions found, 18 results at its top level ====
+  | 17:07:48.057       the tool's picture: 15504 item pixels, 10.75 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-001-tool.jpg
+  | 17:07:48.138       the tool's picture: 17637 item pixels, 12.227 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-002-tool.jpg
+  | 17:07:48.216       the tool's picture: 15595 item pixels, 10.784 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-003-tool.jpg
+  | 17:07:48.306       the tool's picture: 14782 item pixels, 10.268 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-004-tool.jpg
+  | 17:07:48.388       the tool's picture: 16656 item pixels, 11.583 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-005-tool.jpg
+  | 17:07:48.466       the tool's picture: 11464 item pixels, 8.081 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-006-tool.jpg
+  | 17:07:48.543       the tool's picture: 14844 item pixels, 10.352 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-007-tool.jpg
+  | 17:07:48.627       the tool's picture: 9474 item pixels, 6.81 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-008-tool.jpg
+  | 17:07:48.705       the tool's picture: 13022 item pixels, 9.091 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-009-tool.jpg
+  | 17:07:48.792       the tool's picture: 12123 item pixels, 8.589 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-010-tool.jpg
+  | 17:07:48.873       the tool's picture: 13832 item pixels, 9.695 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-011-tool.jpg
+  | 17:07:48.952       the tool's picture: 10702 item pixels, 7.706 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-012-tool.jpg
+  | 17:07:49.031       the tool's picture: 11537 item pixels, 8.141 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-013-tool.jpg
+  | 17:07:49.110       the tool's picture: 13078 item pixels, 9.138 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-014-tool.jpg
+  | 17:07:49.194       the tool's picture: 9269 item pixels, 6.674 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-015-tool.jpg
+  | 17:07:49.276       the tool's picture: 16376 item pixels, 11.255 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-016-tool.jpg
+  | 17:07:49.358       the tool's picture: 18004 item pixels, 12.359 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-017-tool.jpg
+  | 17:07:49.437       the tool's picture: 15293 item pixels, 10.495 percent differs, BLD_ST_Framing_vs_BLD_AR_Curtain_Mullion-018-tool.jpg
+  | 17:07:49.440  ==== TEST BLD-ST-Framing-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:49.440  ==== TEST BLD-ST-Framing-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:49.440  ==== TEST BLD-ST-Framing-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:49.440  ==== TEST BLD-ST-Framing-vs-BLD-ST-Columns found, 26 results at its top level ====
+  | 17:07:49.515       the tool's picture: 10522 item pixels, 7.503 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-001-tool.jpg
+  | 17:07:49.594       the tool's picture: 20859 item pixels, 14.109 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-002-tool.jpg
+  | 17:07:49.681       the tool's picture: 3235 item pixels, 2.75 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-003-tool.jpg
+  | 17:07:49.768       the tool's picture: 3235 item pixels, 2.75 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-004-tool.jpg
+  | 17:07:49.861       the tool's picture: 4833 item pixels, 3.805 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-005-tool.jpg
+  | 17:07:49.945       the tool's picture: 4833 item pixels, 3.805 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-006-tool.jpg
+  | 17:07:50.032       the tool's picture: 3441 item pixels, 2.922 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-007-tool.jpg
+  | 17:07:50.112       the tool's picture: 4833 item pixels, 3.831 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-008-tool.jpg
+  | 17:07:50.199       the tool's picture: 4833 item pixels, 3.831 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-009-tool.jpg
+  | 17:07:50.281       the tool's picture: 5208 item pixels, 4.112 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-010-tool.jpg
+  | 17:07:50.360       the tool's picture: 3167 item pixels, 2.708 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-011-tool.jpg
+  | 17:07:50.437       the tool's picture: 3167 item pixels, 2.708 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-012-tool.jpg
+  | 17:07:50.519       the tool's picture: 2636 item pixels, 2.32 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-013-tool.jpg
+  | 17:07:50.598       the tool's picture: 2636 item pixels, 2.32 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-014-tool.jpg
+  | 17:07:50.676       the tool's picture: 8215 item pixels, 6.049 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-015-tool.jpg
+  | 17:07:50.757       the tool's picture: 8215 item pixels, 6.049 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-016-tool.jpg
+  | 17:07:50.844       the tool's picture: 7479 item pixels, 5.612 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-017-tool.jpg
+  | 17:07:50.943       the tool's picture: 6915 item pixels, 5.104 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-018-tool.jpg
+  | 17:07:51.023       the tool's picture: 7321 item pixels, 5.401 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-019-tool.jpg
+  | 17:07:51.105       the tool's picture: 7321 item pixels, 5.401 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-020-tool.jpg
+  | 17:07:51.190       the tool's picture: 15151 item pixels, 10.216 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-021-tool.jpg
+  | 17:07:51.270       the tool's picture: 8963 item pixels, 6.435 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-022-tool.jpg
+  | 17:07:51.349       the tool's picture: 8963 item pixels, 6.435 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-023-tool.jpg
+  | 17:07:51.429       the tool's picture: 7278 item pixels, 5.326 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-024-tool.jpg
+  | 17:07:51.505       the tool's picture: 7278 item pixels, 5.326 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-025-tool.jpg
+  | 17:07:51.588       the tool's picture: 12943 item pixels, 8.875 percent differs, BLD_ST_Framing_vs_BLD_ST_Columns-026-tool.jpg
+  | 17:07:51.593  ==== TEST BLD-ST-Walls-vs-BLD-AR-Floors found, 2 results at its top level ====
+  | 17:07:51.674       the tool's picture: 4939 item pixels, 3.992 percent differs, BLD_ST_Walls_vs_BLD_AR_Floors-001-tool.jpg
+  | 17:07:51.767       the tool's picture: 6234 item pixels, 4.818 percent differs, BLD_ST_Walls_vs_BLD_AR_Floors-002-tool.jpg
+  | 17:07:51.770  ==== TEST BLD-ST-Walls-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:51.770  ==== TEST BLD-ST-Walls-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:51.770  ==== TEST BLD-ST-Walls-vs-BLD-AR-Walls found, 2 results at its top level ====
+  | 17:07:51.853       the tool's picture: 1768 item pixels, 1.909 percent differs, BLD_ST_Walls_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:51.933       the tool's picture: 1647 item pixels, 1.826 percent differs, BLD_ST_Walls_vs_BLD_AR_Walls-002-tool.jpg
+  | 17:07:51.937  ==== TEST BLD-ST-Walls-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:51.937  ==== TEST BLD-ST-Walls-vs-BLD-AR-Curtain Mullions found, 11 results at its top level ====
+  | 17:07:52.020       the tool's picture: 59245 item pixels, 38.779 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-001-tool.jpg
+  | 17:07:52.100       the tool's picture: 120893 item pixels, 17.089 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-002-tool.jpg
+  | 17:07:52.179       the tool's picture: 62689 item pixels, 34.109 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-003-tool.jpg
+  | 17:07:52.258       the tool's picture: 120893 item pixels, 17.089 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-004-tool.jpg
+  | 17:07:52.336       the tool's picture: 59245 item pixels, 38.779 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-005-tool.jpg
+  | 17:07:52.418       the tool's picture: 44780 item pixels, 28.88 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-006-tool.jpg
+  | 17:07:52.498       the tool's picture: 53595 item pixels, 34.552 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-007-tool.jpg
+  | 17:07:52.579       the tool's picture: 142603 item pixels, 7.096 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-008-tool.jpg
+  | 17:07:52.664       the tool's picture: 105930 item pixels, 31.036 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-009-tool.jpg
+  | 17:07:52.748       the tool's picture: 139077 item pixels, 9.443 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-010-tool.jpg
+  | 17:07:52.829       the tool's picture: 67830 item pixels, 31.422 percent differs, BLD_ST_Walls_vs_BLD_AR_Curtain_Mullions-011-tool.jpg
+  | 17:07:52.832  ==== TEST BLD-ST-Walls-vs-BLD-AR-Doors found, 3 results at its top level ====
+  | 17:07:52.909       the tool's picture: 86128 item pixels, 36.44 percent differs, BLD_ST_Walls_vs_BLD_AR_Doors-001-tool.jpg
+  | 17:07:52.989       the tool's picture: 88684 item pixels, 28.823 percent differs, BLD_ST_Walls_vs_BLD_AR_Doors-002-tool.jpg
+  | 17:07:53.068       the tool's picture: 112293 item pixels, 28.919 percent differs, BLD_ST_Walls_vs_BLD_AR_Doors-003-tool.jpg
+  | 17:07:53.071  ==== TEST BLD-ST-Walls-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:53.071  ==== TEST BLD-ST-Walls-vs-BLD-ST-Foundation found, 6 results at its top level ====
+  | 17:07:53.146       the tool's picture: 0 item pixels, 0.469 percent differs, BLD_ST_Walls_vs_BLD_ST_Foundation-001-tool.jpg
+  | 17:07:53.274       RETAKEN from 30 ft, its camera 21.53 ft from the centre: 2418 item pixels, 31.604 percent differs, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-001-retaken.jpg
+  | 17:07:53.350       the tool's picture: 0 item pixels, 0.469 percent differs, BLD_ST_Walls_vs_BLD_ST_Foundation-002-tool.jpg
+  | 17:07:53.437       RETAKEN from 30 ft, its camera 25.129 ft from the centre: 2103 item pixels, 36.146 percent differs, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-002-retaken.jpg
+  | 17:07:53.514       the tool's picture: 0 item pixels, 0.542 percent differs, BLD_ST_Walls_vs_BLD_ST_Foundation-003-tool.jpg
+  | 17:07:53.591       RETAKEN from 30 ft, its camera 27.552 ft from the centre: 8863 item pixels, 32.885 percent differs, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-003-retaken.jpg
+  | 17:07:53.671       the tool's picture: 0 item pixels, 0.469 percent differs, BLD_ST_Walls_vs_BLD_ST_Foundation-004-tool.jpg
+  | 17:07:53.748       RETAKEN from 30 ft, its camera 23.973 ft from the centre: 10593 item pixels, 34.654 percent differs, colour at the middle 0,224,0, BLD_ST_Walls_vs_BLD_ST_Foundation-004-retaken.jpg
+  | 17:07:53.823       the tool's picture: 0 item pixels, 0.469 percent differs, BLD_ST_Walls_vs_BLD_ST_Foundation-005-tool.jpg
+  | 17:07:53.906       RETAKEN from 30 ft, its camera 25.65 ft from the centre: 9744 item pixels, 37.549 percent differs, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-005-retaken.jpg
+  | 17:07:53.986       the tool's picture: 0 item pixels, 0.542 percent differs, BLD_ST_Walls_vs_BLD_ST_Foundation-006-tool.jpg
+  | 17:07:54.066       RETAKEN from 30 ft, its camera 25.256 ft from the centre: 1799 item pixels, 28.266 percent differs, colour at the middle 168,168,168, BLD_ST_Walls_vs_BLD_ST_Foundation-006-retaken.jpg
+  | 17:07:54.069  ==== TEST BLD-ST-Walls-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:07:54.069  ==== TEST BLD-ST-Walls-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:07:54.070  ==== TEST BLD-ST-Floors-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:54.071  ==== TEST BLD-ST-Floors-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:54.071  ==== TEST BLD-ST-Floors-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:54.071  ==== TEST BLD-ST-Floors-vs-BLD-AR-Walls found, 4 results at its top level ====
+  | 17:07:54.148       the tool's picture: 10026 item pixels, 7.198 percent differs, BLD_ST_Floors_vs_BLD_AR_Walls-001-tool.jpg
+  | 17:07:54.225       the tool's picture: 3276 item pixels, 2.893 percent differs, BLD_ST_Floors_vs_BLD_AR_Walls-002-tool.jpg
+  | 17:07:54.303       the tool's picture: 4131 item pixels, 3.456 percent differs, BLD_ST_Floors_vs_BLD_AR_Walls-003-tool.jpg
+  | 17:07:54.382       the tool's picture: 6960 item pixels, 5.258 percent differs, BLD_ST_Floors_vs_BLD_AR_Walls-004-tool.jpg
+  | 17:07:54.385  ==== TEST BLD-ST-Floors-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:54.385  ==== TEST BLD-ST-Floors-vs-BLD-AR-Curtain Mullions found, 21 results at its top level ====
+  | 17:07:54.460       the tool's picture: 73994 item pixels, 20.99 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-001-tool.jpg
+  | 17:07:54.542       the tool's picture: 63742 item pixels, 15.302 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-002-tool.jpg
+  | 17:07:54.628       the tool's picture: 68736 item pixels, 17.945 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-003-tool.jpg
+  | 17:07:54.712       the tool's picture: 69487 item pixels, 29.638 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-004-tool.jpg
+  | 17:07:54.790       the tool's picture: 73953 item pixels, 24.258 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-005-tool.jpg
+  | 17:07:54.870       the tool's picture: 65204 item pixels, 10.815 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-006-tool.jpg
+  | 17:07:54.946       the tool's picture: 48731 item pixels, 31.94 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-007-tool.jpg
+  | 17:07:55.030       the tool's picture: 58448 item pixels, 34.253 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-008-tool.jpg
+  | 17:07:55.119       the tool's picture: 72894 item pixels, 15.089 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-009-tool.jpg
+  | 17:07:55.199       the tool's picture: 57590 item pixels, 13.456 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-010-tool.jpg
+  | 17:07:55.301       the tool's picture: 58911 item pixels, 34.294 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-011-tool.jpg
+  | 17:07:55.388       the tool's picture: 127944 item pixels, 13.161 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-012-tool.jpg
+  | 17:07:55.475       the tool's picture: 128109 item pixels, 13.042 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-013-tool.jpg
+  | 17:07:55.558       the tool's picture: 127986 item pixels, 13.125 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-014-tool.jpg
+  | 17:07:55.643       the tool's picture: 128109 item pixels, 13.042 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-015-tool.jpg
+  | 17:07:55.722       the tool's picture: 128109 item pixels, 13.042 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-016-tool.jpg
+  | 17:07:55.806       the tool's picture: 127986 item pixels, 13.125 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-017-tool.jpg
+  | 17:07:55.888       the tool's picture: 122240 item pixels, 14.875 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-018-tool.jpg
+  | 17:07:55.966       the tool's picture: 118374 item pixels, 15.979 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-019-tool.jpg
+  | 17:07:56.067       the tool's picture: 99233 item pixels, 8.565 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-020-tool.jpg
+  | 17:07:56.145       the tool's picture: 55937 item pixels, 36.755 percent differs, BLD_ST_Floors_vs_BLD_AR_Curtain_Mullions-021-tool.jpg
+  | 17:07:56.148  ==== TEST BLD-ST-Floors-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:56.148  ==== TEST BLD-ST-Floors-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:56.148  ==== TEST BLD-ST-Floors-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:56.148  ==== TEST BLD-ST-Floors-vs-BLD-ST-Columns found, 6 results at its top level ====
+  | 17:07:56.225       the tool's picture: 65309 item pixels, 31.117 percent differs, BLD_ST_Floors_vs_BLD_ST_Columns-001-tool.jpg
+  | 17:07:56.309       the tool's picture: 42027 item pixels, 27.349 percent differs, BLD_ST_Floors_vs_BLD_ST_Columns-002-tool.jpg
+  | 17:07:56.386       the tool's picture: 68763 item pixels, 14.305 percent differs, BLD_ST_Floors_vs_BLD_ST_Columns-003-tool.jpg
+  | 17:07:56.467       the tool's picture: 68763 item pixels, 14.305 percent differs, BLD_ST_Floors_vs_BLD_ST_Columns-004-tool.jpg
+  | 17:07:56.546       the tool's picture: 51492 item pixels, 25.966 percent differs, BLD_ST_Floors_vs_BLD_ST_Columns-005-tool.jpg
+  | 17:07:56.627       the tool's picture: 51492 item pixels, 25.966 percent differs, BLD_ST_Floors_vs_BLD_ST_Columns-006-tool.jpg
+  | 17:07:56.630  ==== TEST BLD-ST-Floors-vs-BLD-ST-Framing found, 2 results at its top level ====
+  | 17:07:56.703       the tool's picture: 8586 item pixels, 6.305 percent differs, BLD_ST_Floors_vs_BLD_ST_Framing-001-tool.jpg
+  | 17:07:56.781       the tool's picture: 6970 item pixels, 5.268 percent differs, BLD_ST_Floors_vs_BLD_ST_Framing-002-tool.jpg
+  | 17:07:56.784  ==== TEST BLD-ST-Floors-vs-BLD-ST-Walls found, 2 results at its top level ====
+  | 17:07:56.860       the tool's picture: 4256 item pixels, 3.521 percent differs, BLD_ST_Floors_vs_BLD_ST_Walls-001-tool.jpg
+  | 17:07:56.939       the tool's picture: 3572 item pixels, 3.078 percent differs, BLD_ST_Floors_vs_BLD_ST_Walls-002-tool.jpg
+  | 17:07:56.942  ==== TEST BLD-ST-Stair-vs-BLD-AR-Floors found, 2 results at its top level ====
+  | 17:07:57.020       the tool's picture: 31157 item pixels, 20.76 percent differs, BLD_ST_Stair_vs_BLD_AR_Floors-001-tool.jpg
+  | 17:07:57.100       the tool's picture: 29160 item pixels, 19.651 percent differs, BLD_ST_Stair_vs_BLD_AR_Floors-002-tool.jpg
+  | 17:07:57.103  ==== TEST BLD-ST-Stair-vs-BLD-AR-Stairs found, 2 results at its top level ====
+  | 17:07:57.183       the tool's picture: 5139 item pixels, 4.021 percent differs, BLD_ST_Stair_vs_BLD_AR_Stairs-001-tool.jpg
+  | 17:07:57.266       the tool's picture: 3858 item pixels, 3.089 percent differs, BLD_ST_Stair_vs_BLD_AR_Stairs-002-tool.jpg
+  | 17:07:57.268  ==== TEST BLD-ST-Stair-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:57.268  ==== TEST BLD-ST-Stair-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:07:57.268  ==== TEST BLD-ST-Stair-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:57.268  ==== TEST BLD-ST-Stair-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:57.268  ==== TEST BLD-ST-Stair-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:57.269  ==== TEST BLD-ST-Stair-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:57.269  ==== TEST BLD-ST-Stair-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:57.269  ==== TEST BLD-ST-Stair-vs-BLD-ST-Columns found, 2 results at its top level ====
+  | 17:07:57.350       the tool's picture: 5599 item pixels, 4.31 percent differs, BLD_ST_Stair_vs_BLD_ST_Columns-001-tool.jpg
+  | 17:07:57.437       the tool's picture: 4994 item pixels, 3.94 percent differs, BLD_ST_Stair_vs_BLD_ST_Columns-002-tool.jpg
+  | 17:07:57.440  ==== TEST BLD-ST-Stair-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:07:57.440  ==== TEST BLD-ST-Stair-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:07:57.440  ==== TEST BLD-ST-Stair-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:07:57.440  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:57.440  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:57.442  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:57.442  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:07:57.442  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:07:57.443  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:57.444  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:07:57.445  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:07:57.446  ==== TEST BLD-ME-Air Terminals-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:07:57.447  ==== TEST BLD-ME-Air Terminals-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:07:57.447  ==== TEST BLD-ME-Air Terminals-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:07:57.447  ==== TEST BLD-ME-Air Terminals-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:07:57.447  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:07:57.447  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:07:57.447  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:07:57.447  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls found, 4 results at its top level ====
+  | 17:07:57.568       the tool's picture: 102260 item pixels, 31.927 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_AR_W-001-tool.jpg
+  | 17:07:57.665       the tool's picture: 69794 item pixels, 28.945 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_AR_W-002-tool.jpg
+  | 17:07:57.759       the tool's picture: 41273 item pixels, 27.289 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_AR_W-003-tool.jpg
+  | 17:07:57.844       the tool's picture: 149268 item pixels, 2.797 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_AR_W-004-tool.jpg
+  | 17:07:57.847  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:07:57.847  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:07:57.847  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:07:57.847  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:07:57.847  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:07:57.847  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:07:57.847  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing found, 8 results at its top level ====
+  | 17:07:57.998       the tool's picture: 6911 item pixels, 5.122 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-tool.jpg
+  | 17:07:58.088       the tool's picture: 4194 item pixels, 3.271 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-tool.jpg
+  | 17:07:58.173       the tool's picture: 6241 item pixels, 4.604 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-003-tool.jpg
+  | 17:07:58.256       the tool's picture: 2970 item pixels, 2.552 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-004-tool.jpg
+  | 17:07:58.356       the tool's picture: 2654 item pixels, 2.302 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-005-tool.jpg
+  | 17:07:58.431       the tool's picture: 17143 item pixels, 11.641 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-006-tool.jpg
+  | 17:07:58.549       the tool's picture: 4088 item pixels, 3.206 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-007-tool.jpg
+  | 17:07:58.641       the tool's picture: 10399 item pixels, 7.216 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_F-008-tool.jpg
+  | 17:07:58.644  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls found, 9 results at its top level ====
+  | 17:07:58.728       the tool's picture: 0 item pixels, 0.469 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-tool.jpg
+  | 17:07:59.040       RETAKEN from 39.142 ft, its camera 39.142 ft from the centre: 70 item pixels, 27.479 percent differs, colour at the middle 168,168,168, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-retaken.jpg
+  | 17:07:59.124       the tool's picture: 0 item pixels, 0.565 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-tool.jpg
+  | 17:07:59.267       RETAKEN from 30 ft, its camera 18.616 ft from the centre: 65 item pixels, 10.06 percent differs, colour at the middle 168,168,168, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-retaken.jpg
+  | 17:07:59.350       the tool's picture: 0 item pixels, 0.563 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-003-tool.jpg
+  | 17:07:59.455       RETAKEN from 30 ft, its camera 8.746 ft from the centre: 1050 item pixels, 39.451 percent differs, colour at the middle 168,168,168, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-003-retaken.jpg
+  | 17:07:59.535       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-004-tool.jpg
+  | 17:07:59.623       RETAKEN from 30 ft, its camera 15.19 ft from the centre: 0 item pixels, 2.052 percent differs, colour at the middle 168,168,168, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-004-retaken.jpg
+  | 17:07:59.701       the tool's picture: 0 item pixels, 0.56 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-005-tool.jpg
+  | 17:07:59.784       RETAKEN from 30 ft, its camera 17.469 ft from the centre: 0 item pixels, 0.104 percent differs, colour at the middle 168,168,168, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-005-retaken.jpg
+  | 17:07:59.864       the tool's picture: 99764 item pixels, 32.794 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-006-tool.jpg
+  | 17:07:59.950       the tool's picture: 41943 item pixels, 27.716 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-007-tool.jpg
+  | 17:08:00.028       the tool's picture: 3759 item pixels, 3.206 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-008-tool.jpg
+  | 17:08:00.124       the tool's picture: 149412 item pixels, 2.719 percent differs, BLD_FF_Pipes___Pipe_Fittings_vs_BLD_ST_W-009-tool.jpg
+  | 17:08:00.128  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:00.128  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:00.128  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:00.128  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:00.128  ==== TEST BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:00.128  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:00.128  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:00.129  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:00.130  ==== TEST BLD-FF-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings found, 13 results at its top level ====
+  | 17:08:00.202       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-tool.jpg
+  | 17:08:00.299       RETAKEN from 30 ft, its camera 3.073 ft from the centre: 2112 item pixels, 20.417 percent differs, colour at the middle 110,110,110, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-001-retaken.jpg
+  | 17:08:00.386       the tool's picture: 0 item pixels, 0.609 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-tool.jpg
+  | 17:08:00.480       RETAKEN from 30 ft, its camera 4.058 ft from the centre: 4128 item pixels, 25.073 percent differs, colour at the middle 0,236,0, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-002-retaken.jpg
+  | 17:08:00.557       the tool's picture: 0 item pixels, 0.698 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-003-tool.jpg
+  | 17:08:00.648       RETAKEN from 30 ft, its camera 4.058 ft from the centre: 2441 item pixels, 23.336 percent differs, colour at the middle 224,224,224, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-003-retaken.jpg
+  | 17:08:00.730       the tool's picture: 0 item pixels, 0.609 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-004-tool.jpg
+  | 17:08:00.821       RETAKEN from 30 ft, its camera 4.293 ft from the centre: 4119 item pixels, 25.565 percent differs, colour at the middle 241,0,0, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-004-retaken.jpg
+  | 17:08:00.900       the tool's picture: 0 item pixels, 0.698 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-005-tool.jpg
+  | 17:08:00.989       RETAKEN from 30 ft, its camera 4.293 ft from the centre: 2465 item pixels, 23.737 percent differs, colour at the middle 224,224,224, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-005-retaken.jpg
+  | 17:08:01.067       the tool's picture: 0 item pixels, 0.609 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-006-tool.jpg
+  | 17:08:01.158       RETAKEN from 30 ft, its camera 6.016 ft from the centre: 3601 item pixels, 21.974 percent differs, colour at the middle 143,143,143, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-006-retaken.jpg
+  | 17:08:01.238       the tool's picture: 0 item pixels, 0.688 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-007-tool.jpg
+  | 17:08:01.329       RETAKEN from 30 ft, its camera 6.016 ft from the centre: 2327 item pixels, 22.365 percent differs, colour at the middle 141,141,141, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-007-retaken.jpg
+  | 17:08:01.408       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-008-tool.jpg
+  | 17:08:01.496       RETAKEN from 30 ft, its camera 3.297 ft from the centre: 2312 item pixels, 19.232 percent differs, colour at the middle 224,0,0, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-008-retaken.jpg
+  | 17:08:01.577       the tool's picture: 0 item pixels, 0.609 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-009-tool.jpg
+  | 17:08:01.665       RETAKEN from 30 ft, its camera 3.196 ft from the centre: 3038 item pixels, 21.549 percent differs, colour at the middle 0,251,0, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-009-retaken.jpg
+  | 17:08:01.743       the tool's picture: 0 item pixels, 0.609 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-010-tool.jpg
+  | 17:08:01.833       RETAKEN from 30 ft, its camera 3.529 ft from the centre: 3242 item pixels, 22.529 percent differs, colour at the middle 44,112,0, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-010-retaken.jpg
+  | 17:08:01.911       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-011-tool.jpg
+  | 17:08:02.008       RETAKEN from 30 ft, its camera 3.757 ft from the centre: 2313 item pixels, 18.719 percent differs, colour at the middle 137,137,137, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-011-retaken.jpg
+  | 17:08:02.088       the tool's picture: 0 item pixels, 0.698 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-012-tool.jpg
+  | 17:08:02.180       RETAKEN from 30 ft, its camera 6.123 ft from the centre: 3859 item pixels, 23.435 percent differs, colour at the middle 211,0,0, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-012-retaken.jpg
+  | 17:08:02.262       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-013-tool.jpg
+  | 17:08:02.356       RETAKEN from 30 ft, its camera 6.123 ft from the centre: 2441 item pixels, 23.109 percent differs, colour at the middle 224,224,224, BLD_FF_Pipe_Accessories_vs_BLD_FF_Pipes_-013-retaken.jpg
+  | 17:08:02.360  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:02.360  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:02.360  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:02.360  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:02.361  ==== TEST BLD-FF-Sprinklers-vs-BLD-ST-Floors found, 4 results at its top level ====
+  | 17:08:02.437       the tool's picture: 113315 item pixels, 24.859 percent differs, BLD_FF_Sprinklers_vs_BLD_ST_Floors-001-tool.jpg
+  | 17:08:02.521       the tool's picture: 113316 item pixels, 24.766 percent differs, BLD_FF_Sprinklers_vs_BLD_ST_Floors-002-tool.jpg
+  | 17:08:02.597       the tool's picture: 113316 item pixels, 24.768 percent differs, BLD_FF_Sprinklers_vs_BLD_ST_Floors-003-tool.jpg
+  | 17:08:02.678       the tool's picture: 113316 item pixels, 24.846 percent differs, BLD_FF_Sprinklers_vs_BLD_ST_Floors-004-tool.jpg
+  | 17:08:02.681  ==== TEST BLD-FF-Sprinklers-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:02.681  ==== TEST BLD-FF-Sprinklers-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:02.681  ==== TEST BLD-FF-Sprinklers-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-FF-Sprinklers-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-FF-Sprinklers-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-FF-Sprinklers-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:02.683  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:02.684  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:02.684  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:02.684  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:02.684  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:02.684  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:02.684  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:02.684  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:02.685  ==== TEST BLD-PL-Mechanical Equipment-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:02.686  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:02.686  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:02.686  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:02.686  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls found, 2 results at its top level ====
+  | 17:08:02.763       the tool's picture: 56757 item pixels, 32.445 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_AR_W-001-tool.jpg
+  | 17:08:02.845       the tool's picture: 149049 item pixels, 2.94 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_AR_W-002-tool.jpg
+  | 17:08:02.848  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:02.849  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:02.849  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:02.849  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:02.849  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation found, 2 results at its top level ====
+  | 17:08:02.926       the tool's picture: 190 item pixels, 0.76 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-tool.jpg
+  | 17:08:03.003       the tool's picture: 0 item pixels, 0.755 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-tool.jpg
+  | 17:08:03.218       RETAKEN from 154.929 ft, its camera 154.929 ft from the centre: 501 item pixels, 20.919 percent differs, colour at the middle 197,37,96, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-retaken.jpg
+  | 17:08:03.222  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:03.222  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:03.222  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls found, 8 results at its top level ====
+  | 17:08:03.299       the tool's picture: 0 item pixels, 0.565 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-tool.jpg
+  | 17:08:03.402       RETAKEN from 30 ft, its camera 17.069 ft from the centre: 40 item pixels, 13.518 percent differs, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-retaken.jpg
+  | 17:08:03.482       the tool's picture: 0 item pixels, 0.672 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-tool.jpg
+  | 17:08:03.590       RETAKEN from 63.342 ft, its camera 63.342 ft from the centre: 108 item pixels, 17.948 percent differs, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-retaken.jpg
+  | 17:08:03.668       the tool's picture: 0 item pixels, 0.565 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-003-tool.jpg
+  | 17:08:03.760       RETAKEN from 30 ft, its camera 16.83 ft from the centre: 47 item pixels, 9.719 percent differs, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-003-retaken.jpg
+  | 17:08:03.839       the tool's picture: 0 item pixels, 0.542 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-004-tool.jpg
+  | 17:08:03.926       RETAKEN from 30 ft, its camera 13.796 ft from the centre: 1208 item pixels, 42.341 percent differs, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-004-retaken.jpg
+  | 17:08:04.004       the tool's picture: 0 item pixels, 0.466 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-005-tool.jpg
+  | 17:08:04.091       RETAKEN from 30 ft, its camera 12.744 ft from the centre: 32 item pixels, 20.794 percent differs, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-005-retaken.jpg
+  | 17:08:04.171       the tool's picture: 0 item pixels, 0.565 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-006-tool.jpg
+  | 17:08:04.259       RETAKEN from 30 ft, its camera 15.313 ft from the centre: 86 item pixels, 10.859 percent differs, colour at the middle 168,168,168, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-006-retaken.jpg
+  | 17:08:04.339       the tool's picture: 54333 item pixels, 28.766 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-007-tool.jpg
+  | 17:08:04.419       the tool's picture: 149186 item pixels, 2.87 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_W-008-tool.jpg
+  | 17:08:04.423  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors found, 3 results at its top level ====
+  | 17:08:04.501       the tool's picture: 149683 item pixels, 2.659 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-tool.jpg
+  | 17:08:04.578       the tool's picture: 101831 item pixels, 19.995 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-tool.jpg
+  | 17:08:04.659       the tool's picture: 87494 item pixels, 26.602 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_ST_F-003-tool.jpg
+  | 17:08:04.663  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:04.663  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:04.663  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:04.663  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:04.664  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:04.664  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories found, 1 results at its top level ====
+  | 17:08:04.742       the tool's picture: 0 item pixels, 0.547 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-tool.jpg
+  | 17:08:04.842       RETAKEN from 30 ft, its camera 7.734 ft from the centre: 3310 item pixels, 20.013 percent differs, colour at the middle 0,255,0, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-retaken.jpg
+  | 17:08:04.847  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:04.848  ==== TEST BLD-PL-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment found, 1 results at its top level ====
+  | 17:08:04.924       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-tool.jpg
+  | 17:08:05.014       RETAKEN from 30 ft, its camera 3.533 ft from the centre: 2205 item pixels, 15.932 percent differs, colour at the middle 158,190,243, BLD_PL_Pipes___Pipe_Fittings_vs_BLD_PL_M-001-retaken.jpg
+  | 17:08:05.017  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:05.017  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:05.018  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:05.018  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:05.018  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:05.018  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:05.018  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:05.018  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:05.018  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:05.019  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:05.019  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:05.019  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:05.019  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:05.019  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:05.019  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:05.021  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:05.022  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:05.022  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:05.022  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:05.022  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:05.023  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:05.023  ==== TEST BLD-PL-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:05.023  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:05.023  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:05.023  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:05.024  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:05.024  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:05.024  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:05.024  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:05.024  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:05.024  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:05.025  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:05.025  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:05.025  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:05.025  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:05.025  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:05.025  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:05.026  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:05.026  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:05.026  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:05.026  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:05.026  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:05.026  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:05.027  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:05.027  ==== TEST BLD-DR-Mechanical Equipment-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:05.027  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors found, 2 results at its top level ====
+  | 17:08:05.103       the tool's picture: 152753 item pixels, 1.122 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_AR_F-001-tool.jpg
+  | 17:08:05.190       the tool's picture: 152752 item pixels, 1.352 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_AR_F-002-tool.jpg
+  | 17:08:05.194  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:05.194  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:05.194  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls found, 1 results at its top level ====
+  | 17:08:05.267       the tool's picture: 33033 item pixels, 21.956 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_AR_W-001-tool.jpg
+  | 17:08:05.270  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:05.271  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:05.271  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:05.271  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:05.271  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:05.271  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:05.271  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:05.271  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls found, 8 results at its top level ====
+  | 17:08:05.349       the tool's picture: 5692 item pixels, 4.406 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-001-tool.jpg
+  | 17:08:05.426       the tool's picture: 0 item pixels, 0.651 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-tool.jpg
+  | 17:08:05.509       RETAKEN from 30 ft, its camera 17.793 ft from the centre: 97 item pixels, 12.029 percent differs, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-002-retaken.jpg
+  | 17:08:05.588       the tool's picture: 0 item pixels, 0.565 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-003-tool.jpg
+  | 17:08:05.678       RETAKEN from 30 ft, its camera 15.409 ft from the centre: 35 item pixels, 16.057 percent differs, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-003-retaken.jpg
+  | 17:08:05.755       the tool's picture: 0 item pixels, 0.466 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-004-tool.jpg
+  | 17:08:05.842       RETAKEN from 30 ft, its camera 21.8 ft from the centre: 0 item pixels, 0.805 percent differs, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-004-retaken.jpg
+  | 17:08:05.920       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-005-tool.jpg
+  | 17:08:06.004       RETAKEN from 30 ft, its camera 15.415 ft from the centre: 0 item pixels, 11.18 percent differs, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-005-retaken.jpg
+  | 17:08:06.081       the tool's picture: 0 item pixels, 0.583 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-006-tool.jpg
+  | 17:08:06.176       RETAKEN from 54.435 ft, its camera 54.435 ft from the centre: 439 item pixels, 33.266 percent differs, colour at the middle 168,168,168, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-006-retaken.jpg
+  | 17:08:06.260       the tool's picture: 33626 item pixels, 22.344 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-007-tool.jpg
+  | 17:08:06.342       the tool's picture: 71829 item pixels, 26.125 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_W-008-tool.jpg
+  | 17:08:06.347  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors found, 3 results at its top level ====
+  | 17:08:06.425       the tool's picture: 29265 item pixels, 19.581 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_F-001-tool.jpg
+  | 17:08:06.505       the tool's picture: 152677 item pixels, 1.508 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_F-002-tool.jpg
+  | 17:08:06.588       the tool's picture: 152620 item pixels, 1.987 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_ST_F-003-tool.jpg
+  | 17:08:06.591  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:06.592  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:06.592  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:06.592  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:06.592  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings found, 2 results at its top level ====
+  | 17:08:06.668       the tool's picture: 5590 item pixels, 4.477 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_FF_P-001-tool.jpg
+  | 17:08:06.750       the tool's picture: 538 item pixels, 0.917 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_FF_P-002-tool.jpg
+  | 17:08:06.755  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:06.755  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:06.756  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:06.756  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:06.756  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:06.756  ==== TEST BLD-DR-Pipes & Pipe Fittings-vs-BLD-DR-Mechanical Equipment found, 2 results at its top level ====
+  | 17:08:06.835       the tool's picture: 0 item pixels, 0.698 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-tool.jpg
+  | 17:08:06.926       RETAKEN from 30 ft, its camera 5.378 ft from the centre: 718 item pixels, 6.956 percent differs, colour at the middle 27,179,0, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-001-retaken.jpg
+  | 17:08:07.006       the tool's picture: 0 item pixels, 0.698 percent differs, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-tool.jpg
+  | 17:08:07.090       RETAKEN from 30 ft, its camera 5.377 ft from the centre: 732 item pixels, 7.25 percent differs, colour at the middle 27,179,0, BLD_DR_Pipes___Pipe_Fittings_vs_BLD_DR_M-002-retaken.jpg
+  | 17:08:07.094  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:07.094  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:07.094  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:07.094  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:07.095  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:07.095  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:07.095  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:07.095  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:07.095  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:07.095  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.096  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.097  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:07.097  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.099  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.100  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.100  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.100  ==== TEST BLD-DR-Pipe Accessories-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.101  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:07.101  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:07.101  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:07.101  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:07.102  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:07.102  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:07.102  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:07.102  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:07.102  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation found, 1 results at its top level ====
+  | 17:08:07.177       the tool's picture: 0 item pixels, 0.591 percent differs, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-tool.jpg
+  | 17:08:07.259       RETAKEN from 30 ft, its camera 2.61 ft from the centre: 7367 item pixels, 32.953 percent differs, colour at the middle 168,168,168, BLD_DR_Plumbing_Fixtures_vs_BLD_ST_Found-001-retaken.jpg
+  | 17:08:07.262  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:07.262  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:07.262  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:07.265  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:07.266  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:07.266  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:07.266  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.266  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:07.267  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.267  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.267  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:07.267  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.268  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.268  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.268  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.268  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings found, 3 results at its top level ====
+  | 17:08:07.343       the tool's picture: 6214 item pixels, 4.591 percent differs, BLD_DR_Plumbing_Fixtures_vs_BLD_DR_Pipes-001-tool.jpg
+  | 17:08:07.427       the tool's picture: 3085 item pixels, 2.615 percent differs, BLD_DR_Plumbing_Fixtures_vs_BLD_DR_Pipes-002-tool.jpg
+  | 17:08:07.508       the tool's picture: 1787 item pixels, 1.688 percent differs, BLD_DR_Plumbing_Fixtures_vs_BLD_DR_Pipes-003-tool.jpg
+  | 17:08:07.512  ==== TEST BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:07.513  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:07.514  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:07.514  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:07.514  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:07.514  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:07.514  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:07.515  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:07.515  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:07.515  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.515  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:07.515  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.516  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.516  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:07.516  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.516  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.516  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.517  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.517  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.517  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.517  ==== TEST BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:07.517  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:07.518  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:07.518  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:07.518  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:07.518  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:07.519  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:07.523  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:07.524  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:07.524  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:07.524  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:07.525  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:07.525  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:07.526  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:07.526  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:07.527  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:07.527  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.527  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:07.528  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.528  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.528  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:07.528  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.529  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.529  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.529  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.529  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.529  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.530  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:07.530  ==== TEST BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:07.530  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:07.530  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:07.530  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:07.530  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:07.531  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:07.531  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:07.531  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:07.531  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:07.531  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:07.532  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:07.532  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:07.532  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:07.532  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:07.532  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:07.533  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:07.533  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.533  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:07.533  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.534  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.534  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:07.534  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.539  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.539  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.539  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.540  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.540  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.541  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:07.541  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:07.541  ==== TEST BLD-EL-Electrical Fixtures-vs-BLD-EL-Electrical Equipment found, 0 results at its top level ====
+  | 17:08:07.542  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:07.543  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:07.543  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:07.544  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:07.544  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:07.544  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:07.545  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:07.545  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:07.545  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:07.545  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:07.546  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:07.546  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:07.546  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:07.546  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:07.547  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:07.547  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.547  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:07.547  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.548  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.548  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:07.548  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.549  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.549  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.549  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:07.549  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:07.550  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:07.550  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:07.550  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:07.550  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment found, 30 results at its top level ====
+  | 17:08:07.632       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-tool.jpg
+  | 17:08:07.777       RETAKEN from 30 ft, its camera 7.929 ft from the centre: 198 item pixels, 2.966 percent differs, colour at the middle 224,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-retaken.jpg
+  | 17:08:07.868       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-tool.jpg
+  | 17:08:07.954       RETAKEN from 30 ft, its camera 7.931 ft from the centre: 199 item pixels, 3.013 percent differs, colour at the middle 224,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-retaken.jpg
+  | 17:08:08.044       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-003-tool.jpg
+  | 17:08:08.251       RETAKEN from 30 ft, its camera 7.901 ft from the centre: 197 item pixels, 7.115 percent differs, colour at the middle 224,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-003-retaken.jpg
+  | 17:08:08.330       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-004-tool.jpg
+  | 17:08:08.427       RETAKEN from 30 ft, its camera 7.942 ft from the centre: 236 item pixels, 3.888 percent differs, colour at the middle 224,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-004-retaken.jpg
+  | 17:08:08.506       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-005-tool.jpg
+  | 17:08:08.601       RETAKEN from 30 ft, its camera 7.796 ft from the centre: 193 item pixels, 7.453 percent differs, colour at the middle 224,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-005-retaken.jpg
+  | 17:08:08.680       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-006-tool.jpg
+  | 17:08:08.768       RETAKEN from 30 ft, its camera 7.75 ft from the centre: 197 item pixels, 7.745 percent differs, colour at the middle 224,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-006-retaken.jpg
+  | 17:08:08.858       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-007-tool.jpg
+  | 17:08:09.192       RETAKEN from 30 ft, its camera 8.723 ft from the centre: 139 item pixels, 3.378 percent differs, colour at the middle 255,5,5, BLD_EL_Conduits___Conduit_Fittings_vs_BL-007-retaken.jpg
+  | 17:08:09.270       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-008-tool.jpg
+  | 17:08:09.409       RETAKEN from 30 ft, its camera 9.246 ft from the centre: 66 item pixels, 8.232 percent differs, colour at the middle 138,166,213, BLD_EL_Conduits___Conduit_Fittings_vs_BL-008-retaken.jpg
+  | 17:08:09.487       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-009-tool.jpg
+  | 17:08:09.584       RETAKEN from 30 ft, its camera 9.316 ft from the centre: 78 item pixels, 2.354 percent differs, colour at the middle 175,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-009-retaken.jpg
+  | 17:08:09.664       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-010-tool.jpg
+  | 17:08:09.760       RETAKEN from 30 ft, its camera 9.35 ft from the centre: 75 item pixels, 3.521 percent differs, colour at the middle 53,128,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-010-retaken.jpg
+  | 17:08:09.853       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-011-tool.jpg
+  | 17:08:10.020       RETAKEN from 30 ft, its camera 5.005 ft from the centre: 1426 item pixels, 10.93 percent differs, colour at the middle 0,231,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-011-retaken.jpg
+  | 17:08:10.149       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-012-tool.jpg
+  | 17:08:10.319       RETAKEN from 30 ft, its camera 9.798 ft from the centre: 106 item pixels, 4.214 percent differs, colour at the middle 210,210,210, BLD_EL_Conduits___Conduit_Fittings_vs_BL-012-retaken.jpg
+  | 17:08:10.450       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-013-tool.jpg
+  | 17:08:10.591       RETAKEN from 30 ft, its camera 13.084 ft from the centre: 969 item pixels, 2.823 percent differs, colour at the middle 246,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-013-retaken.jpg
+  | 17:08:10.679       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-014-tool.jpg
+  | 17:08:10.768       RETAKEN from 30 ft, its camera 12.682 ft from the centre: 964 item pixels, 3.052 percent differs, colour at the middle 255,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-014-retaken.jpg
+  | 17:08:10.854       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-015-tool.jpg
+  | 17:08:10.955       RETAKEN from 30 ft, its camera 13.014 ft from the centre: 380 item pixels, 10.547 percent differs, colour at the middle 255,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-015-retaken.jpg
+  | 17:08:11.061       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-016-tool.jpg
+  | 17:08:11.151       RETAKEN from 30 ft, its camera 9.769 ft from the centre: 87 item pixels, 7.609 percent differs, colour at the middle 127,122,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-016-retaken.jpg
+  | 17:08:11.233       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-017-tool.jpg
+  | 17:08:11.329       RETAKEN from 30 ft, its camera 9.006 ft from the centre: 82 item pixels, 3.68 percent differs, colour at the middle 255,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-017-retaken.jpg
+  | 17:08:11.411       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-018-tool.jpg
+  | 17:08:11.504       RETAKEN from 30 ft, its camera 9.205 ft from the centre: 141 item pixels, 11.354 percent differs, colour at the middle 6,208,6, BLD_EL_Conduits___Conduit_Fittings_vs_BL-018-retaken.jpg
+  | 17:08:11.594       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-019-tool.jpg
+  | 17:08:11.692       RETAKEN from 30 ft, its camera 8.771 ft from the centre: 151 item pixels, 11.12 percent differs, colour at the middle 0,231,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-019-retaken.jpg
+  | 17:08:11.779       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-020-tool.jpg
+  | 17:08:11.864       RETAKEN from 30 ft, its camera 8.337 ft from the centre: 149 item pixels, 10.862 percent differs, colour at the middle 128,243,128, BLD_EL_Conduits___Conduit_Fittings_vs_BL-020-retaken.jpg
+  | 17:08:11.942       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-021-tool.jpg
+  | 17:08:12.027       RETAKEN from 30 ft, its camera 7.87 ft from the centre: 154 item pixels, 10.651 percent differs, colour at the middle 255,255,255, BLD_EL_Conduits___Conduit_Fittings_vs_BL-021-retaken.jpg
+  | 17:08:12.108       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-022-tool.jpg
+  | 17:08:12.193       RETAKEN from 30 ft, its camera 12.092 ft from the centre: 886 item pixels, 5.966 percent differs, colour at the middle 255,255,255, BLD_EL_Conduits___Conduit_Fittings_vs_BL-022-retaken.jpg
+  | 17:08:12.272       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-023-tool.jpg
+  | 17:08:12.353       RETAKEN from 30 ft, its camera 20.754 ft from the centre: 973 item pixels, 2.911 percent differs, colour at the middle 48,121,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-023-retaken.jpg
+  | 17:08:12.428       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-024-tool.jpg
+  | 17:08:12.510       RETAKEN from 30 ft, its camera 13.02 ft from the centre: 254 item pixels, 4.339 percent differs, colour at the middle 64,191,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-024-retaken.jpg
+  | 17:08:12.585       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-025-tool.jpg
+  | 17:08:12.662       RETAKEN from 30 ft, its camera 13.037 ft from the centre: 725 item pixels, 3.456 percent differs, colour at the middle 29,223,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-025-retaken.jpg
+  | 17:08:12.739       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-026-tool.jpg
+  | 17:08:12.819       RETAKEN from 30 ft, its camera 18.229 ft from the centre: 933 item pixels, 7.047 percent differs, colour at the middle 255,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-026-retaken.jpg
+  | 17:08:12.894       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-027-tool.jpg
+  | 17:08:12.977       RETAKEN from 30 ft, its camera 13.161 ft from the centre: 507 item pixels, 5.086 percent differs, colour at the middle 255,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-027-retaken.jpg
+  | 17:08:13.054       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-028-tool.jpg
+  | 17:08:13.135       RETAKEN from 30 ft, its camera 16.505 ft from the centre: 824 item pixels, 7.172 percent differs, colour at the middle 255,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-028-retaken.jpg
+  | 17:08:13.214       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-029-tool.jpg
+  | 17:08:13.291       RETAKEN from 30 ft, its camera 13.137 ft from the centre: 189 item pixels, 4.198 percent differs, colour at the middle 32,252,32, BLD_EL_Conduits___Conduit_Fittings_vs_BL-029-retaken.jpg
+  | 17:08:13.370       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-030-tool.jpg
+  | 17:08:13.450       RETAKEN from 30 ft, its camera 18.986 ft from the centre: 778 item pixels, 6.049 percent differs, colour at the middle 255,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-030-retaken.jpg
+  | 17:08:13.453  ==== TEST BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures found, 5 results at its top level ====
+  | 17:08:13.525       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-tool.jpg
+  | 17:08:13.610       RETAKEN from 30 ft, its camera 21.289 ft from the centre: 1766 item pixels, 17.057 percent differs, colour at the middle 239,0,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-001-retaken.jpg
+  | 17:08:13.684       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-tool.jpg
+  | 17:08:13.766       RETAKEN from 30 ft, its camera 23.466 ft from the centre: 2323 item pixels, 7.784 percent differs, colour at the middle 0,216,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-002-retaken.jpg
+  | 17:08:13.841       the tool's picture: 0 item pixels, 1.023 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-003-tool.jpg
+  | 17:08:13.921       RETAKEN from 30 ft, its camera 26.325 ft from the centre: 1705 item pixels, 7.841 percent differs, colour at the middle 0,231,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-003-retaken.jpg
+  | 17:08:13.997       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-004-tool.jpg
+  | 17:08:14.078       RETAKEN from 30 ft, its camera 25.964 ft from the centre: 1640 item pixels, 14.141 percent differs, colour at the middle 0,216,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-004-retaken.jpg
+  | 17:08:14.161       the tool's picture: 0 item pixels, 1.021 percent differs, BLD_EL_Conduits___Conduit_Fittings_vs_BL-005-tool.jpg
+  | 17:08:14.241       RETAKEN from 30 ft, its camera 8.797 ft from the centre: 1676 item pixels, 7.708 percent differs, colour at the middle 0,216,0, BLD_EL_Conduits___Conduit_Fittings_vs_BL-005-retaken.jpg
+  | 17:08:14.245  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:14.246  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:14.246  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:14.246  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:14.246  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:14.247  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:14.247  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:14.247  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:14.247  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:14.247  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:14.248  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:14.248  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:14.248  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:14.248  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:14.249  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:14.249  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.249  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:14.249  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.249  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.250  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:14.250  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.251  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.251  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.251  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.251  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.251  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.252  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:14.252  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:14.252  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Equipment found, 0 results at its top level ====
+  | 17:08:14.252  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Fixtures found, 0 results at its top level ====
+  | 17:08:14.252  ==== TEST BLD-EL-Lighting Fixtures-vs-BLD-EL-Conduits & Conduit Fittings found, 0 results at its top level ====
+  | 17:08:14.253  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:14.253  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:14.253  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:14.258  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:14.264  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:14.264  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:14.265  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:14.265  ==== TEST BLD-EL-Lighting Devices-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:14.266  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:14.266  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:14.266  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:14.267  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:14.267  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:14.268  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:14.268  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:14.268  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.269  ==== TEST BLD-EL-Lighting Devices-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:14.269  ==== TEST BLD-EL-Lighting Devices-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.269  ==== TEST BLD-EL-Lighting Devices-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.269  ==== TEST BLD-EL-Lighting Devices-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:14.270  ==== TEST BLD-EL-Lighting Devices-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.270  ==== TEST BLD-EL-Lighting Devices-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.270  ==== TEST BLD-EL-Lighting Devices-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.270  ==== TEST BLD-EL-Lighting Devices-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.270  ==== TEST BLD-EL-Lighting Devices-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.271  ==== TEST BLD-EL-Lighting Devices-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.271  ==== TEST BLD-EL-Lighting Devices-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:14.272  ==== TEST BLD-EL-Lighting Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:14.272  ==== TEST BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Equipment found, 0 results at its top level ====
+  | 17:08:14.272  ==== TEST BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Fixtures found, 0 results at its top level ====
+  | 17:08:14.273  ==== TEST BLD-EL-Lighting Devices-vs-BLD-EL-Conduits & Conduit Fittings found, 0 results at its top level ====
+  | 17:08:14.273  ==== TEST BLD-EL-Lighting Devices-vs-BLD-EL-Lighting Fixtures found, 0 results at its top level ====
+  | 17:08:14.273  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:14.273  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:14.274  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:14.274  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:14.274  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:14.275  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:14.279  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:14.279  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:14.280  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:14.280  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:14.286  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:14.286  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:14.286  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:14.287  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:14.287  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:14.287  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.287  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:14.288  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.288  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.288  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:14.288  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.288  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.289  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.289  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.289  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.289  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.290  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:14.290  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:14.290  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Equipment found, 0 results at its top level ====
+  | 17:08:14.291  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Fixtures found, 0 results at its top level ====
+  | 17:08:14.291  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-EL-Conduits & Conduit Fittings found, 0 results at its top level ====
+  | 17:08:14.291  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures found, 0 results at its top level ====
+  | 17:08:14.291  ==== TEST BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Devices found, 0 results at its top level ====
+  | 17:08:14.292  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:14.292  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:14.292  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:14.293  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:14.293  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:14.293  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:14.299  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:14.299  ==== TEST BLD-EL-Communication Devices-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:14.300  ==== TEST BLD-EL-Communication Devices-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:14.300  ==== TEST BLD-EL-Communication Devices-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:14.301  ==== TEST BLD-EL-Communication Devices-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:14.301  ==== TEST BLD-EL-Communication Devices-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:14.302  ==== TEST BLD-EL-Communication Devices-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:14.302  ==== TEST BLD-EL-Communication Devices-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:14.303  ==== TEST BLD-EL-Communication Devices-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:14.303  ==== TEST BLD-EL-Communication Devices-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.303  ==== TEST BLD-EL-Communication Devices-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:14.304  ==== TEST BLD-EL-Communication Devices-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.304  ==== TEST BLD-EL-Communication Devices-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.304  ==== TEST BLD-EL-Communication Devices-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:14.304  ==== TEST BLD-EL-Communication Devices-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.305  ==== TEST BLD-EL-Communication Devices-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.305  ==== TEST BLD-EL-Communication Devices-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.305  ==== TEST BLD-EL-Communication Devices-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.305  ==== TEST BLD-EL-Communication Devices-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.306  ==== TEST BLD-EL-Communication Devices-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.306  ==== TEST BLD-EL-Communication Devices-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:14.307  ==== TEST BLD-EL-Communication Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:14.307  ==== TEST BLD-EL-Communication Devices-vs-BLD-EL-Electrical Equipment found, 0 results at its top level ====
+  | 17:08:14.307  ==== TEST BLD-EL-Communication Devices-vs-BLD-EL-Electrical Fixtures found, 0 results at its top level ====
+  | 17:08:14.307  ==== TEST BLD-EL-Communication Devices-vs-BLD-EL-Conduits & Conduit Fittings found, 0 results at its top level ====
+  | 17:08:14.308  ==== TEST BLD-EL-Communication Devices-vs-BLD-EL-Lighting Fixtures found, 0 results at its top level ====
+  | 17:08:14.308  ==== TEST BLD-EL-Communication Devices-vs-BLD-EL-Lighting Devices found, 0 results at its top level ====
+  | 17:08:14.308  ==== TEST BLD-EL-Communication Devices-vs-BLD-EL-Fire Alarm Devices found, 0 results at its top level ====
+  | 17:08:14.308  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Floors found, 0 results at its top level ====
+  | 17:08:14.309  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Stairs found, 0 results at its top level ====
+  | 17:08:14.309  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Columns found, 0 results at its top level ====
+  | 17:08:14.312  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Walls found, 0 results at its top level ====
+  | 17:08:14.313  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Curtain Panels found, 0 results at its top level ====
+  | 17:08:14.313  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Curtain Mullions found, 0 results at its top level ====
+  | 17:08:14.314  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Doors found, 0 results at its top level ====
+  | 17:08:14.314  ==== TEST BLD-EL-Data Devices-vs-BLD-AR-Railings found, 0 results at its top level ====
+  | 17:08:14.314  ==== TEST BLD-EL-Data Devices-vs-BLD-ST-Foundation found, 0 results at its top level ====
+  | 17:08:14.315  ==== TEST BLD-EL-Data Devices-vs-BLD-ST-Columns found, 0 results at its top level ====
+  | 17:08:14.316  ==== TEST BLD-EL-Data Devices-vs-BLD-ST-Framing found, 0 results at its top level ====
+  | 17:08:14.316  ==== TEST BLD-EL-Data Devices-vs-BLD-ST-Walls found, 0 results at its top level ====
+  | 17:08:14.316  ==== TEST BLD-EL-Data Devices-vs-BLD-ST-Floors found, 0 results at its top level ====
+  | 17:08:14.316  ==== TEST BLD-EL-Data Devices-vs-BLD-ST-Stair found, 0 results at its top level ====
+  | 17:08:14.317  ==== TEST BLD-EL-Data Devices-vs-BLD-ME-Ducts&Duct Fittings found, 0 results at its top level ====
+  | 17:08:14.317  ==== TEST BLD-EL-Data Devices-vs-BLD-ME-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.318  ==== TEST BLD-EL-Data Devices-vs-BLD-ME-Air Terminals found, 0 results at its top level ====
+  | 17:08:14.318  ==== TEST BLD-EL-Data Devices-vs-BLD-FF-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.318  ==== TEST BLD-EL-Data Devices-vs-BLD-FF-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.319  ==== TEST BLD-EL-Data Devices-vs-BLD-FF-Sprinklers found, 0 results at its top level ====
+  | 17:08:14.319  ==== TEST BLD-EL-Data Devices-vs-BLD-PL-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.319  ==== TEST BLD-EL-Data Devices-vs-BLD-PL-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.319  ==== TEST BLD-EL-Data Devices-vs-BLD-PL-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.320  ==== TEST BLD-EL-Data Devices-vs-BLD-DR-Mechanical Equipment found, 0 results at its top level ====
+  | 17:08:14.320  ==== TEST BLD-EL-Data Devices-vs-BLD-DR-Pipes & Pipe Fittings found, 0 results at its top level ====
+  | 17:08:14.320  ==== TEST BLD-EL-Data Devices-vs-BLD-DR-Pipe Accessories found, 0 results at its top level ====
+  | 17:08:14.321  ==== TEST BLD-EL-Data Devices-vs-BLD-DR-Plumbing Fixtures found, 0 results at its top level ====
+  | 17:08:14.321  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings found, 0 results at its top level ====
+  | 17:08:14.321  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Electrical Equipment found, 0 results at its top level ====
+  | 17:08:14.321  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Electrical Fixtures found, 0 results at its top level ====
+  | 17:08:14.322  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Conduits & Conduit Fittings found, 0 results at its top level ====
+  | 17:08:14.323  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Lighting Fixtures found, 0 results at its top level ====
+  | 17:08:14.323  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Lighting Devices found, 0 results at its top level ====
+  | 17:08:14.323  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Fire Alarm Devices found, 0 results at its top level ====
+  | 17:08:14.327  ==== TEST BLD-EL-Data Devices-vs-BLD-EL-Communication Devices found, 0 results at its top level ====
+  | 17:08:14.330  every item shown again, as the probe leaves it, the NWF not saved
+  | 17:08:14.330  RETAKE TOTAL  512 pictures taken the tool's way, 76 of them drew no item of its clash, 72 of those drew an item when retaken, 4 still drew none, 7.872 s in the retakes, from 30 ft at the nearest
+  | 17:08:14.330  probe finished
+
+==== STEP 6. Quit through the API ====
+  17:08:15.268  t+60.4s  Dispose RETURNED after 0.45 s
+  17:08:17.127  t+62.3s  pid 17068 state gone, 1.9 s after Dispose returned, not forced
+
+==== FINALLY ====
+  17:08:17.134  t+62.3s  pid 17068 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 115, longest pass 412 ms, longest gap between the starts of two passes 922 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  17:07:15.194  t+0.3s  watchdog started
+  17:07:16.515  t+1.6s  new process Roamer pid 17068, parent 1784 svchost.exe, started 17:07:15.859, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  17:07:16.590  t+1.7s  Roamer 17068 visible top level windows: none
+  17:07:17.255  t+2.4s  new process AdskLicensingAgent pid 16208, parent 17068 Roamer.exe, started 17:07:16.573, command line holds the word embedding or automation: no
+  17:07:17.386  t+2.5s  new process AdskLicensingAgent pid 30596, parent 17068 Roamer.exe, started 17:07:16.470, command line holds the word embedding or automation: no
+  17:07:17.503  t+2.6s  new process AdskLicensingAgent pid 34168, parent 17068 Roamer.exe, started 17:07:16.405, command line holds the word embedding or automation: no
+  17:07:19.126  t+4.3s  Roamer 17068 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] ""
+  17:07:20.214  t+5.3s  Roamer 17068 visible top level windows: none
+  17:07:20.757  t+5.9s  Roamer 17068 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:07:21.845  t+7.0s  Roamer 17068 visible top level windows: none
+  17:07:22.934  t+8.1s  Roamer 17068 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:07:24.063  t+9.2s  Roamer 17068 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  17:08:15.338  t+60.5s  Roamer 17068 visible top level windows: none
+  17:08:16.945  t+62.1s  Roamer 17068 has exited
+  17:08:17.457  t+62.6s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 17068, parent 1784 svchost.exe: exited
+  AdskLicensingAgent pid 16208, parent 17068 Roamer.exe: exited
+  AdskLicensingAgent pid 30596, parent 17068 Roamer.exe: exited
+  AdskLicensingAgent pid 34168, parent 17068 Roamer.exe: STILL RUNNING
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 2479934293137  new QWord 2480535141915
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 264  new DWord 265
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 283  new DWord 284
+  22.0\CER\22.5.1433.58  uptime  old QWord 766454531250  new QWord 767025312500
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1A07PP-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134368051319664699  new QWord 134368060437259834
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A07PP-ZZZ-BM-MOD-000001.nwd, sha1 F35B929EABC3>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\sky-20261018-170714\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134368015520288597  new QWord 134368015737108762
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-ME-MOD-000001.nwc, sha1 7E301F0326DC>  new String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc, sha1 C303315D56FD>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1C07BS-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1A07PP-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\2  LastOpened  old QWord 134368051065137825  new QWord 134368051319664699
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1C07BS-ZZZ-BM-MOD-000001.nwd, sha1 711394FA8146>  new String <a path outside the loop folder, file 1104-PAR-1A07PP-ZZZ-BM-MOD-000001.nwd, sha1 F35B929EABC3>
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1C07BS-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\3  LastOpened  old QWord 134368050726105912  new QWord 134368051065137825
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwd, sha1 CC39AB26CDD9>  new String <a path outside the loop folder, file 1104-PAR-1C07BS-ZZZ-BM-MOD-000001.nwd, sha1 711394FA8146>
+  22.0\Recent File List\4  DisplayName  old String "probe-document.nwf"  new String "1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\4  LastOpened  old QWord 134368029522381512  new QWord 134368050726105912
+  22.0\Recent File List\4  Path  old String "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\probe-document.nwf"  new String <a path outside the loop folder, file 1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwd, sha1 CC39AB26CDD9>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"  new String "probe-document.nwf"
+  22.0\Recent File List\5  LastOpened  old QWord 134368029522221497  new QWord 134368029522381512
+  22.0\Recent File List\5  Path  old String "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\autosave-input\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\probe-document.nwf"
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134368020543245119  new QWord 134368029522221497
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf, sha1 2462D16DEB87>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\auto-save-20261018-161544\autosave-input\1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\7  LastOpened  old QWord 134368020262367102  new QWord 134368020543245119
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf, sha1 02EF4C092E82>  new String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf, sha1 2462D16DEB87>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\8  LastOpened  old QWord 134368020053325283  new QWord 134368020262367102
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf, sha1 319E1734B000>  new String <a path outside the loop folder, file 1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf, sha1 02EF4C092E82>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\9  LastOpened  old QWord 134368015737108762  new QWord 134368020053325283
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc, sha1 C303315D56FD>  new String <a path outside the loop folder, file 1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf, sha1 319E1734B000>
+  registry: 35 values or keys differ from the backup
+  registry: 35 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 70392 bytes, sha256 3F92A92CEDC2, written 2026-10-18 16:15:52  new 71647 bytes, sha256 BFDCF7B4BC16, written 2026-10-18 17:08:14
+  file CHANGED LastSession.xml  old 39277 bytes, sha256 10CEA107737D, written 2026-10-18 17:03:52  new 39289 bytes, sha256 E25F063BC9E7, written 2026-10-18 17:08:15
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 3E69F1B0D3CA79D1D79E4DE6B30DE66AB9F2FA4271762764D752FFE7ECB7931E, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf  1001845 bytes
+  hkcu-navisworks-manage-22.0-before.reg  110264 bytes
+  mypid.txt  36 bytes
+  plugin-output.txt  161730 bytes
+  SkyProbe.dll  19456 bytes
+  watch.txt  1760 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-18 17:08:18, 64 s in all
