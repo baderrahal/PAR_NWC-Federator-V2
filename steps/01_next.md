@@ -1723,3 +1723,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F216 F210-R4, the full path on every package line
 
 - Bader's message of 18 Oct 2026, F-R4: the full path on every package line in PACKAGE TREE and PACKAGES TICKED. PackageWords.PackageLine is the one shape of a package's line in both blocks, its path from the parent, its files and its full path, and the two tests of the blocks assert it.
+- DONE 2026-10-18, merged in 294. The two tests of the blocks assert the full path on every package line.
