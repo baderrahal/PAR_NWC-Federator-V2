@@ -19,7 +19,7 @@ Bader or a later fix.
 | F218 | the far limit 30 m, tests at 29.9, 30 and 30.1 m | 295 | Core tests | seen in F220 |
 | F219 | a group of one discipline runs its tests on neither page, Q209 counted | 299 | Core tests | seen in F220, Q209 |
 | F220 | the test on multi2 | 300 | the NWC page 45 groups, 44 DONE, the corrupt one FAILED, 22.1 min, the NWF page 44 DONE, 19.6 min, 9029 clashes on both, the real files 0 lines differ | nothing |
-| F221 | this audit, the rule texts the code has outgrown fixed | F221_PR | Core tests and the build | |
+| F221 | this audit, the rule texts the code has outgrown fixed | 301 | Core tests and the build | |
 
 ## Findings of the round
 
