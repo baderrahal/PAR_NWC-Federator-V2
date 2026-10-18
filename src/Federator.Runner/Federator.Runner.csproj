@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    F214, Bader's answer to Q204 of 18 Oct 2026: a fresh Navisworks per package. The window of a run of packages starts
+    this program, which starts one Navisworks through the Automation API for each package in turn, runs the installed
+    add-in there on that package, quits it and waits for it to be gone before the next. Measured first by
+    tools\probes\PackageStartProbe, docs\history\scan.md 5z-zj. It references no Navisworks file: the Automation DLL is
+    loaded at run time from the install folder the window hands it. AnyCPU and not 32 bit preferred, so it runs as a 64
+    bit process as the probe's helper did. The add-in references this project so the exe lands beside the add-in and
+    install.ps1 carries it in the bundle.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Federator.Runner</AssemblyName>
+    <RootNamespace>Federator.Runner</RootNamespace>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Federator.Core\Federator.Core.csproj" />
+  </ItemGroup>
+
+</Project>

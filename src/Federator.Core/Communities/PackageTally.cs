@@ -68,6 +68,7 @@ namespace Federator.Core.Communities
         private readonly List<GroupEnd> ends = new List<GroupEnd>();
         private readonly List<Package> order = new List<Package>();
         private readonly Dictionary<string, string> notRun = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, string> noResult = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>A package of the run, in the order it runs, so a package that ran nothing is still counted.</summary>
         public void Expect(Package package)
@@ -106,9 +107,34 @@ namespace Federator.Core.Communities
             }
         }
 
+        /// <summary>
+        /// A package whose own Navisworks wrote no result, F214, and why. It is never said as not run, since its groups may
+        /// have run and written files before its Navisworks ended. The first reason given is the one kept.
+        /// </summary>
+        public void NoResult(Package package, string why)
+        {
+            if (package == null)
+            {
+                throw new ArgumentNullException("package");
+            }
+
+            Expect(package);
+
+            if (!noResult.ContainsKey(package.RelativePath))
+            {
+                noResult.Add(package.RelativePath, string.IsNullOrEmpty(why) ? "UNKNOWN why" : why);
+            }
+        }
+
         public int GroupCount
         {
             get { return ends.Count; }
+        }
+
+        /// <summary>How many of the groups ended this way, F214, read by the one RESULT of a run in fresh starts.</summary>
+        public int CountOf(GroupOutcome outcome)
+        {
+            return ends.FindAll(end => end.Outcome == outcome).Count;
         }
 
         /// <summary>The lines RESULT carries: each group, then each package, each community and the run.</summary>
@@ -145,8 +171,11 @@ namespace Federator.Core.Communities
                 }
 
                 string why;
+                string unknown;
                 lines.Add("package        " + package.RelativePath + " : "
-                    + (notRun.TryGetValue(package.RelativePath, out why) && totals.Groups == 0 ? "not run, " + why : totals.Words()));
+                    + (noResult.TryGetValue(package.RelativePath, out unknown) && totals.Groups == 0
+                        ? unknown
+                        : notRun.TryGetValue(package.RelativePath, out why) && totals.Groups == 0 ? "not run, " + why : totals.Words()));
 
                 Totals community;
 

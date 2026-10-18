@@ -684,7 +684,8 @@ well as to pass.
   to say, F109, FR-079
 - What install.ps1 and the team install both hold to is written once, in
   build\install-common.ps1, which each dot-sources: the place the add-in goes, the line
-  telling a person to start Navisworks, the 15 files of a whole bundle, the stamp and its
+  telling a person to start Navisworks, the 16 files of a whole bundle, the runner of F214
+  among them, the stamp and its
   parts, the Roamer refusal in one set of words, the walk from %APPDATA% down, and
   RemoveTree with LinksAt, so no junction or link is ever removed through by either. A copy
   of one of these in another script is a bug. INSTALL.md and INSTALL-TEAM.txt carry the
@@ -1138,7 +1139,8 @@ groups they make by steps 2 and 3, counted again when the step is shown.
 THE NWC PAGE'S ROUTE, `OnRunPackages`: refused with Core's reason before anything is opened while no tree is read,
 nothing is ticked or the Report folder is refused, then one `PackagePlan` per ticked package, a group whose NWF is there
 left to the NWF page by `NwcPageRule`, the PACKAGES TICKED and PACKAGE GROUPS blocks, the pack choice and the confirm of
-the scanned run, the folders of each package that runs made and said, then `RunJobs` with one engine for the whole run.
+the scanned run, the folders of each package that runs made and said, then, since F214, each package handed to its own
+Navisworks, below, whose window runs `RunJobs` with one engine for that package's groups.
 Each job carries its package and its package's Log folder, `FederationJob.InPackage`, the copy of a dated rebuild keeps
 both, and `RunOne` sets the Log folder off the job. The GROUP started and finished lines, the pace of the live line,
 the coordinates tally and the clash totals read `FederationJob.Label`, so community and package are on every group line
@@ -1146,11 +1148,48 @@ and in RESULT. The list of models off the shared coordinates goes into the Log f
 the run log is copied into each.
 
 THE NWF PAGE'S ROUTE, `OnRunNwfPackages`: the same refusals, the NWFs of each ticked package by `PackageNwfs`, a package
-with none named and the others run, the open document's confirm and the refresh confirm, then `RunPickedNwfs` with each
-NWF's place, `PackageNwf`, so its NWD, its Backup and its logs are written into its package's folders and not beside the
-file. One failure never stops the others: each group and each NWF is run in its own try, and only the guard that stops a
-run after its first 50 tests all fail the same way stops the packages after it.
+with none named and the others run, the open document's confirm and the refresh confirm, then, since F214, each package in
+its own Navisworks, whose window runs `RunPickedNwfs` with each NWF's place, `PackageNwf`, so its NWD, its Backup and its
+logs are written into its package's folders and not beside the file. One failure never stops the others: each group and each
+NWF is run in its own try, and since F214 the guard that stops a run after its first 50 tests all fail the same way stops
+only the package it fired in, since the next package runs in a fresh Navisworks with a fresh engine.
 
+## A fresh Navisworks per package, F214
+
+Bader's answer to Q204 of 18 Oct 2026: a fresh Navisworks start per package, Run pressed once, the next starting only after
+the last closed, measured first in docs\history\scan.md 5z-zj. Every rule and every word of the files and the lines is Core's,
+core.md A FRESH NAVISWORKS PER PACKAGE. THE WINDOW A PERSON RUNS plans and confirms the packages on either page as before,
+every refusal, the pack choice and the one confirm, which says nothing open here is touched in place of what opening would
+discard, and the NWF page asks nothing about the open document, since no package opens anything in this Navisworks. Then
+`RunPackagesInFreshStarts` writes the order into a folder of its own under package-runs beside the tool's logs folder, every
+control of the window by its name, the text boxes a person can type in, the tick boxes and the drop downs,
+`TheControlsAsTheyStand`, but the drop down of the NWFs last used, `NeverCopied`, whose items are each machine's history and
+whose choice reads another NWF, starts `Federator.Runner.exe` from the bundle with the folder of the Navisworks it runs in and
+the order, and `WaitForTheRunner` answers the window every poll and copies each new line of the status file into the log. A
+pass that throws is said once and the wait goes on, so the results are never read while the runner runs, and past every
+package's ceiling and wait added up, `RunnerLimitMinutes`, the window ends the runner, the one process it started. The live
+line says the packages run, in Core's words, and never a line of the runner's. Once the runner ends `JoinTheResults` reads
+every package's result, fills the package tally from them, a package with no result counted by `PackageTally.NoResult` and
+never said as not run, writes the one RESULT through `RunLog.WriteJoinedResult`, which closes the log's account as every
+RESULT does, sets the live line to the packages that wrote a result, and warns where one did not. THE RUNNER,
+src\Federator.Runner, references no Navisworks file, loads the Automation DLL from the install folder by reflection as the
+probe's helper did, and for each package in turn starts one Navisworks and takes the one Roamer new since before as its own and
+never any other. Where it cannot tell which is its own, more than one or none new, the package is not run, its Navisworks told
+to quit and every Navisworks new since its start waited on and none ended. Otherwise it sets it visible, runs the installed
+plugin with the mode package-run, the order and the index, quits it by Dispose and waits the order's GoneWithinSeconds for its
+process to be gone, ending it past that, so the next starts only once the last has closed. A start that threw has the Navisworks
+it brought up found and waited on too. The order's ceiling runs from before the start to after the wait, so a start, a run, a
+quit or a wait that hangs is ended where its Navisworks is told, and said where it is not. A throw, a crash or the ceiling of
+one package is said and the next runs. THE WINDOW OF A PACKAGE'S OWN NAVISWORKS, `FederatorPlugin` handed the mode, the order
+and the index, is made with a `PackageRunChild` and runs as soon as it is shown: it sets the controls in the order's order and
+runs nothing where any could not be set, reads the tree off the order's parent, ticks its one package and runs the route of its
+page, its own engine, groups, discipline reports and log, then writes its result and closes. Its groups are the engine's
+`OutcomesSoFar`, so a run that threw part way still names the groups before the throw. In it no box is shown: `Warn` logs what
+it would have said and its first warning is the package's reason where no group ran, and the run's confirm, the confirm of what
+opening a file discards, the refresh confirm of the NWF page and the Rebuild box's confirm each log that the window that started
+the run confirmed it. A child whose order does not read runs nothing and says so. WHAT IS NOT MEASURED: whether a Navisworks a
+person started, and not the Automation API, can start the runner's Navisworks, which is step one of the proof in
+steps\03_bader_next.md. Rows F214-R1 to R4 hold what the readers found and this does not close.
 ## The discipline reports, F209
 
 Every rule and every word is Core's, core.md The discipline reports. The add-in reads and writes only. FOR A GROUP OF A

@@ -8916,3 +8916,39 @@ append then returns False as it did after a person's answer. The box's text is t
 **UNKNOWN.** Whether a file on a drive that is gone, or an NWC of another version, opens a box of another shape. Whether a box
 opened by TryOpenFile of an NWF, on the NWF page, has this shape. Neither is answered by this tool, since the rule answers only a
 box naming the file being appended.
+
+## 5z-zj. HOW ONE NAVISWORKS STARTS A FRESH NAVISWORKS FOR ONE PACKAGE AND KNOWS IT CLOSED, MEASURED 2026-10-18
+
+F214, F210-R1, Bader's answer to Q204 of 18 Oct 2026: a fresh Navisworks start per package, Run pressed once, the next starting
+only after the last closed. Measured before anything was built: whether a plugin inside one Navisworks can start a second
+Navisworks, hand it which package to run, and know it is gone before the next.
+
+**HOW.** `tools\probes\PackageStartProbe\probe-package-start.ps1`, AppendBoxProbe's guarded runner with its plugin and arguments
+changed, its guard untouched. One Navisworks started through the Automation API and adopted, pid 6360, quit by Dispose and gone
+1.6 s later, not forced. Its plugin `PackageStartProbePlugin.cs`, mode parent, started `Helper\PackageStartHelper.exe`, an x64
+console program of net48 that loads `Autodesk.Navisworks.Automation.dll` by reflection from the install folder it is handed,
+makes a `NavisworksApplication`, sets Visible, calls AddPluginAssembly with the probe's dll and ExecuteAddInPlugin with the mode
+child and two arguments, calls Dispose and waits up to 60 s for the process it started to be gone. While the helper ran, the
+parent called WaitForExit(200) in a loop and pumped its own Dispatcher between, the way the window's run pumps. The result, the
+machine's name masked: `tools\probes\PackageStartProbe\package-start-result-20261018.txt`, 19 s in all.
+
+**IT WORKS FROM INSIDE A PLUGIN.** The helper, pid 12176, parent 6360 Roamer, made a second Navisworks, pid 19768, in 4.31 s.
+Its parent is svchost 1784, as COM starts it, with `-Embedding` on its command line, not the helper. AddPluginAssembly returned
+in 0.01 s. ExecuteAddInPlugin handed the child its three strings whole, the mode, the output path and the words "the package C06
+itself, order 1 of 2" with their spaces, and returned the child's 0. Dispose returned in 0.38 s and the process was gone 1.55 s
+later. The helper ended with code 0 after 8.42 s, and the parent pumped its Dispatcher 37 times meanwhile and returned 0 to the
+runner. Whether the first Navisworks' own window answered a person meanwhile was not read. Two Navisworks ran at once on this licence for 8 s with no box.
+
+**WHAT IT LEAVES.** One AdskLicensingAgent the FIRST Navisworks started, pid 1264, was still running after both Navisworks were
+gone. The two the second started had exited. Bader's settings changed as any start changes them, the session counts and the
+Auto-Save switch, and the guard put nothing back because a Navisworks it had not adopted ran, so they were put back by hand and
+read back, as F213's run did.
+
+**WHAT THIS DECIDES.** A run of packages can hand each package to a fresh Navisworks: the window's process starts a small
+program, which starts Navisworks through the Automation API, runs the installed plugin there with the package named in its
+arguments, quits it by Dispose and waits for its process to be gone before the next, while the window keeps answering by pumping.
+
+**UNKNOWN.** Whether a Navisworks a person started, and not the Automation API, can do the same, since the probe's parent was
+started through the API. Whether the bundle's plugin is found in the second Navisworks without AddPluginAssembly, which the loop's
+run.ps1 measures on every run since it calls ExecuteAddInPlugin on the installed plugin alone. What a second Navisworks costs in
+memory beside a first that holds a document, since the probe's first held none.

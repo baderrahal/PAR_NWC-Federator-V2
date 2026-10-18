@@ -591,6 +591,12 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public void RunStarted(int groups)
         {
+            RunStarted(groups, "group", "groups");
+        }
+
+        /// <summary>The same mark with what the run counts named, F214, a run of packages in fresh starts counting packages.</summary>
+        public void RunStarted(int count, string one, string many)
+        {
             int number;
             bool earlierNeverFinished = false;
 
@@ -623,7 +629,7 @@ namespace Federator.Core.Diagnostics
                 censusNarrowed = false;
             }
 
-            Line("RUN      started, " + groups + (groups == 1 ? " group" : " groups"));
+            Line("RUN      started, " + count + " " + (count == 1 ? one : many));
 
             if (number > 1)
             {
@@ -726,12 +732,40 @@ namespace Federator.Core.Diagnostics
             WriteRaw(string.Empty);
         }
 
+        /// <summary>The title of the RESULT block, the last block a run writes, read back by PackageRunResult.ResultLinesOf.</summary>
+        public const string ResultTitle = "RESULT";
+
+        /// <summary>The rule a section's title is written between.</summary>
+        public const string SectionRule = "================================================================";
+
         public void Section(string title)
         {
             WriteRaw(string.Empty);
-            WriteRaw("================================================================");
+            WriteRaw(SectionRule);
             WriteRaw(title);
-            WriteRaw("================================================================");
+            WriteRaw(SectionRule);
+        }
+
+        /// <summary>
+        /// The RESULT of a run whose groups ran in other Navisworks starts, F214: the title and the lines the caller joined
+        /// from each start's own RESULT, then the account closed as WriteResultBlock closes it, so a later run of this
+        /// window counts only what it records.
+        /// </summary>
+        public void WriteJoinedResult(IList<string> lines)
+        {
+            try
+            {
+                Section(ResultTitle);
+
+                foreach (string line in lines ?? new List<string>())
+                {
+                    Line(line);
+                }
+            }
+            finally
+            {
+                CloseTheAccount();
+            }
         }
 
         private void WriteRaw(string line)
@@ -2233,7 +2267,7 @@ namespace Federator.Core.Diagnostics
 
             Block(TimingBlock.RunTitle, timing);
 
-            Section("RESULT");
+            Section(ResultTitle);
 
             Line("groups done    : " + CountOf(GroupOutcome.Done));
             Line("groups partial : " + CountOf(GroupOutcome.Partial));

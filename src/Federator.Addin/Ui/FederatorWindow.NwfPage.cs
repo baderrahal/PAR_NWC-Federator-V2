@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Federator.Addin.Engine;
 using Federator.Core.Clash;
+using Federator.Core.Communities;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Views;
@@ -477,7 +478,13 @@ namespace Federator.Addin.Ui
         {
             bool ticked = RebuildExisting.IsChecked == true;
 
-            if (ticked)
+            // F214. In a package's own Navisworks the box is set from the order, and the person confirmed it once in the
+            // window that started the run, so nothing is asked again where nobody is there to answer.
+            if (ticked && child != null)
+            {
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ConfirmedByTheParent("Rebuilding the groups whose NWF is there"));
+            }
+            else if (ticked)
             {
                 MessageBoxResult answer = MessageBox.Show(
                     this,

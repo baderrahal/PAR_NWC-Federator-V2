@@ -1,0 +1,684 @@
+﻿11:08:38.410  +0000.000s  Log opened at C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110838.log
+11:08:38.415  +0000.005s  ROWS     the machine readable log is C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110838.tsv
+11:08:38.419  +0000.010s  RETAIN   keeping 30 logs, deleted 1, could not delete 0, and 1 .tsv beside them
+
+================================================================
+SESSION
+================================================================
+11:08:38.429  +0000.021s  started        : 2026-10-18 11:08:38
+11:08:38.431  +0000.022s  plugin version : 1.0.0.0 32440799 built 2026-10-18 11:06:07
+11:08:38.432  +0000.023s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+11:08:38.432  +0000.023s  open document  : none, the document is clear
+11:08:38.433  +0000.024s  log file       : C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110838.log
+11:08:38.493  +0000.084s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+11:08:38.535  +0000.126s  Source    C:\Users\bader\Desktop\NM fed\NWC\C04
+11:08:38.536  +0000.127s  Nwf       C:\Users\bader\Desktop\NM fed\NWF\C04
+11:08:38.536  +0000.128s  Nwd       C:\Users\bader\Desktop\NM fed\NWD\C04
+11:08:38.537  +0000.128s  PickedNwf C:\Users\bader\Desktop\NM fed\NWF\C02
+11:08:38.538  +0000.129s  PackageParentC:\NWC-PC-Test\work\r6b\Parent
+11:08:38.713  +0000.304s  MATRIX   the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml holds 61 sets and 1830 tests.
+11:08:38.716  +0000.307s  TEAMS    the teams are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, the team map beside this file. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code
+11:08:38.717  +0000.308s  TEAMS    Architecture is AR
+11:08:38.717  +0000.309s  TEAMS    Structure is ST
+11:08:38.719  +0000.309s  TEAMS    Mechanical is HV, PL, FP, ME, DR and FF
+11:08:38.719  +0000.310s  TEAMS    Electrical is EL and EV
+11:08:38.720  +0000.310s  TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN
+11:08:38.720  +0000.311s  TEAMS    a pair holding Mechanical or Electrical carries the size folder
+11:08:38.723  +0000.314s  TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder above it in the clash XML's set tree names, unless a model of its group carries a code its name holds
+11:08:38.724  +0000.315s  MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+11:08:38.725  +0000.315s  MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  0 occurrences. this file does not hold that name
+11:08:38.725  +0000.316s  MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  0 occurrences. that set already asks exactly this, so it was left alone. contains, then one negated equals per category another set asks for, F87 since scan.md 5g
+11:08:38.726  +0000.317s  MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:08:38.726  +0000.317s  MATRIX   the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:08:38.727  +0000.318s  MATRIX   the value ME-PIPING is asked as ME-PIPING or ME-Piping, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:08:38.728  +0000.318s  MATRIX   the value FF-Fire Fighting is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+11:08:38.728  +0000.319s  MATRIX   the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+11:08:38.729  +0000.320s  MATRIX   the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+11:08:38.730  +0000.321s  MATRIX   the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it
+11:08:38.731  +0000.322s  MATRIX   every set beside those asking Source File contains -AR- whose category another discipline also uses asks it already  0 occurrences
+11:08:38.732  +0000.322s  MATRIX   a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box "Rebuild sets that drifted from the file" is ticked. The SETS block of each group names every such set as DRIFTED
+11:08:38.733  +0000.323s  MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change
+
+================================================================
+HEALTH 1104-PAR
+================================================================
+11:08:38.755  +0000.346s  Tests: 1830
+11:08:38.756  +0000.347s  Sets: 61
+11:08:38.756  +0000.347s  Locators resolved: 61 of 61
+11:08:38.757  +0000.348s  Tests with an unresolved side: 0
+11:08:38.757  +0000.349s  Conditions: 146 across 58 distinct rules
+11:08:38.758  +0000.349s  Sets at the root with no folder: 0
+11:08:38.759  +0000.350s  Duplicate set names: 0
+11:08:38.759  +0000.350s  Sets asking exactly the same question: 1
+11:08:38.760  +0000.351s      BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices
+11:08:38.761  +0000.352s  Revit categories known: 374, measured on the C02 folder only
+11:08:38.761  +0000.352s  Sets asking for a category no model carries: 13, against the list measured on the C02 folder only
+11:08:38.762  +0000.353s      BLD-AR-Ramps asks for "Ramps"
+11:08:38.763  +0000.354s      BLD-AR-Roofs asks for "Roofs"
+11:08:38.763  +0000.354s      BLD-AR-Columns asks for "Columns"
+11:08:38.764  +0000.355s      BLD-AR-Casework asks for "Casework"
+11:08:38.764  +0000.355s      BLD-AR-Parking asks for "Parking"
+11:08:38.765  +0000.356s      and 8 more, counted and not listed
+11:08:38.766  +0000.357s  Set names breaking their folder's pattern: 1
+11:08:38.766  +0000.357s      BLD-Security Devices reads BLD where 13 others in the same folder read BLD-EL
+
+================================================================
+PACKAGE TREE
+================================================================
+11:08:45.492  +0007.083s  parent      : C:\NWC-PC-Test\work\multi\flat\Parent
+11:08:45.493  +0007.085s  found       : 3 communities, 3 packages, 129 NWC files
+11:08:45.495  +0007.086s  community   C06  1 package, 64 NWC files
+11:08:45.496  +0007.087s     package  C06  64 NWC files
+11:08:45.497  +0007.088s  community   C07  1 package, 64 NWC files
+11:08:45.498  +0007.089s     package  C07  64 NWC files
+11:08:45.499  +0007.090s  community   Dummy  1 package, 1 NWC file
+11:08:45.500  +0007.091s     package  Dummy  1 NWC file
+11:08:45.501  +0007.092s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+PACKAGE TREE
+================================================================
+11:08:53.789  +0015.380s  parent      : C:\NWC-PC-Test\work\multi\flat\Parent
+11:08:53.791  +0015.381s  found       : 3 communities, 3 packages, 129 NWC files
+11:08:53.792  +0015.383s  community   C06  1 package, 64 NWC files
+11:08:53.793  +0015.384s     package  C06  64 NWC files
+11:08:53.794  +0015.385s  community   C07  1 package, 64 NWC files
+11:08:53.796  +0015.386s     package  C07  64 NWC files
+11:08:53.797  +0015.388s  community   Dummy  1 package, 1 NWC file
+11:08:53.798  +0015.389s     package  Dummy  1 NWC file
+11:08:53.799  +0015.390s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+PACKAGES TICKED
+================================================================
+11:08:53.805  +0015.396s  parent      : C:\NWC-PC-Test\work\multi\flat\Parent
+11:08:53.806  +0015.397s  ticked      C06  64 NWC files
+11:08:53.807  +0015.398s  ticked      C07  64 NWC files
+11:08:53.808  +0015.400s  left out    Dummy  1 NWC file
+11:08:53.809  +0015.401s  ticked      : 2 packages holding 128 NWC files
+11:08:53.811  +0015.402s  left out    : 1 package holding 1 NWC file
+
+================================================================
+PACKAGE GROUPS
+================================================================
+11:08:53.816  +0015.407s  C06  1B06BC  runs, 5 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+11:08:53.818  +0015.409s  C06  1B06BS  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf
+11:08:53.820  +0015.410s  C06  1B06G1  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf
+11:08:53.821  +0015.411s  C06  1B06K1  runs, 3 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf
+11:08:53.824  +0015.415s  C06  1B06KI  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwf
+11:08:53.825  +0015.416s  C06  1B06M1  runs, 2 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf
+11:08:53.827  +0015.417s  C06  1B06P1  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf
+11:08:53.828  +0015.418s  C06  1B06PE  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf
+11:08:53.829  +0015.419s  C06  1B06PG  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwf
+11:08:53.830  +0015.421s  C06  1B06PH  runs, 5 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf
+11:08:53.831  +0015.422s  C06  1B06PK  runs, 2 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf
+11:08:53.832  +0015.423s  C06  1B06PO  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf
+11:08:53.833  +0015.424s  C06  1B06PP  runs, 8 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf
+11:08:53.834  +0015.425s  C06  1B06PS  runs, 3 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf
+11:08:53.835  +0015.426s  C06  1B06PT  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf
+11:08:53.836  +0015.427s  C06  1B06PW  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.nwf
+11:08:53.838  +0015.428s  C06  1B06WL  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf
+11:08:53.839  +0015.429s  C06  1B06WM  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf
+11:08:53.840  +0015.430s  C06  1B06WO  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf
+11:08:53.841  +0015.431s  C06  1C06M2  runs, 2 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+11:08:53.842  +0015.433s  C06  1C06PK  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf
+11:08:53.843  +0015.434s  C07  1B06BC  runs, 5 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+11:08:53.844  +0015.435s  C07  1B06BS  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf
+11:08:53.845  +0015.436s  C07  1B06G1  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf
+11:08:53.846  +0015.437s  C07  1B06K1  runs, 3 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf
+11:08:53.847  +0015.438s  C07  1B06KI  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwf
+11:08:53.849  +0015.439s  C07  1B06M1  runs, 2 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf
+11:08:53.850  +0015.440s  C07  1B06P1  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf
+11:08:53.851  +0015.441s  C07  1B06PE  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf
+11:08:53.852  +0015.442s  C07  1B06PG  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwf
+11:08:53.853  +0015.443s  C07  1B06PH  runs, 5 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf
+11:08:53.854  +0015.445s  C07  1B06PK  runs, 2 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf
+11:08:53.855  +0015.446s  C07  1B06PO  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf
+11:08:53.856  +0015.447s  C07  1B06PP  runs, 8 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf
+11:08:53.857  +0015.448s  C07  1B06PS  runs, 3 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf
+11:08:53.858  +0015.449s  C07  1B06PT  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf
+11:08:53.860  +0015.450s  C07  1B06PW  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.nwf
+11:08:53.863  +0015.454s  C07  1B06WL  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf
+11:08:53.864  +0015.455s  C07  1B06WM  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf
+11:08:53.866  +0015.456s  C07  1B06WO  runs, 4 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf
+11:08:53.867  +0015.458s  C07  1C06M2  runs, 2 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+11:08:53.868  +0015.459s  C07  1C06PK  runs, 1 files, NWF C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf
+
+================================================================
+RUN SETTINGS
+================================================================
+11:08:54.897  +0016.488s  source folder     : C:\NWC-PC-Test\work\multi\flat\Parent
+11:08:54.899  +0016.489s  include subfolders: no
+11:08:54.900  +0016.491s  NWF folder        : the NWF folder of each package under C:\NWC-PC-Test\work\multi\flat\Report-F214
+11:08:54.901  +0016.492s  NWD folder        : the NWD folder of each package under C:\NWC-PC-Test\work\multi\flat\Report-F214
+11:08:54.903  +0016.493s  files found       : 129
+11:08:54.904  +0016.495s  files ticked      : 128
+11:08:54.905  +0016.496s  groups built      : 42
+11:08:54.907  +0016.498s  grouping         : One file per building
+11:08:54.910  +0016.500s  apply file to old: no, differences are reported and nothing is changed
+11:08:54.912  +0016.503s  penetrations     : no, every clash keeps the status it has
+11:08:54.913  +0016.504s  clash tolerance  : 25 mm, chosen in the tool, the drop down being its only source, set on every test and beats the built in matrix and the document
+11:08:54.914  +0016.505s  priority         : built in, read off the matrix pack built into the tool, so a Priority column where the pack reads, which its PACK and PRIORITY lines say
+11:08:54.915  +0016.507s  by design        : no, the built in pairs are not read
+11:08:54.917  +0016.508s  viewpoints       : yes, saved viewpoints are made for the clashes
+11:08:54.918  +0016.509s  NWD naming       : overwrites, so only the latest week exists
+11:08:54.919  +0016.510s  republish NWD    : yes, fixed
+11:08:54.920  +0016.512s  model units      : as each NWC carries them, never set, F201
+11:08:54.922  +0016.513s  report units     : Meters (m), always, converted before anything is written
+11:08:54.926  +0016.517s  PACKAGES folder made     C:\NWC-PC-Test\work\multi\flat\Report-F214\C06
+11:08:54.929  +0016.520s  PACKAGES folder made     C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF
+11:08:54.930  +0016.521s  PACKAGES folder made     C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD
+11:08:54.932  +0016.522s  PACKAGES folder made     C:\NWC-PC-Test\work\multi\flat\Report-F214\C07
+11:08:54.933  +0016.524s  PACKAGES folder made     C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF
+11:08:54.934  +0016.525s  PACKAGES folder made     C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD
+11:08:54.941  +0016.532s  RUN      started, 2 packages
+11:08:54.993  +0016.584s  PACKAGES starting C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\Federator.Runner.exe for 2 packages, order C:\Users\bader\AppData\Local\ParsonsNwcFederator\package-runs\20261018-110854\order.txt. This window waits and answers while each package runs in its own Navisworks
+11:08:55.212  +0016.804s  PACKAGES 11:08:55.038  the runner started for 2 packages, each in a fresh Navisworks, the next only once the last has closed, order C:\Users\bader\AppData\Local\ParsonsNwcFederator\package-runs\20261018-110854\order.txt
+11:08:55.213  +0016.805s  PACKAGES 11:08:55.053  package 1 of 2, C06, starting a fresh Navisworks
+11:08:59.405  +0020.996s  PACKAGES 11:08:59.304  C06: Navisworks started in 4.2 s, pid 13952
+11:20:38.642  +0720.233s  PACKAGES 11:20:38.469  C06: its run returned 0 after 697.2 s
+11:20:41.976  +0723.567s  PACKAGES 11:20:41.903  C06: its Navisworks is gone 2.7 s after it was told to quit
+11:20:41.978  +0723.569s  PACKAGES 11:20:41.903  package 2 of 2, C07, starting a fresh Navisworks
+11:20:48.425  +0730.016s  PACKAGES 11:20:48.308  C07: Navisworks started in 6.4 s, pid 20220
+11:33:15.730  +1477.322s  PACKAGES 11:33:15.653  C07: its run returned 0 after 745.0 s
+11:33:19.268  +1480.859s  PACKAGES 11:33:19.249  C07: its Navisworks is gone 2.4 s after it was told to quit
+11:33:19.270  +1480.861s  PACKAGES 11:33:19.250  the runner ended after 2 packages in 1464.2 s
+11:33:19.280  +1480.871s  PACKAGES the runner ended with code 0
+11:33:19.331  +1480.922s  RUN      finished
+
+================================================================
+RESULT
+================================================================
+11:33:19.353  +1480.944s  fresh starts   : 2 packages, each in its own Navisworks, one after the other
+11:33:19.356  +1480.947s  groups done    : 42
+11:33:19.360  +1480.950s  groups partial : 0
+11:33:19.362  +1480.953s  groups failed  : 0
+11:33:19.365  +1480.956s  
+11:33:19.367  +1480.957s  group          C06  1B06BC  DONE  512 clashes
+11:33:19.369  +1480.960s  group          C06  1B06BS  DONE  0 clashes
+11:33:19.371  +1480.962s  group          C06  1B06G1  DONE  1038 clashes
+11:33:19.373  +1480.963s  group          C06  1B06K1  DONE  40 clashes
+11:33:19.386  +1480.977s  group          C06  1B06KI  DONE  0 clashes
+11:33:19.387  +1480.978s  group          C06  1B06M1  DONE  30 clashes
+11:33:19.389  +1480.979s  group          C06  1B06P1  DONE  374 clashes
+11:33:19.389  +1480.981s  group          C06  1B06PE  DONE  68 clashes
+11:33:19.391  +1480.982s  group          C06  1B06PG  DONE  0 clashes
+11:33:19.392  +1480.983s  group          C06  1B06PH  DONE  59 clashes
+11:33:19.393  +1480.985s  group          C06  1B06PK  DONE  2916 clashes
+11:33:19.395  +1480.986s  group          C06  1B06PO  DONE  66 clashes
+11:33:19.397  +1480.988s  group          C06  1B06PP  DONE  534 clashes
+11:33:19.398  +1480.989s  group          C06  1B06PS  DONE  92 clashes
+11:33:19.399  +1480.990s  group          C06  1B06PT  DONE  0 clashes
+11:33:19.400  +1480.991s  group          C06  1B06PW  DONE  0 clashes
+11:33:19.402  +1480.993s  group          C06  1B06WL  DONE  45 clashes
+11:33:19.403  +1480.994s  group          C06  1B06WM  DONE  285 clashes
+11:33:19.405  +1480.995s  group          C06  1B06WO  DONE  118 clashes
+11:33:19.405  +1480.997s  group          C06  1C06M2  DONE  30 clashes
+11:33:19.407  +1480.998s  group          C06  1C06PK  DONE  0 clashes
+11:33:19.408  +1480.999s  group          C07  1B06BC  DONE  512 clashes
+11:33:19.409  +1481.001s  group          C07  1B06BS  DONE  0 clashes
+11:33:19.411  +1481.002s  group          C07  1B06G1  DONE  1038 clashes
+11:33:19.412  +1481.003s  group          C07  1B06K1  DONE  40 clashes
+11:33:19.416  +1481.007s  group          C07  1B06KI  DONE  0 clashes
+11:33:19.419  +1481.010s  group          C07  1B06M1  DONE  30 clashes
+11:33:19.420  +1481.011s  group          C07  1B06P1  DONE  374 clashes
+11:33:19.421  +1481.012s  group          C07  1B06PE  DONE  68 clashes
+11:33:19.423  +1481.014s  group          C07  1B06PG  DONE  0 clashes
+11:33:19.425  +1481.015s  group          C07  1B06PH  DONE  59 clashes
+11:33:19.426  +1481.017s  group          C07  1B06PK  DONE  2916 clashes
+11:33:19.427  +1481.018s  group          C07  1B06PO  DONE  66 clashes
+11:33:19.429  +1481.020s  group          C07  1B06PP  DONE  534 clashes
+11:33:19.433  +1481.023s  group          C07  1B06PS  DONE  92 clashes
+11:33:19.434  +1481.025s  group          C07  1B06PT  DONE  0 clashes
+11:33:19.435  +1481.026s  group          C07  1B06PW  DONE  0 clashes
+11:33:19.437  +1481.027s  group          C07  1B06WL  DONE  45 clashes
+11:33:19.438  +1481.029s  group          C07  1B06WM  DONE  285 clashes
+11:33:19.440  +1481.031s  group          C07  1B06WO  DONE  118 clashes
+11:33:19.441  +1481.032s  group          C07  1C06M2  DONE  30 clashes
+11:33:19.442  +1481.033s  group          C07  1C06PK  DONE  0 clashes
+11:33:19.444  +1481.035s  package        C06 : 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:19.445  +1481.036s  package        C07 : 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:19.446  +1481.037s  community      C06 : 1 package, 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:19.448  +1481.039s  community      C07 : 1 package, 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:19.449  +1481.040s  run            : 2 communities, 2 packages, 42 groups, 42 done, 0 partial, 0 failed, 12414 clashes
+11:33:19.453  +1481.044s  
+11:33:19.455  +1481.046s  PACKAGE C06 : its own RESULT, from its log C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110901.log
+11:33:19.456  +1481.047s      11:20:37.932  +0696.671s  groups done    : 21
+11:33:19.458  +1481.049s      11:20:37.934  +0696.673s  groups partial : 0
+11:33:19.459  +1481.050s      11:20:37.935  +0696.674s  groups failed  : 0
+11:33:19.460  +1481.051s      
+11:33:19.462  +1481.053s      11:20:37.937  +0696.676s  group          C06  1B06BC  DONE  512 clashes
+11:33:19.463  +1481.054s      11:20:37.938  +0696.677s  group          C06  1B06BS  DONE  0 clashes
+11:33:19.465  +1481.056s      11:20:37.939  +0696.678s  group          C06  1B06G1  DONE  1038 clashes
+11:33:19.467  +1481.058s      11:20:37.940  +0696.679s  group          C06  1B06K1  DONE  40 clashes
+11:33:19.468  +1481.059s      11:20:37.942  +0696.681s  group          C06  1B06KI  DONE  0 clashes
+11:33:19.469  +1481.060s      11:20:37.943  +0696.682s  group          C06  1B06M1  DONE  30 clashes
+11:33:19.471  +1481.062s      11:20:37.944  +0696.683s  group          C06  1B06P1  DONE  374 clashes
+11:33:19.472  +1481.063s      11:20:37.945  +0696.684s  group          C06  1B06PE  DONE  68 clashes
+11:33:19.474  +1481.065s      11:20:37.947  +0696.685s  group          C06  1B06PG  DONE  0 clashes
+11:33:19.475  +1481.066s      11:20:37.948  +0696.686s  group          C06  1B06PH  DONE  59 clashes
+11:33:19.476  +1481.068s      11:20:37.949  +0696.688s  group          C06  1B06PK  DONE  2916 clashes
+11:33:19.478  +1481.069s      11:20:37.950  +0696.689s  group          C06  1B06PO  DONE  66 clashes
+11:33:19.479  +1481.070s      11:20:37.951  +0696.690s  group          C06  1B06PP  DONE  534 clashes
+11:33:19.509  +1481.100s      11:20:37.952  +0696.691s  group          C06  1B06PS  DONE  92 clashes
+11:33:19.511  +1481.102s      11:20:37.953  +0696.692s  group          C06  1B06PT  DONE  0 clashes
+11:33:19.513  +1481.104s      11:20:37.954  +0696.693s  group          C06  1B06PW  DONE  0 clashes
+11:33:19.515  +1481.105s      11:20:37.956  +0696.694s  group          C06  1B06WL  DONE  45 clashes
+11:33:19.516  +1481.107s      11:20:37.956  +0696.696s  group          C06  1B06WM  DONE  285 clashes
+11:33:19.518  +1481.108s      11:20:37.958  +0696.697s  group          C06  1B06WO  DONE  118 clashes
+11:33:19.519  +1481.110s      11:20:37.959  +0696.698s  group          C06  1C06M2  DONE  30 clashes
+11:33:19.520  +1481.111s      11:20:37.960  +0696.699s  group          C06  1C06PK  DONE  0 clashes
+11:33:19.522  +1481.113s      11:20:37.961  +0696.700s  package        C06 : 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:19.523  +1481.114s      11:20:37.962  +0696.701s  community      C06 : 1 package, 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:19.525  +1481.115s      11:20:37.963  +0696.702s  run            : 1 community, 1 package, 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:19.526  +1481.117s      
+11:33:19.527  +1481.118s      11:20:37.966  +0696.706s  first run      : 21
+11:33:19.528  +1481.119s      11:20:37.967  +0696.707s  weekly run     : 0
+11:33:19.530  +1481.121s      11:20:37.969  +0696.708s  weekly + matrix: 0
+11:33:19.530  +1481.122s      11:20:37.970  +0696.709s  rebuilt        : 0
+11:33:19.533  +1481.123s      11:20:37.972  +0696.711s  skipped        : 0
+11:33:19.534  +1481.125s      
+11:33:19.540  +1481.131s      11:20:37.978  +0696.716s  clashes found  : 6207 across 21 groups, 6 of which ran no test
+11:33:19.542  +1481.132s      11:20:37.978  +0696.718s        C06  1B06BC    512  from 49 test(s) that found something
+11:33:19.544  +1481.134s      11:20:37.980  +0696.719s        C06  1B06BS      0  no test ran
+11:33:19.545  +1481.136s      11:20:37.981  +0696.720s        C06  1B06G1   1038  from 96 test(s) that found something
+11:33:19.547  +1481.137s      11:20:37.982  +0696.721s        C06  1B06K1     40  from 12 test(s) that found something
+11:33:19.548  +1481.139s      11:20:37.983  +0696.722s        C06  1B06KI      0  no test ran
+11:33:19.550  +1481.140s      11:20:37.984  +0696.723s        C06  1B06M1     30  from 9 test(s) that found something
+11:33:19.551  +1481.141s      11:20:37.985  +0696.724s        C06  1B06P1    374  from 20 test(s) that found something
+11:33:19.552  +1481.143s      11:20:37.986  +0696.725s        C06  1B06PE     68  from 24 test(s) that found something
+11:33:19.554  +1481.144s      11:20:37.987  +0696.726s        C06  1B06PG      0  no test ran
+11:33:19.555  +1481.146s      11:20:37.988  +0696.727s        C06  1B06PH     59  from 15 test(s) that found something
+11:33:19.556  +1481.147s      11:20:37.989  +0696.729s        C06  1B06PK   2916  from 26 test(s) that found something
+11:33:19.557  +1481.149s      11:20:37.990  +0696.730s        C06  1B06PO     66  from 18 test(s) that found something
+11:33:19.559  +1481.150s      11:20:37.992  +0696.731s        C06  1B06PP    534  from 70 test(s) that found something
+11:33:19.560  +1481.151s      11:20:37.993  +0696.732s        C06  1B06PS     92  from 6 test(s) that found something
+11:33:19.562  +1481.153s      11:20:37.994  +0696.733s        C06  1B06PT      0  no test ran
+11:33:19.563  +1481.154s      11:20:37.996  +0696.734s        C06  1B06PW      0  no test ran
+11:33:19.566  +1481.157s      11:20:37.997  +0696.736s        C06  1B06WL     45  from 15 test(s) that found something
+11:33:19.568  +1481.159s      11:20:37.998  +0696.737s        C06  1B06WM    285  from 41 test(s) that found something
+11:33:19.570  +1481.160s      11:20:37.999  +0696.738s        C06  1B06WO    118  from 37 test(s) that found something
+11:33:19.571  +1481.162s      11:20:38.000  +0696.739s        C06  1C06M2     30  from 9 test(s) that found something
+11:33:19.573  +1481.164s      11:20:38.001  +0696.740s        C06  1C06PK      0  no test ran
+11:33:19.574  +1481.165s      11:20:38.004  +0696.743s  clash skipped  : none, every clash is run whatever the coordinates are. 15 groups hold a model not on the same shared coordinates, so the clash results may be wrong for them
+11:33:19.575  +1481.167s      11:20:38.005  +0696.744s  coordinates    : 21 of 21 groups judged
+11:33:19.577  +1481.168s      11:20:38.007  +0696.745s        C06  1B06BC 4 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: AR  1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc, the group is not FAILED for it
+11:33:19.578  +1481.170s      11:20:38.008  +0696.746s        C06  1B06G1 3 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: AR  1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc, the group is not FAILED for it
+11:33:19.580  +1481.171s      11:20:38.009  +0696.748s        C06  1B06K1 1 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.582  +1481.173s      11:20:38.010  +0696.749s        C06  1B06M1 1 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: ST  1104-PAR-1B06M1-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+11:33:19.583  +1481.174s      11:20:38.011  +0696.750s        C06  1B06P1 2 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.585  +1481.176s      11:20:38.013  +0696.751s        C06  1B06PE 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.587  +1481.178s      11:20:38.013  +0696.752s        C06  1B06PH 4 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.589  +1481.180s      11:20:38.014  +0696.754s        C06  1B06PK 1 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.590  +1481.182s      11:20:38.016  +0696.755s        C06  1B06PO 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.593  +1481.185s      11:20:38.017  +0696.756s        C06  1B06PP 5 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.595  +1481.186s      11:20:38.018  +0696.757s        C06  1B06PS 3 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: AR  1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc, ST  1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+11:33:19.596  +1481.188s      11:20:38.019  +0696.758s        C06  1B06WL 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.598  +1481.189s      11:20:38.020  +0696.760s        C06  1B06WM 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.599  +1481.191s      11:20:38.022  +0696.761s        C06  1B06WO 1 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:19.601  +1481.192s      11:20:38.023  +0696.762s        C06  1C06M2 1 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+11:33:19.603  +1481.194s      
+11:33:19.604  +1481.196s      11:20:38.028  +0696.767s  COVERAGE tests counted            : 1830 names, each once across 21 groups
+11:33:19.606  +1481.197s      11:20:38.029  +0696.768s  COVERAGE in the document in one group at least : 944, never in the document 886
+11:33:19.608  +1481.199s      11:20:38.031  +0696.769s  COVERAGE run in one group at least : 944
+11:33:19.610  +1481.201s      11:20:38.032  +0696.770s  COVERAGE with clashes in one group at least : 195
+11:33:19.612  +1481.202s      11:20:38.033  +0696.772s  COVERAGE run, never with a clash  : 749
+11:33:19.613  +1481.204s      11:20:38.034  +0696.773s  COVERAGE over 21 groups, added up : 38430 places, 3515 created this run, 0 already there, 34915 not created, 3364 run, 447 with clashes, 2917 without, 151 in the document and not run
+11:33:19.615  +1481.205s      11:20:38.035  +0696.774s  COVERAGE checked : 3364 compared, 3364 agree, 0 FAILED in 0 of 21 groups, 151 not compared, 34915 held by neither side, tests no count was set beside, every group keeps its own result, 38430 test places in the groups checked, a test once for each group it is in
+11:33:19.618  +1481.209s      11:20:38.037  +0696.776s  generic models : 982 items in 11 models of 64 over 21 groups, 53 at nought, 0 not counted
+11:33:19.620  +1481.210s      
+11:33:19.620  +1481.212s      11:20:38.040  +0696.779s  by priority    : A 4772, B 1169, C 266, No priority 0, 6207 in all
+11:33:19.623  +1481.213s      
+11:33:19.624  +1481.215s      11:20:38.043  +0696.782s  pictures       : 3656 written beside the files listed below, 132.71 MB, every size read back off the disk
+11:33:19.626  +1481.216s      11:20:38.044  +0696.783s                   counted and not listed one by one. The logo copied beside each report is not counted
+11:33:19.627  +1481.218s      11:20:38.045  +0696.784s  files written  : 110, every size read back off the disk
+11:33:19.628  +1481.219s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf  1,003,698 bytes
+11:33:19.630  +1481.220s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwd  6,698,258 bytes
+11:33:19.631  +1481.222s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.xlsx  100,457 bytes
+11:33:19.633  +1481.223s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.html  4,403,849 bytes
+11:33:19.635  +1481.225s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06BC-ZZZ-BM-MOD-000001 Internal.xlsx  134,797 bytes
+11:33:19.636  +1481.227s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf  12,964 bytes
+11:33:19.638  +1481.228s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwd  281,655 bytes
+11:33:19.643  +1481.234s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.xlsx  7,694 bytes
+11:33:19.645  +1481.236s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:19.646  +1481.238s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06BS-ZZZ-BM-MOD-000001 Internal.xlsx  137,551 bytes
+11:33:19.648  +1481.239s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf  2,856,395 bytes
+11:33:19.649  +1481.241s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwd  8,333,336 bytes
+11:33:19.651  +1481.242s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.xlsx  204,532 bytes
+11:33:19.652  +1481.244s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.html  4,987,774 bytes
+11:33:19.654  +1481.246s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06G1-ZZZ-BM-MOD-000001 Internal.xlsx  135,178 bytes
+11:33:19.656  +1481.248s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf  106,444 bytes
+11:33:19.660  +1481.250s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwd  928,401 bytes
+11:33:19.662  +1481.252s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.xlsx  20,114 bytes
+11:33:19.663  +1481.254s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.html  3,897,722 bytes
+11:33:19.665  +1481.256s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06K1-ZZZ-BM-MOD-000001 Internal.xlsx  137,490 bytes
+11:33:19.669  +1481.260s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwf  15,439 bytes
+11:33:19.672  +1481.262s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwd  457,849 bytes
+11:33:19.673  +1481.264s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.xlsx  7,696 bytes
+11:33:19.675  +1481.266s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:19.677  +1481.268s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06KI-ZZZ-BM-MOD-000001 Internal.xlsx  137,957 bytes
+11:33:19.678  +1481.269s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf  76,620 bytes
+11:33:19.680  +1481.271s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwd  540,840 bytes
+11:33:19.681  +1481.273s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.xlsx  17,369 bytes
+11:33:19.683  +1481.274s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.html  3,885,802 bytes
+11:33:19.685  +1481.276s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06M1-ZZZ-BM-MOD-000001 Internal.xlsx  138,422 bytes
+11:33:19.687  +1481.278s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf  687,494 bytes
+11:33:19.689  +1481.280s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwd  8,354,935 bytes
+11:33:19.693  +1481.284s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.xlsx  76,639 bytes
+11:33:19.695  +1481.286s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.html  4,261,444 bytes
+11:33:19.697  +1481.288s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06P1-ZZZ-BM-MOD-000001 Internal.xlsx  137,262 bytes
+11:33:19.699  +1481.290s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf  266,330 bytes
+11:33:19.701  +1481.292s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwd  981,633 bytes
+11:33:19.703  +1481.294s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.xlsx  28,627 bytes
+11:33:19.705  +1481.296s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.html  3,927,437 bytes
+11:33:19.706  +1481.298s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PE-ZZZ-BM-MOD-000001 Internal.xlsx  137,585 bytes
+11:33:19.708  +1481.299s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwf  35,166 bytes
+11:33:19.710  +1481.301s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwd  1,659,553 bytes
+11:33:19.711  +1481.303s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.xlsx  7,695 bytes
+11:33:19.713  +1481.304s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:19.717  +1481.308s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PG-ZZZ-BM-MOD-000001 Internal.xlsx  137,104 bytes
+11:33:19.719  +1481.310s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf  151,571 bytes
+11:33:19.721  +1481.312s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd  4,284,704 bytes
+11:33:19.723  +1481.314s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.xlsx  24,239 bytes
+11:33:19.726  +1481.317s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.html  3,918,666 bytes
+11:33:19.728  +1481.319s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PH-ZZZ-BM-MOD-000001 Internal.xlsx  137,254 bytes
+11:33:19.730  +1481.321s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf  1,663,922 bytes
+11:33:19.732  +1481.323s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwd  22,956,593 bytes
+11:33:19.734  +1481.325s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.xlsx  397,261 bytes
+11:33:19.736  +1481.327s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.html  6,965,342 bytes
+11:33:19.738  +1481.329s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PK-ZZZ-BM-MOD-000001 Internal.xlsx  137,769 bytes
+11:33:19.740  +1481.331s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf  293,196 bytes
+11:33:19.743  +1481.334s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwd  2,081,133 bytes
+11:33:19.745  +1481.336s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.xlsx  26,417 bytes
+11:33:19.746  +1481.338s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.html  3,925,200 bytes
+11:33:19.748  +1481.339s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PO-ZZZ-BM-MOD-000001 Internal.xlsx  136,727 bytes
+11:33:19.751  +1481.342s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf  1,670,009 bytes
+11:33:19.752  +1481.343s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwd  24,567,657 bytes
+11:33:19.755  +1481.345s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.xlsx  88,898 bytes
+11:33:19.756  +1481.347s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.html  4,391,455 bytes
+11:33:19.757  +1481.349s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PP-ZZZ-BM-MOD-000001 Internal.xlsx  136,351 bytes
+11:33:19.759  +1481.350s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf  53,459 bytes
+11:33:19.761  +1481.352s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwd  5,351,936 bytes
+11:33:19.762  +1481.354s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.xlsx  22,570 bytes
+11:33:19.764  +1481.355s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.html  3,943,246 bytes
+11:33:19.766  +1481.357s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PS-ZZZ-BM-MOD-000001 Internal.xlsx  137,385 bytes
+11:33:19.768  +1481.359s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf  10,872 bytes
+11:33:19.769  +1481.360s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwd  163,304 bytes
+11:33:19.771  +1481.362s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.xlsx  7,694 bytes
+11:33:19.773  +1481.364s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:19.775  +1481.366s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PT-ZZZ-BM-MOD-000001 Internal.xlsx  138,385 bytes
+11:33:19.776  +1481.367s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.nwf  27,837 bytes
+11:33:19.778  +1481.369s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.nwd  1,106,715 bytes
+11:33:19.780  +1481.371s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.xlsx  7,694 bytes
+11:33:19.782  +1481.373s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:19.784  +1481.375s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06PW-ZZZ-BM-MOD-000001 Internal.xlsx  137,340 bytes
+11:33:19.785  +1481.376s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf  141,948 bytes
+11:33:19.787  +1481.378s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwd  4,726,017 bytes
+11:33:19.789  +1481.380s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.xlsx  19,785 bytes
+11:33:19.791  +1481.382s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.html  3,898,076 bytes
+11:33:19.793  +1481.384s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06WL-ZZZ-BM-MOD-000001 Internal.xlsx  137,656 bytes
+11:33:19.795  +1481.386s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf  899,874 bytes
+11:33:19.797  +1481.388s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwd  3,186,084 bytes
+11:33:19.800  +1481.390s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.xlsx  53,602 bytes
+11:33:19.802  +1481.393s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.html  4,145,086 bytes
+11:33:19.804  +1481.395s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06WM-ZZZ-BM-MOD-000001 Internal.xlsx  137,536 bytes
+11:33:19.806  +1481.397s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf  529,393 bytes
+11:33:19.808  +1481.399s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwd  2,342,559 bytes
+11:33:19.811  +1481.402s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.xlsx  34,698 bytes
+11:33:19.813  +1481.404s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.html  3,971,338 bytes
+11:33:19.815  +1481.406s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1B06WO-ZZZ-BM-MOD-000001 Internal.xlsx  136,811 bytes
+11:33:19.817  +1481.408s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  78,154 bytes
+11:33:19.819  +1481.410s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd  544,711 bytes
+11:33:19.821  +1481.412s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.xlsx  15,984 bytes
+11:33:19.823  +1481.415s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.html  3,883,098 bytes
+11:33:19.825  +1481.417s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 Internal.xlsx  138,422 bytes
+11:33:19.828  +1481.418s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWF\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf  30,881 bytes
+11:33:19.829  +1481.420s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\NWD\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwd  1,013,508 bytes
+11:33:19.831  +1481.422s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.xlsx  7,696 bytes
+11:33:19.833  +1481.424s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Clash report\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:19.834  +1481.426s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\1104-PAR-1C06PK-ZZZ-BM-MOD-000001 Internal.xlsx  138,021 bytes
+11:33:19.836  +1481.428s                                LIST  C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\Models not on the same shared coordinates, run 2026-10-18 110902.txt  11,927 bytes
+11:33:19.957  +1481.548s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\C06 AR checks.xlsx  10,841 bytes
+11:33:19.959  +1481.550s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\C06 ST checks.xlsx  40,175 bytes
+11:33:19.961  +1481.552s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\C06 ME checks.xlsx  13,591 bytes
+11:33:19.963  +1481.553s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\C06 EL checks.xlsx  10,964 bytes
+11:33:19.964  +1481.555s      
+11:33:19.966  +1481.557s      11:20:38.182  +0696.921s  Nothing failed.
+11:33:19.967  +1481.558s      
+11:33:19.969  +1481.560s      11:20:38.186  +0696.925s  lines collapsed in this file, all of them kept in the .tsv beside it:
+11:33:19.970  +1481.561s      11:20:38.187  +0696.926s      CLASH created: 3515 written as 5 and 3510 counted. Every one is in the machine readable log
+11:33:19.972  +1481.563s      11:20:38.188  +0696.927s      CLASH found clashes: 447 written as 5 and 442 counted. Every one is in the machine readable log
+11:33:19.973  +1481.565s      11:20:38.189  +0696.928s      CLASH passed, found nothing: 2917 written as 5 and 2912 counted. Every one is in the machine readable log
+11:33:19.975  +1481.566s      11:20:38.191  +0696.929s      IMAGES every model shown for a test: 18 written as 5 and 13 counted. Every one is in the machine readable log
+11:33:19.977  +1481.568s      11:20:38.192  +0696.931s      ROWS the two numbers agree: 3364 written as 5 and 3359 counted. Every one is in the machine readable log
+11:33:19.978  +1481.570s      
+11:33:19.980  +1481.571s      11:20:38.194  +0696.933s  run time       : 695.807s
+11:33:19.982  +1481.573s      11:20:38.195  +0696.934s  waiting for the person : 0.753s, which is not work this tool did
+11:33:19.984  +1481.575s      11:20:38.196  +0696.935s  total elapsed  : 696.935s
+11:33:19.985  +1481.576s      11:20:38.207  +0696.946s  the .log so far: 3,575,870 bytes, read before this block finished writing
+11:33:19.987  +1481.578s      11:20:38.216  +0696.954s  the .tsv       : 15,842,604 bytes, which keeps every line the .log collapsed
+11:33:19.988  +1481.580s      11:20:38.253  +0696.992s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110901.log to C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\run-20261018-110901.log, 3576075 bytes
+11:33:19.989  +1481.581s      11:20:38.255  +0696.994s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-110901.tsv to C:\NWC-PC-Test\work\multi\flat\Report-F214\C06\Log\run-20261018-110901.tsv, 15842604 bytes
+11:33:19.992  +1481.583s  
+11:33:19.994  +1481.584s  PACKAGE C07 : its own RESULT, from its log C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-112050.log
+11:33:19.995  +1481.586s      11:33:14.993  +0744.348s  groups done    : 21
+11:33:19.996  +1481.587s      11:33:14.995  +0744.350s  groups partial : 0
+11:33:19.998  +1481.589s      11:33:14.996  +0744.351s  groups failed  : 0
+11:33:19.999  +1481.590s      
+11:33:20.001  +1481.592s      11:33:14.999  +0744.353s  group          C07  1B06BC  DONE  512 clashes
+11:33:20.003  +1481.594s      11:33:15.000  +0744.354s  group          C07  1B06BS  DONE  0 clashes
+11:33:20.004  +1481.595s      11:33:15.001  +0744.355s  group          C07  1B06G1  DONE  1038 clashes
+11:33:20.005  +1481.597s      11:33:15.002  +0744.356s  group          C07  1B06K1  DONE  40 clashes
+11:33:20.007  +1481.598s      11:33:15.003  +0744.358s  group          C07  1B06KI  DONE  0 clashes
+11:33:20.009  +1481.600s      11:33:15.004  +0744.359s  group          C07  1B06M1  DONE  30 clashes
+11:33:20.010  +1481.601s      11:33:15.006  +0744.360s  group          C07  1B06P1  DONE  374 clashes
+11:33:20.012  +1481.603s      11:33:15.008  +0744.362s  group          C07  1B06PE  DONE  68 clashes
+11:33:20.014  +1481.605s      11:33:15.008  +0744.363s  group          C07  1B06PG  DONE  0 clashes
+11:33:20.015  +1481.606s      11:33:15.010  +0744.364s  group          C07  1B06PH  DONE  59 clashes
+11:33:20.017  +1481.608s      11:33:15.011  +0744.365s  group          C07  1B06PK  DONE  2916 clashes
+11:33:20.018  +1481.610s      11:33:15.012  +0744.367s  group          C07  1B06PO  DONE  66 clashes
+11:33:20.020  +1481.611s      11:33:15.013  +0744.368s  group          C07  1B06PP  DONE  534 clashes
+11:33:20.021  +1481.613s      11:33:15.014  +0744.369s  group          C07  1B06PS  DONE  92 clashes
+11:33:20.024  +1481.615s      11:33:15.016  +0744.370s  group          C07  1B06PT  DONE  0 clashes
+11:33:20.026  +1481.616s      11:33:15.016  +0744.371s  group          C07  1B06PW  DONE  0 clashes
+11:33:20.027  +1481.618s      11:33:15.019  +0744.373s  group          C07  1B06WL  DONE  45 clashes
+11:33:20.029  +1481.620s      11:33:15.020  +0744.374s  group          C07  1B06WM  DONE  285 clashes
+11:33:20.031  +1481.621s      11:33:15.021  +0744.375s  group          C07  1B06WO  DONE  118 clashes
+11:33:20.032  +1481.623s      11:33:15.022  +0744.376s  group          C07  1C06M2  DONE  30 clashes
+11:33:20.034  +1481.624s      11:33:15.023  +0744.378s  group          C07  1C06PK  DONE  0 clashes
+11:33:20.035  +1481.626s      11:33:15.024  +0744.379s  package        C07 : 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:20.037  +1481.627s      11:33:15.026  +0744.380s  community      C07 : 1 package, 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:20.038  +1481.629s      11:33:15.027  +0744.381s  run            : 1 community, 1 package, 21 groups, 21 done, 0 partial, 0 failed, 6207 clashes
+11:33:20.041  +1481.632s      
+11:33:20.043  +1481.633s      11:33:15.030  +0744.385s  first run      : 21
+11:33:20.044  +1481.635s      11:33:15.032  +0744.386s  weekly run     : 0
+11:33:20.046  +1481.637s      11:33:15.033  +0744.387s  weekly + matrix: 0
+11:33:20.048  +1481.639s      11:33:15.034  +0744.389s  rebuilt        : 0
+11:33:20.051  +1481.641s      11:33:15.035  +0744.390s  skipped        : 0
+11:33:20.053  +1481.643s      
+11:33:20.055  +1481.645s      11:33:15.041  +0744.395s  clashes found  : 6207 across 21 groups, 6 of which ran no test
+11:33:20.057  +1481.648s      11:33:15.042  +0744.396s        C07  1B06BC    512  from 49 test(s) that found something
+11:33:20.059  +1481.649s      11:33:15.043  +0744.398s        C07  1B06BS      0  no test ran
+11:33:20.064  +1481.655s      11:33:15.044  +0744.399s        C07  1B06G1   1038  from 96 test(s) that found something
+11:33:20.067  +1481.657s      11:33:15.046  +0744.400s        C07  1B06K1     40  from 12 test(s) that found something
+11:33:20.069  +1481.659s      11:33:15.047  +0744.401s        C07  1B06KI      0  no test ran
+11:33:20.071  +1481.662s      11:33:15.048  +0744.403s        C07  1B06M1     30  from 9 test(s) that found something
+11:33:20.076  +1481.666s      11:33:15.049  +0744.404s        C07  1B06P1    374  from 20 test(s) that found something
+11:33:20.078  +1481.669s      11:33:15.050  +0744.405s        C07  1B06PE     68  from 24 test(s) that found something
+11:33:20.080  +1481.670s      11:33:15.051  +0744.406s        C07  1B06PG      0  no test ran
+11:33:20.082  +1481.672s      11:33:15.052  +0744.407s        C07  1B06PH     59  from 15 test(s) that found something
+11:33:20.083  +1481.674s      11:33:15.054  +0744.408s        C07  1B06PK   2916  from 26 test(s) that found something
+11:33:20.085  +1481.675s      11:33:15.055  +0744.410s        C07  1B06PO     66  from 18 test(s) that found something
+11:33:20.087  +1481.677s      11:33:15.056  +0744.411s        C07  1B06PP    534  from 70 test(s) that found something
+11:33:20.088  +1481.679s      11:33:15.058  +0744.412s        C07  1B06PS     92  from 6 test(s) that found something
+11:33:20.090  +1481.681s      11:33:15.059  +0744.413s        C07  1B06PT      0  no test ran
+11:33:20.091  +1481.682s      11:33:15.060  +0744.415s        C07  1B06PW      0  no test ran
+11:33:20.093  +1481.684s      11:33:15.062  +0744.416s        C07  1B06WL     45  from 15 test(s) that found something
+11:33:20.094  +1481.686s      11:33:15.063  +0744.417s        C07  1B06WM    285  from 41 test(s) that found something
+11:33:20.096  +1481.687s      11:33:15.064  +0744.418s        C07  1B06WO    118  from 37 test(s) that found something
+11:33:20.098  +1481.689s      11:33:15.065  +0744.420s        C07  1C06M2     30  from 9 test(s) that found something
+11:33:20.100  +1481.691s      11:33:15.066  +0744.421s        C07  1C06PK      0  no test ran
+11:33:20.101  +1481.692s      11:33:15.068  +0744.423s  clash skipped  : none, every clash is run whatever the coordinates are. 15 groups hold a model not on the same shared coordinates, so the clash results may be wrong for them
+11:33:20.103  +1481.694s      11:33:15.070  +0744.424s  coordinates    : 21 of 21 groups judged
+11:33:20.105  +1481.696s      11:33:15.071  +0744.426s        C07  1B06BC 4 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: AR  1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc, the group is not FAILED for it
+11:33:20.107  +1481.698s      11:33:15.072  +0744.427s        C07  1B06G1 3 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: AR  1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc, the group is not FAILED for it
+11:33:20.108  +1481.700s      11:33:15.074  +0744.428s        C07  1B06K1 1 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.110  +1481.701s      11:33:15.075  +0744.430s        C07  1B06M1 1 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: ST  1104-PAR-1B06M1-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+11:33:20.112  +1481.703s      11:33:15.076  +0744.431s        C07  1B06P1 2 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.114  +1481.705s      11:33:15.078  +0744.432s        C07  1B06PE 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.116  +1481.707s      11:33:15.080  +0744.434s        C07  1B06PH 4 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.117  +1481.708s      11:33:15.081  +0744.435s        C07  1B06PK 1 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.119  +1481.710s      11:33:15.082  +0744.436s        C07  1B06PO 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.121  +1481.712s      11:33:15.083  +0744.438s        C07  1B06PP 5 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.123  +1481.714s      11:33:15.085  +0744.439s        C07  1B06PS 3 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: AR  1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc, ST  1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+11:33:20.124  +1481.716s      11:33:15.086  +0744.440s        C07  1B06WL 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.126  +1481.717s      11:33:15.088  +0744.442s        C07  1B06WM 3 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.128  +1481.720s      11:33:15.089  +0744.443s        C07  1B06WO 1 model(s) not on the same shared coordinates, the clash results may be wrong
+11:33:20.130  +1481.721s      11:33:15.090  +0744.445s        C07  1C06M2 1 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+11:33:20.132  +1481.723s      
+11:33:20.133  +1481.725s      11:33:15.095  +0744.450s  COVERAGE tests counted            : 1830 names, each once across 21 groups
+11:33:20.135  +1481.726s      11:33:15.097  +0744.451s  COVERAGE in the document in one group at least : 944, never in the document 886
+11:33:20.137  +1481.728s      11:33:15.098  +0744.453s  COVERAGE run in one group at least : 944
+11:33:20.138  +1481.730s      11:33:15.100  +0744.454s  COVERAGE with clashes in one group at least : 195
+11:33:20.140  +1481.731s      11:33:15.101  +0744.456s  COVERAGE run, never with a clash  : 749
+11:33:20.142  +1481.733s      11:33:15.103  +0744.457s  COVERAGE over 21 groups, added up : 38430 places, 3515 created this run, 0 already there, 34915 not created, 3364 run, 447 with clashes, 2917 without, 151 in the document and not run
+11:33:20.144  +1481.735s      11:33:15.104  +0744.459s  COVERAGE checked : 3364 compared, 3364 agree, 0 FAILED in 0 of 21 groups, 151 not compared, 34915 held by neither side, tests no count was set beside, every group keeps its own result, 38430 test places in the groups checked, a test once for each group it is in
+11:33:20.145  +1481.737s      11:33:15.107  +0744.461s  generic models : 982 items in 11 models of 64 over 21 groups, 53 at nought, 0 not counted
+11:33:20.147  +1481.738s      
+11:33:20.149  +1481.740s      11:33:15.110  +0744.465s  by priority    : A 4772, B 1169, C 266, No priority 0, 6207 in all
+11:33:20.150  +1481.742s      
+11:33:20.152  +1481.743s      11:33:15.114  +0744.468s  pictures       : 3642 written beside the files listed below, 132.19 MB, every size read back off the disk
+11:33:20.154  +1481.745s      11:33:15.115  +0744.470s                   counted and not listed one by one. The logo copied beside each report is not counted
+11:33:20.157  +1481.747s      11:33:15.117  +0744.471s  files written  : 110, every size read back off the disk
+11:33:20.160  +1481.751s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf  998,071 bytes
+11:33:20.163  +1481.753s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwd  6,693,157 bytes
+11:33:20.166  +1481.756s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.xlsx  100,457 bytes
+11:33:20.168  +1481.759s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.html  4,403,849 bytes
+11:33:20.171  +1481.762s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06BC-ZZZ-BM-MOD-000001 Internal.xlsx  134,797 bytes
+11:33:20.174  +1481.765s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf  12,958 bytes
+11:33:20.177  +1481.767s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwd  281,650 bytes
+11:33:20.179  +1481.770s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.xlsx  7,694 bytes
+11:33:20.181  +1481.772s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06BS-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:20.189  +1481.780s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06BS-ZZZ-BM-MOD-000001 Internal.xlsx  137,551 bytes
+11:33:20.193  +1481.783s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf  2,870,765 bytes
+11:33:20.198  +1481.789s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwd  8,347,713 bytes
+11:33:20.200  +1481.791s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.xlsx  204,532 bytes
+11:33:20.202  +1481.793s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.html  4,987,774 bytes
+11:33:20.204  +1481.794s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06G1-ZZZ-BM-MOD-000001 Internal.xlsx  135,178 bytes
+11:33:20.205  +1481.796s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf  106,168 bytes
+11:33:20.207  +1481.798s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwd  928,122 bytes
+11:33:20.209  +1481.800s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.xlsx  20,114 bytes
+11:33:20.210  +1481.801s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.html  3,897,722 bytes
+11:33:20.212  +1481.803s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06K1-ZZZ-BM-MOD-000001 Internal.xlsx  137,490 bytes
+11:33:20.214  +1481.805s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwf  15,446 bytes
+11:33:20.216  +1481.807s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.nwd  457,849 bytes
+11:33:20.218  +1481.809s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.xlsx  7,696 bytes
+11:33:20.219  +1481.811s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06KI-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:20.222  +1481.812s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06KI-ZZZ-BM-MOD-000001 Internal.xlsx  137,957 bytes
+11:33:20.223  +1481.814s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf  77,483 bytes
+11:33:20.225  +1481.816s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwd  541,704 bytes
+11:33:20.227  +1481.818s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.xlsx  17,369 bytes
+11:33:20.229  +1481.820s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.html  3,885,802 bytes
+11:33:20.230  +1481.821s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06M1-ZZZ-BM-MOD-000001 Internal.xlsx  138,422 bytes
+11:33:20.232  +1481.823s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf  691,025 bytes
+11:33:20.234  +1481.825s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwd  8,358,271 bytes
+11:33:20.236  +1481.827s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.xlsx  76,639 bytes
+11:33:20.237  +1481.829s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.html  4,261,444 bytes
+11:33:20.244  +1481.835s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06P1-ZZZ-BM-MOD-000001 Internal.xlsx  137,262 bytes
+11:33:20.246  +1481.837s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf  269,027 bytes
+11:33:20.247  +1481.839s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwd  984,330 bytes
+11:33:20.250  +1481.841s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.xlsx  28,627 bytes
+11:33:20.253  +1481.844s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.html  3,927,437 bytes
+11:33:20.255  +1481.846s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PE-ZZZ-BM-MOD-000001 Internal.xlsx  137,585 bytes
+11:33:20.258  +1481.849s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwf  35,176 bytes
+11:33:20.260  +1481.851s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.nwd  1,659,566 bytes
+11:33:20.262  +1481.853s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.xlsx  7,695 bytes
+11:33:20.264  +1481.854s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PG-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:20.266  +1481.856s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PG-ZZZ-BM-MOD-000001 Internal.xlsx  137,104 bytes
+11:33:20.267  +1481.858s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf  150,982 bytes
+11:33:20.269  +1481.860s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwd  4,284,091 bytes
+11:33:20.271  +1481.862s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.xlsx  24,239 bytes
+11:33:20.273  +1481.864s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.html  3,918,666 bytes
+11:33:20.275  +1481.866s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PH-ZZZ-BM-MOD-000001 Internal.xlsx  137,254 bytes
+11:33:20.277  +1481.867s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf  1,671,927 bytes
+11:33:20.278  +1481.869s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwd  22,975,594 bytes
+11:33:20.280  +1481.871s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.xlsx  397,261 bytes
+11:33:20.282  +1481.873s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.html  6,965,342 bytes
+11:33:20.284  +1481.875s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PK-ZZZ-BM-MOD-000001 Internal.xlsx  137,769 bytes
+11:33:20.286  +1481.877s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf  292,262 bytes
+11:33:20.288  +1481.879s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwd  2,080,250 bytes
+11:33:20.290  +1481.881s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.xlsx  26,184 bytes
+11:33:20.293  +1481.883s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.html  3,924,784 bytes
+11:33:20.295  +1481.885s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PO-ZZZ-BM-MOD-000001 Internal.xlsx  136,727 bytes
+11:33:20.297  +1481.888s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf  1,662,805 bytes
+11:33:20.301  +1481.892s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwd  24,560,663 bytes
+11:33:20.303  +1481.894s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.xlsx  88,197 bytes
+11:33:20.305  +1481.896s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.html  4,391,351 bytes
+11:33:20.310  +1481.901s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PP-ZZZ-BM-MOD-000001 Internal.xlsx  136,351 bytes
+11:33:20.312  +1481.903s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf  53,405 bytes
+11:33:20.314  +1481.905s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwd  5,351,880 bytes
+11:33:20.316  +1481.906s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.xlsx  22,570 bytes
+11:33:20.317  +1481.908s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.html  3,943,246 bytes
+11:33:20.319  +1481.910s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PS-ZZZ-BM-MOD-000001 Internal.xlsx  137,385 bytes
+11:33:20.321  +1481.912s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwf  10,871 bytes
+11:33:20.323  +1481.913s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.nwd  163,302 bytes
+11:33:20.325  +1481.915s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.xlsx  7,694 bytes
+11:33:20.326  +1481.917s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PT-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:20.328  +1481.919s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PT-ZZZ-BM-MOD-000001 Internal.xlsx  138,385 bytes
+11:33:20.330  +1481.921s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.nwf  27,855 bytes
+11:33:20.332  +1481.922s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.nwd  1,106,724 bytes
+11:33:20.334  +1481.924s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.xlsx  7,694 bytes
+11:33:20.335  +1481.926s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06PW-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:20.337  +1481.928s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06PW-ZZZ-BM-MOD-000001 Internal.xlsx  137,340 bytes
+11:33:20.339  +1481.930s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf  141,730 bytes
+11:33:20.341  +1481.931s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwd  4,725,800 bytes
+11:33:20.342  +1481.933s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.xlsx  19,674 bytes
+11:33:20.344  +1481.935s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.html  3,897,868 bytes
+11:33:20.346  +1481.937s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06WL-ZZZ-BM-MOD-000001 Internal.xlsx  137,656 bytes
+11:33:20.348  +1481.939s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf  902,967 bytes
+11:33:20.350  +1481.940s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwd  3,189,174 bytes
+11:33:20.351  +1481.942s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.xlsx  52,703 bytes
+11:33:20.353  +1481.944s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.html  4,144,670 bytes
+11:33:20.355  +1481.945s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06WM-ZZZ-BM-MOD-000001 Internal.xlsx  137,536 bytes
+11:33:20.356  +1481.947s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf  526,545 bytes
+11:33:20.358  +1481.949s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwd  2,339,710 bytes
+11:33:20.360  +1481.951s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.xlsx  34,580 bytes
+11:33:20.362  +1481.953s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.html  3,971,130 bytes
+11:33:20.363  +1481.955s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1B06WO-ZZZ-BM-MOD-000001 Internal.xlsx  136,811 bytes
+11:33:20.365  +1481.957s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  77,625 bytes
+11:33:20.367  +1481.958s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd  544,189 bytes
+11:33:20.369  +1481.960s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.xlsx  15,927 bytes
+11:33:20.371  +1481.962s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.html  3,882,994 bytes
+11:33:20.372  +1481.964s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 Internal.xlsx  138,422 bytes
+11:33:20.374  +1481.965s                                NWF   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWF\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwf  30,891 bytes
+11:33:20.376  +1481.968s                                NWD   C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\NWD\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.nwd  1,013,513 bytes
+11:33:20.379  +1481.969s                                XLSX  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.xlsx  7,696 bytes
+11:33:20.381  +1481.971s                                HTML  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Clash report\1104-PAR-1C06PK-ZZZ-BM-MOD-000001.html  2,683,838 bytes
+11:33:20.383  +1481.973s                                INTERNAL C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\1104-PAR-1C06PK-ZZZ-BM-MOD-000001 Internal.xlsx  138,021 bytes
+11:33:20.384  +1481.975s                                LIST  C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\Models not on the same shared coordinates, run 2026-10-18 112051.txt  11,927 bytes
+11:33:20.386  +1481.977s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\C07 AR checks.xlsx  10,841 bytes
+11:33:20.388  +1481.979s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\C07 ST checks.xlsx  40,178 bytes
+11:33:20.392  +1481.983s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\C07 ME checks.xlsx  13,591 bytes
+11:33:20.395  +1481.986s                                CHECKS C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\C07 EL checks.xlsx  10,964 bytes
+11:33:20.400  +1481.991s      
+11:33:20.402  +1481.993s      11:33:15.292  +0744.646s  Nothing failed.
+11:33:20.404  +1481.995s      
+11:33:20.406  +1481.997s      11:33:15.296  +0744.651s  lines collapsed in this file, all of them kept in the .tsv beside it:
+11:33:20.408  +1481.999s      11:33:15.298  +0744.652s      CLASH created: 3515 written as 5 and 3510 counted. Every one is in the machine readable log
+11:33:20.410  +1482.001s      11:33:15.299  +0744.654s      CLASH found clashes: 447 written as 5 and 442 counted. Every one is in the machine readable log
+11:33:20.412  +1482.002s      11:33:15.301  +0744.655s      CLASH passed, found nothing: 2917 written as 5 and 2912 counted. Every one is in the machine readable log
+11:33:20.413  +1482.004s      11:33:15.302  +0744.656s      IMAGES every model shown for a test: 18 written as 5 and 13 counted. Every one is in the machine readable log
+11:33:20.415  +1482.006s      11:33:15.304  +0744.658s      ROWS the two numbers agree: 3364 written as 5 and 3359 counted. Every one is in the machine readable log
+11:33:20.417  +1482.008s      
+11:33:20.419  +1482.009s      11:33:15.307  +0744.661s  run time       : 743.411s
+11:33:20.420  +1482.011s      11:33:15.308  +0744.663s  waiting for the person : 0.815s, which is not work this tool did
+11:33:20.422  +1482.013s      11:33:15.310  +0744.664s  total elapsed  : 744.664s
+11:33:20.423  +1482.015s      11:33:15.324  +0744.678s  the .log so far: 3,575,153 bytes, read before this block finished writing
+11:33:20.426  +1482.017s      11:33:15.337  +0744.691s  the .tsv       : 15,842,707 bytes, which keeps every line the .log collapsed
+11:33:20.428  +1482.018s      11:33:15.376  +0744.730s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-112050.log to C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\run-20261018-112050.log, 3575358 bytes
+11:33:20.429  +1482.020s      11:33:15.378  +0744.732s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261018-112050.tsv to C:\NWC-PC-Test\work\multi\flat\Report-F214\C07\Log\run-20261018-112050.tsv, 15842707 bytes
+11:33:48.877  +1510.467s  Window closed.

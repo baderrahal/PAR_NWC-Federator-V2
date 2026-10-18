@@ -1,0 +1,27 @@
+11:08:38.616  packages driver started, pid 2680, owner pid 23488, page NWC, stamp 32440799
+11:08:40.868  the tool's window, handle 1052582, caption "Parsons NWC Federator   [1.0.0.0 32440799 built 2026-10-18 11:06:07]"
+11:08:44.949  typed into PackageParentBox: C:\NWC-PC-Test\work\multi\flat\Parent, it reads C:\NWC-PC-Test\work\multi\flat\Parent
+11:08:45.409  typed into PackageReportBox: C:\NWC-PC-Test\work\multi\flat\Report-F214, it reads C:\NWC-PC-Test\work\multi\flat\Report-F214
+11:08:45.455  pressed ReadPackagesButton
+11:08:49.949  TREE after Read, nothing ticked:
+11:08:49.974    community  C06  [Off]  C06  |  1 package, 64 NWC files
+11:08:49.986       package  C06 itself  [Off]  C06 itself  |  64 NWC files, 21 groups
+11:08:49.992    community  C07  [Off]  C07  |  1 package, 64 NWC files
+11:08:50.000       package  C07 itself  [Off]  C07 itself  |  64 NWC files, 21 groups
+11:08:50.006    community  Dummy  [Off]  Dummy  |  1 package, 1 NWC file
+11:08:50.017       package  Dummy itself  [Off]  Dummy itself  |  1 NWC file, 1 group
+11:08:50.045  TREE after Read, nothing ticked holds 3 communities. The line under it reads: 3 communities, 3 packages, 129 NWC files. 0 packages ticked.
+11:08:52.061  ticked the community C06: before Off, after On, 1 toggles
+11:08:52.592  ticked the community C07: before Off, after On, 1 toggles
+11:08:53.634  TREE ticked, before Run:
+11:08:53.643    community  C06  [On]  C06  |  1 package, 64 NWC files
+11:08:53.652       package  C06 itself  [On]  C06 itself  |  64 NWC files, 21 groups
+11:08:53.659    community  C07  [On]  C07  |  1 package, 64 NWC files
+11:08:53.667       package  C07 itself  [On]  C07 itself  |  64 NWC files, 21 groups
+11:08:53.673    community  Dummy  [Off]  Dummy  |  1 package, 1 NWC file
+11:08:53.681       package  Dummy itself  [Off]  Dummy itself  |  1 NWC file, 1 group
+11:08:53.709  TREE ticked, before Run holds 3 communities. The line under it reads: 3 communities, 3 packages, 129 NWC files. 2 packages ticked.
+11:08:53.774  pressed RunPackagesButton
+11:08:54.855  the confirm of pid 23488: caption "Parsons NWC Federator", every text: "OK" "Cancel" "This run federates 42 groups.    First run: 42. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus matrix: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened.    Clash tolerance: 25 mm, chosen in the tool.  It is set on every clash test in this run, which is 42 groups of 1830 tests from the built in matrix, plus every test already saved in each NWF.  It beats the tolerance in the built in matrix and the tolerance in the document.  Every recorded result and every status a person set is KEPT. What changes is which clashes each test finds when it runs, so a clash somebody marked may not come back at the new tolerance.    Each package runs in a fresh Navisworks of its own, one after the other, so nothing open in this one is touched.    Carry on?"
+11:08:54.885  answered with OK, WM_COMMAND 1 posted to dialog 1772682, PostMessage True
+11:08:54.890  DRIVER EXIT 0 PRESSED: Run ticked packages on the NWC page, and OK on the confirm

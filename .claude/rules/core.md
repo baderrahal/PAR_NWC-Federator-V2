@@ -2519,6 +2519,28 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   why. A clash count not taken is UNKNOWN and a total holding one says at least
 - The words of the step and the panel are `PackageWords`, the buttons within the tick box rule, and the two pickers are
   `PickerKind.PackageParent` and `PackageReport`, each remembered on its own
+- A FRESH NAVISWORKS PER PACKAGE, F214, Bader's answer to Q204 of 18 Oct 2026, measured in scan.md 5z-zj. What passes
+  between the starts is Core's. `PackageRunOrder` is what the window a person runs hands every package's Navisworks: the
+  page, the parent and Report folders, the packages in their order, every control of the window by name as `ControlValue`,
+  text, tick or choice, the run's own folder named for its second by `FolderFor` and never one already there, the plugin and
+  the `PackageRunSettings`, a ceiling of 240 minutes a package, a wait of 60 s for a Navisworks to be gone and a poll of 200 ms,
+  all chosen and not measured, each refusing what cannot work, and `RunnerLimitMinutes`, every package's ceiling and wait added
+  up, past which the window ends the runner. `PackageRunResult` is what each package's Navisworks writes back: its groups,
+  each with its outcome, its clashes, minus one where not taken, and its reason, why none ran, its own log and the lines of its
+  own RESULT block, `ResultLinesOf`, everything after the last `RunLog.ResultTitle` between two `RunLog.SectionRule` lines,
+  the title and the rule RunLog writes it with and no copy of them, proved on a block RunLog wrote. Both files are one shape,
+  `PackageRunFile`: a first line naming what the file is, then a key and values a line, each value escaped by
+  `EventRow.Escape`, the machine readable log's rule, so a path with a tab or a line break reads back whole. A file not there,
+  of another first line, with a key it does not know, a wrong count of values, a number that is not one or that the settings
+  refuse, an outcome that is not one by its name, or a result with no end line, which is a Navisworks that stopped writing it,
+  reads as null with why and never as a part. `PackageRunWords` holds every line the runner and the window write about it and
+  the one RESULT, `JoinedResult`, written by `RunLog.WriteJoinedResult`, which closes the log's account as every RESULT does:
+  the group counts read off the package tally, `PackageTally.CountOf`, and never counted a second time, how many packages wrote
+  no result and how many ran no group, the tally, each group not DONE with its reason, then each package's own RESULT under its
+  name and its log, or NO RESULT with why. A PACKAGE WITH NO RESULT IS NEVER SAID AS NOT RUN, `PackageTally.NoResult`, since
+  its groups may have written files before its Navisworks ended, and whether any did is UNKNOWN. The live line counts the
+  packages that wrote a result, `Finished`, and `Warning` is the window's warning where one did not. Proved by
+  `PackageFreshStartTests`
 
 ## The discipline reports, F209
 

@@ -379,7 +379,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            if (!ConfirmClear(labels, tolerance))
+            if (!ConfirmClear(labels, tolerance, true))
             {
                 Log("Run cancelled before anything was cleared.");
                 return;
@@ -404,6 +404,13 @@ namespace Federator.Addin.Ui
             {
                 log.Failure("making the report folders of the ticked packages", error, "nothing was run");
                 Warn("A report folder could not be made, so nothing was run." + Environment.NewLine + Environment.NewLine + error.Message);
+                return;
+            }
+
+            // F214. The window a person runs hands each package to a fresh Navisworks, and a package's own window runs it.
+            if (child == null)
+            {
+                RunPackagesInFreshStarts(PackageRunOrder.NwcPage, runnable, report, tally);
                 return;
             }
 
@@ -646,12 +653,8 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            if (!ConfirmTheOpenDocumentGoes())
-            {
-                Log("Run cancelled before anything was opened.");
-                return;
-            }
-
+            // F214. Nothing is asked about the document open here: since F214 every package opens its NWFs in its own fresh
+            // Navisworks, so what is open in this one is never touched.
             string text = RefreshConfirm.Text(
                 nwfs.Count + " NWFs of " + packagesWithNwfs + " packages",
                 PackageWords.BackupOfEach,
@@ -665,7 +668,11 @@ namespace Federator.Addin.Ui
 
             log.Block("CONFIRM packages", new List<string>(text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)));
 
-            if (MessageBox.Show(this, text, RefreshConfirm.Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel)
+            if (child != null)
+            {
+                log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ConfirmedByTheParent("The refresh"));
+            }
+            else if (MessageBox.Show(this, text, RefreshConfirm.Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel)
                 != MessageBoxResult.OK)
             {
                 Log("Run cancelled before anything was opened.");
@@ -681,6 +688,13 @@ namespace Federator.Addin.Ui
 
             if (!ChoosePackOrStop(pickedGroups, "the run of packages on the NWF page"))
             {
+                return;
+            }
+
+            // F214. The window a person runs hands each package to a fresh Navisworks, and a package's own window runs it.
+            if (child == null)
+            {
+                RunPackagesInFreshStarts(PackageRunOrder.NwfPage, run.Runnable, report, tally);
                 return;
             }
 
@@ -736,6 +750,9 @@ namespace Federator.Addin.Ui
             finally
             {
                 WriteTheResult(engine, null, tally.Lines());
+
+                // F214. The NWFs this run ended with, those before a throw among them, for a package's own result.
+                lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
                 running = false;
                 SetTheRunButtons(true);
                 ShowOpenDocument();

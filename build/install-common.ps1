@@ -18,7 +18,8 @@ $StartLine = "Start Navisworks Manage 2025 and look on the Tool Add-ins tab for 
 # eleven more DLLs and every one of them has to travel, or the add-in loads and then
 # throws the first time a group finishes. Checked on 2026-08-31: none of them collides
 # with a file the Navisworks install ships, see docs\history\scan.md section 4h.
-$carried = @("Federator.Addin.dll", "Federator.Core.dll")
+# F214 adds the runner, the program the window starts to give each package of a run its own Navisworks.
+$carried = @("Federator.Addin.dll", "Federator.Core.dll", "Federator.Runner.exe")
 $library = @(
     "ClosedXML.dll",
     "ClosedXML.Parser.dll",
