@@ -1,4 +1,4 @@
-STATE WAITING, 2026-10-18 21:50, last run multi3 run-20261018-205401, the round of F222 to F230 closed, F230 merged in 311, Bader answers Q212
+STATE OPEN, 2026-10-19 01:10, last run multi3 run-20261018-205401, the round of F231 to F238, F231 merged in 312, F232 next
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,14 +16,14 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 309 | 16 | 0 | 19 | 91 | 7 | 442 |
-| total | 513 | 24 | 0 | 19 | 191 | 18 | 765 |
+| outside the waves | 310 | 16 | 0 | 19 | 91 | 7 | 443 |
+| total | 514 | 24 | 0 | 19 | 191 | 18 | 766 |
 <!-- the end of the counts -->
 ## Now
-- 18 Oct evening, the round of F222 to F230 closed: F222 302, F223 303, F224 304, F225 305, F226 306, F227 307, F228 308,
-  FR-204 309, F229 310, F230 311. F229 saw every fix on multi3, C06, C07 and SKY, the real files 0 lines differ.
-  claude\audit-round-2026-10-18b.md, the findings and 41 contradictions
-- 18 Oct before: F212 to F221, 292 to 301, a fresh Navisworks per package, the bad NWC, the one discipline rule and the audit
+- 19 Oct, the round of F231 to F238 open, Bader's six fixes, the full run on final-2026-10-19 and the end, plan in log.md.
+  F231 measured the append against a manual Append on 1B06BC, 1B06PS and 1B06K1, 0.000 mm after both pages, the far
+  models in the NWC files, no code changed, scan.md 5z-zn, claude\audit-round-2026-10-19.md
+- 18 Oct: F212 to F230, 292 to 311, a Navisworks per group, Auto-Save off, two set codes, the retake, the audits
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
@@ -33,11 +33,9 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 13:30, multi2, C06, C07, Corrupt, both pages | 026a1447, main after 299 | C06 3605 and 3623, C07 2709 twice, C06 stops from group 11 | not run | none read | NWC page 22.1 min, NWF page 19.6 min |
 | 18 Oct 20:24, multi3, C06, C07, SKY, both pages, a Navisworks a group | e38344c7, main after 309 | no stop in any of 46 groups, 1B06PK 4330 MB at most | not run | none read | NWC page 28.2 min, NWF page 26.4 min, 46 starts about 200 s and 46 quits 93 s a page |
 ## Next
-1. Bader runs the round's steps at the top of steps\03_bader_next.md, F222 to F227, step 1 a Navisworks he starts himself
-2. Bader answers Q212, whether the tests a rule left out that an NWF still holds are removed
-3. Bader reads claude\audit-round-2026-10-18b.md and says which of its 41 contradictions to fix
-4. F229-R1, the next run's window pruning the group logs of the run before
-5. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
+1. F231 merged, then F232, packages first and one route per page, then F233 one discipline groups not built
+2. F234 the discipline report, F235 Q187 and Q195 as answered in the round, F236 the clash count check
+3. F237 the full run on final-2026-10-19, then F238 the audit, the proof steps and the closing entry
 
 ## Waiting for Bader
 - Q212 the tests a rule left out still held in an NWF refreshed before it, leave them, delete once or a folder of their own

@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    F231, the append measured against a manual Append, 2026-10-18. A probe that runs INSIDE Navisworks, in
+    DisciplineProbe's shape, started through the automation API by tools\probes\AppendProbe\probe-append.ps1.
+    It opens each NWF or NWD it is handed, one after another, and writes per model the file name, the source
+    file name, the units, the translation of its transform and the min and max of its root item's box, in the
+    document's units and in millimetres. It references no project of this repo and saves nothing.
+
+        dotnet build tools\probes\AppendProbe\AppendProbe.csproj -c Release
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>AppendProbe</AssemblyName>
+    <RootNamespace>AppendProbe</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+    <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
+    <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api">
+      <HintPath>$(NavisworksApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckNavisworks" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(NavisworksApiDll)')" Text="Autodesk.Navisworks.Api.dll was not found at $(NavisworksApiDll). Pass -p:NavisworksPath with the real install folder." />
+  </Target>
+
+</Project>

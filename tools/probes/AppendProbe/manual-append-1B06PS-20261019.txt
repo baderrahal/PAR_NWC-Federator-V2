@@ -1,0 +1,18 @@
+23:59:52.893  manual Append of 3 files from C:\NWC-PC-Test\work\append-check\1B06PS\NWC into C:\NWC-PC-Test\work\append-check\1B06PS\1B06PS manual.nwf, Navisworks pid 30736
+23:59:52.900    in this order: 1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc
+23:59:52.900    in this order: 1104-PAR-1B06PS-ZZZ-EL-MOD-000001.nwc
+23:59:52.900    in this order: 1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc
+23:59:52.963  main window: 1B06BC manual.nwf - Autodesk Navisworks Manage 2025
+00:00:04.019  File, New pressed, the quick access bar's New, RoamerGUI_FILE_NEW, main window now: Untitled - Autodesk Navisworks Manage 2025
+00:00:09.940  Append pressed, the Home tab's Append, RoamerGUI_FILE_APPEND, and its dialog is up
+00:00:09.953    its file type box reads '', left as it is
+00:00:09.974  typed the folder, the box reads C:\NWC-PC-Test\work\append-check\1B06PS\NWC
+00:00:11.988  typed the files, the box reads "1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc" "1104-PAR-1B06PS-ZZZ-EL-MOD-000001.nwc" "1104-PAR-1B06PS-ZZZ-ST-MOD-000001.nwc"
+00:00:12.780  the Append dialog is gone, waiting 15 s for the models
+00:00:27.798  main window now: Untitled - Autodesk Navisworks Manage 2025
+00:00:36.073  Save pressed, the quick access bar's Save, and for an untitled document its Save As dialog is up
+00:00:36.099    save as types: Navisworks 2016-2025 (*.nwd) | Navisworks 2016-2025 File Set (*.nwf) | Navisworks 2015 (*.nwd) | Navisworks 2015 File Set (*.nwf) | All Supported Files (*.*) | All Files (*.*), chosen now: Navisworks 2016-2025 File Set (*.nwf), left as it is
+00:00:36.105  typed the NWF path, the box reads C:\NWC-PC-Test\work\append-check\1B06PS\1B06PS manual.nwf
+00:00:41.661  main window now: 1B06PS manual.nwf - Autodesk Navisworks Manage 2025
+00:00:41.719  the NWF on disk: 4018 bytes, sha256 C6ED69B86A868818FA90FF117084A30D3D6FFCBA273AFD3A14303AB8DB07F0D5
+00:00:41.723  DONE
