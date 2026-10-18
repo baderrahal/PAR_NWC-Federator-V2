@@ -153,7 +153,25 @@ namespace Federator.Runner
             }
 
             now.ExceptWith(atTheStart);
-            return now.Count > 0;
+
+            // A process listed that reads exited is gone, whatever still holds its handle, so it is never counted as running.
+            // The first smoke run of F223 counted one with every group's Navisworks read gone, and which it was is UNKNOWN.
+            foreach (int pid in now)
+            {
+                try
+                {
+                    if (!IsGone(pid))
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>One group in one fresh Navisworks, from before its start to its process gone. A throw before its try, the read of the Navisworks running, goes to Main, which says it and runs the next.</summary>
