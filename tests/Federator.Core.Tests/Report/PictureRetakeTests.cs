@@ -48,7 +48,6 @@ namespace Federator.Core.Tests
             byte[] sky = Filled(136, 169, 238);
 
             Assert.That(PictureRetake.ItemPixels(sky, Width, Height, Stride, settings), Is.EqualTo(0));
-            Assert.That(PictureRetake.MiddleIsTheSky(sky, Width, Height, Stride, settings), Is.True);
 
             Paint(sky, 2, 2, 230, 40, 40);
             Paint(sky, 4, 4, 40, 230, 40);
@@ -62,9 +61,47 @@ namespace Federator.Core.Tests
             settings.Every = 1;
             Assert.That(PictureRetake.ItemPixels(sky, Width, Height, Stride, settings), Is.EqualTo(3), "the pixel at 3,3 is read every one pixel");
 
-            byte[] grey = Filled(168, 168, 168);
-            Assert.That(PictureRetake.MiddleIsTheSky(grey, Width, Height, Stride, settings), Is.False, "a wall at the middle is not the sky");
             Assert.That(PictureRetake.ItemPixels(null, Width, Height, Stride, settings), Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// The sky runs from 108,144,230 at the top to 209,238,254 at the bottom, read off F226's first smoke run, whose 4 pictures
+        /// of only the sky had 158,189,243 at their middle and so were not the 136,169,238 the first pass looked for there.
+        /// </summary>
+        [Test]
+        public void ASkyOfAnyRowIsTheSkyAndAWallIsNever()
+        {
+            PictureRetakeSettings settings = new PictureRetakeSettings();
+            byte[] gradient = Filled(108, 144, 230);
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int r = 108 + (209 - 108) * y / (Height - 1);
+                    int g = 144 + (238 - 144) * y / (Height - 1);
+                    int b = 230 + (254 - 230) * y / (Height - 1);
+                    Paint(gradient, x, y, (byte)r, (byte)g, (byte)b);
+                }
+            }
+
+            Assert.That(PictureRetake.OnlyTheSky(gradient, Width, Height, Stride, settings), Is.True, "the top row, the middle and the palest bottom row");
+            Assert.That(PictureRetake.OnlyTheSky(Filled(158, 189, 243), Width, Height, Stride, settings), Is.True);
+            Assert.That(PictureRetake.OnlyTheSky(Filled(168, 168, 168), Width, Height, Stride, settings), Is.False, "a grey wall is never the sky");
+
+            Paint(gradient, 0, 0, 230, 230, 230);
+            Assert.That(PictureRetake.OnlyTheSky(gradient, Width, Height, Stride, settings), Is.True, "a label in a corner leaves the sky the sky");
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    Paint(gradient, x, y, 168, 168, 168);
+                }
+            }
+
+            Assert.That(PictureRetake.OnlyTheSky(gradient, Width, Height, Stride, settings), Is.False, "a wall across a fifth of the picture is something");
+            Assert.That(PictureRetake.OnlyTheSky(null, Width, Height, Stride, settings), Is.False);
         }
 
         [Test]

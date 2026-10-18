@@ -662,7 +662,7 @@ namespace Federator.Addin.Engine
             return top.DisplayName;
         }
 
-        /// <summary>Core's two readings of a picture, whether it draws an item of the clash and whether its middle is the sky.</summary>
+        /// <summary>Core's two readings of a picture, whether it draws an item of the clash and whether it shows only the sky.</summary>
         private void Measure(Bitmap bitmap, out bool drew, out bool sky)
         {
             Rectangle all = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
@@ -674,7 +674,7 @@ namespace Federator.Addin.Engine
                 byte[] bytes = new byte[stride * data.Height];
                 System.Runtime.InteropServices.Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
                 drew = PictureRetake.ItemPixels(bytes, data.Width, data.Height, stride, options.Retake) > 0;
-                sky = PictureRetake.MiddleIsTheSky(bytes, data.Width, data.Height, stride, options.Retake);
+                sky = PictureRetake.OnlyTheSky(bytes, data.Width, data.Height, stride, options.Retake);
             }
             finally
             {

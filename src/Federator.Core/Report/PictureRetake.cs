@@ -32,9 +32,9 @@ namespace Federator.Core.Report
             Retake = true;
             Bright = DefaultBright;
             Dark = DefaultDark;
-            SkyRed = 136;
-            SkyGreen = 169;
-            SkyBlue = 238;
+            SkyShare = 0.95;
+            SkyBlueAtLeast = 200;
+            SkyBlueOverRed = 40;
         }
 
         /// <summary>Whether a picture that draws no item of its clash is taken again, on by Q208.</summary>
@@ -74,12 +74,14 @@ namespace Federator.Core.Report
             }
         }
 
-        /// <summary>The sky's colour at a picture's middle, 136,169,238, read off every empty picture of 5z-zk.</summary>
-        public int SkyRed { get; set; }
+        /// <summary>The share of the pixels read that must be the sky's blue for a picture to show only the sky, 0.95.</summary>
+        public double SkyShare { get; set; }
 
-        public int SkyGreen { get; set; }
+        /// <summary>The least blue of the sky, 200, under the 230 of its darkest row.</summary>
+        public int SkyBlueAtLeast { get; set; }
 
-        public int SkyBlue { get; set; }
+        /// <summary>The least the sky's blue is over its red, 40, under the 45 of its palest row.</summary>
+        public int SkyBlueOverRed { get; set; }
     }
 
     /// <summary>Which picture a clash keeps once its retake was taken or not.</summary>
@@ -139,17 +141,46 @@ namespace Federator.Core.Report
             return items;
         }
 
-        /// <summary>Whether a picture's middle pixel is the sky's colour, read in the same bytes.</summary>
-        public static bool MiddleIsTheSky(byte[] bgra, int width, int height, int stride, PictureRetakeSettings settings)
+        /// <summary>
+        /// Whether a picture shows only the sky: at least the setting's share of the pixels read are the sky's blue, blue the
+        /// largest channel, green over red, blue at the setting's least and over red by the setting's gap. The sky runs from
+        /// 108,144,230 at the top to 209,238,254 at the bottom of a picture of 1024 by 1024, read off F226's first smoke run, so
+        /// no one colour names it, and a grey wall, 168,168,168 at the middle of 5z-zm's 4 retakes, is never the sky.
+        /// </summary>
+        public static bool OnlyTheSky(byte[] bgra, int width, int height, int stride, PictureRetakeSettings settings)
         {
-            if (bgra == null || settings == null || width <= 0 || height <= 0)
+            if (bgra == null || settings == null || width <= 0 || height <= 0 || stride < width * 4)
             {
                 return false;
             }
 
-            int at = (height / 2) * stride + (width / 2) * 4;
+            int read = 0;
+            int sky = 0;
 
-            return at + 2 < bgra.Length && bgra[at + 2] == settings.SkyRed && bgra[at + 1] == settings.SkyGreen && bgra[at] == settings.SkyBlue;
+            for (int y = 0; y < height; y += settings.Every)
+            {
+                for (int x = 0; x < width; x += settings.Every)
+                {
+                    int at = y * stride + x * 4;
+
+                    if (at + 2 >= bgra.Length)
+                    {
+                        break;
+                    }
+
+                    int b = bgra[at];
+                    int g = bgra[at + 1];
+                    int r = bgra[at + 2];
+                    read++;
+
+                    if (b >= g && g >= r && b >= settings.SkyBlueAtLeast && b - r >= settings.SkyBlueOverRed)
+                    {
+                        sky++;
+                    }
+                }
+            }
+
+            return read > 0 && sky >= settings.SkyShare * read;
         }
 
         /// <summary>
