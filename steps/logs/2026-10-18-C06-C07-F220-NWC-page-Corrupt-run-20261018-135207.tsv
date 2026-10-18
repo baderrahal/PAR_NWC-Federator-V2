@@ -1,0 +1,35 @@
+﻿time	seconds	group	step	event	name	number	text
+13:52:08.216	0.993	Corrupt  1B06KI	DECIDE	step started	DECIDE	0	
+13:52:08.221	0.997	Corrupt  1B06KI	DECIDE	census before	models	0	
+13:52:08.222	0.999	Corrupt  1B06KI	DECIDE	census before	sets	0	
+13:52:08.224	1.000	Corrupt  1B06KI	DECIDE	census before	tests	0	
+13:52:08.225	1.002	Corrupt  1B06KI	DECIDE	census before	results	0	
+13:52:08.227	1.003	Corrupt  1B06KI	DECIDE	census before	views	0	
+13:52:08.275	1.052	Corrupt  1B06KI		census after	models	0	
+13:52:08.277	1.053	Corrupt  1B06KI		census after	sets	0	
+13:52:08.278	1.054	Corrupt  1B06KI		census after	tests	0	
+13:52:08.279	1.055	Corrupt  1B06KI		census after	results	0	
+13:52:08.280	1.056	Corrupt  1B06KI		census after	views	0	
+13:52:08.284	1.060	Corrupt  1B06KI		step finished	DECIDE	0.051	First run
+13:52:08.295	1.071	Corrupt  1B06KI	APPEND	step started	APPEND	0	
+13:52:08.297	1.073	Corrupt  1B06KI	APPEND	census before	models	0	
+13:52:08.298	1.074	Corrupt  1B06KI	APPEND	census before	sets	0	
+13:52:08.298	1.075	Corrupt  1B06KI	APPEND	census before	tests	0	
+13:52:08.299	1.075	Corrupt  1B06KI	APPEND	census before	results	0	
+13:52:08.300	1.076	Corrupt  1B06KI	APPEND	census before	views	0	
+13:52:08.568	1.345	Corrupt  1B06KI	APPEND	append failed	APPEND	200000	C:\\NWC-PC-Test\\work\\multi2\\Parent\\Corrupt\\1104-PAR-1B06KI-ZZZ-AR-MOD-000001.nwc
+13:52:08.582	1.359	Corrupt  1B06KI		census after	models	0	
+13:52:08.583	1.359	Corrupt  1B06KI		census after	sets	0	
+13:52:08.583	1.360	Corrupt  1B06KI		census after	tests	0	
+13:52:08.584	1.361	Corrupt  1B06KI		census after	results	0	
+13:52:08.585	1.361	Corrupt  1B06KI		census after	views	0	
+13:52:08.587	1.363	Corrupt  1B06KI		step finished	APPEND	0.278	0 of 1 appended
+13:52:08.599	1.375			group finished	Corrupt  1B06KI	0.418	FAILED First run
+13:52:08.615	1.391			timing	APPEND	0.278	1 visits
+13:52:08.615	1.392			timing	DECIDE	0.051	1 visits
+13:52:08.646	1.423			written	LIST	313	C:\\NWC-PC-Test\\work\\multi2\\Report\\Corrupt\\Log\\Models not on the same shared coordinates, run 2026-10-18 135208.txt
+13:52:08.665	1.442			timing beside size	Corrupt  1B06KI	0.418	1 NWC file, 200000 bytes, UNKNOWN elements, UNKNOWN clashes, UNKNOWN viewpoints
+13:52:09.639	2.415			written	CHECKS	8174	C:\\NWC-PC-Test\\work\\multi2\\Report\\Corrupt\\Corrupt AR checks.xlsx
+13:52:10.363	3.139			written	CHECKS	7902	C:\\NWC-PC-Test\\work\\multi2\\Report\\Corrupt\\Corrupt ST checks.xlsx
+13:52:10.379	3.156			written	CHECKS	7901	C:\\NWC-PC-Test\\work\\multi2\\Report\\Corrupt\\Corrupt ME checks.xlsx
+13:52:10.396	3.173			written	CHECKS	7902	C:\\NWC-PC-Test\\work\\multi2\\Report\\Corrupt\\Corrupt EL checks.xlsx

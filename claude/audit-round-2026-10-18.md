@@ -11,24 +11,33 @@ Bader or a later fix.
 | fix | what | pull request | proved here | waits for |
 |---|---|---|---|---|
 | F212 | Bader's answers to Q202 to Q206, the manual append rule in addin.md, 20 merged branches deleted, main kept | 292 | the rule read off src, nothing sets anything around an append | nothing |
-| F213 | a bad NWC never stops an unattended run, its message box answered, its group FAILED | 293 | probes 5z-zh and 5z-zi, a run on a random file, a cut file and a held file | F220_NWC |
-| F214 | a fresh Navisworks per package, Run pressed once | 296 | the flat C06 and C07 run, 42 of 42 DONE, C07 3642 pictures, 24.4 min | F220_NWC |
+| F213 | a bad NWC never stops an unattended run, its message box answered, its group FAILED | 293 | probes 5z-zh and 5z-zi, a run on a random file, a cut file and a held file | seen in F220 |
+| F214 | a fresh Navisworks per package, Run pressed once | 296 | the flat C06 and C07 run, 42 of 42 DONE, C07 3642 pictures, 24.4 min | seen in F220 |
 | F215 | the sky-only pictures measured, cause UNKNOWN | 297 | SkyProbe, scan.md 5z-zk | Q208 |
-| F216 | the full path on every package line | 294 | Core tests | F220_NWC |
-| F217 | the NWF page confirm counts the old jpg files | 298 | Core tests | F220_NWF |
-| F218 | the far limit 30 m, tests at 29.9, 30 and 30.1 m | 295 | Core tests | F220_NWC |
-| F219 | a group of one discipline runs its tests on neither page, Q209 counted | 299 | Core tests | F220_NWF, Q209 |
-| F220 | the test on multi2 | F220_PR | F220_SUMMARY | |
+| F216 | the full path on every package line | 294 | Core tests | seen in F220 |
+| F217 | the NWF page confirm counts the old jpg files | 298 | Core tests | seen in F220 |
+| F218 | the far limit 30 m, tests at 29.9, 30 and 30.1 m | 295 | Core tests | seen in F220 |
+| F219 | a group of one discipline runs its tests on neither page, Q209 counted | 299 | Core tests | seen in F220, Q209 |
+| F220 | the test on multi2 | 300 | the NWC page 45 groups, 44 DONE, the corrupt one FAILED, 22.1 min, the NWF page 44 DONE, 19.6 min, 9029 clashes on both, the real files 0 lines differ | nothing |
 | F221 | this audit, the rule texts the code has outgrown fixed | F221_PR | Core tests and the build | |
 
 ## Findings of the round
 
-F220_FINDINGS
+- F220, the NWC page on C06, C07 and Corrupt and the NWF page on C06 and C07, steps\logs 2026-10-18-C06-C07-F220:
+  - F213 seen: the random file's message box pressed after 206 ms, its group FAILED naming the file, no person. Corrupt was
+    the last package, so a package after it is not shown
+  - F214 seen: each package in its own Navisworks, gone 1.6 to 2.4 s after it was told to quit. C07 2709 pictures on each
+    page with no memory stop. C06 3605 and 3623, the memory stop firing 7 and 8 times from its 11th group of 21 on
+  - F216 seen: every package line of PACKAGE TREE and PACKAGES TICKED ends with its full path
+  - F217 seen: the NWF page's confirm counted 6314 old jpg files, the 3605 and 2709 the NWC page wrote
+  - F218 seen: 49.055 m reads far and 23.963 m near in the discipline workbooks
+  - F219 seen: both pages skip the same 12 groups, 6 of C06 and 6 of C07, each with its discipline, and no NWF read UNKNOWN
+  - both pages 6207 clashes in C06 and 2822 in C07. Clash Detective's own counts were not read against the workbooks
 
-- The desktop folder of real files changed outside this session: its NWC\C07 folder was written between 09:41 and 09:49
-  on 18 Oct, the 1B06 copies replaced by 1C07, 1D07 and 1A07 files. This round only read it. F220 ran the real C07 as it
-  stood at 12:37, when multi2 was copied, listing-before.tsv beside it
-- F214-R5: the memory stop still fires in the last 6 or 7 groups of each package of 21
+- The desktop folder of real files: its NWC\C07 holds 1C07, 1D07 and 1A07 files dated 09:41 on 18 Oct and its folder
+  09:42, where F210's copy held 1B06 files, a change no command of this session made. This round only read the folder,
+  141 files and 25 folders before and after F220, 0 lines differ. F220 ran C07 as it stood at 12:37
+- F214-R5: the memory stop still fires in C06, from its 11th group of 21 on in F220, where the row reads the last 6
 - F215: 76 pictures of 1B06BC and 25 of 1B06P1 draw no item of their clash, cause UNKNOWN, Q208
 - F219-R1: an NWF the NWF page refreshed before F219 keeps the results of its one-discipline tests, which COVERAGE reads
   as FAILED, about 3992 clashes on C06 and C07
@@ -37,7 +46,10 @@ F220_FINDINGS
 
 ## The checks that pass
 
-F221_CHECKS
+- The solution builds in Release with --no-incremental, 0 warnings and 0 errors, on fix-F221 with main 4e705ce merged in.
+- Core tests 3392 passed, 0 failed, 0 skipped, on main before this branch and on it after.
+- check-locals and check-imports pass over src, and so do check-tracker and check-progress.
+- Every pull request of the round, 292 to 300, merged on green with its branch deleted, and none is left open.
 
 - No Navisworks type in src\Federator.Core or src\Federator.Runner. The Runner names the Automation DLL and its type
   only as strings, loaded by reflection from a joined path.

@@ -1,5 +1,26 @@
 # 03 Bader next
 
+## The round of 18 Oct, F212 to F221
+
+Simple words. Every fix of this round was seen on Navisworks by F220, started by the loop, on copies in C:\NWC-PC-Test\work\multi2, which stays on this PC. What no run of the loop can show is a Navisworks you start yourself giving each package its own Navisworks, so step 1 comes first. The whole report is claude\audit-round-2026-10-18.md. Use a new empty folder for Report, so nothing of F220 is written over.
+
+1. Start Navisworks Manage 2025 from the Start menu, as you always do, and open the tool.
+2. On the NWC page, step 5, type C:\NWC-PC-Test\work\multi2\Parent as the parent folder and a new empty folder as Report, and press Read.
+   Look for: each package line ending with its full path, such as `C06  64 NWC files, at C:\NWC-PC-Test\work\multi2\Parent\C06`. F216.
+3. Tick C06 and Corrupt, press Run ticked packages and OK on the one confirm, and click nothing more.
+   Look for: a second Navisworks opening for C06, working and closing, then one for Corrupt, and no message box waiting for you. F214 and F213.
+4. When the live line says the run finished, open the log with Open log folder.
+   Look for: `group          Corrupt  1B06KI  FAILED` and its why line naming the file and saying it could not be appended, and C06 with 21 groups, 21 done. F213.
+5. In the same log, under PACKAGE C06, or in C06's own log.
+   Look for: `CLASH    C06  1B06BS holds one discipline, EL, so no test of it is run, Bader's answer to Q203`. F219.
+6. Open C06 EL checks.xlsx in the C06 folder of your Report folder and filter the Check column on Coordinates.
+   Look for: 1B06PO far, 49.055 m from AR. Under the old limit of 1000 m it read near. F218.
+7. On the NWF page, type the same parent and Report folders, press Read, tick C06 and press Run ticked packages.
+   Look for: the confirm's Pictures line counting the old jpg files of step 3, about 3605, and not UNKNOWN. F217.
+8. Press OK and wait for the run to finish, then open its log.
+   Look for: `CLASH    C06  1104-PAR-1B06BS-ZZZ-BM-MOD-000001 holds one discipline, EL, so no test of it is run, Bader's answer to Q203`, the same groups skipped as on the NWC page. F219.
+9. Answer Q207 to Q210 in steps\02_questions.md, or in the tab.
+
 ## F214, a fresh Navisworks for every package
 
 Simple words. When you run ticked packages, your window plans them and asks once, as before. Then each package runs in a new Navisworks of its own, one after the other, and the next starts only once the last has closed, so a long run never fills one Navisworks's memory. One RESULT in your window's log joins them all. PROVEN on copies with Navisworks started by the loop. Not yet proven with a Navisworks you started yourself, which is step 1 and comes first because nothing else can show it.
