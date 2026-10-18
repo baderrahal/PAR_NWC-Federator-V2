@@ -206,19 +206,19 @@ namespace Federator.Core.Health
         /// it truncated rather than leaving a reader to wonder. Ten, taken when the block was
         /// written from the ten SetsAcrossTheRun named then. That number is no longer shared:
         /// since F127 SetsAcrossTheRun names every set that found nothing, through
-        /// CoverageSettings.SetsAtZeroNamedInTheRun, and this one stays ten.
+        /// CoverageSettings.SetsAtZeroNamedInTheRun, and this one stays ten. Since F227, Bader's
+        /// answer to Q210, it is the default of ReportOptions.ExportNamesShown, the setting the
+        /// engine hands in.
         /// </summary>
-        public const int NamesShown = 10;
+        public const int DefaultNamesShown = 10;
 
         /// <summary>
-        /// The block, written even when everything is right, because a missing block reads
-        /// as a check that did not run. The sets are those of the picked clash file, or
-        /// null where none was picked, and they are what the workset names are compared
-        /// with by letter case.
+        /// The block at the default count of names, as the tests read it. The run hands its own
+        /// count to the overload that takes one.
         /// </summary>
-        public static IList<string> Lines(IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets)
+        internal static IList<string> Lines(IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets)
         {
-            return Lines(models, sets, NamesShown);
+            return Lines(models, sets, DefaultNamesShown);
         }
 
         /// <summary>
@@ -251,6 +251,13 @@ namespace Federator.Core.Health
             return model == null || !model.Counted ? string.Empty : EventRow.Count(model.Elements);
         }
 
+        /// <summary>
+        /// The block, written even when everything is right, because a missing block reads
+        /// as a check that did not run. The sets are those of the picked clash file, or
+        /// null where none was picked, and they are what the workset names are compared
+        /// with by letter case. namesShown is the run's ReportOptions.ExportNamesShown, nought
+        /// listing every name.
+        /// </summary>
         public static IList<string> Lines(
             IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets, int namesShown)
         {

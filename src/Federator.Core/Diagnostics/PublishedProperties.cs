@@ -85,7 +85,7 @@ namespace Federator.Core.Diagnostics
         /// Whether a property of that name was set, so a check can ask the question without
         /// reading the line back as text.
         /// </summary>
-        public bool WasSet(string name)
+        internal bool WasSet(string name)
         {
             return names.Contains(name);
         }

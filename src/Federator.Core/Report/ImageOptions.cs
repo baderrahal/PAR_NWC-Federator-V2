@@ -28,6 +28,12 @@ namespace Federator.Core.Report
 
         private readonly HashSet<ClashStatus> statuses = new HashSet<ClashStatus>();
 
+        private int picturesForA = PictureLimits.DefaultPicturesForA;
+        private int picturesForB = PictureLimits.DefaultPicturesForB;
+        private int picturesForC = PictureLimits.DefaultPicturesForC;
+        private long gdiStop = PictureLimits.DefaultGdiStop;
+        private long memoryStopBytes = PictureLimits.DefaultMemoryStopBytes;
+
         public ImageOptions()
         {
             Write = true;
@@ -103,6 +109,77 @@ namespace Federator.Core.Report
 
         /// <summary>F226, Bader's answer to Q208: the retake of a picture that draws no item of its clash, on, from 30 ft at the nearest.</summary>
         public PictureRetakeSettings Retake { get; } = new PictureRetakeSettings();
+
+        /// <summary>
+        /// The most pictures a test of priority A gets, 150, F190 and F227. Nought gives such a test no picture.
+        /// Below nought is refused, since no test holds fewer than no pictures.
+        /// </summary>
+        public int PicturesForA
+        {
+            get { return picturesForA; }
+            set { picturesForA = NoughtOrMore(value, "priority A"); }
+        }
+
+        /// <summary>The most pictures a test of priority B gets, 100, refused below nought as A is.</summary>
+        public int PicturesForB
+        {
+            get { return picturesForB; }
+            set { picturesForB = NoughtOrMore(value, "priority B"); }
+        }
+
+        /// <summary>The most pictures a test of priority C or of no priority gets, 50, refused below nought as A is.</summary>
+        public int PicturesForC
+        {
+            get { return picturesForC; }
+            set { picturesForC = NoughtOrMore(value, "priority C"); }
+        }
+
+        /// <summary>
+        /// The GDI objects of the Navisworks process past which no picture is made, 9000, F172 and F227. Refused at
+        /// nought or below, which would stop the pictures before the first, and at the process's limit of 10000 or
+        /// past it, which Navisworks never reaches alive.
+        /// </summary>
+        public long GdiStop
+        {
+            get
+            {
+                return gdiStop;
+            }
+
+            set
+            {
+                if (value <= 0 || value >= PictureLimits.ProcessGdiLimit)
+                {
+                    throw new ArgumentOutOfRangeException("value", value,
+                        "The GDI stop is more than nought and less than the " + PictureLimits.ProcessGdiLimit
+                        + " a process may hold.");
+                }
+
+                gdiStop = value;
+            }
+        }
+
+        /// <summary>
+        /// The private bytes of the Navisworks process past which no picture is made, 12 GB, F182 and F227. Refused at
+        /// nought or below, which would stop the pictures before the first.
+        /// </summary>
+        public long MemoryStopBytes
+        {
+            get
+            {
+                return memoryStopBytes;
+            }
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "The memory stop is more than nought bytes.");
+                }
+
+                memoryStopBytes = value;
+            }
+        }
 
         /// <summary>Is this clash one to render.</summary>
         public bool Wants(ClashStatus status)
@@ -222,8 +299,8 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// F172, F175 and F190, Bader's answers to Q171. Is there room for one more picture on this test: under
-        /// the box's cap where it is not zero, and under the rule of PictureLimits, which gives the first 150, 100
-        /// or 50 clashes of every test, whatever its clash count, a picture by its priority A, B or C
+        /// the box's cap where it is not zero, and under the rule of PictureLimits, which gives the first PicturesForA,
+        /// PicturesForB or PicturesForC clashes of every test, 150, 100 and 50 by default, whatever its clash count, a picture by its priority A, B or C
         /// and skips the rest. The least of the two holds. The box keeps its own job, a cap of the user's
         /// choosing for every test, and the rule is there whatever the box says.
         /// </summary>
@@ -235,7 +312,7 @@ namespace Federator.Core.Report
         /// <summary>The most pictures this test may have, F175: the rule of its picture priority and the box, the least.</summary>
         public int LimitOf(TestReport test)
         {
-            return PictureLimits.LimitFor(test.PicturePriority, CapPerTest);
+            return PictureLimits.LimitFor(test.PicturePriority, this);
         }
 
         /// <summary>Only the statuses asked for, in the order the tally reports them.</summary>
@@ -289,11 +366,11 @@ namespace Federator.Core.Report
             }
 
             string statusList = string.Join(", ", Names(ChosenStatuses()));
-            // F172. The box's cap and the fixed rule are both said, the rule being there whatever the box says.
+            // F172. The box's cap and the rule of the caps are both said, the rule being there whatever the box says.
             string cap = (CapPerTest > 0
                     ? "at most " + CapPerTest + " per test"
                     : "no cap of your own per test")
-                + ", and " + PictureLimits.RuleInWords();
+                + ", and " + PictureLimits.RuleInWords(this);
 
             return "Images on, " + Width + " by " + Height + " pixels, " + statusList
                 + " only, " + cap + ", "
@@ -301,6 +378,17 @@ namespace Federator.Core.Report
                 + (OnlyTheTestsModels ? ", only the models of each test shown" : ", every model shown")
                 + (GhostTheOtherItems ? ", Clash Detective asked to show the other items" : ", Clash Detective asked to hide the other items")
                 + ".";
+        }
+
+        private static int NoughtOrMore(int pictures, string priority)
+        {
+            if (pictures < 0)
+            {
+                throw new ArgumentOutOfRangeException("value", pictures,
+                    "The most pictures a test of " + priority + " gets is nought or more.");
+            }
+
+            return pictures;
         }
 
         private static string[] Names(IList<ClashStatus> chosen)

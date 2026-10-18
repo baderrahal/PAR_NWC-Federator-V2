@@ -45,7 +45,7 @@ namespace Federator.Core.Generic
         public int GroupsWhoseTextsMeet { get; private set; }
 
         /// <summary>The groups that reached no count at all, by name.</summary>
-        public IList<string> GroupsNotCounted
+        internal IList<string> GroupsNotCounted
         {
             get { return new List<string>(groupsNotCounted); }
         }

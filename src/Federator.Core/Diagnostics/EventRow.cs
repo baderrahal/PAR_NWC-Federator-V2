@@ -93,7 +93,7 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>How many fields every row has. The header and every row agree.</summary>
-        public const int FieldCount = 8;
+        internal const int FieldCount = 8;
 
         public string Line()
         {

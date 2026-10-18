@@ -107,7 +107,7 @@ namespace Federator.Core.Rerun
             verdict = LoadWaitVerdict.KeepWaiting;
         }
 
-        public int SteadyReadings
+        internal int SteadyReadings
         {
             get { return steadyReadings; }
         }
@@ -117,13 +117,13 @@ namespace Federator.Core.Rerun
             get { return pauseMilliseconds; }
         }
 
-        public double CeilingSeconds
+        internal double CeilingSeconds
         {
             get { return ceilingSeconds; }
         }
 
         /// <summary>How many readings have been handed in.</summary>
-        public int Readings
+        internal int Readings
         {
             get { return readings; }
         }

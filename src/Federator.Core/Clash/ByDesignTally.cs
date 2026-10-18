@@ -67,7 +67,7 @@ namespace Federator.Core.Clash
         /// points at, this pass reaches the saved tests, where before it matched no pair
         /// there. The pass stays, Q144, and the block says so rather than moving in silence.
         /// </summary>
-        public int? SavedTestsRead
+        internal int? SavedTestsRead
         {
             get { return savedTestsRead; }
         }

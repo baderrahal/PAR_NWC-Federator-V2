@@ -589,6 +589,42 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
+        /// F227, Bader's answer to Q210. How many names the block lists is the run's ReportOptions.ExportNamesShown,
+        /// ten by default, nought listing every one, and below nought is refused where it is set.
+        /// </summary>
+        [Test]
+        public void HowManyNamesTheBlockListsIsTheRunsSettingAndBelowNoughtIsRefused()
+        {
+            Federator.Core.Report.ReportOptions reports = new Federator.Core.Report.ReportOptions();
+
+            Assert.That(reports.ExportNamesShown, Is.EqualTo(10));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => reports.ExportNamesShown = -1);
+            Assert.That(reports.ExportNamesShown, Is.EqualTo(10), "a refused value leaves the setting as it was");
+
+            IList<ModelExport> models = new List<ModelExport>
+            {
+                new ModelExport("a.nwc", "ME", 100, 100, 100, new List<string>
+                {
+                    "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf",
+                    "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November"
+                })
+            };
+
+            reports.ExportNamesShown = 3;
+            string three = Joined(ExportCheck.Lines(models, NoFile, reports.ExportNamesShown));
+
+            Assert.That(three, Does.Contain("Charlie"));
+            Assert.That(three, Does.Not.Contain("Delta"));
+            Assert.That(three, Does.Contain("and 11 more, counted and not listed"));
+
+            reports.ExportNamesShown = 0;
+            string every = Joined(ExportCheck.Lines(models, NoFile, reports.ExportNamesShown));
+
+            Assert.That(every, Does.Contain("November"));
+            Assert.That(every, Does.Not.Contain("more, counted and not listed"));
+        }
+
+        /// <summary>
         /// F116. The block names ten and counts the rest, so in nine groups of set 03 on C06,
         /// whose worksets seen lines end "and N more, counted and not listed" at lines 605,
         /// 1354, 3248, 3928, 4670, 5071, 6482, 6853 and 7254 of its log, which spelling the
@@ -711,8 +747,8 @@ namespace Federator.Core.Tests.Health
                 Model("AR", 86, 86, 86, "AR-EXTERIOR", "AR-INTERIOR")
             };
 
-            string unread = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.NamesShown, false));
-            string read = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.NamesShown, true));
+            string unread = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.DefaultNamesShown, false));
+            string read = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.DefaultNamesShown, true));
 
             Assert.That(unread, Does.Contain(
                 "the list of workset pairs a person decided are not typos could not be read out of Federator.Core.dll,"

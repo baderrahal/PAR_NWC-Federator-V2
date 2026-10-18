@@ -16,6 +16,8 @@ namespace Federator.Core.Report
     /// </summary>
     public sealed class ReportOptions
     {
+        private int exportNamesShown = ExportCheck.DefaultNamesShown;
+
         public ReportOptions()
         {
             WriteWorkbook = true;
@@ -54,6 +56,29 @@ namespace Federator.Core.Report
         /// unattended run goes on, F213. Read off Core here and never typed in the window.
         /// </summary>
         public Federator.Core.Rerun.AppendBoxSettings AppendBox { get; set; }
+
+        /// <summary>
+        /// How many workset names the EXPORT CHECK block lists before it counts the rest, ten, F227, Bader's answer to
+        /// Q210. Nought lists every name. Refused below nought, since no block lists fewer than no names.
+        /// </summary>
+        public int ExportNamesShown
+        {
+            get
+            {
+                return exportNamesShown;
+            }
+
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value,
+                        "The export check lists nought names or more, nought listing every one.");
+                }
+
+                exportNamesShown = value;
+            }
+        }
 
         /// <summary>
         /// The discipline reports of a run of packages, F209: which disciplines get a workbook, the reference discipline, the

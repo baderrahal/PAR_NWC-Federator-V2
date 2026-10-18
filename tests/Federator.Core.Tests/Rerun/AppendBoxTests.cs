@@ -178,5 +178,25 @@ namespace Federator.Core.Tests
             settings.EveryMilliseconds = 50;
             Assert.That(settings.EveryMilliseconds, Is.EqualTo(50));
         }
+
+        /// <summary>
+        /// F227, Bader's answer to Q210. How many presses before a box still standing is said is a setting, ten by
+        /// default, refused below one where it is set, and the line says the number pressed.
+        /// </summary>
+        [Test]
+        public void ABoxStillStandingIsSaidAfterTenPressesAndBelowOneIsRefused()
+        {
+            AppendBoxSettings settings = new ReportOptions().AppendBox;
+
+            Assert.That(settings.PressesBeforeSaying, Is.EqualTo(10));
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.PressesBeforeSaying = 0);
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.PressesBeforeSaying = -3);
+            Assert.That(settings.PressesBeforeSaying, Is.EqualTo(10), "a refused value leaves the setting as it was");
+
+            settings.PressesBeforeSaying = 1;
+            Assert.That(settings.PressesBeforeSaying, Is.EqualTo(1));
+            settings.PressesBeforeSaying = 3;
+            Assert.That(AppendBox.StillStandsLine(File, settings.PressesBeforeSaying), Does.Contain("3 times"));
+        }
     }
 }

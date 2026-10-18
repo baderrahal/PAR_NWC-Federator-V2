@@ -210,7 +210,7 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>How many services this tool could not measure, across this group.</summary>
-        public int UnmeasuredCount
+        internal int UnmeasuredCount
         {
             get { return Of(PenetrationVerdict.SizeUnknown); }
         }

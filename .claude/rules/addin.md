@@ -818,7 +818,8 @@ well as to pass.
   `IsTheBoxOf` with the children it read, and answers a box only where Core says it is the box of that file,
   a #32770 window with one button whose text names the file, by WM_COMMAND with that button's id, 2, the
   click a person makes on OK. IDOK did not close it, measured. A box is marked pressed only once the press
-  was posted, pressed again on every tick while it stands and said once where it still stands after ten. The
+  was posted, pressed again on every tick while it stands and said once where it still stands after the presses of
+  the setting `ReportOptions.AppendBox.PressesBeforeSaying`, ten by default and refused below one, F227. The
   append then returns false, the APPEND line says what Navisworks said, and where the append returned false,
   or threw after the box was answered, `AppendBox.GroupError` goes on `JobOutcome.FilesNavisworksRefused`,
   never on the errors, so the group ends FAILED with the file named, every step after the append runs as it
@@ -953,7 +954,8 @@ well as to pass.
   LongCall.Say, in a finally, so one that throws is named too. Other passes over every clash, the
   penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
   ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
-  ClashImages
+  ClashImages. The running count after every CountEveryTests tests, 25, is read off the same Progress since
+  F227, where it was ClashRunner's const
 - THE RENUMBER ANSWERS WHILE IT RENAMES, F146: FederationEngine.RenumberThePictures hands
   ImageRenumbering.Apply a said that renders the live line through Tick, whose callback lets the window
   answer about once a second, and writes a PROGRESS line with its .tsv row through StepProgress once the

@@ -26,7 +26,7 @@ namespace Federator.Core.Sets
         public int GroupsAtZero { get; internal set; }
 
         /// <summary>How many groups it found something in.</summary>
-        public int GroupsWithItems
+        internal int GroupsWithItems
         {
             get { return GroupsSeen - GroupsAtZero; }
         }

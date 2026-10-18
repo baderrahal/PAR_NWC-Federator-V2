@@ -94,6 +94,29 @@ namespace Federator.Core.Tests
             Assert.That(settings.LongCallSeconds, Is.EqualTo(30.0), "a refused value leaves the setting as it was");
         }
 
+        /// <summary>
+        /// F227, Bader's answer to Q210. The clash step's running count is a setting beside the other two, every 25
+        /// tests by default, refused below one where it is set, and the count follows it.
+        /// </summary>
+        [Test]
+        public void TheRunningCountIsEveryTwentyFiveTestsAndBelowOneIsRefusedWhereItIsSet()
+        {
+            ProgressSettings settings = new ProgressSettings();
+
+            Assert.That(settings.CountEveryTests, Is.EqualTo(25));
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.CountEveryTests = 0);
+            Assert.Throws<ArgumentOutOfRangeException>(() => settings.CountEveryTests = -1);
+            Assert.That(settings.CountEveryTests, Is.EqualTo(25), "a refused value leaves the setting as it was");
+
+            Federator.Core.Clash.ClashRunOutcome outcome = new Federator.Core.Clash.ClashRunOutcome();
+
+            Assert.That(outcome.ProgressAfter(24, 100, settings.CountEveryTests), Is.Null);
+            Assert.That(outcome.ProgressAfter(25, 100, settings.CountEveryTests), Does.StartWith("25 of 100 tests"));
+
+            settings.CountEveryTests = 1;
+            Assert.That(outcome.ProgressAfter(3, 100, settings.CountEveryTests), Does.StartWith("3 of 100 tests"));
+        }
+
         [Test]
         public void TheViewsStepTakesTheOneProgressDefault()
         {

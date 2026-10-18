@@ -19,53 +19,67 @@ namespace Federator.Core.Report
     /// process may hold 10000. Past 9000 no more pictures are made, a NOTICE says at which picture and
     /// how many objects, and the run goes on with the rest of the group. The
     /// run 20261014-105308 crashed Navisworks at picture 8907 of 10170 at 9999 objects, in lcodwin.dll.
+    ///
+    /// The five numbers are settings on ImageOptions since F227, Bader's answer to Q210, and the consts here are
+    /// their defaults.
     /// </summary>
     public static class PictureLimits
     {
-        /// <summary>The most pictures a test of priority A gets, its first clashes in report order.</summary>
-        public const int PicturesForA = 150;
+        /// <summary>The most pictures a test of priority A gets by default, its first clashes in report order.</summary>
+        public const int DefaultPicturesForA = 150;
 
-        /// <summary>The most pictures a test of priority B gets.</summary>
-        public const int PicturesForB = 100;
+        /// <summary>The most pictures a test of priority B gets by default.</summary>
+        public const int DefaultPicturesForB = 100;
 
-        /// <summary>The most pictures a test of priority C gets, and of one with no priority.</summary>
-        public const int PicturesForC = 50;
+        /// <summary>The most pictures a test of priority C gets by default, and of one with no priority.</summary>
+        public const int DefaultPicturesForC = 50;
 
-        /// <summary>The GDI objects of the Navisworks process past which no picture is made.</summary>
-        public const long GdiStop = 9000;
-
-        /// <summary>
-        /// F182, Bader's answer C to Q175. The private bytes of the Navisworks process past which no picture is made,
-        /// 12 GB of 1024 cubed. The first of this and the GDI stop to fire ends the pictures.
-        /// </summary>
-        public const long MemoryStopBytes = 12L * 1024 * 1024 * 1024;
+        /// <summary>The GDI objects of the Navisworks process past which no picture is made, by default.</summary>
+        public const long DefaultGdiStop = 9000;
 
         /// <summary>
-        /// The most pictures a test of that priority gets. None is C, because a test no matrix
-        /// names is C by F168 and a priority not known is the least a test may get, never the most.
+        /// The GDI objects a Windows process may hold. A stop at it or past it never fires before the crash, which
+        /// the run 20261014-105308 met at 9999 objects.
         /// </summary>
-        public static int PicturesFor(ClashPriority priority)
+        public const long ProcessGdiLimit = 10000;
+
+        /// <summary>
+        /// F182, Bader's answer C to Q175. The private bytes of the Navisworks process past which no picture is made by
+        /// default, 12 GB of 1024 cubed. The first of this and the GDI stop to fire ends the pictures.
+        /// </summary>
+        public const long DefaultMemoryStopBytes = 12L * 1024 * 1024 * 1024;
+
+        /// <summary>
+        /// The most pictures a test of that priority gets under the run's settings. None is C, because a test no
+        /// matrix names is C by F168 and a priority not known is the least a test may get, never the most.
+        /// </summary>
+        public static int PicturesFor(ClashPriority priority, ImageOptions options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options");
+            }
+
             switch (priority)
             {
-                case ClashPriority.A: return PicturesForA;
-                case ClashPriority.B: return PicturesForB;
-                default: return PicturesForC;
+                case ClashPriority.A: return options.PicturesForA;
+                case ClashPriority.B: return options.PicturesForB;
+                default: return options.PicturesForC;
             }
         }
 
         /// <summary>
         /// The most pictures a test may have, F190. The cap of its priority, whatever its clash count, and
-        /// the least of it and the box's number where the box is not zero. A test with fewer clashes than
-        /// the limit gets a picture for each, because the pictures stop at the end of its clashes.
+        /// the least of it and the box's number, the run's CapPerTest, where the box is not zero. A test with
+        /// fewer clashes than the limit gets a picture for each, because the pictures stop at the end of its clashes.
         /// </summary>
-        public static int LimitFor(ClashPriority priority, int boxCapPerTest)
+        public static int LimitFor(ClashPriority priority, ImageOptions options)
         {
-            int limit = PicturesFor(priority);
+            int limit = PicturesFor(priority, options);
 
-            if (boxCapPerTest > 0 && boxCapPerTest < limit)
+            if (options.CapPerTest > 0 && options.CapPerTest < limit)
             {
-                limit = boxCapPerTest;
+                limit = options.CapPerTest;
             }
 
             return limit;
@@ -93,12 +107,17 @@ namespace Federator.Core.Report
             return priority == ClashPriority.None ? "C" : Priorities.Words(priority);
         }
 
-        /// <summary>The rule said in words for the window and the log: the three caps.</summary>
-        public static string RuleInWords()
+        /// <summary>The rule said in words for the window and the log: the three caps of the run's settings.</summary>
+        public static string RuleInWords(ImageOptions options)
         {
-            return "every test gets pictures for at most its first " + PicturesForA.ToString(CultureInfo.InvariantCulture)
-                + " clashes at priority A, " + PicturesForB.ToString(CultureInfo.InvariantCulture)
-                + " at priority B and " + PicturesForC.ToString(CultureInfo.InvariantCulture) + " at priority C";
+            if (options == null)
+            {
+                throw new ArgumentNullException("options");
+            }
+
+            return "every test gets pictures for at most its first " + options.PicturesForA.ToString(CultureInfo.InvariantCulture)
+                + " clashes at priority A, " + options.PicturesForB.ToString(CultureInfo.InvariantCulture)
+                + " at priority B and " + options.PicturesForC.ToString(CultureInfo.InvariantCulture) + " at priority C";
         }
     }
 
@@ -111,11 +130,7 @@ namespace Federator.Core.Report
     {
         private readonly long limit;
 
-        public GdiBackstop()
-            : this(PictureLimits.GdiStop)
-        {
-        }
-
+        /// <summary>The backstop at the run's ImageOptions.GdiStop, where a limit that cannot work is refused.</summary>
         public GdiBackstop(long limit)
         {
             this.limit = limit;
@@ -156,7 +171,8 @@ namespace Federator.Core.Report
             return "NOTICE   the pictures stopped at picture " + PictureNumber.ToString(CultureInfo.InvariantCulture)
                 + " because Navisworks held " + GdiObjects.ToString(CultureInfo.InvariantCulture)
                 + " GDI objects, past the " + limit.ToString(CultureInfo.InvariantCulture)
-                + " set so the run does not crash on the limit of 10000. "
+                + " set so the run does not crash on the limit of "
+                + PictureLimits.ProcessGdiLimit.ToString(CultureInfo.InvariantCulture) + ". "
                 + "The run goes on without the rest of the pictures";
         }
 
@@ -180,11 +196,7 @@ namespace Federator.Core.Report
     {
         private readonly long limit;
 
-        public MemoryBackstop()
-            : this(PictureLimits.MemoryStopBytes)
-        {
-        }
-
+        /// <summary>The stop at the run's ImageOptions.MemoryStopBytes, where a limit that cannot work is refused.</summary>
         public MemoryBackstop(long limit)
         {
             this.limit = limit;

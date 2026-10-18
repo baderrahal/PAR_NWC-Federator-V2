@@ -175,7 +175,7 @@ namespace Federator.Core.Diagnostics
         /// The counts neither census could read, so a step can say plainly that it does
         /// not know whether they moved rather than saying nothing at all.
         /// </summary>
-        public IList<CensusCount> CouldNotCompare(DocumentCensus before)
+        internal IList<CensusCount> CouldNotCompare(DocumentCensus before)
         {
             List<CensusCount> unknown = new List<CensusCount>();
 

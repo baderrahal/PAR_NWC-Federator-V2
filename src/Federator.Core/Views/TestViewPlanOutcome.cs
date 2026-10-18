@@ -77,7 +77,7 @@ namespace Federator.Core.Views
         public int TestsWithNoOpenClash { get; internal set; }
 
         /// <summary>Every side that reads UNKNOWN, each once by its whole locator, FR-074 and N5 of F114c, the empty side for a side with no set name. Lines says why, each reason written.</summary>
-        public ReadOnlyCollection<string> UnknownSets
+        internal ReadOnlyCollection<string> UnknownSets
         {
             get { return new ReadOnlyCollection<string>(unknownSets); }
         }
@@ -106,7 +106,7 @@ namespace Federator.Core.Views
         }
 
         /// <summary>The team pair of a test the plan was handed, or null where it never saw that test.</summary>
-        public TeamPair PairOfTest(string testName)
+        internal TeamPair PairOfTest(string testName)
         {
             TeamPair pair;
             return testName != null && pairOfTest.TryGetValue(testName, out pair) ? pair : null;
@@ -153,13 +153,13 @@ namespace Federator.Core.Views
         }
 
         /// <summary>Each test left without a view because a side is on a team the map does not name or on UNKNOWN, once.</summary>
-        public ReadOnlyCollection<string> OutsideTheMap
+        internal ReadOnlyCollection<string> OutsideTheMap
         {
             get { return new ReadOnlyCollection<string>(unmapped); }
         }
 
         /// <summary>The open clashes of those tests, in no view.</summary>
-        public int OpenOutsideTheMap
+        internal int OpenOutsideTheMap
         {
             get { return unmappedOpen; }
         }
@@ -268,19 +268,19 @@ namespace Federator.Core.Views
         }
 
         /// <summary>The tests of priority A in a carrying pair that have clashes over the threshold, kept in their one view.</summary>
-        public int OverSizeKeptTestsA
+        internal int OverSizeKeptTestsA
         {
             get { return overSizeKeptTestsA; }
         }
 
         /// <summary>The same for priority B.</summary>
-        public int OverSizeKeptTestsB
+        internal int OverSizeKeptTestsB
         {
             get { return overSizeKeptTestsB; }
         }
 
         /// <summary>The clashes over the threshold of those tests of A and B.</summary>
-        public int OverSizeKeptClashes
+        internal int OverSizeKeptClashes
         {
             get { return overSizeKeptClashes; }
         }

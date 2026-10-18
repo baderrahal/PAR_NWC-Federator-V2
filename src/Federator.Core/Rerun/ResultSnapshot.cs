@@ -147,28 +147,6 @@ namespace Federator.Core.Rerun
 
         /// <summary>A line for each field of a matched clash that is not as it was.</summary>
         public List<string> Changes { get; private set; }
-
-        public int BeforeTotal
-        {
-            get { return Sum(Before); }
-        }
-
-        public int AfterTotal
-        {
-            get { return Sum(After); }
-        }
-
-        private static int Sum(int[] counts)
-        {
-            int sum = 0;
-
-            foreach (int count in counts)
-            {
-                sum += count;
-            }
-
-            return sum;
-        }
     }
 
     /// <summary>
@@ -189,7 +167,7 @@ namespace Federator.Core.Rerun
         {
         }
 
-        public ReadOnlyCollection<TestRefresh> PerTest
+        internal ReadOnlyCollection<TestRefresh> PerTest
         {
             get { return new ReadOnlyCollection<TestRefresh>(perTest); }
         }

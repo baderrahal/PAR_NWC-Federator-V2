@@ -50,9 +50,6 @@ namespace Federator.Addin.Engine
         private readonly RunLog log;
         private readonly RepeatedFailureGuard guard;
 
-        /// <summary>How often the running count goes in the log, so a long run is watchable.</summary>
-        public const int ProgressEvery = 25;
-
         /// <summary>
         /// The line the window shows while the run works, or null where nothing supplied
         /// one, which is what the two hand buttons on the Clash step do. The three steps
@@ -964,8 +961,8 @@ namespace Federator.Addin.Engine
 
                 // A running count, so a run of well over a thousand tests is watched rather
                 // than silent. Taken AFTER the test it numbers, F113, so the last one of a
-                // group reads the same numbers as the block under it.
-                string running = outcome.ProgressAfter(i + 1, total, ProgressEvery);
+                // group reads the same numbers as the block under it. How often is ProgressSettings.CountEveryTests, F227.
+                string running = outcome.ProgressAfter(i + 1, total, Settings().CountEveryTests);
 
                 if (running != null)
                 {

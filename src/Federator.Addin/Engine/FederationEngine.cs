@@ -2857,7 +2857,7 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
-                watch = new AppendBoxWatch(file, reports.AppendBox.EveryMilliseconds, log);
+                watch = new AppendBoxWatch(file, reports.AppendBox, log);
                 appended = document.TryAppendFile(file);
                 return appended;
             }
@@ -3046,7 +3046,7 @@ namespace Federator.Addin.Engine
                 // sets ask, and with no file picked the block says nothing was compared.
                 log.Block(
                     ExportCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
-                    ExportCheck.Lines(exports, exchange == null ? null : exchange.Sets));
+                    ExportCheck.Lines(exports, exchange == null ? null : exchange.Sets, reports.ExportNamesShown));
 
                 foreach (ModelExport model in exports)
                 {

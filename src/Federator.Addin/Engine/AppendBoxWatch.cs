@@ -15,15 +15,14 @@ namespace Federator.Addin.Engine
     /// Navisworks' main thread fires inside the box, and WM_COMMAND with the id of the box's one button closes it the way
     /// a click on OK does, after which the append returns false. Which window is a box, which box is answered and with
     /// what are Core's, AppendBox, handed the class and the children read here, and no other window is touched. A box of
-    /// the file is pressed again on every tick while it stands, and said once where it still stands after ten presses.
-    /// Nothing here starts a thread and nothing here calls Navisworks: the timer runs on the thread the run is on, and
+    /// the file is pressed again on every tick while it stands, and said once where it still stands after the presses of
+    /// AppendBoxSettings.PressesBeforeSaying, ten by default. Nothing here starts a thread and nothing here calls Navisworks: the timer runs on the thread the run is on, and
     /// the only calls are Windows' own, reading windows and posting one message. No setting is changed, Bader's rule of
     /// 18 Oct 2026 that the tool changes no setting to append.
     /// </summary>
     internal sealed class AppendBoxWatch : IDisposable
     {
         private const int WmCommand = 0x0111;
-        private const int PressesBeforeSaying = 10;
 
         /// <summary>
         /// The boxes left alone this session, each said once, since a box that is not the file's, the window's own
@@ -37,12 +36,19 @@ namespace Federator.Addin.Engine
         private readonly DispatcherTimer timer;
         private readonly Stopwatch clock = Stopwatch.StartNew();
         private readonly Dictionary<IntPtr, int> presses = new Dictionary<IntPtr, int>();
+        private readonly int pressesBeforeSaying;
         private bool readFailureSaid;
 
-        public AppendBoxWatch(string file, int everyMilliseconds, RunLog log)
+        public AppendBoxWatch(string file, AppendBoxSettings settings, RunLog log)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
             this.file = file;
             this.log = log;
+            pressesBeforeSaying = settings.PressesBeforeSaying;
 
             using (Process self = Process.GetCurrentProcess())
             {
@@ -50,7 +56,7 @@ namespace Federator.Addin.Engine
             }
 
             timer = new DispatcherTimer(DispatcherPriority.Normal, Dispatcher.CurrentDispatcher);
-            timer.Interval = TimeSpan.FromMilliseconds(everyMilliseconds);
+            timer.Interval = TimeSpan.FromMilliseconds(settings.EveryMilliseconds);
             timer.Tick += OnTick;
             timer.Start();
         }
@@ -129,7 +135,7 @@ namespace Federator.Addin.Engine
                 Say(AppendBox.AnsweredLine(file, button.Value, AnsweredReason, clock.ElapsedMilliseconds));
             }
 
-            if (pressed == PressesBeforeSaying)
+            if (pressed == pressesBeforeSaying)
             {
                 Say(AppendBox.StillStandsLine(file, pressed));
             }
