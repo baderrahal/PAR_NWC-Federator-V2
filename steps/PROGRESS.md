@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 05:30, F208 288, F209 289 and F210 290 merged, F211 in review, run-20261018-010353 to 044816 on copies of C06 and C07, 14b434f4 of main installed
+STATE WAITING, 2026-10-18 05:40, the round of F208 to F211 closed, 288 to 291 merged, waiting for Q202 to Q206, run-20261018-010353 to 044816 on copies of C06 and C07, 14b434f4 of main installed
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,8 +16,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 273 | 16 | 1 | 23 | 67 | 7 | 387 |
-| total | 476 | 24 | 1 | 23 | 168 | 18 | 710 |
+| outside the waves | 274 | 16 | 0 | 23 | 67 | 7 | 387 |
+| total | 477 | 24 | 0 | 23 | 168 | 18 | 710 |
 <!-- the end of the counts -->
 
 ## Now
