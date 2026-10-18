@@ -1032,6 +1032,24 @@ and 6 does not read as broken.
   line, `DisciplinesNotReadLine`, and its tests run as before. Both pages say why no test ran in
   one line, `BuildingGroup.OneDisciplineLine`, which names the discipline. A picked NWF refreshed
   before F219 can still hold an earlier run's results for those tests, row F219-R1.
+  SINCE F233, BADER'S ROUND OF 19 OCT 2026, FIX 3, A GROUP OF ONE DISCIPLINE IS NOT BUILT, on both
+  pages: nothing appended, no NWF, NWD, Excel, Internal Excel, HTML, picture folder or viewpoints.
+  The words are `Federator.Core.Communities.OneDisciplineGroups`: one NOT BUILT line a group naming
+  its community, building, discipline and file names and `one discipline, not built`, a second
+  naming an NWF of it an earlier run left, never deleted and never run, and RESULT's `not built`
+  line a community with the count, `PackageTally.NotBuilt`, such a group in no count of done,
+  partial or failed and never one with no end to count. On the NWF page its disciplines are read
+  once its NWF opens, whatever steps are ticked, before the refresh, and a group of one stops
+  there, `RunLog.GroupNotBuilt` closing it on one GROUP line, the line carried to the window that
+  started the run as its result's reason, `OneDisciplineGroups.IsTheLine`, which names the NWF of the earlier run too. So the
+  F219 reading above, only where its tests are asked for, and `OneDisciplineLine` with the SingleDiscipline skip are no longer
+  reached on either page, row F233-R8. AN NWF LINKING A FILE NOT ON THE DISK IS NOT JUDGED, the breaker's finding on F233: a
+  model Navisworks could not load may be among no models, so a group of two disciplines would read as one, and
+  `OneDisciplineGroups.NotJudgedLine` says so and the group runs as before, the refresh stopping on the file. The words are
+  the grid's status word, `NwcPageRule.OneDiscipline`, read once. RESULT of the window that started the run counts them on its
+  own line, `one discipline :`, so the counts of done, partial and failed add up, and the live line says them apart and never
+  warns of them, `PackageRunWords.Finished` and `Warning`. A run of the NWC page whose every group is of one discipline still
+  writes RESULT. Each is said and counted by the window a person runs alone, never again in a group's own Navisworks
   SINCE F224, BADER'S ANSWER TO Q209 OF 18 OCT 2026, ONLY TESTS ACROSS TWO SET CODES RUN, inside
   a group of two or more as well, on both pages, by the one plan step the engine reads before it
   creates any test, `ClashTestPlan.AcrossTwoSetCodes`. BLD-ST against BLD-ST and BLD-AR against

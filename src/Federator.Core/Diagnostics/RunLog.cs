@@ -1622,18 +1622,6 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
-        /// Records how one group ended, with the reason when it did not end cleanly, and
-        /// the GROUP finished line that carries which of the two workflows it took, in the
-        /// words of Federator.Core.Rerun.RunPath. The label goes on the line and into the
-        /// RESULT block totals, so a log alone shows how many groups took each path. Null
-        /// where the caller does not know, and then no path is written.
-        ///
-        /// A group recorded as Failed always carries a reason. When the caller gives none
-        /// one is substituted rather than thrown over, because logging must never be the
-        /// thing that stops a run, and a substituted reason still keeps the RESULT block
-        /// honest by naming the group and saying the reason is missing.
-        /// </summary>
-        /// <summary>
         /// F233, Bader's round of 19 Oct 2026, fix 3. A group of one discipline, found so once its NWF opened, is not built and
         /// not run: its steps are closed and one GROUP line says so with why, and it is in no count of done, partial or failed.
         /// </summary>
@@ -1650,6 +1638,18 @@ namespace Federator.Core.Diagnostics
                 + Words.Or(why, "UNKNOWN why"));
         }
 
+        /// <summary>
+        /// Records how one group ended, with the reason when it did not end cleanly, and
+        /// the GROUP finished line that carries which of the two workflows it took, in the
+        /// words of Federator.Core.Rerun.RunPath. The label goes on the line and into the
+        /// RESULT block totals, so a log alone shows how many groups took each path. Null
+        /// where the caller does not know, and then no path is written.
+        ///
+        /// A group recorded as Failed always carries a reason. When the caller gives none
+        /// one is substituted rather than thrown over, because logging must never be the
+        /// thing that stops a run, and a substituted reason still keeps the RESULT block
+        /// honest by naming the group and saying the reason is missing.
+        /// </summary>
         public void GroupFinished(
             string building, GroupOutcome outcome, double seconds, string reason, string runPath)
         {

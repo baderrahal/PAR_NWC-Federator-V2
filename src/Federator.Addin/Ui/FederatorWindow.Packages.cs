@@ -581,7 +581,8 @@ namespace Federator.Addin.Ui
                     {
                         planLines.Add(group.Label + "  left out, " + NwcPageRule.OneDiscipline);
 
-                        // Said once, by the window that started the run, and not again in each group's own Navisworks.
+                        // Said and counted once, by the window that started the run, and not again in each group's own Navisworks,
+                        // whose RESULT the joined RESULT nests under its group.
                         if (child == null)
                         {
                             log.Line(OneDisciplineGroups.Line(package.Community, group.Building, group.Disciplines.Count == 0 ? null : group.Disciplines[0], group.Files));
@@ -590,9 +591,10 @@ namespace Federator.Addin.Ui
                             {
                                 log.Line(OneDisciplineGroups.EarlierNwfLine(group.NwfPath));
                             }
+
+                            tally.NotBuilt(package, group.Building);
                         }
 
-                        tally.NotBuilt(package, group.Building);
                         continue;
                     }
 
@@ -654,6 +656,13 @@ namespace Federator.Addin.Ui
             if (jobs.Count == 0)
             {
                 log.Line(PackageWords.Prefix + " the run of packages refused before starting. No group of the ticked packages can run, each is named above");
+
+                // F233. A run whose every group is of one discipline still writes RESULT, its line per community with the count.
+                if (child == null && tally.NotBuiltCount > 0)
+                {
+                    WriteTheResult(null, tally.Lines());
+                }
+
                 Warn("No group of the ticked packages can run. The log names each and why.");
                 return;
             }

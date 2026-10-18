@@ -1125,7 +1125,8 @@ folder, `PackageTree.ReadNwfs`, community, package and NWF, its ticks Core's `Nw
 THE NWC PAGE'S ROUTE, `OnRun`, the one Run of the page, RunButton in the bar under the steps, which Bader's words call the one at the top, Q215: refused with Core's reason before
 anything is opened while no tree is read, nothing is ticked or the Report folder is refused, then the rows made again, then
 one `PackagePlan` per ticked package, a group whose NWF is there left to the NWF page by `NwcPageRule`, a group of one
-discipline and a group unticked on step 2 left out, each named, the PACKAGES TICKED, PACKAGE GROUPS and FINDINGS blocks, the
+discipline not built, F233, its NOT BUILT line and the line of an NWF an earlier run left written by the window a person runs
+and counted by `PackageTally.NotBuilt`, and a group unticked on step 2 left out, each named, the PACKAGES TICKED, PACKAGE GROUPS and FINDINGS blocks, the
 pack choice and the one confirm, the folders of each package that runs made and said, then, since F214, each package handed to its own
 Navisworks, below, whose window runs `RunJobs` with one engine for that package's groups.
 Each job carries its package and its package's Log folder, `FederationJob.InPackage`, the copy of a dated rebuild keeps
@@ -1133,6 +1134,14 @@ both, and `RunOne` sets the Log folder off the job. The GROUP started and finish
 the coordinates tally and the clash totals read `FederationJob.Label`, so community and package are on every group line
 and in RESULT. The list of models off the shared coordinates goes into the Log folder of every package the run wrote, as
 the run log is copied into each.
+
+A GROUP OF ONE DISCIPLINE ON THE NWF PAGE, F233: in its own Navisworks `FederationEngine.TheGroupHoldsOneDiscipline` reads the
+NWF's disciplines once it opens and, where they are one, writes its NOT BUILT line and its earlier NWF line and stops before
+the refresh, `JobOutcome.NotBuiltBecause` set, the GROUP line `RunLog.GroupNotBuilt`, and the window writes that line as its
+result's reason, which the window that started the run counts as not built and names with the NWF of the earlier run. The
+Backup copy is made before the open, as for every NWF of the page, and the Log folder gets the log's copy, row F233-R1, Q217.
+Where a file the NWF links is not on the disk, by the refresh's `MissingFiles` or, with the refresh off, each model's
+`Model.FileName` read with File.Exists, the disciplines are not judged, one NOT JUDGED line, and the group runs as before.
 
 THE NWF PAGE'S ROUTE, `OnRunNwfPackages`, its one Run: refused while no NWF is ticked, the ticked NWFs of each package by
 `PackageNwfs`, a package whose ticked NWF is gone named and the others run, the NWF TREE, NWFS TICKED and PACKAGE NWFS blocks, the refresh confirm, then, since F214, each package in

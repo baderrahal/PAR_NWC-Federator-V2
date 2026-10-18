@@ -465,6 +465,7 @@ namespace Federator.Addin.Ui
             List<PackageRunResult> results = new List<PackageRunResult>();
             List<string> whys = new List<string>();
             int ran = 0;
+            int notBuilt = 0;
             PackageTally tally = run.Tally;
 
             // F222. The packages the run planned, never the tree read again, which a person may have read off another folder.
@@ -484,10 +485,14 @@ namespace Federator.Addin.Ui
                 whys.Add(why);
 
                 // F222. A result naming no group is a group that ran nothing, and the live line never says it ran. F233, a group
-                // of one discipline not built is counted as one the run took, since nothing of it was to be built.
-                if (result != null && (result.Groups.Count > 0 || OneDisciplineGroups.IsTheLine(result.NoGroupBecause)))
+                // of one discipline not built is counted apart, never as ran and never warned of.
+                if (result != null && result.Groups.Count > 0)
                 {
                     ran++;
+                }
+                else if (result != null && OneDisciplineGroups.IsTheLine(result.NoGroupBecause))
+                {
+                    notBuilt++;
                 }
 
                 try
@@ -507,7 +512,14 @@ namespace Federator.Addin.Ui
 
                     if (result.Groups.Count == 0 && OneDisciplineGroups.IsTheLine(result.NoGroupBecause))
                     {
+                        // F233. The NWF page's group is its NWF, which an earlier run left, so this log names it as the group's own did.
                         log.Line(result.NoGroupBecause);
+
+                        if (File.Exists(unit.Group))
+                        {
+                            log.Line(OneDisciplineGroups.EarlierNwfLine(unit.Group));
+                        }
+
                         tally.NotBuilt(package, unit.Name);
                     }
                     else if (result.Groups.Count == 0)
@@ -533,8 +545,8 @@ namespace Federator.Addin.Ui
                 log.Failure("joining the results of the groups", error, "each group's own log still holds its RESULT");
             }
 
-            SetProgress(PackageRunWords.Finished(ran, order.Units.Count));
-            string warning = PackageRunWords.Warning(ran, order.Units.Count);
+            SetProgress(PackageRunWords.Finished(ran, notBuilt, order.Units.Count));
+            string warning = PackageRunWords.Warning(ran, notBuilt, order.Units.Count);
 
             if (warning != null)
             {

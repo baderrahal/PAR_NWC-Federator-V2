@@ -66,11 +66,18 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheCommunityIsThePackagesFirstFolder()
+        public void ANameNoFileSystemWouldTakeIsReadWholeAndNeverAThrow()
         {
-            Assert.That(OneDisciplineGroups.CommunityOf("C06"), Is.EqualTo("C06"));
-            Assert.That(OneDisciplineGroups.CommunityOf("C06" + Path.DirectorySeparatorChar + "Infra"), Is.EqualTo("C06"));
-            Assert.That(OneDisciplineGroups.CommunityOf(null), Is.EqualTo(string.Empty));
+            string line = OneDisciplineGroups.Line("C06", "1B06PG", "EL", new[] { @"C:\a\b<|>.nwc", "x/y.nwc", "plain.nwc" });
+
+            Assert.That(line, Is.EqualTo("NOT BUILT  C06  1B06PG  EL  b<|>.nwc, y.nwc, plain.nwc  one discipline, not built"));
+        }
+
+        [Test]
+        public void TheWordsAreTheGridsStatusWord()
+        {
+            Assert.That(OneDisciplineGroups.Words, Is.EqualTo("one discipline, not built"));
+            Assert.That(OneDisciplineGroups.Words.Substring(1), Is.EqualTo(Federator.Core.Rerun.NwcPageRule.OneDiscipline.Substring(1)));
         }
 
         [Test]
@@ -86,10 +93,57 @@ namespace Federator.Core.Tests
             Assert.That(tally.CountOf(GroupOutcome.Done), Is.EqualTo(1));
             Assert.That(tally.NotBuiltCount, Is.EqualTo(2));
             Assert.That(tally.NotRunCount, Is.EqualTo(0), "never a group that ran nothing");
-            Assert.That(lines, Has.Member("group          " + "C06" + Path.DirectorySeparatorChar + "Infra  1B06PG  NOT BUILT, one discipline, not built"));
+            Assert.That(lines, Has.Member("group          " + "C06" + Path.DirectorySeparatorChar + "Infra  1B06PG  one discipline, not built"));
             Assert.That(lines, Has.Member("not built      C06 : 1 group not built for one discipline"));
             Assert.That(lines, Has.Member("not built      C07 : 1 group not built for one discipline"));
             Assert.That(OneDisciplineGroups.ResultLine("C06", 2), Is.EqualTo("not built      C06 : 2 groups not built for one discipline"));
+        }
+
+        [Test]
+        public void TheJoinedResultWritesANotBuiltGroupsLineAndNeverSaysItRanNothing()
+        {
+            string line = OneDisciplineGroups.Line("C07", "1C07BS", "EL", new[] { "1104-PAR-1C07BS-ZZZ-EL-MOD-000001.nwc" });
+            PackageRunResult c07 = new PackageRunResult("C07", null) { NoGroupBecause = line };
+            PackageTally tally = new PackageTally();
+            tally.NotBuilt(tree.Find("C07"), "1C07BS");
+
+            System.Collections.Generic.IList<string> lines = PackageRunWords.JoinedResult(
+                new[] { new PackageRunUnit("C07", TestPaths.At("Report", "C07", "NWF", "b.nwf"), "1C07BS") },
+                new[] { c07 },
+                new string[] { null },
+                tally);
+
+            Assert.That(lines, Has.Member("    " + line));
+            Assert.That(lines.Any(l => l.Contains("it ran nothing")), Is.False);
+            Assert.That(lines, Has.Member("not built      C07 : 1 group not built for one discipline"));
+            Assert.That(lines, Has.Member("one discipline : 1 group not built, the counts above leave them out, each named below"));
+            Assert.That(lines.Count(l => l.StartsWith("not built")), Is.EqualTo(1), "the count line is never read as a second community line");
+        }
+
+        [Test]
+        public void AJoinedResultWithNoGroupNotBuiltCarriesNoSuchCount()
+        {
+            PackageRunResult c06 = new PackageRunResult("C06", null) { NoGroupBecause = "the package is not in the tree" };
+            PackageTally tally = new PackageTally();
+            tally.NotRun(tree.Find("C06"), "1B06BC", "the package is not in the tree");
+
+            System.Collections.Generic.IList<string> lines = PackageRunWords.JoinedResult(
+                new[] { new PackageRunUnit("C06", TestPaths.At("Report", "C06", "NWF", "a.nwf"), "1B06BC") },
+                new[] { c06 },
+                new string[] { null },
+                tally);
+
+            Assert.That(lines.Any(l => l.StartsWith("one discipline")), Is.False);
+            Assert.That(lines, Has.Member("    it ran nothing, the package is not in the tree"));
+        }
+
+        [Test]
+        public void AnNwfLinkingAFileNotOnTheDiskIsNotJudged()
+        {
+            Assert.That(OneDisciplineGroups.NotJudgedLine("C06/1B06PG", 1),
+                Is.EqualTo("NOT JUDGED  C06/1B06PG  1 file it links is not on the disk, so whether it holds one discipline is UNKNOWN and it is not judged as one"));
+            Assert.That(OneDisciplineGroups.NotJudgedLine(null, 2), Does.Contain("UNKNOWN  2 files it links are"));
+            Assert.That(OneDisciplineGroups.IsTheLine(OneDisciplineGroups.NotJudgedLine("x", 1)), Is.False);
         }
 
         [Test]

@@ -6,6 +6,26 @@ Simple words. Each fix of this round adds its steps here as it merges, and F238 
 folder of the full run. The steps of the round of 18 Oct below name step 5 and the NWF picker, which F232 took out: on this
 build step 5 is step 1. Packages and the picker is the NWF page's tree.
 
+### F233, one discipline groups are not built
+
+1. On 1. Packages read a parent folder of copies holding a building of one discipline, such as 1B06PG of C06, and tick its
+   community.
+   Look for: on 2. Grouping its row reading `One discipline, not built` with its box off and greyed.
+2. Press Run and OK, and click nothing more.
+   Look for: in the log `NOT BUILT  C06  1B06PG  EL  1104-PAR-1B06PG-ZZZ-EL-MOD-000001.nwc  one discipline, not built`, and in
+   RESULT `not built      C06 : 1 group not built for one discipline`.
+3. Open the Report folder's NWF, NWD, Log and Clash report folders of that package.
+   Look for: no file of the group of one discipline written by this run.
+4. Put a copy of an NWF of a group of one discipline from an earlier run into the package's NWF folder, read the NWF page and
+   tick it with the others, then press Run and OK.
+   Look for: in the log the NOT BUILT line, the line `the NWF ... of an earlier run is there, and it is not deleted and not run`,
+   the NWF the same size and date as before, RESULT counting it under `not built` and on its `one discipline :` line, the
+   line under the Run button reading `... ran, 1 not built for one discipline`, and one new dated copy of that NWF in the
+   Backup folder, which the page makes of every NWF before it opens it, Q217.
+5. Rename one NWC of a building of two disciplines or more in the parent folder of copies, then run its NWF on the NWF page,
+   then put the name back.
+   Look for: in the log `NOT JUDGED` naming that group and `1 file it links is not on the disk`, and no NOT BUILT line for it.
+
 ### F232, packages first, one route per page
 
 1. Start Navisworks Manage 2025 from the Start menu and open the tool.

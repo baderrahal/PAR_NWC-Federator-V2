@@ -210,24 +210,32 @@ namespace Federator.Core.Communities
             return PackageWords.Count(groups, "group runs", "groups run") + " one after the other, each in its own Navisworks. The log follows each.";
         }
 
-        /// <summary>The window's live line once the run ends, counting only the groups whose result names a group they ran.</summary>
-        public static string Finished(int withResult, int groups)
+        /// <summary>
+        /// The window's live line once the run ends, counting only the groups whose result names a group they ran, and apart from
+        /// them, F233, the groups whose own Navisworks found one discipline and built nothing.
+        /// </summary>
+        public static string Finished(int withResult, int notBuilt, int groups)
         {
+            string apart = notBuilt > 0 ? ", " + notBuilt.ToString(CultureInfo.InvariantCulture) + " not built for one discipline" : string.Empty;
+
             if (withResult == groups)
             {
                 return "Run finished. " + PackageWords.Count(groups, "group", "groups") + " ran, each in its own Navisworks. The log's RESULT joins them.";
             }
 
             return "Run finished. " + withResult.ToString(CultureInfo.InvariantCulture) + " of " + PackageWords.Count(groups, "group", "groups")
-                + " ran. The log's RESULT names each and why.";
+                + " ran" + apart + (withResult + notBuilt == groups ? ". The log's RESULT joins them." : ". The log's RESULT names each and why.");
         }
 
-        /// <summary>The warning the person sees once a run in fresh starts ends with a group that wrote no result or ran nothing, or null where every one ran.</summary>
-        public static string Warning(int withResult, int groups)
+        /// <summary>
+        /// The warning the person sees once a run in fresh starts ends with a group that wrote no result or ran nothing, or null where
+        /// every one ran or was not built for one discipline, F233, which is the rule and no fault.
+        /// </summary>
+        public static string Warning(int withResult, int notBuilt, int groups)
         {
-            return withResult == groups
+            return withResult + notBuilt >= groups
                 ? null
-                : (groups - withResult).ToString(CultureInfo.InvariantCulture) + " of " + PackageWords.Count(groups, "group", "groups")
+                : (groups - withResult - notBuilt).ToString(CultureInfo.InvariantCulture) + " of " + PackageWords.Count(groups, "group", "groups")
                     + " wrote no result or ran nothing, and whether a group with no result wrote files is not known. The log's RESULT names each and why.";
         }
 
@@ -286,6 +294,13 @@ namespace Federator.Core.Communities
                 lines.Add("ran nothing    : " + PackageWords.Count(tally.NotRunCount, "group", "groups") + ", each named below with why");
             }
 
+            // F233. So the counts above add up to the groups of the run.
+            if (tally.NotBuiltCount > 0)
+            {
+                lines.Add("one discipline : " + PackageWords.Count(tally.NotBuiltCount, "group", "groups")
+                    + " not built, the counts above leave them out, each named below");
+            }
+
             lines.Add(string.Empty);
             lines.AddRange(tally.Lines());
 
@@ -319,7 +334,10 @@ namespace Federator.Core.Communities
 
                 if (results[i].NoGroupBecause != null)
                 {
-                    lines.Add("    it ran nothing, " + results[i].NoGroupBecause);
+                    // F233. A group of one discipline was not built, which is not a group that ran nothing by fault.
+                    lines.Add(OneDisciplineGroups.IsTheLine(results[i].NoGroupBecause)
+                        ? "    " + results[i].NoGroupBecause
+                        : "    it ran nothing, " + results[i].NoGroupBecause);
                 }
 
                 if (results[i].ResultLines.Count == 0)

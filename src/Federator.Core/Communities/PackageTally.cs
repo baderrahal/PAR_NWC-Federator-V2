@@ -211,7 +211,7 @@ namespace Federator.Core.Communities
 
             foreach (NoEnd end in notBuilt)
             {
-                lines.Add("group          " + end.Package.RelativePath + "  " + end.Group + "  NOT BUILT, " + end.Words);
+                lines.Add("group          " + end.Package.RelativePath + "  " + end.Group + "  " + end.Words);
             }
 
             Dictionary<string, Totals> byCommunity = new Dictionary<string, Totals>(StringComparer.OrdinalIgnoreCase);

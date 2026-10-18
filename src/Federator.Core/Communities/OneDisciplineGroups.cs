@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
+using Federator.Core.Rerun;
 
 namespace Federator.Core.Communities
 {
@@ -16,7 +16,9 @@ namespace Federator.Core.Communities
     {
         public const string Prefix = "NOT BUILT";
 
-        public const string Words = "one discipline, not built";
+        /// <summary>The status word of the NWC page's grid, NwcPageRule.OneDiscipline, as a line of the log says it.</summary>
+        public static readonly string Words =
+            char.ToLowerInvariant(NwcPageRule.OneDiscipline[0]) + NwcPageRule.OneDiscipline.Substring(1);
 
         /// <summary>The one line a group of one discipline gets in the log.</summary>
         public static string Line(string community, string building, string discipline, IEnumerable<string> files)
@@ -38,18 +40,21 @@ namespace Federator.Core.Communities
             return Prefix + "  the NWF " + Or(nwf) + " of an earlier run is there, and it is not deleted and not run";
         }
 
+        /// <summary>
+        /// The line of an NWF whose disciplines are not judged since a file it links is not on the disk, so a model Navisworks
+        /// could not load is never read as a discipline the group does not hold. It runs as it did before F233.
+        /// </summary>
+        public static string NotJudgedLine(string group, int missing)
+        {
+            return "NOT JUDGED  " + Or(group) + "  " + missing.ToString(CultureInfo.InvariantCulture)
+                + (missing == 1 ? " file it links is" : " files it links are") + " not on the disk, so whether it holds one discipline is UNKNOWN"
+                + " and it is not judged as one";
+        }
+
         /// <summary>Whether a reason a group's own Navisworks gave is this line, so the window that started the run counts it.</summary>
         public static bool IsTheLine(string said)
         {
             return said != null && said.StartsWith(Prefix + "  ", StringComparison.Ordinal) && said.EndsWith(Words, StringComparison.Ordinal);
-        }
-
-        /// <summary>The community of a package's path from the parent, its first folder.</summary>
-        public static string CommunityOf(string relativePath)
-        {
-            string path = relativePath ?? string.Empty;
-            int at = path.IndexOfAny(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
-            return at < 0 ? path : path.Substring(0, at);
         }
 
         /// <summary>RESULT's line for one community.</summary>
@@ -59,16 +64,16 @@ namespace Federator.Core.Communities
                 + (count == 1 ? " group" : " groups") + " not built for one discipline";
         }
 
+        /// <summary>The name after the last slash or backslash, read as text so a path no file system would take is never a throw.</summary>
         private static string NameOf(string file)
         {
-            try
+            if (file == null)
             {
-                return Path.GetFileName(file);
+                return string.Empty;
             }
-            catch (ArgumentException)
-            {
-                return file;
-            }
+
+            int at = file.LastIndexOfAny(new[] { '\\', '/' });
+            return at < 0 ? file : file.Substring(at + 1);
         }
 
         private static string Or(string value)

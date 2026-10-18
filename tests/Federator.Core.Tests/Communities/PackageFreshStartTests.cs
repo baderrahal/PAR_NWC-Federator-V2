@@ -456,10 +456,20 @@ namespace Federator.Core.Tests
         [Test]
         public void TheLiveLineAndTheWarningCountOnlyTheGroupsThatWroteAResult()
         {
-            Assert.That(PackageRunWords.Finished(3, 3), Does.Contain("3 groups ran"));
-            Assert.That(PackageRunWords.Finished(1, 3), Does.Contain("1 of 3 groups ran.").And.Not.Contain("ran,"));
-            Assert.That(PackageRunWords.Warning(3, 3), Is.Null);
-            Assert.That(PackageRunWords.Warning(0, 2), Does.Contain("2 of 2 groups wrote no result or ran nothing"));
+            Assert.That(PackageRunWords.Finished(3, 0, 3), Does.Contain("3 groups ran"));
+            Assert.That(PackageRunWords.Finished(1, 0, 3), Does.Contain("1 of 3 groups ran.").And.Not.Contain("ran,"));
+            Assert.That(PackageRunWords.Warning(3, 0, 3), Is.Null);
+            Assert.That(PackageRunWords.Warning(0, 0, 2), Does.Contain("2 of 2 groups wrote no result or ran nothing"));
+        }
+
+        [Test]
+        public void AGroupNotBuiltForOneDisciplineIsNeverSaidToHaveRunAndIsNeverWarnedOf()
+        {
+            Assert.That(PackageRunWords.Finished(10, 2, 12), Is.EqualTo("Run finished. 10 of 12 groups ran, 2 not built for one discipline. The log's RESULT joins them."));
+            Assert.That(PackageRunWords.Finished(0, 2, 2), Does.StartWith("Run finished. 0 of 2 groups ran, 2 not built"));
+            Assert.That(PackageRunWords.Warning(10, 2, 12), Is.Null);
+            Assert.That(PackageRunWords.Finished(9, 2, 12), Does.EndWith("names each and why."));
+            Assert.That(PackageRunWords.Warning(9, 2, 12), Does.StartWith("1 of 12 groups wrote no result"));
         }
     }
 }

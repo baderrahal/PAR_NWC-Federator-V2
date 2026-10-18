@@ -952,7 +952,8 @@ namespace Federator.Addin.Engine
                     // F233, Bader's round of 19 Oct 2026, fix 3. An NWF's disciplines read off its models' own file names once it
                     // opens, F219's reading, and a group of one discipline stops here: no refresh, no save, no NWD, no report, no
                     // picture and no viewpoint, the NWF of the earlier run left as it is and named.
-                    if (ready && openItHere && TheGroupHoldsOneDiscipline(document, job, outcome))
+                    if (ready && openItHere && TheGroupHoldsOneDiscipline(
+                        document, job, outcome, refresh, inPackage == null || inPackage.Package == null ? null : inPackage.Package.Community))
                     {
                         return outcome;
                     }
@@ -1092,10 +1093,23 @@ namespace Federator.Addin.Engine
         /// the line, and true is returned, so nothing is refreshed, saved, published, reported, pictured or viewed. Where they
         /// cannot be read the group runs as before and the line says so.
         /// </summary>
-        private bool TheGroupHoldsOneDiscipline(Document document, FederationJob job, JobOutcome outcome)
+        private bool TheGroupHoldsOneDiscipline(Document document, FederationJob job, JobOutcome outcome, RefreshRun refresh, string community)
         {
             string why;
             IList<string> files = ModelFileNamesOf(document);
+
+            // F233 on the breaker's finding. A model whose file is not there may not be among the models at all, so a group of two
+            // disciplines missing one reads as one. Its disciplines are not judged, and the refresh, where it runs, stops on it.
+            IList<string> missing = refresh != null
+                ? refresh.MissingFiles(document)
+                : new List<string>(files).FindAll(file => file.Length > 0 && !File.Exists(file));
+
+            if (missing.Count > 0)
+            {
+                log.Line(OneDisciplineGroups.NotJudgedLine(job.Label, missing.Count));
+                return false;
+            }
+
             IList<string> codes = BuildingGroup.DisciplinesOf(files, reports.Names, NamePattern.DefaultDiscipline, out why);
 
             if (codes == null)
@@ -1111,7 +1125,7 @@ namespace Federator.Addin.Engine
             }
 
             string building = files.Count == 0 ? job.Building : ContainerName.Parse(files[0], reports.Names).Building;
-            string line = OneDisciplineGroups.Line(OneDisciplineGroups.CommunityOf(job.Package), building, codes[0], files);
+            string line = OneDisciplineGroups.Line(community, building, codes[0], files);
             log.Line(line);
             log.Line(OneDisciplineGroups.EarlierNwfLine(job.NwfPath));
             outcome.NotBuiltBecause = line;
