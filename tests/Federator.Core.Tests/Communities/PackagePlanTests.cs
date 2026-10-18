@@ -117,6 +117,27 @@ namespace Federator.Core.Tests
 
             Assert.That(plan.Groups.Count, Is.EqualTo(1));
             Assert.That(plan.NotRun.Single(), Does.StartWith("cannot be read  notes.nwc  "));
+            Assert.That(plan.Unreadable, Is.EqualTo(1));
+            Assert.That(plan.Grouped.Single().Building, Is.EqualTo("1B06BC"), "the groups the findings read");
+            Assert.That(plan.Skipped, Is.Empty);
+        }
+
+        [Test]
+        public void AGroupTheGroupingBlocksIsHandedOnWithItsFilesAndWhy()
+        {
+            Make("C07", "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc");
+            Make("C07", "1104-XYZ-1B06BC-ZZZ-EL-MOD-000001.nwc");
+            Package package = PackageTree.Read(Path.Combine(root, "Parent"), ".nwc").Packages()[0];
+
+            PackagePlan plan = PlanOf(package);
+
+            Assert.That(plan.Blocked, Is.EqualTo(1));
+            Assert.That(plan.Skipped.Count, Is.EqualTo(1));
+            Assert.That(plan.Skipped[0].Building, Is.EqualTo("1B06BC"));
+            Assert.That(plan.Skipped[0].Files.Count, Is.EqualTo(2));
+            Assert.That(plan.Skipped[0].Reason, Is.Not.Empty);
+            Assert.That(plan.Grouped, Is.Empty);
+            Assert.That(plan.Unreadable, Is.EqualTo(0));
         }
 
         [Test]

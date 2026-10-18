@@ -1,135 +1,94 @@
 using System.Collections.Generic;
+using Federator.Core.Communities;
 using Federator.Core.Grouping;
-using Federator.Core.Naming;
 using Federator.Core.Rerun;
 
 namespace Federator.Addin.Ui
 {
     /// <summary>
-    /// One group in the tables. A group whose files disagree on the project code or the
-    /// originator arrives blocked, showing both offending file names, and cannot be ticked.
-    ///
-    /// The three output names are a view onto the row in the name table, so typing one in
-    /// the grid marks that one name as typed over and a later pattern change leaves it
-    /// alone, and clearing it gives it back to the pattern. Nothing here holds a second
-    /// copy of a name.
+    /// One group of a ticked package on the Grouping step, F232, Bader's round of 19 Oct 2026, fix 2: its community, its
+    /// package, its building, its files, its disciplines, how it is expected to run and its status. A group whose files
+    /// disagree on the project code or the originator arrives blocked, and a group of one discipline is not built, and
+    /// neither can be ticked, NwcPageRule.CanTick. The names, the paths and the files are the package plan's, PackagePlan,
+    /// so the row holds no second copy of them.
     /// </summary>
     public sealed class GroupRow : ObservableObject
     {
         private bool include;
-        private readonly OutputNameRow names;
 
-        private GroupRow(
-            string building, IList<string> files, IList<string> disciplines, OutputNameRow names)
+        private GroupRow(Package package, string building, IList<string> files, int fileCount, IList<string> disciplines, PackageGroup group)
         {
-            Building = building;
-            Files = files;
-            Disciplines = string.Join(", ", new List<string>(disciplines).ToArray());
-            DisciplineCodes = new List<string>(disciplines);
-            DisciplineCount = disciplines.Count;
-            this.names = names;
+            Package = package;
+            Building = building ?? string.Empty;
+            Files = files ?? new List<string>();
+            FileCount = fileCount;
+            DisciplineCodes = new List<string>(disciplines ?? new List<string>());
+            Disciplines = string.Join(", ", new List<string>(DisciplineCodes).ToArray());
+            Group = group;
         }
 
-        public static GroupRow Usable(
-            string building,
-            IList<string> files,
-            IList<string> disciplines,
-            OutputNameRow names)
+        /// <summary>A group the plan runs. It starts ticked where it can be.</summary>
+        public static GroupRow Usable(PackageGroup group)
         {
-            GroupRow row = new GroupRow(building, files, disciplines, names);
-            row.include = true;
+            GroupRow row = new GroupRow(group.Package, group.Building, group.Files, group.Files.Count, group.Disciplines, group);
+            row.include = row.CanInclude;
             return row;
         }
 
-        public static GroupRow Blocked(string building, IList<string> files, string reason)
+        /// <summary>A group the grouping blocked, or one of a package the name guard refuses, with why.</summary>
+        public static GroupRow Blocked(Package package, string building, int fileCount, IList<string> disciplines, string reason)
         {
-            GroupRow row = new GroupRow(building, files, new List<string>(), null);
-            row.BlockedReason = reason;
-            row.include = false;
+            GroupRow row = new GroupRow(package, building, new List<string>(), fileCount, disciplines, null);
+            row.BlockedReason = reason ?? string.Empty;
             return row;
+        }
+
+        public Package Package { get; private set; }
+
+        /// <summary>The plan's group, or null for a blocked one.</summary>
+        public PackageGroup Group { get; private set; }
+
+        public string Community
+        {
+            get { return Package == null ? string.Empty : Package.Community; }
+        }
+
+        /// <summary>The package's name in the tree, its path below the community.</summary>
+        public string PackageName
+        {
+            get { return Package == null ? string.Empty : Package.Name; }
         }
 
         public string Building { get; private set; }
 
+        /// <summary>The group named with its package, the key its tick is kept by across a regroup and the run reads.</summary>
+        public string Label
+        {
+            get { return PackagePlan.LabelFor(Package == null ? string.Empty : Package.RelativePath, Building); }
+        }
+
         /// <summary>Full paths, in the order the files will be appended.</summary>
         public IList<string> Files { get; private set; }
 
-        public int FileCount
-        {
-            get { return Files.Count; }
-        }
+        public int FileCount { get; private set; }
 
         public string Disciplines { get; private set; }
 
-        /// <summary>How many disciplines the scan found in this group, handed on to the job.</summary>
-        public int DisciplineCount { get; private set; }
-
-        /// <summary>
-        /// The codes themselves, kept beside the joined string the column shows, because
-        /// F52 makes one viewpoint folder per code and a joined string would have to be
-        /// split again by whoever needed it.
-        /// </summary>
         public IList<string> DisciplineCodes { get; private set; }
+
+        public int DisciplineCount
+        {
+            get { return DisciplineCodes.Count; }
+        }
 
         public string NwfName
         {
-            get { return NameOf(OutputKind.Nwf); }
-            set { TypeOver(OutputKind.Nwf, value, "NwfName"); }
+            get { return Group == null ? string.Empty : Group.NwfName; }
         }
 
-        public string NwdName
+        public string NwfPath
         {
-            get { return NameOf(OutputKind.Nwd); }
-            set { TypeOver(OutputKind.Nwd, value, "NwdName"); }
-        }
-
-        public string WorkbookName
-        {
-            get { return NameOf(OutputKind.Workbook); }
-            set { TypeOver(OutputKind.Workbook, value, "WorkbookName"); }
-        }
-
-        /// <summary>
-        /// The name this group is known by in the log and the group list. The NWF is the
-        /// one that carries the clash history, so it is the one that names the group.
-        /// </summary>
-        public string OutputName
-        {
-            get { return NwfName; }
-        }
-
-        /// <summary>Says at a glance which rows a pattern change will leave alone.</summary>
-        public string EditedMark
-        {
-            get { return names != null && names.WasEdited ? "by hand" : string.Empty; }
-        }
-
-        private string NameOf(OutputKind kind)
-        {
-            return names == null ? string.Empty : names.Get(kind);
-        }
-
-        private void TypeOver(OutputKind kind, string value, string property)
-        {
-            if (names == null)
-            {
-                return;
-            }
-
-            // FR-160. A cleared cell gives the name back to the pattern through Core's rule, and the
-            // window's refill after the edit builds it, so the cell is read back either way.
-            names.Typed(kind, value);
-            Raise(property);
-            Raise("EditedMark");
-        }
-
-        /// <summary>Tells the grid the names underneath it have been refilled.</summary>
-        public void NamesRefilled()
-        {
-            Raise("NwfName");
-            Raise("NwdName");
-            Raise("WorkbookName");
-            Raise("EditedMark");
+            get { return Group == null ? string.Empty : Group.NwfPath; }
         }
 
         /// <summary>Null when the group is usable.</summary>
@@ -151,16 +110,13 @@ namespace Federator.Addin.Ui
 
         public bool CanInclude
         {
-            get { return NwcPageRule.CanRun(IsBlocked, NwfExists, RebuildAllowed); }
+            get { return NwcPageRule.CanTick(IsBlocked, DisciplineCount, NwfExists, RebuildAllowed); }
         }
 
-        /// <summary>
-        /// Fewer than two disciplines cannot clash, by the one rule in BuildingGroup. The
-        /// tests are still created so the NWF matches the others, and none of them is run.
-        /// </summary>
+        /// <summary>Fewer than two disciplines cannot clash, by the one rule in BuildingGroup, and is not built, F232.</summary>
         public bool IsSingleDiscipline
         {
-            get { return BuildingGroup.CannotClashWith(DisciplineCount); }
+            get { return !IsBlocked && BuildingGroup.CannotClashWith(DisciplineCount); }
         }
 
         public bool Include
@@ -168,12 +124,15 @@ namespace Federator.Addin.Ui
             get { return include; }
             set
             {
-                if (include == value)
+                bool now = value && CanInclude;
+
+                if (include == now)
                 {
+                    Raise("Include");
                     return;
                 }
 
-                include = value && CanInclude;
+                include = now;
                 Raise("Include");
             }
         }
@@ -181,10 +140,8 @@ namespace Federator.Addin.Ui
         private string runAs = RunPath.Unknown;
 
         /// <summary>
-        /// Which of the two workflows this group is expected to take, in the words of
-        /// Federator.Core.Rerun.RunPath, worked out before Run from whether the NWF is
-        /// already at its output path and whether an XML is picked. Shown in the group
-        /// list so the person knows before pressing anything.
+        /// Which of the workflows this group is expected to take, in the words of Federator.Core.Rerun.RunPath, worked out
+        /// before Run from whether the NWF is already at its output path.
         /// </summary>
         public string RunAs
         {
@@ -207,13 +164,8 @@ namespace Federator.Addin.Ui
         private string nearbyNwf = string.Empty;
 
         /// <summary>
-        /// The sentence about a file in the NWF folder whose name is nearly the one this
-        /// group would write, or empty. F71.
-        ///
-        /// KEPT APART FROM RunAs ON PURPOSE. RunAs is what the run COUNTS by, through
-        /// Federator.Core.Rerun.RunPath.Count, which maps a label it does not know onto
-        /// Unknown, and both the confirm dialog and the RESULT block read those counts. So
-        /// the label stays exactly one of the six and the warning rides beside it.
+        /// The sentence about a file in the NWF folder whose name is nearly the one this group would write, or empty, F71,
+        /// kept apart from RunAs, which is what the run counts by.
         /// </summary>
         public string NearbyNwf
         {
@@ -233,16 +185,7 @@ namespace Federator.Addin.Ui
             }
         }
 
-        /// <summary>Whether this group is about to build an NWF beside one nearly named the same.</summary>
-        public bool HasNearbyNwf
-        {
-            get { return NearbyNwf.Length > 0; }
-        }
-
-        /// <summary>
-        /// What the Run as column shows: the label, and the near miss sentence after it
-        /// where there is one. The column reads this and the counting reads RunAs.
-        /// </summary>
+        /// <summary>What the Run as column shows: the label, and the near miss sentence after it where there is one.</summary>
         public string RunAsShown
         {
             get { return IsBlocked ? string.Empty : RunPath.Shown(runAs, nearbyNwf); }
@@ -250,22 +193,24 @@ namespace Federator.Addin.Ui
 
         public string Status
         {
-            get
-            {
-                if (IsBlocked)
-                {
-                    return "BLOCKED: " + BlockedReason;
-                }
+            get { return NwcPageRule.StatusOf(BlockedReason, DisciplineCount); }
+        }
 
-                return IsSingleDiscipline
-                    ? "Ready. One discipline, so every test is created and none is run."
-                    : "Ready";
+        /// <summary>Tells the grid the box may have moved, after the NWF or the Rebuild box changed what it allows.</summary>
+        public void AllowedMoved()
+        {
+            if (include && !CanInclude)
+            {
+                include = false;
             }
+
+            Raise("Include");
+            Raise("CanInclude");
         }
 
         public override string ToString()
         {
-            return Building;
+            return Label;
         }
     }
 }

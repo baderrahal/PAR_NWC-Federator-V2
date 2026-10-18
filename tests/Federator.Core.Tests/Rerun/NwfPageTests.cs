@@ -92,49 +92,6 @@ namespace Federator.Core.Tests
 
         // ---------- the NWFs last used ----------
 
-        [Test]
-        public void TheLastNwfUsedIsFirstAndAPathIsHeldOnce()
-        {
-            RecentNwfs list = new RecentNwfs();
-            list.Remember(@"C:\n\A.nwf");
-            list.Remember(@"C:\n\B.nwf");
-            list.Remember(@"c:\N\a.NWF");
-
-            Assert.That(list.Paths, Is.EqualTo(new[] { @"c:\N\a.NWF", @"C:\n\B.nwf" }));
-        }
-
-        [Test]
-        public void ItHoldsAtMostTenAndDropsTheOldest()
-        {
-            RecentNwfs list = new RecentNwfs();
-
-            for (int i = 1; i <= 13; i++)
-            {
-                list.Remember(@"C:\n\" + i + ".nwf");
-            }
-
-            Assert.That(list.Paths.Count, Is.EqualTo(10));
-            Assert.That(list.Paths[0], Is.EqualTo(@"C:\n\13.nwf"));
-            Assert.That(list.Paths[9], Is.EqualTo(@"C:\n\4.nwf"));
-        }
-
-        [Test]
-        public void TheFileReadsBackInItsOrderAndIgnoresEmptyLines()
-        {
-            RecentNwfs list = new RecentNwfs();
-            list.Remember(@"C:\n\A.nwf");
-            list.Remember(@"C:\n\B.nwf");
-
-            List<string> lines = new List<string>(list.ToLines());
-            lines.Add(string.Empty);
-            RecentNwfs again = RecentNwfs.Read(lines);
-
-            Assert.That(again.Paths, Is.EqualTo(list.Paths));
-            Assert.That(RecentNwfs.Read(null).Paths, Is.Empty);
-            list.Remember("   ");
-            Assert.That(list.Paths.Count, Is.EqualTo(2));
-        }
-
         // ---------- the confirmation ----------
 
         private static ManifestComparison OneChanged()
@@ -245,6 +202,18 @@ namespace Federator.Core.Tests
             Assert.That(NwcPageRule.CanRun(false, true, false), Is.False);
             Assert.That(NwcPageRule.CanRun(false, true, true), Is.True);
             Assert.That(NwcPageRule.CanRun(true, false, true), Is.False, "a group blocked for another reason stays blocked");
+        }
+
+        [Test]
+        public void AGroupOfOneDisciplineCanNeverBeTickedAndSaysItIsNotBuilt()
+        {
+            Assert.That(NwcPageRule.CanTick(false, 2, false, false), Is.True);
+            Assert.That(NwcPageRule.CanTick(false, 1, false, false), Is.False);
+            Assert.That(NwcPageRule.CanTick(false, 1, true, true), Is.False, "Rebuild never builds a group of one discipline");
+            Assert.That(NwcPageRule.CanTick(false, 3, true, false), Is.False, "its NWF is there and Rebuild is off");
+            Assert.That(NwcPageRule.StatusOf(null, 1), Is.EqualTo("One discipline, not built"));
+            Assert.That(NwcPageRule.StatusOf(null, 4), Is.EqualTo("Ready"));
+            Assert.That(NwcPageRule.StatusOf("two project codes", 1), Is.EqualTo("BLOCKED: two project codes"));
         }
 
         [Test]

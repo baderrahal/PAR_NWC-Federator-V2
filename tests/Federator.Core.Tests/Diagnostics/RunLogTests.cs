@@ -361,17 +361,17 @@ namespace Federator.Core.Tests
         {
             using (RunLog log = Start())
             {
-                log.Block(RunLog.GroupsSectionTitle, new[] { "run  1B06PK  4 files", "run  100000  4 files" });
+                log.Block("PACKAGE GROUPS", new[] { "run  1B06PK  4 files", "run  100000  4 files" });
                 log.Block(RunLog.FindingsSectionTitle, new[] { "ODD SHAPE  100000", "NEAR MATCH  1B06K1 and 1B06KI" });
 
                 string text = ReadWhileOpen(log);
 
-                Assert.That(text, Does.Contain("GROUPS"));
+                Assert.That(text, Does.Contain("PACKAGE GROUPS"));
                 Assert.That(text, Does.Contain("FINDINGS"));
                 Assert.That(text, Does.Contain("run  1B06PK  4 files"));
                 Assert.That(text, Does.Contain("ODD SHAPE  100000"));
 
-                int groupsAt = text.IndexOf("GROUPS", StringComparison.Ordinal);
+                int groupsAt = text.IndexOf("PACKAGE GROUPS", StringComparison.Ordinal);
                 int findingsAt = text.IndexOf("FINDINGS", StringComparison.Ordinal);
                 Assert.That(findingsAt, Is.GreaterThan(groupsAt), "FINDINGS came before the group list");
             }
@@ -429,30 +429,6 @@ namespace Federator.Core.Tests
                 string text = ReadWhileOpen(log);
                 Assert.That(text, Does.Contain("APPEND   FAILED"));
                 Assert.That(text, Does.Contain("NOT ON DISK"));
-            }
-        }
-
-        [Test]
-        public void ScanAndGroupLinesAreEachLoggedSeparately()
-        {
-            using (RunLog log = Start())
-            {
-                log.ScanStarted(@"C:\in", true);
-                log.UnreadableFile("badname.nwc", "Split on \"-\" gave 1 parts");
-                log.ScanFinished(7, 6, 1);
-                log.GroupStarted("1C07BC", new List<string> { @"C:\in\a.nwc", @"C:\in\b.nwc" });
-                log.GroupFinished("1C07BC", GroupOutcome.Done, 42.125, null, null);
-
-                string text = ReadWhileOpen(log);
-                Assert.That(text, Does.Contain("SCAN     started"));
-                Assert.That(text, Does.Contain("including subfolders"));
-                Assert.That(text, Does.Contain("UNREAD   badname.nwc"));
-                Assert.That(text, Does.Contain("Split on \"-\" gave 1 parts"));
-                Assert.That(text, Does.Contain("SCAN     finished 7 found, 6 readable, 1 that cannot be read"));
-                Assert.That(text, Does.Contain("GROUP    started  1C07BC  2 files"));
-                Assert.That(text, Does.Contain(@"C:\in\a.nwc"));
-                Assert.That(text, Does.Contain(@"C:\in\b.nwc"));
-                Assert.That(text, Does.Contain("GROUP    finished 1C07BC  DONE  42.125s"));
             }
         }
 
@@ -565,24 +541,6 @@ namespace Federator.Core.Tests
                 Assert.That(text, Does.Contain("IMAGES   skipped  UNKNOWN"));
                 Assert.That(log.WrittenFiles.Count, Is.EqualTo(0), "a skip records nothing as written");
             }
-        }
-
-        // F27. The line after the group list. There is no hidden rule dropping groups,
-        // so the line names the one thing that does, the Run column.
-        [Test]
-        public void TheUntickedLineCountsTheGroupsAndNamesTheRunColumn()
-        {
-            Assert.That(RunLog.UntickedGroupsLine(12),
-                Is.EqualTo("12 groups unticked in the Run column, nothing else drops a group"));
-            Assert.That(RunLog.UntickedGroupsLine(1),
-                Is.EqualTo("1 group unticked in the Run column, nothing else drops a group"));
-        }
-
-        [Test]
-        public void NothingUntickedStillSaysSo()
-        {
-            Assert.That(RunLog.UntickedGroupsLine(0),
-                Is.EqualTo("0 groups unticked in the Run column, nothing else drops a group"));
         }
 
         /// <summary>

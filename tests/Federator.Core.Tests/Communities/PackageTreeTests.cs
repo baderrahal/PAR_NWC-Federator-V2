@@ -146,16 +146,111 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void FilesInTheParentItselfAreLeftOutAndSaid()
+        public void FilesInTheParentItselfAreOnePackageNamedAfterIt()
         {
             File("Parent", "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc");
+            File("Parent", "1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc");
             File("Parent", "C06", "1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc");
+
+            PackageTree tree = PackageTree.Read(Parent, ".nwc");
+            Package itself = tree.Find("Parent");
+
+            Assert.That(tree.Packages().Count, Is.EqualTo(2));
+            Assert.That(tree.LeftOut, Is.Empty);
+            Assert.That(itself, Is.Not.Null);
+            Assert.That(itself.Community, Is.EqualTo("Parent"));
+            Assert.That(itself.FullPath, Is.EqualTo(Parent));
+            Assert.That(itself.Files.Count, Is.EqualTo(2));
+            Assert.That(itself.Name, Is.EqualTo("Parent itself"));
+            Assert.That(tree.Communities.Select(c => c.Name).ToArray(), Is.EqualTo(new[] { "C06", "Parent" }), "communities in name order");
+        }
+
+        [Test]
+        public void AParentHoldingOnlyItsOwnFilesIsOneCommunityOfOnePackage()
+        {
+            File("Parent", "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc");
+
+            PackageTree tree = PackageTree.Read(Parent, ".nwc");
+
+            Assert.That(tree.Communities.Count, Is.EqualTo(1));
+            Assert.That(tree.Packages().Single().RelativePath, Is.EqualTo("Parent"));
+        }
+
+        [Test]
+        public void TheParentsOwnFilesAreLeftOutWhereAFolderUnderItHasItsName()
+        {
+            File("Parent", "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc");
+            File("Parent", "parent", "1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc");
 
             PackageTree tree = PackageTree.Read(Parent, ".nwc");
 
             Assert.That(tree.Packages().Count, Is.EqualTo(1));
+            Assert.That(tree.Packages()[0].FullPath, Is.EqualTo(Path.Combine(Parent, "parent")));
             Assert.That(tree.LeftOut.Count, Is.EqualTo(1));
-            Assert.That(tree.LeftOut[0], Does.Contain("1 NWC file sit in the parent folder itself"));
+            Assert.That(tree.LeftOut[0], Is.EqualTo("1 NWC file sit in the parent folder itself, which would be the package Parent, "
+                + "and a folder under it carries that name too, so they are in no package"));
+        }
+
+        private string Report
+        {
+            get { return Path.Combine(root, "Report"); }
+        }
+
+        private string Nwf(params string[] parts)
+        {
+            return File(new[] { "Report" }.Concat(parts).ToArray());
+        }
+
+        [Test]
+        public void TheNwfTreeIsReadOffTheReportFolderAPackageBeingTheFolderOverItsNwfFolder()
+        {
+            string a = Nwf("C06", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf");
+            string b = Nwf("C06", "NWF", "1104-PAR-1B06BS-ZZZ-BM-MOD-000001.nwf");
+            string c = Nwf("C07", "Infrastructure and Landscape", "NWF", "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf");
+            Nwf("C06", "NWD", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwd");
+            Nwf("C06", "Log", "run.log");
+
+            PackageTree tree = PackageTree.ReadNwfs(Report);
+
+            Assert.That(tree.WasRead, Is.True);
+            Assert.That(tree.Extension, Is.EqualTo(".nwf"));
+            Assert.That(tree.Packages().Select(p => p.RelativePath).ToArray(),
+                Is.EqualTo(new[] { "C06", Rel("C07", "Infrastructure and Landscape") }));
+            Assert.That(tree.Find("C06").Files.ToArray(), Is.EqualTo(new[] { a, b }));
+            Assert.That(tree.Find(Rel("C07", "Infrastructure and Landscape")).Files.ToArray(), Is.EqualTo(new[] { c }));
+            Assert.That(tree.Find("C06").Community, Is.EqualTo("C06"));
+            Assert.That(tree.LeftOut, Is.Empty);
+        }
+
+        [Test]
+        public void TheNwfTreeFindsTheNwfsPackageNwfsFinds()
+        {
+            Nwf("C06", "Infra", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf");
+
+            Package package = PackageTree.ReadNwfs(Report).Packages().Single();
+            IList<PackageNwf> found = PackageNwfs.For(Report, package, NwfPickDisk.Real);
+
+            Assert.That(found.Select(n => n.NwfPath).ToArray(), Is.EqualTo(package.Files.ToArray()));
+        }
+
+        [Test]
+        public void AnNwdInAnNwfFolderIsNoNwfAndACommunityWithNoNwfIsLeftOutAndSaid()
+        {
+            Nwf("C06", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf");
+            Nwf("C07", "NWF", "1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd");
+
+            PackageTree tree = PackageTree.ReadNwfs(Report);
+
+            Assert.That(tree.Packages().Count, Is.EqualTo(1));
+            Assert.That(tree.LeftOut.Single(), Is.EqualTo("community C07 holds no NWF file in any folder below it, so it has no package"));
+        }
+
+        [Test]
+        public void ANwfTreeOfNoReportFolderSaysWhy()
+        {
+            Assert.That(PackageTree.ReadNwfs("  ").WhyNoTree, Is.EqualTo(PackageWords.PickTheReport));
+            Assert.That(PackageTree.ReadNwfs(Report).WhyNoTree, Is.EqualTo("The Report folder is not there: " + Report));
+            Assert.That(PackageWords.NwfSummary(null, null), Is.EqualTo(PackageWords.NwfNotReadYet));
         }
 
         [Test]

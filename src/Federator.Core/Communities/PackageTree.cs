@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using Federator.Core.Rerun;
 
 namespace Federator.Core.Communities
@@ -280,11 +281,26 @@ namespace Federator.Core.Communities
                 return tree;
             }
 
+            // F232, Bader's round of 19 Oct 2026, fix 2: a parent that holds files itself is one package named after it, the
+            // community of the same name. A folder under it of that name would be a second community of one name, so then the
+            // parent's own files are left out and said, Q213.
             List<string> loose = Sorted(OfTheKind(files, tree.Extension));
+            string parentName = Leaf(tree.Parent);
 
             if (loose.Count > 0)
             {
-                tree.leftOut.Add(PackageWords.InTheParentItself(loose.Count, tree.Extension));
+                bool clash = folders != null && folders.Any(folder => string.Equals(Leaf(folder), parentName, StringComparison.OrdinalIgnoreCase));
+
+                if (clash)
+                {
+                    tree.leftOut.Add(PackageWords.ParentItselfNamedTwice(loose.Count, tree.Extension, parentName));
+                }
+                else
+                {
+                    Community itself = new Community(parentName, tree.Parent);
+                    itself.Add(new Package(parentName, parentName, tree.Parent, loose));
+                    tree.communities.Add(itself);
+                }
             }
 
             foreach (string folder in Sorted(folders))
@@ -309,7 +325,143 @@ namespace Federator.Core.Communities
                 tree.communities.Add(community);
             }
 
+            tree.communities.Sort((a, b) => StringComparer.OrdinalIgnoreCase.Compare(a.Name, b.Name));
             return tree;
+        }
+
+        /// <summary>The NWF page's tree off the disk itself.</summary>
+        public static PackageTree ReadNwfs(string report)
+        {
+            return ReadNwfs(report, NwfPickDisk.Real, IsALinkOnTheDisk);
+        }
+
+        /// <summary>
+        /// The tree of the NWF page, F232, Bader's round of 19 Oct 2026, fix 2: read off the Report folder alone. The first
+        /// level under it is the community, as under the parent. Every folder at any depth below a community whose NWF folder,
+        /// PackageOutput.DefaultNwfSubfolder, directly holds NWF files is one package, its path from the Report folder the
+        /// path the NWC page wrote it under, so PackageNwfs.For finds the same files, and its files are those NWFs, judged by
+        /// NwfPick.IsNwf alone, in name order without case. The NWF folder itself is not walked again. A link is named and
+        /// never followed, a folder that will not read is named, and a community holding none is left out and said.
+        /// </summary>
+        public static PackageTree ReadNwfs(string report, NwfPickDisk disk, Func<string, bool> isLink)
+        {
+            if (disk == null)
+            {
+                throw new ArgumentNullException("disk");
+            }
+
+            if (isLink == null)
+            {
+                throw new ArgumentNullException("isLink");
+            }
+
+            string trimmed = report == null ? string.Empty : report.Trim();
+            PackageTree tree = new PackageTree(trimmed.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar), NwfExtension);
+
+            if (trimmed.Length == 0)
+            {
+                tree.WhyNoTree = PackageWords.PickTheReport;
+                tree.WhyNoTreeForALabel = tree.WhyNoTree;
+                return tree;
+            }
+
+            if (!disk.IsFolder(tree.Parent))
+            {
+                tree.WhyNoTree = PackageWords.ReportNotThere(tree.Parent);
+                tree.WhyNoTreeForALabel = tree.WhyNoTree;
+                return tree;
+            }
+
+            IList<string> folders;
+
+            try
+            {
+                folders = disk.FoldersIn(tree.Parent);
+            }
+            catch (Exception error)
+            {
+                tree.WhyNoTree = PackageWords.ReportWouldNotRead(tree.Parent, error.Message);
+                tree.WhyNoTreeForALabel = PackageWords.ReportWouldNotReadForALabel;
+                return tree;
+            }
+
+            foreach (string folder in Sorted(folders))
+            {
+                string name = Leaf(folder);
+
+                if (isLink(folder))
+                {
+                    tree.leftOut.Add(PackageWords.LinkNotFollowed(name));
+                    continue;
+                }
+
+                Community community = new Community(name, folder);
+                tree.WalkForNwfs(community, folder, name, disk, isLink);
+
+                if (community.Packages.Count == 0)
+                {
+                    tree.leftOut.Add(PackageWords.CommunityHoldsNone(name, tree.Extension));
+                    continue;
+                }
+
+                tree.communities.Add(community);
+            }
+
+            return tree;
+        }
+
+        /// <summary>The extension the NWF page's packages hold.</summary>
+        public const string NwfExtension = ".nwf";
+
+        private void WalkForNwfs(Community community, string folder, string relativePath, NwfPickDisk disk, Func<string, bool> isLink)
+        {
+            IList<string> folders;
+
+            try
+            {
+                folders = disk.FoldersIn(folder);
+            }
+            catch (Exception error)
+            {
+                leftOut.Add(PackageWords.FolderWouldNotRead(relativePath, error.Message));
+                return;
+            }
+
+            foreach (string sub in Sorted(folders))
+            {
+                string leaf = Leaf(sub);
+                string path = relativePath + Path.DirectorySeparatorChar + leaf;
+
+                if (isLink(sub))
+                {
+                    leftOut.Add(PackageWords.LinkNotFollowed(path));
+                    continue;
+                }
+
+                if (string.Equals(leaf, PackageOutput.DefaultNwfSubfolder, StringComparison.OrdinalIgnoreCase))
+                {
+                    List<string> nwfs;
+
+                    try
+                    {
+                        nwfs = Sorted(disk.FilesIn(sub).Where(NwfPick.IsNwf));
+                    }
+                    catch (Exception error)
+                    {
+                        leftOut.Add(PackageWords.FolderWouldNotRead(path, error.Message));
+                        continue;
+                    }
+
+                    if (nwfs.Count > 0)
+                    {
+                        community.Add(new Package(community.Name, relativePath, folder, nwfs));
+                    }
+
+                    continue;
+                }
+
+                WalkForNwfs(community, sub, path, disk, isLink);
+            }
         }
 
         private void Walk(Community community, string folder, string relativePath, NwfPickDisk disk, Func<string, bool> isLink)

@@ -7,23 +7,12 @@ namespace Federator.Core.Diagnostics
 {
     /// <summary>
     /// The pickers, each of which remembers its own last folder. One shared last folder
-    /// is worse than none, because picking an NWD folder then moves the source picker.
+    /// is worse than none, because picking the Report folder then moves the parent folder picker.
     /// </summary>
     public enum PickerKind
     {
-        Source,
-        Nwf,
-        Nwd,
-
         /// <summary>The picture the client report page carries, if anyone picks one.</summary>
         Logo,
-
-        /// <summary>
-        /// The existing NWF or folder of NWFs on the NWF page, F129 and F188. Its own kind and not
-        /// the NWF output folder's, because the NWFs a person runs as they are and the folder
-        /// a scanned run writes to are not the same place as often as not.
-        /// </summary>
-        PickedNwf,
 
         /// <summary>The parent folder of the packages, F208, whose first level holds the communities.</summary>
         PackageParent,
@@ -133,11 +122,7 @@ namespace Federator.Core.Diagnostics
         {
             return new[]
             {
-                PickerKind.Source,
-                PickerKind.Nwf,
-                PickerKind.Nwd,
                 PickerKind.Logo,
-                PickerKind.PickedNwf,
                 PickerKind.PackageParent,
                 PickerKind.PackageReport
             };

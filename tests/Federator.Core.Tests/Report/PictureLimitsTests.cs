@@ -248,22 +248,6 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F227 on the reviewer's finding: the label beside the box of a cap per test reads the three caps off the options,
-        /// where the XAML typed them, so a cap changed is a label changed.
-        /// </summary>
-        [Test]
-        public void TheLabelOfTheCapBoxReadsTheCapsOffTheOptions()
-        {
-            ImageOptions options = new ImageOptions();
-            Assert.That(PictureLimits.BoxLabel(options),
-                Is.EqualTo("At most per test, 0 for none. Every test gets at most 150 at A, 100 at B, 50 at C"));
-
-            options.PicturesForB = 80;
-            Assert.That(PictureLimits.BoxLabel(options), Does.Contain("80 at B").And.Not.Contain("100"));
-            Assert.Throws<System.ArgumentNullException>(() => PictureLimits.BoxLabel(null));
-        }
-
-        /// <summary>
         /// F227, Bader's answer to Q210. The five numbers are the run's settings on ImageOptions, his numbers of
         /// Q171 and Q175 their defaults.
         /// </summary>

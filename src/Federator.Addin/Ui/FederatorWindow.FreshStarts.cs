@@ -106,8 +106,29 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                packagePanel.Parent = order.Parent;
                 packagePanel.Report = order.Report;
+
+                // F232. The NWF page reads its tree off the Report folder and ticks its one NWF, the NWC page reads its tree off
+                // the parent and ticks its one package.
+                if (order.Page == PackageRunOrder.NwfPage)
+                {
+                    ReadTheNwfs();
+
+                    if (nwfTicks == null || !nwfTree.WasRead || nwfTree.Find(package) == null)
+                    {
+                        childRanNoGroupBecause = "the package is not in the tree read off " + order.Report + " in its own Navisworks, "
+                            + Words.Or(nwfTree == null ? null : nwfTree.WhyNoTree, "it is not among the packages read");
+                        log.Line(PackageRunWords.Prefix + " " + childRanNoGroupBecause);
+                        return;
+                    }
+
+                    nwfTicks.Tick(child.Unit.Group, true);
+                    TheNwfTicksMoved();
+                    OnRunNwfPackages(this, null);
+                    return;
+                }
+
+                packagePanel.Parent = order.Parent;
                 ReadThePackages();
 
                 Package found = packageTree == null ? null : packageTree.Find(package);
@@ -122,15 +143,7 @@ namespace Federator.Addin.Ui
 
                 packageTicks.Tick(found, true);
                 TheTicksMoved();
-
-                if (order.Page == PackageRunOrder.NwfPage)
-                {
-                    OnRunNwfPackages(this, null);
-                }
-                else
-                {
-                    OnRunPackages(this, null);
-                }
+                OnRun(this, null);
             }
             catch (Exception error)
             {
@@ -210,13 +223,6 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The one control never copied: the drop down of the NWFs last used, whose items are each machine's own history
-        /// and change as every package's run remembers its NWFs, and whose choice only fills the picked NWF box, which no
-        /// run of packages reads. Set in a child it would pick another NWF and read it, the breaker's finding on F214.
-        /// </summary>
-        private static readonly HashSet<string> NeverCopied = new HashSet<string>(StringComparer.Ordinal) { "RecentNwfBox" };
-
-        /// <summary>
         /// Every control of the window a run reads, by its name: each text box a person can type in, each tick box and each
         /// drop down, in that order, so a child sets the boxes the grouping reads before the drop down that regroups.
         /// </summary>
@@ -236,7 +242,7 @@ namespace Federator.Addin.Ui
         {
             FrameworkElement element = node as FrameworkElement;
 
-            if (element != null && !string.IsNullOrEmpty(element.Name) && !NeverCopied.Contains(element.Name) && seen.Add(element.Name))
+            if (element != null && !string.IsNullOrEmpty(element.Name) && seen.Add(element.Name))
             {
                 TextBox text = element as TextBox;
                 CheckBox tick = element as CheckBox;
@@ -326,12 +332,12 @@ namespace Federator.Addin.Ui
         /// goes on, and a runner past every group's ceiling and wait added up is ended, so this window never waits for ever
         /// and never reads the results while its runner still runs.
         /// </summary>
-        private void RunPackagesInFreshStarts(string page, PackageRun run, IList<PackageRunUnit> units)
+        private void RunPackagesInFreshStarts(string page, string parent, PackageRun run, IList<PackageRunUnit> units)
         {
             PackageRunOrder order = new PackageRunOrder
             {
                 Page = page,
-                Parent = packageTree.Parent,
+                Parent = parent,
                 Report = run.Report,
                 PluginId = FederatorPlugin.PluginName + "." + FederatorPlugin.DeveloperCode,
                 ParentLog = log.IsWritingToDisk ? log.Path : null,

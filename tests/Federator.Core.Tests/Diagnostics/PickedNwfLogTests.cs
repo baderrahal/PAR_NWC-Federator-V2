@@ -64,55 +64,5 @@ namespace Federator.Core.Tests
             }
         }
 
-        [Test]
-        public void TheResultBlockCarriesThePickedNwfsLineUnderTheGroupCounts()
-        {
-            string picked = "NWFs picked    : 2 from " + TestPaths.At("Feds") + ", each run as the open file run runs it";
-
-            using (RunLog log = RunLog.Start(Path.Combine(folder, "logs"), new DateTime(2026, 10, 8, 20, 0, 0)))
-            {
-                log.GroupFinished("a", GroupOutcome.Done, 1.0, null, RunPath.Label(RerunDecision.Open, false));
-                log.GroupFinished("b", GroupOutcome.Failed, 1.0, "the NWF would not open", RunPath.Label(RerunDecision.Open, false));
-                log.WriteResultBlock(null, pickedNwfs: picked);
-
-                string text = Read(log);
-                string result = text.Substring(text.LastIndexOf("RESULT", StringComparison.Ordinal));
-
-                Assert.That(result, Does.Contain("groups done    : 1"));
-                Assert.That(result, Does.Contain("groups failed  : 1"));
-                Assert.That(result, Does.Contain(picked));
-                Assert.That(result.IndexOf(picked, StringComparison.Ordinal),
-                    Is.GreaterThan(result.IndexOf("groups failed  : 1", StringComparison.Ordinal)));
-            }
-        }
-
-        [Test]
-        public void TheResultBlockOfAnyOtherRunHasNoPickedNwfsLine()
-        {
-            using (RunLog log = RunLog.Start(Path.Combine(folder, "logs"), new DateTime(2026, 10, 8, 20, 0, 0)))
-            {
-                log.GroupFinished("a", GroupOutcome.Done, 1.0, null, RunPath.FirstRun);
-                log.WriteResultBlock(null);
-
-                Assert.That(Read(log), Does.Not.Contain("NWFs picked"));
-            }
-        }
-
-        [Test]
-        public void ThePickedNwfPickerRemembersItsOwnFolderAndMovesNoOther()
-        {
-            FolderMemory memory = FolderMemory.Load(Path.Combine(folder, FolderMemory.FileName));
-            string nwfs = TestPaths.At("Feds");
-            string output = TestPaths.At("Out", "nwf");
-
-            memory.Remember(PickerKind.Nwf, output);
-            memory.Remember(PickerKind.PickedNwf, nwfs);
-
-            Assert.That(memory.LastFor(PickerKind.PickedNwf), Is.EqualTo(nwfs));
-            Assert.That(memory.LastFor(PickerKind.Nwf), Is.EqualTo(output));
-
-            FolderMemory again = FolderMemory.Load(Path.Combine(folder, FolderMemory.FileName));
-            Assert.That(again.LastFor(PickerKind.PickedNwf), Is.EqualTo(nwfs), "it survives a restart");
-        }
     }
 }

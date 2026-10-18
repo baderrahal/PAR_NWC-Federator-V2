@@ -40,16 +40,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheLineUnderTheOutputsStepFollowsItToo()
-        {
-            ReportPaths.Subfolder = "Weekly Clash";
-
-            Assert.That(
-                ReportPaths.WhereTheyGo(TestPaths.At("out", "NWF"), null, null),
-                Does.Contain("Weekly Clash"));
-        }
-
-        [Test]
         public void ASubfolderThatIsNoNameIsRefused()
         {
             Assert.Throws<ArgumentException>(delegate { ReportPaths.Subfolder = null; });

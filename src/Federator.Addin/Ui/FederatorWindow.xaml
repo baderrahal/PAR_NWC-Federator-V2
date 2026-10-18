@@ -81,7 +81,7 @@
                      line cannot push the log box down the window mid run. -->
                 <TextBlock x:Name="ProgressLine" DockPanel.Dock="Top" Margin="0,0,0,6"
                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
-                           Text="Pick a folder and press Scan." />
+                           />
 
                 <TextBox x:Name="LogBox" Height="150"
                          IsReadOnly="True" TextWrapping="NoWrap"
@@ -94,29 +94,44 @@
             <TabItem Header="NWC">
             <TabControl x:Name="Steps" SelectionChanged="OnStepShown">
 
-            <!-- Step 1 -->
-            <TabItem Header="1. Source">
-                <DockPanel Margin="8">
-                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Pick the folder of NWC files and press Scan. What was found and what is wrong with it are both reported here. Nothing below blocks a run or unticks anything, it is information and the decision is yours." />
-                    <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+            <!-- Step 1, F232, Bader's round of 19 Oct 2026, fix 2. The packages first: the parent folder, the Report folder,
+                 the tree with its ticks, and under the tree the findings over the NWC files of the ticked packages. Its words
+                 are Core's, PackageWords, read through the panel's data. -->
+            <TabItem x:Name="PackagesStep">
+                <DockPanel Margin="8" x:Name="PackagesPanel">
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" TextWrapping="Wrap"
+                               Text="{Binding Heading}" />
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="Folder" />
-                        <TextBox Grid.Column="1" x:Name="SourceFolderBox" VerticalAlignment="Center" />
-                        <Button Grid.Column="2" Content="Browse" Click="OnBrowseSource" />
-                        <CheckBox Grid.Column="3" x:Name="IncludeSubfolders" Content="Include subfolders"
-                                  IsChecked="True" VerticalAlignment="Center" Margin="12,0,0,0" />
-                        <Button Grid.Column="4" Content="Scan" Click="OnScan" FontWeight="Bold" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding ParentLabel}" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="PackageParentBox" VerticalAlignment="Center" Margin="0,0,0,4"
+                                 Text="{Binding Parent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowsePackageParent" Margin="4,0,0,4" />
+                        <Button Grid.Row="0" Grid.Column="3" x:Name="ReadPackagesButton" Content="{Binding ReadWord}"
+                                Click="OnReadPackages" FontWeight="Bold" Margin="4,0,0,4" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="{Binding ReportLabel}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="PackageReportBox" VerticalAlignment="Center" Margin="0,0,0,4"
+                                 Text="{Binding Report, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowsePackageReport" Margin="4,0,0,4" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Style="{StaticResource TickHelp}"
+                                   Margin="0,0,0,4" Text="{Binding ReportHelp}" />
                     </Grid>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                        <Button x:Name="TickAllPackagesButton" Content="{Binding TickAllWord}" Click="OnTickAllPackages" Margin="0,0,4,0" />
+                        <Button x:Name="ClearAllPackagesButton" Content="{Binding ClearAllWord}" Click="OnClearAllPackages" />
+                    </StackPanel>
 
-                    <TextBlock DockPanel.Dock="Bottom" x:Name="SourceSummary" Margin="0,6,0,0" />
-                    <!-- The scan and its checks in one place. None of this blocks a run. -->
+                    <!-- The findings of the Source step there was before F232, moved under the tree. None of this blocks a run. -->
                     <Border DockPanel.Dock="Bottom" x:Name="FindingsPanel"
                             BorderBrush="#D0D0D0" BorderThickness="1" Background="#FFFDF5"
                             Padding="8" Margin="0,8,0,0">
@@ -135,51 +150,18 @@
                                      FontFamily="Segoe UI" FontSize="12" />
                         </DockPanel>
                     </Border>
-
-                    <DataGrid x:Name="FilesGrid" AutoGenerateColumns="False" CanUserAddRows="False"
-                              IsReadOnly="False" GridLinesVisibility="Horizontal"
-                              HeadersVisibility="Column" SelectionMode="Extended">
-                        <DataGrid.Columns>
-                            <DataGridCheckBoxColumn Header="Use" Width="40"
-                                                    Binding="{Binding Include, UpdateSourceTrigger=PropertyChanged}">
-                                <DataGridCheckBoxColumn.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="IsEnabled" Value="{Binding CanInclude}" />
-                                    </Style>
-                                </DataGridCheckBoxColumn.CellStyle>
-                            </DataGridCheckBoxColumn>
-                            <DataGridTextColumn Header="File name" Width="330" IsReadOnly="True"
-                                                Binding="{Binding FileName}" />
-                            <DataGridTextColumn Header="Building" Width="80" IsReadOnly="True"
-                                                Binding="{Binding Building}" />
-                            <DataGridTextColumn Header="Discipline" Width="70" IsReadOnly="True"
-                                                Binding="{Binding Discipline}" />
-                            <DataGridTextColumn Header="Project" Width="60" IsReadOnly="True"
-                                                Binding="{Binding Project}" />
-                            <DataGridTextColumn Header="Originator" Width="70" IsReadOnly="True"
-                                                Binding="{Binding Originator}" />
-                            <DataGridTextColumn Header="Reason it cannot be read" Width="*" IsReadOnly="True"
-                                                Binding="{Binding Reason}" />
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsReadable}" Value="False">
-                                        <Setter Property="Background" Value="#FFF3F3" />
-                                        <Setter Property="Foreground" Value="#A00000" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
+                    <TextBlock DockPanel.Dock="Bottom" x:Name="PackagesSummary" Text="{Binding Summary}"
+                               TextWrapping="Wrap" Margin="0,6,0,0" />
+                    <TreeView x:Name="PackagesTree" ItemsSource="{Binding Nodes}"
+                              ItemContainerStyle="{StaticResource PackageItem}" ItemTemplate="{StaticResource PackageLine}" />
                 </DockPanel>
             </TabItem>
 
             <!-- Step 2 -->
-            <TabItem Header="2. Grouping">
+            <TabItem Header="2. Grouping" x:Name="GroupingStep">
                 <DockPanel Margin="8">
-                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Choose how the files are gathered into federations. A group whose files disagree on the project code or the originator is blocked and names both files. The scan and its findings are on the Source step." />
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" TextWrapping="Wrap"
+                               Text="Choose how the files of the ticked packages are gathered into federations, one row per group. A group whose files disagree on the project code or the originator is blocked and names both files. A group of one discipline is not built. The packages and their findings are on step 1. Packages." />
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
                         <Label Content="Make" VerticalAlignment="Center" />
                         <ComboBox x:Name="GroupingModeBox" MinWidth="320" VerticalAlignment="Center"
@@ -226,17 +208,21 @@
                                     </Style>
                                 </DataGridTemplateColumn.CellStyle>
                             </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Community" Width="90" IsReadOnly="True"
+                                                Binding="{Binding Community}" />
+                            <DataGridTextColumn Header="Package" Width="150" IsReadOnly="True"
+                                                Binding="{Binding PackageName}" />
                             <DataGridTextColumn Header="Building" Width="90" IsReadOnly="True"
                                                 Binding="{Binding Building}" />
                             <DataGridTextColumn Header="Files" Width="50" IsReadOnly="True"
                                                 Binding="{Binding FileCount}" />
-                            <DataGridTextColumn Header="Disciplines" Width="200" IsReadOnly="True"
+                            <DataGridTextColumn Header="Disciplines" Width="160" IsReadOnly="True"
                                                 Binding="{Binding Disciplines}" />
                             <!-- RunAsShown and not RunAs. The column carries the near miss
                                  sentence after the label, F71, and the counting reads the
                                  bare label so a widened one never reaches it. Wider than
                                  the other columns because the sentence names a file. -->
-                            <DataGridTextColumn Header="Run as" Width="300" IsReadOnly="True"
+                            <DataGridTextColumn Header="Run as" Width="260" IsReadOnly="True"
                                                 Binding="{Binding RunAsShown}" />
                             <DataGridTextColumn Header="Status" Width="*" IsReadOnly="True"
                                                 Binding="{Binding Status}" />
@@ -255,137 +241,13 @@
                 </DockPanel>
             </TabItem>
 
-            <!-- Step 3 -->
+            <!-- Step 3, F232: the naming boxes and the logo only. Every output goes under the Report folder at the package's
+                 path from the parent, in its NWF, NWD, Log and Clash report folders. The heading is Core's. -->
             <TabItem Header="3. Outputs">
-                <!-- The only step whose content is taller than the window. Measured at
-                     1024x680, 1280x800 and 1600x1000 with tools\probes\probe-window-scroll.ps1
-                     and cut off at all three, by 384, 264 and 87 pixels, which is why the
-                     naming table and everything under it could not be reached. The other
-                     three steps fit at all three sizes and are left alone, because a
-                     ScrollViewer around a step whose grid is meant to fill stops it
-                     filling. -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
-                <DockPanel Margin="8">
-                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="One NWF folder and one NWD folder for the whole run, holding the NWF and NWD files alone. The logs and the reports go in a folder called Log beside them, made if it is not there, and nothing in it is overwritten or deleted. The name fields below fill the table, and any name in the table can be typed over. A name you type over is left alone when a pattern changes." />
-                    <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="NWF folder" />
-                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="NwfFolderBox"
-                                 VerticalAlignment="Center" Margin="0,0,0,4"
-                                 TextChanged="OnOutputFolderChanged" />
-                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseNwf" Margin="4,0,0,4" />
-                        <Label Grid.Row="1" Grid.Column="0" Content="NWD folder" />
-                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="NwdFolderBox"
-                                 VerticalAlignment="Center" Margin="0,0,0,4"
-                                 TextChanged="OnOutputFolderChanged" />
-                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowseNwd" Margin="4,0,0,4" />
-                        <!-- The NWD, the client page and the photos used to be three tick
-                             boxes. A weekly run wants all three every time, so they are
-                             fixed on and are not a decision any more. -->
-                        <Label Grid.Row="5" Grid.Column="0" Content="Logo" />
-                        <TextBox Grid.Row="5" Grid.Column="1" x:Name="LogoBox"
-                                 VerticalAlignment="Center" />
-                        <Button Grid.Row="5" Grid.Column="2" Content="Browse" Click="OnBrowseLogo" />
-                        <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource TickHelp}"
-                                   Text="Starts as the Navisworks logo, which is what the client accepts. Clear it for none." />
-                    </Grid>
-
-                    <!-- Everything below here is a decision a weekly run does not have to
-                         make. It is collapsed, with the answer already chosen, so the
-                         Outputs step is two folders and the logo. -->
-                    <Expander DockPanel.Dock="Top" Header="More, rarely changed"
-                              IsExpanded="False" Margin="0,0,0,8">
-                        <Border BorderBrush="#D0D0D0" BorderThickness="1" Padding="8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
-                                    <CheckBox x:Name="DateTheNwd" IsChecked="False"
-                                              Content="Date the NWD so every week is kept"
-                                              Checked="OnNamingToggled" Unchecked="OnNamingToggled" />
-                                    <TextBlock Style="{StaticResource TickHelp}"
-                                               Text="Without this, only the latest week exists." />
-                                </StackPanel>
-
-                                <StackPanel Grid.Row="1" Grid.ColumnSpan="5">
-                                    <CheckBox x:Name="WriteClashXml" IsChecked="False"
-                                              Content="Write a clash XML beside each workbook"
-                                              Checked="OnXmlChanged" Unchecked="OnXmlChanged" />
-                                    <TextBlock Style="{StaticResource TickHelp}"
-                                               Text="One extra file per building, under a megabyte." />
-                                </StackPanel>
-
-                                <!-- F150. The label and the grey line are read off Core,
-                                     OtherItemsInPictures, and the default off ImageOptions. -->
-                                <StackPanel Grid.Row="2" Grid.ColumnSpan="5">
-                                    <CheckBox x:Name="GhostOtherItems"
-                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <TextBlock x:Name="GhostOtherItemsHelp" Style="{StaticResource TickHelp}" />
-                                </StackPanel>
-
-                                <Label Grid.Row="3" Grid.Column="0" Content="Photo size" VerticalAlignment="Center" />
-                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="ImagePixelsBox"
-                                         MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
-                                         TextChanged="OnImageSettingChanged" />
-                                <Label Grid.Row="3" Grid.Column="2" x:Name="ImageCapLabel"
-                                       VerticalAlignment="Center" />
-                                <TextBox Grid.Row="3" Grid.Column="3" x:Name="ImageCapBox"
-                                         MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
-                                         TextChanged="OnImageSettingChanged" />
-
-                                <Label Grid.Row="4" Grid.Column="0" Content="Photo of" VerticalAlignment="Center" />
-                                <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4"
-                                            Orientation="Horizontal" VerticalAlignment="Center">
-                                    <CheckBox x:Name="ImageNew" Content="New" Margin="0,0,10,0"
-                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageActive" Content="Active" Margin="0,0,10,0"
-                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageReviewed" Content="Reviewed" Margin="0,0,10,0"
-                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageApproved" Content="Approved" Margin="0,0,10,0"
-                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <CheckBox x:Name="ImageResolved" Content="Resolved"
-                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                </StackPanel>
-
-                                <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
-                                           Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#606060"
-                                           Text="Photos on." />
-                            </Grid>
-                        </Border>
-                    </Expander>
-
+                <StackPanel Margin="8">
+                    <TextBlock Style="{StaticResource StepHeading}" TextWrapping="Wrap" x:Name="OutputsHeading" />
                     <!-- The four fields this tool supplies rather than reads out of a file
                          name, plus the code used when a group covers several buildings.
                          Defaults, not constants. -->
@@ -420,55 +282,47 @@
                             <TextBlock Grid.Row="1" Grid.Column="5" Text="All buildings" FontWeight="Bold" Margin="4,0,4,2" />
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="NWF" VerticalAlignment="Center" />
-                            <TextBox Grid.Row="2" Grid.Column="1" x:Name="NwfLevel" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="2" Grid.Column="2" x:Name="NwfDiscipline" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="2" Grid.Column="3" x:Name="NwfType" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="2" Grid.Column="4" x:Name="NwfNumber" Width="80" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="2" Grid.Column="5" x:Name="NwfAllBuildings" Width="90" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="2" Grid.Column="1" x:Name="NwfLevel" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="2" Grid.Column="2" x:Name="NwfDiscipline" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="2" Grid.Column="3" x:Name="NwfType" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="2" Grid.Column="4" x:Name="NwfNumber" Width="80" Margin="4,1" />
+                            <TextBox Grid.Row="2" Grid.Column="5" x:Name="NwfAllBuildings" Width="90" Margin="4,1" />
 
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="NWD" VerticalAlignment="Center" />
-                            <TextBox Grid.Row="3" Grid.Column="1" x:Name="NwdLevel" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="3" Grid.Column="2" x:Name="NwdDiscipline" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="3" Grid.Column="3" x:Name="NwdType" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="3" Grid.Column="4" x:Name="NwdNumber" Width="80" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="3" Grid.Column="5" x:Name="NwdAllBuildings" Width="90" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="3" Grid.Column="1" x:Name="NwdLevel" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="3" Grid.Column="2" x:Name="NwdDiscipline" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="3" Grid.Column="3" x:Name="NwdType" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="3" Grid.Column="4" x:Name="NwdNumber" Width="80" Margin="4,1" />
+                            <TextBox Grid.Row="3" Grid.Column="5" x:Name="NwdAllBuildings" Width="90" Margin="4,1" />
 
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="Workbook" VerticalAlignment="Center" />
-                            <TextBox Grid.Row="4" Grid.Column="1" x:Name="WorkbookLevel" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="4" Grid.Column="2" x:Name="WorkbookDiscipline" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="4" Grid.Column="3" x:Name="WorkbookType" Width="70" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="4" Grid.Column="4" x:Name="WorkbookNumber" Width="80" Margin="4,1" TextChanged="OnNamingChanged" />
-                            <TextBox Grid.Row="4" Grid.Column="5" x:Name="WorkbookAllBuildings" Width="90" Margin="4,1" TextChanged="OnNamingChanged" />
+                            <TextBox Grid.Row="4" Grid.Column="1" x:Name="WorkbookLevel" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="4" Grid.Column="2" x:Name="WorkbookDiscipline" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="4" Grid.Column="3" x:Name="WorkbookType" Width="70" Margin="4,1" />
+                            <TextBox Grid.Row="4" Grid.Column="4" x:Name="WorkbookNumber" Width="80" Margin="4,1" />
+                            <TextBox Grid.Row="4" Grid.Column="5" x:Name="WorkbookAllBuildings" Width="90" Margin="4,1" />
                         </Grid>
                     </Border>
-
-                    <TextBlock DockPanel.Dock="Top" x:Name="NamePreview" Margin="0,0,0,8"
-                               TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" />
-                    <TextBlock DockPanel.Dock="Bottom" x:Name="OutputsSummary" Margin="0,6,0,0" />
-                    <DataGrid x:Name="OutputsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
-                              IsReadOnly="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
-                              CellEditEnding="OnNameEdited">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Building" Width="90" IsReadOnly="True"
-                                                Binding="{Binding Building}" />
-                            <DataGridTextColumn Header="Files" Width="50" IsReadOnly="True"
-                                                Binding="{Binding FileCount}" />
-                            <DataGridTextColumn Header="NWF name" Width="250"
-                                                Binding="{Binding NwfName, UpdateSourceTrigger=LostFocus}" />
-                            <DataGridTextColumn Header="NWD name" Width="250"
-                                                Binding="{Binding NwdName, UpdateSourceTrigger=LostFocus}" />
-                            <DataGridTextColumn Header="Workbook name" Width="250"
-                                                Binding="{Binding WorkbookName, UpdateSourceTrigger=LostFocus}" />
-                            <DataGridTextColumn Header="Edited" Width="55" IsReadOnly="True"
-                                                Binding="{Binding EditedMark}" />
-                            <DataGridTextColumn Header="Status" Width="*" IsReadOnly="True"
-                                                Binding="{Binding Status}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </DockPanel>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Logo" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="LogoBox"
+                                 VerticalAlignment="Center" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseLogo" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource TickHelp}"
+                                   Text="Starts as the Navisworks logo, which is what the client accepts. Clear it for none." />
+                    </Grid>
+                </StackPanel>
                 </ScrollViewer>
             </TabItem>
-
 
             <!-- Step 4. The clash XML, the two boxes that destroy data, the two hand
                  buttons, and the second way to run, on the file that is open. -->
@@ -649,106 +503,35 @@
                 </DockPanel>
             </TabItem>
 
-            <!-- Step 5, F208, Bader's message of 17 Oct 2026. Many communities at once, each ticked package built in
-                 turn with the grouping, the names and the clash choices of the steps before. Its words are Core's,
-                 PackageWords, read through the panel's data, which the NWF page's panel shares. -->
-            <TabItem Header="5. Packages" x:Name="PackagesStep">
-                <DockPanel Margin="8" x:Name="PackagesPanel">
-                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" TextWrapping="Wrap"
-                               Text="{Binding Heading}" />
-                    <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding ParentLabel}" />
-                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="PackageParentBox" VerticalAlignment="Center" Margin="0,0,0,4"
-                                 Text="{Binding Parent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowsePackageParent" Margin="4,0,0,4" />
-                        <Button Grid.Row="0" Grid.Column="3" x:Name="ReadPackagesButton" Content="{Binding ReadWord}"
-                                Click="OnReadPackages" FontWeight="Bold" Margin="4,0,0,4" />
-                        <Label Grid.Row="1" Grid.Column="0" Content="{Binding ReportLabel}" />
-                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="PackageReportBox" VerticalAlignment="Center" Margin="0,0,0,4"
-                                 Text="{Binding Report, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Grid.Row="1" Grid.Column="2" Content="Browse" Click="OnBrowsePackageReport" Margin="4,0,0,4" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Style="{StaticResource TickHelp}"
-                                   Margin="0,0,0,4" Text="{Binding ReportHelp}" />
-                    </Grid>
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
-                        <Button x:Name="TickAllPackagesButton" Content="{Binding TickAllWord}" Click="OnTickAllPackages" Margin="0,0,4,0" />
-                        <Button x:Name="ClearAllPackagesButton" Content="{Binding ClearAllWord}" Click="OnClearAllPackages" />
-                        <Button x:Name="RunPackagesButton" Content="{Binding RunWord}" Click="OnRunPackages"
-                                FontWeight="Bold" MinWidth="160" Margin="16,0,0,0" />
-                    </StackPanel>
-                    <TextBlock DockPanel.Dock="Bottom" x:Name="PackagesSummary" Text="{Binding Summary}"
-                               TextWrapping="Wrap" Margin="0,6,0,0" />
-                    <TreeView x:Name="PackagesTree" ItemsSource="{Binding Nodes}"
-                              ItemContainerStyle="{StaticResource PackageItem}" ItemTemplate="{StaticResource PackageLine}" />
-                </DockPanel>
-            </TabItem>
-
             </TabControl>
             </TabItem>
 
-            <!-- F188, Bader's answer 3 of Q174. The NWF page: the weekly work on an NWF that is built. Its
-                 words, its tick boxes and what each needs are Core's, Federator.Core.Rerun.NwfPageSteps and
-                 RefreshConfirm, read in the constructor and never typed here. -->
+            <!-- F188, Bader's answer 3 of Q174, and F232, his round of 19 Oct 2026, fix 2. The NWF page: Packages first, the
+                 Report folder and a tree of community, package and NWF read off it, then the tolerance, the five steps and one
+                 Run. Its words, its tick boxes and what each needs are Core's, PackageWords, NwfPageSteps and RefreshConfirm,
+                 read in the constructor and never typed here. -->
             <TabItem Header="NWF">
-                <DockPanel Margin="8">
-                    <!-- F208. The tree of the NWC page's step 5, the same data, on the right of the NWF page. Each ticked
-                         package runs the NWFs in the NWF folder under its report folder. -->
-                    <Border DockPanel.Dock="Right" Width="440" BorderBrush="#D0D0D0" BorderThickness="1"
-                            Padding="8" Margin="8,0,0,0" x:Name="NwfPackagesPanel">
-                        <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" TextWrapping="Wrap"
-                                       Text="{Binding NwfHeading}" />
-                            <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Label Grid.Row="0" Grid.Column="0" Content="{Binding ParentLabel}" />
-                                <TextBox Grid.Row="0" Grid.Column="1" x:Name="NwfPackageParentBox" VerticalAlignment="Center" Margin="0,0,0,4"
-                                         Text="{Binding Parent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <Button Grid.Row="0" Grid.Column="2" x:Name="NwfReadPackagesButton" Content="{Binding ReadWord}"
-                                        Click="OnReadPackages" MinWidth="60" Margin="4,0,0,4" />
-                                <Label Grid.Row="1" Grid.Column="0" Content="{Binding ReportLabel}" />
-                                <TextBox Grid.Row="1" Grid.Column="1" x:Name="NwfPackageReportBox" VerticalAlignment="Center" Margin="0,0,0,4"
-                                         Text="{Binding Report, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource TickHelp}"
-                                           Margin="0,0,0,4" Text="{Binding ReportHelp}" />
-                            </Grid>
-                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
-                                <Button x:Name="NwfTickAllPackagesButton" Content="{Binding TickAllWord}" Click="OnTickAllPackages"
-                                        MinWidth="70" Margin="0,0,4,0" />
-                                <Button x:Name="NwfClearAllPackagesButton" Content="{Binding ClearAllWord}" Click="OnClearAllPackages"
-                                        MinWidth="70" />
-                                <Button x:Name="RunNwfPackagesButton" Content="{Binding RunWord}" Click="OnRunNwfPackages"
-                                        FontWeight="Bold" MinWidth="140" Margin="12,0,0,0" />
-                            </StackPanel>
-                            <TextBlock DockPanel.Dock="Bottom" x:Name="NwfPackagesSummary" Text="{Binding Summary}"
-                                       TextWrapping="Wrap" Margin="0,6,0,0" />
-                            <TreeView x:Name="NwfPackagesTree" ItemsSource="{Binding Nodes}"
-                                      ItemContainerStyle="{StaticResource PackageItem}" ItemTemplate="{StaticResource PackageLine}" />
-                        </DockPanel>
-                    </Border>
+                <Grid Margin="8" x:Name="NwfPackagesPanel">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" MinHeight="120" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" MinHeight="90" />
+                    </Grid.RowDefinitions>
 
-                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}" x:Name="NwfPageHeading" />
-
-                    <Grid DockPanel.Dock="Top" Margin="0,0,0,4">
+                    <TextBlock Grid.Row="0" Style="{StaticResource StepHeading}" TextWrapping="Wrap"
+                               Text="{Binding NwfHeading}" />
+                    <Grid Grid.Row="1" Margin="0,0,0,6">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -758,26 +541,26 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" x:Name="PickedNwfLabel" />
-                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="PickedNwfBox" VerticalAlignment="Center"
-                                 LostFocus="OnPickedNwfLostFocus" />
-                        <Button Grid.Row="0" Grid.Column="2" Content="File" Click="OnBrowsePickedNwfFile" />
-                        <Button Grid.Row="0" Grid.Column="3" Content="Folder" Click="OnBrowsePickedNwfFolder" />
-                        <Label Grid.Row="1" Grid.Column="0" x:Name="RecentNwfLabel" />
-                        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="RecentNwfBox" Margin="0,4,0,0"
-                                  SelectionChanged="OnRecentNwfChosen" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" x:Name="PickedNwfHelp"
-                                   Style="{StaticResource FindingLine}" Margin="0,2,0,0" />
+                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding ReportLabel}" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="NwfPackageReportBox" VerticalAlignment="Center" Margin="0,0,0,4"
+                                 Text="{Binding Report, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseNwfReport" Margin="4,0,0,4" />
+                        <Button Grid.Row="0" Grid.Column="3" x:Name="NwfReadPackagesButton" Content="{Binding ReadWord}"
+                                Click="OnReadNwfPackages" FontWeight="Bold" Margin="4,0,0,4" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Style="{StaticResource TickHelp}"
+                                   Margin="0,0,0,4" Text="{Binding ReportHelp}" />
                     </Grid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,6">
+                        <Button x:Name="NwfTickAllPackagesButton" Content="{Binding TickAllWord}" Click="OnTickAllNwfs" Margin="0,0,4,0" />
+                        <Button x:Name="NwfClearAllPackagesButton" Content="{Binding ClearAllWord}" Click="OnClearAllNwfs" />
+                    </StackPanel>
+                    <TreeView Grid.Row="3" x:Name="NwfPackagesTree" ItemsSource="{Binding NwfNodes}"
+                              ItemContainerStyle="{StaticResource PackageItem}" ItemTemplate="{StaticResource PackageLine}" />
+                    <TextBlock Grid.Row="4" x:Name="NwfPackagesSummary" Text="{Binding NwfSummary}"
+                               TextWrapping="Wrap" Margin="0,6,0,0" />
 
-                    <TextBlock DockPanel.Dock="Top" x:Name="NwfChangedHeading" FontWeight="Bold" Margin="0,6,0,2" />
-                    <TextBox DockPanel.Dock="Top" x:Name="NwfChangedBox" IsReadOnly="True" Height="84"
-                             TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto"
-                             HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="11" />
-
-                    <Grid DockPanel.Dock="Top" Margin="0,8,0,0">
+                    <Grid Grid.Row="5" Margin="0,8,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -790,7 +573,7 @@
                                    VerticalAlignment="Center" />
                     </Grid>
 
-                    <StackPanel DockPanel.Dock="Top" Margin="0,8,0,0">
+                    <StackPanel Grid.Row="6" Margin="0,8,0,0">
                         <TextBlock x:Name="NwfStepsHeading" FontWeight="Bold" Margin="0,0,0,2" />
                         <StackPanel Orientation="Horizontal">
                             <CheckBox x:Name="NwfStepRefresh" IsChecked="True" Margin="0,0,16,0"
@@ -807,17 +590,24 @@
                         <TextBlock x:Name="NwfStepsHelp" Style="{StaticResource FindingLine}" />
                     </StackPanel>
 
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,8,0,0">
-                        <Button x:Name="RunPickedNwfsButton" Content="Run" Click="OnRunPickedNwfs"
+                    <StackPanel Grid.Row="7" Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button x:Name="RunNwfPackagesButton" Click="OnRunNwfPackages"
                                 MinWidth="120" FontWeight="Bold" Margin="0,0,8,0" />
                     </StackPanel>
 
-                    <TextBlock DockPanel.Dock="Top" x:Name="NwfSummary" Margin="0,6,0,0" TextWrapping="Wrap" />
-                    <TextBlock DockPanel.Dock="Top" x:Name="NwfRulesLine" Style="{StaticResource FindingLine}" />
+                    <TextBlock Grid.Row="8" x:Name="NwfSummary" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="9" x:Name="NwfRulesLine" Style="{StaticResource FindingLine}" />
 
-                    <TextBlock DockPanel.Dock="Top" x:Name="NwfTableHeading" FontWeight="Bold" Margin="0,8,0,2" />
-                    <DataGrid x:Name="NwfTable" AutoGenerateColumns="False" CanUserAddRows="False"
-                              IsReadOnly="True" HeadersVisibility="Column" MinHeight="90">
+                    <!-- The NWC files changed since the last run of the one NWF ticked, read off its last manifest and the disk,
+                         as the single NWF picker showed them before F232, Q214. -->
+                    <TextBlock Grid.Row="10" x:Name="NwfChangedHeading" FontWeight="Bold" Margin="0,6,0,2" />
+                    <TextBox Grid.Row="11" x:Name="NwfChangedBox" IsReadOnly="True" Height="84"
+                             TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="11" />
+
+                    <TextBlock Grid.Row="12" x:Name="NwfTableHeading" FontWeight="Bold" Margin="0,8,0,2" />
+                    <DataGrid Grid.Row="13" x:Name="NwfTable" AutoGenerateColumns="False" CanUserAddRows="False"
+                              IsReadOnly="True" HeadersVisibility="Column">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Test" Binding="{Binding Test}" Width="*" />
                             <DataGridTextColumn Header="New" Binding="{Binding New}" Width="70" />
@@ -827,7 +617,7 @@
                             <DataGridTextColumn Header="Resolved" Binding="{Binding Resolved}" Width="80" />
                         </DataGrid.Columns>
                     </DataGrid>
-                </DockPanel>
+                </Grid>
             </TabItem>
         </TabControl>
     </DockPanel>

@@ -1556,21 +1556,7 @@ namespace Federator.Core.Diagnostics
 
         // ---------- one line per action ----------
 
-        public const string GroupsSectionTitle = "GROUPS";
         public const string FindingsSectionTitle = "FINDINGS";
-
-        /// <summary>
-        /// The one line after the group list saying how many groups were unticked in the
-        /// Run column. F27. The list used to print skipped for an unticked group, and the
-        /// run log of 2026-09-07 was read as a hidden rule dropping 12 of 26 groups. There
-        /// is no such rule: nothing in the code unticks a group except the Run column and
-        /// a blocked group, so the line says so.
-        /// </summary>
-        public static string UntickedGroupsLine(int unticked)
-        {
-            return unticked + (unticked == 1 ? " group" : " groups")
-                + " unticked in the Run column, nothing else drops a group";
-        }
 
         /// <summary>
         /// Where the Revit container inside an NWC is a different building from the NWC.
@@ -1596,23 +1582,6 @@ namespace Federator.Core.Diagnostics
             {
                 Line(line);
             }
-        }
-
-        public void ScanStarted(string folder, bool includeSubfolders)
-        {
-            Line("SCAN     started  " + folder + (includeSubfolders ? "  including subfolders" : "  top folder only"));
-        }
-
-        public void ScanFinished(int found, int readable, int unreadable)
-        {
-            Line("SCAN     finished " + found + " found, " + readable + " readable, "
-                + unreadable + " that cannot be read");
-        }
-
-        public void UnreadableFile(string fileName, string reason)
-        {
-            Line("UNREAD   " + fileName);
-            Detail("reason   : " + Words.Or(reason, "UNKNOWN"));
         }
 
         /// <summary>What the GROUP started line says in place of a count where no file list is handed in, F129.</summary>
@@ -2230,12 +2199,11 @@ namespace Federator.Core.Diagnostics
             bool makeViewpoints = true,
             CoverageAcrossTheRun coverage = null,
             GenericModelsAcrossTheRun generic = null,
-            string pickedNwfs = null,
             IList<string> packages = null)
         {
             try
             {
-                WriteTheResult(thisRun, makeViewpoints, coverage, generic, pickedNwfs, packages);
+                WriteTheResult(thisRun, makeViewpoints, coverage, generic, packages);
             }
             finally
             {
@@ -2249,7 +2217,6 @@ namespace Federator.Core.Diagnostics
             bool makeViewpoints,
             CoverageAcrossTheRun coverage,
             GenericModelsAcrossTheRun generic,
-            string pickedNwfs,
             IList<string> packages)
         {
             // Before RESULT, so RESULT is the last block, the LOGS lines of F158 after it, and does not have
@@ -2279,13 +2246,6 @@ namespace Federator.Core.Diagnostics
             Line("groups done    : " + CountOf(GroupOutcome.Done));
             Line("groups partial : " + CountOf(GroupOutcome.Partial));
             Line("groups failed  : " + CountOf(GroupOutcome.Failed));
-
-            // F129. Under the group counts, because each picked NWF is one of those groups. Only
-            // for a run of picked NWFs, NwfPickPlan.ResultLine.
-            if (!string.IsNullOrEmpty(pickedNwfs))
-            {
-                Line(pickedNwfs);
-            }
 
             // F208. Under the group counts, because each line names one of those groups with its community and package,
             // then one total per package, one per community and one for the run, Communities.PackageTally. Only for a run

@@ -185,6 +185,8 @@ namespace Federator.Core.Communities
     {
         private readonly List<PackageGroup> groups = new List<PackageGroup>();
         private readonly List<string> notRun = new List<string>();
+        private readonly List<SkippedBuildingGroup> skipped = new List<SkippedBuildingGroup>();
+        private readonly List<BuildingGroup> grouped = new List<BuildingGroup>();
 
         private PackagePlan(Package package, string reportRoot)
         {
@@ -213,6 +215,21 @@ namespace Federator.Core.Communities
         {
             get { return notRun.AsReadOnly(); }
         }
+
+        /// <summary>The groups the grouping blocked, each with its files and why, for the rows of the Grouping step, F232.</summary>
+        public IList<SkippedBuildingGroup> Skipped
+        {
+            get { return skipped.AsReadOnly(); }
+        }
+
+        /// <summary>The groups the grouping made, as the grouping gives them, for the findings of the Packages step, F232.</summary>
+        public IList<BuildingGroup> Grouped
+        {
+            get { return grouped.AsReadOnly(); }
+        }
+
+        /// <summary>How many of the package's files have a name that does not read, F232.</summary>
+        public int Unreadable { get; private set; }
 
         public int Blocked { get; private set; }
 
@@ -265,6 +282,7 @@ namespace Federator.Core.Communities
                 if (!parsed.IsReadable)
                 {
                     plan.notRun.Add("cannot be read  " + Path.GetFileName(file) + "  " + parsed.UnreadableReason);
+                    plan.Unreadable++;
                     continue;
                 }
 
@@ -278,8 +296,10 @@ namespace Federator.Core.Communities
             {
                 plan.notRun.Add("BLOCKED  " + skipped.Building + "  " + skipped.Reason);
                 plan.Blocked++;
+                plan.skipped.Add(skipped);
             }
 
+            plan.grouped.AddRange(result.Groups);
             OutputNameTable names = OutputNameTable.From(result.Groups, naming, settings, today);
             plan.WhyNot = names.WhyTheRunCannotStart(internalWorkbook);
 

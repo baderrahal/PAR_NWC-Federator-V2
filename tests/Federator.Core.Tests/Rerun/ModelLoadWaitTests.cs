@@ -317,7 +317,6 @@ namespace Federator.Core.Tests
         {
             Assert.That(RunPath.Label(RerunDecision.Refused, false), Is.EqualTo(RunPath.Stopped));
             Assert.That(RunPath.Label(RerunDecision.Refused, true), Is.EqualTo(RunPath.Stopped));
-            Assert.That(RunPath.AfterOpening(RerunDecision.Refused, false), Is.EqualTo(RunPath.Stopped));
             Assert.That(RunPath.All, Does.Contain(RunPath.Stopped));
         }
     }

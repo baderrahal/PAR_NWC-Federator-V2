@@ -30,23 +30,20 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheLabelAndItsGreyLineAreShortPlainAndClaimNothingUnmeasured()
+        public void TheLabelIsShortPlainAndClaimsNothingUnmeasured()
         {
             Assert.That(OtherItemsInPictures.TickLabel.Split(' ').Length, Is.LessThanOrEqualTo(8));
-            Assert.That(OtherItemsInPictures.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
             Assert.That(OtherItemsInPictures.TickLabel, Does.Not.Contain("GhostTheOtherItems"), "no code identifier in a label");
-            Assert.That(OtherItemsInPictures.HelpLine, Does.Not.Contain("HideOther"), "no code identifier in a label");
-            Assert.That(OtherItemsInPictures.HelpLine, Does.Not.Contain("every PC"), "a run has not measured that");
 
-            foreach (string word in OtherItemsInPictures.TickLabel.Split(' ').Concat(OtherItemsInPictures.HelpLine.Split(' ')))
+            foreach (string word in OtherItemsInPictures.TickLabel.Split(' '))
             {
                 string letters = word.Trim(',', '.');
                 bool shouted = letters.Length > 2 && letters == letters.ToUpperInvariant() && letters.Any(char.IsLetter);
                 Assert.That(shouted, Is.False, "no capitals for emphasis, " + word);
             }
 
-            Assert.That(OtherItemsInPictures.TickLabel + OtherItemsInPictures.HelpLine, Does.Not.Contain(";"));
-            Assert.That(OtherItemsInPictures.TickLabel + OtherItemsInPictures.HelpLine, Does.Not.Contain(EmDash));
+            Assert.That(OtherItemsInPictures.TickLabel, Does.Not.Contain(";"));
+            Assert.That(OtherItemsInPictures.TickLabel, Does.Not.Contain(EmDash));
         }
 
         [Test]

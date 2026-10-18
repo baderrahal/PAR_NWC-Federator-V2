@@ -64,25 +64,7 @@ namespace Federator.Core.Tests
                 kind + " did not reopen where it was left");
         }
 
-        // ---------- one per picker, all five ----------
-
-        [Test]
-        public void TheSourcePickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.Source, "nwc");
-        }
-
-        [Test]
-        public void TheNwfPickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.Nwf, "nwf");
-        }
-
-        [Test]
-        public void TheNwdPickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.Nwd, "nwd");
-        }
+        // ---------- one per picker, all three ----------
 
         [Test]
         public void TheLogoPickerRemembersItsOwnFolder()
@@ -90,25 +72,14 @@ namespace Federator.Core.Tests
             ProveOnePicker(PickerKind.Logo, "branding");
         }
 
-        /// <summary>
-        /// F129. The existing NWF or folder of NWFs on the Source step. Its two Browse buttons,
-        /// one for a file and one for a folder, share this one kind, so a person picking a
-        /// folder after a file opens where the file was.
-        /// </summary>
-        [Test]
-        public void ThePickedNwfPickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.PickedNwf, "picked-nwf");
-        }
-
-        /// <summary>F208. The parent folder of the packages, on step 5 of the NWC page.</summary>
+        /// <summary>F208. The parent folder of the packages, on step 1 of the NWC page.</summary>
         [Test]
         public void ThePackageParentPickerRemembersItsOwnFolder()
         {
             ProveOnePicker(PickerKind.PackageParent, "parent");
         }
 
-        /// <summary>F208. The Report folder the packages write under, on step 5 of the NWC page.</summary>
+        /// <summary>F208. The Report folder the packages write under, on step 1 of the NWC page.</summary>
         [Test]
         public void ThePackageReportPickerRemembersItsOwnFolder()
         {
@@ -118,11 +89,10 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Seven kinds and seven tests above: five since F154, F155 and F158 took out the priority, by design, clash XML and
-            // Excel folder pickers, and the parent and Report folders of the packages F208 added. The existing NWF picker has two
-            // Browse buttons on one kind. If another kind is added this fails until it is
-            // proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(7));
+            // Three kinds and three tests above since F232 took out the Source, NWF, NWD and picked NWF pickers with the
+            // Source step, the Outputs step's folder boxes and the NWF page's picker. If another kind is added this fails until
+            // it is proved too.
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(3));
         }
 
         // ---------- the one that was actually broken ----------
@@ -157,9 +127,9 @@ namespace Federator.Core.Tests
             string typed = Make("typed");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Source, remembered);
+            memory.Remember(PickerKind.PackageParent, remembered);
 
-            Assert.That(PickerStart.For(memory, PickerKind.Source, typed), Is.EqualTo(typed));
+            Assert.That(PickerStart.For(memory, PickerKind.PackageParent, typed), Is.EqualTo(typed));
         }
 
         [Test]
@@ -168,9 +138,9 @@ namespace Federator.Core.Tests
             string parent = Make("still here");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Nwd, Path.Combine(parent, "gone", "deeper"));
+            memory.Remember(PickerKind.Logo, Path.Combine(parent, "gone", "deeper"));
 
-            Assert.That(PickerStart.For(memory, PickerKind.Nwd, string.Empty), Is.EqualTo(parent));
+            Assert.That(PickerStart.For(memory, PickerKind.Logo, string.Empty), Is.EqualTo(parent));
         }
 
         [Test]
@@ -180,11 +150,11 @@ namespace Federator.Core.Tests
             string nwd = Make("nwd");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.Source, nwc);
-            memory.Remember(PickerKind.Nwd, nwd);
+            memory.Remember(PickerKind.PackageParent, nwc);
+            memory.Remember(PickerKind.Logo, nwd);
 
-            Assert.That(PickerStart.For(memory, PickerKind.Source, string.Empty), Is.EqualTo(nwc),
-                "picking an NWD folder moved the source picker");
+            Assert.That(PickerStart.For(memory, PickerKind.PackageParent, string.Empty), Is.EqualTo(nwc),
+                "picking the logo moved the parent folder picker");
         }
 
         [Test]
@@ -192,11 +162,11 @@ namespace Federator.Core.Tests
         {
             FolderMemory memory = FolderMemory.Load(file);
 
-            Assert.That(PickerStart.For(memory, PickerKind.Source, string.Empty),
+            Assert.That(PickerStart.For(memory, PickerKind.PackageParent, string.Empty),
                 Is.EqualTo(string.Empty));
-            Assert.That(PickerStart.For(memory, PickerKind.Source, null),
+            Assert.That(PickerStart.For(memory, PickerKind.PackageParent, null),
                 Is.EqualTo(string.Empty));
-            Assert.That(PickerStart.For(null, PickerKind.Source, null),
+            Assert.That(PickerStart.For(null, PickerKind.PackageParent, null),
                 Is.EqualTo(string.Empty));
         }
     }

@@ -223,7 +223,6 @@ namespace Federator.Core.Tests
         public void TheLogHasNoMemberThatCopiesItAnywhereElse()
         {
             Assert.That(typeof(RunLog).GetMethod("TryCopyTo"), Is.Null);
-            Assert.That(typeof(Federator.Core.Rerun.NwfPickPlan).GetProperty("LogFolder"), Is.Null);
         }
 
         [Test]

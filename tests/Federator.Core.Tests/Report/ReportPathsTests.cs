@@ -117,16 +117,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheWordsForTheOutputsStepNameTheLogFolderAndNeverAnException()
-        {
-            Assert.That(ReportPaths.WhereTheyGo(Nwf, Nwd, Source), Is.EqualTo(Path.Combine(Area, "Log")));
-            Assert.That(ReportPaths.WhereTheyGo(string.Empty, string.Empty, string.Empty),
-                Does.Contain("once the NWF folder is picked"));
-            Assert.That(ReportPaths.WhereTheyGo(Path.Combine(Source, "nwf"), null, Source),
-                Does.Contain("inside the folder being scanned"));
-        }
-
-        [Test]
         public void TheFolderNameIsASettingAndRefusesAPathOrABlank()
         {
             string before = ReportPaths.Subfolder;

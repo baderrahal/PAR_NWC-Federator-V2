@@ -28,13 +28,12 @@ using Federator.Core.Views;
 namespace Federator.Addin.Ui
 {
     /// <summary>
-    /// Four tabs: source, grouping, outputs, clash. The window does the deciding. The
-    /// engine does the work, on this same thread.
+    /// Two pages. The NWC page has four steps, packages, grouping, outputs and clash, and the NWF page its packages
+    /// and its steps, F232. The window does the deciding. The engine does the work, on this same thread.
     /// </summary>
     public partial class FederatorWindow : Window
     {
         private readonly ContainerNameSettings settings = new ContainerNameSettings();
-        private readonly ObservableCollection<FileRow> files = new ObservableCollection<FileRow>();
         private readonly ObservableCollection<GroupRow> groups = new ObservableCollection<GroupRow>();
         private readonly RunLog log;
         private ScanFindings findings = ScanFindings.From(new List<BuildingGroup>());
@@ -47,7 +46,6 @@ namespace Federator.Addin.Ui
         private SourceMismatchFindings sourceFindings;
 
         private ScanCounts counts = new ScanCounts();
-        private IList<BuildingGroup> lastGroups = new List<BuildingGroup>();
         private readonly OutputNaming naming = new OutputNaming();
 
         /// <summary>Where each picker was last pointed, kept across sessions.</summary>
@@ -67,11 +65,7 @@ namespace Federator.Addin.Ui
         /// </summary>
         private readonly GenericModelsSettings internalWorkbook = new GenericModelsSettings();
 
-        /// <summary>One row per group, filled from the patterns and editable in place.</summary>
-        private OutputNameTable nameTable = new OutputNameTable();
         private bool running;
-        private bool suspendRegroup;
-        private bool suspendNaming;
 
         /// <summary>
         /// The Run box clicked last and the state it was left in, the start of the next Shift
@@ -91,9 +85,7 @@ namespace Federator.Addin.Ui
 
             InitializeComponent();
 
-            FilesGrid.ItemsSource = files;
             GroupsGrid.ItemsSource = groups;
-            OutputsGrid.ItemsSource = groups;
 
             // The boxes are filled from the patterns BEFORE anything can read them back.
             //
@@ -105,7 +97,6 @@ namespace Federator.Addin.Ui
             // by hand, which is where MOD-00001 came from instead of MOD-000001.
             ShowNaming();
             ShowTheInstallsLogo();
-            ShowImageDefaults();
             ShowPenetrationWording();
             FillTolerance();
             ShowByDesignWording();
@@ -113,7 +104,6 @@ namespace Federator.Addin.Ui
             ShowProbeWording();
             RunRangeHelp.Text = ShiftRange.HelpLine;
             ShowOpenDocument();
-            ShowPickedNwfWording();
             StartTheNwfPage();
             StartThePackages();
             FillGroupingModes();
@@ -131,8 +121,6 @@ namespace Federator.Addin.Ui
             // F155. The built in matrix is read and judged when the window opens, where a picked
             // file was read and judged at its pick, so a matrix that will not read shows before Run.
             ShowTheMatrix();
-
-            files.CollectionChanged += delegate { Regroup(); };
 
             // Every line the log writes appears in the window as it is written, so the run
             // is watched rather than read afterwards.
@@ -157,311 +145,7 @@ namespace Federator.Addin.Ui
             LogBox.ScrollToEnd();
         }
 
-        // ---------- Step 1, source ----------
-
-        private void OnBrowseSource(object sender, RoutedEventArgs e)
-        {
-            string picked = PickFolder(
-                "Pick the folder holding the NWC files", StartFor(PickerKind.Source, SourceFolderBox.Text));
-
-            if (picked != null)
-            {
-                RememberFolder(PickerKind.Source, picked);
-                SourceFolderBox.Text = picked;
-            }
-        }
-
-        private void OnScan(object sender, RoutedEventArgs e)
-        {
-            // F143. The harvest pumps the window between rows, so Scan, which empties the file
-            // list a run reads, is refused while a run is going, as every other handler is.
-            if (running)
-            {
-                return;
-            }
-
-            string folder = SourceFolderBox.Text == null ? string.Empty : SourceFolderBox.Text.Trim();
-
-            if (folder.Length == 0 || !Directory.Exists(folder))
-            {
-                Warn("Pick a folder that exists first.");
-                return;
-            }
-
-            foreach (FileRow row in files)
-            {
-                row.PropertyChanged -= OnFileRowChanged;
-            }
-
-            files.Clear();
-
-            bool subfolders = IncludeSubfolders.IsChecked == true;
-            SearchOption depth = subfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-
-            log.ScanStarted(folder, subfolders);
-
-            string[] found;
-
-            try
-            {
-                found = Directory.GetFiles(folder, "*.nwc", depth);
-            }
-            catch (Exception error)
-            {
-                log.Failure("scanning " + folder, error, "stopped the scan, nothing was changed");
-                Warn("The folder could not be read." + Environment.NewLine + error.Message);
-                return;
-            }
-
-            Array.Sort(found, StringComparer.OrdinalIgnoreCase);
-
-            int unreadable = 0;
-
-            // Grouping every time a row lands would regroup once per file. Do it once at
-            // the end instead.
-            suspendRegroup = true;
-
-            try
-            {
-                foreach (string path in found)
-                {
-                    FileRow row = new FileRow(path, ContainerName.Parse(path, settings));
-                    row.PropertyChanged += OnFileRowChanged;
-                    files.Add(row);
-
-                    if (!row.IsReadable)
-                    {
-                        unreadable++;
-                        log.UnreadableFile(row.FileName, row.Reason);
-                    }
-                }
-            }
-            finally
-            {
-                suspendRegroup = false;
-            }
-
-            SourceSummary.Text = found.Length + " NWC found, " + (found.Length - unreadable)
-                + " readable, " + unreadable + " that cannot be read.";
-
-            log.ScanFinished(found.Length, found.Length - unreadable, unreadable);
-
-            // A Scan starts the groups clean, every one ticked and named by its pattern, as it
-            // always has. FR-153 keeps the person's choices only where a regroup follows a file
-            // ticked or unticked within the folder already scanned.
-            Regroup(false);
-            Steps.SelectedIndex = 1;
-        }
-
-        // ---------- The NWF page, the existing NWFs, F129 and F188 ----------
-
-        /// <summary>The label and the grey line of the picked NWF box, Core's words, NwfPick.</summary>
-        private void ShowPickedNwfWording()
-        {
-            PickedNwfLabel.Content = NwfPick.Label;
-            PickedNwfHelp.Text = NwfPick.HelpLine;
-        }
-
-        /// <summary>One NWF, remembered by its folder as every picker is.</summary>
-        private void OnBrowsePickedNwfFile(object sender, RoutedEventArgs e)
-        {
-            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
-            {
-                dialog.Title = "Pick the NWF to run where it sits";
-                dialog.Filter = "Navisworks NWF (*.nwf)|*.nwf";
-                dialog.CheckFileExists = true;
-
-                string folder = StartFor(PickerKind.PickedNwf, PickedNwfBox.Text);
-
-                if (folder.Length > 0 && Directory.Exists(folder))
-                {
-                    dialog.InitialDirectory = folder;
-                }
-
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
-
-                PickedNwfChosen(dialog.FileName);
-            }
-        }
-
-        /// <summary>A folder of NWFs, on the same memory as the file, so one opens where the other was.</summary>
-        private void OnBrowsePickedNwfFolder(object sender, RoutedEventArgs e)
-        {
-            string picked = PickFolder(
-                "Pick the folder of NWFs to run where they sit", StartFor(PickerKind.PickedNwf, PickedNwfBox.Text));
-
-            if (picked != null)
-            {
-                PickedNwfChosen(picked);
-            }
-        }
-
-        /// <summary>
-        /// Remembers the pick, puts it in the box and says what it gives on the NWF page's
-        /// line. The disk is read here and again when Run NWFs is pressed, never on each key.
-        /// </summary>
-        private void PickedNwfChosen(string picked)
-        {
-            RememberFolder(PickerKind.PickedNwf, picked);
-            PickedNwfBox.Text = picked;
-
-            NwfPickPlan plan = PlanThePickedNwfs();
-
-            if (plan != null)
-            {
-                NwfSummary.Text = plan.Describe();
-            }
-        }
-
-        /// <summary>
-        /// What the box gives, by Core's rule, NwfPick.From, with the subfolders box of the
-        /// Source step. Null where the reading threw, which is logged and said.
-        /// </summary>
-        private NwfPickPlan PlanThePickedNwfs()
-        {
-            try
-            {
-                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true);
-            }
-            catch (Exception error)
-            {
-                log.Failure("reading the picked NWFs", error, "nothing was run");
-                NwfSummary.Text = "The picked NWFs could not be read. " + RunLog.TheLogSaysWhy();
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Runs every NWF the pick gives, F129, Bader's request 4 under Q112, each opened where it
-        /// sits and run by the open file run's route, FederationEngine.RunPickedNwfs. A pick the
-        /// rule refuses, two NWFs writing one file among them, is refused here before anything is
-        /// opened. The run settings, the clash file, the lines across the run and RESULT are the
-        /// open file run's, with what the choice changes in Core's words, NwfPickPlan.SettingsLines
-        /// and ResultLine.
-        /// </summary>
-        private void OnRunPickedNwfs(object sender, RoutedEventArgs e)
-        {
-            if (running)
-            {
-                return;
-            }
-
-            // F76. A tolerance that is not one is refused here, in Core's words, as the scanned
-            // run refuses it, before anything is opened.
-            ToleranceChoice tolerance = NwfToleranceOrSayWhyNot("the run of picked NWFs");
-
-            if (tolerance == null)
-            {
-                return;
-            }
-
-            ReportOptions options = ReportsWanted(tolerance);
-            NwfPageSteps nwfSteps = TheNwfSteps();
-            nwfSteps.Apply(options);
-            NwfPickPlan plan = PlanThePickedNwfs();
-
-            if (plan == null)
-            {
-                return;
-            }
-
-            NwfSummary.Text = plan.Describe();
-
-            if (!plan.CanStart)
-            {
-                log.Line("RUN      refused before starting. " + plan.WhyNoRun);
-                Warn("The run cannot start." + Environment.NewLine + Environment.NewLine + plan.WhyNoRun);
-                return;
-            }
-
-            if (!ConfirmTheOpenDocumentGoes())
-            {
-                Log("Run cancelled before anything was opened.");
-                return;
-            }
-
-            // F188. The confirmation of the NWF page, Cancel the default: the changed NWC files, the tests, the tool
-            // viewpoint folder made again and the old jpg files. Nothing is opened or changed before OK.
-            if (!ConfirmTheRefresh(plan, nwfSteps))
-            {
-                Log("Run cancelled before anything was opened.");
-                return;
-            }
-
-            RememberTheNwfs(plan.Paths());
-            nwfTable.Clear();
-
-            List<KeyValuePair<string, IList<string>>> pickedGroups = new List<KeyValuePair<string, IList<string>>>();
-
-            foreach (string picked in plan.Paths())
-            {
-                pickedGroups.Add(PackChoice.Group(picked, new List<string> { picked }));
-            }
-
-            if (!ChoosePackOrStop(pickedGroups, "the run of picked NWFs"))
-            {
-                return;
-            }
-
-            running = true;
-            RunPickedNwfsButton.IsEnabled = false;
-
-            // Outside the try, for the same reason as the scanned run.
-            FederationEngine engine = null;
-            AutoSaveOff autoSave = null;
-
-            try
-            {
-                // F80. The mark and the line together, so the run time in the timing block is
-                // RUN started to RUN finished, as the scanned run marks it.
-                log.RunStarted(plan.Nwfs.Count);
-
-                // F223, Q207. Auto-Save off while the run works, put back in the finally before RESULT.
-                autoSave = new AutoSaveOff(log.Line);
-
-                log.Block("RUN SETTINGS", plan.SettingsLines());
-                SayTheRunsChoices(options.Tolerance);
-
-                TeamMap teams;
-                ExchangeDocument exchange = ReadTheMatrixForAnOpenFileRun(out teams);
-
-                engine = new FederationEngine(SetProgress, log, exchange, teams, options);
-                engine.UsePack(chosenPack);
-                IList<JobOutcome> pickedOutcomes = engine.RunPickedNwfs(plan.Paths());
-                ShowTheNwfTable(pickedOutcomes);
-
-                SayWhatAnOpenFileRunAddedUp(engine);
-
-                // F82. Each picked NWF is a group, so the sets across the groups are added up
-                // as the scanned run adds them.
-                log.Block(SetsAcrossTheRun.BlockTitle, engine.SetsAcrossTheRun.Lines());
-
-                log.RunFinished();
-                SetProgress(RunFinishedLine());
-            }
-            catch (Exception error)
-            {
-                log.Failure("the run of picked NWFs", error, "stopped, everything already written is kept");
-                SetProgress("The run of picked NWFs stopped on an error.");
-                Warn("The run stopped." + Environment.NewLine + Environment.NewLine + error.Message);
-            }
-            finally
-            {
-                if (autoSave != null)
-                {
-                    autoSave.Dispose();
-                }
-
-                log.Line(NwfPick.SourceFindingsSkipped);
-                WriteTheResult(engine, plan.ResultLine());
-                running = false;
-                RunPickedNwfsButton.IsEnabled = true;
-                ShowOpenDocument();
-            }
-        }
+        // ---------- Step 2, the grouping choice ----------
 
         /// <summary>
         /// The four ways of gathering files, read off GroupingModes so the window and the
@@ -493,14 +177,6 @@ namespace Federator.Addin.Ui
             // Another grouping makes other groups, and a key means another thing under it, so
             // the groups start clean as after a Scan.
             Regroup(false);
-        }
-
-        private void OnFileRowChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Include")
-            {
-                Regroup();
-            }
         }
 
         // ---------- Step 2, grouping ----------
@@ -581,196 +257,7 @@ namespace Federator.Addin.Ui
 
             runAnchor = clicked;
             runAnchorState = set.State;
-            RefreshOutputsSummary();
-        }
-
-        private void Regroup()
-        {
-            Regroup(true);
-        }
-
-        private void Regroup(bool keepChoices)
-        {
-            if (suspendRegroup)
-            {
-                return;
-            }
-
-            // FR-153. The Run boxes are read before the rows go, so a group the person unticked
-            // stays unticked once the groups are made again. A Scan reads none, so every group
-            // starts ticked.
-            KeptRunTicks runTicks = new KeptRunTicks();
-
-            if (keepChoices)
-            {
-                foreach (GroupRow row in groups)
-                {
-                    runTicks.Read(row.Building, row.IsBlocked, row.Include);
-                }
-            }
-
-            groups.Clear();
-            runAnchor = null;
-
-            List<ParsedContainerName> ticked = new List<ParsedContainerName>();
-            Dictionary<string, List<string>> pathsByStem = new Dictionary<string, List<string>>(StringComparer.Ordinal);
-
-            foreach (FileRow row in files)
-            {
-                if (!row.Include || !row.IsReadable)
-                {
-                    continue;
-                }
-
-                ticked.Add(row.Parsed);
-
-                List<string> paths;
-
-                if (!pathsByStem.TryGetValue(row.Parsed.Stem, out paths))
-                {
-                    paths = new List<string>();
-                    pathsByStem.Add(row.Parsed.Stem, paths);
-                }
-
-                paths.Add(row.FullPath);
-            }
-
-            ReadNaming();
-
-            GroupingMode mode = ChosenGrouping();
-            BuildingGroupingResult result = BuildingGrouping.Group(ticked, mode, settings);
-            lastGroups = new List<BuildingGroup>(result.Groups);
-
-            // The scan feeds the table, built again for the groups made now. FR-153: a name
-            // typed over in a group that is still a group is kept by its key, where every
-            // one was thrown away. A pattern change goes through Refill instead.
-            OutputNameTable rebuilt = OutputNameTable.From(result.Groups, naming, settings);
-            if (keepChoices)
-            {
-                rebuilt.KeepTypedFrom(nameTable);
-            }
-
-            nameTable = rebuilt;
-            lastRefill = string.Empty;
-
-            foreach (BuildingGroup group in result.Groups)
-            {
-                GroupRow made = GroupRow.Usable(
-                    group.Building,
-                    PathsFor(group.Files, pathsByStem),
-                    group.Disciplines,
-                    nameTable.Find(group.Building));
-
-                made.Include = runTicks.StartsTicked(group.Building);
-                groups.Add(made);
-            }
-
-            foreach (SkippedBuildingGroup skipped in result.Skipped)
-            {
-                groups.Add(GroupRow.Blocked(
-                    skipped.Building,
-                    PathsFor(skipped.Files, pathsByStem),
-                    skipped.Reason));
-            }
-
-            int blocked = result.Skipped.Count;
-            GroupingSummary.Text = GroupingModes.Describe(mode) + ". "
-                + result.Groups.Count + (result.Groups.Count == 1 ? " group ready, " : " groups ready, ")
-                + blocked + " blocked.";
-
-            // Worked out here so it is on screen before Run is pressed, not after.
-            findings = ScanFindings.From(result);
-            ShowFindings();
-            RefreshNamePreview();
-
-            RefreshOutputsSummary();
-        }
-
-        /// <summary>
-        /// The name for one group, or the reason it cannot be built. A half typed pattern
-        /// must show what is wrong rather than throwing while somebody is still typing.
-        /// </summary>
-        private string SafeName(NamePattern pattern, BuildingGroup group)
-        {
-            string why = pattern.WhyUnusable();
-
-            if (why != null)
-            {
-                // Our own sentence, asked for directly, so nothing a framework wrote can
-                // reach a label. No name yet is not a shouting matter either.
-                return "No name yet. " + why;
-            }
-
-            try
-            {
-                return pattern.NameFor(group, settings);
-            }
-            catch (InvalidOperationException)
-            {
-                return "No name yet. One of the fields on this step is empty.";
-            }
-        }
-
-        /// <summary>
-        /// The findings panel, on the Source step so pressing Scan reports what was found
-        /// and what is wrong with it in one place. Nothing here blocks a run or unticks
-        /// anything. It is information and the decision stays with the person reading it.
-        /// </summary>
-        private void ShowFindings()
-        {
-            counts = new ScanCounts();
-            counts.FilesFound = files.Count;
-            counts.FilesReadable = ReadableFileCount();
-            counts.GroupingDescription = GroupingModes.Describe(ChosenGrouping());
-
-            int ready = 0;
-            int blocked = 0;
-
-            foreach (GroupRow group in groups)
-            {
-                if (group.IsBlocked)
-                {
-                    blocked++;
-                }
-                else
-                {
-                    ready++;
-                }
-            }
-
-            counts.Groups = ready;
-            counts.BlockedGroups = blocked;
-            counts.Count(AllFindings());
-
-            FindingsHeading.Text = counts.TotalFindings == 0
-                ? "What the scan found"
-                : "What the scan found, including " + counts.TotalFindings
-                    + (counts.TotalFindings == 1 ? " thing" : " things")
-                    + " worth a look. None of it stops a run.";
-
-            List<string> lines = new List<string>(counts.Lines());
-            lines.Add(string.Empty);
-
-            foreach (ScanFinding finding in AllFindings())
-            {
-                lines.Add(finding.Label + "   " + finding.Sentence);
-
-                foreach (string file in finding.Files)
-                {
-                    lines.Add("      " + file);
-                }
-
-                lines.Add(string.Empty);
-            }
-
-            if (sourceFindings == null)
-            {
-                lines.Add("The NWC files have not been compared against the Revit models they were "
-                    + "published from yet. That can only be done once a run has opened them, so it "
-                    + "appears here after the first run.");
-            }
-
-            FindingsBox.Text = string.Join(Environment.NewLine, lines.ToArray());
+            ShowGroupingSummary();
         }
 
         /// <summary>
@@ -787,21 +274,6 @@ namespace Federator.Addin.Ui
             }
 
             return all;
-        }
-
-        private int ReadableFileCount()
-        {
-            int readable = 0;
-
-            foreach (FileRow row in files)
-            {
-                if (row.IsReadable)
-                {
-                    readable++;
-                }
-            }
-
-            return readable;
         }
 
         /// <summary>
@@ -828,30 +300,6 @@ namespace Federator.Addin.Ui
             }
         }
 
-        private static IList<string> PathsFor(
-            IEnumerable<ParsedContainerName> parsedFiles, IDictionary<string, List<string>> pathsByStem)
-        {
-            List<string> paths = new List<string>();
-
-            foreach (ParsedContainerName parsed in parsedFiles)
-            {
-                List<string> found;
-
-                if (pathsByStem.TryGetValue(parsed.Stem, out found))
-                {
-                    foreach (string path in found)
-                    {
-                        if (!paths.Contains(path))
-                        {
-                            paths.Add(path);
-                        }
-                    }
-                }
-            }
-
-            return paths;
-        }
-
         // ---------- Step 3, the naming patterns ----------
 
         /// <summary>
@@ -860,19 +308,10 @@ namespace Federator.Addin.Ui
         /// </summary>
         private void ShowNaming()
         {
-            suspendNaming = true;
-
-            try
-            {
-                Show(naming.Nwf, NwfLevel, NwfDiscipline, NwfType, NwfNumber, NwfAllBuildings);
-                Show(naming.Nwd, NwdLevel, NwdDiscipline, NwdType, NwdNumber, NwdAllBuildings);
-                Show(naming.Workbook, WorkbookLevel, WorkbookDiscipline, WorkbookType,
-                    WorkbookNumber, WorkbookAllBuildings);
-            }
-            finally
-            {
-                suspendNaming = false;
-            }
+            Show(naming.Nwf, NwfLevel, NwfDiscipline, NwfType, NwfNumber, NwfAllBuildings);
+            Show(naming.Nwd, NwdLevel, NwdDiscipline, NwdType, NwdNumber, NwdAllBuildings);
+            Show(naming.Workbook, WorkbookLevel, WorkbookDiscipline, WorkbookType,
+                WorkbookNumber, WorkbookAllBuildings);
         }
 
         private static void Show(
@@ -898,7 +337,6 @@ namespace Federator.Addin.Ui
             Read(naming.Workbook, WorkbookLevel, WorkbookDiscipline, WorkbookType,
                 WorkbookNumber, WorkbookAllBuildings);
 
-            naming.DateTheNwd = DateTheNwd != null && DateTheNwd.IsChecked == true;
         }
 
         private static void Read(
@@ -914,200 +352,6 @@ namespace Federator.Addin.Ui
             pattern.TypeCode = Trimmed(type.Text);
             pattern.Number = Trimmed(number.Text);
             pattern.AllBuildings = Trimmed(allBuildings.Text);
-        }
-
-        private void OnNamingChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            RefillNames();
-        }
-
-        private void OnNamingToggled(object sender, RoutedEventArgs e)
-        {
-            RefillNames();
-        }
-
-        /// <summary>
-        /// A pattern changed, so every name that has not been typed over is rebuilt and
-        /// every one that has is left exactly as it is. It says how many it kept, because
-        /// otherwise nobody can tell whether their edit survived.
-        /// </summary>
-        private void RefillNames()
-        {
-            if (suspendNaming || nameTable == null || NamePreview == null)
-            {
-                return;
-            }
-
-            ReadNaming();
-            int kept = nameTable.Refill(naming, settings);
-
-            foreach (GroupRow row in groups)
-            {
-                row.NamesRefilled();
-            }
-
-            lastRefill = OutputNameTable.DescribeRefill(nameTable.Count, kept);
-            RefreshNamePreview();
-            RefreshOutputsSummary();
-        }
-
-        private string lastRefill = string.Empty;
-
-        /// <summary>
-        /// A name typed straight into the table. Only that one name changes, and only that
-        /// row is left alone by the next pattern change. A cell cleared gives its name back
-        /// to the pattern, FR-160.
-        /// </summary>
-        private void OnNameEdited(object sender, System.Windows.Controls.DataGridCellEditEndingEventArgs e)
-        {
-            // The binding writes the value on commit, so nothing is read here. This runs
-            // afterwards to refresh what the edit affects.
-            GroupRow edited = e.Row == null ? null : e.Row.Item as GroupRow;
-
-            Dispatcher.BeginInvoke(new Action(delegate
-            {
-                // FR-160. A cleared cell gave its name back to the pattern, and only a refill
-                // builds it. A name typed over is left alone by the refill, and no other row's
-                // name can have moved, so only the edited row is read back.
-                nameTable.Refill(naming, settings);
-
-                if (edited != null)
-                {
-                    edited.NamesRefilled();
-                }
-
-                lastRefill = string.Empty;
-                RefreshNamePreview();
-                RefreshOutputsSummary();
-            }), System.Windows.Threading.DispatcherPriority.Background);
-        }
-
-        /// <summary>
-        /// What the names come out as, shown before anything runs. A pattern that would put
-        /// two groups on one name is named here as well as refused at Run, because seeing
-        /// it while typing is better than being stopped afterwards.
-        /// </summary>
-        private void RefreshNamePreview()
-        {
-            if (NamePreview == null)
-            {
-                return;
-            }
-
-            List<string> lines = new List<string>();
-
-            foreach (GroupRow group in groups)
-            {
-                if (!group.IsBlocked)
-                {
-                    lines.Add("NWF       " + group.NwfName);
-                    lines.Add("NWD       " + group.NwdName);
-                    lines.Add("Workbook  " + group.WorkbookName);
-                    break;
-                }
-            }
-
-            if (lines.Count == 0)
-            {
-                NamePreview.Text = "No group to name yet. Scan a folder first.";
-                return;
-            }
-
-            string collisions = nameTable.WhyTheRunCannotStart(internalWorkbook);
-
-            NamePreview.Text = "The first group would be written as:" + Environment.NewLine
-                + string.Join(Environment.NewLine, lines.ToArray())
-                + (lastRefill.Length == 0
-                    ? string.Empty
-                    : Environment.NewLine + lastRefill)
-                + (collisions == null
-                    ? string.Empty
-                    : Environment.NewLine + Environment.NewLine + "THE RUN CANNOT START. " + collisions);
-
-            // A name change moves the NWF path, and the path is what decides First run
-            // against Weekly run.
-            RefreshRunPaths();
-        }
-
-        /// <summary>
-        /// Which of the two workflows each group is expected to take, shown in the group
-        /// list before Run. Read off whether the NWF is already at its output path and
-        /// whether an XML is picked, through Federator.Core.Rerun.RunPath. Nothing here
-        /// opens a file, so Rebuilt cannot be known yet and never shows here. It shows
-        /// once PreviewRunPaths has opened the NWFs at Run, and after the run.
-        /// </summary>
-        private void RefreshRunPaths()
-        {
-            if (NwfFolderBox == null)
-            {
-                return;
-            }
-
-            string nwfFolder = Trimmed(NwfFolderBox.Text);
-            bool xmlPicked = MatrixIsBuiltIn();
-
-            // Listed ONCE for the whole refresh and not once per group. F71 asks every
-            // group whether the folder already holds a name close to the one it would
-            // write, and reading the folder per group would walk it as many times as
-            // there are buildings for an answer that cannot change between them.
-            IList<string> namesInFolder = NwfNamesIn(nwfFolder);
-            int nearby = 0;
-
-            foreach (GroupRow group in groups)
-            {
-                if (group.IsBlocked)
-                {
-                    continue;
-                }
-
-                if (nwfFolder.Length == 0 || group.NwfName.Length == 0)
-                {
-                    group.RunAs = RunPath.Unknown;
-                    group.NearbyNwf = string.Empty;
-                    continue;
-                }
-
-                bool nwfOnDisk;
-
-                try
-                {
-                    nwfOnDisk = File.Exists(OutputPaths.Nwf(nwfFolder, group.NwfName));
-                }
-                catch (Exception)
-                {
-                    group.RunAs = RunPath.Unknown;
-                    group.NearbyNwf = string.Empty;
-                    continue;
-                }
-
-                group.RunAs = RunPath.Expected(nwfOnDisk, xmlPicked);
-
-                // F188. A group whose NWF is there is run from the NWF page, unless Rebuild is ticked.
-                group.NwfExists = nwfOnDisk;
-                group.RebuildAllowed = RebuildExisting.IsChecked == true;
-
-                if (nwfOnDisk && !group.RebuildAllowed)
-                {
-                    group.Include = false;
-                }
-
-                // Only where the group is about to BUILD one. A group whose NWF is
-                // already there is opened, so a second file with a similar name beside it
-                // is somebody else's business and not a thing to warn about. F71.
-                string note = nwfOnDisk
-                    ? string.Empty
-                    : SimilarNames.Note(
-                        SimilarNames.ClosestIn(group.NwfName, namesInFolder, settings));
-
-                group.NearbyNwf = note;
-
-                if (note.Length > 0)
-                {
-                    nearby++;
-                }
-            }
-
-            ShowNearbyNwfLine(nearby);
         }
 
         /// <summary>
@@ -1232,71 +476,6 @@ namespace Federator.Addin.Ui
             return pack == null ? null : MatrixCorrections.ReadPack(pack);
         }
 
-        /// <summary>The expected label of every group that will run, in list order.</summary>
-        private IList<string> TickedRunPaths()
-        {
-            List<string> labels = new List<string>();
-
-            foreach (GroupRow group in groups)
-            {
-                if (group.Include && !group.IsBlocked && group.Files.Count > 0)
-                {
-                    labels.Add(group.RunAs);
-                }
-            }
-
-            return labels;
-        }
-
-        /// <summary>
-        /// Opens each NWF that is on disk and compares it with the scan, so the confirm
-        /// dialog counts the Rebuilt groups and the list shows them before Run. F24.
-        ///
-        /// Only when nothing open would be lost. Opening an NWF replaces the open document
-        /// and the person has not yet said yes, and "Run cancelled before anything was
-        /// cleared" has to stay true. Where something is open the dialog says Rebuilt is
-        /// only known once each NWF is opened, and the run settles the label.
-        /// </summary>
-        private void PreviewRunPaths(IList<FederationJob> jobs)
-        {
-            string discarded;
-
-            try
-            {
-                discarded = DocumentGuard.WhatClearWouldDiscard();
-            }
-            catch (Exception error)
-            {
-                discarded = "Navisworks would not say what is open (" + error.Message + ").";
-            }
-
-            if (discarded != null)
-            {
-                log.Line("PREVIEW  not done, opening each NWF would discard what is open before the confirm dialog: "
-                    + discarded);
-                return;
-            }
-
-            try
-            {
-                IList<string> labels = FederationEngine.PreviewRunPaths(jobs, MatrixIsBuiltIn(), log, SetProgress);
-
-                for (int i = 0; i < jobs.Count && i < labels.Count; i++)
-                {
-                    GroupRow group = GroupFor(jobs[i]);
-
-                    if (group != null)
-                    {
-                        group.RunAs = labels[i];
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                log.Failure("checking the NWFs before the run", error, "the labels stay as expected and the run decides");
-            }
-        }
-
         /// <summary>The label each group ended with, read off what the engine did.</summary>
         private void ShowRunPathsAfterTheRun(IList<JobOutcome> outcomes, bool xmlPicked)
         {
@@ -1336,47 +515,6 @@ namespace Federator.Addin.Ui
         }
 
         // ---------- Step 3, outputs ----------
-
-        private void OnBrowseNwf(object sender, RoutedEventArgs e)
-        {
-            string picked = PickFolder(
-                "Pick the folder for the NWF files", StartFor(PickerKind.Nwf, NwfFolderBox.Text));
-
-            if (picked != null)
-            {
-                RememberFolder(PickerKind.Nwf, picked);
-                NwfFolderBox.Text = picked;
-                RefreshOutputsSummary();
-            }
-        }
-
-        private void OnBrowseNwd(object sender, RoutedEventArgs e)
-        {
-            string picked = PickFolder(
-                "Pick the folder for the NWD files", StartFor(PickerKind.Nwd, NwdFolderBox.Text));
-
-            if (picked != null)
-            {
-                RememberFolder(PickerKind.Nwd, picked);
-                NwdFolderBox.Text = picked;
-                RefreshOutputsSummary();
-            }
-        }
-
-        private int TickedFileCount()
-        {
-            int ticked = 0;
-
-            foreach (FileRow row in files)
-            {
-                if (row.Include && row.IsReadable)
-                {
-                    ticked++;
-                }
-            }
-
-            return ticked;
-        }
 
         /// <summary>
         /// Fills the logo box with the one Navisworks puts on its own reports, because
@@ -1663,10 +801,10 @@ namespace Federator.Addin.Ui
 
             if (which == MessageBoxResult.Yes)
             {
-                // The source folder is where the NWC files usually are, so the picker
+                // The parent folder of the packages is where the NWC files are, so the picker
                 // starts there, and nothing is remembered because this is not that picker.
                 folder = PickFolder(
-                    "Pick the folder of NWC files to probe", StartFor(PickerKind.Source, SourceFolderBox.Text));
+                    "Pick the folder of NWC files to probe", StartFor(PickerKind.PackageParent, packagePanel.Parent));
 
                 if (folder == null)
                 {
@@ -1773,20 +911,7 @@ namespace Federator.Addin.Ui
 
                 RememberFolder(PickerKind.Logo, dialog.FileName);
                 LogoBox.Text = dialog.FileName;
-                RefreshOutputsSummary();
             }
-        }
-
-        private void OnOutputFolderChanged(
-            object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            RefreshOutputsSummary();
-            RefreshRunPaths();
-        }
-
-        private void OnXmlChanged(object sender, RoutedEventArgs e)
-        {
-            RefreshOutputsSummary();
         }
 
         /// <summary>
@@ -1800,8 +925,8 @@ namespace Federator.Addin.Ui
 
             // Logs and reports never go inside the folder being scanned. A real run put them
             // in C:\00_NM\NWC Fed\NWC\test001, which is where its own input lives.
-            options.SourceFolder = Trimmed(SourceFolderBox.Text);
-            options.WriteXml = WriteClashXml.IsChecked == true;
+            // Since F232 the folder read is the parent folder of the packages, and the clash XML is off, its default.
+            options.SourceFolder = Trimmed(packagePanel.Parent);
             options.RebuildExisting = RebuildExisting.IsChecked == true;
 
             // The page and the photos are fixed on in the options themselves, so nothing here
@@ -1814,297 +939,16 @@ namespace Federator.Addin.Ui
 
             options.MakeViewpoints = MakeViewpoints.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
-            options.Images = ImagesWanted();
             options.Names = settings;
             options.GenericModels = internalWorkbook;
             return options;
         }
 
-        /// <summary>
-        /// What the run will do about pictures. A box nobody can read falls back to the
-        /// default rather than stopping the run, and the summary line shows what was
-        /// actually understood, so a typo is visible before Run is pressed.
-        /// </summary>
-        private ImageOptions ImagesWanted()
-        {
-            ImageOptions images = new ImageOptions();
-            images.GhostTheOtherItems = GhostOtherItems.IsChecked == true;
-
-            int pixels = Number(ImagePixelsBox.Text, ImageOptions.DefaultPixels);
-            images.Width = pixels;
-            images.Height = pixels;
-            images.CapPerTest = Number(ImageCapBox.Text, 0);
-
-            List<ClashStatus> wanted = new List<ClashStatus>();
-
-            if (ImageNew.IsChecked == true) { wanted.Add(ClashStatus.New); }
-            if (ImageActive.IsChecked == true) { wanted.Add(ClashStatus.Active); }
-            if (ImageReviewed.IsChecked == true) { wanted.Add(ClashStatus.Reviewed); }
-            if (ImageApproved.IsChecked == true) { wanted.Add(ClashStatus.Approved); }
-            if (ImageResolved.IsChecked == true) { wanted.Add(ClashStatus.Resolved); }
-
-            if (wanted.Count == 0)
-            {
-                // Every status unticked means no picture would ever be written. That is
-                // the images box unticked, said a longer way, so it is treated as that
-                // rather than refused.
-                images.Write = false;
-            }
-            else
-            {
-                images.OnlyFor(wanted);
-            }
-
-            return images;
-        }
-
-        /// <summary>
-        /// A whole number out of a box, or the fallback. Never throws and never stops a
-        /// run, because this is read on every keystroke.
-        /// </summary>
-        private static int Number(string text, int fallback)
-        {
-            int value;
-
-            if (!int.TryParse(Trimmed(text), System.Globalization.NumberStyles.None,
-                    System.Globalization.CultureInfo.InvariantCulture, out value))
-            {
-                return fallback;
-            }
-
-            return value < 0 ? fallback : value;
-        }
-
-        /// <summary>
-        /// The photo boxes and the five status ticks are filled from ImageOptions, which
-        /// is where the defaults live, rather than typed into the XAML as well. A default
-        /// written in two places drifts, and the 1024 is measured off the accepted report.
-        /// Filled here for the same reason the naming boxes are, before anything reads
-        /// them back.
-        /// </summary>
-        private void ShowImageDefaults()
-        {
-            ImageOptions defaults = new ImageOptions();
-
-            ImagePixelsBox.Text = defaults.Width.ToString(
-                System.Globalization.CultureInfo.InvariantCulture);
-            ImageCapBox.Text = defaults.CapPerTest.ToString(
-                System.Globalization.CultureInfo.InvariantCulture);
-
-            // F227. The three caps of the label read off the options, never typed into the XAML.
-            ImageCapLabel.Content = PictureLimits.BoxLabel(defaults);
-
-            // F150. The label and the grey line read off Core, as AlignmentCheck.TickLabel is,
-            // and the default off the options the run reads, never typed into the XAML.
-            GhostOtherItems.Content = OtherItemsInPictures.TickLabel;
-            GhostOtherItems.IsChecked = defaults.GhostTheOtherItems;
-            GhostOtherItemsHelp.Text = OtherItemsInPictures.HelpLine;
-
-            ImageNew.IsChecked = defaults.Wants(ClashStatus.New);
-            ImageActive.IsChecked = defaults.Wants(ClashStatus.Active);
-            ImageReviewed.IsChecked = defaults.Wants(ClashStatus.Reviewed);
-            ImageApproved.IsChecked = defaults.Wants(ClashStatus.Approved);
-            ImageResolved.IsChecked = defaults.Wants(ClashStatus.Resolved);
-
-            RefreshImageSummary();
-        }
-
-        private void OnImageSettingChanged(object sender, RoutedEventArgs e)
-        {
-            RefreshImageSummary();
-        }
-
-        private void OnImageSettingChanged(object sender, TextChangedEventArgs e)
-        {
-            RefreshImageSummary();
-        }
-
-        /// <summary>
-        /// Says what the settings will actually do, in the same words the log will use, so
-        /// a cap or a size that did not read the way it was typed is visible here first.
-        /// </summary>
-        private void RefreshImageSummary()
-        {
-            if (ImageSummary == null)
-            {
-                return;
-            }
-
-            try
-            {
-                ImageSummary.Text = ImagesWanted().Describe()
-                    + " The workbook is the client's layout.";
-            }
-            catch (Exception)
-            {
-                // A label, not a failure dialog, so it carries no framework message.
-                ImageSummary.Text = "The photo settings on this step cannot be read.";
-            }
-        }
-
-        /// <summary>
-        /// Where the workbooks land, or a plain reason why that cannot be worked out yet.
-        /// Never throws, because it runs on every keystroke in a folder box.
-        /// </summary>
-        private string WorkbookFolderOrWhyNot()
-        {
-            // One rule, in Core, so it can be proved rather than clicked.
-            return ReportPaths.WhereTheyGo(
-                Trimmed(NwfFolderBox.Text), Trimmed(NwdFolderBox.Text), Trimmed(SourceFolderBox.Text));
-        }
-
-        private void RefreshOutputsSummary()
-        {
-            // IsChecked="True" in the XAML raises Checked while the tree is still being
-            // built, so this can be reached before the controls it reads exist.
-            if (OutputsSummary == null
-                || NwfFolderBox == null || NwdFolderBox == null || WriteClashXml == null || SourceFolderBox == null
-                || DateTheNwd == null)
-            {
-                return;
-            }
-
-            int ready = 0;
-
-            foreach (GroupRow group in groups)
-            {
-                if (group.Include)
-                {
-                    ready++;
-                }
-            }
-
-            string nwd = "The NWD is republished every run.";
-
-            string xml = WriteClashXml != null && WriteClashXml.IsChecked == true
-                ? " A clash XML is written beside each workbook."
-                : string.Empty;
-
-            OutputsSummary.Text = ready + " groups ticked to run. " + nwd
-                + " Workbooks go in " + WorkbookFolderOrWhyNot() + "." + xml
-                + " The log is written to "
-                + (log.IsWritingToDisk ? log.Path : "the window only") + ".";
-        }
-
         // ---------- Run ----------
-
-        private void OnRun(object sender, RoutedEventArgs e)
-        {
-            if (running)
-            {
-                return;
-            }
-
-            string nwfFolder = NwfFolderBox.Text == null ? string.Empty : NwfFolderBox.Text.Trim();
-            string nwdFolder = NwdFolderBox.Text == null ? string.Empty : NwdFolderBox.Text.Trim();
-
-            if (nwfFolder.Length == 0 || nwdFolder.Length == 0)
-            {
-                Warn("Pick an NWF folder and an NWD folder in step 3 first.");
-                Steps.SelectedIndex = 2;
-                return;
-            }
-
-            // Outputs overwrite with no date suffix, so two groups sharing a name is not a
-            // warning. The second silently destroys the first and only shows up later as a
-            // federation nobody can find. Caught before anything is cleared or written, and so is a
-            // workbook named as another group's internal workbook, F127-R5.
-            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart(internalWorkbook);
-
-            if (collisions != null)
-            {
-                log.Line("RUN      refused before starting. " + collisions);
-                Warn("The run cannot start." + Environment.NewLine + Environment.NewLine + collisions);
-                Steps.SelectedIndex = 2;
-                return;
-            }
-
-            List<FederationJob> jobs = new List<FederationJob>();
-
-            foreach (GroupRow group in groups)
-            {
-                if (!group.Include || group.IsBlocked || group.Files.Count == 0)
-                {
-                    continue;
-                }
-
-                // Built through OutputPaths so the path a rerun looks for the NWF at is
-                // the same string it was written to.
-                jobs.Add(new FederationJob(
-                    group.Building,
-                    group.NwfName,
-                    OutputPaths.Nwf(nwfFolder, group.NwfName),
-                    OutputPaths.Nwd(nwdFolder, group.NwdName),
-                    group.Files,
-                    group.WorkbookName,
-                    group.DisciplineCount,
-                    group.DisciplineCodes));
-            }
-
-            if (jobs.Count == 0)
-            {
-                Warn("No group is ticked to run.");
-                return;
-            }
-
-            // F166, Q164 B. The pack is chosen by the project code of the NWC file names, before the
-            // preview opens any NWF and before the confirm, so a run with no pack stops untouched.
-            List<KeyValuePair<string, IList<string>>> packGroups = new List<KeyValuePair<string, IList<string>>>();
-
-            foreach (FederationJob job in jobs)
-            {
-                packGroups.Add(PackChoice.Group(job.Building, job.Files));
-            }
-
-            if (!ChoosePackOrStop(packGroups, "the run"))
-            {
-                return;
-            }
-
-            // F76. A tolerance that is not one is refused here, in Core's words, rather
-            // than reaching 1830 tests and being discovered in a report.
-            ToleranceChoice tolerance = ToleranceOrSayWhyNot("the run");
-
-            if (tolerance == null)
-            {
-                return;
-            }
-
-            // The NWF folder may have changed since the list was last refreshed, so the
-            // labels are read again right before they are counted.
-            RefreshRunPaths();
-
-            // Then each NWF on disk is opened and compared, where that loses nothing, so
-            // the dialog can count the Rebuilt groups and the list can show them.
-            PreviewRunPaths(jobs);
-
-            if (!ConfirmClear(TickedRunPaths(), tolerance))
-            {
-                Log("Run cancelled before anything was cleared.");
-                return;
-            }
-
-            log.RunSettings(
-                SourceFolderBox.Text,
-                IncludeSubfolders.IsChecked == true,
-                nwfFolder,
-                nwdFolder,
-                files.Count,
-                TickedFileCount(),
-                groups.Count);
-
-            log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
-            SayTheRunsChoices(tolerance);
-            log.Block(RunLog.GroupsSectionTitle, GroupListLines());
-            log.Block(RunLog.FindingsSectionTitle, findings.Lines());
-
-            RunJobs(jobs, nwfFolder, nwdFolder, tolerance);
-        }
 
         /// <summary>
         /// The choices on the Outputs and Clash steps that every run of groups reads, under
-        /// RUN SETTINGS, for the scanned run and, since F129, the picked NWFs, one method so the
-        /// two say them alike.
+        /// RUN SETTINGS, for both pages, one method so the two say them alike.
         /// </summary>
         private void SayTheRunsChoices(ToleranceChoice tolerance)
         {
@@ -2125,7 +969,7 @@ namespace Federator.Addin.Ui
                 : "no, the built in pairs are not read"));
             log.Line(ViewpointRequest.SettingsLine(MakeViewpoints.IsChecked == true));
             log.Line("NWD naming       : "
-                + (DateTheNwd.IsChecked == true
+                + (naming.DateTheNwd
                     ? "dated, so every week is kept"
                     : "overwrites, so only the latest week exists"));
             log.Line("republish NWD    : yes, fixed");
@@ -2135,116 +979,15 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The groups that will actually run. A name shared with a group nobody ticked is
-        /// not a collision, because only one of them is going to be written.
-        /// </summary>
-        private IList<string> TickedGroupKeys()
-        {
-            List<string> ticked = new List<string>();
-
-            foreach (GroupRow row in groups)
-            {
-                if (row.Include && !row.IsBlocked && row.Files.Count > 0)
-                {
-                    ticked.Add(row.Building);
-                }
-            }
-
-            return ticked;
-        }
-
-        /// <summary>
-        /// One line per group, so the findings block that follows has something to refer
-        /// to and the log reads on its own.
-        /// </summary>
-        private IList<string> GroupListLines()
-        {
-            List<string> lines = new List<string>();
-            int unticked = 0;
-            int nearby = 0;
-
-            foreach (GroupRow group in groups)
-            {
-                // Unticked, never skipped. A group is only left out of a run by the Run
-                // column or by being blocked, and skipped once read as a rule that does
-                // not exist.
-                string state = group.IsBlocked ? "BLOCKED " : (group.Include ? "run     " : "unticked");
-
-                if (!group.IsBlocked && !group.Include)
-                {
-                    unticked++;
-                }
-
-                lines.Add(state + "  " + group.Building.PadRight(10)
-                    + group.FileCount.ToString().PadLeft(3)
-                    + (group.FileCount == 1 ? " file   " : " files  ")
-                    + (group.OutputName.Length == 0 ? "no output name" : group.OutputName)
-                    + "  [" + group.Disciplines + "]"
-                    + (group.IsBlocked ? string.Empty : "  " + group.RunAsShown));
-
-                if (group.IsBlocked)
-                {
-                    lines.Add("          " + group.BlockedReason);
-                }
-
-                if (group.HasNearbyNwf)
-                {
-                    nearby++;
-                }
-            }
-
-            if (lines.Count == 0)
-            {
-                lines.Add("No groups.");
-            }
-            else
-            {
-                lines.Add(RunLog.UntickedGroupsLine(unticked));
-
-                // F71. Only where at least one group is in that state, and it says what to
-                // do rather than doing it, which is the rule this tool keeps for every
-                // finding. The words are Core's so the window and the log read the same.
-                if (nearby > 0)
-                {
-                    lines.Add(SimilarNames.WhatToDo(nearby));
-                }
-            }
-
-            return lines;
-        }
-
-        /// <summary>
-        /// Says which of the two workflows the run will take, per group count, before
-        /// anything happens. Clearing is only said where it is true, which is the First
-        /// run groups. Whatever is open is replaced either way, so it is named and the
-        /// user can cancel. Asked once, before the first group.
+        /// The run's one confirm. Since F214 every group runs in a Navisworks of its own, and since F232 the NWC page has
+        /// that route alone, so what is open here is never discarded and the screen says so.
         /// </summary>
         private bool ConfirmClear(IList<string> runPaths, ToleranceChoice tolerance)
-        {
-            return ConfirmClear(runPaths, tolerance, false);
-        }
-
-        /// <summary>
-        /// The run's one confirm. inFreshStarts is true for a run of packages since F214, whose groups each run in a
-        /// Navisworks of their own, so what is open here is never discarded and the screen says so instead.
-        /// </summary>
-        private bool ConfirmClear(IList<string> runPaths, ToleranceChoice tolerance, bool inFreshStarts)
         {
             if (child != null)
             {
                 log.Line(PackageRunWords.Prefix + " " + PackageRunWords.ConfirmedByTheParent("The run"));
                 return true;
-            }
-
-            string discarded;
-
-            try
-            {
-                discarded = DocumentGuard.WhatClearWouldDiscard();
-            }
-            catch (Exception error)
-            {
-                discarded = "Navisworks would not say what is open (" + error.Message + ").";
             }
 
             string message = string.Join(
@@ -2283,21 +1026,7 @@ namespace Federator.Addin.Ui
                 message += Environment.NewLine + Environment.NewLine + byDesignLine;
             }
 
-            if (inFreshStarts)
-            {
-                message += Environment.NewLine + Environment.NewLine + PackageRunWords.NothingHereIsTouched;
-            }
-            else if (discarded != null)
-            {
-                message += Environment.NewLine + Environment.NewLine
-                    + "This will be discarded without saving:" + Environment.NewLine
-                    + "    " + discarded;
-            }
-            else
-            {
-                message += Environment.NewLine + Environment.NewLine
-                    + "Nothing is open at the moment, so nothing is lost.";
-            }
+            message += Environment.NewLine + Environment.NewLine + PackageRunWords.NothingHereIsTouched;
 
             message += Environment.NewLine + Environment.NewLine + "Carry on?";
 
@@ -2312,8 +1041,7 @@ namespace Federator.Addin.Ui
         /// and the progress line repaint, which is not the same as moving the work onto a
         /// background thread. No Navisworks call may leave this thread.
         /// </summary>
-        private void RunJobs(
-            IList<FederationJob> jobs, string nwfFolder, string nwdFolder, ToleranceChoice tolerance, PackageRun packages = null)
+        private void RunJobs(IList<FederationJob> jobs, ToleranceChoice tolerance, PackageRun packages)
         {
             running = true;
             SetTheRunButtons(false);
@@ -2362,25 +1090,17 @@ namespace Federator.Addin.Ui
 
                 // F208. A run of packages has no one NWF folder: each group writes into its package's Log folder, under
                 // the package's report folder beside its NWF and NWD folders, which its job carries.
-                log.Line(packages == null
-                    ? "RUN      logs and reports go in " + options.LogFolderFor(nwfFolder, nwdFolder)
-                        + ", beside the NWF and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone"
-                    : "RUN      logs and reports go in the Log folder of each package, under its report folder beside its NWF "
-                        + "and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone");
+                log.Line("RUN      logs and reports go in the Log folder of each package, under its report folder beside its NWF "
+                    + "and NWD folders. The NWF and NWD folders hold the NWF and NWD files alone");
                 log.Line("RUN      the clash XML is "
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
-                engine = packages == null
-                    ? new FederationEngine(SetProgress, log, exchange, teams, options, nwfFolder, nwdFolder)
-                    : new FederationEngine(SetProgress, log, exchange, teams, options);
+                engine = new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.UsePack(chosenPack);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
 
-                if (packages != null)
-                {
-                    // F222. No discipline workbook is written here: the window that started the run writes them off this group's result.
-                    CountThePackageGroups(packages.Tally, outcomes);
-                }
+                // F222. No discipline workbook is written here: the window that started the run writes them off this group's result.
+                CountThePackageGroups(packages.Tally, outcomes);
 
                 // What each group actually did, in the list. A group that was rebuilt
                 // reads Rebuilt here once the run has settled it.
@@ -2391,7 +1111,6 @@ namespace Federator.Addin.Ui
                 // Information, exactly like the scan findings. Nothing acts on it.
                 sourceFindings = SourceMismatchFindings.From(engine.SourcePairs, settings);
                 log.Block(RunLog.SourceFindingsSectionTitle, sourceFindings.Lines());
-                ShowFindings();
 
                 // F82. Straight after the source findings, because it is the same kind of
                 // thing: something the run noticed that no output carries. A set at zero
@@ -2449,7 +1168,7 @@ namespace Federator.Addin.Ui
 
                 // The result block is written whatever happened, so a run that stopped still
                 // leaves a readable log with its summary at the end.
-                WriteTheResult(engine, null, packages == null ? null : packages.Tally.Lines());
+                WriteTheResult(engine, packages.Tally.Lines());
 
                 // F214. The groups this run ended with, those before a throw among them, for a package's own result.
                 lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
@@ -2469,13 +1188,13 @@ namespace Federator.Addin.Ui
         /// <summary>
         /// The RESULT block of one run. engine is that run's engine, or null where the run
         /// stopped before one was made, and then the block says nothing of the shared
-        /// coordinates rule or the viewpoints box rather than guess. pickedNwfs is
-        /// NwfPickPlan.ResultLine for a run of picked NWFs, F129, and null for every other run.
+        /// coordinates rule or the viewpoints box rather than guess. packages is the tally of a run of
+        /// packages, and null for the open file run.
         /// The log is written in the logs folder and, once the block is on the disk, copied with
         /// its .tsv into the Log folder of the run, F158, which replaces F151's rule that no copy
         /// is written anywhere else. The Log folder is not the NWF or the NWD folder.
         /// </summary>
-        private void WriteTheResult(FederationEngine engine, string pickedNwfs = null, IList<string> packages = null)
+        private void WriteTheResult(FederationEngine engine, IList<string> packages = null)
         {
             try
             {
@@ -2487,7 +1206,6 @@ namespace Federator.Addin.Ui
                     engine == null || engine.MakesViewpoints,
                     engine == null ? null : engine.CoverageAcrossTheRun,
                     engine == null ? null : engine.GenericModelsAcrossTheRun,
-                    pickedNwfs: pickedNwfs,
                     packages: packages);
             }
             catch (Exception error)
@@ -2827,6 +1545,12 @@ namespace Federator.Addin.Ui
             {
                 RefreshThePackageDetails();
             }
+
+            // F232. The rows of step 2 follow the names of step 3 and the Report folder, which may have changed, each tick kept.
+            if (ReferenceEquals(Steps.SelectedItem, GroupingStep) && !running)
+            {
+                Regroup(true);
+            }
         }
 
         /// <summary>
@@ -2849,11 +1573,6 @@ namespace Federator.Addin.Ui
             if (RunOpenButton != null)
             {
                 RunOpenButton.IsEnabled = !running && OpenDocumentJob.CanRun(open);
-            }
-
-            if (RunPickedNwfsButton != null)
-            {
-                RunPickedNwfsButton.IsEnabled = !running;
             }
         }
 

@@ -28,9 +28,6 @@ namespace Federator.Core.Report
         /// <summary>The tick box beside the photo settings, read off here and never typed into the window.</summary>
         public const string TickLabel = "Ghost the other items in clash photos";
 
-        /// <summary>The grey line under it. It says asks, since whether the pictures follow is measured by a run.</summary>
-        public const string HelpLine = "Off asks Clash Detective to hide other items, on to show them";
-
         /// <summary>Where a person sets Hide Other by hand in Clash Detective, named where the tool could not put it back.</summary>
         internal const string WhereToSetIt = "Clash Detective, Results, Display Settings, Isolation";
 
