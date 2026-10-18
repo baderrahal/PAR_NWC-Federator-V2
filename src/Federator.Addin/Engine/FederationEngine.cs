@@ -14,6 +14,7 @@ using Federator.Core.Exchange;
 using Federator.Core.Findings;
 using Federator.Core.Generic;
 using Federator.Core.Health;
+using Federator.Core.Grouping;
 using Federator.Core.Naming;
 using Federator.Core.Communities;
 using Federator.Core.Probe;
@@ -996,6 +997,23 @@ namespace Federator.Addin.Engine
                         if (openItHere)
                         {
                             openFiles = FilesInsideTheOpenDocument(job.Building);
+
+                            // F219, Bader's answer to Q203. A picked NWF's disciplines read off each model's own file name,
+                            // never its source, so a group of one discipline runs its tests on neither page, and one whose
+                            // names will not read runs them as before. Read only where the tests are asked for.
+                            if (reports.RunTests)
+                            {
+                                string why;
+                                IList<string> codes = BuildingGroup.DisciplinesOf(
+                                    ModelFileNamesOf(document), reports.Names, NamePattern.DefaultDiscipline, out why);
+
+                                if (codes == null)
+                                {
+                                    log.Line(BuildingGroup.DisciplinesNotReadLine(job.Label, why));
+                                }
+
+                                job.ReadTheDisciplinesAtTheOpen(codes);
+                            }
                         }
 
                         // F75. Nothing is emptied on this path, so the census line says what
@@ -1970,6 +1988,22 @@ namespace Federator.Addin.Engine
         /// are logged whenever they disagree, which is what made this findable in the
         /// first place.
         /// </summary>
+        /// <summary>
+        /// F219. Each model's own file name, Model.FileName, empty where it has none, as the EXPORT CHECK and the model
+        /// teams read a model, and never the SourceFileName FilesInsideTheOpenDocument falls back to.
+        /// </summary>
+        private static IList<string> ModelFileNamesOf(Document document)
+        {
+            List<string> names = new List<string>();
+
+            foreach (Model model in document.Models)
+            {
+                names.Add(model.FileName ?? string.Empty);
+            }
+
+            return names;
+        }
+
         private IList<string> FilesInsideTheOpenDocument(string building)
         {
             List<string> files = new List<string>();
@@ -3797,11 +3831,8 @@ namespace Federator.Addin.Engine
 
                 if (runner.SingleDisciplineGroup)
                 {
-                    log.Line("CLASH    " + job.Building + " holds one discipline, so no test is run, and "
-                        + "only the tests whose sides both find something are created. One discipline "
-                        + "cannot clash with itself.");
+                    log.Line(BuildingGroup.OneDisciplineLine(job.Label, job.Disciplines));
                 }
-
 
 
                 // Each output answers to its own flag. The report is built when the

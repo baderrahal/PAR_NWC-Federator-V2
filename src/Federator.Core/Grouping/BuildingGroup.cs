@@ -70,6 +70,88 @@ namespace Federator.Core.Grouping
             return disciplineCount < 2;
         }
 
+        /// <summary>
+        /// The disciplines of an NWF opened on the NWF page, F219, Bader's answer to Q203 of 18 Oct 2026: a group of one
+        /// discipline runs its tests on neither page. Read off each model's file name, Model.FileName and never its source,
+        /// by the scan's own call, ContainerName.Parse handed the whole path as the scan hands it, distinct and sorted,
+        /// Ordinal, as a scanned group's are. Null with why, the count UNKNOWN so no test is stopped on a guess, where a model
+        /// carries no file name, a name will not read, the naming settings refuse, or a model's discipline is the one the
+        /// tool gives its own federated outputs, federatedDiscipline, BM by default, since such a model holds disciplines of
+        /// its own that the name does not say.
+        /// </summary>
+        public static IList<string> DisciplinesOf(IList<string> modelFiles, ContainerNameSettings settings, string federatedDiscipline, out string why)
+        {
+            why = null;
+
+            if (modelFiles == null || settings == null)
+            {
+                why = "the models' file names were not read";
+                return null;
+            }
+
+            SortedSet<string> codes = new SortedSet<string>(StringComparer.Ordinal);
+            int unnamed = 0;
+
+            foreach (string file in modelFiles)
+            {
+                if (string.IsNullOrEmpty(file))
+                {
+                    unnamed++;
+                    continue;
+                }
+
+                ParsedContainerName parsed;
+
+                try
+                {
+                    parsed = ContainerName.Parse(file, settings);
+                }
+                catch (ArgumentException error)
+                {
+                    why = "the naming settings refuse, " + Diagnostics.Words.TrimStop(error.Message);
+                    return null;
+                }
+
+                if (!parsed.IsReadable)
+                {
+                    why = "the name of " + System.IO.Path.GetFileName(file) + " does not read, " + Diagnostics.Words.TrimStop(parsed.UnreadableReason);
+                    return null;
+                }
+
+                if (string.Equals(parsed.Discipline, federatedDiscipline, StringComparison.Ordinal))
+                {
+                    why = System.IO.Path.GetFileName(file) + " is named " + federatedDiscipline + ", the tool's own name for a federated model, so which "
+                        + "disciplines it holds is not in its name";
+                    return null;
+                }
+
+                codes.Add(parsed.Discipline);
+            }
+
+            if (unnamed > 0)
+            {
+                why = unnamed + " of the " + modelFiles.Count + " models carry no file name";
+                return null;
+            }
+
+            return new List<string>(codes);
+        }
+
+        /// <summary>The one line both pages log for a group of one discipline, so the log says why no test ran on either.</summary>
+        public static string OneDisciplineLine(string group, IList<string> disciplines)
+        {
+            return "CLASH    " + group + " holds one discipline, "
+                + (disciplines == null || disciplines.Count == 0 ? "UNKNOWN which" : string.Join(", ", new List<string>(disciplines).ToArray()))
+                + ", so no test of it is run, Bader's answer to Q203";
+        }
+
+        /// <summary>The line the NWF page logs where an NWF's disciplines could not be read, so its tests run as before.</summary>
+        public static string DisciplinesNotReadLine(string group, string why)
+        {
+            return "CLASH    " + group + ": how many disciplines its models hold is UNKNOWN, " + Diagnostics.Words.TrimStop(why)
+                + ", so it is not judged a group of one discipline";
+        }
+
         /// <summary>The project code every file in this group agreed on.</summary>
         public string Project { get; private set; }
 
