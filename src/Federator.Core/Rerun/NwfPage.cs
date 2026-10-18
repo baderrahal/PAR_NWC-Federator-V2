@@ -380,14 +380,10 @@ namespace Federator.Core.Rerun
     /// <summary>
     /// The words of the NWF page and what the NWC page says beside it, F188, Bader's order of 14 Oct 2026, task 9.
     /// Short and plain. Written here once and read by the window in its constructor, so a test can read them
-    /// and a copy typed into the XAML cannot drift.
+    /// and a copy typed into the XAML cannot drift. The two tab headers, NWC and NWF, are typed in the XAML.
     /// </summary>
     public static class NwfPageWords
     {
-        public const string NwcPageName = "NWC";
-
-        public const string NwfPageName = "NWF";
-
         public const string Heading = "The weekly work on an NWF that is built. Pick the NWF, see which NWC files changed, tick the steps and press Run. The NWC page builds an NWF once.";
 
         public const string RecentLabel = "Last used";
