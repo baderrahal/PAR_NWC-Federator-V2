@@ -1783,3 +1783,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F226 Q208, a picture that draws no item of its clash taken again
 
 - Bader's answer to Q208 of 18 Oct 2026: retake each picture that draws no item of its clash through the active view, from the clash's own camera moved back to 30 ft where it stands closer, its two items red and green, other models hidden, measured first on copies of 1B06BC and 1B06P1, one IMAGES line with the count retaken and the count still empty, and no Image cell showing only sky.
+- DONE 2026-10-18, merged in 306. A picture that draws no item of its clash taken again through the active view, 1B06BC 19 of 173 retaken and 15 drawing their items, 0 pictures of only the sky in 1B06BC and 1B06P1, measured in scan.md 5z-zm on 76 and 25, 3433 Core tests passed.
