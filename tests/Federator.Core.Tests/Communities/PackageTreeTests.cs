@@ -257,8 +257,10 @@ namespace Federator.Core.Tests
 
             Assert.That(lines, Has.Some.EqualTo("found       : 2 communities, 3 packages, 3 NWC files"));
             Assert.That(lines, Has.Some.EqualTo("community   C06  2 packages, 2 NWC files"));
-            Assert.That(lines, Has.Some.EqualTo("   package  " + Rel("C06", "Infrastructure and Landscape") + "  1 NWC file"));
-            Assert.That(lines, Has.Some.EqualTo("   package  C07  1 NWC file"));
+            // F216, Bader's F-R4: every package line carries its full path as well as its path from the parent.
+            Assert.That(lines, Has.Some.EqualTo("   package  " + Rel("C06", "Infrastructure and Landscape") + "  1 NWC file, at "
+                + Path.Combine(Parent, "C06", "Infrastructure and Landscape")));
+            Assert.That(lines, Has.Some.EqualTo("   package  C07  1 NWC file, at " + Path.Combine(Parent, "C07")));
             Assert.That(lines, Has.Some.EqualTo("left out    : nothing, every file of the kind is in a package"));
         }
     }

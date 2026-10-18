@@ -122,10 +122,13 @@ namespace Federator.Core.Tests
             IList<string> lines = ticks.Lines();
             string sep = Path.DirectorySeparatorChar.ToString();
 
-            Assert.That(lines, Has.Some.EqualTo("ticked      C06" + sep + "Infrastructure  2 NWC files"));
-            Assert.That(lines, Has.Some.EqualTo("ticked      C06" + sep + "Infrastructure and Landscape  1 NWC file"));
-            Assert.That(lines, Has.Some.EqualTo("left out    C07  1 NWC file"));
-            Assert.That(lines, Has.Some.EqualTo("left out    Dummy  1 NWC file"));
+            // F216, Bader's F-R4: every package line carries its full path as well as its path from the parent.
+            Assert.That(lines, Has.Some.EqualTo("ticked      C06" + sep + "Infrastructure  2 NWC files, at "
+                + Path.Combine(tree.Parent, "C06", "Infrastructure")));
+            Assert.That(lines, Has.Some.EqualTo("ticked      C06" + sep + "Infrastructure and Landscape  1 NWC file, at "
+                + Path.Combine(tree.Parent, "C06", "Infrastructure and Landscape")));
+            Assert.That(lines, Has.Some.EqualTo("left out    C07  1 NWC file, at " + Path.Combine(tree.Parent, "C07")));
+            Assert.That(lines, Has.Some.EqualTo("left out    Dummy  1 NWC file, at " + Path.Combine(tree.Parent, "Dummy")));
             Assert.That(lines, Has.Some.EqualTo("ticked      : 2 packages holding 3 NWC files"));
             Assert.That(lines, Has.Some.EqualTo("left out    : 2 packages holding 2 NWC files"));
         }

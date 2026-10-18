@@ -2494,8 +2494,11 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
 - NOTHING IS TICKED AT THE START, `PackageTicks`, so a parent of ten communities never runs all ten by mistake. A
   community's tick sets every one of its packages, `StateOf` reads neither for a community partly ticked, and Tick all and
   Clear all set every package. `WhyNoRun` refuses a run while none is ticked, and a tree not read refuses with its own
-  reason. The ticked run in the tree's order. `Lines` names every package ticked and every one left out with its full path
-  from the parent and its files, then the count of each
+  reason. The ticked run in the tree's order. `Lines` names every package ticked and every one left out with its path from
+  the parent, its files and its full path, then the count of each. EVERY PACKAGE LINE OF THE PACKAGE TREE AND PACKAGES
+  TICKED BLOCKS CARRIES ITS FULL PATH, F216, Bader's F-R4 of 18 Oct 2026, `PackageWords.PackageLine`, the one shape of a
+  package's line in both blocks, so each line alone says where the package is. The path from the parent stays first, since
+  every group line names a package by it
 - A PACKAGE WRITES UNDER ITS OWN REPORT FOLDER, `PackageOutput`: the Report folder and the package's path from the parent,
   such as Report\C06\Infrastructure, its NWFs in NWF and its NWDs in NWD under it, `DefaultNwfSubfolder` and
   `DefaultNwdSubfolder`, so `ReportPaths.LogFolder` puts the Log and the Clash report under it as well and every output of
