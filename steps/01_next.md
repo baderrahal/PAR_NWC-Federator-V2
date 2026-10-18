@@ -1798,3 +1798,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F229 the test of the round of 18 Oct evening
 
 - The round of 18 Oct 2026, TEST: main built and installed, C06 and C07 copied from the desktop folder as they are now into C:\NWC-PC-Test\work\multi3 in the flat layout with a Report folder holding empty C06 and C07 and a package of one copy of 1B06BC and 1B06P1, the NWC page on all with Run pressed once and no box answered, then the NWF page, each point proved off the logs, the clashes against F220 and the logs and tsv in steps\logs.
+- DONE 2026-10-18, merged in 310. 46 groups each in its own Navisworks on both pages, 46 DONE, 5895 clashes, no memory stop, Auto-Save put back to '0', 284 tests of one set code left out a group and 3576 clashes fewer than F220, 0 pictures of only the sky, the desktop folder 0 lines differing.
