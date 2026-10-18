@@ -514,6 +514,7 @@ namespace Federator.Addin.Engine
                 }
 
                 ClashTestPlan resolved;
+                IList<string> savedToo = new List<string>();
 
                 // F132. Every test the document holds, each side as the set it points at,
                 // read over the index just built, so the mirror rule pairs saved tests by
@@ -572,33 +573,62 @@ namespace Federator.Addin.Engine
                     // F168, Bader's answer A to Q168. A test saved in the NWF that the matrix does not name,
                     // such as one a coordinator added by hand in Clash Detective, is run too, where it sits,
                     // after the tests of the matrix, at the tolerance of the drop down like every other test.
-                    // It is in the reports and in the Coverage sheet like any other.
-                    IList<string> savedToo;
+                    // It is in the reports and in the Coverage sheet like any other, said and recorded once the
+                    // rule of two set codes below has passed it.
                     resolved = resolved.WithTheSavedTestsTheMatrixDoesNotName(inTheDocument, out savedToo);
-
-                    foreach (string savedName in savedToo)
-                    {
-                        outcome.AddSavedRunToo(savedName);
-                    }
-
-                    if (savedToo.Count > 0)
-                    {
-                        log.Line("CLASH    " + savedToo.Count
-                            + (savedToo.Count == 1 ? " test" : " tests") + " saved in the NWF that the matrix does not name "
-                            + (savedToo.Count == 1 ? "is" : "are") + " run too, where "
-                            + (savedToo.Count == 1 ? "it sits" : "they sit") + ", after the tests of the matrix: "
-                            + string.Join(", ", new List<string>(savedToo).GetRange(0, Math.Min(savedToo.Count, 10)).ToArray())
-                            + (savedToo.Count > 10 ? " and " + (savedToo.Count - 10) + " more" : string.Empty));
-                    }
                 }
 
                 // F224, Bader's answer to Q209. Only tests across two set codes run, on both pages, a test whose two sides carry
                 // one set code left out of the plan before the mirrors are paired, created and run by nothing, and said with its
-                // count on one CLASH line. One saved in the NWF keeps its earlier results there.
-                IDictionary<string, int> leftOutByCode;
+                // count on one CLASH line. One saved in the NWF keeps its earlier results there. In a group of one discipline
+                // Q203 runs none of its tests, so the rule is not read and every test keeps Q203's one reason.
                 int planned = resolved.Buildable.Count;
-                resolved = resolved.AcrossTwoSetCodes(SetCodes, new Federator.Core.Views.ViewpointSettings().SetNameSeparator, out leftOutByCode);
-                log.Line(SetCodeRule.Line(planned - resolved.Buildable.Count, planned, leftOutByCode, SetCodes != null && SetCodes.Count > 0));
+
+                if (SingleDisciplineGroup)
+                {
+                    log.Line(SetCodeRule.NotReadInAGroupOfOne(planned));
+                }
+                else
+                {
+                    IDictionary<string, int> leftOutByCode;
+                    char separator = new Federator.Core.Views.ViewpointSettings().SetNameSeparator;
+                    resolved = resolved.AcrossTwoSetCodes(SetCodes, separator, out leftOutByCode);
+                    log.Line(SetCodeRule.Line(planned - resolved.Buildable.Count, planned, leftOutByCode, SetCodes != null && SetCodes.Count > 0,
+                        SetCodeRule.WithASideOfNoCode(resolved.Buildable, SetCodes, separator)));
+                }
+
+                if (savedToo.Count > 0)
+                {
+                    HashSet<string> stillRun = new HashSet<string>(StringComparer.Ordinal);
+
+                    foreach (PlannedClashTest test in resolved.Buildable)
+                    {
+                        stillRun.Add(test.Name);
+                    }
+
+                    List<string> runToo = new List<string>();
+
+                    foreach (string savedName in savedToo)
+                    {
+                        if (stillRun.Contains(savedName))
+                        {
+                            runToo.Add(savedName);
+                            outcome.AddSavedRunToo(savedName);
+                        }
+                    }
+
+                    int ruleLeftOut = savedToo.Count - runToo.Count;
+                    log.Line("CLASH    " + savedToo.Count
+                        + (savedToo.Count == 1 ? " test" : " tests") + " saved in the NWF that the matrix does not name, "
+                        + runToo.Count + " run too, where " + (runToo.Count == 1 ? "it sits" : "they sit") + ", after the tests of the matrix"
+                        + (runToo.Count > 0
+                            ? ": " + string.Join(", ", runToo.GetRange(0, Math.Min(runToo.Count, 10)).ToArray())
+                                + (runToo.Count > 10 ? " and " + (runToo.Count - 10) + " more" : string.Empty)
+                            : string.Empty)
+                        + (ruleLeftOut > 0
+                            ? ", and " + ruleLeftOut + " left out by the rule of two set codes, kept in the NWF with " + (ruleLeftOut == 1 ? "its" : "their") + " results"
+                            : string.Empty));
+                }
 
                 // F132. The mirrored pairs among the tests to run, judged against the
                 // document and this group's sets build, their lines, then the renames of

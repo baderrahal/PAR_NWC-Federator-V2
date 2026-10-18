@@ -255,6 +255,7 @@ namespace Federator.Core.Rerun
             text.AppendLine("Tests: " + (testsInMatrix > 0
                 ? "the " + testsInMatrix.ToString(CultureInfo.InvariantCulture) + " of the built in matrix, and the tests saved in the NWF, run again where they sit. "
                 : "the tests saved in the NWF run again where they sit. ")
+                + "A test whose two sides carry one set code is not run, and one saved in the NWF keeps its earlier results there. "
                 + "Statuses, assigned to and comments of clashes still there are kept.");
             text.AppendLine("Viewpoints: the folder " + viewpointFolderName + " with "
                 + (toolViews >= 0 ? toolViews.ToString(CultureInfo.InvariantCulture) : "UNKNOWN") + " viewpoints is deleted and made again."

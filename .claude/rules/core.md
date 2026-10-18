@@ -1053,8 +1053,14 @@ and 6 does not read as broken.
   such as BLD-Security Devices, leaves its test running, never left out on a guess. The reason is
   SameSetCode, counted apart from SingleDiscipline, its coverage row says not created or run, and
   every group writes one CLASH line, `SetCodeRule.Line`, saying how many of how many planned it
-  left out by code, a nought said and no code known said apart. The built in matrix loses exactly
-  the 284 tests Q203 counted, AR 120, EL 78, ME 36, ST 15, FF 15, PL 10, DR 10
+  left out by code, a nought said and no code known said apart, and how many of the tests that run
+  have a side whose set name reads no code, `SetCodeRule.WithASideOfNoCode`, so a nought is never
+  read as every test judged. In a group of one discipline Q203 runs none of its tests, so the rule
+  is not read and its line says so, `SetCodeRule.NotReadInAGroupOfOne`. The run knows it did not
+  create a test the rule left out, so the count check reads it held by neither side where the
+  document does not hold it. The built in matrix loses exactly the 284 tests Q209 counted, AR 120,
+  EL 78, ME 36, ST 15, FF 15, PL 10, DR 10. The words of the workbook and the window carry no
+  question number
 - The reports never go inside the folder being scanned, whether it was picked or
   defaulted to. A run put the workbooks in the NWC folder it was reading, and the
   Clash step picks an XML at run time, so a report written there is a file a later run

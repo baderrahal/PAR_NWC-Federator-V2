@@ -419,7 +419,10 @@ well as to pass.
   group's disciplines where no map was read, so a test whose two sides carry one set code is
   neither created nor run on either page, its count said on the CLASH line of `SetCodeRule.Line`.
   One already saved in a picked NWF stays there with its earlier results, never deleted, row
-  F219-R1. THE RULE, `PairTheMirrors`: `MirrorRule.Of` over the tests to run, with an XML
+  F219-R1. A test saved in the NWF that the matrix does not name, F168, passes the rule like any
+  other, so its line and `AddSavedRunToo` come after the rule and name only the ones still run,
+  with the count the rule left out. A group of one discipline does not read the rule, Q203 already
+  running none of its tests. THE RULE, `PairTheMirrors`: `MirrorRule.Of` over the tests to run, with an XML
   against that document plan and this group's `SetBuildOutcome`, `ClashRunner.SetsBuilt`, which
   the engine hands from `outcome.Sets` after the sets build and before the clash step, the
   priority file and the XML's sets, and with no XML over the saved tests alone, then its
