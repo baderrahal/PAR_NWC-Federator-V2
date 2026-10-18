@@ -2,6 +2,51 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F220, the test of the round on multi2, C06, C07 and a corrupt package
+
+Branch fix-F220 off main 026a144, after F219 299, the last merge of the round's fixes. Bader's TEST: build and install main,
+copy C06 and C07 into C:\NWC-PC-Test\work\multi2 in the flat layout with a Report folder holding empty C06 and C07 and one
+package of the random bytes NWC, run the NWC page on all three with Run pressed once and no box answered, then the NWF page
+on C06 and C07, prove each point and copy the logs and tsv into steps\logs.
+
+What was done. Main 026a144 built and installed by build\install.ps1, exit 0, the window's title reading 026a1447. multi2
+held Parent\C06, 64 NWCs, Parent\C07, 70 NWCs, copied from the desktop folder of real files at 12:37 and checked against its listing with 0 SHA-256
+mismatches at the copy, and Parent\Corrupt, one NWC of 200000 random bytes. The install, the copy and the two stopped starts
+below were read in this session and are not among the files kept. Both runs were driven by the session's launcher and driver
+through UI Automation, the driver pressing Read, ticking the communities, pressing Run once and OK on the one confirm, and
+nothing else. Two starts before the first run pressed nothing: the evidence folder was outside run-evidence, then the stamp
+was typed wrong, and each time the driver stopped before any press and the launcher's hang rule closed its Navisworks and put
+the Auto-Save switch back, 141 files in the work listing before and after each.
+
+What the runs showed.
+- The NWC page, 13:30 to 13:52, 22.1 min by the launcher's clock, ExecuteAddInPlugin to its return: 3 packages each in its own Navisworks, 45 groups, 44 DONE, 0 partial, 1 FAILED, at
+  least 9029 clashes, C06 21 groups and 6207 clashes, C07 23 groups and 2822, Corrupt 1 group FAILED.
+- The NWF page, 13:53 to 14:12, 19.6 min by the same clock: 2 packages each in its own Navisworks, 44 NWFs, 44 DONE, 9029 clashes, C06 6207 and
+  C07 2822, the same as the NWC page.
+- F213: Navisworks opened a message box on the random file and the tool pressed its one button, id 2, after 206 ms, the group
+  ended FAILED naming the file, and the run closed its result with no person. Corrupt was the last package, so a package after
+  it is not shown by this run.
+- F214: every package in its own Navisworks, each gone 1.6 to 2.4 s after it was told to quit, the next started after. C07 wrote 2709 pictures on each
+  page with no memory stop. C06 wrote 3605 and 3623, the memory stop firing 7 and 8 times from its 11th group of 21 on, where row F214-R5 read the last 6.
+- F216: every package line of PACKAGE TREE and PACKAGES TICKED ends with its full path, as C06  64 NWC files, at
+  C:\NWC-PC-Test\work\multi2\Parent\C06.
+- F217: the NWF page's confirm read Pictures: 6314 old jpg files in the Clash report folder are written again or removed,
+  which is the 3605 and 2709 pictures the NWC page wrote.
+- F218: in the discipline workbooks 49.055 m from AR reads far and 23.963 m reads near, so the limit is 30 m, and F209's
+  1000 m would read 49.055 m near.
+- F219: the NWC page and the NWF page skip the same 12 groups, 6 of C06 and 6 of C07, each named with its discipline in the
+  same words, CLASH    C06  1104-PAR-1B06BS-ZZZ-BM-MOD-000001 holds one discipline, EL, so no test of it is run, Bader's
+  answer to Q203 on the NWF page. No NWF read UNKNOWN.
+- The desktop folder of real files was only read: 141 files and 25 folders before and after, 0 lines differ in name, size,
+  date or SHA-256. Its C07 holds 1C07, 1D07 and 1A07 files dated 09:41 on 18 Oct and its folder 09:42, a change no command of this session made, where the\n  F210 copy held 1B06 files.
+
+What was proved here. No code changed. Core tests 3392 passed before and after, 0 failed, 0 skipped, the after read in the pre-commit of\nthis branch's commits. The evidence is 20 files, the largest 19,604,026 bytes,
+in steps\logs named 2026-10-18-C06-C07-F220, every log and tsv masked by mask-evidence.ps1 and read back with nothing left,
+the two listings, and the launcher and driver records.
+
+What remains. Row F214-R5, the memory stop in C06 from its 11th group on. Q208 and Q209. Known bugs: none new. What comes next:
+F221, the audit of the round.
+
 ## 2026-10-18 F219, Q203, a group of one discipline runs its tests on neither page, and Q209
 
 Branch fix-F219 off main 99509de, worked in a worktree while F215's claim check ran, main merged in after F215 and F217.

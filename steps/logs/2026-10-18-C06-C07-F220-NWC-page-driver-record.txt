@@ -1,0 +1,28 @@
+13:30:29.299  packages driver started, pid 25620, owner pid 12316, page NWC, stamp 026a1447
+13:30:31.531  the tool's window, handle 5639714, caption "Parsons NWC Federator   [1.0.0.0 026a1447 built 2026-10-18 13:13:43]"
+13:30:35.702  typed into PackageParentBox: C:\NWC-PC-Test\work\multi2\Parent, it reads C:\NWC-PC-Test\work\multi2\Parent
+13:30:36.168  typed into PackageReportBox: C:\NWC-PC-Test\work\multi2\Report, it reads C:\NWC-PC-Test\work\multi2\Report
+13:30:36.207  pressed ReadPackagesButton
+13:30:40.714  TREE after Read, nothing ticked:
+13:30:40.751    community  C06  [Off]  C06  |  1 package, 64 NWC files
+13:30:40.760       package  C06 itself  [Off]  C06 itself  |  64 NWC files, 21 groups
+13:30:40.769    community  C07  [Off]  C07  |  1 package, 70 NWC files
+13:30:40.777       package  C07 itself  [Off]  C07 itself  |  70 NWC files, 23 groups
+13:30:40.783    community  Corrupt  [Off]  Corrupt  |  1 package, 1 NWC file
+13:30:40.790       package  Corrupt itself  [Off]  Corrupt itself  |  1 NWC file, 1 group
+13:30:40.821  TREE after Read, nothing ticked holds 3 communities. The line under it reads: 3 communities, 3 packages, 135 NWC files. 0 packages ticked.
+13:30:42.847  ticked the community C06: before Off, after On, 1 toggles
+13:30:43.379  ticked the community C07: before Off, after On, 1 toggles
+13:30:43.903  ticked the community Corrupt: before Off, after On, 1 toggles
+13:30:44.938  TREE ticked, before Run:
+13:30:44.947    community  C06  [On]  C06  |  1 package, 64 NWC files
+13:30:44.955       package  C06 itself  [On]  C06 itself  |  64 NWC files, 21 groups
+13:30:44.960    community  C07  [On]  C07  |  1 package, 70 NWC files
+13:30:44.969       package  C07 itself  [On]  C07 itself  |  70 NWC files, 23 groups
+13:30:44.975    community  Corrupt  [On]  Corrupt  |  1 package, 1 NWC file
+13:30:44.983       package  Corrupt itself  [On]  Corrupt itself  |  1 NWC file, 1 group
+13:30:45.012  TREE ticked, before Run holds 3 communities. The line under it reads: 3 communities, 3 packages, 135 NWC files. 3 packages ticked.
+13:30:45.065  pressed RunPackagesButton
+13:30:46.164  the confirm of pid 12316: caption "Parsons NWC Federator", every text: "OK" "Cancel" "This run federates 45 groups.    First run: 45. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus matrix: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened.    Clash tolerance: 25 mm, chosen in the tool.  It is set on every clash test in this run, which is 45 groups of 1830 tests from the built in matrix, plus every test already saved in each NWF.  It beats the tolerance in the built in matrix and the tolerance in the document.  Every recorded result and every status a person set is KEPT. What changes is which clashes each test finds when it runs, so a clash somebody marked may not come back at the new tolerance.    Each package runs in a fresh Navisworks of its own, one after the other, so nothing open in this one is touched.    Carry on?"
+13:30:46.192  answered with OK, WM_COMMAND 1 posted to dialog 4785452, PostMessage True
+13:30:46.195  DRIVER EXIT 0 PRESSED: Run ticked packages on the NWC page, and OK on the confirm
