@@ -1744,3 +1744,7 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - Bader's message of 18 Oct 2026, F-R5: the NWF page package confirm counts old jpgs in each package's Clash report folder. RefreshConfirm.PicturesFolderOf and OldPictures count, over every NWF of the run, the files named as the tool names its pictures, the rule F177 removes by, and the one-NWF confirm counts through the same rule.
 - DONE 2026-10-18, merged in 298. Three Core tests break the folder, the name rule and an unreadable folder. The count on a run is seen in F220.
+
+## F219 Q203, a group of one discipline runs its tests on neither page
+
+- Bader's answer to Q203 of 18 Oct 2026: a group of one discipline runs its tests on neither page, the NWF page skipping them as the NWC page does and the log saying why on both, and a new question counting the tests that set a discipline against itself. BuildingGroup.DisciplinesOf reads a picked NWF's disciplines off its models' names at the open, OneDisciplineLine is the one line both pages log, and Q209 holds the counts.

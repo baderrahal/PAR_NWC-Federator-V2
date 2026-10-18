@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-18 F219, Q203, a group of one discipline runs its tests on neither page, and Q209
+
+Branch fix-F219 off main 99509de, worked in a worktree while F215's claim check ran, main merged in after F215 and F217.
+Bader's answer to Q203: a group of one discipline runs its tests on neither page, the NWF page skipping them as the NWC page
+does, the log saying why on both, and a new question counting the tests of the 1104-PAR pack that set a discipline against
+itself inside groups of two or more disciplines and what each page does with them today, nothing changed.
+
+What was done. Core, `BuildingGroup.DisciplinesOf`: the disciplines of an NWF the NWF page opens, read off its models' file names
+by the scan's own parser, distinct and sorted, and null with why where a model has no name or a name will not read, so the count
+is UNKNOWN and no test is stopped on a guess. `OneDisciplineLine`, the one line both pages log for a group of one discipline,
+naming it, and `DisciplinesNotReadLine`. The add-in: `RunAnOpenFile` reads them once a picked NWF opens and hands them to the
+job, `FederationJob.ReadTheDisciplinesAtTheOpen`, so `IsSingleDiscipline` and the clash step's rule read them as a scanned
+group's, and the clash step logs Core's line where it typed its own. The document already open by hand stays unjudged.
+Four Core tests in OneDisciplineOnTheNwfPageTests. The rule is in core.md beside the one-discipline bullet.
+
+Q209. Counted off the pack's XML: of its 1830 tests 284 set a set code against the same code and 513 set one team of the pack's
+team map against itself, 120 Architecture, 15 Structure, 300 Mechanical and 78 Electrical, 60 more having a side whose set name
+carries no code. Off the COVERAGE rows of the flat C06 and C07 runs of F210: over the 30 groups of two or more disciplines both
+pages ran 1828 of them, 358 found clashes, 4906 of those groups' 12414 clashes. Both pages run them as any other test today.
+
+What was proved here. Core tests 3382 passed before, 3386 after on the branch, 3389 with F217 merged in, 0 failed, 0 skipped. dotnet build of the solution
+0 errors, 0 warnings. No Navisworks run: the NWF page's skip is seen in F220's run of the NWF page on C06 and C07.
+
+What remains. Bader's answer to Q209. Known bugs: none new. What comes next: F220, the test on multi2.
+
 ## 2026-10-18 F217, F210-R5, the old jpg files counted on the NWF page's confirm of a run of packages
 
 Branch fix-F217 off main 99509de, worked in a worktree while F215's claim check ran, main merged in after F215. Bader's F-R5:

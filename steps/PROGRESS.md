@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-18 13:00, last run 94/item1-C02, the round of F212 to F221, F217 PR next, then F219, F220, F221
+STATE OPEN, 2026-10-18 13:30, last run 94/item1-C02, the round of F212 to F221, F219 in review, then the F220 test on multi2
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,13 +16,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 290 | 16 | 0 | 20 | 71 | 7 | 404 |
-| total | 493 | 24 | 0 | 20 | 172 | 18 | 727 |
+| outside the waves | 290 | 16 | 2 | 21 | 70 | 7 | 406 |
+| total | 493 | 24 | 2 | 21 | 171 | 18 | 729 |
 <!-- the end of the counts -->
 
 ## Now
 - 18 Oct, Bader's answers to Q202 to Q206, F212 to F221, plan atop steps\history\log.md. Merged: F212 292, F213 293, F216 294, F218 295.
-  F214 296 merged, C07 3642 pictures. F215 sky pictures: Clash Detective draws no item in 101, the active view does
+  F214 296, F215 297, F217 298 merged. F215 sky pictures measured, cause UNKNOWN, Q208. F219 one discipline on both pages
 - 18 Oct before: F208 to F211, 288 to 291, the packages, the discipline reports, the test on C06 and C07 and the audit
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -35,14 +35,14 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 01:04, C06 and C07 copy, 42 groups | 14b434f4, main after 289 | 3514, the memory stop in 22 groups | not run | none read | NWC page 60.0 min, NWF page 51.6 min |
 | 18 Oct 11:08, C06 and C07 copy, a Navisworks each | 3244079, F214 | 3656 and 3642, the stop in the last 6 or 7 groups of each | not run | none read | C06 11.6 min, C07 12.4 min |
 ## Next
-1. F215 its pull request and merge, the sky pictures measured and left UNKNOWN, Q208
-2. F217 the old jpg count on the NWF page, F219 one discipline groups on the NWF page and the new question of self pairs
-3. F220 the test on copies of C06 and C07 in C:\NWC-PC-Test\work\multi2, then F221 the audit of the repo
+1. F219 its pull request and merge, then F220 the test on multi2, the real files listed before and after, then F221
+2. C07 in the desktop folder of real files changed at 09:41 on 18 Oct, outside this session, so F220 runs the real C07
+3. Bader answers Q207, Q208 and Q209 of this round
 4. Bader answers Q194 to Q201, Q187 to Q192, and Q182, Q184, Q185, Q186
 5. F207-R1 on a copy of C04. C02 waits on Q191. tools\loop\prove-run.ps1 not run since F173, its window cases UNKNOWN
 
 ## Waiting for Bader
-- Q207 the loop's Auto-Save switch, kept or taken out. Q208 retake through the active view a picture that draws no item
+- Q207 Auto-Save switch kept or out. Q208 retake through the active view an empty picture. Q209 self-pair tests
 - Q194 Approved pictures, Q195 the rule boxes on the NWF page, Q196 Layer, Q197 Item Name, Q198 logo, Q199 relative links
 - Q200 foundations, Q201 the look of the pictures. Q187 caps, Q188 512 pixels, Q189 by design pairs, Q190 folders, Q191 C02, Q192 numbers
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
