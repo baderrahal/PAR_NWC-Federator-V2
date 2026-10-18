@@ -8952,3 +8952,56 @@ arguments, quits it by Dispose and waits for its process to be gone before the n
 started through the API. Whether the bundle's plugin is found in the second Navisworks without AddPluginAssembly, which the loop's
 run.ps1 measures on every run since it calls ExecuteAddInPlugin on the installed plugin alone. What a second Navisworks costs in
 memory beside a first that holds a document, since the probe's first held none.
+
+## 5z-zk. WHY SOME CLASH PICTURES OF 1B06BC AND 1B06P1 SHOW ONLY THE SKY, MEASURED 2026-10-18, THE CAUSE UNKNOWN
+
+F215, F210-R3, Bader's message of 18 Oct 2026: the sky-only pictures of 1B06BC and 1B06P1 probed on copies, the camera
+position against the clash point of an empty picture and a good one, fixed with no sky picture on a rerun or measured and left
+UNKNOWN. Measured, and the cause is left UNKNOWN.
+
+**HOW.** `tools\probes\SkyProbe\probe-sky.ps1`, built from probe-picture-speed.ps1 with its inputs changed and the guard file
+untouched, tools\loop\nw-guard.ps1 read at sha256 349551F8 in every run, with the mode sky of `SkyProbePlugin.cs`, opening a copy
+of the NWF the C06 flat run of F210 built and saved, holding its tests and results. Seven runs: five on 1B06BC, one on 1B06P1 and
+one on 1B06K1, 10.7 to 15.4 s each by the watchdog, every Navisworks quit by Dispose and not forced, Bader's settings put back,
+35 registry values with 0 still differing. The probe grew between runs, four builds of SkyProbe.dll each named with its sha256 in
+its result, the committed source the last. For the first clashes of each test named it reads the clash's centre and the camera
+of `TestsViewpointForResult`, every readable property of that viewpoint, and in the last build of its clip planes, takes the
+picture the way the tool does, `TestsImageForResult` at 512 pixels, with every model shown and with only the models of its two
+items shown, and from the clash's own camera and that camera moved back along the same line to 30, 100 and 300 ft takes a
+picture of the active view, `CopyViewpointFrom` and `View.GenerateImage`, with no item coloured and no model hidden. With
+`-HideOther` the probe writes Clash Detective's Hide Other on before the start. Every run found it already on, '3 1', so the
+pictures with it off were not taken. `tools\probes\SkyProbe\count-sky-pictures.ps1` reads every picture of a group's _files
+folder. The results, the machine's name masked, are the sky-result-*-20261018.txt and sky-pictures-*-C06-20261018.tsv files in
+tools\probes\SkyProbe. The pictures stay in the probe's work folders under %LOCALAPPDATA%\NwcFederatorLoop\probes and are not
+committed.
+
+**WHICH PICTURES ARE EMPTY.** Of the pictures the run wrote, those whose middle is the sky's colour, 136,169,238, and that hold
+no pixel of a clashing item's red or green: 76 of 1B06BC's 399, 25 of 1B06P1's 374 and 0 of 1B06K1's 40. The 76 is the audit's
+76. The 25 is as many as the audit's 13 and its 12 near empty, read by another measure, so whether they are the same pictures is
+not read. 1B06BC holds more pictures with the sky at the middle that draw their two items in under 1000 pixels, cd100001,
+cd100003, cd100005 and cd430001, the first three framed by Clash Detective's camera from 154, 340 and 156 ft. The empty ones come
+mostly whole tests at a time: in 1B06BC every picture of 8 of the 12 tests holding one, all 30 of BLD-EL-Conduits & Conduit
+Fittings-vs-BLD-EL-Electrical Equipment and all 13 of BLD-FF-Pipe Accessories-vs-BLD-FF-Pipes & Pipe Fittings among them, and
+part of the other 4, in 1B06P1 every picture of its 4 such tests.
+
+**THE CAMERA.** For the clashes the probe read whose picture had the sky at its middle, the clash's own viewpoint stands 2.61 to
+207.67 ft from the centre, 7.9 ft for the EL clashes, perspective, with the same rotation, 45, 35.26 and 30, and near and far
+types Auto as every viewpoint read. The clip planes read the same, Enabled and an empty box, on the two clashes that build read,
+one empty and one drawing its items small. How far the document's own camera moves when the picture is taken was not read, since
+the probe reads it after each picture and never before.
+
+**THE GEOMETRY IS THERE.** From 30, 100 and 300 ft back along the clash's own line the active view draws something for every
+clash probed. From the clash's own camera it draws the EL clashes, 12.6 percent of the picture differing at 7.9 ft, the picture
+showing the conduits, a fitting and a box when looked at, and the FF clashes, and draws almost nothing for 5 of the 16 clashes
+of the run over every empty test of 1B06BC, a flat grey middle under 0.35 percent. So a camera close to some clashes may be part
+of it, and does not explain the EL clashes, which the active view draws from that camera. `TestsImageForResult` draws no item
+for the empty clashes with every model shown and with only its items' models shown.
+
+**WHAT IT IS NOT.** Not the distance from the origin: 1B06K1's AR and ME sit about 9.26 million feet out and 1B06BC's EL about
+9.10 million, and 1B06K1's pictures draw. Not one model: the empty tests' items are in AR, ME, both ST models and EL of 1B06BC,
+and in ME and both ST of 1B06P1, while other tests whose items lie in the same models draw. Not a model hidden: every root reads
+shown.
+
+**UNKNOWN.** What makes `TestsImageForResult` draw nothing for these tests. What the active view draws with the items coloured
+and the other models hidden, as the tool's pictures are, since the probe took none that way. Whether such a picture would be
+accepted in the client's report in place of Clash Detective's, Q208.
