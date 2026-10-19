@@ -6,7 +6,7 @@ label on each group says which way it goes, the confirm dialog counts the labels
 them. The labels come from `Federator.Core.Rerun.RunPath`, confirmed by Bader on 2026-09-07, and they
 change what the person is told, never what the engine does.
 
-Everything below is read off the code and the rules of 18 Oct 2026. What no run has shown yet is said
+Everything below is read off the code and the rules of 19 Oct 2026. What no run has shown yet is said
 UNKNOWN, and the list of those is at the end.
 
 ## The NWC page, the first build of a group
@@ -88,7 +88,8 @@ last used and no panel on the right since F232.
 - The five steps, each with a box, all ticked when the page opens: Refresh, Run tests, Pictures,
   Viewpoints, Reports. A step that needs another is greyed and the grey line says why. Viewpoints
   and Reports need Run tests, and Pictures needs Reports (`NwfPageSteps`).
-- The Clash step's Reviewed boxes are read by this page's run too (`ReportsWanted`). The tolerance is
+- The penetration box is this page's own since F235, and the Clash step's by design box is read by this page's run too
+  (`ReportsWanted`). The tolerance is
   the drop down of this page. The grouping, the pack and the search set build are not on this page.
 
 ### The confirm

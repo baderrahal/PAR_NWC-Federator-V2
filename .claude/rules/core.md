@@ -1076,8 +1076,8 @@ and 6 does not read as broken.
   itself inside the source there is nowhere safe, and that is said rather than written
   somewhere surprising
 - Outputs overwrite, the NWD every run and the NWF only when it is being built for
-  the first time. No version suffix, and no date suffix unless the weekly record tick
-  box is on, which is off by default and applies to the NWD alone
+  the first time. No version suffix, and no date suffix, the weekly record tick
+  box that dated the NWD gone since F232, `OutputNaming.DateTheNwd` left at its default, off
 - The NWF and the NWD are dated differently on purpose, and this is the reason. The
   NWF holds the clash tests and every clash result inside it, so it IS the history and
   overwriting it in place is what keeps that history. A dated NWF would fork the
@@ -1284,7 +1284,7 @@ and 6 does not read as broken.
   `ReportPaths.Subfolder`, beside them, worked out by `ReportPaths.LogFolder` as the deepest
   folder holding both and one level up where the two are one folder or one holds the other.
   It holds the run log and its .tsv, the notes on the shared coordinates, the Excel, the
-  Internal workbook, the HTML, the XML and the _files folder together, so the page's
+  Internal workbook and the XML together, the HTML and its _files folder in the Clash report folder since F177, so the page's
   relative links and the Excel's F152 file:/// links keep working, proved by
   `LogFolderLinksTests`. NOTHING IN IT IS EVER OVERWRITTEN OR DELETED: a group whose name is
   already there takes `ReportPaths.NameThatOverwritesNothing`, its name and the moment of the
@@ -1568,8 +1568,8 @@ and 6 does not read as broken.
 - EACH PICTURE ALSO CARRIES A CLICK LINK, F169, Bader's answer A to Q163: an a:hlinkClick on the picture to the
   relative path of its jpg from the folder the workbook sits in, forward slashed, going up with .. where the jpg is
   not below it, a space written %20 and nothing after the file name, LinkedPictures.RelativeLinkFor. The linked picture
-  of F152 and the Image cell link are as they were. Since F158 the _files folder sits beside the workbook in the Log
-  folder, so the link is NAME_files/cdNNNNNN.jpg. Whether Excel itself follows a relative link is UNKNOWN until a
+  of F152 and the Image cell link are as they were. Since F177 the _files folder sits in the Clash report folder beside the Log
+  folder, so the link is ../Clash report/NAME_files/cdNNNNNN.jpg, read off the workbooks of 19 Oct 2026. Whether Excel itself follows a relative link is UNKNOWN until a
   person clicks one
 - THE WORKBOOK'S PICTURES ARE LINKED PICTURES IN THE CLIENT'S FORM, F152, Bader's decision of
   2026-10-13, Q162-2: pictures stay links, the same form as the client's own file.
@@ -1921,8 +1921,8 @@ and 6 does not read as broken.
   one error, `TakeTheGroupError`. A group that takes no picture touches nothing and says so. THE LINE CLAIMS
   ONLY WHAT WAS READ: where the tool set the value it says whether the pictures follow is UNKNOWN until a
   run's picture sizes show it, near 48 KB a picture with the other items hidden against about 550 KB with
-  them drawn, and `Describe` and the grey line say Clash Detective is asked, never what it draws. The box is
-  labelled by `OtherItemsInPictures.TickLabel` and its grey line is `HelpLine`. A stop between the set and the
+  them drawn, and `Describe` says Clash Detective is asked, never what it draws. The box is
+  gone with its label and grey line since F232, the ghosting at the default of `ImageOptions`. A stop between the set and the
   put back is row F150-R1
   never fired. A render or a save that threw is `ImageFailure.BecauseItThrewWriting`, the
   type and the message with the picture's path and the picture's folder said as those words
@@ -3192,7 +3192,7 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   where its count of Resolved clashes removed across the group is at least the test's gap,
   and where it is fewer the line says so
 - THE DOCUMENT'S SIDE IS `DocumentTestCount`, plain numbers the add-in fills from one walk of
-  the tests after the clash step, so they are what the NWF holds after Compact and include
+  the tests after the clash step, so they are what the NWF holds, nothing compacting since F185, and include
   the tests a weekly run did not run. A count not taken is minus one and never zero.
   Statuses are not read, because they are not judged, PQ4 of F104 being unmeasured
 - THE TESTS OF A MIRRORED PAIR WHOSE CLASHES F132 MERGED ARE NOT COMPARED, `CountCheck.InAMergeWhy`,
@@ -3429,8 +3429,6 @@ docs\history\scan.md 5z-zb of 2026-10-08, and nothing of it has run on Naviswork
   what threw and that the count is UNKNOWN and the group keeps its own result, the group is
   counted as not counted in RESULT, and the failure is logged with what happens next
 - No clash test is made for these sets, and the block says so
-
-### The machine readable log, F64
 
 ### The machine readable log, F64
 

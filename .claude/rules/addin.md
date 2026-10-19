@@ -619,7 +619,7 @@ well as to pass.
   MOD-000001. The defaults were always six digits in the code and never reached the window
 - Every default the window shows is read from the Core object that holds it, in the
   constructor, and is never typed into the XAML as well. The photo size, the cap and the five
-  status ticks are read from ImageOptions, the paste into cells tick gone with F152, which is where the
+  status ticks were read from ImageOptions until F232 took them out of the window, and run at its defaults, which is where the
   1024 measured off the accepted report lives. Two copies of a default drift, and the XAML
   copy is the one nothing can test. The tick box that once skipped the clash for models off the
   shared coordinates started from its Core default beside its
@@ -1131,8 +1131,8 @@ anything is opened while no tree is read, nothing is ticked or the Report folder
 one `PackagePlan` per ticked package, a group whose NWF is there left to the NWF page by `NwcPageRule`, a group of one
 discipline not built, F233, its NOT BUILT line and the line of an NWF an earlier run left written by the window a person runs
 and counted by `PackageTally.NotBuilt`, and a group unticked on step 2 left out, each named, the PACKAGES TICKED, PACKAGE GROUPS and FINDINGS blocks, the
-pack choice and the one confirm, the folders of each package that runs made and said, then, since F214, each package handed to its own
-Navisworks, below, whose window runs `RunJobs` with one engine for that package's groups.
+pack choice and the one confirm, the folders of each package that runs made and said, then, since F214, each package, and since F222 each group, handed to its own
+Navisworks, below, whose window runs `RunJobs` with one engine for that group.
 Each job carries its package and its package's Log folder, `FederationJob.InPackage`, the copy of a dated rebuild keeps
 both, and `RunOne` sets the Log folder off the job. The GROUP started and finished lines, the pace of the live line,
 the coordinates tally and the clash totals read `FederationJob.Label`, so community and package are on every group line
@@ -1148,8 +1148,8 @@ Where a file the NWF links is not on the disk, by the refresh's `MissingFiles` o
 `Model.FileName` read with File.Exists, the disciplines are not judged, one NOT JUDGED line, and the group runs as before.
 
 THE NWF PAGE'S ROUTE, `OnRunNwfPackages`, its one Run: refused while no NWF is ticked, the ticked NWFs of each package by
-`PackageNwfs`, a package whose ticked NWF is gone named and the others run, the NWF TREE, NWFS TICKED and PACKAGE NWFS blocks, the refresh confirm, then, since F214, each package in
-its own Navisworks, whose window runs `RunPickedNwfs` with each NWF's place, `PackageNwf`, so its NWD, its Backup and its
+`PackageNwfs`, a package whose ticked NWF is gone named and the others run, the NWF TREE, NWFS TICKED and PACKAGE NWFS blocks, the refresh confirm, then, since F214, each package, and since F222 each NWF, in
+its own Navisworks, whose window runs `RunPickedNwfs` with that NWF's place, `PackageNwf`, so its NWD, its Backup and its
 logs are written into its package's folders and not beside the file. One failure never stops the others: each group and each
 NWF is run in its own try, and since F214 the guard that stops a run after its first 50 tests all fail the same way stops
 only the package it fired in, and since F222 only the group, since the next runs in a fresh Navisworks with a fresh engine.
@@ -1175,7 +1175,7 @@ are .claude\rules\runner.md's, moved there by F228. THE WINDOW OF A PACKAGE'S OW
 and the index, is made with a `PackageRunChild` and runs as soon as it is shown: it sets the controls in the order's order and
 runs nothing where any could not be set, then on the NWC page reads the tree off the order's parent and ticks its one package,
 and on the NWF page, since F232, reads the tree off the order's Report folder and ticks its one NWF, whose order names the
-Report folder as its parent too, and runs the route of its page, its own engine, groups, discipline reports and log, then writes its result and closes. Its groups are the engine's
+Report folder as its parent too, and runs the route of its page, its own engine, groups and log, the window that started the run writing the discipline reports since F222, then writes its result and closes. Its groups are the engine's
 `OutcomesSoFar`, so a run that threw part way still names the groups before the throw. In it no box is shown: `Warn` logs what
 it would have said and its first warning is the package's reason where no group ran, and the run's confirm, the confirm of what
 opening a file discards, the refresh confirm of the NWF page and the Rebuild box's confirm each log that the window that started
