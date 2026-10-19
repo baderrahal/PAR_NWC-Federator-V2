@@ -31,6 +31,10 @@
 $TrackerColumns = @("id", "short title", "area", "wave", "class", "status", "PR", "the run that proved it", "the date of the last change")
 $TrackerStatuses = @("open", "in progress", "in review", "merged", "proven by a run", "waiting for Bader", "dropped")
 
+# Where the closed FR items of steps\fix-round.md are moved, F242, Bader's round of 19 Oct 2026 b,
+# item 4, named as the check's lines name it, under steps. The check reads them as fix-round.md's own.
+$FixRoundClosedName = "history\fix-round-closed.md"
+
 # steps\PROGRESS.md, the one page a session starts from, F139. It is at most this many lines, and
 # its counts sit between these two marker lines, made by make-tracker.ps1 and never typed.
 $ProgressMaxLines = 60
@@ -208,12 +212,16 @@ function Test-TrackerRows($Rows) {
 # Class line, and the questions its section names, Q<n> or each of a range Q<a> to Q<b>, each
 # with the first line that names it. A heading that names an FR number in any other shape is a
 # fault, such as ### FR-190: x, #### FR-190, ### FR190 or ### Item FR-190, and so are a second
-# heading of one item and a file with no item at all, so a heading the reader cannot see never
-# reads as nothing to check.
-function Get-FixRoundItems([string[]] $Lines) {
+# heading of one item, in one file or across the two, so a heading the reader cannot see never
+# reads as nothing to check. Name is the file the lines are read off, fix-round.md or the file the
+# closed items moved to, $FixRoundClosedName, and every fault and item names it. First carries the
+# headings already read off the other file, so an item headed in both is a second heading. A file
+# with no item at all is the caller's fault to say, since the closed items may hold every one.
+function Get-FixRoundItems([string[]] $Lines, [string] $Name = "fix-round.md", $First = $null) {
     $items = New-Object System.Collections.Generic.List[object]
     $faults = New-Object System.Collections.Generic.List[string]
-    $first = New-Object 'System.Collections.Generic.Dictionary[string,int]' ([StringComparer]::Ordinal)
+    $first = $First
+    if ($null -eq $first) { $first = New-Object 'System.Collections.Generic.Dictionary[string,string]' ([StringComparer]::Ordinal) }
     $ignoreCase = [Text.RegularExpressions.RegexOptions]::IgnoreCase
     $item = $null
     for ($k = 0; $k -lt $Lines.Length; $k++) {
@@ -223,16 +231,17 @@ function Get-FixRoundItems([string[]] $Lines) {
             $id = $m.Groups[1].Value
             $item = $null
             if ($first.ContainsKey($id)) {
-                $faults.Add("fix-round.md line " + ($k + 1) + " is a second heading of $id, whose first is at line " + $first[$id])
+                $at = $first[$id].Split("|"); $where = if ($at[0] -ceq $Name) { "line " + $at[1] } else { $at[0] + " line " + $at[1] }
+                $faults.Add("$Name line " + ($k + 1) + " is a second heading of $id, whose first is at $where")
                 continue
             }
-            $first[$id] = $k + 1
-            $item = @{ Id = $id; Line = $k + 1; Class = "UNKNOWN"; ClassLine = 0; Asks = New-Object 'System.Collections.Generic.Dictionary[string,int]' ([StringComparer]::Ordinal) }
+            $first[$id] = "$Name|" + ($k + 1)
+            $item = @{ Id = $id; File = $Name; Line = $k + 1; Class = "UNKNOWN"; ClassLine = 0; Asks = New-Object 'System.Collections.Generic.Dictionary[string,int]' ([StringComparer]::Ordinal) }
             $items.Add($item)
             continue
         }
         if ([regex]::IsMatch($line, '^#{1,6}\s*\W*FR\W?\d', $ignoreCase) -or [regex]::IsMatch($line, '^#{3,6}\s.*\bFR\W?\d', $ignoreCase)) {
-            $faults.Add("fix-round.md line " + ($k + 1) + " looks like the heading of an FR item and is not in the shape ### FR-<number> <key>, so it was not read as one")
+            $faults.Add("$Name line " + ($k + 1) + " looks like the heading of an FR item and is not in the shape ### FR-<number> <key>, so it was not read as one")
             $item = $null
             continue
         }
@@ -251,8 +260,7 @@ function Get-FixRoundItems([string[]] $Lines) {
             if (-not $item.Asks.ContainsKey($one.Groups[1].Value)) { $item.Asks[$one.Groups[1].Value] = $k + 1 }
         }
     }
-    if ($items.Count -eq 0) { $faults.Add("fix-round.md has no heading of an FR item in the shape ### FR-<number> <key>, so no row was checked against it") }
-    return @{ Items = $items; Faults = $faults }
+    return @{ Items = $items; Faults = $faults; First = $first }
 }
 
 # The line of fix-round.md where an entry of the waves section first names an id, or the
@@ -413,7 +421,7 @@ function Get-FixRoundWaves([string[]] $Lines) {
 # question's number with the items naming it in file order, their line, area and wave, or null
 # when a heading or a line of the waves could not be read, so no question row is compared with
 # what was read in part. That fault is named on its own line, so nothing passes in silence.
-function Test-TrackerFixRound($Rows, [string] $RoundPath) {
+function Test-TrackerFixRound($Rows, [string] $RoundPath, [string] $ClosedPath = "") {
     $faults = New-Object System.Collections.Generic.List[string]
     $round = Read-TrackerText $RoundPath "fix-round.md"
     if ($null -ne $round.Fault) {
@@ -424,6 +432,25 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath) {
     $read = Get-FixRoundItems $lines
     $waves = Get-FixRoundWaves $lines
     foreach ($f in $read.Faults) { $faults.Add($f) }
+    # The closed items moved out of fix-round.md are read as its own, after it, so a row of a
+    # closed item still has its heading, its class and the questions it names. The waves stay in
+    # fix-round.md and place the closed items as they always did.
+    if ($ClosedPath -and (Test-Path -LiteralPath $ClosedPath -PathType Leaf)) {
+        $closed = Read-TrackerText $ClosedPath $FixRoundClosedName
+        if ($null -ne $closed.Fault) {
+            $faults.Add($closed.Fault)
+            $read.Faults.Add($closed.Fault)
+        } else {
+            $more = Get-FixRoundItems ($closed.Text.Split("`n")) $FixRoundClosedName $read.First
+            foreach ($i in $more.Items) { $read.Items.Add($i) }
+            foreach ($f in $more.Faults) { $faults.Add($f); $read.Faults.Add($f) }
+        }
+    }
+    if ($read.Items.Count -eq 0) {
+        $none = "fix-round.md has no heading of an FR item in the shape ### FR-<number> <key>, so no row was checked against it"
+        $faults.Add($none)
+        $read.Faults.Add($none)
+    }
     foreach ($f in $waves.Faults) { $faults.Add($f) }
 
     $byId = New-Object 'System.Collections.Generic.Dictionary[string,object]' ([StringComparer]::Ordinal)
@@ -433,14 +460,14 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath) {
     foreach ($item in $read.Items) {
         [void]$itemIds.Add($item.Id)
         if (-not $byId.ContainsKey($item.Id)) {
-            $faults.Add("fix-round.md line " + $item.Line + " names " + $item.Id + " and tracker.csv has no row for it")
+            $faults.Add($item.File + " line " + $item.Line + " names " + $item.Id + " and tracker.csv has no row for it")
             continue
         }
         $row = $byId[$item.Id]
         $where = "tracker.csv line " + $row.Line + ", id " + $item.Id
         if ($row["class"] -cne $item.Class) {
-            if ($item.ClassLine -gt 0) { $faults.Add("${where}: the class '" + $row["class"] + "' is not '" + $item.Class + "', which fix-round.md line " + $item.ClassLine + " gives") }
-            else { $faults.Add("${where}: the class '" + $row["class"] + "' is not 'UNKNOWN', since its item at fix-round.md line " + $item.Line + " has no Class line") }
+            if ($item.ClassLine -gt 0) { $faults.Add("${where}: the class '" + $row["class"] + "' is not '" + $item.Class + "', which " + $item.File + " line " + $item.ClassLine + " gives") }
+            else { $faults.Add("${where}: the class '" + $row["class"] + "' is not 'UNKNOWN', since its item at " + $item.File + " line " + $item.Line + " has no Class line") }
         }
         if (-not $waves.Read) { continue }
         foreach ($column in @("area", "wave")) {
@@ -478,7 +505,7 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath) {
                 if ($waves.Of.ContainsKey($item.Id)) { $area = $waves.Of[$item.Id].Area; $wave = $waves.Of[$item.Id].Wave }
                 foreach ($number in $item.Asks.Keys) {
                     if (-not $places.ContainsKey($number)) { $places[$number] = New-Object System.Collections.Generic.List[object] }
-                    $places[$number].Add(@{ Id = $item.Id; Line = $item.Asks[$number]; Area = $area; Wave = $wave })
+                    $places[$number].Add(@{ Id = $item.Id; File = $item.File; Line = $item.Asks[$number]; Area = $area; Wave = $wave })
                 }
             }
         }
@@ -498,7 +525,7 @@ function Get-QuestionPlace($Places, [string] $Number) {
             if ($p.Area -ceq "none") { continue }
             if (-not $areas.Contains($p.Area)) { $areas.Add($p.Area) }
             if (-not $waves.Contains($p.Wave)) { $waves.Add($p.Wave) }
-            $from.Add($p.Id + " at line " + $p.Line)
+            $from.Add($p.Id + " at " + $(if ($p.File -ceq "fix-round.md") { "" } else { $p.File + " " }) + "line " + $p.Line)
         }
     }
     if ($areas.Count -eq 0) { return @{ Area = "none"; Wave = "none"; From = $null } }

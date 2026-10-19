@@ -17,7 +17,10 @@
       anything but none, UNKNOWN included, since only a run that proved the row goes there
     - an FR item of steps\fix-round.md, by its heading, with no row written with its exact id,
       a heading naming an FR number in another shape, a second heading of one item, a
-      fix-round.md with no item heading, and a row whose id starts FR- with no item headed so
+      fix-round.md with no item heading, and a row whose id starts FR- with no item headed so.
+      The closed items moved to steps\history\fix-round-closed.md, F242, are read as
+      fix-round.md's own when that file is there, so a heading there names its item, one in
+      both files is a second heading, and every fault of an item there names that file
     - in the waves section of fix-round.md: no such section, a line in no shape its reader
       knows, a line starting with a letter right under a wave, area or stage line, an area
       line with no wave line above it, an FR id named where the reader places no item, an
@@ -62,6 +65,7 @@ if (-not $Root) { $Root = Split-Path (Split-Path $PSScriptRoot) }
 $csv = Join-Path $Root "steps\tracker.csv"
 $md = Join-Path $Root "steps\tracker.md"
 $round = Join-Path $Root "steps\fix-round.md"
+$roundClosed = Join-Path (Join-Path $Root "steps") $FixRoundClosedName
 $questions = Join-Path $Root "steps\02_questions.md"
 
 foreach ($name in @("steps\tracker.csv", "steps\fix-round.md", "steps\02_questions.md")) {
@@ -82,7 +86,7 @@ $waiting = 0
 $requests = 0
 if ($parsed) {
     foreach ($f in (Test-TrackerRows $read.Rows)) { $faults.Add($f) }
-    $against = Test-TrackerFixRound $read.Rows $round
+    $against = Test-TrackerFixRound $read.Rows $round $roundClosed
     foreach ($f in $against.Faults) { $faults.Add($f) }
     $items = $against.Count
     $areas = $against.Areas
@@ -127,5 +131,5 @@ if ($faults.Count -gt 0) {
     Write-Output ("check-tracker: REFUSED, " + $faults.Count + " fault(s) above")
     exit 1
 }
-Write-Output ("check-tracker: the tracker reads clean, " + $read.Rows.Count + " rows, each of the $items FR items of fix-round.md has one with its class, area and wave, each of the $areas areas its waves section names has one, each of the $waiting questions of 02_questions.md with no answer has one, each of the $requests requests of Bader's there has one, the $asked rows of class question each name a question of 02_questions.md, read the area and the wave of the items naming it and read as its answer says, and tracker.md is what make-tracker.ps1 makes")
+Write-Output ("check-tracker: the tracker reads clean, " + $read.Rows.Count + " rows, each of the $items FR items of fix-round.md and its closed items has one with its class, area and wave, each of the $areas areas its waves section names has one, each of the $waiting questions of 02_questions.md with no answer has one, each of the $requests requests of Bader's there has one, the $asked rows of class question each name a question of 02_questions.md, read the area and the wave of the items naming it and read as its answer says, and tracker.md is what make-tracker.ps1 makes")
 exit 0
