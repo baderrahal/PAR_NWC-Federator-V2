@@ -867,6 +867,15 @@ namespace Federator.Addin.Ui
                     }
 
                     GroupRunFiles files = GroupRunFiles.Read(File.ReadAllLines(tsv));
+
+                    // F236 on the breaker's S1. A group whose .tsv names no test that ran has no count to read, and a total of
+                    // noughts would read as checked and clean.
+                    if (!files.AnyTestRead)
+                    {
+                        check.AddNotRead(result.Groups[0].Group, "its .tsv names no test that ran, its tests not asked for or the group ending before its clash step");
+                        continue;
+                    }
+
                     string whyNoWorkbook;
                     WorkbookTests workbook = TheClashWorkbook(files, out whyNoWorkbook);
                     string whyNoPage = files.Page == null ? "no page was written" : !File.Exists(files.Page) ? "the page written, " + files.Page + ", is not on the disk" : null;
@@ -894,6 +903,7 @@ namespace Federator.Addin.Ui
             foreach (string community in order)
             {
                 string path = null;
+                bool saving = false;
 
                 try
                 {
@@ -903,7 +913,9 @@ namespace Federator.Addin.Ui
                     path = ReportPaths.FreeFilePath(folder, ClashCountWorkbook.NameFor(community), DateTime.Now, null);
                     log.Block("CLASH COUNT CHECK " + community, check.Lines());
                     log.WriteAttempted("COUNTS", path);
+                    saving = true;
                     ClashCountWorkbook.Write(path, check, DateTime.Now);
+                    saving = false;
                     log.WriteFinished("COUNTS", path);
                     log.Line(ClashCountWorkbook.ReadBackLine(path, check));
                 }
@@ -912,7 +924,7 @@ namespace Federator.Addin.Ui
                     log.Failure("writing the clash count check of " + community, error, "the other communities are still written");
 
                     // F236 on the breaker's C1. A save that threw lists nothing as written, as every workbook's does.
-                    if (path != null)
+                    if (saving)
                     {
                         log.WriteThrew("COUNTS", path);
                     }

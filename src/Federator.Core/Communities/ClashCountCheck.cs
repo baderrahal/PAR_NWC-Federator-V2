@@ -47,11 +47,30 @@ namespace Federator.Core.Communities
         /// <summary>Whether the group wrote a VIEWS TREE block at all, false where its views were not asked for or not reached.</summary>
         public bool ViewsTreeWritten { get; private set; }
 
-        /// <summary>The tests the rule of two set codes left out, Q209.</summary>
-        public int LeftOutBySetCodes { get; private set; }
+        /// <summary>The tests the rule of two set codes left out, Q209, minus one, UNKNOWN, where no coverage row was read.</summary>
+        public int LeftOutBySetCodes
+        {
+            get { return coverageRead ? setCodes : ClashCountRow.Unknown; }
+        }
 
-        /// <summary>The tests the rule of one discipline left out, Q203.</summary>
-        public int LeftOutByOneDiscipline { get; private set; }
+        /// <summary>The tests the rule of one discipline left out, Q203, minus one, UNKNOWN, where no coverage row was read.</summary>
+        public int LeftOutByOneDiscipline
+        {
+            get { return coverageRead ? oneDiscipline : ClashCountRow.Unknown; }
+        }
+
+        /// <summary>
+        /// Whether the .tsv names any test that ran, found clashes, passed or threw after its count. A group with none, its tests
+        /// not asked for, a failure before its clash step or a .tsv cut short, has no count to read, the breaker's S1.
+        /// </summary>
+        public bool AnyTestRead
+        {
+            get { return found.Count > 0; }
+        }
+
+        private bool coverageRead;
+        private int setCodes;
+        private int oneDiscipline;
 
         /// <summary>
         /// A test's open clashes in its views, the views of one test added up, nought for a test with no view where the block
@@ -109,7 +128,7 @@ namespace Federator.Core.Communities
             int count;
             bool number = int.TryParse(row.Number, NumberStyles.None, CultureInfo.InvariantCulture, out count);
 
-            if (row.Happening == RunEvents.TestFoundClashes && number)
+            if ((row.Happening == RunEvents.TestFoundClashes || row.Happening == RunEvents.TestFailedAfterItsCount) && number)
             {
                 found[row.Name] = count;
             }
@@ -161,8 +180,9 @@ namespace Federator.Core.Communities
             }
             else if (row.Happening == RunEvents.CoverageTest)
             {
-                LeftOutBySetCodes += CoverageBlock.RowGives(row.Text, CoverageReason.SameSetCode) ? 1 : 0;
-                LeftOutByOneDiscipline += CoverageBlock.RowGives(row.Text, CoverageReason.OneDiscipline) ? 1 : 0;
+                coverageRead = true;
+                setCodes += CoverageBlock.RowGives(row.Text, CoverageReason.SameSetCode) ? 1 : 0;
+                oneDiscipline += CoverageBlock.RowGives(row.Text, CoverageReason.OneDiscipline) ? 1 : 0;
             }
         }
     }
@@ -322,7 +342,7 @@ namespace Federator.Core.Communities
         /// <summary>Whether any of the four counts could not be read, so the row is not judged whole.</summary>
         public bool HasUnknown
         {
-            get { return Found < 0 || ExcelRows < 0 || HtmlRows < 0 || Views < 0 || ViewsExpected < 0; }
+            get { return Found < 0 || ExcelRows < 0 || HtmlRows < 0 || Views < 0; }
         }
 
         /// <summary>The names of the counts that could not be read, for the log.</summary>
@@ -333,12 +353,6 @@ namespace Federator.Core.Communities
             AddIfUnknown(names, ExcelRows, Columns[4]);
             AddIfUnknown(names, HtmlRows, Columns[5]);
             AddIfUnknown(names, Views, Columns[6]);
-
-            if (ExcelRows >= 0 && ViewsExpected < 0)
-            {
-                names.Add("the statuses of the Excel rows");
-            }
-
             return string.Join(", ", names.ToArray());
         }
 
@@ -370,9 +384,10 @@ namespace Federator.Core.Communities
 
         /// <summary>
         /// A row adding up the rows given, under the words given. A count UNKNOWN in a row is left out of its column, and the
-        /// Why skipped cell then says the total is at least the sum, a count not taken never being a nought.
+        /// Why skipped cell then says the total is at least the sum, a count not taken never being a nought, as it does where a
+        /// group of the total could not be read at all.
         /// </summary>
-        public static ClashCountRow Total(string building, string words, IList<ClashCountRow> rows)
+        public static ClashCountRow Total(string building, string words, IList<ClashCountRow> rows, int groupsNotRead = 0)
         {
             int[] sums = new int[5];
             int[] statuses = new int[Statuses.Length];
@@ -395,7 +410,19 @@ namespace Federator.Core.Communities
                 }
             }
 
-            string why = unknown == 0 ? string.Empty : "at least these, " + unknown + (unknown == 1 ? " count UNKNOWN is" : " counts UNKNOWN are") + " left out";
+            List<string> left = new List<string>();
+
+            if (unknown > 0)
+            {
+                left.Add(unknown + (unknown == 1 ? " count UNKNOWN is" : " counts UNKNOWN are") + " left out");
+            }
+
+            if (groupsNotRead > 0)
+            {
+                left.Add(groupsNotRead + (groupsNotRead == 1 ? " group whose counts were not read is" : " groups whose counts were not read are") + " left out");
+            }
+
+            string why = left.Count == 0 ? string.Empty : "at least these, " + string.Join(", ", left.ToArray());
             return new ClashCountRow(building, words, string.Empty, sums[0], sums[1], sums[2], sums[3], sums[4], why, statuses);
         }
     }
@@ -470,7 +497,7 @@ namespace Federator.Core.Communities
 
             foreach (KeyValuePair<string, int> test in run.Found)
             {
-                if (test.Value > 0 && !run.IsMerged(test.Key))
+                if ((test.Value > 0 || run.AddedByMirrorsTo(test.Key) > 0) && !run.IsMerged(test.Key))
                 {
                     names.Add(test.Key);
                 }
@@ -490,24 +517,25 @@ namespace Federator.Core.Communities
                 IList<WorkbookTest> inExcel = workbook == null ? new List<WorkbookTest>() : workbook.Named(name);
                 IList<PageTest> inPage = page == null ? new List<PageTest>() : page.Named(name);
                 WorkbookTest excel = inExcel.Count == 1 ? inExcel[0] : null;
-                int excelRows = workbook == null || inExcel.Count > 1 ? ClashCountRow.Unknown : excel == null ? 0 : excel.Rows;
+                bool unread = workbook == null || inExcel.Count > 1 || (excel != null && excel.Rows < 0);
+                int excelRows = unread ? ClashCountRow.Unknown : excel == null ? 0 : excel.Rows;
                 int html = page == null || inPage.Count > 1 ? ClashCountRow.Unknown : inPage.Count == 0 ? 0 : inPage[0].Rows;
                 List<int> statuses = new List<int>();
 
                 foreach (ClashStatus status in ClashCountRow.Statuses)
                 {
-                    statuses.Add(workbook == null || inExcel.Count > 1 ? ClashCountRow.Unknown : excel == null ? 0 : excel.RowsAt(status.ToString()));
+                    statuses.Add(unread ? ClashCountRow.Unknown : excel == null ? 0 : excel.RowsAt(status.ToString()));
                 }
 
                 group.Add(new ClashCountRow(
                     building,
                     name,
-                    excel == null ? string.Empty : excel.Priority,
+                    workbook == null ? ClashCountRow.UnknownWord : excel == null ? string.Empty : excel.Priority,
                     run.Found.TryGetValue(name, out found) ? found : ClashCountRow.Unknown,
                     excelRows,
                     html,
                     run.ViewsOf(name),
-                    workbook == null || inExcel.Count > 1 ? ClashCountRow.Unknown : excel == null ? 0 : excel.Pictures,
+                    unread ? ClashCountRow.Unknown : excel == null ? 0 : excel.Pictures,
                     workbook == null ? "the workbook was not read" : excel == null ? WhyNotInTheWorkbook(inExcel.Count) : WhySkipped(excel, options),
                     statuses,
                     run.AddedByMirrorsTo(name),
@@ -596,7 +624,7 @@ namespace Federator.Core.Communities
                 all.AddRange(group.Rows);
             }
 
-            return ClashCountRow.Total(Community, TotalWords + " " + Community, all);
+            return ClashCountRow.Total(Community, TotalWords + " " + Community, all, notRead.Count);
         }
 
         /// <summary>The rows whose four counts differ, over every group.</summary>

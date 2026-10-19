@@ -1030,6 +1030,10 @@ namespace Federator.Addin.Engine
             PlannedClashTest planned,
             ClashRunOutcome outcome)
         {
+            // F236 on the reviewer's second reading. Clash Detective's count, kept outside the try so a throw after it, in the
+            // harvest, still hands it to the clash count check and the test is never dropped from it in silence.
+            int counted = -1;
+
             try
             {
                 TestAddress address;
@@ -1303,6 +1307,7 @@ namespace Federator.Addin.Engine
                     }
 
                     tally = Count(after, planned.Name);
+                    counted = tally.Total;
 
                     // Read now, in the same pass, because the results are only readable
                     // while this document is open and this handle is fresh.
@@ -1422,6 +1427,12 @@ namespace Federator.Addin.Engine
                     "clash test " + planned.Name,
                     error,
                     "kept going with the next test, this one is reported as skipped and was not run");
+
+                if (counted >= 0)
+                {
+                    log.Row(RunEvents.TestFailedAfterItsCount, planned.Name, EventRow.Count(counted),
+                        "Clash Detective counted its clashes, then the test threw: " + reason);
+                }
             }
         }
 

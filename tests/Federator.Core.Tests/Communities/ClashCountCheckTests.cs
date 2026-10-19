@@ -453,6 +453,103 @@ namespace Federator.Core.Tests
             Assert.That(ClashCountWorkbook.ReadBackLine(Path.Combine(folder, "none.xlsx"), check), Does.StartWith("COUNTS   read back FAILED"));
         }
 
+        /// <summary>The reviewer's second reading: a test whose harvest threw after Clash Detective counted it is still a row.</summary>
+        [Test]
+        public void ATestThatThrewAfterItsCountIsStillARowWithClashDetectivesCount()
+        {
+            GroupRunFiles run = GroupRunFiles.Read(Tsv(
+                Row(RunEvents.TestFailedAfterItsCount, Walls, "7", "Clash Detective counted its clashes, then the test threw: X"),
+                Row(RunEvents.ViewsTree, "1B06PK", "1", ViewLine("Doors-vs-Walls", 0))));
+
+            ClashCountRow row = OneRow(run, null, null);
+
+            Assert.That(row.Test, Is.EqualTo(Walls));
+            Assert.That(row.Found, Is.EqualTo(7));
+        }
+
+        [Test]
+        public void TwoBlocksOrTwoPageTestsOfOneNameAreUnknownNeverOneOfThem()
+        {
+            ClashReport report = new ClashReport("1B06PK", "1104-PAR-1B06PK-ZZZ-BM-MOD-000001");
+            report.SetTreeRoot = "lcop_selection_set_tree";
+            report.DocumentUnits = "m";
+            report.RunAt = new DateTime(2026, 10, 19, 4, 0, 0);
+            WorkbookTestsTests.AddTest(report, Walls, 3, 0);
+            WorkbookTestsTests.AddTest(report, Walls, 2, 0);
+            WorkbookTests twice = WorkbookTestsTests.ReadBack(WorkbookTestsTests.Write(report, folder));
+            WorkbookTests once = WorkbookTestsTests.ReadBack(Workbook(test => { }));
+
+            ClashCountRow excel = OneRow(Run(5, 5), twice, PageTests.Read(Block(Walls, 5)));
+            ClashCountRow page = OneRow(Run(5, 5), once, PageTests.Read(Block(Walls, 5) + Block(Walls, 5)));
+
+            Assert.That(excel.ExcelRows, Is.EqualTo(ClashCountRow.Unknown));
+            Assert.That(excel.WhySkipped, Is.EqualTo("the workbook holds 2 blocks of this test"));
+            Assert.That(page.HtmlRows, Is.EqualTo(ClashCountRow.Unknown));
+            Assert.That(page.ExcelRows, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void AGroupNotReadIsNamedOnALineAndTheTestsTheRuleOfOneDisciplineLeftOutAreCounted()
+        {
+            ClashCountCheck check = new ClashCountCheck("C06");
+            check.AddNotRead("1B06PE", "its .tsv C:\\x.tsv is not there");
+            check.AddNotRead("1B06PF", null);
+            ClashCountGroup group = check.AddGroup("1B06PK", GroupRunFiles.Read(Tsv(
+                Row(RunEvents.CoverageTest, "A-vs-B", string.Empty, Coverage("A-vs-B", CoverageReason.OneDiscipline, false)),
+                Row(RunEvents.CoverageTest, "C-vs-D", string.Empty, Coverage("C-vs-D", CoverageReason.OneDiscipline, false)))),
+                null, null, null, ViewpointSettings.DefaultViewStatuses);
+
+            Assert.That(group.LeftOutByOneDiscipline, Is.EqualTo(2));
+            Assert.That(group.LeftOutBySetCodes, Is.EqualTo(0));
+            Assert.That(check.Lines(), Has.Member("COUNTS   NOT READ  C06  1B06PE  its .tsv C:\\x.tsv is not there"));
+            Assert.That(check.Lines(), Has.Member("COUNTS   NOT READ  C06  1B06PF  UNKNOWN"), "no reason handed is UNKNOWN, never empty");
+            Assert.That(check.Lines().Last(), Does.EndWith("0 not built for one discipline, 2 not read"));
+        }
+
+        /// <summary>The breaker's S1 and S2 on attempt 2: a .tsv with no test row and no coverage row holds no count to read.</summary>
+        [Test]
+        public void ATsvWithNoTestAndNoCoverageRowReadsNoTestAndTheLeftOutCountsUnknown()
+        {
+            GroupRunFiles none = GroupRunFiles.Read(Tsv(Row(RunEvents.Written, RunEvents.WorkbookKind, "1", "a.xlsx")));
+            GroupRunFiles passed = GroupRunFiles.Read(Tsv(Row(RunEvents.TestPassed, Walls, "0", string.Empty)));
+
+            Assert.That(none.AnyTestRead, Is.False);
+            Assert.That(passed.AnyTestRead, Is.True, "a test that passed is a count read");
+            Assert.That(none.LeftOutByOneDiscipline, Is.EqualTo(ClashCountRow.Unknown));
+            Assert.That(none.LeftOutBySetCodes, Is.EqualTo(ClashCountRow.Unknown));
+        }
+
+        /// <summary>The breaker's S3: a group not read leaves the community's total a lower bound, said.</summary>
+        [Test]
+        public void TheCommunitysTotalSaysAtLeastWhereAGroupWasNotRead()
+        {
+            WorkbookTests workbook = WorkbookTestsTests.ReadBack(Workbook(test => { }));
+            ClashCountCheck check = new ClashCountCheck("C06");
+            OneRow(Run(5, 5), workbook, PageTests.Read(Block(Walls, 5)), check);
+
+            Assert.That(check.Total().WhySkipped, Is.Empty);
+            check.AddNotRead("1B06PE", "its Navisworks wrote no result");
+            Assert.That(check.Total().WhySkipped, Is.EqualTo("at least these, 1 group whose counts were not read is left out"));
+        }
+
+        /// <summary>The breaker's S4: a kept test that found none whose mirrors found clashes is still a row.</summary>
+        [Test]
+        public void AKeptTestThatFoundNoneWhoseMirrorsFoundClashesIsARow()
+        {
+            GroupRunFiles run = GroupRunFiles.Read(Tsv(
+                Row(RunEvents.TestPassed, Walls, "0", string.Empty),
+                Row(RunEvents.TestFoundClashes, "Floors-vs-Walls (mirror)", "5", string.Empty),
+                Row(RunEvents.Mirror, "Floors-vs-Walls (mirror)", string.Empty, Walls),
+                Row(RunEvents.MirrorMerged, "Floors-vs-Walls (mirror)", string.Empty, Walls),
+                Row(RunEvents.AddedByMirrors, Walls, "5", string.Empty)));
+
+            ClashCountRow row = OneRow(run, null, null);
+
+            Assert.That(row.Test, Is.EqualTo(Walls));
+            Assert.That(row.RowsExpected, Is.EqualTo(5));
+            Assert.That(row.Priority, Is.EqualTo(ClashCountRow.UnknownWord), "no workbook read, no priority read");
+        }
+
         [Test]
         public void ACommunityNameExcelRefusesStillWritesItsSheet()
         {

@@ -11,13 +11,14 @@ build step 5 is step 1. Packages and the picker is the NWF page's tree.
 1. After a run, open the Report folder's C06 folder and open `C06 clash count check.xlsx`.
    Look for: one row per group per test with clashes, its columns from Building to Resolved, a bold Total under each group
    and one Total C06 at the end.
-2. Filter the table for rows with a red fill.
-   Look for: none, and in the log no line starting `COUNTS   DIFFER`.
+2. Filter the table for rows with a red fill, then search the run's log for `COUNTS   read back`.
+   Look for: no red row and no cell reading UNKNOWN, in the log no line starting `COUNTS   DIFFER` or `COUNTS   UNKNOWN`, and
+   the read back line ending `as written, of C06`.
 3. Pick one row and open that group's Excel and HTML on the same test.
    Look for: the same Excel rows, HTML rows and statuses as the row says, and in Clash Detective the same clash count.
 4. Scroll below the table.
-   Look for: the groups not built for one discipline by name, and for each group the tests left out by one discipline and by
-   two set codes.
+   Look for: the groups not built for one discipline by name, for each group the tests left out by one discipline and by
+   two set codes, and no section `Groups whose counts could not be read`.
 
 ### F235, the picture caps over 750 clashes and penetrations on by default
 

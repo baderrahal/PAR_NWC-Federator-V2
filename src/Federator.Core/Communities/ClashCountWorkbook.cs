@@ -29,7 +29,7 @@ namespace Federator.Core.Communities
         public const string LeftOutHeading = "Tests left out by a rule";
         public static readonly string[] LeftOutColumns = { "Building", "Left out by one discipline", "Left out by two set codes" };
         public const string EveryTestLeftOut = "every test, the group was not built";
-        public const string NotReadHeading = "Groups whose files could not be read";
+        public const string NotReadHeading = "Groups whose counts could not be read";
         public static readonly string[] NotReadColumns = { "Building", "Why" };
 
         public static string NameFor(string community)
@@ -87,8 +87,8 @@ namespace Federator.Core.Communities
                 foreach (ClashCountGroup group in check.Groups)
                 {
                     sheet.Cell(row, 1).SetValue(group.Building);
-                    sheet.Cell(row, 2).SetValue(group.LeftOutByOneDiscipline);
-                    sheet.Cell(row, 3).SetValue(group.LeftOutBySetCodes);
+                    PutCount(sheet.Cell(row, 2), group.LeftOutByOneDiscipline);
+                    PutCount(sheet.Cell(row, 3), group.LeftOutBySetCodes);
                     row++;
                 }
 
@@ -153,6 +153,19 @@ namespace Federator.Core.Communities
             if (!total && line.Differs)
             {
                 range.Style.Fill.BackgroundColor = Red;
+            }
+        }
+
+        /// <summary>A count as a number, or UNKNOWN where it was not read, never a nought.</summary>
+        private static void PutCount(IXLCell cell, int count)
+        {
+            if (count < 0)
+            {
+                cell.SetValue(ClashCountRow.UnknownWord);
+            }
+            else
+            {
+                cell.SetValue(count);
             }
         }
 

@@ -2730,8 +2730,11 @@ the NWC page whose every group is of one discipline too.
   Reviewed is in none, the lead's reading of his words, Q222. A total is never red
 - A TOTAL PER GROUP AND ONE FOR THE COMMUNITY, `ClashCountRow.Total`, then the groups not built for one discipline, off the plans
   on the NWC page and the NOT BUILT line of a result on the NWF page, then the tests a rule left out, a count a group, a group not
-  built reading every test left out, then the groups whose files could not be read, each with why, `ClashCountCheck.NotRead`,
-  never dropped in silence: no result, a result naming no group for another reason, no .tsv, or a read that threw. The CHECKS line
+  built reading every test left out, then the groups whose counts could not be read, each with why, `ClashCountCheck.NotRead`,
+  never dropped in silence: no result, a result naming no group for another reason, no .tsv, a .tsv naming no test that ran,
+  `GroupRunFiles.AnyTestRead`, the breaker's S1 on attempt 2, or a read that threw, and the community's total then says at least. A
+  test whose harvest threw after Clash Detective counted it keeps that count on a row of its own, `RunEvents.TestFailedAfterItsCount`,
+  and a group with no coverage row reads its tests left out UNKNOWN. The CHECKS line
   reads the workbook back off the disk against the check it was written from, its test rows and its red ones, and says THE
   WORKBOOK DIFFERS with both sides where they do not match, `ClashCountWorkbook.ReadBackLine`
 

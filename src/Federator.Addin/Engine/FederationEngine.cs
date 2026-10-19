@@ -4505,7 +4505,7 @@ namespace Federator.Addin.Engine
 
             // F236 on the reviewer's finding 1. The clash count check of the window that started the run reads the sheet by
             // the name the writer gave it, which the file's name need not carry, so the name goes in the .tsv beside the write.
-            if (!threw)
+            if (!threw && outcome.WorkbookOnDisk)
             {
                 log.Row(RunEvents.WorkbookSheet, RunEvents.WorkbookKind, string.Empty, SheetNames.ForReport(report.OutputName));
             }

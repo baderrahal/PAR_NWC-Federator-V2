@@ -12,6 +12,9 @@ namespace Federator.Core.Diagnostics
         /// <summary>A test that ran and found none.</summary>
         public const string TestPassed = "test passed";
 
+        /// <summary>A test whose clashes Clash Detective counted and which then threw, its name and that count.</summary>
+        public const string TestFailedAfterItsCount = "test failed after its count";
+
         /// <summary>One row a test of the coverage, its name and the words of its reason.</summary>
         public const string CoverageTest = "coverage test";
 
