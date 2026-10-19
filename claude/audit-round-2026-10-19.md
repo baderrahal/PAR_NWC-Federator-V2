@@ -236,7 +236,10 @@ settings were put back, 0 lines differing. The logs and tsv of both pages are in
 
 This part, the proof steps at the top of steps\03_bader_next.md, the full run's output first, and the QA of the repo read by an
 audit agent on main 6faff29, after PR 317, which PR 318 changed only under steps and tools\probes. Of its 65 rows F238 fixed 15
-as text, the rule files, workflow.md, the page and six control bytes under steps, and lists the rest. No code changed.
+as text, about 13 problems, the rule files, workflow.md, the page and six control bytes under steps, and four more lines the
+claim-checker found beside them, core.md on the _files folder twice and Compact, and addin.md on a step that moved. 9 rows
+were closed before and one is kept by Q207, and the other 40 are listed. PR 318 changed 147 files under steps\logs, 5 under
+steps and 3 under tools\probes\ClashPickProbe, read by git diff 6faff29 d5f34d1. No code changed.
 
 ## The checks that pass
 
@@ -306,7 +309,7 @@ as text, the rule files, workflow.md, the page and six control bytes under steps
 | 19 | closed | steps\01_next.md at 6faff29, lines 1808 to 1836 | F231 to F236 each have a section and a DONE line, and so do their rows in tracker.csv | closed before F238 |
 | 20 | stands again | steps\01_next.md:1805 and :1806 at 6faff29 | a BEL byte, 0x07, sits in "claude\audit-round-2026-10-18b.md" in F230's own section, the fix that called the byte fixed | fixed by F238 |
 | 21 | closed | 03_bader_next.md | F227's step reads as the IMAGES line does | closed before F238 |
-| 22 | stands | 03_bader_next.md at 6faff29, F233 step 4 (line 67), step 5 (line 73), F232 step 10 (line 102), F236 step 2 (line 14) | steps.md:30-31, one action a step. Each of these asks for two to four actions | listed, the full run's steps one action each |
+| 22 | stands | 03_bader_next.md at 6faff29, F233 step 4 (line 67), step 5 (line 73), F232 step 10 (line 102), F236 step 2 (line 14) | steps.md:30-31, one action a step. Each of these asks for two to four actions | listed, and steps 1, 6, 8 and 9 of the full run's steps hold more than one action too |
 | 23 | stands | src\Federator.Core\Coverage\CoverageSettings.cs:87 | CategoriesNamedPerModel is internal and read only by CoverageSettingsTests.cs:25 and :75-77 | listed |
 | 24 | stands | CLAUDE.md:154-156 against build.md:12-24 | install.ps1's rule is written in both | listed |
 | 25 | kept by Q207 | AutoSaveSwitch.cs, tools\loop\nw-guard.ps1 | unchanged, Q207 keeps the loop's copy | kept by Q207 |

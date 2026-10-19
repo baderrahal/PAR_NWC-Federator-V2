@@ -9,12 +9,15 @@ Branch fix-F238 off main d5f34d1. The end of Bader's round of 19 Oct 2026, F231 
 What was done. claude\audit-round-2026-10-19.md finished: F236's part, F237's with the counts per community read off the clash
 count checks, the ten random picks and the comparison with 18 Oct, the bugs found, each a row, the checks that pass, and the
 contradictions with CLAUDE.md. The proof steps at the top of steps\03_bader_next.md in one order for the round: 13 steps on the
-full run's output in final-2026-10-19\Report, step 1 opening Report\C06 and its AR, ST, ME and EL workbooks, each step one
-action with its Look for line, then the steps of F236 to F232. The QA of the repo, read by an audit agent on main 6faff29 with
-the Core tests run there, 3451 passed, 0 failed, 0 skipped: of the 35 contradictions of 18 Oct and the morning's 9 still open,
-10 are closed and the rest stand, and 21 are new, numbered 36 to 56. F238 fixed 15 of them as text: the six control bytes
-under steps put back as the paths they were, the page's waiting lines naming Q187 and Q195 answered, four rules of core.md, four
-lines of addin.md, two lines of workflow.md and the order of the proof steps. The other 40 are listed in the audit with where
+full run's output in final-2026-10-19\Report, step 1 opening Report\C06 and its AR, ST, ME and EL workbooks, each with its Look
+for line, then the steps of F236 to F232. Steps 1, 6, 8 and 9 hold more than one action, which row 22 lists. The QA of the
+repo, read by an audit agent on main 6faff29 with the Core tests run there, 3451 passed, 0 failed, 0 skipped: of the 35
+contradictions of 18 Oct and the morning's 9 still open, 9 are closed, one is kept by Q207 and the rest stand, and 21 are new,
+numbered 36 to 56. F238 fixed 15 of the 65 rows as text, about 13 problems, since rows 16 and m12 and rows 20 and 49 name one
+fault each: the six control bytes under steps put back as the paths they were, the page's waiting lines naming Q187 and Q195
+answered, six lines of core.md, four of addin.md, two of workflow.md and the order of the proof steps. The claim-checker then
+found the same faults beside them, two more lines of core.md on the _files folder, one on Compact and one of addin.md naming a
+step that moved, fixed too. The other 40 are listed in the audit with where
 each is, the code ones among them: words and a rule of the clash count check typed in the window, 43, a page with no clash
 table read as a nought, 46, the open file run as a second route of the NWC page, 37, and members only tests read, 38 and 56.
 

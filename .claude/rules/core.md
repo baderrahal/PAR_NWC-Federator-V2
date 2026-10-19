@@ -1585,7 +1585,7 @@ and 6 does not read as broken.
   picture, anchored at column A of that row, its far corner worked out from the sheet's own
   widths and heights, so a 60 point clash row gives the client's own end, column A at
   906780 and the next row at 144780. The target is the absolute path of the jpg in the
-  _files folder beside the workbook, `ImageNaming.PathFor`, as the client's file has it, and
+  _files folder in the Clash report folder since F177, `ImageNaming.PathFor`, as the client's file has it, and
   the cell keeps its relative link. NO PICTURE IS EMBEDDED, so THE PICTURES SHOW ONLY WHILE
   THAT FOLDER STAYS WHERE IT WAS WRITTEN, which the WORKBOOK step's XLSX line says,
   `LinkedPictures.Line`. Every part is made and turned into bytes first, then written into a copy that replaces
@@ -1640,7 +1640,7 @@ and 6 does not read as broken.
   collides with a file the Navisworks install ships
 - Images are ON by default, because the report the client has already accepted has them
   and one without them is not the thing they agreed to receive. They go where that report
-  puts them, in a folder beside the workbook named after it with _files on the end, as
+  puts them, in a folder named after the page with _files on the end, in the Clash report folder since F177, as
   loose jpg. The workbook links to them and does not paste them in, the linked pictures
   above. The thumbnail tick box that pasted them into the cells is gone, F152, with
   ImageOptions.EmbedThumbnail and the writer's two thumbnail sizes. A PICTURE IS NOT A VIEWPOINT and nothing in the image
@@ -3188,7 +3188,7 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   its rows or count were taken, and any other says whether it ran is UNKNOWN, each with what
   it threw. A test already in the document and not run this run still holds an earlier
   run's results, the design's decision 4 at its default A, and only such a test is given
-  that cause. Compact is named as something that could account for a gap, never its cause,
+  that cause. Compact, which nothing runs since F185, is named as something that could account for a gap, never its cause,
   where its count of Resolved clashes removed across the group is at least the test's gap,
   and where it is fewer the line says so
 - THE DOCUMENT'S SIDE IS `DocumentTestCount`, plain numbers the add-in fills from one walk of

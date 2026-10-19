@@ -19,7 +19,7 @@ fix follow, F236 first.
    and Issues AR 10, ST 28, ME 17, EL 14. In ST, rows 1 and 2 on a red fill, 1B06BC at `34.014 m, ST on T1, AR on Internal`
    and `34.472 m, ST on BCTANK, AR on Internal`. In EL, four One discipline group rows, 1B06BS, 1B06KI, 1B06PG and 1B06PW.
 2. In the same folder open `C06 clash count check.xlsx`.
-   Look for: no red row, the last row `Total C06` reading 3904, 3904, 3904, 2121, 3904, 0, and Reviewed 1783, then under
+   Look for: no red row, the row `Total C06` reading 3904, 3904, 3904, 2121, 3904, 0, and Reviewed 1783, then under
    `Groups not built for one discipline` 1B06BS, 1B06KI, 1B06PG, 1B06PT, 1B06PW and 1C06PK.
 3. Open Report\C07\`C07 clash count check.xlsx`.
    Look for: no red row, `Total C07` reading 1549, 1549, 1549, 986, 1549, 0, and Reviewed 563, and six groups not built,
