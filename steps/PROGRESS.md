@@ -1,4 +1,4 @@
-STATE WAITING, 2026-10-19 10:48, the round of 19 Oct b done, F239 to F242 merged in 320 to 324, waiting for Bader's answers to the form Q225
+STATE OPEN, 2026-10-19, the round of 20 Oct, F243 merged in 325, F244 next, then F245, the form and the proof copy
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,10 +15,11 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 325 | 16 | 0 | 30 | 135 | 7 | 513 |
-| total | 529 | 24 | 0 | 30 | 235 | 18 | 836 |
+| outside the waves | 326 | 16 | 0 | 30 | 144 | 7 | 523 |
+| total | 530 | 24 | 0 | 30 | 244 | 18 | 846 |
 <!-- the end of the counts -->
 ## Done
+- 20 Oct, Bader's order of 19 Oct 20:58, F243 one name per output, overwritten, the clash Excel in Clash report, no dated and no Internal files, 325, three attempts and a guard pass by his decision, rows F243-R1 to R9
 - 19 Oct b, Bader's new way of building, four items, no Navisworks run. F240 the agents' models by their jobs, 320. F241 the
   round rules under Rounds in CLAUDE.md and the ai-max skill version 3, 321. F239 docs\rules.md, 105 rules, ten with no test,
   322. F242 the closed items of four steps files moved into steps\history and this page in five parts, 323, and the end, 324
@@ -46,6 +47,6 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
 - The agents' new models and the ai-max copy load from the next session he starts
 ## Next
-1. His answers to Q225 and the questions it lists, by number and letter
+1. F244 the discipline workbook from the mock, then F245 the wrong data of 19 Oct, then the round's form Q226 onward and the proof copy proof-2026-10-20
 2. The proof steps at the top of steps\03_bader_next.md, the full run's 13 first
 3. The next round, three or four fixes from his answers, the code ones of claude\audit-round-2026-10-19b.md first

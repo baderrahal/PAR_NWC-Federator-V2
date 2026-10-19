@@ -2,6 +2,41 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F243, one name per output, the round of 20 Oct
+
+Branch fix-F243 off main f5c9bee, worktree agent-a6690e08d866e220a, pull request 325. Bader's order of 19 Oct 2026 20:58, the
+first of three fixes, F243 to F245.
+
+What was done. The clash Excel is written in the Clash report folder beside its HTML and its pictures, so every picture link
+is the pictures folder and the picture with nothing going up, and its links are read back against the links the writer made,
+one missing on the disk an error on the group. Every output has one name and is overwritten: the clash count check, the
+discipline workbooks, the XML, Backup\NAME.nwf and the one list of models not on the same shared coordinates, which the window
+that started the run writes once from the facts each group's result carries back. A group's NAME_files folder is deleted whole
+before its clash report, PicturesFolder, file by file so a held file is named, and a link inside it, or the folder itself being
+a link, is removed as the link alone. A file held open is read off the exception of the write, FileInUse, skipped, logged as
+Close PATH and run the report again, carried in RESULT and in the end message of the window that started the run. The old dated
+and Internal names are deleted once at the start of a run, in the window that starts it, inside Report\COMMUNITY and its package
+folders only, OldReportFiles, one class with a near miss test per pattern, the newest dated backup renamed where its plain name
+is free. NameThatOverwritesNothing, the Internal workbook, its Coverage and Generic Models sheets and the INTERNAL step are
+deleted with their tests. docs\rules.md OF1, OF2, OF3, OF6 and RE8 say the new rule, GR2, CT5, CT18, CT19 and RE2 no longer
+name the Internal workbook or the Coverage sheet, and RE11 is marked CONFLICT with point 3.
+
+The attempts. Attempt 1, fba68c4. The reviewer and the breaker found that the one list of the run kept only the last group,
+since each group runs in its own Navisworks, and that the cleanup missed the package folders and the workbook names. Attempt 2,
+da01c22 and 21e289f, fixed those and nine more, the list carried through the result file, shape 4. Its readers found it walked
+through a link inside the pictures folder and deleted outside it, and lines claiming what was not checked. Attempt 3, 1163e74,
+was narrow. Its readers found that a pictures folder which is itself a link still had its target emptied, a data risk, and
+wording faults. At the third attempt Bader chose one guard pass and the merge, 5478ff5, the folder that is a link removed alone.
+The wording faults left are F243-R1 to R9, none deleting or losing data.
+
+What was proved here. Core tests 3451 passed before and 3463 after, 0 failed, 0 skipped, 51 deleted with the code they tested.
+Each new test seen failing first against stubs and the old add-in, the junction tests on a real mklink /J junction. The
+solution builds in Release with 0 errors and 0 warnings, the add-in included. check-locals and check-imports clean. Nothing ran
+in Navisworks.
+
+What remains. The steps at the top of steps\03_bader_next.md and the round's proof run on C06 1B06PS and 1B06WL. Known bugs:
+F243-R1 to F243-R9. The questions of the readings go in the round's form, Q226 onward. What comes next: F244.
+
 ## 2026-10-19 F242b, the end of the round of 19 Oct b
 
 Branch fix-F242b off main 72e5842, worktree wt-F242b, pull request 324. The end of Bader's round of 19 Oct 2026 b, F239 to F242,

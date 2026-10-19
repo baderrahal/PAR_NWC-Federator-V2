@@ -25,7 +25,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 ## Grouping
 
 - GR1. Per building is the default of the four ways of gathering, on the full six character building code. The brief, CLAUDE.md. Test: GroupingModeTests.PerBuildingIsTheDefault
-- GR2. A group of one discipline is not built on either page: nothing appended and no NWF, NWD, Excel, Internal Excel, HTML, pictures or viewpoints, and an NWF an earlier run left is named and never deleted. His round of 19 Oct, fix 3, Q203. Test, in part: OneDisciplineGroupsTests.AnEarlierNwfIsNamedAndNeverDeletedOrRun
+- GR2. A group of one discipline is not built on either page: nothing appended and no NWF, NWD, Excel, HTML, pictures or viewpoints, and an NWF an earlier run left is named and never deleted. His round of 19 Oct, fix 3, Q203. Test, in part: OneDisciplineGroupsTests.AnEarlierNwfIsNamedAndNeverDeletedOrRun
 - GR3. Every ticked group of two disciplines or more is federated and clashed, with no hidden discipline rule. Q21, GR2 for a group of one. Test: SingleDisciplineGroupTests.AGroupWithTwoFilesOfOneDisciplineKnowsItCannotClashEither
 - GR4. A Shift click on a Run box ticks or unticks the range from the box clicked before. Q112 request 5. Test: ShiftRangeTests.AShiftClickDownGivesEveryRowFromTheAnchorToTheClickTheAnchorsState
 
@@ -35,7 +35,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 - CT2. A run chooses its pack by the project code in the NWC file names, and no match, or two, stops the run before anything is opened. Q164 B, carried by F166, his words not recorded under it. Test: PackChoiceTests.ACodeWithNoPackStopsAndSaysWhatToSend
 - CT3. Only tests across two different set codes run, on both pages, and each group logs how many the rule left out. Q209. Test: SetCodeRuleTests.ATestIsLeftOutOnlyWhereBothSidesReadOneCode
 - CT4. A test saved in the NWF that the matrix does not name runs too, where it sits, after the tests of the matrix. Q168 A, carried by F168, his words not recorded under it. Test: SavedTestsTheMatrixDoesNotNameTests.ASavedTestNotInTheMatrixIsAddedAfterTheMatrixTestsAndRunsWhereItSits
-- CT5. A test whose side finds nothing is not created, and the Coverage sheet names it with why. Q46. Test: CreationPlanTests.ATestWhoseSideFindsNothingIsNotCreatedAtAll
+- CT5. A test whose side finds nothing is not created, and the run log's .tsv keeps its coverage row with why, the Coverage sheet gone with the Internal workbook, his order of 19 Oct 20:58, Q226 open. Q46. Test: CreationPlanTests.ATestWhoseSideFindsNothingIsNotCreatedAtAll
 - CT6. Both tests of a mirrored pair, sets swapped or of one rule list, are created and run, the mirror keeping its own name with (mirror) at the end, and where CT7 merges them each clash is counted once, under the kept test. Q133 D, Q121 B, Q136 A, chat notes. Test: MirrorRuleTests.TheCorrectedMatrixHolds59PairsByRuleListAndEveryTestStillRuns
 - CT7. A mirror's clashes merge only where this run made both tests and their sets from the matrix, and otherwise each keeps its own and the log says a clash may be counted twice. Q142 A, Q137 A. Test: MirrorMergedWhereTests.BothTestsCreatedFromTheXmlOverSetsBuiltFromItAreMerged
 - CT8. A clash both tests find shows Reviewed or Approved over the rest, and otherwise New or Active over Resolved. Q138 B. Test: BothFoundStatusTests.AStatusAPersonSetsWinsOverEveryOtherWhicheverTestCarriesIt
@@ -48,8 +48,8 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 - CT15. Clash sets never depend on worksets. Chat notes. CONFLICT: the corrections of Q68, Q102 and Q103 make the matrix ask worksets, and the code follows them. NO TEST
 - CT16. A set already in the NWF that differs from the matrix is rebuilt only with its box ticked, off by default. Q72. Test: SetDriftTests.TheBoxIsOffByDefaultBecauseItChangesTheNwf
 - CT17. Of two twin sets the unused one is removed and the working one renamed into its name. Q74. Test: SetLeftoversTests.TheWorkingHalfOfAPairIsRenamedAndTheUnusedHalfIsRemoved
-- CT18. After each group every test of the matrix is set against what happened to it, with a reason, on a COVERAGE block and the Coverage sheet, and a count in Clash Detective that differs from the workbook is a FAILED line in COVERAGE and RESULT while the group keeps its own result. Q112 request 2 and its notes, Q127 A. Test: CoverageAcrossTheRunTests.ACountThatDiffersIsAFailedLineInResultAndTheGroupKeepsItsOwnResult
-- CT19. The Generic Models of each model are counted in the log and on a sheet, with one search set a model in a Generic Models folder, and no clash test is made for them. Q112 request 3. Test, in part: GenericModelsReportTests.EachModelIsCountedOffTheResultOfItsOwnSet
+- CT18. After each group every test of the matrix is set against what happened to it, with a reason, on a COVERAGE block, the Coverage sheet gone with the Internal workbook by his order of 19 Oct 20:58, Q226 open, and a count in Clash Detective that differs from the workbook is a FAILED line in COVERAGE and RESULT while the group keeps its own result. Q112 request 2 and its notes, Q127 A. Test: CoverageAcrossTheRunTests.ACountThatDiffersIsAFailedLineInResultAndTheGroupKeepsItsOwnResult
+- CT19. The Generic Models of each model are counted in the log, the sheet gone with the Internal workbook by his order of 19 Oct 20:58 and the Generic Models now in the discipline workbook, with one search set a model in a Generic Models folder, and no clash test is made for them. Q112 request 3. Test, in part: GenericModelsReportTests.EachModelIsCountedOffTheResultOfItsOwnSet
 - CT20. With the by design box ticked the pass also reaches the tests saved in the NWF, and its block says so. Q144 B. Test: ByDesignRuleTests.TheBlockSaysWhenTheSidesWereReadOffTheTestsSavedInTheNwf
 - CT21. A test a rule now leaves out that an NWF still holds keeps its results, is not compared and is never FAILED. Q209, Q212 open. Test: LeftOutByARuleTests.ATestOfOneSetCodeAnNwfStillHoldsIsNotComparedAndNeverFailed
 - CT22. Compact resolved stays removed, and the tool calls no compact and no reset of results. Q178. NO TEST
@@ -117,7 +117,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 ## Reports
 
 - RE1. The report is the Navisworks HTML tabular export dragged into Excel, one sheet laid out as the client's. Q1. Test: OneSheetWorkbookTests.ThereIsOneSheetAndNoOthers
-- RE2. A test with no clash is left out of the Excel, while the HTML keeps every test and the Coverage sheet lists every test. Q162-3, chat notes. Test: WorkbookTestCountTests.TwoTestsWithClashesAndThreeWithNoneAreTwoBlocksAndNothingElse
+- RE2. A test with no clash is left out of the Excel, while the HTML keeps every test and the run log's .tsv keeps one coverage row a test, the Coverage sheet gone by his order of 19 Oct 20:58, Q226 open. Q162-3, chat notes. Test: WorkbookTestCountTests.TwoTestsWithClashesAndThreeWithNoneAreTwoBlocksAndNothingElse
 - RE3. The report goes out in metres, always. Q23. Test: ReportUnitsTests.TheToleranceIsConvertedAndItsLabelWithIt
 - RE4. Priority is a column to sort on, and the blocks stay in the order measured off the Navisworks exports. Q49. Test: PriorityColumnTests.PickingAFileLeavesTheBlocksInTheMeasuredOrder
 - RE5. No column or cell of the tool's own is on the client's sheet, and the penetration count stays in the log. Q45. Test: ClientReportColumnsTests.TheirsAreTheirsAndAnythingElseIsNot
@@ -126,7 +126,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 - RE8. No Internal workbook is written, its Coverage sheet moves nowhere and Q226 names what it held, and the clash workbook holds the client's sheet alone. His order of 19 Oct 20:58, F243, in place of Q146 B and Q126 B. Test: OneNamePerOutputSourceTests.NoInternalWorkbookIsWritten
 - RE9. One workbook per discipline per package, AR, ST, ME and EL, with the summary of the seven checks and only the rows that need action, sorted by severity. His round of 19 Oct, fix 4, Q218 and Q219 open. Test: DisciplineReportTests.EveryRowIsInItsOwnDisciplinesWorkbookSortedBySeverityThenBuildingThenFile
 - RE10. One clash count check a community, its four counts side by side, a row red where they differ, the views held to the statuses a view shows. His round of 19 Oct, fix 6, Q222 and Q223 open. Test: ClashCountCheckTests.EachOfTheFourCountsThatDiffersMakesTheRowRedAndALogLine
-- RE11. A report check never fails a group, and a count that differs is a line of the log and RESULT. Q112 notes. Test: CoverageAcrossTheRunTests.ACountThatDiffersIsAFailedLineInResultAndTheGroupKeepsItsOwnResult
+- RE11. A report check never fails a group, and a count that differs is a line of the log and RESULT. Q112 notes. CONFLICT: his order of 19 Oct 20:58, point 3, makes a picture link of the clash Excel missing on the disk a failure of the group, built by F243, and the form asks which holds. Test: CoverageAcrossTheRunTests.ACountThatDiffersIsAFailedLineInResultAndTheGroupKeepsItsOwnResult
 
 ## Logs
 

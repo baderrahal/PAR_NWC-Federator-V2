@@ -1256,8 +1256,10 @@ NEVER DATED, and the add-in calls them.
 - THE LINKS ARE READ BACK after the WORKBOOK CHECK, `WorkbookLinks.Check` held to `WorkbookWriter.PicturesLinked` and
   `LinksWritten`, one XLSX links line, one .tsv row `missing link` for each link reaching no file, and a missing link is the
   group's error through `outcome.AddError(links.Error())`, so the group is not DONE. A workbook that would not read back is
-  said UNKNOWN and fails nothing- A FILE OPEN IN ANOTHER PROGRAM, read by `FileInUse.IsInUse` off the exception of the write, is never written under another
-  name: `RunLog.NotWrittenWhileOpen` says Bader's line and keeps it, nothing is listed as written, no error goes on the group,
+  said UNKNOWN and fails nothing
+- A FILE OPEN IN ANOTHER PROGRAM, read by `FileInUse.IsInUse` off the exception of the write, is never written under another
+  name: `RunLog.NotWrittenWhileOpen`, `NotDeletedWhileOpen` for a file to be deleted and `NotReadWhileOpen` for the NWF read
+  before its backup, says Bader's line and keeps it, nothing is listed as written, no error goes on the group,
   and the run goes on. That holds for the clash Excel, which the coverage then reads as not written, the page, the XML, the
   list of models off the shared coordinates, each held file of the pictures folder, the NWF's backup, whose refresh then stops
   as for any backup not made, the line naming the NWF where the NWF is the file held, read by opening it for reading before
