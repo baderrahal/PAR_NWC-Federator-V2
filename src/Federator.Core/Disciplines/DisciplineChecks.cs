@@ -908,27 +908,32 @@ namespace Federator.Core.Disciplines
     /// <summary>
     /// CAD imports and Generic Models, F234 and F244: one Low row per model and CAD file, and one per model, family and type,
     /// each with its elements counted and every element id once, an id not read counted on its own. The row of Models holds
-    /// the distinct CAD files and the Generic Models elements. A model whose items were not walked is said in the log.
+    /// the distinct CAD files and the Generic Models elements. A model whose items were not walked is said in the log. The
+    /// imports of a model whose names carry no file name are one row, Imported CAD file, name not readable, F245 item 1.
     /// </summary>
     public static class ElementChecks
     {
         public static CheckFindings Cad(IList<DisciplineGroup> groups, ModelRows rows, DisciplineReportSettings settings)
         {
             return Of(groups, rows, CheckWords.Cad, m => m.CadNotRead, m => m.Cad,
-                e => new KeyValuePair<string, string>(e.Name ?? settings.NotReadable, null),
+                e => new KeyValuePair<string, string>(e.Name, null), settings.NotReadable,
                 (row, kinds, elements) => row.CadFiles = kinds);
         }
 
         public static CheckFindings Generic(IList<DisciplineGroup> groups, ModelRows rows, DisciplineReportSettings settings)
         {
             return Of(groups, rows, CheckWords.Generic, m => m.GenericNotRead, m => m.Generic,
-                e => new KeyValuePair<string, string>(e.Family ?? settings.NotReadable, e.Type ?? settings.NotReadable),
+                e => new KeyValuePair<string, string>(e.Family ?? settings.NotReadable, e.Type ?? settings.NotReadable), settings.NotReadable,
                 (row, kinds, elements) => row.GenericElements = elements);
         }
 
+        /// <summary>
+        /// The rows of one check. A key whose value is null is a CAD import, its key the file's name or null where the name was
+        /// not read, which the CAD file or family cell writes as the setting's words.
+        /// </summary>
         private static CheckFindings Of(
             IList<DisciplineGroup> groups, ModelRows rows, string check, Func<ModelFacts, string> notRead, Func<ModelFacts, IList<ElementFact>> elements,
-            Func<ElementFact, KeyValuePair<string, string>> keyOf, Action<ModelRow, int, int> counted)
+            Func<ElementFact, KeyValuePair<string, string>> keyOf, string notReadable, Action<ModelRow, int, int> counted)
         {
             CheckFindings found = new CheckFindings(check);
 
@@ -996,7 +1001,7 @@ namespace Federator.Core.Disciplines
                             key.Value == null ? CheckWords.Imported(key.Key) : CheckWords.Family(key.Key, key.Value),
                             elementCount, CheckWords.Elements(elementCount),
                             key.Value == null ? CheckWords.ReplaceImport : CheckWords.MoveFamily);
-                        found.Add(issue.WithElements(key.Key, key.Value, ids[key]), row);
+                        found.Add(issue.WithElements(key.Key ?? notReadable, key.Value, ids[key]), row);
                     }
                 }
             }

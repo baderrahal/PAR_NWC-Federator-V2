@@ -573,9 +573,13 @@ namespace Federator.Core.Disciplines
             return "Saved " + Date(written);
         }
 
+        /// <summary>The finding of a model's CAD import, Bader's words of 19 Oct 2026 where its name carries no file name, F245 item 1.</summary>
+        public const string ImportedNameNotRead = "Imported CAD file, name not readable";
+
+        /// <summary>The finding of a model's imports of one CAD file, or ImportedNameNotRead where the name is null.</summary>
         public static string Imported(string name)
         {
-            return "Imported " + name;
+            return name == null ? ImportedNameNotRead : "Imported " + name;
         }
 
         public static string Family(string family, string type)

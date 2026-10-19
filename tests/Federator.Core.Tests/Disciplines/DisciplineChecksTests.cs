@@ -483,7 +483,8 @@ namespace Federator.Core.Tests
             Assert.That(cad[0].Unit, Is.EqualTo("elements"));
             Assert.That(cad[0].ElementIds.ToArray(), Is.EqualTo(new[] { "1819523", "1819524" }));
             Assert.That(cad[0].Source, Is.EqualTo("Chem-Feed Pkg-R0.dwg"));
-            Assert.That(cad[1].Finding, Is.EqualTo("Imported not readable"));
+            Assert.That(cad[1].Finding, Is.EqualTo("Imported CAD file, name not readable"), "Bader's words of 19 Oct 2026, F245 item 1");
+            Assert.That(cad[1].Source, Is.EqualTo("not readable"), "the CAD file or family cell, the setting's words");
             Assert.That(cad[1].ElementIds.ToArray(), Is.EqualTo(new string[] { null }));
             Assert.That(cad[1].Unit, Is.EqualTo("element"));
             Assert.That(cad[0].Priority, Is.EqualTo(CheckWords.Low));
