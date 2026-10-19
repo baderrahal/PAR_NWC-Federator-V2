@@ -2,6 +2,44 @@
 
 Newest entry at the top.
 
+## 2026-10-20 F244, the discipline workbook copied from the mock, the round of 20 Oct
+
+Branch fix-F244 off main 6ed8417, worktree agent-a67a0ca22a4f152e4, pull request 326. Bader's order of 19 Oct 2026 20:58,
+the second of three fixes, F243 to F245.
+
+What was done. The mock of 19 Oct, its xlsx, pdf and script, is in docs\design, and DisciplineWorkbook.Write copies it: four
+sheets, Summary, Models, To fix and Element IDs, in the mock's colours, fonts, widths and words, every number a number cell, no
+formula and no merged cell. The checks write what they read into one row per model, ModelRows, so every distance measured is on
+Models, a reference on internal origin is its own High row and every other model of its building a Medium one, never High, a
+group of one discipline is on Models as NOT CHECKED and on no other sheet, and Missing model counts buildings, F245 items 3 to 7,
+each with a test seen failing on main first. One discipline group is no check any more. A model with any value not read reads
+NOT CHECKED, never OK, B5 says All pass only where every model was judged by every check and To fix holds no row, a model's short
+name is its discipline and its number part, read off the naming settings' NumberPart, the one place the number sits, and the file
+age is judged on the whole days the cell shows. The CHECKS line reads the rows of To fix and of Element IDs back against the rows
+written. The evidence check names the two mock files exactly, with a broken fixture for the pdf rule. The members the rewrite left
+with no caller are deleted with their tests. core.md, addin.md, RE9 and docs\workflow.md say the new rule.
+
+Bader's decision of 20 Oct. The lead printed the mock and the written workbook through Excel and judged them side by side: they
+match on all four sheets. Both printed none for every With issue count above 1, since Excel reads the second section of the mock's
+format [=1]0" model";0" models";"none" as the negative numbers, so the Summary read none beside FIX. Bader chose to fix the
+format, [=1]0" model";[>1]0" models";"none", and the mock is kept as approved.
+
+The attempts. Attempt 1, 21bb213 and the format, a92838b. The reviewer found CheckWords.All with no caller, and the breaker a
+model never read reading OK, B5 saying all pass beside rows to fix, and the short name taken from the last part. Attempt 2,
+4f5b5bb, fixed those and six more. Its readers found a model whose date was not read still OK and the number's place written
+twice. Attempt 3, d745b0a, narrow, closed both. Its readers found that where a model's shared site read throws, a model could
+still pass on a fact never read and the Summary's With issue could pass its Checked. At the third attempt Bader chose one guard
+pass and the merge, f0dd1e5: a building where any model's site was not read is not judged on Coordinates at all.
+What the readings left is rows F244-R1 to R9 and the round's form.
+
+What was proved here. Core tests 3463 passed before and 3486 after, 0 failed, 0 skipped. The C06 ME workbook the test writes
+holds the same values at every attempt and is compared cell by cell with the mock by a test that names the cell of any
+difference. The solution builds in Release with 0 errors and 0 warnings, the add-in included. check-locals and check-imports
+clean. Nothing ran in Navisworks.
+
+What remains. The steps at the top of steps\03_bader_next.md and the round's proof run. Known bugs: F244-R1 to R9. What comes
+next: F245.
+
 ## 2026-10-19 F243, one name per output, the round of 20 Oct
 
 Branch fix-F243 off main f5c9bee, worktree agent-a6690e08d866e220a, pull request 325. Bader's order of 19 Oct 2026 20:58, the
