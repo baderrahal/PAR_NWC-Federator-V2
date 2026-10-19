@@ -70,7 +70,7 @@ namespace Federator.Core.Disciplines
 
         public string Check { get; private set; }
 
-        /// <summary>The files of this workbook's discipline the check read, CheckWords.FilesCheckedRule.</summary>
+        /// <summary>The files of this workbook's discipline the check read, and for Missing model the files of the groups of two disciplines or more, Q218.</summary>
         public int FilesChecked { get; private set; }
 
         /// <summary>The rows of the check in the issues table of the same workbook.</summary>

@@ -174,7 +174,7 @@ namespace Federator.Core.Disciplines
         }
 
         /// <summary>The rows no workbook takes, a file of a discipline outside the list or whose name does not read.</summary>
-        public IList<DisciplineIssue> LeftOut
+        internal IList<DisciplineIssue> LeftOut
         {
             get { return leftOut.AsReadOnly(); }
         }
@@ -443,9 +443,9 @@ namespace Federator.Core.Disciplines
             Title = title ?? string.Empty;
         }
 
-        public string Title { get; private set; }
+        internal string Title { get; private set; }
 
-        public IList<KeyValuePair<string, int>> Summary
+        internal IList<KeyValuePair<string, int>> Summary
         {
             get { return summary.AsReadOnly(); }
         }

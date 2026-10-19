@@ -482,11 +482,6 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// Whether a model names the internal origin as its site, the one test for it, so
-        /// the block, the failure and the rule cannot drift apart. A site whose read threw
-        /// names nothing, FR-002.
-        /// </summary>
-        /// <summary>
         /// How far a model sits from the reference, the straight line of the differences of their translations in X, Y and Z,
         /// in millimetres, the one measure of the block and of the discipline reports, F234. Both must be placed.
         /// </summary>
@@ -503,7 +498,11 @@ namespace Federator.Core.Health
             return Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
         }
 
-        /// <summary>Whether a model names Revit's own origin as its shared site, the one test of it, a site not read never.</summary>
+        /// <summary>
+        /// Whether a model names the internal origin as its site, the one test for it, so
+        /// the block, the failure, the rule and since F234 the discipline reports cannot drift
+        /// apart. A site whose read threw names nothing, FR-002.
+        /// </summary>
         public static bool NamesInternal(ModelPlacement model, string internalName)
         {
             return model.SiteRead && string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal);

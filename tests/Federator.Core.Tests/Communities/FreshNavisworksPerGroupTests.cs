@@ -391,6 +391,8 @@ namespace Federator.Core.Tests
             DisciplineGroup third = groups.First(g => g.Name == "1B06KI");
             Assert.That(third.Models, Is.Null);
             Assert.That(third.WhyNoModels, Is.EqualTo(PackageRunFacts.DidNotRun));
+            Assert.That(third.NotBuiltForOneDiscipline, Is.True, "left out by F233's rule, so its row is a One discipline group");
+            Assert.That(first.NotBuiltForOneDiscipline, Is.False, "a group that ran was built, whatever its files read");
         }
 
         [Test]
@@ -454,6 +456,7 @@ namespace Federator.Core.Tests
 
             Assert.That(groups.Single().Files.ToArray(), Is.EqualTo(new[] { pg }));
             Assert.That(groups.Single().Models, Is.Null);
+            Assert.That(groups.Single().NotBuiltForOneDiscipline, Is.True);
             Assert.That(GroupDisciplinesCheck.OneDiscipline(groups, new Federator.Core.Naming.ContainerNameSettings()).Issues.Single().Discipline, Is.EqualTo("EL"));
         }
     }

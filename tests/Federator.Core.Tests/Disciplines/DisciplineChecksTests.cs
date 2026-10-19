@@ -28,7 +28,7 @@ namespace Federator.Core.Tests
             return new ModelFacts(file).WithPlacement(x, y, z).WithSite(site).WithCad(new List<ElementFact>()).WithGeneric(new List<ElementFact>());
         }
 
-        /// <summary>1B06BC as its ALIGNMENT block read it on 19 Oct 2026, run-20261019-010707, AR the reference on Internal.</summary>
+        /// <summary>1B06BC as its ALIGNMENT block read it, steps\logs\2026-10-18-C06-C07-F229-NWC-page-C06-group-run-20261018-202521.log lines 244 to 249, AR the reference on Internal.</summary>
         private static List<DisciplineGroup> Bc()
         {
             ModelFacts[] models =
@@ -133,6 +133,30 @@ namespace Federator.Core.Tests
         }
 
         [Test]
+        public void WithTheArModelNotPlacedTheRowNamesTheModelItWasMeasuredFromAndNeverABlank()
+        {
+            ModelFacts ar = new ModelFacts(Nwc("1B06PS", "AR")).PlacementNot("the model has no transform").WithSite("S");
+            List<DisciplineGroup> st = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { ar.File, Nwc("1B06PS", "ST"), Nwc("1B06PS", "EL") },
+                    new[] { ar, Model(Nwc("1B06PS", "ST"), 0, 0, 0, "S"), Model(Nwc("1B06PS", "EL"), 40000, 0, 0, "S") }, null)
+            };
+            string odd = TestPaths.At("Parent", "C06", "plain.nwc");
+            List<DisciplineGroup> unread = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { odd, Nwc("1B06PS", "EL") },
+                    new[] { Model(odd, 0, 0, 0, "S"), Model(Nwc("1B06PS", "EL"), 40000, 0, 0, "S") }, null)
+            };
+
+            DisciplineIssue fromSt = CoordinatesCheck.Of(st, Settings, Names).Issues.Single();
+            DisciplineIssue fromOdd = CoordinatesCheck.Of(unread, Settings, Names).Issues.Single();
+
+            Assert.That(fromSt.WhatIsWrong, Is.EqualTo("more than 30 m from the ST model"), "ALIGNMENT's rule, the first placed model where AR is not");
+            Assert.That(fromSt.Value, Is.EqualTo("40.000 m, EL on S, ST on S"));
+            Assert.That(fromOdd.WhatIsWrong, Is.EqualTo("more than 30 m from the plain.nwc model"));
+        }
+
+        [Test]
         public void APlacementOfNoNumberIsNeverThreeNoughts()
         {
             ModelFacts model = new ModelFacts("a.nwc").WithPlacement(double.NaN, 0, 0);
@@ -169,7 +193,7 @@ namespace Federator.Core.Tests
         {
             List<DisciplineGroup> groups = new List<DisciplineGroup>
             {
-                new DisciplineGroup("1B06PG", new[] { Nwc("1B06PG", "EL"), Nwc("1B06PG", "EL", "000002") }, null, "this group did not run in this run"),
+                new DisciplineGroup("1B06PG", new[] { Nwc("1B06PG", "EL"), Nwc("1B06PG", "EL", "000002") }, null, "this group did not run in this run").NotBuilt(),
                 new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "EL") }, null, "not run")
             };
 
@@ -180,6 +204,27 @@ namespace Federator.Core.Tests
             Assert.That(one.Value, Is.EqualTo("1104-PAR-1B06PG-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1B06PG-ZZZ-EL-MOD-000002.nwc"));
             Assert.That(one.Building, Is.EqualTo("1B06PG"));
             Assert.That(one.Severity, Is.EqualTo(CheckWords.Medium));
+        }
+
+        /// <summary>
+        /// The reviewer's finding on F234's first pass: an NWF that links a file not on the disk is built, F233's NOT JUDGED,
+        /// while its facts hold only the models that loaded, one discipline of them, and a model of the federated discipline or a
+        /// name that does not read make F219's rule say UNKNOWN. None of them is a One discipline group row or a Missing model row.
+        /// </summary>
+        [Test]
+        public void OnlyAGroupTheRunLeftUnbuiltIsAOneDisciplineRowAndADisciplineUnknownMissesNothing()
+        {
+            List<DisciplineGroup> groups = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR") }, null, "built, a link not on the disk"),
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "BM") }, null, "not run"),
+                new DisciplineGroup("1B06PK", new[] { Nwc("1B06PK", "AR"), TestPaths.At("P", "plain.nwc") }, null, "not run")
+            };
+
+            Assert.That(GroupDisciplinesCheck.OneDiscipline(groups, Names).Issues, Is.Empty);
+            CheckFindings missing = GroupDisciplinesCheck.Missing(groups, Settings, Names);
+            Assert.That(missing.Issues, Is.Empty);
+            Assert.That(missing.Notes.Count(n => n.Contains("whether it misses a discipline is UNKNOWN")), Is.EqualTo(2));
         }
 
         [Test]

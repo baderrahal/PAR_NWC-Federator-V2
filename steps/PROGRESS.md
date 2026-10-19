@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 02:20, last run multi3 run-20261018-205401, the round of F231 to F238, F233 in review, F234 next
+STATE OPEN, 2026-10-19 03:00, the round of F231 to F238, F233 merged in 314, F234 on fix-F234 proving on C06 and C07, last run 94/item1-C02
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,14 +16,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 312 | 16 | 0 | 24 | 110 | 7 | 469 |
-| total | 516 | 24 | 0 | 24 | 210 | 18 | 792 |
+| outside the waves | 312 | 16 | 3 | 26 | 117 | 7 | 481 |
+| total | 516 | 24 | 3 | 26 | 217 | 18 | 804 |
 <!-- the end of the counts -->
 ## Now
 - 19 Oct, the round of F231 to F238 open, Bader's six fixes, the full run on final-2026-10-19 and the end, plan in log.md.
   F231 measured the append against a manual Append on 1B06BC, 1B06PS and 1B06K1, 0.000 mm after both pages, the far
   models in the NWC files, no code changed, scan.md 5z-zn, claude\audit-round-2026-10-19.md. F232 packages first, merged
-  in 313. F233 one discipline groups not built on both pages, proved on copies at 280e2f04, rows F233-R1 to R10
+  in 313. F233 one discipline groups not built on both pages, merged in 314, rows F233-R1 to R10. F234 the discipline
+  workbooks in Bader's layout, commit 1597fe9 installed, the NWC page running on copies of C06 and C07 under work\f234
 - 18 Oct: F212 to F230, 292 to 311, a Navisworks per group, Auto-Save off, two set codes, the retake, the audits
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.

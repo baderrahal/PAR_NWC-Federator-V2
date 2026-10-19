@@ -21,9 +21,10 @@ namespace Federator.Core.Disciplines
         public const int DefaultOlderThanDays = 7;
 
         /// <summary>
-        /// How far apart two boxes may sit before a discipline is far from the reference, in metres: far is MORE than this,
-        /// so a gap of exactly 30 m is near. Bader's answer to Q202 of 18 Oct 2026, F218, 30 m the default, where F209 chose
-        /// 1000 m. The gap between two boxes, which is nought where they overlap, and the C02 case is 2,823 km.
+        /// How far a model may sit from the reference before it is far, in metres: far is MORE than this, so exactly 30 m is
+        /// near. Bader's answer to Q202 of 18 Oct 2026, F218, 30 m the default, where F209 chose 1000 m. Since F234 the distance
+        /// is the straight line of the translations of the two transforms, ALIGNMENT's, and never the gap between two boxes,
+        /// so the C02 case of 2,823 km between boxes, which docs\history\scan.md says the transform does not show, is UNKNOWN.
         /// </summary>
         public const double DefaultFarMetres = 30.0;
 

@@ -205,8 +205,8 @@ namespace Federator.Core.Disciplines
                             CheckWords.Coordinates,
                             DisciplineOf.Building(model.File, names),
                             model.File,
-                            CheckWords.FarFrom(settings.FarMetres, reference.Discipline),
-                            CheckWords.FarValue(millimetres, model.Discipline, AlignmentCheck.SiteName(model), reference.Discipline, AlignmentCheck.SiteName(reference)),
+                            CheckWords.FarFrom(settings.FarMetres, NameOf(reference)),
+                            CheckWords.FarValue(millimetres, NameOf(model), AlignmentCheck.SiteName(model), NameOf(reference), AlignmentCheck.SiteName(reference)),
                             CheckWords.ExportAgain,
                             null));
                     }
@@ -243,8 +243,14 @@ namespace Federator.Core.Disciplines
             return found;
         }
 
+        /// <summary>A model as a row names it, its discipline, or its file's name where the discipline does not read.</summary>
+        private static string NameOf(ModelPlacement model)
+        {
+            return model.Discipline.Length > 0 ? model.Discipline : model.File;
+        }
+
         /// <summary>A model's facts as ALIGNMENT's placement, its name, its discipline, its site or not read and its translation or not read.</summary>
-        public static ModelPlacement PlacementOf(ModelFacts model, ContainerNameSettings names)
+        private static ModelPlacement PlacementOf(ModelFacts model, ContainerNameSettings names)
         {
             string file = DisciplineOf.FileName(model.File);
             return new ModelPlacement(
@@ -258,10 +264,11 @@ namespace Federator.Core.Disciplines
     }
 
     /// <summary>
-    /// Missing model and One discipline group, F234: read off the file names of each group. A group of two disciplines or more
-    /// gets one row in the workbook of each discipline of the setting it holds no file of. A group of one discipline, which
-    /// F233 does not build, gets a row in that discipline's workbook with its file names. A group whose files were not read,
-    /// its Navisworks writing no result, is said in the log and never counted as missing a discipline, F222.
+    /// Missing model and One discipline group, F234. A group of two disciplines or more, read off its file names by F219's one
+    /// rule, BuildingGroup.DisciplinesOf, gets one row in the workbook of each discipline of the setting it holds no file of. A
+    /// group F233 did not build for one discipline, its decision carried as DisciplineGroup.NotBuiltForOneDiscipline and never
+    /// judged again, gets a row in that discipline's workbook with its file names. A group whose files were not read, or whose
+    /// disciplines that rule says are UNKNOWN, is said in the log and never counted as missing a discipline, F222.
     /// </summary>
     public static class GroupDisciplinesCheck
     {
@@ -271,11 +278,25 @@ namespace Federator.Core.Disciplines
 
             foreach (DisciplineGroup group in groups)
             {
-                IList<string> codes = DisciplineOf.CodesOf(group, names);
-
                 if (group.Files.Count == 0)
                 {
                     found.Note(group.Name + " not read, whether it misses a discipline is UNKNOWN, its files were not read, " + (group.WhyNoModels ?? "UNKNOWN why"));
+                    continue;
+                }
+
+                if (group.NotBuiltForOneDiscipline)
+                {
+                    continue;
+                }
+
+                // The one rule of a group's disciplines off its file names, F219's, which says UNKNOWN for a name that does not
+                // read or a federated model, so no group is said to miss a discipline on a guess.
+                string why;
+                IList<string> codes = BuildingGroup.DisciplinesOf(group.Files, names, NamePattern.DefaultDiscipline, out why);
+
+                if (codes == null)
+                {
+                    found.Note(group.Name + " not read, whether it misses a discipline is UNKNOWN, " + why);
                     continue;
                 }
 
@@ -326,7 +347,7 @@ namespace Federator.Core.Disciplines
                     }
                 }
 
-                if (codes.Count != 1)
+                if (!group.NotBuiltForOneDiscipline)
                 {
                     continue;
                 }
@@ -339,7 +360,7 @@ namespace Federator.Core.Disciplines
                 }
 
                 found.Add(new DisciplineIssue(
-                    codes[0],
+                    codes.Count == 0 ? string.Empty : codes[0],
                     CheckWords.OneDiscipline,
                     DisciplineOf.BuildingsOf(group, names),
                     null,

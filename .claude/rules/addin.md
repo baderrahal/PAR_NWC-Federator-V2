@@ -1206,7 +1206,8 @@ Navisworks a group cost on a whole community, read off the first run of C06 and 
 Every rule and every word is Core's, core.md The discipline reports. The add-in reads and writes only. FOR A GROUP OF A
 PACKAGE ALONE, `FederationEngine.ReadTheDisciplineFacts` runs at the end of `WhatTheModelsCarry`, the one place both routes
 pass through, in a try of its own, so a fault never fails the group and never counts its EXPORT CHECK as not read. It calls
-`DisciplineFactsReader.Read`: each model's root box converted to metres through UnitTable, its shared site through
+`DisciplineFactsReader.Read`: since F234 each model's translation in millimetres by the ALIGNMENT block's own read,
+`ModelFactsReader.TranslationOf` with `MillimetresPerUnit`, and never the box, its shared site through
 `ModelFactsReader.SharedCoordinateOn`, then ONE WALK of its items, each released as the walk leaves it, reading the Item tab
 and the Element tab once per item by the names `DisciplineProperties` holds, measured in scan.md 5z-zg. An element of the
 setting's category is a Generic Models line, and a topmost item of the Item tab Type Imports in Families is a CAD line whose
@@ -1216,6 +1217,10 @@ DISCIPLINE line a group says what was read and in how long. The facts stay on `J
 THE WINDOW WRITES THE WORKBOOKS ONCE THE PACKAGE'S GROUPS HAVE RUN, `WriteTheDisciplineReports`, since F222 the window that
 started the run, off the facts each group's own Navisworks wrote into its result, `PackageRunFacts.GroupsOf`, each package in a
 try of its own: on the NWC page every group of its plan, the facts of those that ran and the files alone of those left out, on the NWF
-page every NWF that ran and its models' files, each NWC's date off the disk, then `DisciplineReport.For`, the DISCIPLINE
-REPORT block, and the four workbooks in the package's report folder, each one CHECKS attempt and written line with its size
-read back by the log and one line reading its rows back off the file.
+page every NWF that ran and its models' files, and since F234 the files of an NWF found to be one discipline, carried back by
+its result, `JobOutcome.NotBuiltFiles` and `PackageRunResult.NotBuiltFiles`, each NWC's date off the disk, then
+`DisciplineReport.For` with the package's name for the title, the DISCIPLINE REPORT block, and the four workbooks in the
+package's report folder, each one CHECKS attempt and written line with its size read back by the log and one CHECKS line
+reading its issue rows and its summary back off the file, `DisciplineWorkbookWords.ReadBackLine`. A PACKAGE WHOSE EVERY GROUP IS
+OF ONE DISCIPLINE, `PackageRun.NotBuiltOnly`, runs nothing and still gets its folders and its workbooks, and a run of the NWC
+page whose every group is of one discipline writes them before its RESULT.

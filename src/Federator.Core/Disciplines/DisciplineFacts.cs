@@ -188,6 +188,18 @@ namespace Federator.Core.Disciplines
         public ReadOnlyCollection<ModelFacts> Models { get; private set; }
 
         public string WhyNoModels { get; private set; }
+
+        /// <summary>
+        /// F234. Whether F233 left the group unbuilt for one discipline, the decision as the run made it, the plan's on the NWC
+        /// page and the NOT BUILT line of its own Navisworks on the NWF page, never judged a second time off the files.
+        /// </summary>
+        public bool NotBuiltForOneDiscipline { get; private set; }
+
+        public DisciplineGroup NotBuilt()
+        {
+            NotBuiltForOneDiscipline = true;
+            return this;
+        }
     }
 
     /// <summary>One NWC file's date as the disk gave it, or null with why where it could not be read.</summary>

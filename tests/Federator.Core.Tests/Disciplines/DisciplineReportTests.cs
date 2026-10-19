@@ -57,7 +57,7 @@ namespace Federator.Core.Tests
             {
                 new DisciplineGroup("1B06BC", bc, new[] { Model(bc[0], 0, "S"), Model(bc[1], 0, "S"), Model(bc[2], 34014.4, "T1"), Model(bc[3], 50000.0, "S") }, null),
                 new DisciplineGroup("1B06PS", ps, ps.Select(f => Model(f, 0, "S")), null),
-                new DisciplineGroup("1B06PG", pg, null, "this group did not run in this run")
+                new DisciplineGroup("1B06PG", pg, null, "this group did not run in this run").NotBuilt()
             };
             List<FileDate> dates = bc.Concat(ps).Concat(pg).Select(f => new FileDate(f, f == ps[1] ? Now.AddDays(-9) : Now.AddDays(-1), null)).ToList();
 
