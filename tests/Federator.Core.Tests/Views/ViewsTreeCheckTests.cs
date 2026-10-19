@@ -1183,6 +1183,43 @@ namespace Federator.Core.Tests
                 Does.Contain("how many tests ran with no open clash is UNKNOWN, the tests the clash step ran were not handed in"));
         }
 
+        /// <summary>
+        /// F236 on the reviewer's finding 8. The lines ViewsTree.Lines writes are read back by ReadViewLine, each view's test,
+        /// its open clashes and whether it was read back, and a view written and not read back reads so, finding 3, so the clash
+        /// count check reads the block's own shape and never a line typed for the test.
+        /// </summary>
+        [Test]
+        public void TheBlocksViewLinesReadBackToTheirTestTheirOpenClashesAndWhetherTheViewWasReadBack()
+        {
+            Tree tree = Good();
+            int walls = tree.Written.FindIndex(w => w.Name == Walls);
+            WrittenView was = tree.Written[walls];
+            tree.Written[walls] = new WrittenView(was.Folders, was.Name, was.IndexInParent, true, false);
+            ViewsTreeFacts facts = FactsOf(tree);
+            Dictionary<string, int> open = new Dictionary<string, int>();
+            Dictionary<string, bool> readBack = new Dictionary<string, bool>();
+
+            foreach (string line in ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0))
+            {
+                string test;
+                int clashes;
+                bool back;
+
+                if (ViewsTree.ReadViewLine(line, out test, out clashes, out back))
+                {
+                    open[test] = clashes;
+                    readBack[test] = back;
+                }
+            }
+
+            Assert.That(open.Count, Is.EqualTo(3), "one view a test and no folder line read as a view");
+            Assert.That(open[Ducts], Is.EqualTo(2));
+            Assert.That(open[Lights], Is.EqualTo(1));
+            Assert.That(open[Walls], Is.EqualTo(1));
+            Assert.That(readBack[Ducts], Is.True);
+            Assert.That(readBack[Walls], Is.False, "a view written and not read back");
+        }
+
         private sealed class Tree
         {
             internal TestViewPlanOutcome Plan;

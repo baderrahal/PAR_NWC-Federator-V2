@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 
@@ -287,11 +288,70 @@ namespace Federator.Core.Views
                     sizeFolder = view.SizeFolder;
                 }
 
-                lines.Add((view.SizeFolder == null ? "      " : "        ") + view.Name + "  " + view.Clashes.Count
-                    + " open clashes, " + ShowsAndHides(facts, models, view) + ", " + StateOf(facts, view));
+                lines.Add((view.SizeFolder == null ? "      " : "        ") + view.Name + ViewLineCount(view.Clashes.Count)
+                    + ShowsAndHides(facts, models, view) + ", " + StateOf(facts, view));
             }
 
             return lines;
+        }
+
+        /// <summary>What follows a view's name on its line: two spaces, its open clashes and a comma before what it shows.</summary>
+        private static string ViewLineCount(int clashes)
+        {
+            return "  " + clashes.ToString(CultureInfo.InvariantCulture) + ViewLineMark;
+        }
+
+        private const string ViewLineMark = " open clashes, ";
+
+        /// <summary>The end of a view's line where the view was written, marked and read back, StateOf.</summary>
+        private const string ReadBackWords = "read back";
+
+        /// <summary>
+        /// F236. A view's line of the block read back, its test's name, its open clashes and whether the view was written,
+        /// marked and read back, the one reader of the shape ViewLineCount and StateOf write, false for a line of a folder or
+        /// any other line. The name is read whole, never trimmed at its end.
+        /// </summary>
+        public static bool ReadViewLine(string line, out string test, out int openClashes, out bool readBack)
+        {
+            test = null;
+            openClashes = -1;
+            readBack = line != null && line.EndsWith(", " + ReadBackWords, StringComparison.Ordinal);
+
+            if (string.IsNullOrEmpty(line))
+            {
+                return false;
+            }
+
+            int mark = line.IndexOf(ViewLineMark, StringComparison.Ordinal);
+
+            if (mark < 0)
+            {
+                return false;
+            }
+
+            int space = line.LastIndexOf("  ", mark, StringComparison.Ordinal);
+            int start = 0;
+
+            while (start < line.Length && line[start] == ' ')
+            {
+                start++;
+            }
+
+            if (space <= start)
+            {
+                return false;
+            }
+
+            int clashes;
+
+            if (!int.TryParse(line.Substring(space + 2, mark - space - 2), NumberStyles.None, CultureInfo.InvariantCulture, out clashes))
+            {
+                return false;
+            }
+
+            test = line.Substring(start, space - start);
+            openClashes = clashes;
+            return true;
         }
 
         /// <summary>The views and their open clashes in that letter, discipline and size folder, a null matching any.</summary>
@@ -386,7 +446,7 @@ namespace Federator.Core.Views
                 return "NOT MARKED";
             }
 
-            return written.ReadBack ? "read back" : "NOT READ BACK";
+            return written.ReadBack ? ReadBackWords : "NOT READ BACK";
         }
 
         private static string LeftOutWords(ViewsTreeFacts facts)

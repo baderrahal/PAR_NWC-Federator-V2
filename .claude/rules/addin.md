@@ -1228,3 +1228,18 @@ package's report folder, each one CHECKS attempt and written line with its size 
 reading its issue rows and its summary back off the file, `DisciplineWorkbookWords.ReadBackLine`. A PACKAGE WHOSE EVERY GROUP IS
 OF ONE DISCIPLINE, `PackageRun.NotBuiltOnly`, runs nothing and still gets its folders and its workbooks, and a run of the NWC
 page whose every group is of one discipline writes them before its RESULT.
+
+THE CLASH COUNT CHECK, F236, `WriteTheClashCountChecks`, right after the discipline reports and before RESULT, the whole in a try
+so a fault never stops RESULT: for each group of the run, its .tsv beside its log, `RowLog.PathFor`, read by `GroupRunFiles`, then
+the clash workbook and the page that .tsv names, read off the disk by `WorkbookTests.ReadFile` with the sheet the .tsv names, and
+`PageTests`, each group in a try of its own. A group with no result, a result naming no group for another reason than one
+discipline, no .tsv or a read that threw is named as not read with why, `ClashCountCheck.AddNotRead`, and a workbook or a page not
+read is said on a COUNTS line and its counts are UNKNOWN. The groups not built come off the plans and the results. The views are
+held to `new ViewpointSettings().ViewStatuses`, the setting the engine builds its views with. One workbook a community in its
+folder, `PackageOutput.CommunityFolderFor`, the CLASH COUNT CHECK block, its COUNTS attempt and written lines and the read back line
+against the check written. The run's picture settings ride on `PackageRun.Images`. WHAT THE GROUP WRITES FOR IT, attempt 2 on the
+reviewer's and the breaker's findings: the engine writes the workbook's sheet name on a `RunEvents.WorkbookSheet` row once the
+workbook is written whole, `ClashRunner` one `RunEvents.Mirror` row a mirror the rule paired and, where a merge took a kept test's
+mirrors, one `MirrorMerged` row a mirror and one `AddedByMirrors` row, and the page whose write threw goes through
+`RunLog.WriteThrew` as the workbook does, so a page of an earlier run is never read as this run's and its check is not run. Every
+rule and every word is Core's, core.md The clash count check.

@@ -153,28 +153,41 @@ namespace Federator.Core.Report
             }
 
             int rows = 0;
+            int pictures = 0;
+            string priority = null;
+            Dictionary<string, int> statuses = new Dictionary<string, int>(StringComparer.Ordinal);
             int at = headings + 1;
 
             while (at <= last && sheet.Cell(at, WorkbookWriter.ColumnClashName).GetString().Length > 0)
             {
                 rows++;
+
+                // F236. Each row's status, its picture by the link its Image cell carries, and its test's letter, read off the file.
+                string status = sheet.Cell(at, WorkbookWriter.ColumnStatus).GetString();
+                int was;
+                statuses[status] = statuses.TryGetValue(status, out was) ? was + 1 : 1;
+                pictures += sheet.Cell(at, WorkbookWriter.ColumnImage).HasHyperlink ? 1 : 0;
+                priority = priority ?? sheet.Cell(at, WorkbookWriter.ColumnPriority).GetString();
                 at++;
             }
 
-            Add(name, start, rows, clashes);
+            Add(name, start, rows, clashes).Read(pictures, statuses, priority);
             return at;
         }
 
-        private void Add(string name, int row, int rows, int clashes)
+        private WorkbookTest Add(string name, int row, int rows, int clashes)
         {
+            WorkbookTest test = new WorkbookTest(name, row, rows, clashes);
+
             if (string.IsNullOrEmpty(name))
             {
                 doubts.Add("row " + row.ToString(CultureInfo.InvariantCulture)
                     + " carries a test with no name, so it cannot be set beside any test");
-                return;
+                return test;
             }
 
-            tests.Add(new WorkbookTest(name, row, rows, clashes));
+            tests.Add(test);
+            return test;
         }
 
         /// <summary>The cell as a whole number, or minus one and a doubt.</summary>

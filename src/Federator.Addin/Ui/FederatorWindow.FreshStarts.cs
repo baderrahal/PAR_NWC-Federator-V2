@@ -546,6 +546,7 @@ namespace Federator.Addin.Ui
             {
                 // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
                 WriteTheDisciplineReports(run, order.Units, results, whys);
+                WriteTheClashCountChecks(run, order.Units, results);
                 log.RunFinished();
                 log.WriteJoinedResult(PackageRunWords.JoinedResult(order.Units, results, whys, tally));
             }

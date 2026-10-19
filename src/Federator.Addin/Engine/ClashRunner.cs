@@ -635,6 +635,7 @@ namespace Federator.Addin.Engine
                 // clashes.
                 MirrorRule mirrored = PairTheMirrors(resolved, inTheDocument, outcome);
                 MirrorNames = MirrorNamesOf(mirrored);
+                WriteTheMirrorRows(mirrored);
                 DocumentClashTests clashTests = document.GetClash().TestsData;
 
                 if (mirrored != null)
@@ -1029,6 +1030,10 @@ namespace Federator.Addin.Engine
             PlannedClashTest planned,
             ClashRunOutcome outcome)
         {
+            // F236 on the reviewer's second reading. Clash Detective's count, kept outside the try so a throw after it, in the
+            // harvest, still hands it to the clash count check and the test is never dropped from it in silence.
+            int counted = -1;
+
             try
             {
                 TestAddress address;
@@ -1302,6 +1307,7 @@ namespace Federator.Addin.Engine
                     }
 
                     tally = Count(after, planned.Name);
+                    counted = tally.Total;
 
                     // Read now, in the same pass, because the results are only readable
                     // while this document is open and this handle is fresh.
@@ -1405,7 +1411,7 @@ namespace Federator.Addin.Engine
                 log.NumberedRepeat(
                     result.Passed ? "CLASH passed, found nothing" : "CLASH found clashes",
                     "CLASH    " + result.Line(),
-                    result.Passed ? "test passed" : "test found clashes",
+                    result.Passed ? RunEvents.TestPassed : RunEvents.TestFoundClashes,
                     planned.Name,
                     EventRow.Count(tally.Total),
                     result.Passed ? "ran and found nothing" : "ran and found clashes");
@@ -1421,6 +1427,12 @@ namespace Federator.Addin.Engine
                     "clash test " + planned.Name,
                     error,
                     "kept going with the next test, this one is reported as skipped and was not run");
+
+                if (counted >= 0)
+                {
+                    log.Row(RunEvents.TestFailedAfterItsCount, planned.Name, EventRow.Count(counted),
+                        "Clash Detective counted its clashes, then the test threw: " + reason);
+                }
             }
         }
 
@@ -2413,6 +2425,59 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// F236. One .tsv row a mirror the rule paired, its run name and the test it mirrors, so the clash count check holds a
+        /// mirror to no view, since no mirror gets one. None where the rule did not run.
+        /// </summary>
+        private void WriteTheMirrorRows(MirrorRule mirrored)
+        {
+            if (mirrored == null)
+            {
+                return;
+            }
+
+            foreach (MirrorPair pair in mirrored.Pairs)
+            {
+                if (!string.IsNullOrEmpty(pair.MirrorName))
+                {
+                    log.Row(RunEvents.Mirror, pair.MirrorName, string.Empty, pair.Kept.Name);
+                }
+            }
+        }
+
+        /// <summary>
+        /// F236. Where the merge took a kept test's mirrors, one .tsv row a mirror merged and one row of the clashes only they
+        /// found, which the merge added to the kept test, so the clash count check holds the kept test's rows to Clash
+        /// Detective's count and those, and leaves the mirrors out, their clashes being the kept test's. None where nothing
+        /// merged, since then each mirror keeps its own block.
+        /// </summary>
+        private void WriteTheMergeRows(MirrorMerge merge)
+        {
+            IList<string> merged = merge.MergedNames;
+
+            if (merged.Count == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                for (int i = 1; i < merged.Count; i++)
+                {
+                    log.Row(RunEvents.MirrorMerged, merged[i], string.Empty, merge.Kept.Name);
+                }
+
+                log.Row(RunEvents.AddedByMirrors, merge.Kept.Name, EventRow.Count(merge.AddedToTheKeptTest), string.Empty);
+            }
+            catch (InvalidOperationException error)
+            {
+                log.Failure(
+                    "writing the merge rows of " + merge.Kept.Name,
+                    error,
+                    "kept going, the clash count check then reads the kept test without the clashes only its mirrors found");
+            }
+        }
+
         /// <summary>The run name of every mirror the rule paired, or null where the rule did not run.</summary>
         private static IList<string> MirrorNamesOf(MirrorRule mirrored)
         {
@@ -2585,6 +2650,7 @@ namespace Federator.Addin.Engine
                 }
 
                 log.Block("MIRROR MERGE " + merge.Kept.Name, merge.Lines());
+                WriteTheMergeRows(merge);
 
                 TestReport summary = ReportFor(merge.Kept);
                 int inDocument;

@@ -1842,7 +1842,7 @@ namespace Federator.Core.Diagnostics
 
             Numbered(
                 kind.PadRight(8) + " written  " + path + "  " + DescribeSize(size),
-                "written",
+                RunEvents.Written,
                 kind,
                 EventRow.Count(size),
                 path);
