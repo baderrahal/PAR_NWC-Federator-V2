@@ -1181,7 +1181,11 @@ and 6 does not read as broken.
   was found off while any of those is more than nought. ONE LIST, `OffCoordinatesAcrossTheRun.ListName`,
   "Models not on the same shared coordinates.txt", overwritten by each run, its first line naming
   the run that wrote it, F243, Bader's order of 19 Oct 2026. It was each run's own file named for
-  the second the run started, which `OldReportFiles` now cleans. A model whose
+  the second the run started, which `OldReportFiles` now cleans. A RUN OF PACKAGES MAKES IT ONCE, F243
+  attempt 2: each group's own Navisworks carries its tally's record of the group, `OffCoordinatesGroup`, in its
+  result, `PackageRunResult.OffCoordinates`, offgroup, offmodel, offinternal and offnosite lines by the result
+  file's own rules, shape 4, and `PackageRunResult.OffCoordinatesOf` makes the one tally over every result, a
+  group with no result or no record not reached and never clean, proved by `OffCoordinatesCarriedTests`. A model whose
   placement or site could not be read is never judged on it, and the block says so
 - The EXPORT CHECK run line is added up in Core, `ExportCheckAcrossTheRun`, by the rules
   each group's block judges by, `ModelExport.HoldsNoElement` among them, so the line and

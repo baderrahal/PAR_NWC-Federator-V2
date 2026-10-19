@@ -627,6 +627,7 @@ namespace Federator.Addin.Ui
                         group.Disciplines.Count,
                         group.Disciplines).InPackage(package.RelativePath, logFolder));
                     planLines.Add(group.Label + "  runs, " + group.Files.Count + " files, NWF " + group.NwfPath);
+                    run.WritesInto(logFolder);
                 }
 
                 if (jobs.Count == before)
@@ -771,6 +772,7 @@ namespace Federator.Addin.Ui
                 Report = report;
                 Disciplines = disciplines;
                 Tally = new PackageTally();
+                LogFolders = new List<string>();
                 Runnable = new List<Package>();
                 NotBuiltOnly = new List<Package>();
                 Plans = new Dictionary<string, PackagePlan>(StringComparer.OrdinalIgnoreCase);
@@ -787,6 +789,21 @@ namespace Federator.Addin.Ui
             public DisciplineReportSettings Disciplines { get; private set; }
 
             public PackageTally Tally { get; private set; }
+
+            /// <summary>F243 attempt 2. When the window started the run's groups, the moment the one list of the run names.</summary>
+            public DateTime Started { get; set; }
+
+            /// <summary>F243 attempt 2. The Log folder of each package a group of the run writes into, each once, for the one list.</summary>
+            public List<string> LogFolders { get; private set; }
+
+            /// <summary>Adds a Log folder once, compared as Windows compares paths.</summary>
+            public void WritesInto(string logFolder)
+            {
+                if (!string.IsNullOrEmpty(logFolder) && !LogFolders.Exists(f => string.Equals(f, logFolder, StringComparison.OrdinalIgnoreCase)))
+                {
+                    LogFolders.Add(logFolder);
+                }
+            }
 
             public List<Package> Runnable { get; private set; }
 
@@ -1511,6 +1528,7 @@ namespace Federator.Addin.Ui
                 foreach (PackageNwf nwf in inPackages)
                 {
                     units.Add(new PackageRunUnit(nwf.Package.RelativePath, nwf.NwfPath, Path.GetFileNameWithoutExtension(nwf.NwfPath)));
+                    run.WritesInto(nwf.LogFolder);
                     GroupsOf(groupsOfEachCommunity, nwf.Package.Community).Add(Path.GetFileNameWithoutExtension(nwf.NwfPath));
                     FoldersOf(foldersOfEachCommunity, nwf.Package.Community)[nwf.Package.RelativePath] = PackageOutput.FolderFor(report, nwf.Package);
                 }
@@ -1592,6 +1610,7 @@ namespace Federator.Addin.Ui
 
                 // F214. The NWFs this run ended with, those before a throw among them, for a package's own result.
                 lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
+                lastCoordinates = engine == null ? null : engine.CoordinatesAcrossTheRun;
                 running = false;
                 SetTheRunButtons(true);
                 ShowOpenDocument();

@@ -1123,8 +1123,8 @@ Navisworks, below, whose window runs `RunJobs` with one engine for that group.
 Each job carries its package and its package's Log folder, `FederationJob.InPackage`, the copy of a dated rebuild keeps
 both, and `RunOne` sets the Log folder off the job. The GROUP started and finished lines, the pace of the live line,
 the coordinates tally and the clash totals read `FederationJob.Label`, so community and package are on every group line
-and in RESULT. The list of models off the shared coordinates goes into the Log folder of every package the run wrote, as
-the run log is copied into each.
+and in RESULT. The list of models off the shared coordinates goes into the Log folder of every package the run wrote, written
+once since F243 by the window that started the run over every group's carried record, F243 One name per output.
 
 A GROUP OF ONE DISCIPLINE ON THE NWF PAGE, F233: in its own Navisworks `FederationEngine.TheGroupHoldsOneDiscipline` reads the
 NWF's disciplines once it opens and, where they are one, writes its NOT BUILT line and its earlier NWF line and stops before
@@ -1270,5 +1270,11 @@ NEVER DATED, and the add-in calls them.
   workbook name, on the NWF page each NWF of the run by its name, and each package's own report folder,
   `PackageOutput.FolderFor`, each under its community, `OldReportFiles.Clean` in Report\COMMUNITY\ and nowhere else. Each
   line logged with its kind, each file held open said in FileInUse's words, each other failure logged, one count line a
-  community, and the run goes on- THE COORDINATES LIST is `OffCoordinatesAcrossTheRun.ListName` in each Log folder, overwritten, and the discipline workbooks
-  and the clash count check are written under their one name, the folder and Core's name joined
+  community, and the run goes on
+- THE COORDINATES LIST is `OffCoordinatesAcrossTheRun.ListName` in each Log folder, overwritten. A group's own Navisworks
+  writes none, `packagesRun`, and carries its tally's groups back, `PackageRunResult.OffCoordinates`. The window that
+  started the run writes the one list once every group has ended and before its joined RESULT, `WriteTheOneListOfTheRun`,
+  over `PackageRunResult.OffCoordinatesOf` with the run's start, `PackageRun.Started`, into each Log folder a group of the
+  run writes into, `PackageRun.LogFolders`, through the engine's one writer, `FederationEngine.WriteTheList`. The open file
+  run writes its own as before. The discipline workbooks and the clash count check are written under their one name, the
+  folder and Core's name joined

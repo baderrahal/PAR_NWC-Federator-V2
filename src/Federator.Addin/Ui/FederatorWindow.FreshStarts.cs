@@ -10,6 +10,7 @@ using Federator.Addin.Engine;
 using Federator.Core.Communities;
 using Federator.Core.Diagnostics;
 using Federator.Core.Disciplines;
+using Federator.Core.Health;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 
@@ -74,6 +75,12 @@ namespace Federator.Addin.Ui
 
         /// <summary>The groups the last run of this window ended with, read by a child to write its result.</summary>
         private IList<JobOutcome> lastOutcomes;
+
+        /// <summary>
+        /// The shared coordinates tally the last run of this window ended with, read by a child to carry its groups back in its
+        /// result, F243 attempt 2, or null where no engine was made.
+        /// </summary>
+        private OffCoordinatesAcrossTheRun lastCoordinates;
 
         /// <summary>Why a child ran no group, where it knows, or null.</summary>
         private string childRanNoGroupBecause;
@@ -169,6 +176,15 @@ namespace Federator.Addin.Ui
             try
             {
                 PackageRunResult result = new PackageRunResult(child.Package, log.IsWritingToDisk ? log.Path : null);
+
+                // F243 attempt 2. The shared coordinates check's record of each group, for the one list of the run.
+                if (lastCoordinates != null)
+                {
+                    foreach (OffCoordinatesGroup group in lastCoordinates.Groups)
+                    {
+                        result.OffCoordinates.Add(group);
+                    }
+                }
 
                 // F233. A group of one discipline was opened and not built, so it ends with no group and its one line.
                 List<JobOutcome> built = lastOutcomes == null ? new List<JobOutcome>() : new List<JobOutcome>(lastOutcomes).FindAll(o => o == null || o.NotBuiltBecause == null);
@@ -372,6 +388,7 @@ namespace Federator.Addin.Ui
             running = true;
             SetTheRunButtons(false);
             log.RunStarted(units.Count, "group", "groups");
+            run.Started = DateTime.Now;
             SetProgress(PackageRunWords.Waiting(units.Count));
             bool runnerEnded = false;
 
@@ -551,6 +568,8 @@ namespace Federator.Addin.Ui
             try
             {
                 // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
+                // F243 attempt 2, the lead's decision on item 1: the one list of the run, over every group's carried facts.
+                WriteTheOneListOfTheRun(run, results, order.Units.Count);
                 WriteTheDisciplineReports(run, order.Units, results, whys);
                 WriteTheClashCountChecks(run, order.Units, results);
                 IList<string> own = log.FilesInUse;
@@ -584,6 +603,24 @@ namespace Federator.Addin.Ui
             if (warning != null)
             {
                 Warn(warning);
+            }
+        }
+
+        /// <summary>
+        /// F243 attempt 2, the lead's decision on item 1. The one list of models not on the same shared coordinates of a run of
+        /// packages, made over the record each group's result carried back, PackageRunResult.OffCoordinatesOf, its first line
+        /// the start of this run, and written once into each Log folder the run wrote into. A group with no result or no record
+        /// is counted not reached, never clean.
+        /// </summary>
+        private void WriteTheOneListOfTheRun(PackageRun run, IList<PackageRunResult> results, int groups)
+        {
+            try
+            {
+                FederationEngine.WriteTheList(log, PackageRunResult.OffCoordinatesOf(run.Started, groups, results), run.LogFolders);
+            }
+            catch (Exception error)
+            {
+                log.Failure("writing the one list of models not on the same shared coordinates", error, "the run's RESULT is still written");
             }
         }
 

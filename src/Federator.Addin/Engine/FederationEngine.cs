@@ -3041,13 +3041,17 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// The run's one list for the modellers, Bader's answer to Q99 and Q100, in the Log
         /// folder. Since F243, Bader's order of 19 Oct 2026, ONE file under one name, overwritten
-        /// by each run, its first line saying which run wrote it, and a file open in another
-        /// program is left as it is and named. Written on every run,
+        /// by each run, its first line saying which run wrote it. Written on every run,
         /// the list empty or not, saying how many groups the check judged. Since F159 it
         /// carries a NOTICE for each group holding a model not on the same shared coordinates,
         /// which models, and that the clash results may be wrong for them, and the same words
         /// are in the run log. With no Log folder it is not written, and the NOTICE lines in the
         /// log carry the same words.
+        ///
+        /// A GROUP'S OWN NAVISWORKS WRITES NONE, F243 attempt 2, the lead's decision on the reviewer's B1: since F232 a run
+        /// of packages runs only there, one group a Navisworks, so its list would hold its one group and the next group's
+        /// would write over it. Its tally's groups ride back in its result, and the window that started the run writes the
+        /// one list over every group, FederatorWindow.WriteTheOneListOfTheRun. The open file run writes its own as before.
         /// </summary>
         private void WriteTheListForTheModellers()
         {
@@ -3058,11 +3062,23 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            // F208. A run of packages writes the run's list into the Log folder of every package it ran, as the window
-            // copies the run log into each, so no package's folder holds a list another package's run left. Any other run
-            // writes it into its one Log folder, as it always has.
-            List<string> folders = packagesRun ? new List<string>(logFolders) : new List<string> { reportFolder };
+            if (packagesRun)
+            {
+                log.WriteSkipped("LIST", "this is a group's own Navisworks, so the window that started the run writes the one"
+                    + " list over every group of the run from what each group's result carries");
+                return;
+            }
 
+            WriteTheList(log, CoordinatesAcrossTheRun, new List<string> { reportFolder });
+        }
+
+        /// <summary>
+        /// The one list written into each Log folder handed in, under its one name, overwritten, the file open in another program
+        /// left as it is and named, any other failure logged. The engine's open file run and the window that started a run of
+        /// packages both write through it.
+        /// </summary>
+        internal static void WriteTheList(RunLog log, OffCoordinatesAcrossTheRun run, IEnumerable<string> folders)
+        {
             foreach (string folder in folders)
             {
                 string path = Path.Combine(folder, OffCoordinatesAcrossTheRun.ListName);
@@ -3070,8 +3086,8 @@ namespace Federator.Addin.Engine
                 try
                 {
                     log.WriteAttempted("LIST", path);
-                    EnsureFolder(path);
-                    File.WriteAllLines(path, CoordinatesAcrossTheRun.ForModellers());
+                    Directory.CreateDirectory(folder);
+                    File.WriteAllLines(path, run.ForModellers());
                     log.WriteFinished("LIST", path);
                 }
                 catch (Exception error)
@@ -3089,7 +3105,6 @@ namespace Federator.Addin.Engine
                 }
             }
         }
-
         /// <summary>The set rebuild settings this run was given, Q72, or the default which is off.</summary>
         private SetRebuildSettings Rebuilds()
         {

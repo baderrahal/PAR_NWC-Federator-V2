@@ -1187,6 +1187,7 @@ namespace Federator.Addin.Ui
 
                 // F214. The groups this run ended with, those before a throw among them, for a package's own result.
                 lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
+                lastCoordinates = engine == null ? null : engine.CoordinatesAcrossTheRun;
                 running = false;
                 SetTheRunButtons(true);
             }

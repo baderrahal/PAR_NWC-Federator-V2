@@ -41,7 +41,9 @@ seven points. Steps 1 and 2 need no Navisworks.
    Look for: a jpg opening from Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files.
 11. Open f243\Report\C06\Log.
    Look for: no xlsx of 1B06BC, no file with Internal in its name for 1B06BC, one `Models not on the same shared
-   coordinates.txt` whose first line names this run's start, and the run-....log and .tsv of this run beside the old ones.
+   coordinates.txt` whose first line names this run's start and whose second reads `The check judged 1 of 1 group of this
+   run.`, and the run-....log and .tsv of this run beside the old ones. In the log of 1B06BC's own Navisworks the line
+   `LIST     skipped  this is a group's own Navisworks`, and in the run's log one `LIST     attempt` for the C06 Log folder.
 12. Open f243\Report\C06\Backup.
    Look for: `1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf` with today's time and no date in its name, and the other groups' dated
    backups as they were.

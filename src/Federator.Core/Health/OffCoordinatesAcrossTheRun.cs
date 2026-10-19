@@ -34,7 +34,7 @@ namespace Federator.Core.Health
 
         private readonly DateTime runStarted;
         private readonly int groupsInTheRun;
-        private readonly List<Entry> entries = new List<Entry>();
+        private readonly List<OffCoordinatesGroup> entries = new List<OffCoordinatesGroup>();
 
         public OffCoordinatesAcrossTheRun(DateTime runStarted, int groupsInTheRun)
         {
@@ -48,7 +48,15 @@ namespace Federator.Core.Health
         /// </summary>
         public void Add(string building, OffCoordinates off, bool runsATest)
         {
-            entries.Add(new Entry(string.IsNullOrEmpty(building) ? "UNKNOWN" : building, off, runsATest));
+            entries.Add(new OffCoordinatesGroup(building, off, runsATest));
+        }
+
+        /// <summary>
+        /// Every group added, in the order added, the record a group's own Navisworks carries back in its result, F243 attempt 2.
+        /// </summary>
+        public IList<OffCoordinatesGroup> Groups
+        {
+            get { return entries.AsReadOnly(); }
         }
 
         /// <summary>How many groups held at least one model not on the same shared coordinates.</summary>
@@ -72,7 +80,7 @@ namespace Federator.Core.Health
 
             lines.Add("coordinates    : " + Judged() + " of " + Words.Counted(groupsInTheRun, "group", "groups") + " judged" + NotJudgedResult());
 
-            foreach (Entry entry in entries)
+            foreach (OffCoordinatesGroup entry in entries)
             {
                 if (entry.Off != null && entry.Off.Any)
                 {
@@ -117,7 +125,7 @@ namespace Federator.Core.Health
             lines.Add("NOTICE. Every clash was run and none was skipped. " + OffCoordinates.ResultsMayBeWrong
                 + " Export them again on the project's shared coordinates and run again.");
 
-            foreach (Entry entry in entries)
+            foreach (OffCoordinatesGroup entry in entries)
             {
                 if (entry.Off == null || !entry.Off.Any)
                 {
@@ -175,7 +183,7 @@ namespace Federator.Core.Health
         {
             int models = 0;
 
-            foreach (Entry entry in entries)
+            foreach (OffCoordinatesGroup entry in entries)
             {
                 if (entry.Off != null)
                 {
@@ -244,26 +252,31 @@ namespace Federator.Core.Health
             return said;
         }
 
-        private int Count(Predicate<Entry> which)
+        private int Count(Predicate<OffCoordinatesGroup> which)
         {
             return entries.FindAll(which).Count;
         }
+    }
 
-        /// <summary>One group as the check left it.</summary>
-        private sealed class Entry
+    /// <summary>
+    /// One group as the check left it: its name, what the check judged of its models, or null where the read threw, and
+    /// whether a clash test was to run in it. F243 attempt 2: the record a group's own Navisworks carries back in its result,
+    /// so the window that started the run makes the one list over every group with the tally's own rules.
+    /// </summary>
+    public sealed class OffCoordinatesGroup
+    {
+        public OffCoordinatesGroup(string building, OffCoordinates off, bool runsATest)
         {
-            public Entry(string building, OffCoordinates off, bool runsATest)
-            {
-                Building = building;
-                Off = off;
-                RunsATest = runsATest;
-            }
-
-            public string Building { get; private set; }
-
-            public OffCoordinates Off { get; private set; }
-
-            public bool RunsATest { get; private set; }
+            Building = string.IsNullOrEmpty(building) ? "UNKNOWN" : building;
+            Off = off;
+            RunsATest = runsATest;
         }
+
+        public string Building { get; private set; }
+
+        /// <summary>What the check judged, or null where the read threw.</summary>
+        public OffCoordinates Off { get; private set; }
+
+        public bool RunsATest { get; private set; }
     }
 }

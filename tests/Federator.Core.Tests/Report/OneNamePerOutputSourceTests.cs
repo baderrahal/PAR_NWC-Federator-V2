@@ -167,7 +167,7 @@ namespace Federator.Core.Tests
                 BodyOf(engine, "private void WriteTheWorkbook("),
                 BodyOf(engine, "private void WriteHtmlTabular("),
                 BodyOf(engine, "private void WriteTheClashXml("),
-                BodyOf(engine, "private void WriteTheListForTheModellers("),
+                BodyOf(engine, "internal static void WriteTheList("),
                 BodyOf(engine, "private void DeleteThePicturesFolderOnce("),
                 BodyOf(refresh, "internal string BackupTheNwf("),
                 BodyOf(packages, "private void WriteTheClashCountChecksOf("),
@@ -224,6 +224,23 @@ namespace Federator.Core.Tests
 
             Assert.That(At(tail, "SayTheEarlierReportsLeft(job, outcome)"), Is.GreaterThan(At(tail, "WriteWorkbook(job, outcome)")));
             Assert.That(BodyOf(engine, "private void SayTheEarlierReportsLeft("), Does.Contain("PicturesFolder.EarlierFileLine("));
+        }
+
+        /// <summary>
+        /// F243 attempt 2, the lead's decision on item 1. A group's own Navisworks writes no list and carries its tally's groups
+        /// back in its result, and the window that started the run writes the one list over them before its joined RESULT.
+        /// </summary>
+        [Test]
+        public void TheOneListIsWrittenByTheWindowThatStartedTheRun()
+        {
+            string engine = BodyOf(Engine(), "private void WriteTheListForTheModellers(");
+            string fresh = Source("src", "Federator.Addin", "Ui", "FederatorWindow.FreshStarts.cs");
+            string join = BodyOf(fresh, "private void JoinTheResults(");
+
+            Assert.That(At(engine, "if (packagesRun)"), Is.LessThan(At(engine, "WriteTheList(log, CoordinatesAcrossTheRun")));
+            Assert.That(BodyOf(fresh, "private void WriteThePackagesResult("), Does.Contain("result.OffCoordinates.Add(group)"));
+            Assert.That(At(join, "WriteTheOneListOfTheRun(run, results, order.Units.Count)"), Is.LessThan(At(join, "log.WriteJoinedResult(")));
+            Assert.That(BodyOf(fresh, "private void WriteTheOneListOfTheRun("), Does.Contain("PackageRunResult.OffCoordinatesOf(run.Started"));
         }
 
         /// <summary>F243 attempt 2, the breaker's S5. The links are checked against the count the writer made, each missing one a row.</summary>
