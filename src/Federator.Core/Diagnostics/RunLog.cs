@@ -49,6 +49,7 @@ namespace Federator.Core.Diagnostics
         private readonly StringBuilder mirror = new StringBuilder();
         private readonly List<WrittenFile> written = new List<WrittenFile>();
         private readonly List<LoggedFailure> failures = new List<LoggedFailure>();
+        private readonly List<string> filesInUse = new List<string>();
 
         /// <summary>
         /// Every distinct failure seen so far, so a repeat is recognised rather than
@@ -661,6 +662,7 @@ namespace Federator.Core.Diagnostics
             {
                 written.Clear();
                 failures.Clear();
+                filesInUse.Clear();
                 repeats.Clear();
                 groupRecords.Clear();
                 stepRecords.Clear();
@@ -1732,6 +1734,38 @@ namespace Federator.Core.Diagnostics
                 file);
         }
 
+        /// <summary>
+        /// A file this run did not write because another program held it open, F243, Bader's order of 19 Oct 2026 point 6: its
+        /// one line, FileInUse's words, said now and kept, each file once, for RESULT and for the run window's end message.
+        /// Nothing is written under another name and nothing is recorded as written.
+        /// </summary>
+        public void NotWrittenWhileOpen(string path)
+        {
+            string line = Federator.Core.Report.FileInUse.Line(path);
+
+            lock (gate)
+            {
+                if (!filesInUse.Contains(line))
+                {
+                    filesInUse.Add(line);
+                }
+            }
+
+            Line(line);
+        }
+
+        /// <summary>The line of each file left open since the last RESULT, in the order met, for the run window's end message.</summary>
+        public IList<string> FilesInUse
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return new List<string>(filesInUse).AsReadOnly();
+                }
+            }
+        }
+
         public void WriteAttempted(string kind, string path)
         {
             Line(kind.PadRight(8) + " attempt  " + path);
@@ -2417,6 +2451,20 @@ namespace Federator.Core.Diagnostics
                 foreach (WrittenFile file in files)
                 {
                     Detail(file.Kind.PadRight(5) + " " + file.Path + "  " + DescribeSize(file.SizeInBytes));
+                }
+            }
+
+            // F243, Bader's order of 19 Oct 2026 point 6. Each file left open in another program, on its own line in his words,
+            // which a group's own Navisworks hands back to the window that started the run in its RESULT lines.
+            IList<string> open = FilesInUse;
+
+            if (open.Count > 0)
+            {
+                Line("files open     : " + open.Count + " not written, each was open in another program");
+
+                foreach (string line in open)
+                {
+                    Line(line);
                 }
             }
 

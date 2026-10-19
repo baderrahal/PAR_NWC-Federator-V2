@@ -9,9 +9,9 @@ namespace Federator.Core.Coverage
     /// The COVERAGE block of one group, F127, Bader's request 2 under Q112, section 1.7 of the F127 design,
     /// which the loop keeps outside the repo as turn5\f127-design.md: the tests of the clash matrix, or of the
     /// tests saved in the document, counted by presence and by reason, a few named for each reason that has no
-    /// results, the count check against the clash workbook and every COVERAGE FAILED line. Read off the one
-    /// shape the Coverage sheet is written from, CoverageSheetData, so the block and the sheet cannot say two
-    /// things about one test. Every test is on the sheet and in the .tsv, RowText, so the block names a few.
+    /// results, the count check against the clash workbook and every COVERAGE FAILED line, read off CoverageSheetData.
+    /// Every test is in the .tsv, RowText, so the block names a few. The Coverage sheet that carried every test too went
+    /// with the internal workbook, F243, Bader's order of 19 Oct 2026 point 4.
     ///
     /// THE GROUP KEEPS ITS OWN RESULT, the last line says so, because a report check never fails a group.
     /// </summary>
@@ -89,8 +89,7 @@ namespace Federator.Core.Coverage
 
                 if (tests.Count > shown)
                 {
-                    lines.Add("    and " + (tests.Count - shown) + " more of this reason, every one on the Coverage sheet"
-                        + " of the internal workbook and in the .tsv");
+                    lines.Add("    and " + (tests.Count - shown) + " more of this reason, every one in the .tsv");
                 }
             }
 
@@ -189,8 +188,8 @@ namespace Federator.Core.Coverage
 
                 if (shown == examples)
                 {
-                    lines.Add("    and " + (notCompared - shown) + " more not compared, every one on the Coverage sheet"
-                        + " of the internal workbook");
+                    lines.Add("    and " + (notCompared - shown) + " more not compared, named nowhere since the Coverage sheet"
+                        + " that listed every one went, F243");
                     break;
                 }
 

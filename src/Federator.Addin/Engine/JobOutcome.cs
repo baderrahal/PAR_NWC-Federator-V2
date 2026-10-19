@@ -4,7 +4,6 @@ using Federator.Core.Clash;
 using Federator.Core.Coverage;
 using Federator.Core.Diagnostics;
 using Federator.Core.Health;
-using Federator.Core.Generic;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -241,16 +240,11 @@ namespace Federator.Addin.Engine
         /// </summary>
         public SetBuildOutcome GenericSets { get; set; }
 
-        /// <summary>The Generic Models count of this group, F128, or null when none was taken.</summary>
-        public GenericModelsReport GenericModels { get; set; }
-
         /// <summary>
-        /// Size read back off the disk, or minus one when the internal workbook is not there, the workbook
-        /// beside the clash workbook holding the Generic Models sheet and the Coverage sheet, Q146 answered B.
+        /// Whether this group's pictures folder in the Clash report folder was dealt with before its clash report, F243, Bader's
+        /// order of 19 Oct 2026 point 2, so it is deleted once a group whichever step reaches it first.
         /// </summary>
-        public long InternalWorkbookSize { get; set; }
-
-        public bool InternalWorkbookOnDisk { get; set; }
+        public bool PicturesFolderDeleted { get; set; }
 
         /// <summary>
         /// The tests the clash step planned for this group, F127, the clash matrix's or the ones saved in the
@@ -266,8 +260,7 @@ namespace Federator.Addin.Engine
         public ICollection<string> InAMerge { get; set; }
 
         /// <summary>
-        /// The coverage of this group, F127, what its Coverage sheet and its COVERAGE block are written
-        /// from, or null where none was taken.
+        /// The coverage of this group, F127, what its COVERAGE block is written from, or null where none was taken.
         /// </summary>
         public CoverageSheetData Coverage { get; set; }
 

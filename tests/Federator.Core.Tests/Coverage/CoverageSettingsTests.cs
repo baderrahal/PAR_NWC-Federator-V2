@@ -1,7 +1,6 @@
 using System;
 using Federator.Core.Coverage;
 using Federator.Core.Diagnostics;
-using Federator.Core.Report;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -20,41 +19,10 @@ namespace Federator.Core.Tests
         {
             CoverageSettings settings = new CoverageSettings();
 
-            Assert.That(settings.SheetName, Is.EqualTo("Coverage"), "Bader's own word for the sheet");
             Assert.That(settings.ExamplesPerReason, Is.EqualTo(RunLog.KeptOfARepeat));
             Assert.That(settings.CategoriesNamedPerModel, Is.EqualTo(10));
             Assert.That(settings.FailedLinesInResult, Is.EqualTo(0), "every FAILED line is in RESULT, his words");
             Assert.That(settings.SetsAtZeroNamedInTheRun, Is.EqualTo(0), "every set that found nothing is named");
-        }
-
-        [Test]
-        public void TheDefaultSheetNameIsOneExcelAccepts()
-        {
-            Assert.That(SheetNames.IsAcceptable(new CoverageSettings().SheetName), Is.True);
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        [TestCase("   ")]
-        [TestCase("Cover:age")]
-        [TestCase("Cover/age")]
-        [TestCase("'Coverage")]
-        [TestCase("Coverage of every test of the XML")]
-        public void ASheetNameExcelRefusesIsRefusedWhereItIsSet(string name)
-        {
-            CoverageSettings settings = new CoverageSettings();
-
-            Assert.Throws<ArgumentException>(() => settings.SheetName = name);
-            Assert.That(settings.SheetName, Is.EqualTo("Coverage"), "a refused name changed the setting");
-        }
-
-        [Test]
-        public void ASheetNameExcelAcceptsIsKept()
-        {
-            CoverageSettings settings = new CoverageSettings();
-            settings.SheetName = "Tests covered";
-
-            Assert.That(settings.SheetName, Is.EqualTo("Tests covered"));
         }
 
         [Test]

@@ -182,7 +182,7 @@ namespace Federator.Core.Tests
 
             Assert.That(line, Is.EqualTo(
                 "BLOCKS   130 in the workbook, one for every test with a clash. The other 1700 of the 1830 tests of "
-                    + "the report found none and are on the page and the Coverage sheet alone"));
+                    + "the report found none and are on the page and in the .tsv alone"));
             Assert.That(line, Does.Not.Contain("MUST"));
         }
 

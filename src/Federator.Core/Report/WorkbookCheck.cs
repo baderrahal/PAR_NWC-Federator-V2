@@ -186,9 +186,9 @@ namespace Federator.Core.Report
             SheetName = sheets[0].Name;
 
             // Theirs is one sheet holding every test. Ours had fifty. FR-200 allowed the Coverage
-            // sheet second for a while, and Bader's answer B to Q146 of 11 Oct 2026 put it in the
-            // internal workbook beside this one, so this workbook is the client's sheet alone again
-            // and a second sheet of any name is named, the Coverage sheet included.
+            // sheet second for a while, and Bader's answer B to Q146 of 11 Oct 2026 took it out, so
+            // this workbook is the client's sheet alone again and a second sheet of any name is named,
+            // a Coverage sheet included. Since F243 no Coverage sheet is written anywhere.
             if (Sheets != 1)
             {
                 List<string> names = new List<string>();
@@ -308,7 +308,7 @@ namespace Federator.Core.Report
                     + " a test with no clash, the first at row " + firstNoClash
                     + (firstName.Length > 0 ? ", " + Quote(firstName) : ", with no name")
                     + ". A test with no clash writes nothing in the workbook since F153, and is on the page"
-                    + " and the Coverage sheet alone.");
+                    + " and in the .tsv alone.");
             }
 
             // A sheet with no block has no heading row, so the block layout cannot be compared, and

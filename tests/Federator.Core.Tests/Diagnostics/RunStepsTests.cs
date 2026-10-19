@@ -14,11 +14,11 @@ namespace Federator.Core.Tests
     public class RunStepsTests
     {
         [Test]
-        public void TheTwentyStepsAreThereInTheOrderAGroupMeetsThem()
+        public void TheNineteenStepsAreThereInTheOrderAGroupMeetsThem()
         {
             IList<string> all = RunSteps.All;
 
-            Assert.That(all.Count, Is.EqualTo(20));
+            Assert.That(all.Count, Is.EqualTo(19));
 
             // F182, Bader's answer B to Q175: the viewpoints, then the NWF saved and the NWD published,
             // then the pictures and the reports that link them. VIEWS is F85's, built after the clash step
@@ -27,13 +27,13 @@ namespace Federator.Core.Tests
             // byte file. PICTURES is F149's, every picture taken once every test has run, each picture's
             // IMAGES visit nesting inside it, then RENUMBER, FR-077, which checks every picture carries its
             // row's number. WORKBOOK, HTML and XML link the jpgs, so they come after. COVERAGE is F127's
-            // add-in half and reads the clash workbook back. INTERNAL follows it, Bader's answer B to Q146.
-            // F187 adds REFRESH after DECIDE, the NWF page's refresh. Twenty steps.
+            // add-in half and reads the clash workbook back. INTERNAL followed it, Bader's answer B to Q146, until
+            // F243 took the internal workbook out. F187 adds REFRESH after DECIDE, the NWF page's refresh. Nineteen steps.
             string[] expected =
             {
                 "DECIDE", "REFRESH", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
                 "HARVEST", "VIEWS", "NWD", "CONFIRM", "PICTURES", "IMAGES", "RENUMBER",
-                "WORKBOOK", "HTML", "XML", "COVERAGE", "INTERNAL"
+                "WORKBOOK", "HTML", "XML", "COVERAGE"
             };
 
             for (int i = 0; i < expected.Length; i++)
@@ -62,7 +62,7 @@ namespace Federator.Core.Tests
                 RunSteps.Decide, RunSteps.Append, RunSteps.NwfSave, RunSteps.Units,
                 RunSteps.Sets, RunSteps.TestsCreate, RunSteps.TestsRun, RunSteps.Harvest,
                 RunSteps.Pictures, RunSteps.Images, RunSteps.Renumber, RunSteps.Views, RunSteps.Workbook, RunSteps.Html,
-                RunSteps.Xml, RunSteps.Coverage, RunSteps.InternalWorkbook, RunSteps.Nwd, RunSteps.Confirm
+                RunSteps.Xml, RunSteps.Coverage, RunSteps.Nwd, RunSteps.Confirm
             })
             {
                 Assert.That(RunSteps.IsAStep(name), Is.True, name);
@@ -87,7 +87,7 @@ namespace Federator.Core.Tests
         public void TheOrderIsThePositionOnTheList()
         {
             Assert.That(RunSteps.OrderOf(RunSteps.Decide), Is.EqualTo(0));
-            Assert.That(RunSteps.OrderOf(RunSteps.InternalWorkbook), Is.EqualTo(19));
+            Assert.That(RunSteps.OrderOf(RunSteps.Coverage), Is.EqualTo(18), "the last step since F243");
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Views),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),
@@ -143,7 +143,6 @@ namespace Federator.Core.Tests
             Assert.That(RunSteps.OrderOf(RunSteps.Html), Is.GreaterThan(pictures), "the HTML links the jpgs");
             Assert.That(RunSteps.OrderOf(RunSteps.Xml), Is.GreaterThan(pictures));
             Assert.That(RunSteps.OrderOf(RunSteps.Coverage), Is.GreaterThan(RunSteps.OrderOf(RunSteps.Workbook)), "it reads the workbook back");
-            Assert.That(RunSteps.OrderOf(RunSteps.InternalWorkbook), Is.GreaterThan(RunSteps.OrderOf(RunSteps.Coverage)));
         }
 
         /// <summary>

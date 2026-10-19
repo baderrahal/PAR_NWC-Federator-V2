@@ -194,17 +194,19 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
-        /// One fixed list name meant a smaller run, or the open file run of one group, wrote over the
-        /// list of the full run. Each run's list is its own file, named for the second its run started.
+        /// F243, Bader's order of 19 Oct 2026, point 1: ONE file, overwritten by each run, its first line saying which run
+        /// wrote it. Until then each run's list was its own file named for the second its run started. The break: two runs
+        /// started apart give one name, and each list's first line names its own run.
         /// </summary>
         [Test]
-        public void EachRunsListIsItsOwnFileNamedForItsStart()
+        public void EveryRunWritesTheOneListAndItsFirstLineNamesTheRun()
         {
             OffCoordinatesAcrossTheRun full = new OffCoordinatesAcrossTheRun(new DateTime(2026, 10, 5, 9, 30, 0), 46);
             OffCoordinatesAcrossTheRun one = new OffCoordinatesAcrossTheRun(new DateTime(2026, 10, 5, 11, 2, 7), 1);
 
-            Assert.That(full.ListName, Is.EqualTo("Models not on the same shared coordinates, run 2026-10-05 093000.txt"));
-            Assert.That(one.ListName, Is.EqualTo("Models not on the same shared coordinates, run 2026-10-05 110207.txt"));
+            Assert.That(OffCoordinatesAcrossTheRun.ListName, Is.EqualTo("Models not on the same shared coordinates.txt"));
+            Assert.That(full.ForModellers()[0], Is.EqualTo("Models not on the same shared coordinates, from the run started 2026-10-05 09:30"));
+            Assert.That(one.ForModellers()[0], Is.EqualTo("Models not on the same shared coordinates, from the run started 2026-10-05 11:02"));
         }
 
         // ---------- a zero that reads as clean ----------

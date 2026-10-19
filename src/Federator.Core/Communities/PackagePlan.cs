@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using Federator.Core.Generic;
 using Federator.Core.Grouping;
 using Federator.Core.Naming;
 using Federator.Core.Rerun;
@@ -289,7 +288,6 @@ namespace Federator.Core.Communities
             GroupingMode mode,
             ContainerNameSettings settings,
             OutputNaming naming,
-            GenericModelsSettings internalWorkbook,
             DateTime today)
         {
             if (package == null)
@@ -305,11 +303,6 @@ namespace Federator.Core.Communities
             if (naming == null)
             {
                 throw new ArgumentNullException("naming");
-            }
-
-            if (internalWorkbook == null)
-            {
-                throw new ArgumentNullException("internalWorkbook");
             }
 
             PackagePlan plan = new PackagePlan(package, reportRoot);
@@ -342,7 +335,7 @@ namespace Federator.Core.Communities
 
             plan.grouped.AddRange(result.Groups);
             OutputNameTable names = OutputNameTable.From(result.Groups, naming, settings, today);
-            plan.WhyNot = names.WhyTheRunCannotStart(internalWorkbook);
+            plan.WhyNot = names.WhyTheRunCannotStart();
 
             foreach (BuildingGroup group in result.Groups)
             {

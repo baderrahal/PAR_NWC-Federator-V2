@@ -10,6 +10,7 @@ using Federator.Addin.Engine;
 using Federator.Core.Communities;
 using Federator.Core.Diagnostics;
 using Federator.Core.Disciplines;
+using Federator.Core.Report;
 using Federator.Core.Rerun;
 
 namespace Federator.Addin.Ui
@@ -542,11 +543,17 @@ namespace Federator.Addin.Ui
                 }
             }
 
+            // F243, Bader's order of 19 Oct 2026 point 6. Each file left open in another program goes in the end message: this
+            // window's own, the cleanup and its workbooks among them, read before RESULT closes the account, and each group's,
+            // found again in the RESULT lines its own Navisworks handed back.
+            List<string> leftOpen = new List<string>();
+
             try
             {
                 // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
                 WriteTheDisciplineReports(run, order.Units, results, whys);
                 WriteTheClashCountChecks(run, order.Units, results);
+                leftOpen.AddRange(log.FilesInUse);
                 log.RunFinished();
                 log.WriteJoinedResult(PackageRunWords.JoinedResult(order.Units, results, whys, tally));
             }
@@ -555,8 +562,21 @@ namespace Federator.Addin.Ui
                 log.Failure("joining the results of the groups", error, "each group's own log still holds its RESULT");
             }
 
+            foreach (PackageRunResult result in results)
+            {
+                foreach (string line in result == null ? new List<string>() : result.ResultLines)
+                {
+                    string open = FileInUse.LineIn(line);
+
+                    if (open != null)
+                    {
+                        leftOpen.Add(open);
+                    }
+                }
+            }
+
             SetProgress(PackageRunWords.Finished(ran, notBuilt, order.Units.Count));
-            string warning = PackageRunWords.Warning(ran, notBuilt, order.Units.Count);
+            string warning = FileInUse.EndMessage(PackageRunWords.Warning(ran, notBuilt, order.Units.Count), leftOpen);
 
             if (warning != null)
             {

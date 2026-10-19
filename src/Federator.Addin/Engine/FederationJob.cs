@@ -43,7 +43,6 @@ namespace Federator.Addin.Engine
             NwdPath = nwdPath;
             Files = files;
             WorkbookName = string.IsNullOrEmpty(workbookName) ? outputName : workbookName;
-            ClashReportName = WorkbookName;
             DisciplineCount = disciplineCount;
             Disciplines = disciplines ?? new List<string>();
         }
@@ -85,29 +84,12 @@ namespace Federator.Addin.Engine
         /// <summary>Full paths, appended in this order.</summary>
         public IList<string> Files { get; private set; }
 
-        /// <summary>What the workbook is called. The NWF name unless a pattern differs.</summary>
+        /// <summary>
+        /// What the clash workbook, the HTML, their _files folder of pictures and the XML are called, the NWF name unless a
+        /// pattern differs. One name, never dated, a file under it overwritten, F177 for the Clash report folder and F243,
+        /// Bader's order of 19 Oct 2026, for every output.
+        /// </summary>
         public string WorkbookName { get; private set; }
-
-        /// <summary>
-        /// The plain name of the HTML and of its _files folder of pictures in the Clash report folder,
-        /// F177, Bader's order of 14 Oct 2026. It is never dated: a file there under this name is
-        /// overwritten. It is the name the group was given and NameTheReports never changes it.
-        /// </summary>
-        public string ClashReportName { get; private set; }
-
-        /// <summary>
-        /// The name the files of this group in the Log folder are written under, set once at the top of the
-        /// group by the engine, F158, where a file already in the Log folder would otherwise be overwritten.
-        /// The Excel, the Internal workbook and the XML read it. The HTML and the pictures folder do not,
-        /// F177, they keep ClashReportName, and the links are made from each picture's own path.
-        /// </summary>
-        internal void NameTheReports(string name)
-        {
-            if (!string.IsNullOrEmpty(name))
-            {
-                WorkbookName = name;
-            }
-        }
 
         /// <summary>
         /// How many disciplines the scan found in this group, or for a picked NWF its models'

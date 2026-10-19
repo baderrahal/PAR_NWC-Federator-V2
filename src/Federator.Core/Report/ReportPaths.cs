@@ -10,14 +10,13 @@ namespace Federator.Core.Report
     /// Where the logs and the reports go. One place builds the path, so the path written to and
     /// the path looked for cannot drift, exactly as OutputPaths does for the NWF and the NWD.
     ///
-    /// F158, changed by F170 (Bader's answer to Q169). The NWF and the NWD folders hold the NWF and
-    /// the NWD and nothing else. The Log folder sits beside them and holds the text type files and
-    /// the Excel: the run log and its .tsv, the notes on the shared coordinates, the Excel, the
-    /// Internal workbook and the XML. The Clash report folder sits beside the Log folder and holds
-    /// the HTML with its _files folder of pictures, so the picture links of the HTML work. The Excel
-    /// reaches the pictures by a link that goes up one folder. F177, Bader's order of 14 Oct 2026: a file the
-    /// tool writes in the Clash report folder under a name already there is OVERWRITTEN and never dated,
-    /// and the Log folder keeps its dated names. An older Excel in Log points at jpgs a later run overwrites.
+    /// F158, changed by F170 (Bader's answer to Q169) and by F243, Bader's order of 19 Oct 2026: "clash test excel files must
+    /// be inside Clash Report Folder, no more internal or dated named files". The NWF and the NWD folders hold the NWF and the
+    /// NWD and nothing else. The Log folder sits beside them and holds the run log and its .tsv, the one list of models not on
+    /// the same shared coordinates, the XML and the manifest. The Clash report folder sits beside the Log folder and holds the
+    /// clash Excel and the HTML with their _files folder of pictures, so every picture link of both is the folder and the
+    /// picture with nothing going up. EVERY OUTPUT HAS ONE NAME AND IS OVERWRITTEN, never dated, and no internal workbook is
+    /// written. The copy of the run log, LogCopy, alone keeps a dated name where its own is taken, FreeFilePath.
     /// </summary>
     public static class ReportPaths
     {
@@ -247,7 +246,7 @@ namespace Federator.Core.Report
             return For(folder, outputName, WorkbookExtension);
         }
 
-        /// <summary>The optional XML, beside the workbook and under the same name.</summary>
+        /// <summary>The optional XML, in the Log folder under the group's name, the workbook's name since F243 sits in the Clash report folder.</summary>
         public static string Xml(string folder, string outputName)
         {
             return For(folder, outputName, XmlExtension);
@@ -274,61 +273,15 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The name a group's files in the LOG FOLDER are written under, so that nothing already there is
-        /// overwritten, F158, narrowed by F177. The name as it is where none of its files is there: the
-        /// workbook, the Internal workbook and the XML. Where any is, the name with the moment of the run
-        /// after it, and a number after that where even that is taken. Nothing is deleted or touched.
-        ///
-        /// THE CLASH REPORT FOLDER IS NOT LOOKED AT, F177, Bader's order of 14 Oct 2026. The HTML and the
-        /// _files folder of pictures there are overwritten by name and never dated, so a name taken there
-        /// is no reason for another. The HTML and the pictures keep the group's plain name, and the
-        /// Excel's links are made from each picture's own path, so they keep working under a dated Excel.
+        /// The moment a dated name carries after the name, the copy of the run log's today and every output's before F243,
+        /// which Communities.OldReportFiles reads to clean them.
         /// </summary>
-        public static string NameThatOverwritesNothing(
-            string folder, string workbookName, string internalSuffix, DateTime now, Func<string, bool> exists)
-        {
-            if (string.IsNullOrEmpty(folder) || string.IsNullOrEmpty(workbookName))
-            {
-                return workbookName;
-            }
-
-            if (exists == null)
-            {
-                exists = path => File.Exists(path) || Directory.Exists(path);
-            }
-
-            if (!AnyOfThemExist(folder, workbookName, internalSuffix, exists))
-            {
-                return workbookName;
-            }
-
-            string dated = workbookName + " " + now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
-            string candidate = dated;
-
-            for (int number = 2; AnyOfThemExist(folder, candidate, internalSuffix, exists); number++)
-            {
-                candidate = dated + " " + number.ToString(CultureInfo.InvariantCulture);
-            }
-
-            return candidate;
-        }
-
-        private static bool AnyOfThemExist(string folder, string name, string internalSuffix, Func<string, bool> exists)
-        {
-            string workbook = Path.Combine(folder, name + WorkbookExtension);
-
-            if (exists(workbook) || exists(Path.Combine(folder, name + XmlExtension)))
-            {
-                return true;
-            }
-
-            return !string.IsNullOrEmpty(internalSuffix)
-                && exists(Path.Combine(folder, name + " " + internalSuffix + WorkbookExtension));
-        }
+        public const string DatedNameFormat = "yyyy-MM-dd HHmmss";
 
         /// <summary>
-        /// The path for something written into the Log folder that must not replace a file there,
-        /// F158: the plain name where it is free, and the name with the moment after it where not.
+        /// The path for the copy of the run log and its .tsv in the Log folder, F158, LogCopy, the one caller since F243: the
+        /// plain name where it is free, and the name with the moment after it where not. No output of a group or of a run is
+        /// named by it, Bader's order of 19 Oct 2026: every output has one name and is overwritten.
         /// </summary>
         public static string FreeFilePath(string folder, string fileName, DateTime now, Func<string, bool> exists)
         {
@@ -346,7 +299,7 @@ namespace Federator.Core.Report
 
             string stem = Path.GetFileNameWithoutExtension(fileName);
             string extension = Path.GetExtension(fileName);
-            string dated = stem + " " + now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
+            string dated = stem + " " + now.ToString(DatedNameFormat, CultureInfo.InvariantCulture);
             string candidate = Path.Combine(folder, dated + extension);
 
             for (int number = 2; exists(candidate); number++)

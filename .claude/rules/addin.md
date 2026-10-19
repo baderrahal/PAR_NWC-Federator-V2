@@ -428,7 +428,7 @@ well as to pass.
   priority file and the XML's sets, and with no XML over the saved tests alone, then its
   MIRROR block, its MIRROR RENAMES block and its MIRROR COVERAGE block, the coverage names
   of F127 written as the Core gives them, which the Coverage sheet's MIRRORED PAIRS section
-  points at and does not copy, and a rule that threw is a
+  pointed at until that sheet went, F243, and a rule that threw is a
   FAILURE line, no test paired, every test under the plan's name. THE RENAMES, `MakeTheRenames`,
   before any test is found by name or created: each by the saved test's address through
   `TestsEditDisplayName` on a handle resolved for it, its results counted by status before and
@@ -801,18 +801,12 @@ well as to pass.
   box is ticked, its Asked set to what the document's set asks as every present set's is. The
   plan is made before the file's build and its sets are built after, all inside the one SETS
   step, so the step's seconds show both. The GENERIC MODELS block and one row a model follow
-  the build. Its sheet goes in the internal workbook, the INTERNAL step, below, written whether
-  or not the clash ran, skipped with its own line where neither a count nor a coverage was
-  taken, there is no report folder or no workbook is wanted this run, and where the write throws
-  nothing is listed as written, through `RunLog.WriteThrew`, the size stays unread and one line
-  says whether a file of that name is at the path, and that whether it is an earlier run's file
-  untouched or one this run cut short is UNKNOWN, since a save that threw after opening the path
-  leaves the old file cut short and File.Exists still reads true, because a file this tool did
-  not write is never listed as written, and otherwise read back by size as every
-  file is. The clash workbook's write that throws goes through WriteThrew the same way since
-  F118-R3, and its WORKBOOK CHECK is not run, one line saying why, since it would read the
+  the build. No sheet of them is written since F243, Bader's order of 19 Oct 2026 point 4: the internal workbook
+  and its INTERNAL step are gone, and the Generic Models data lives in the discipline workbook, F244. The clash
+  workbook's write that throws goes through `RunLog.WriteThrew` since F118-R3, nothing listed as written, and its
+  WORKBOOK CHECK is not run, one line saying why, since it would read the
   file at the path as this run's. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
-  window. A plan, a build or a workbook write that throws NEVER FAILS THE GROUP, the lead's
+  window. A plan or a build that throws NEVER FAILS THE GROUP, the lead's
   decision on attempt 2: it logs the failure with what happens next, writes the GENERIC MODELS
   block with its FAILED line off `GenericModelsReport.FailedLines`, counts the group as not
   counted in RESULT, which the window hands the engine's `GenericModelsAcrossTheRun`, and the
@@ -830,7 +824,7 @@ well as to pass.
   and `InAMerge`, the tests of every mirrored pair whose clashes `MirrorMerge.AddTo` merged,
   read off what the merge did and never off the plan. THE COVERAGE STEP,
   `RunSteps.Coverage`, runs in FinishTheGroup after the NWD, since F182, and the clash workbook,
-  its page and its XML, and before the internal workbook, so the document is still open and the clash
+  its page and its XML, so the document is still open and the clash
   workbook is on the disk, for the scanned run and the open file run alike: `CoverageRule.For`
   over the plan and the runner's record with the group's codes off the EXPORT CHECK's models
   and the run's off the ticked groups of this run, Clash Detective's two counts of every test in
@@ -850,15 +844,8 @@ well as to pass.
   GROUP: it is logged with what happens next, the block says the coverage is UNKNOWN and the
   group is counted not checked, since a report check never fails a group. The picked XML's
   sha256 is read once when the run starts, one COVERAGE line, and a read that throws is logged
-  and reads UNKNOWN. THE INTERNAL WORKBOOK, Bader's answer B to Q146 of 11 Oct 2026, the INTERNAL
-  step after COVERAGE, `InternalWorkbook.Write` beside the clash workbook, named by
-  `GenericModelsSettings.WorkbookNameFor`, the Generic Models sheet and the Coverage sheet in one
-  save or the one the group has, each lack said on its own line, the Generic Models sheet left
-  out with `InternalWorkbook.WhyNoGenericSheet`'s words where the two names are one to Excel,
-  logged under its own kind, INTERNAL attempt and INTERNAL written, and never XLSX, so the
-  loop's documents read pairs each NWF with its one clash workbook, then read back by size and
-  by its sheets' names, `InternalWorkbook.Check`. A write that throws lists nothing as written
-  and says whether a file of that name is at the path, as the Generic Models workbook did. THE
+  and reads UNKNOWN. NO INTERNAL WORKBOOK IS WRITTEN since F243, Bader's order of 19 Oct 2026 point 4,
+  and its Coverage sheet is moved nowhere, Q226. THE
   CLASH WORKBOOK HOLDS THE CLIENT'S SHEET ALONE, the Navisworks export's layout, and its
   WORKBOOK CHECK calls a second sheet a problem. The settings are `ReportOptions.Coverage`, read
   off Core and never typed in the window. The two hand buttons take no coverage, they are not runs
@@ -1243,3 +1230,39 @@ workbook is written whole, `ClashRunner` one `RunEvents.Mirror` row a mirror the
 mirrors, one `MirrorMerged` row a mirror and one `AddedByMirrors` row, and the page whose write threw goes through
 `RunLog.WriteThrew` as the workbook does, so a page of an earlier run is never read as this run's and its check is not run. Every
 rule and every word is Core's, core.md The clash count check.
+
+## One name per output, F243
+
+Bader's order of 19 Oct 2026: "clash test excel files must be inside Clash Report Folder, no more internal or dated named files,
+if there any files old overwrite NWF NWD Clash report like excel and html and delete the old pictures". Every rule and every
+word is Core's, core.md Rules the code holds, the One workbook per group rule and THE CLASH REPORT FOLDER IS OVERWRITTEN AND
+NEVER DATED, and the add-in calls them.
+
+- THE CLASH EXCEL IS WRITTEN AND READ BACK AT `ThePagePath`, Clash report\NAME.xlsx beside the HTML and NAME_files, by the
+  workbook step and the coverage alike. `NameTheReportsSoNothingIsOverwritten`, `FederationJob.NameTheReports` and
+  `ClashReportName` are gone, so the Excel, the page, the pictures folder and the XML carry the one `WorkbookName`. The XML
+  stays in the Log folder under that name. No internal workbook and no INTERNAL step
+- THE PICTURES FOLDER GOES ONCE A GROUP, `DeleteThePicturesFolderOnce`, `JobOutcome.PicturesFolderDeleted`: before the
+  deferred pictures in `TakeThePicturesOfTheGroup`, before `runner.Run` where the hand button takes them inside the clash
+  step, and in `WriteWorkbook`, before the Excel and the page, where no picture was taken this run and the Excel or the page is
+  wanted. A group that never reaches a clash report deletes nothing. The leftover removal of F177 still follows the pictures
+- THE LINKS ARE READ BACK after the WORKBOOK CHECK, `WorkbookLinks.Check`, one XLSX links line, and a missing link is the
+  group's error through `outcome.AddError(links.Error())`, so the group is not DONE. A workbook that would not read back is
+  said UNKNOWN and fails nothing
+- A FILE OPEN IN ANOTHER PROGRAM, read by `FileInUse.IsInUse` off the exception of the write, is never written under another
+  name: `RunLog.NotWrittenWhileOpen` says Bader's line and keeps it, nothing is listed as written, no error goes on the group,
+  and the run goes on. That holds for the clash Excel, which the coverage then reads as not written, the page, the XML, the
+  list of models off the shared coordinates, the pictures folder, the NWF's backup, whose refresh then stops as for any
+  backup not made, the discipline workbooks, the clash count check and the old files of the cleanup. The NWF and the NWD are
+  written by Navisworks and keep their behaviour
+- THE END MESSAGE: RESULT writes every kept line, so a group's own Navisworks hands them back in its result's RESULT lines.
+  `JoinTheResults` reads the window's own, `log.FilesInUse`, before the joined RESULT closes the account, finds each group's
+  with `FileInUse.LineIn`, and shows them under the run's warning, `FileInUse.EndMessage`, through `Warn`. The open document
+  run shows its own the same way once its RESULT is written
+- THE OLD NAMES ARE CLEANED ONCE, `CleanTheOldReportFiles`, by the window that starts the run, `child == null`, after the
+  confirm and the pack choice and before `RunPackagesInFreshStarts`, on both pages: on the NWC page each group of the plan of
+  every package of the run, the runnable ones and the ones whose every group is of one discipline, by its NWF name, on the NWF
+  page each NWF of the run by its name, each under its community, `OldReportFiles.Clean` in Report\COMMUNITY\ and nowhere
+  else. Each line logged, each file held open said in FileInUse's words, each other failure logged, and the run goes on
+- THE COORDINATES LIST is `OffCoordinatesAcrossTheRun.ListName` in each Log folder, overwritten, and the discipline workbooks
+  and the clash count check are written under their one name, the folder and Core's name joined

@@ -74,13 +74,6 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public const string Coverage = "COVERAGE";
 
-        /// <summary>
-        /// The internal workbook beside the clash workbook, Bader's answer B to Q146, holding the
-        /// Generic Models sheet of F128 and the Coverage sheet, written once both are taken. It
-        /// was F128's GENERIC XLSX, when the workbook held the Generic Models sheet alone. Eight letters and
-        /// not INTERNAL XLSX, because a name longer than TESTS CREATE widens every STEP line of the log.
-        /// </summary>
-        public const string InternalWorkbook = "INTERNAL";
         public const string Nwd = "NWD";
         public const string Confirm = "CONFIRM";
 
@@ -109,8 +102,7 @@ namespace Federator.Core.Diagnostics
             Workbook,
             Html,
             Xml,
-            Coverage,
-            InternalWorkbook
+            Coverage
         };
 
         /// <summary>

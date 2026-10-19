@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Federator.Core.Generic;
 using Federator.Core.Grouping;
 using Federator.Core.Naming;
 using NUnit.Framework;
@@ -16,7 +15,6 @@ namespace Federator.Core.Tests
     {
         private static readonly ContainerNameSettings Settings = new ContainerNameSettings();
         private static readonly DateTime Friday = new DateTime(2026, 9, 4);
-        private static readonly GenericModelsSettings Internal = new GenericModelsSettings();
 
         private static readonly string[] Folder =
         {
@@ -61,13 +59,13 @@ namespace Federator.Core.Tests
         {
             OutputNameTable table = Table(new OutputNaming());
 
-            Assert.That(table.WhyTheRunCannotStart(Internal), Is.Null, "it should start out clean");
+            Assert.That(table.WhyTheRunCannotStart(), Is.Null, "it should start out clean");
 
             // Typing a name that another row already has is exactly how this happens.
             table.Find("1C07K1").Fill(
                 OutputKind.Nwf, table.Find("1C07BC").NwfName);
 
-            string why = table.WhyTheRunCannotStart(Internal);
+            string why = table.WhyTheRunCannotStart();
 
             Assert.That(why, Is.Not.Null, "a collision went unnoticed");
             Assert.That(why, Does.Contain("would be written to the same"));
@@ -87,62 +85,7 @@ namespace Federator.Core.Tests
 
             Assert.That(collisions.Count, Is.EqualTo(1));
             Assert.That(collisions[0].Kind, Is.EqualTo("Workbook"));
-            Assert.That(table.WhyTheRunCannotStart(Internal), Is.Not.Null);
-        }
-        // ---------- a workbook named as another group's internal workbook stops the run, F127-R5 ----------
-
-        /// <summary>
-        /// The internal workbook is named after the group's workbook, one space and the suffix, so a group
-        /// whose workbook is named X Internal beside a group whose workbook is X would have one written over
-        /// the other with no line, the breaker's point 6 on F127b. The check names both groups and the name.
-        /// </summary>
-        [Test]
-        public void AWorkbookNamedAsAnotherGroupsInternalWorkbookStopsTheRun()
-        {
-            OutputNameTable table = Table(new OutputNaming());
-            string internalName = Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName);
-
-            table.Find("1C07K1").Fill(OutputKind.Workbook, internalName);
-
-            Assert.That(table.Collisions(), Is.Empty, "no two rows share a name, so the three kinds alone see nothing");
-            Assert.That(table.WhyTheRunCannotStart(Internal), Is.EqualTo(
-                "The internal workbook of 1C07BC and the workbook of 1C07K1 would both be written as " + internalName
-                + ". One would overwrite the other, so the run does not start."));
-        }
-
-        /// <summary>Windows reads two names apart only in case as one file, as the three kinds are read.</summary>
-        [Test]
-        public void AnInternalWorkbookApartOnlyInCaseStillStopsTheRun()
-        {
-            OutputNameTable table = Table(new OutputNaming());
-            string internalName = Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName);
-
-            table.Find("1C07K1").Fill(OutputKind.Workbook, internalName.ToLowerInvariant());
-
-            Assert.That(table.WhyTheRunCannotStart(Internal), Does.Contain("would both be written as " + internalName + "."));
-        }
-
-        /// <summary>The suffix is a setting, so the name is read through it and not as the default word.</summary>
-        [Test]
-        public void TheInternalWorkbookIsReadThroughTheSuffixSetting()
-        {
-            OutputNameTable table = Table(new OutputNaming());
-            GenericModelsSettings other = new GenericModelsSettings();
-            other.WorkbookSuffix = "Checks";
-
-            table.Find("1C07K1").Fill(OutputKind.Workbook, Internal.WorkbookNameFor(table.Find("1C07BC").WorkbookName));
-
-            Assert.That(table.WhyTheRunCannotStart(other), Is.Null, "the default suffix was read in place of the setting");
-
-            table.Find("1C07K1").Fill(OutputKind.Workbook, other.WorkbookNameFor(table.Find("1C07BC").WorkbookName));
-
-            Assert.That(table.WhyTheRunCannotStart(other), Does.Contain("The internal workbook of 1C07BC and the workbook of 1C07K1"));
-        }
-
-        [Test]
-        public void TheStartCheckRefusesNoInternalWorkbookSettings()
-        {
-            Assert.Throws<ArgumentNullException>(() => Table(new OutputNaming()).WhyTheRunCannotStart(null));
+            Assert.That(table.WhyTheRunCannotStart(), Is.Not.Null);
         }
 
         // ---------- a name that cannot be used stops the run, FR-159 and FR-165 ----------
@@ -159,7 +102,7 @@ namespace Federator.Core.Tests
             naming.Nwf.Level = string.Empty;
             OutputNameTable table = Table(naming);
 
-            string all = table.WhyTheRunCannotStart(Internal);
+            string all = table.WhyTheRunCannotStart();
 
             Assert.That(all, Is.Not.Null);
             Assert.That(all, Is.EqualTo(
@@ -167,7 +110,7 @@ namespace Federator.Core.Tests
                 + " They are 1B06BS, 1C07BC, 1C07K1. The run does not start."));
             Assert.That(all, Does.Not.Contain("would be written to the same"));
 
-            string one = TableOf(new[] { Folder[0], Folder[1] }, naming).WhyTheRunCannotStart(Internal);
+            string one = TableOf(new[] { Folder[0], Folder[1] }, naming).WhyTheRunCannotStart();
 
             Assert.That(one, Is.Not.Null, "one ticked group passed the check with its name a sentence");
             Assert.That(one, Is.EqualTo(
@@ -194,7 +137,7 @@ namespace Federator.Core.Tests
             naming.Nwf.Level = string.Empty;
             OutputNameTable table = OutputNameTable.From(result.Groups, naming, Settings, Friday);
 
-            string all = table.WhyTheRunCannotStart(Internal);
+            string all = table.WhyTheRunCannotStart();
 
             Assert.That(all, Does.StartWith("The NWF name of 8 groups cannot be used."));
             Assert.That(all, Does.Contain("They are 1A01AA, 1A02AA, 1A03AA, 1A04AA, 1A05AA and 3 more."));
@@ -212,7 +155,7 @@ namespace Federator.Core.Tests
                     OutputNameTable table = Table(new OutputNaming());
                     table.Find("1C07BC").Fill(kind, cleared);
 
-                    string why = table.WhyTheRunCannotStart(Internal);
+                    string why = table.WhyTheRunCannotStart();
 
                     Assert.That(why, Is.Not.Null, kind + " cleared to \"" + cleared + "\"");
                     Assert.That(why, Is.EqualTo(
@@ -235,7 +178,7 @@ namespace Federator.Core.Tests
                 OutputNameTable table = Table(new OutputNaming());
                 table.Find("1C07BC").Fill(OutputKind.Nwd, "Tower " + refused + " east");
 
-                string why = table.WhyTheRunCannotStart(Internal);
+                string why = table.WhyTheRunCannotStart();
 
                 Assert.That(why, Is.EqualTo(
                     "The NWD name of 1C07BC cannot be used, it holds \"" + refused
@@ -250,7 +193,7 @@ namespace Federator.Core.Tests
             OutputNameTable table = Table(new OutputNaming());
             table.Find("1C07BC").Fill(OutputKind.Workbook, "Tower\teast");
 
-            string why = table.WhyTheRunCannotStart(Internal);
+            string why = table.WhyTheRunCannotStart();
 
             Assert.That(why, Does.Contain("a control character (U+0009)"));
             Assert.That(why, Does.Not.Contain("\t"));
@@ -262,7 +205,7 @@ namespace Federator.Core.Tests
             OutputNameTable table = Table(new OutputNaming());
             table.Find("1C07BC").Fill(OutputKind.Nwf, "Tower East - rev 2 (final)");
 
-            Assert.That(table.WhyTheRunCannotStart(Internal), Is.Null);
+            Assert.That(table.WhyTheRunCannotStart(), Is.Null);
         }
 
         /// <summary>
@@ -303,12 +246,12 @@ namespace Federator.Core.Tests
         {
             OutputNameTable table = Table(new OutputNaming());
 
-            Assert.That(table.WhyTheRunCannotStart(Internal), Is.Null);
+            Assert.That(table.WhyTheRunCannotStart(), Is.Null);
 
             table.Find("1C07K1").Fill(OutputKind.Nwf, table.Find("1C07BC").NwfName);
 
-            Assert.That(table.WhyTheRunCannotStart(Internal), Does.Contain("would be written to the same"));
-            Assert.That(table.WhyTheRunCannotStart(Internal), Does.Not.Contain("cannot be used"));
+            Assert.That(table.WhyTheRunCannotStart(), Does.Contain("would be written to the same"));
+            Assert.That(table.WhyTheRunCannotStart(), Does.Not.Contain("cannot be used"));
         }
 
         // ---------- the dated NWD ----------
@@ -432,7 +375,7 @@ namespace Federator.Core.Tests
                 Assert.That(row.NwdName, Does.Not.EndWith("-000001"), bad);
                 Assert.That(row.NwfName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"), bad);
 
-                string why = Table(naming).WhyTheRunCannotStart(Internal);
+                string why = Table(naming).WhyTheRunCannotStart();
 
                 Assert.That(why, Is.Not.Null, bad);
                 Assert.That(why, Does.Contain("not one a date can be written with"), bad);

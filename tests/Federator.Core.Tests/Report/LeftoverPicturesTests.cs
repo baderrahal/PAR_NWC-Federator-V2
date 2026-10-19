@@ -13,8 +13,8 @@ namespace Federator.Core.Tests
     /// F177, Bader's order of 14 Oct 2026, round 4, task 3. A second run into the same Clash report folder
     /// overwrites the same named files and never dates a name there, removes the tool's own picture files
     /// the run did not write, keeps every other file, and every link still resolves. A failed run, or one
-    /// that did not reach the end of its picture step, removes nothing. The Log folder keeps its dated
-    /// names.
+    /// that did not reach the end of its picture step, removes nothing. Since F243 the whole folder is deleted before
+    /// a group's clash report, PicturesFolder, and the clash Excel sits beside its pictures under one name.
     /// </summary>
     [TestFixture]
     public class LeftoverPicturesTests
@@ -201,108 +201,72 @@ namespace Federator.Core.Tests
 
         // ---------- a second run into the same Clash report folder ----------
 
+        /// <summary>
+        /// F243, Bader's order of 19 Oct 2026: the clash Excel sits in the Clash report folder beside its pictures, one name
+        /// overwritten, and the group's pictures folder is deleted whole before its clash report is written. So a second run
+        /// leaves exactly its own pictures, the Excel and its links under the one name, and another group's files untouched.
+        /// Until then the second Excel took a dated name in the Log folder and the leftover jpgs were removed one by one.
+        /// </summary>
         [Test]
-        public void ASecondRunOverwritesTheSameNamesRemovesTheLeftoversKeepsTheRestAndEveryLinkResolves()
+        public void ASecondRunDeletesThePicturesFolderWritesOverTheExcelAndEveryLinkResolves()
         {
             TestPaths.OnWindowsOnly("the file:/// form of a drive letter path");
 
-            string anchor = ReportPaths.Workbook(clashReport, Name);
+            string excel = ReportPaths.Workbook(clashReport, Name);
 
-            // The first run, three pictures for three clashes, its Excel and its XML in the Log folder.
-            ClashReport first = Report(anchor, 3);
+            // The first run, three pictures for three clashes, its Excel beside them and its XML in the Log folder.
+            ClashReport first = Report(excel, 3);
             WritePictures(first, 1);
-            string firstExcel = ReportPaths.Workbook(log, Name);
-            new WorkbookWriter().Write(first, firstExcel);
-            string firstXml = ReportPaths.Xml(log, Name);
-            new ClashReportXml().Write(first, firstXml);
+            new WorkbookWriter().Write(first, excel);
+            string xml = ReportPaths.Xml(log, Name);
+            new ClashReportXml().Write(first, xml);
 
-            // Files a person or another tool put in the same folders, and a picture of an old test.
+            // A note a person put in the pictures folder, the logo, and another group's page and pictures.
             string note = Path.Combine(pictures, "reviewer notes.txt");
-            File.WriteAllText(note, "keep me");
-            string logo = Put(ImageNaming.LogoName, 9);
+            File.WriteAllText(note, "a person's note");
+            Put(ImageNaming.LogoName, 9);
             string peer = Path.Combine(clashReport, "OTHER-GROUP.html");
             File.WriteAllText(peer, "another group's page");
             string peerPictures = Path.Combine(clashReport, "OTHER-GROUP_files");
             Directory.CreateDirectory(peerPictures);
             string peerJpg = Path.Combine(peerPictures, "cd000001.jpg");
             File.WriteAllBytes(peerJpg, Jpg(7));
-            string oldXmlBytes = File.ReadAllText(firstXml);
-            string oldExcelHash = Hash(firstExcel);
 
-            Assert.That(Directory.GetFiles(pictures, "cd*.jpg").Length, Is.EqualTo(3));
+            // The second run: the folder goes first, then two pictures, then the Excel under the same name.
+            PicturesFolder deleted = PicturesFolder.Delete(pictures);
 
-            // The second run: the same group, two clashes, the Excel under a dated name because the
-            // plain name is taken in the Log folder, and the pictures under the plain name again.
-            string secondName = ReportPaths.NameThatOverwritesNothing(
-                log, Name, "Internal", new DateTime(2026, 10, 14, 16, 0, 0), null);
+            Assert.That(deleted.Deleted, Is.True);
+            Assert.That(deleted.Pictures, Is.EqualTo(3));
 
-            Assert.That(secondName, Is.EqualTo(Name + " 2026-10-14 160000"), "the Log folder keeps its dated names");
-
-            ClashReport second = Report(anchor, 2);
+            ClashReport second = Report(excel, 2);
             WritePictures(second, 2);
-            string secondExcel = ReportPaths.Workbook(log, secondName);
-            new WorkbookWriter().Write(second, secondExcel);
+            new WorkbookWriter().Write(second, excel);
 
-            List<string> written = second.Tests.SelectMany(t => t.Rows).Where(r => r.HasImage).Select(r => r.ImageFile).ToList();
-            LeftoverPicturesOutcome outcome = LeftoverPictures.Remove(pictures, written, true, null);
-
-            // Overwritten by name, and no dated name was made in the Clash report folder.
+            Assert.That(Directory.GetFiles(pictures).Select(Path.GetFileName), Is.EquivalentTo(new[] { "cd000001.jpg", "cd000002.jpg" }),
+                "the earlier run's picture, the logo and the note went with the folder");
+            Assert.That(File.Exists(note), Is.False);
             Assert.That(File.ReadAllBytes(Path.Combine(pictures, "cd000001.jpg")), Is.EqualTo(Jpg(2)));
-            Assert.That(File.ReadAllBytes(Path.Combine(pictures, "cd000002.jpg")), Is.EqualTo(Jpg(2)));
             Assert.That(Directory.GetDirectories(clashReport).Select(Path.GetFileName),
                 Is.EquivalentTo(new[] { Name + "_files", "OTHER-GROUP_files" }));
-            Assert.That(Directory.GetFiles(clashReport).Select(Path.GetFileName), Is.EquivalentTo(new[] { "OTHER-GROUP.html" }));
-
-            // The leftover is gone, the logo and the notes and the other group's files are all kept.
-            Assert.That(outcome.Removed, Is.EquivalentTo(new[] { "cd000003.jpg" }));
-            Assert.That(File.Exists(Path.Combine(pictures, "cd000003.jpg")), Is.False);
-            Assert.That(File.Exists(note), Is.True);
-            Assert.That(File.Exists(logo), Is.True);
-            Assert.That(File.Exists(peer), Is.True);
+            Assert.That(Directory.GetFiles(clashReport).Select(Path.GetFileName),
+                Is.EquivalentTo(new[] { Name + ".xlsx", "OTHER-GROUP.html" }), "one Excel under the one name, no dated name");
             Assert.That(File.ReadAllBytes(peerJpg), Is.EqualTo(Jpg(7)), "another group's picture was touched");
+            Assert.That(File.Exists(peer), Is.True);
+            Assert.That(Directory.GetFiles(log, "*.xlsx"), Is.Empty, "no Excel in the Log folder");
 
-            // The Log folder: the first Excel and its XML are as the first run left them and the second Excel
-            // sits beside them under its dated name.
-            Assert.That(Hash(firstExcel), Is.EqualTo(oldExcelHash));
-            Assert.That(File.ReadAllText(firstXml), Is.EqualTo(oldXmlBytes));
-            Assert.That(File.Exists(secondExcel), Is.True);
+            // Every link of the Excel resolves from the folder it sits in, the folder and the picture with nothing going up.
+            WorkbookLinks links = WorkbookLinks.Check(excel);
 
-            // Every link of the second Excel resolves, and so does each of the first Excel's that names a
-            // picture still there. That one now shows the second run's picture, by Bader's order.
-            foreach (string link in ClickLinks(secondExcel))
+            Assert.That(links.Checked, Is.EqualTo(4), "a click link and a cell link for each of the two pictures");
+            Assert.That(links.Missing.Count, Is.EqualTo(0));
+
+            foreach (string link in ClickLinks(excel))
             {
-                string resolved = Path.GetFullPath(Path.Combine(log, Uri.UnescapeDataString(link).Replace('/', Path.DirectorySeparatorChar)));
-
-                Assert.That(File.Exists(resolved), Is.True, "the second Excel's click link reaches no file: " + link);
-                Assert.That(ReportPaths.IsInside(resolved, pictures), Is.True);
+                Assert.That(link, Does.StartWith(Name + "_files/cd"));
+                Assert.That(link, Does.Not.Contain(".."));
             }
-
-            int stillThere = 0;
-
-            foreach (string link in ClickLinks(firstExcel))
-            {
-                string resolved = Path.GetFullPath(Path.Combine(log, Uri.UnescapeDataString(link).Replace('/', Path.DirectorySeparatorChar)));
-
-                if (File.Exists(resolved))
-                {
-                    stillThere++;
-                    Assert.That(File.ReadAllBytes(resolved), Is.EqualTo(Jpg(2)), "an older Excel shows the new picture");
-                }
-            }
-
-            Assert.That(stillThere, Is.EqualTo(2), "the older Excel's link to the removed leftover is the one that no longer resolves");
         }
-
         // ---------- helpers ----------
-
-        private static string Hash(string path)
-        {
-            using (System.Security.Cryptography.SHA256 sha = System.Security.Cryptography.SHA256.Create())
-            using (FileStream stream = File.OpenRead(path))
-            {
-                return BitConverter.ToString(sha.ComputeHash(stream));
-            }
-        }
 
         private static void WritePictures(ClashReport report, byte mark)
         {

@@ -288,14 +288,14 @@ namespace Federator.Core.Report
         public ContainerNameSettings Names { get; set; }
 
         /// <summary>
-        /// The Generic Models sets, count, block and sheet of every group, F128 and FR-177, and the suffix that
-        /// names the internal workbook the sheet goes in, Q146 answered B. Always on, by Bader's request, and
-        /// its three values and the workbook suffix are read off Core here and never typed in the window.
+        /// The Generic Models sets, count and block of every group, F128 and FR-177. Always on, by Bader's request,
+        /// and its values are read off Core here and never typed in the window. The sheet and the internal workbook
+        /// it went in are gone since F243, Bader's order of 19 Oct 2026 point 4.
         /// </summary>
         public GenericModelsSettings GenericModels { get; set; }
 
         /// <summary>
-        /// The coverage of the picked tests of every group, F127: the Coverage sheet's name, the examples the
+        /// The coverage of the picked tests of every group, F127: the examples the
         /// COVERAGE block names for each reason and the FAILED lines RESULT lists. Read off Core here and never
         /// typed in the window.
         /// </summary>

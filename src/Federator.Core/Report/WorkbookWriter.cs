@@ -101,8 +101,9 @@ namespace Federator.Core.Report
         ///
         /// THE CLIENT'S SHEET ALONE. FR-200 put the Coverage sheet second in this workbook,
         /// and Bader's answer B to Q146 of 11 Oct 2026 took it out again: this workbook goes
-        /// to the client and keeps the Navisworks export's layout, so the Coverage sheet is in
-        /// the internal workbook beside it, InternalWorkbook, with the Generic Models sheet.
+        /// to the client and keeps the Navisworks export's layout. Since F243, Bader's order of
+        /// 19 Oct 2026, it is written into the Clash report folder beside its pictures, and no
+        /// internal workbook is written beside it.
         /// </summary>
         public string Write(ClashReport report, string path)
         {
@@ -226,9 +227,8 @@ namespace Federator.Core.Report
             // F153, Bader's decision of 2026-10-13, which retires Q73's answer b. A TEST WITH NO
             // CLASH WRITES NOTHING IN THE WORKBOOK. His run of that day held 130 tests with
             // clashes and then rows 5204 to 6903, 1700 tests of one row each with nothing in
-            // them. Every test is still on the page, which keeps all of its blocks, and on the
-            // Coverage sheet of the internal workbook, which lists every test, so no test goes
-            // unreported. The workbook check expects a block for each test with a clash alone,
+            // them. Every test is still on the page, which keeps all of its blocks, and in the
+            // .tsv, a row for every test, so no test goes unreported. The workbook check expects a block for each test with a clash alone,
             // CreationPlan.BlockCountLine, and names any row of a test with no clash.
             if (test.Rows.Count == 0)
             {

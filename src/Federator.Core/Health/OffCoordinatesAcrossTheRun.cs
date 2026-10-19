@@ -25,7 +25,12 @@ namespace Federator.Core.Health
     /// </summary>
     public sealed class OffCoordinatesAcrossTheRun
     {
-        private const string ListNameStart = "Models not on the same shared coordinates, run ";
+        /// <summary>
+        /// The name of the one list in the Log folder, F243, Bader's order of 19 Oct 2026: ONE file, overwritten by each run, its
+        /// first line saying which run wrote it, ForModellers. Until then each run's list was its own file named for the second
+        /// its run started, which Communities.OldReportFiles now cleans.
+        /// </summary>
+        public const string ListName = "Models not on the same shared coordinates.txt";
 
         private readonly DateTime runStarted;
         private readonly int groupsInTheRun;
@@ -35,16 +40,6 @@ namespace Federator.Core.Health
         {
             this.runStarted = runStarted;
             this.groupsInTheRun = groupsInTheRun;
-        }
-
-        /// <summary>
-        /// The name of this run's list, its own file named for the second the run started.
-        /// One fixed name let a smaller run, or the open file run of one group, write over
-        /// the list of a fuller run, so every run's list is kept and none stands for another.
-        /// </summary>
-        public string ListName
-        {
-            get { return ListNameStart + runStarted.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture) + ".txt"; }
         }
 
         /// <summary>

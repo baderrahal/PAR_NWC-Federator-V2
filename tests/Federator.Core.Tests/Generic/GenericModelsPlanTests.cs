@@ -43,7 +43,6 @@ namespace Federator.Core.Tests
 
             Assert.That(settings.CategoryValue, Is.EqualTo("Generic Models"));
             Assert.That(settings.FolderName, Is.EqualTo("Generic Models"));
-            Assert.That(settings.SheetName, Is.EqualTo("Generic Models"));
         }
 
         /// <summary>The value the tool asks for is a value its own list of categories holds, so the default answers to a file.</summary>
@@ -63,20 +62,9 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentException>(() => settings.CategoryValue = "   ");
             Assert.Throws<ArgumentException>(() => settings.FolderName = "  ");
             Assert.Throws<ArgumentException>(() => settings.FolderName = "Generic/Models");
-            Assert.Throws<ArgumentException>(() => settings.SheetName = "Generic:Models");
-            Assert.Throws<ArgumentException>(() => settings.SheetName = new string('x', 32));
 
             Assert.That(settings.CategoryValue, Is.EqualTo("Generic Models"), "a refused value changes nothing");
             Assert.That(settings.FolderName, Is.EqualTo("Generic Models"));
-            Assert.That(settings.SheetName, Is.EqualTo("Generic Models"));
-        }
-
-        [Test]
-        public void ASheetNameExcelAcceptsIsKept()
-        {
-            GenericModelsSettings settings = new GenericModelsSettings { SheetName = "Generic" };
-
-            Assert.That(settings.SheetName, Is.EqualTo("Generic"));
         }
 
         /// <summary>The value is compared exactly and never trimmed, so a trailing space is the person's value.</summary>
@@ -501,39 +489,6 @@ namespace Federator.Core.Tests
                 new List<DocumentSet> { new DocumentSet(plan.Sets[0].Set.Path, "a", new List<string>(), 0) },
                 plan.SetNames), Is.Empty, "a set the plan names is no leftover");
             Assert.That(Plan().SetNames, Is.Empty);
-        }
-
-        // ---------- the internal workbook ----------
-
-        /// <summary>
-        /// Bader's answer B to Q146: the internal workbook beside the clash workbook holds the Generic Models
-        /// sheet and the Coverage sheet, so its name says Internal and never Generic Models alone.
-        /// </summary>
-        [Test]
-        public void TheWorkbookIsNamedAfterTheGroupsWorkbookWithTheSuffix()
-        {
-            GenericModelsSettings settings = new GenericModelsSettings();
-
-            Assert.That(settings.WorkbookSuffix, Is.EqualTo("Internal"));
-            Assert.That(settings.WorkbookNameFor("1104-PAR-1A02MM-ZZZ-BM-RPT-000001"), Is.EqualTo("1104-PAR-1A02MM-ZZZ-BM-RPT-000001 Internal"));
-
-            settings.WorkbookSuffix = "GM";
-            Assert.That(settings.WorkbookNameFor("x"), Is.EqualTo("x GM"));
-        }
-
-        [Test]
-        public void ASuffixWindowsRefusesInAFileNameIsRefusedWhereItIsSet()
-        {
-            GenericModelsSettings settings = new GenericModelsSettings();
-
-            Assert.Throws<ArgumentException>(() => settings.WorkbookSuffix = null);
-            Assert.Throws<ArgumentException>(() => settings.WorkbookSuffix = "  ");
-            Assert.Throws<ArgumentException>(() => settings.WorkbookSuffix = "Generic:Models");
-            Assert.Throws<ArgumentException>(() => settings.WorkbookSuffix = "Generic|Models");
-            Assert.Throws<ArgumentException>(() => settings.WorkbookNameFor(string.Empty));
-            Assert.Throws<ArgumentException>(() => settings.WorkbookNameFor(null));
-
-            Assert.That(settings.WorkbookSuffix, Is.EqualTo("Internal"), "a refused value changes nothing");
         }
     }
 }

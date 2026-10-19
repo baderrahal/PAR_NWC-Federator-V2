@@ -1,6 +1,4 @@
 using System;
-using Federator.Core.Naming;
-using Federator.Core.Report;
 using Federator.Core.Sets;
 using Federator.Core.Teams;
 
@@ -30,18 +28,6 @@ namespace Federator.Core.Generic
         /// <summary>The folder of the saved sets tree the sets go in, Bader's own words, request 3 under Q112.</summary>
         public const string DefaultFolderName = "Generic Models";
 
-        /// <summary>The name of the Generic Models sheet in the internal workbook, the folder's own words.</summary>
-        public const string DefaultSheetName = "Generic Models";
-
-        /// <summary>
-        /// What is put after the group's workbook name to name the internal workbook, so the two workbooks of a
-        /// group sit together in the Log folder. Bader's answer B to Q146, 11 Oct 2026: the clash
-        /// workbook goes to the client and keeps the Navisworks export's layout, so the Generic Models sheet and
-        /// the Coverage sheet go in an internal workbook beside it, and its name says Internal because it holds
-        /// both. It was Generic Models while it held that sheet alone.
-        /// </summary>
-        public const string DefaultWorkbookSuffix = "Internal";
-
         /// <summary>
         /// The Element tab, the category every Revit property of an item sits under, as the client's matrix writes it.
         /// Public so the add-in can read it where ModelFactsReader types the same word as ElementTab.
@@ -61,15 +47,11 @@ namespace Federator.Core.Generic
 
         private string categoryValue;
         private string folderName;
-        private string sheetName;
-        private string workbookSuffix;
 
         public GenericModelsSettings()
         {
             categoryValue = DefaultCategoryValue;
             folderName = DefaultFolderName;
-            sheetName = DefaultSheetName;
-            workbookSuffix = DefaultWorkbookSuffix;
         }
 
         /// <summary>
@@ -115,70 +97,6 @@ namespace Federator.Core.Generic
 
                 folderName = value;
             }
-        }
-
-        /// <summary>The sheet's name. One Excel refuses is refused here, by SheetNames' own rule.</summary>
-        public string SheetName
-        {
-            get
-            {
-                return sheetName;
-            }
-
-            set
-            {
-                if (!SheetNames.IsAcceptable(value))
-                {
-                    throw new ArgumentException(
-                        "The Generic Models sheet needs a name Excel accepts: 1 to " + SheetNames.MaxLength
-                            + " characters, none of " + new string(SheetNames.Refused)
-                            + ", no apostrophe at either end and not blank.",
-                        "value");
-                }
-
-                sheetName = value;
-            }
-        }
-
-        /// <summary>
-        /// What follows the group's workbook name, with one space between, to name the internal workbook.
-        /// Refused where Windows refuses it in a file name, by FileNames' own rule, so a suffix nobody can write
-        /// never loses the workbook.
-        /// </summary>
-        public string WorkbookSuffix
-        {
-            get
-            {
-                return workbookSuffix;
-            }
-
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value) || !FileNames.CanBeAName(value))
-                {
-                    throw new ArgumentException(
-                        "The internal workbook needs a suffix Windows accepts in a file name: not blank and none of "
-                            + FileNames.RefusedPrintable + ".",
-                        "value");
-                }
-
-                workbookSuffix = value;
-            }
-        }
-
-        /// <summary>
-        /// The name of the group's internal workbook, without its extension: the group's workbook name, one
-        /// space and the suffix, so the two sit together in the Log folder under one name. It holds
-        /// the Generic Models sheet and the Coverage sheet, Q146 answered B.
-        /// </summary>
-        public string WorkbookNameFor(string groupWorkbookName)
-        {
-            if (string.IsNullOrEmpty(groupWorkbookName))
-            {
-                throw new ArgumentException("The internal workbook is named after the group's workbook, which needs a name.", "groupWorkbookName");
-            }
-
-            return groupWorkbookName + " " + workbookSuffix;
         }
 
         /// <summary>The Category property's internal name, typed once under src in EmptySets.</summary>

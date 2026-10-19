@@ -144,7 +144,7 @@ namespace Federator.Addin.Ui
             {
                 ReadNaming();
                 PackagePlan plan = PackagePlan.For(
-                    package, Trimmed(packagePanel.Report), ChosenGrouping(), settings, naming, internalWorkbook, DateTime.Today);
+                    package, Trimmed(packagePanel.Report), ChosenGrouping(), settings, naming, DateTime.Today);
                 return PackageWords.Detail(package.Files.Count, packageTree.Extension, plan.Groups.Count, plan.Blocked);
             }
             catch (Exception error)
@@ -335,7 +335,7 @@ namespace Federator.Addin.Ui
 
                     try
                     {
-                        plan = PackagePlan.For(package, Trimmed(packagePanel.Report), mode, settings, naming, internalWorkbook, DateTime.Today);
+                        plan = PackagePlan.For(package, Trimmed(packagePanel.Report), mode, settings, naming, DateTime.Today);
                     }
                     catch (Exception error)
                     {
@@ -543,7 +543,7 @@ namespace Federator.Addin.Ui
 
                 try
                 {
-                    plan = PackagePlan.For(package, report, mode, settings, naming, internalWorkbook, DateTime.Today);
+                    plan = PackagePlan.For(package, report, mode, settings, naming, DateTime.Today);
                 }
                 catch (Exception error)
                 {
@@ -728,6 +728,26 @@ namespace Federator.Addin.Ui
                     units.Add(new PackageRunUnit(job.Package, job.NwfPath, job.Building));
                 }
 
+                // F243 point 7. The old names, once, before any group starts: each group of the plan of every package of the
+                // run by its output name, under its community.
+                Dictionary<string, List<string>> groupsOfEachCommunity = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+                List<Package> inTheRun = new List<Package>(runnable);
+                inTheRun.AddRange(run.NotBuiltOnly);
+
+                foreach (Package package in inTheRun)
+                {
+                    PackagePlan plan;
+
+                    if (run.Plans.TryGetValue(package.RelativePath, out plan))
+                    {
+                        foreach (PackageGroup group in plan.Groups)
+                        {
+                            GroupsOf(groupsOfEachCommunity, package.Community).Add(group.NwfName);
+                        }
+                    }
+                }
+
+                CleanTheOldReportFiles(report, groupsOfEachCommunity, run.Disciplines);
                 RunPackagesInFreshStarts(PackageRunOrder.NwcPage, packageTree.Parent, run, units);
                 return;
             }
@@ -910,7 +930,8 @@ namespace Federator.Addin.Ui
                     ClashCountCheck check = checks[community];
                     string folder = PackageOutput.CommunityFolderFor(run.Report, community);
                     Directory.CreateDirectory(folder);
-                    path = ReportPaths.FreeFilePath(folder, ClashCountWorkbook.NameFor(community), DateTime.Now, null);
+                    // F243, Bader's order of 19 Oct 2026: one name, overwritten.
+                    path = Path.Combine(folder, ClashCountWorkbook.NameFor(community));
                     log.Block("CLASH COUNT CHECK " + community, check.Lines());
                     log.WriteAttempted("COUNTS", path);
                     saving = true;
@@ -921,6 +942,13 @@ namespace Federator.Addin.Ui
                 }
                 catch (Exception error)
                 {
+                    // F243 point 6. Open in Excel: left as it is, its one line said and kept for the end message.
+                    if (saving && FileInUse.IsInUse(error))
+                    {
+                        log.NotWrittenWhileOpen(path);
+                        continue;
+                    }
+
                     log.Failure("writing the clash count check of " + community, error, "the other communities are still written");
 
                     // F236 on the breaker's C1. A save that threw lists nothing as written, as every workbook's does.
@@ -987,8 +1015,8 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// One package's four workbooks off its groups, each with its files and the facts of its models where they were read.
-        /// Each NWC's date off the disk. Each workbook under a name nothing in the folder holds, ReportPaths.FreeFilePath, its
-        /// size read back by the log and its lines read back off the file.
+        /// Each NWC's date off the disk. Each workbook under its one name, overwritten, F243, Bader's order of 19 Oct 2026, one
+        /// open in another program left as it is and named, its size read back by the log and its lines read back off the file.
         /// </summary>
         private void WriteOnePackagesReports(Package package, IList<DisciplineGroup> groupsOfIt, string report, DisciplineReportSettings disciplines)
         {
@@ -1015,7 +1043,8 @@ namespace Federator.Addin.Ui
 
             foreach (string discipline in made.Disciplines)
             {
-                string path = ReportPaths.FreeFilePath(folder, DisciplineWorkbook.NameFor(package.RelativePath, discipline, disciplines), DateTime.Now, null);
+                // F243, Bader's order of 19 Oct 2026: one name, overwritten.
+                string path = Path.Combine(folder, DisciplineWorkbook.NameFor(package.RelativePath, discipline, disciplines));
                 IList<DisciplineIssue> rows = made.IssuesFor(discipline);
                 log.WriteAttempted("CHECKS", path);
 
@@ -1025,6 +1054,13 @@ namespace Federator.Addin.Ui
                 }
                 catch (Exception error)
                 {
+                    // F243 point 6. Open in Excel: left as it is, its one line said and kept for the end message.
+                    if (FileInUse.IsInUse(error))
+                    {
+                        log.NotWrittenWhileOpen(path);
+                        continue;
+                    }
+
                     log.WriteThrew("CHECKS", path);
                     log.Failure("writing the " + discipline + " workbook of " + package.RelativePath, error, "the other workbooks are still written");
                     continue;
@@ -1036,6 +1072,66 @@ namespace Federator.Addin.Ui
                 log.Line(back == null
                     ? "CHECKS   read back FAILED  " + path + ", " + why
                     : DisciplineWorkbookWords.ReadBackLine(back, rows.Count, discipline, package.RelativePath));
+            }
+        }
+
+        /// <summary>The list of group names of one community, made the first time it is asked for.</summary>
+        private static List<string> GroupsOf(Dictionary<string, List<string>> groupsOfEachCommunity, string community)
+        {
+            List<string> names;
+
+            if (!groupsOfEachCommunity.TryGetValue(community, out names))
+            {
+                names = new List<string>();
+                groupsOfEachCommunity.Add(community, names);
+            }
+
+            return names;
+        }
+
+        /// <summary>
+        /// F243, Bader's order of 19 Oct 2026 point 7. The files earlier runs wrote under names this tool no longer writes,
+        /// deleted once by the window that starts the run, before any group starts, inside Report\COMMUNITY\ of each community
+        /// of the run and nowhere else, Core's OldReportFiles. Each file on its own line, one held open said in FileInUse's
+        /// words and kept for the end message, any other failure logged. Nothing here stops the run.
+        /// </summary>
+        private void CleanTheOldReportFiles(string report, Dictionary<string, List<string>> groupsOfEachCommunity, DisciplineReportSettings disciplines)
+        {
+            foreach (KeyValuePair<string, List<string>> community in groupsOfEachCommunity)
+            {
+                try
+                {
+                    OldReportFilesOutcome cleaned = OldReportFiles.Clean(
+                        PackageOutput.CommunityFolderFor(report, community.Key), community.Key, community.Value, disciplines);
+
+                    foreach (string line in cleaned.Lines)
+                    {
+                        log.Line(line);
+                    }
+
+                    foreach (string path in cleaned.InUse)
+                    {
+                        log.NotWrittenWhileOpen(path);
+                    }
+
+                    foreach (KeyValuePair<string, Exception> failed in cleaned.Failed)
+                    {
+                        log.Failure("deleting or renaming " + failed.Key + ", a name this tool no longer writes", failed.Value,
+                            "kept going, the file is left where it is");
+                    }
+
+                    string nothing = cleaned.NothingLine();
+
+                    if (nothing != null)
+                    {
+                        log.Line(nothing);
+                    }
+                }
+                catch (Exception error)
+                {
+                    log.Failure("cleaning the old names in the report folder of " + community.Key, error,
+                        "kept going, the run starts with those files as they are");
+                }
             }
         }
 
@@ -1390,11 +1486,16 @@ namespace Federator.Addin.Ui
             if (child == null)
             {
                 List<PackageRunUnit> units = new List<PackageRunUnit>();
+                Dictionary<string, List<string>> groupsOfEachCommunity = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
                 foreach (PackageNwf nwf in inPackages)
                 {
                     units.Add(new PackageRunUnit(nwf.Package.RelativePath, nwf.NwfPath, Path.GetFileNameWithoutExtension(nwf.NwfPath)));
+                    GroupsOf(groupsOfEachCommunity, nwf.Package.Community).Add(Path.GetFileNameWithoutExtension(nwf.NwfPath));
                 }
+
+                // F243 point 7. The old names, once, before any NWF opens: each NWF of the run by its name, under its community.
+                CleanTheOldReportFiles(report, groupsOfEachCommunity, run.Disciplines);
 
                 RunPackagesInFreshStarts(PackageRunOrder.NwfPage, report, run, units);
                 return;
