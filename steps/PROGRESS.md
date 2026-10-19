@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 09:58, the round of 19 Oct b, F242 the records in review, the end next, last run 94/item1-C02
+STATE OPEN, 2026-10-19 10:01, the round of 19 Oct b, F242 merged in 323, the end next, last run 94/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,8 +15,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 324 | 16 | 0 | 29 | 135 | 7 | 511 |
-| total | 528 | 24 | 0 | 29 | 235 | 18 | 834 |
+| outside the waves | 325 | 16 | 0 | 29 | 135 | 7 | 512 |
+| total | 529 | 24 | 0 | 29 | 235 | 18 | 835 |
 <!-- the end of the counts -->
 ## Done
 - 19 Oct b, Bader's new way of building, four items, no Navisworks run. F240 the agents' models by their jobs, 320. F241 the
