@@ -2676,14 +2676,17 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   line under it, wrapped. Table cells Book 10 with a thin #D5DBE3 line under each, every second row #F6F8FB, centred in height.
   Chips one cell, Demi 9, centred: FIX and MISSING red, REVIEW amber, OK green, NOT CHECKED #BFC5CC, and High, Medium and Low.
   Numbers stored as numbers, no formula, no merged cell. Landscape A3, one page wide, the header row repeating, the sheet's name
-  left and Page &P of &N right in the footer. Every word is `CheckWords`
-- THE TITLES, `CheckWords.Heading`: the community, and the package where it is a subfolder, never C06 C06 itself, three spaces,
-  then the discipline and model checks, models, to fix or element IDs
-- SUMMARY. B2 the run, the reference and the models in buildings, five spaces apart, `CheckWords.RunLine`. B5 one sentence a
-  part, `CheckWords.Lead`: the models with a FIX chip of the models, the buildings with none, the models with CAD imports or Generic
-  Models, a part that is nought left out. All nought says every model passes only where every model was judged by every check
-  that judges it, `DisciplineReport.EveryModelChecked`, and otherwise says nought of them need a fix. Row 7 the header, then the
-  six checks in Bader's order, `CheckWords.All`: Coordinates, Missing model, Naming, File age, CAD imports, Generic Models, each
+  left and Page &P of &N right in the footer. Every word is `CheckWords`, the sheet names, the title words and the column headers
+  among them, and the widths are `DisciplineWorkbook`'s beside them
+- THE TITLES, `CheckWords.Heading`: the community, and the package's path in words where it is a subfolder, `CheckWords.InWords`,
+  the one rule `DisciplineWorkbook.NameFor` reads too, never a backslash and never C06 C06 itself, three spaces, then the
+  discipline and model checks, models, to fix or element IDs
+- SUMMARY. B2 the run, the reference and the models in buildings, five spaces apart, `CheckWords.RunLine`. B5, `CheckWords.Lead`:
+  where To fix holds no row and every model was judged by every check with no value not read, `DisciplineReport.AllPass`, All n
+  models pass every check. Otherwise one sentence a part, the models with a FIX chip of the models kept even at nought, the
+  buildings with none and the models with CAD imports or Generic Models left out at nought, the breaker's S2 on a92838b. The words
+  bent to one where a count is 1, 1 of 1 ME model needs a fix. Row 7 the header, then the
+  six checks in Bader's order, `CheckWords.All`, the one order `DisciplineReport.For` runs them in: Coordinates, Missing model, Naming, File age, CAD imports, Generic Models, each
   with what it checks, Checked and With issue as numbers in the units format, `[=1]0" model";0" models"` for Checked and
   `[=1]0" model";[>1]0" models";"none"` for With issue, buildings for Missing model, the status and the modeller's words or Nothing to do in grey,
   `DisciplineReport.SummaryFor`. CHECKED IS THE MODELS THE CHECK JUDGED, `CheckFindings.CheckedFor`, and for Missing model THE
@@ -2691,12 +2694,19 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   WITH ISSUE IS THOSE OF THEM WITH A ROW OF THAT CHECK ON TO FIX. Status OK where nought, else FIX for a High check and REVIEW
   for a Medium or Low one, With issue in the High or the Low issue fill to match. A check that judged none, and Naming in the
   reference's own workbook, is NOT CHECKED with both counts blank, the reference's row saying its names set the pattern. Under
-  it Tabs, the three lines of the mock and the grey line naming each building whose reference is not the setting's, by the
-  discipline that is, `DisciplineReport.ReferencesLineFor`, none where every reference is the setting's
+  it Tabs, the three lines of the mock and the grey line naming each building whose reference is not the setting's, saying only
+  what its files show, `CheckWords.ReferencesLine`: by the discipline that is its reference, in Ordinal order and the mock's words,
+  a building named under no AR, or no AR or EL, only where its files hold none of them, one with an AR file said in its own words,
+  its AR model was not placed so it is measured from the other, and any other in its own words, none where every reference is the
+  setting's
 - MODELS, `DisciplineReport.ModelsFor`: one row per NWC of the discipline and one per building that has others and none of it,
   by building then file name, out of `ModelRows`, which makes a row for every file of every group before any check runs, and each
-  check writes what it read into the row of the model it read. Model the short name, the discipline and the last part of the name.
-  Status FIX where the model has a High row, REVIEW where it has any, OK, MISSING, or NOT CHECKED, `ModelRow.Status`. Compared with
+  check writes what it read into the row of the model it read. Model the short name, the discipline and the number at the naming
+  settings' `NumberPart`, part 7, read by `ContainerName.Parse` as `ParsedContainerName.Number`, never the last part of the name,
+  the file's name where it has none. Status, `ModelRow.Status`: FIX where the model has a High row, REVIEW where it has any, NOT
+  CHECKED where it has none and a value was not read, its placement, its site, its CAD or Generic walk or no facts of it at all,
+  `ModelRow.SomethingNotRead`, the breaker's S1, OK only where everything was read and nothing found, MISSING, and NOT CHECKED for
+  a group of one discipline. Compared with
   and Off the reference out of Coordinates, `ModelMeasure`: the reference's discipline and the metres, under 1 in grey below
   `DisciplineWorkbook.UnderMetres`, itself and reference in grey on the reference, internal origin on a reference on Internal,
   none and alone in grey on a group of one discipline, UNKNOWN in grey where not measured. Naming OK in green, wrong, or not checked
@@ -2730,8 +2740,9 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   says it, `Pattern`, such as 1104-PAR-<building>-ZZZ-ME-MOD-<number>. A file of another discipline that breaks it is one Medium
   row, Name should be the pattern, and each part it breaks a line of the log with what the reference has there. The pattern
   learned is a line of the log, and with no reference file none is learned and the log says so
-- FILE AGE, `FileAgeCheck`: each file's age in whole days off the date the disk gives on its row of Models, and one older than
-  `OlderThanDays`, 7, a Medium row, Saved and the date, the days its value. Exactly the limit is within it
+- FILE AGE, `FileAgeCheck`: each file's age in whole days off the date the disk gives on its row of Models, and one whose whole
+  days are over `OlderThanDays`, 7, a Medium row, Saved and the date, the days its value. JUDGED ON THE WHOLE DAYS THE CELL WRITES,
+  so 7 days and 3 hours writes 7 and is within it, never a fill beside a 7, the breaker's reading of a92838b
 - CAD IMPORTS AND GENERIC MODELS, `ElementChecks.Cad` and `Generic`: one Low row per model and CAD file, and one per model, family
   and type, each with its elements counted each id once and every id on Element IDs. `LevelName` and `CadFileName` read what the
   add-in hands in, both measured in 5z-zg. A model with none is no row, and one whose items were not walked is a line of the log

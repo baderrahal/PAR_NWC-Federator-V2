@@ -151,13 +151,13 @@ namespace Federator.Core.Tests
                 IXLWorksheet summary = workbook.Worksheet("Summary");
                 Assert.That(summary.Cell("B1").GetString(), Is.EqualTo("C06   ST model checks"), "never C06 C06 itself");
                 Assert.That(summary.Cell("B2").GetString(), Is.EqualTo("Run 19 Oct 2026     Reference: the AR model of each building     2 ST models in 2 buildings"));
-                Assert.That(summary.Cell("B5").GetString(), Is.EqualTo("1 of 2 ST models need a fix."));
-                Assert.That(Enumerable.Range(2, 6).Select(c => summary.Cell(7, c).GetString()).ToArray(), Is.EqualTo(DisciplineWorkbook.SummaryColumns));
+                Assert.That(summary.Cell("B5").GetString(), Is.EqualTo("1 of 2 ST models needs a fix."), "singular where x is 1, the lead's reading of 20 Oct");
+                Assert.That(Enumerable.Range(2, 6).Select(c => summary.Cell(7, c).GetString()).ToArray(), Is.EqualTo(CheckWords.SummaryColumns.ToArray()));
                 Assert.That(workbook.Worksheet("Models").Cell("B1").GetString(), Is.EqualTo("C06   ST models"));
-                Assert.That(Enumerable.Range(2, 10).Select(c => workbook.Worksheet("Models").Cell(5, c).GetString()).ToArray(), Is.EqualTo(DisciplineWorkbook.ModelsColumns));
+                Assert.That(Enumerable.Range(2, 10).Select(c => workbook.Worksheet("Models").Cell(5, c).GetString()).ToArray(), Is.EqualTo(CheckWords.ModelsColumns.ToArray()));
                 IXLWorksheet toFix = workbook.Worksheet("To fix");
                 Assert.That(toFix.Cell("B1").GetString(), Is.EqualTo("C06   ST to fix"));
-                Assert.That(Enumerable.Range(2, 9).Select(c => toFix.Cell(5, c).GetString()).ToArray(), Is.EqualTo(DisciplineWorkbook.ToFixColumns));
+                Assert.That(Enumerable.Range(2, 9).Select(c => toFix.Cell(5, c).GetString()).ToArray(), Is.EqualTo(CheckWords.ToFixColumns.ToArray()));
                 Assert.That(toFix.Cell("C6").GetString(), Is.EqualTo("High"));
                 Assert.That(toFix.Cell("E6").GetString(), Is.EqualTo("ST-000001"));
                 Assert.That(toFix.Cell("G6").GetString(), Is.EqualTo("34.0 m from the AR model. ST on site T1, AR on S"));
@@ -201,12 +201,97 @@ namespace Federator.Core.Tests
             {
                 IXLWorksheet summary = workbook.Worksheet("Summary");
                 Assert.That(summary.Cell("B1").GetString(), Is.EqualTo("C06 Infrastructure and Landscape   ST model checks"));
-                Assert.That(summary.Cell("B5").GetString(), Is.EqualTo("All 1 ST models pass every check."));
+                Assert.That(summary.Cell("B5").GetString(), Is.EqualTo("All 1 ST model passes every check."), "singular for one, the lead's reading of 20 Oct");
                 Assert.That(summary.Cell("B20").GetString(), Is.Empty, "every reference is AR, so no grey line");
             }
 
             Assert.That(CheckWords.Lead("ME", 0, 3, 0, 0, false), Is.EqualTo("0 of 3 ME models need a fix."), "a model not checked is never said to pass");
             Assert.That(CheckWords.Lead("ME", 5, 18, 2, 1, true), Is.EqualTo("5 of 18 ME models need a fix.  2 buildings have no ME model.  1 model has CAD imports or Generic Models to review."));
+            Assert.That(CheckWords.Lead("ME", 1, 1, 0, 0, false), Is.EqualTo("1 of 1 ME model needs a fix."));
+            Assert.That(CheckWords.Lead("ME", 1, 18, 0, 0, false), Is.EqualTo("1 of 18 ME models needs a fix."));
+            Assert.That(CheckWords.Lead("ME", 0, 1, 0, 0, false), Is.EqualTo("0 of 1 ME model needs a fix."));
+            Assert.That(CheckWords.Lead("ME", 0, 18, 0, 0, true), Is.EqualTo("All 18 ME models pass every check."));
+        }
+
+        /// <summary>F244 attempt 2, the breaker's S2: a row on To fix, here a file nine days old, is never under All pass.</summary>
+        [Test]
+        public void TheLeadNeverSaysAllPassWhileToFixHoldsARow()
+        {
+            string[] files = { Nwc("1B06PS", "AR"), Nwc("1B06PS", "ST") };
+            DisciplineReport report = DisciplineReport.For("C06", "C06 itself",
+                new List<DisciplineGroup> { new DisciplineGroup("1B06PS", files, files.Select(f => Model(f, 0, "S")), null) },
+                files.Select(f => new FileDate(f, Now.AddDays(-9), null)).ToList(), Now, new DisciplineReportSettings(), Names);
+            string path = Path.Combine(folder, "st.xlsx");
+
+            DisciplineWorkbook.Write(path, report, "ST");
+
+            Assert.That(report.IssuesFor("ST").Count, Is.EqualTo(1));
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                Assert.That(workbook.Worksheet("Summary").Cell("B5").GetString(), Is.EqualTo("0 of 1 ST model needs a fix."));
+            }
+        }
+
+        /// <summary>
+        /// F244 attempt 2, the breaker's S1: a model with a value not read and nothing found reads NOT CHECKED and never OK: a
+        /// CAD walk not read, a site not read, a file of the group with no facts. A row found still wins.
+        /// </summary>
+        [Test]
+        public void AModelWithAValueNotReadAndNothingFoundIsNotCheckedAndARowFoundStillWins()
+        {
+            string[] files = { Nwc("1B06PS", "AR"), Nwc("1B06PS", "ST"), Nwc("1B06PS", "EL"), Nwc("1B06PS", "ME"), Nwc("1B06PS", "ST", "000002") };
+            ModelFacts[] models =
+            {
+                Model(files[0], 0, "S"),
+                Model(files[1], 0, "S").CadNot("the walk threw"),
+                Model(files[2], 0, "S").SiteNot("the read threw"),
+                Model(files[3], 40000, "S").GenericNot("the walk threw")
+            };
+            DisciplineReport report = DisciplineReport.For("C06", "C06 itself",
+                new List<DisciplineGroup> { new DisciplineGroup("1B06PS", files, models, null) },
+                files.Select(f => new FileDate(f, Now.AddDays(-1), null)).ToList(), Now, new DisciplineReportSettings(), Names);
+
+            Assert.That(report.ModelsFor("AR").Single().Status, Is.EqualTo("OK"), "every value read and nothing found");
+            Assert.That(report.ModelsFor("ST").Single(r => r.Model == "ST-000001").Status, Is.EqualTo("NOT CHECKED"), "its CAD walk not read");
+            Assert.That(report.ModelsFor("ST").Single(r => r.Model == "ST-000002").Status, Is.EqualTo("NOT CHECKED"), "no facts of it");
+            Assert.That(report.ModelsFor("EL").Single().Status, Is.EqualTo("NOT CHECKED"), "its site not read");
+            Assert.That(report.ModelsFor("ME").Single().Status, Is.EqualTo("FIX"), "40 m away, found, wins over its Generic walk not read");
+        }
+
+        /// <summary>
+        /// F244 attempt 2, the reviewer's 3 and the breaker's S8: the grey line says only what the files show. 1B06XX has an AR
+        /// file not placed, so it is named in its own words. 1B06YY has no AR file and an EL file, so it is never under no AR or
+        /// EL. 1B06WL has no AR and 1B06M1 neither AR nor EL, the mock's two sentences.
+        /// </summary>
+        [Test]
+        public void TheGreyLineSaysOnlyWhatTheFilesShow()
+        {
+            List<DisciplineGroup> groups = new List<DisciplineGroup>
+            {
+                Built("1B06M1", Model(Nwc("1B06M1", "ME"), 0, "S"), Model(Nwc("1B06M1", "ST"), 0, "S")),
+                Built("1B06WL", Model(Nwc("1B06WL", "EL"), 0, "S"), Model(Nwc("1B06WL", "ME"), 0, "S")),
+                Built("1B06XX", new ModelFacts(Nwc("1B06XX", "AR")).PlacementNot("no transform").WithSite("S"), Model(Nwc("1B06XX", "EL"), 0, "S"), Model(Nwc("1B06XX", "ME"), 0, "S")),
+                Built("1B06YY", Model(Nwc("1B06YY", "ME"), 0, "S"), Model(Nwc("1B06YY", "EL"), 0, "S"))
+            };
+            DisciplineReport report = DisciplineReport.For("C06", "C06 itself", groups, new List<FileDate>(), Now, new DisciplineReportSettings(), Names);
+
+            Assert.That(report.ReferencesLineFor("ME"), Is.EqualTo(
+                "Where a building has no AR model, the EL model is the reference (1B06WL). Where it has no AR or EL, the ME model is (1B06M1)."
+                + " In 1B06XX the AR model was not placed, so it is measured from the EL model."
+                + " In 1B06YY, which has no AR model, the ME model is the reference."));
+        }
+
+        private static DisciplineGroup Built(string building, params ModelFacts[] models)
+        {
+            return new DisciplineGroup(building, models.Select(m => m.File), models, null);
+        }
+
+        /// <summary>F244 attempt 2, the breaker's cosmetic: a package two levels below the community is said in words, never with a backslash.</summary>
+        [Test]
+        public void ATitleSaysAPackageTwoLevelsDownInWords()
+        {
+            Assert.That(CheckWords.Heading("C06", Path.Combine("Infrastructure", "Roads")), Is.EqualTo("C06 Infrastructure Roads"));
         }
 
         [Test]

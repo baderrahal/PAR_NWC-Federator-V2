@@ -120,13 +120,33 @@ namespace Federator.Core.Disciplines
 
             if (!rows.TryGetValue(name, out row))
             {
-                string code = DisciplineOf.File(file, names);
-                row = new ModelRow(name, code, DisciplineOf.Building(file, names), ShortName(name, code), !group.NotBuiltForOneDiscipline, null);
+                ParsedContainerName parsed = ContainerName.Parse(file, names);
+                string code = parsed.IsReadable ? parsed.Discipline : null;
+                row = new ModelRow(name, code, DisciplineOf.Building(file, names), ShortName(name, parsed), !group.NotBuiltForOneDiscipline, null);
+                row.BuildingHas = CodesOf(group);
                 rows.Add(name, row);
                 all.Add(row);
             }
 
             return row;
+        }
+
+        /// <summary>The disciplines a group's files read, each once, what the grey line under Tabs may say a building has.</summary>
+        private IList<string> CodesOf(DisciplineGroup group)
+        {
+            List<string> codes = new List<string>();
+
+            foreach (string file in group.Files)
+            {
+                string code = DisciplineOf.File(file, names);
+
+                if (code != null && !codes.Contains(code))
+                {
+                    codes.Add(code);
+                }
+            }
+
+            return codes.AsReadOnly();
         }
 
         internal ModelRow Missing(string discipline, string building, IList<string> present)
@@ -136,17 +156,13 @@ namespace Federator.Core.Disciplines
             return row;
         }
 
-        /// <summary>The short name of a file, its discipline and the last part of its name, such as ME-000002, or the name where the discipline does not read.</summary>
-        private string ShortName(string name, string code)
+        /// <summary>
+        /// The short name of a file, its discipline and its number at the naming settings' NumberPart, such as ME-000002, or the
+        /// file's name where the name does not read or has no number part, never the last part of the name.
+        /// </summary>
+        private string ShortName(string name, ParsedContainerName parsed)
         {
-            if (code == null)
-            {
-                return name;
-            }
-
-            int dot = name.LastIndexOf('.');
-            string stem = dot > 0 ? name.Substring(0, dot) : name;
-            return code + names.Separator + stem.Substring(stem.LastIndexOf(names.Separator) + 1);
+            return parsed.IsReadable && parsed.Number != null ? parsed.Discipline + names.Separator + parsed.Number : name;
         }
     }
 
@@ -260,6 +276,7 @@ namespace Federator.Core.Disciplines
                 {
                     ModelPlacement model = placements[i];
                     ModelRow row = rows.In(group, group.Models[i].File);
+                    row.SiteNotRead = !model.SiteRead;
 
                     if (!model.Placed)
                     {
@@ -809,7 +826,7 @@ namespace Federator.Core.Disciplines
         }
     }
 
-    /// <summary>File age, F234 and F244: each NWC's age in whole days off the date the disk gives, on its row of Models, and a model of a group the run built older than the setting, 7 days, one Medium row.</summary>
+    /// <summary>File age, F234 and F244: each NWC's age in whole days off the date the disk gives, on its row of Models, and a model of a group the run built whose whole days are over the setting, 7, one Medium row.</summary>
     public static class FileAgeCheck
     {
         public static CheckFindings Of(
@@ -836,8 +853,7 @@ namespace Federator.Core.Disciplines
                     }
 
                     ModelRow row = rows.In(group, file);
-                    TimeSpan age = now - date.Written.Value;
-                    int days = (int)Math.Floor(age.TotalDays);
+                    int days = (int)Math.Floor((now - date.Written.Value).TotalDays);
                     row.AgeDays = days;
 
                     if (group.NotBuiltForOneDiscipline)
@@ -847,7 +863,8 @@ namespace Federator.Core.Disciplines
 
                     found.Judged(row.Discipline);
 
-                    if (age > TimeSpan.FromDays(settings.OlderThanDays))
+                    // Judged on the whole days the cell writes, so a cell of 7 is never over 7, the breaker's reading of a92838b.
+                    if (days > settings.OlderThanDays)
                     {
                         found.Add(
                             new DisciplineIssue(row.Discipline, CheckWords.FileAge, CheckWords.Medium, row.Building, CheckWords.Saved(date.Written.Value), days, CheckWords.Days(days), CheckWords.ExportFresh),

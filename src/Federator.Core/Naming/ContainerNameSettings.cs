@@ -16,6 +16,9 @@ namespace Federator.Core.Naming
         public const int DefaultBuildingPart = 3;
         public const int DefaultDisciplinePart = 5;
 
+        /// <summary>The number, part 7 of 1104-PAR-1B06BC-ZZZ-AR-MOD-000001, F244, which the discipline workbooks' short name reads.</summary>
+        public const int DefaultNumberPart = 7;
+
         public ContainerNameSettings()
         {
             Separator = DefaultSeparator;
@@ -23,6 +26,7 @@ namespace Federator.Core.Naming
             OriginatorPart = DefaultOriginatorPart;
             BuildingPart = DefaultBuildingPart;
             DisciplinePart = DefaultDisciplinePart;
+            NumberPart = DefaultNumberPart;
         }
 
         public char Separator { get; set; }
@@ -36,6 +40,12 @@ namespace Federator.Core.Naming
         public int BuildingPart { get; set; }
 
         public int DisciplinePart { get; set; }
+
+        /// <summary>
+        /// Which part carries the number. Read where the name has that many parts and never needed to read a name, so it does
+        /// not raise MinimumParts and a name of five or six parts still reads, with no number.
+        /// </summary>
+        public int NumberPart { get; set; }
 
         /// <summary>
         /// A name has to split into at least this many parts before every field the
@@ -58,6 +68,7 @@ namespace Federator.Core.Naming
             RequireOneBased(OriginatorPart, "OriginatorPart");
             RequireOneBased(BuildingPart, "BuildingPart");
             RequireOneBased(DisciplinePart, "DisciplinePart");
+            RequireOneBased(NumberPart, "NumberPart");
 
             if (BuildingPart == DisciplinePart)
             {

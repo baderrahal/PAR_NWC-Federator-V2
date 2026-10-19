@@ -1212,7 +1212,8 @@ page every NWF that ran and its models' files, and since F234 the files of an NW
 its result, `JobOutcome.NotBuiltFiles` and `PackageRunResult.NotBuiltFiles`, each NWC's date off the disk, then
 `DisciplineReport.For` with the package's name for the title, the DISCIPLINE REPORT block, and the four workbooks in the
 package's report folder, each one CHECKS attempt and written line with its size read back by the log and one CHECKS line
-reading its issue rows and its summary back off the file, `DisciplineWorkbookWords.ReadBackLine`. A PACKAGE WHOSE EVERY GROUP IS
+reading the rows of To fix and of Element IDs back off the file against the rows written, in capitals where they differ, since
+F244, `DisciplineWorkbookWords.ReadBackLine`. A PACKAGE WHOSE EVERY GROUP IS
 OF ONE DISCIPLINE, `PackageRun.NotBuiltOnly`, runs nothing and still gets its folders and its workbooks, and a run of the NWC
 page whose every group is of one discipline writes them before its RESULT.
 

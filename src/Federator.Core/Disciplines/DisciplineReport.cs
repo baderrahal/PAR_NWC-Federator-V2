@@ -62,12 +62,12 @@ namespace Federator.Core.Disciplines
 
             DisciplineReport report = new DisciplineReport(community, package, now, settings);
             report.rows = ModelRows.Of(groups, names);
-            report.checks.Add(CoordinatesCheck.Of(groups, report.rows, settings, names));
-            report.checks.Add(GroupDisciplinesCheck.Missing(groups, report.rows, settings, names));
-            report.checks.Add(ReferenceNaming.Of(groups, report.rows, settings, names, out report.naming));
-            report.checks.Add(FileAgeCheck.Of(groups, report.rows, dates, now, settings, names));
-            report.checks.Add(ElementChecks.Cad(groups, report.rows, settings));
-            report.checks.Add(ElementChecks.Generic(groups, report.rows, settings));
+
+            // One order in one place, CheckWords.All, the reviewer's first point on a92838b.
+            foreach (string check in CheckWords.All)
+            {
+                report.checks.Add(report.Run(check, groups, dates, now, names));
+            }
 
             foreach (CheckFindings check in report.checks)
             {
@@ -81,6 +81,34 @@ namespace Federator.Core.Disciplines
             }
 
             return report;
+        }
+
+        /// <summary>One check of the six by its name, each writing what it read into the rows of the models it read.</summary>
+        private CheckFindings Run(string check, IList<DisciplineGroup> groups, IList<FileDate> dates, DateTime now, ContainerNameSettings names)
+        {
+            switch (check)
+            {
+                case CheckWords.Coordinates:
+                    return CoordinatesCheck.Of(groups, rows, settings, names);
+                case CheckWords.Missing:
+                    return GroupDisciplinesCheck.Missing(groups, rows, settings, names);
+                case CheckWords.Naming:
+                    return ReferenceNaming.Of(groups, rows, settings, names, out naming);
+                case CheckWords.FileAge:
+                    return FileAgeCheck.Of(groups, rows, dates, now, settings, names);
+                case CheckWords.Cad:
+                    return ElementChecks.Cad(groups, rows, settings);
+                case CheckWords.Generic:
+                    return ElementChecks.Generic(groups, rows, settings);
+                default:
+                    throw new ArgumentException("the check " + check + " is not one of the six", "check");
+            }
+        }
+
+        /// <summary>Naming in the reference discipline's own workbook, whose names are the pattern and are not judged.</summary>
+        private bool OwnPattern(string check, string discipline)
+        {
+            return check == CheckWords.Naming && discipline == settings.Reference;
         }
 
         /// <summary>The disciplines that get a workbook, the setting's order.</summary>
@@ -158,7 +186,7 @@ namespace Federator.Core.Disciplines
 
             foreach (CheckFindings check in checks)
             {
-                bool ownPattern = check.Check == CheckWords.Naming && discipline == settings.Reference;
+                bool ownPattern = OwnPattern(check.Check, discipline);
                 int judged = check.CheckedFor(discipline);
                 HashSet<ModelRow> withIssue = new HashSet<ModelRow>();
 
@@ -222,46 +250,29 @@ namespace Federator.Core.Disciplines
             return ids.AsReadOnly();
         }
 
-        /// <summary>The grey line under Tabs: the buildings of this discipline's models whose reference is not the setting's, by the discipline that is.</summary>
+        /// <summary>The grey line under Tabs: the buildings of this discipline's models whose reference is not the setting's, said as their files show it.</summary>
         public string ReferencesLineFor(string discipline)
         {
-            SortedDictionary<string, IList<string>> byReference = new SortedDictionary<string, IList<string>>(StringComparer.Ordinal);
-
-            foreach (ModelRow row in ModelsFor(discipline))
-            {
-                if (row.ComparedWith == null || row.ComparedWith == settings.Reference)
-                {
-                    continue;
-                }
-
-                IList<string> buildings;
-
-                if (!byReference.TryGetValue(row.ComparedWith, out buildings))
-                {
-                    buildings = new List<string>();
-                    byReference.Add(row.ComparedWith, buildings);
-                }
-
-                if (!buildings.Contains(row.Building))
-                {
-                    buildings.Add(row.Building);
-                }
-            }
-
-            return CheckWords.ReferencesLine(settings.Reference, new List<KeyValuePair<string, IList<string>>>(byReference));
+            return CheckWords.ReferencesLine(settings.Reference, ModelsFor(discipline));
         }
 
         /// <summary>
-        /// Whether every model of a discipline was judged by every check that judges it, so the Summary may say they all pass:
-        /// none of a group the run did not build and none a check could not read.
+        /// Whether the Summary may say every model of a discipline passes, F244 attempt 2, the breaker's S2: To fix holds no row,
+        /// and every model was judged by every check that judges it, none of a group the run did not build, none with a value
+        /// not read, and each check's Checked every model.
         /// </summary>
-        public bool EveryModelChecked(string discipline)
+        public bool AllPass(string discipline)
         {
+            if (IssuesFor(discipline).Count > 0)
+            {
+                return false;
+            }
+
             int models = 0;
 
             foreach (ModelRow row in ModelsFor(discipline))
             {
-                if (!row.IsMissing && !row.Checked)
+                if (!row.IsMissing && (!row.Checked || row.SomethingNotRead))
                 {
                     return false;
                 }
@@ -271,9 +282,7 @@ namespace Federator.Core.Disciplines
 
             foreach (SummaryRow row in SummaryFor(discipline))
             {
-                bool ownPattern = row.Check == CheckWords.Naming && discipline == settings.Reference;
-
-                if (row.Check != CheckWords.Missing && !ownPattern && row.Checked != models)
+                if (row.Check != CheckWords.Missing && !OwnPattern(row.Check, discipline) && row.Checked != models)
                 {
                     return false;
                 }
@@ -402,11 +411,6 @@ namespace Federator.Core.Disciplines
     /// </summary>
     public static class DisciplineWorkbook
     {
-        public const string SummarySheet = "Summary";
-        public const string ModelsSheet = "Models";
-        public const string ToFixSheet = "To fix";
-        public const string ElementIdsSheet = "Element IDs";
-
         /// <summary>The header row of Models, To fix and Element IDs. The Summary's is SummaryHeaderRow.</summary>
         public const int HeaderRow = 5;
 
@@ -435,25 +439,16 @@ namespace Federator.Core.Disciplines
         private static readonly XLColor NotCheckedFill = XLColor.FromHtml("#BFC5CC");
         private static readonly XLColor IdsTab = XLColor.FromHtml("#8A94A3");
 
-        public static readonly string[] SummaryColumns = { "Check", "What is checked", "Checked", "With issue", "Status", "What the modeller does" };
+        /// <summary>The widths of the table columns from B, the order's, beside the headers of CheckWords.</summary>
         public static readonly double[] SummaryWidths = { 18, 46, 12, 12, 12, 52 };
-
-        public static readonly string[] ModelsColumns =
-        {
-            "Building", "Model", "Status", "Compared with", "Off the reference (m)", "Naming", "File age (days)", "CAD imports (files)",
-            "Generic Models (elements)", "File name"
-        };
-
         public static readonly double[] ModelsWidths = { 11, 12, 11, 12, 13, 10, 11, 13, 15, 46 };
-        public static readonly string[] ToFixColumns = { "No.", "Priority", "Building", "Model", "Check", "Finding", "Value", "Unit", "Fix" };
         public static readonly double[] ToFixWidths = { 6, 10, 11, 12, 15, 52, 10, 10, 50 };
-        public static readonly string[] ElementIdsColumns = { "Building", "Model", "Check", "CAD file or family", "Type", "Element ID" };
         public static readonly double[] ElementIdsWidths = { 11, 12, 16, 44, 32, 13 };
 
         /// <summary>The name of a package's workbook for a discipline: the package's path from the parent in words, the discipline and the suffix.</summary>
         public static string NameFor(string packagePath, string discipline, DisciplineReportSettings settings)
         {
-            string words = (packagePath ?? string.Empty).Replace(Path.DirectorySeparatorChar, ' ').Replace(Path.AltDirectorySeparatorChar, ' ').Trim();
+            string words = CheckWords.InWords(packagePath);
             return (words.Length == 0 ? string.Empty : words + " ") + discipline + " " + settings.WorkbookSuffix + ".xlsx";
         }
 
@@ -466,10 +461,10 @@ namespace Federator.Core.Disciplines
 
             using (XLWorkbook workbook = new XLWorkbook())
             {
-                WriteSummary(workbook.Worksheets.Add(SummarySheet), report, discipline);
-                WriteModels(workbook.Worksheets.Add(ModelsSheet), report, discipline);
-                WriteToFix(workbook.Worksheets.Add(ToFixSheet), report, discipline);
-                WriteElementIds(workbook.Worksheets.Add(ElementIdsSheet), report, discipline);
+                WriteSummary(workbook.Worksheets.Add(CheckWords.SummarySheet), report, discipline);
+                WriteModels(workbook.Worksheets.Add(CheckWords.ModelsSheet), report, discipline);
+                WriteToFix(workbook.Worksheets.Add(CheckWords.ToFixSheet), report, discipline);
+                WriteElementIds(workbook.Worksheets.Add(CheckWords.ElementIdsSheet), report, discipline);
                 workbook.SaveAs(path);
             }
         }
@@ -502,15 +497,15 @@ namespace Federator.Core.Disciplines
                 }
             }
 
-            int last = SummaryColumns.Length + 1;
+            int last = CheckWords.SummaryColumns.Count + 1;
             Banner(sheet, Navy, last + 1,
-                CheckWords.Title(report.Heading, discipline, "model checks"),
+                CheckWords.Title(report.Heading, discipline, CheckWords.SummaryTitle),
                 CheckWords.RunLine(report.RunAt, report.Reference, discipline, count, buildings.Count));
             IXLCell lead = sheet.Cell(5, 2);
-            lead.SetValue(CheckWords.Lead(discipline, fix, count, missing, review, report.EveryModelChecked(discipline)));
+            lead.SetValue(CheckWords.Lead(discipline, fix, count, missing, review, report.AllPass(discipline)));
             Font(lead, Demi, 12, Navy);
             sheet.Row(5).Height = 22;
-            Header(sheet, SummaryHeaderRow, SummaryColumns, SummaryWidths, 30);
+            Header(sheet, SummaryHeaderRow, CheckWords.SummaryColumns, SummaryWidths, 30);
 
             for (int i = 0; i < summary.Count; i++)
             {
@@ -561,9 +556,9 @@ namespace Federator.Core.Disciplines
         private static void WriteModels(IXLWorksheet sheet, DisciplineReport report, string discipline)
         {
             IList<ModelRow> models = report.ModelsFor(discipline);
-            int last = ModelsColumns.Length + 1;
-            Banner(sheet, Cyan, last + 1, CheckWords.Title(report.Heading, discipline, "models"), CheckWords.ModelsLine);
-            Header(sheet, HeaderRow, ModelsColumns, ModelsWidths, 34);
+            int last = CheckWords.ModelsColumns.Count + 1;
+            Banner(sheet, Cyan, last + 1, CheckWords.Title(report.Heading, discipline, CheckWords.ModelsTitle), CheckWords.ModelsLine);
+            Header(sheet, HeaderRow, CheckWords.ModelsColumns, ModelsWidths, 34);
             XLAlignmentHorizontalValues left = XLAlignmentHorizontalValues.Left;
             XLAlignmentHorizontalValues centre = XLAlignmentHorizontalValues.Center;
 
@@ -664,9 +659,9 @@ namespace Federator.Core.Disciplines
         private static void WriteToFix(IXLWorksheet sheet, DisciplineReport report, string discipline)
         {
             IList<DisciplineIssue> issues = report.IssuesFor(discipline);
-            int last = ToFixColumns.Length + 1;
-            Banner(sheet, Red, last + 1, CheckWords.Title(report.Heading, discipline, "to fix"), CheckWords.ToFixLine);
-            Header(sheet, HeaderRow, ToFixColumns, ToFixWidths, 30);
+            int last = CheckWords.ToFixColumns.Count + 1;
+            Banner(sheet, Red, last + 1, CheckWords.Title(report.Heading, discipline, CheckWords.ToFixTitle), CheckWords.ToFixLine);
+            Header(sheet, HeaderRow, CheckWords.ToFixColumns, ToFixWidths, 30);
             XLAlignmentHorizontalValues left = XLAlignmentHorizontalValues.Left;
 
             for (int i = 0; i < issues.Count; i++)
@@ -702,9 +697,9 @@ namespace Federator.Core.Disciplines
         private static void WriteElementIds(IXLWorksheet sheet, DisciplineReport report, string discipline)
         {
             IList<ElementIdRow> ids = report.ElementIdsFor(discipline);
-            int last = ElementIdsColumns.Length + 1;
-            Banner(sheet, IdsTab, last + 1, CheckWords.Title(report.Heading, discipline, "element IDs"), CheckWords.ElementIdsLine);
-            Header(sheet, HeaderRow, ElementIdsColumns, ElementIdsWidths, 30);
+            int last = CheckWords.ElementIdsColumns.Count + 1;
+            Banner(sheet, IdsTab, last + 1, CheckWords.Title(report.Heading, discipline, CheckWords.ElementIdsTitle), CheckWords.ElementIdsLine);
+            Header(sheet, HeaderRow, CheckWords.ElementIdsColumns, ElementIdsWidths, 30);
             XLAlignmentHorizontalValues left = XLAlignmentHorizontalValues.Left;
 
             for (int i = 0; i < ids.Count; i++)
@@ -759,9 +754,9 @@ namespace Federator.Core.Disciplines
             under.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
         }
 
-        private static void Header(IXLWorksheet sheet, int row, string[] columns, double[] widths, double height)
+        private static void Header(IXLWorksheet sheet, int row, IList<string> columns, double[] widths, double height)
         {
-            for (int i = 0; i < columns.Length; i++)
+            for (int i = 0; i < columns.Count; i++)
             {
                 IXLCell cell = sheet.Cell(row, i + 2).SetValue(columns[i]);
                 Font(cell, Demi, 10, Navy);
@@ -915,9 +910,9 @@ namespace Federator.Core.Disciplines
                     IXLWorksheet toFix;
                     IXLWorksheet ids;
 
-                    if (!workbook.TryGetWorksheet(ToFixSheet, out toFix) || !workbook.TryGetWorksheet(ElementIdsSheet, out ids))
+                    if (!workbook.TryGetWorksheet(CheckWords.ToFixSheet, out toFix) || !workbook.TryGetWorksheet(CheckWords.ElementIdsSheet, out ids))
                     {
-                        why = "it holds no sheet named " + (toFix == null ? ToFixSheet : ElementIdsSheet);
+                        why = "it holds no sheet named " + (toFix == null ? CheckWords.ToFixSheet : CheckWords.ElementIdsSheet);
                         return null;
                     }
 

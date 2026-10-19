@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using Federator.Core.Communities;
 
 namespace Federator.Core.Disciplines
@@ -152,7 +153,25 @@ namespace Federator.Core.Disciplines
         /// <summary>The Generic Models elements, each id once, or null where the model's items were not walked.</summary>
         public int? GenericElements { get; internal set; }
 
-        /// <summary>The chip of the Status cell: MISSING, NOT CHECKED, FIX where a High row is the model's, REVIEW where any row is, else OK.</summary>
+        /// <summary>Whether Coordinates found the model's site not read.</summary>
+        internal bool SiteNotRead { get; set; }
+
+        /// <summary>The disciplines the files of the model's building read, what the grey line under Tabs may say it has.</summary>
+        internal IList<string> BuildingHas { get; set; }
+
+        /// <summary>
+        /// Whether a value of the model was not read: its placement or the placement of every model of its building, its site,
+        /// its CAD walk or its Generic walk, or no facts of it at all, the breaker's S1 on a92838b.
+        /// </summary>
+        public bool SomethingNotRead
+        {
+            get { return Measure == ModelMeasure.Unknown || SiteNotRead || !CadFiles.HasValue || !GenericElements.HasValue; }
+        }
+
+        /// <summary>
+        /// The chip of the Status cell: MISSING, NOT CHECKED for a group the run did not build, FIX where a High row is the
+        /// model's, REVIEW where any row is, NOT CHECKED where nothing was found and a value was not read, else OK.
+        /// </summary>
         public string Status
         {
             get
@@ -172,7 +191,12 @@ namespace Federator.Core.Disciplines
                     return CheckWords.FixStatus;
                 }
 
-                return issues.Count > 0 ? CheckWords.Review : CheckWords.Ok;
+                if (issues.Count > 0)
+                {
+                    return CheckWords.Review;
+                }
+
+                return SomethingNotRead ? CheckWords.NotChecked : CheckWords.Ok;
             }
         }
 
@@ -355,11 +379,46 @@ namespace Federator.Core.Disciplines
             return check == Missing ? Building : Model;
         }
 
-        /// <summary>The words before the discipline in each title: the community, and the package where it is a subfolder, never C06 C06 itself.</summary>
+        /// <summary>
+        /// The words before the discipline in each title: the community, and the package's path in words where it is a
+        /// subfolder, never C06 C06 itself and never a backslash.
+        /// </summary>
         public static string Heading(string community, string package)
         {
-            return string.IsNullOrEmpty(package) || package == PackageWords.ItselfName(community) ? community : community + " " + package;
+            return string.IsNullOrEmpty(package) || package == PackageWords.ItselfName(community) ? community : community + " " + InWords(package);
         }
+
+        /// <summary>A package's path with each folder separator a space, the one rule for a title and a workbook's name.</summary>
+        public static string InWords(string path)
+        {
+            return (path ?? string.Empty).Replace(Path.DirectorySeparatorChar, ' ').Replace(Path.AltDirectorySeparatorChar, ' ').Trim();
+        }
+
+        public const string SummarySheet = "Summary";
+        public const string ModelsSheet = "Models";
+        public const string ToFixSheet = "To fix";
+        public const string ElementIdsSheet = "Element IDs";
+
+        /// <summary>The words after the discipline in B1 of each sheet.</summary>
+        public const string SummaryTitle = "model checks";
+        public const string ModelsTitle = "models";
+        public const string ToFixTitle = "to fix";
+        public const string ElementIdsTitle = "element IDs";
+
+        public static readonly ReadOnlyCollection<string> SummaryColumns = new ReadOnlyCollection<string>(
+            new[] { "Check", "What is checked", "Checked", "With issue", "Status", "What the modeller does" });
+
+        public static readonly ReadOnlyCollection<string> ModelsColumns = new ReadOnlyCollection<string>(new[]
+        {
+            "Building", "Model", "Status", "Compared with", "Off the reference (m)", "Naming", "File age (days)", "CAD imports (files)",
+            "Generic Models (elements)", "File name"
+        });
+
+        public static readonly ReadOnlyCollection<string> ToFixColumns = new ReadOnlyCollection<string>(
+            new[] { "No.", "Priority", "Building", "Model", "Check", "Finding", "Value", "Unit", "Fix" });
+
+        public static readonly ReadOnlyCollection<string> ElementIdsColumns = new ReadOnlyCollection<string>(
+            new[] { "Building", "Model", "Check", "CAD file or family", "Type", "Element ID" });
 
         /// <summary>B1 of each sheet: the heading, three spaces, the discipline and the sheet's words.</summary>
         public static string Title(string heading, string discipline, string words)
@@ -375,17 +434,21 @@ namespace Federator.Core.Disciplines
         }
 
         /// <summary>
-        /// B5 of the Summary, one sentence a part and a part that is nought left out. Where all are nought and every model was
-        /// checked, they all pass, and where some was not, the first sentence says nought need a fix and claims no pass.
+        /// B5 of the Summary. Where To fix holds no row and every model was judged by every check, they all pass. Otherwise one
+        /// sentence a part, the first kept even at nought and the others left out at nought, F244 attempt 2, the breaker's S2.
+        /// The words bent to one where a count is 1.
         /// </summary>
-        public static string Lead(string discipline, int fix, int models, int missing, int review, bool everyModelChecked)
+        public static string Lead(string discipline, int fix, int models, int missing, int review, bool allPass)
         {
-            List<string> parts = new List<string>();
-
-            if (fix > 0)
+            if (allPass && models > 0 && fix == 0 && missing == 0 && review == 0)
             {
-                parts.Add(NeedAFix(discipline, fix, models));
+                return "All " + models + " " + discipline + (models == 1 ? " model passes" : " models pass") + " every check.";
             }
+
+            List<string> parts = new List<string>
+            {
+                fix + " of " + Count(models, discipline + " model", discipline + " models") + (fix == 1 || models == 1 ? " needs" : " need") + " a fix."
+            };
 
             if (missing > 0)
             {
@@ -397,17 +460,7 @@ namespace Federator.Core.Disciplines
                 parts.Add(Count(review, "model has", "models have") + " CAD imports or Generic Models to review.");
             }
 
-            if (parts.Count == 0)
-            {
-                return everyModelChecked && models > 0 ? "All " + models + " " + discipline + " models pass every check." : NeedAFix(discipline, 0, models);
-            }
-
             return string.Join("  ", parts.ToArray());
-        }
-
-        private static string NeedAFix(string discipline, int fix, int models)
-        {
-            return fix + " of " + models + " " + discipline + " models need a fix.";
         }
 
         /// <summary>What is checked, the second cell of a Summary row.</summary>
@@ -530,36 +583,87 @@ namespace Federator.Core.Disciplines
         {
             return new[]
             {
-                new KeyValuePair<string, string>("Models", "one row per " + discipline + " model, red where a check failed"),
-                new KeyValuePair<string, string>("To fix", "one row per thing to fix, High first, with the words to send the modeller"),
-                new KeyValuePair<string, string>("Element IDs", "one element per row. Filter on Model, copy the IDs, then Revit Manage > Select by ID")
+                new KeyValuePair<string, string>(ModelsSheet, "one row per " + discipline + " model, red where a check failed"),
+                new KeyValuePair<string, string>(ToFixSheet, "one row per thing to fix, High first, with the words to send the modeller"),
+                new KeyValuePair<string, string>(ElementIdsSheet, "one element per row. Filter on Model, copy the IDs, then Revit Manage > Select by ID")
             };
         }
 
         /// <summary>
-        /// The grey line under Tabs: each building whose reference model is not of the setting's discipline, grouped by the
-        /// discipline that is, in the mock's words, or null where every building's reference is the setting's.
+        /// The grey line under Tabs, F244 attempt 2, the reviewer's 3 and the breaker's S8: each building of these models whose
+        /// reference is not of the setting's discipline, saying only what its files show. One with a file of the setting's
+        /// discipline, which was not placed since the reference moved, is said in its own words. The others are grouped by the
+        /// discipline that is their reference, in Ordinal order, in the mock's words, each named under a sentence only where its
+        /// files hold none of the disciplines that sentence says it has not, and in its own words otherwise. Null where every
+        /// building's reference is the setting's.
         /// </summary>
-        public static string ReferencesLine(string reference, IList<KeyValuePair<string, IList<string>>> byDiscipline)
+        internal static string ReferencesLine(string reference, IList<ModelRow> models)
         {
-            if (byDiscipline.Count == 0)
+            List<string> seen = new List<string>();
+            List<string> notPlaced = new List<string>();
+            List<string> noReference = new List<string>();
+            SortedDictionary<string, List<ModelRow>> byDiscipline = new SortedDictionary<string, List<ModelRow>>(StringComparer.Ordinal);
+
+            foreach (ModelRow row in models)
             {
-                return null;
+                if (row.ComparedWith == null || row.ComparedWith == reference || seen.Contains(row.Building))
+                {
+                    continue;
+                }
+
+                seen.Add(row.Building);
+
+                if (row.BuildingHas.Contains(reference))
+                {
+                    notPlaced.Add("In " + row.Building + " the " + reference + " model was not placed, so it is measured from the " + row.ComparedWith + " model.");
+                    continue;
+                }
+
+                List<ModelRow> into;
+
+                if (!byDiscipline.TryGetValue(row.ComparedWith, out into))
+                {
+                    into = new List<ModelRow>();
+                    byDiscipline.Add(row.ComparedWith, into);
+                }
+
+                into.Add(row);
             }
 
             List<string> sentences = new List<string>();
             List<string> before = new List<string> { reference };
 
-            for (int i = 0; i < byDiscipline.Count; i++)
+            foreach (KeyValuePair<string, List<ModelRow>> pair in byDiscipline)
             {
-                string buildings = "(" + string.Join(", ", new List<string>(byDiscipline[i].Value).ToArray()) + ")";
-                sentences.Add(i == 0
-                    ? "Where a building has no " + reference + " model, the " + byDiscipline[i].Key + " model is the reference " + buildings + "."
-                    : "Where it has no " + Or(before) + ", the " + byDiscipline[i].Key + " model is " + buildings + ".");
-                before.Add(byDiscipline[i].Key);
+                List<string> buildings = new List<string>();
+
+                foreach (ModelRow row in pair.Value)
+                {
+                    if (before.Exists(d => row.BuildingHas.Contains(d)))
+                    {
+                        noReference.Add("In " + row.Building + ", which has no " + reference + " model, the " + pair.Key + " model is the reference.");
+                    }
+                    else
+                    {
+                        buildings.Add(row.Building);
+                    }
+                }
+
+                if (buildings.Count == 0)
+                {
+                    continue;
+                }
+
+                string named = "(" + string.Join(", ", buildings.ToArray()) + ")";
+                sentences.Add(sentences.Count == 0
+                    ? "Where a building has no " + reference + " model, the " + pair.Key + " model is the reference " + named + "."
+                    : "Where it has no " + Or(before) + ", the " + pair.Key + " model is " + named + ".");
+                before.Add(pair.Key);
             }
 
-            return string.Join(" ", sentences.ToArray());
+            sentences.AddRange(notPlaced);
+            sentences.AddRange(noReference);
+            return sentences.Count == 0 ? null : string.Join(" ", sentences.ToArray());
         }
 
         /// <summary>A date the way the workbooks write it, 19 Oct 2026.</summary>

@@ -65,13 +65,14 @@ set -e
 # and the turn names it with its size and sha256. A binary file no line names is refused with
 # words that say so, so a person adds a line for its type rather than hunting for an id.
 #   F244, Bader's order of 19 Oct 2026, puts the mock of the discipline workbook in docs\design,
-#     its xlsx under the xlsx rule and its pdf under one of its own: a pdf opens %PDF-, 25 50 44
-#     46 2D, and its last 8 bytes hold %%EOF, 25 25 45 4F 46, read on the mock on 20 Oct 2026,
-#     which ends 25 25 45 4F 46 0A, so text appended past its end fails it
+#     and the two files are named exactly, never every xlsx or pdf there: its xlsx under the xlsx
+#     bytes and its pdf under its own, a pdf opening %PDF-, 25 50 44 46 2D, whose last 8 bytes hold
+#     %%EOF, 25 25 45 4F 46, read on the mock on 20 Oct 2026, which ends 25 25 45 4F 46 0A, so text
+#     appended past its end fails it. broken\docs\design holds a pdf that ends wrong
 binary='^samples/.*\.jpg$ ffd8ff 2 ffd9
 ^samples/.*\.xlsx$ 504b0304 65557 504b0506
-^docs/design/.*\.xlsx$ 504b0304 65557 504b0506
-^docs/design/.*\.pdf$ 255044462d 8 2525454f46'
+^docs/design/discipline-workbook-mock\.xlsx$ 504b0304 65557 504b0506
+^docs/design/discipline-workbook-mock\.pdf$ 255044462d 8 2525454f46'
 
 rules="$(dirname "$0")/evidence-ids.txt"
 

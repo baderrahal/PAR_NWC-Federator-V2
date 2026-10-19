@@ -19,6 +19,7 @@ namespace Federator.Core.Naming
             string originator,
             string building,
             string discipline,
+            string number,
             string unreadableReason)
         {
             Stem = stem;
@@ -28,6 +29,7 @@ namespace Federator.Core.Naming
             Originator = originator;
             Building = building;
             Discipline = discipline;
+            Number = number;
             UnreadableReason = unreadableReason;
         }
 
@@ -48,6 +50,9 @@ namespace Federator.Core.Naming
 
         public string Discipline { get; private set; }
 
+        /// <summary>The number at the settings' NumberPart, or null where the name has no such part, F244.</summary>
+        public string Number { get; private set; }
+
         /// <summary>Null when <see cref="IsReadable"/> is true.</summary>
         public string UnreadableReason { get; private set; }
 
@@ -57,10 +62,11 @@ namespace Federator.Core.Naming
             string project,
             string originator,
             string building,
-            string discipline)
+            string discipline,
+            string number)
         {
             return new ParsedContainerName(
-                stem, parts, true, project, originator, building, discipline, null);
+                stem, parts, true, project, originator, building, discipline, number, null);
         }
 
         internal static ParsedContainerName Unreadable(
@@ -71,7 +77,7 @@ namespace Federator.Core.Naming
                 throw new ArgumentException("An unreadable name needs a reason.", "reason");
             }
 
-            return new ParsedContainerName(stem, parts, false, null, null, null, null, reason);
+            return new ParsedContainerName(stem, parts, false, null, null, null, null, null, reason);
         }
 
         public override string ToString()

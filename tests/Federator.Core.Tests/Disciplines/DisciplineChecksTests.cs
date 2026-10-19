@@ -415,6 +415,44 @@ namespace Federator.Core.Tests
             Assert.That(found.Notes.Single(), Is.EqualTo("File age  1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc not read, its date was not read, the file is gone"));
         }
 
+        /// <summary>F244 attempt 2, the breaker's WRONG: the age is judged on the whole days the cell writes, so a cell of 7 is never a row.</summary>
+        [Test]
+        public void TheAgeIsJudgedOnTheWholeDaysTheCellWritesSo7Days3HoursIsNoRowAnd8DaysIs()
+        {
+            DateTime now = new DateTime(2026, 10, 18, 12, 0, 0);
+            List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL") }, null, "not run") };
+            List<FileDate> dates = new List<FileDate>
+            {
+                new FileDate(Nwc("1B06BC", "AR"), now.AddDays(-7).AddHours(-3), null),
+                new FileDate(Nwc("1B06BC", "EL"), now.AddDays(-8), null)
+            };
+            ModelRows rows = ModelRows.Of(groups, Names);
+
+            CheckFindings found = FileAgeCheck.Of(groups, rows, dates, now, Settings, Names);
+
+            Assert.That(rows.All.Single(r => r.Discipline == "AR").AgeDays, Is.EqualTo(7));
+            Assert.That(found.Issues.Any(i => i.Discipline == "AR"), Is.False, "7 days 3 hours writes 7, which is not over 7");
+            Assert.That(found.Issues.Single().Discipline, Is.EqualTo("EL"));
+            Assert.That(found.Issues.Single().Value, Is.EqualTo(8));
+        }
+
+        /// <summary>F244 attempt 2, the breaker's S9: the short name is the discipline and the number part of the naming settings, never the last part.</summary>
+        [Test]
+        public void TheShortNameIsTheDisciplineAndTheNumberPartNeverTheLastPart()
+        {
+            string one = TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-MOD-000001-A.nwc");
+            string two = TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-MOD-000002-A.nwc");
+            List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06BC", new[] { one, two, Nwc("1B06BC", "AR") }, null, "not run") };
+
+            ModelRows rows = ModelRows.Of(groups, Names);
+
+            Assert.That(rows.All.Select(r => r.Model).ToArray(), Is.EqualTo(new[] { "ME-000001", "ME-000002", "AR-000001" }), "an 8 part name, two models apart by their number alone");
+            Assert.That(ContainerName.Parse(one, Names).Number, Is.EqualTo("000001"), "part 7, the naming settings' NumberPart");
+            ParsedContainerName six = ContainerName.Parse(TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-MOD.nwc"), Names);
+            Assert.That(six.IsReadable, Is.True, "the number never raises the parts a name needs");
+            Assert.That(six.Number, Is.Null);
+        }
+
         // ---------- CAD imports and Generic Models ----------
 
         [Test]
