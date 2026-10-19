@@ -65,15 +65,32 @@ namespace Federator.Core.Tests
         {
             ClashReport report = Report(3);
             WriteThePictures(report);
-            new WorkbookWriter().Write(report, workbook);
+            WorkbookWriter writer = new WorkbookWriter();
+            writer.Write(report, workbook);
 
-            WorkbookLinks links = WorkbookLinks.Check(workbook);
+            WorkbookLinks links = WorkbookLinks.Check(workbook, writer.PicturesLinked, writer.LinksWritten);
 
             Assert.That(links.NotRead, Is.Null);
-            Assert.That(links.Checked, Is.EqualTo(6));
-            Assert.That(links.Missing.Count, Is.EqualTo(0));
-            Assert.That(links.Line(), Is.EqualTo("XLSX     links    6 checked, 0 missing"));
+            Assert.That(links.Read, Is.EqualTo(6));
+            Assert.That(links.MissingCount, Is.EqualTo(0));
+            Assert.That(links.Line(), Is.EqualTo("XLSX     links    3 pictures linked, 6 links expected, 6 read, 0 missing"));
             Assert.That(links.Error(), Is.Null);
+        }
+
+        /// <summary>F243 attempt 2, the breaker's S5. The writer counts each link it made, the cell link and the click link of a picture.</summary>
+        [Test]
+        public void TheWriterCountsEveryLinkItMade()
+        {
+            ClashReport report = Report(3);
+            report.Tests[0].Rows[2].ImageLink = string.Empty;
+            WriteThePictures(report);
+            WorkbookWriter writer = new WorkbookWriter();
+            writer.Write(report, workbook);
+
+            Assert.That(writer.PicturesLinked, Is.EqualTo(3));
+            Assert.That(writer.LinksWritten, Is.EqualTo(5), "three click links and two cell links, the third row carrying no cell link");
+            Assert.That(WorkbookLinks.Check(workbook, writer.PicturesLinked, writer.LinksWritten).Line(),
+                Is.EqualTo("XLSX     links    3 pictures linked, 5 links expected, 5 read, 0 missing"));
         }
 
         /// <summary>The break: one picture taken away after the write is counted missing, named, and is the group's error.</summary>
@@ -82,18 +99,39 @@ namespace Federator.Core.Tests
         {
             ClashReport report = Report(3);
             WriteThePictures(report);
-            new WorkbookWriter().Write(report, workbook);
+            WorkbookWriter writer = new WorkbookWriter();
+            writer.Write(report, workbook);
 
             string gone = report.Tests[0].Rows[1].ImagePath;
             File.Delete(gone);
 
-            WorkbookLinks links = WorkbookLinks.Check(workbook);
+            WorkbookLinks links = WorkbookLinks.Check(workbook, writer.PicturesLinked, writer.LinksWritten);
 
-            Assert.That(links.Checked, Is.EqualTo(6));
-            Assert.That(links.Missing.Count, Is.EqualTo(2), "its cell link and its click link");
+            Assert.That(links.Read, Is.EqualTo(6));
+            Assert.That(links.MissingCount, Is.EqualTo(2), "its cell link and its click link");
             Assert.That(links.Missing[0], Is.EqualTo(Path.GetFullPath(gone)));
-            Assert.That(links.Line(), Does.StartWith("XLSX     links    6 checked, 2 missing, the first " + Path.GetFullPath(gone)));
-            Assert.That(links.Error(), Does.Contain("2 links to a picture not on the disk"));
+            Assert.That(links.Line(), Is.EqualTo("XLSX     links    3 pictures linked, 6 links expected, 6 read, 2 missing, the first "
+                + Path.GetFullPath(gone)));
+            Assert.That(links.Error(), Does.Contain("2 of the 6 links"));
+        }
+
+        /// <summary>
+        /// F243 attempt 2, the breaker's S5. A link the writer made that the workbook read back does not hold is missing too, so
+        /// a workbook whose links went is never read as clean.
+        /// </summary>
+        [Test]
+        public void ALinkTheWriterMadeThatTheWorkbookDoesNotHoldIsMissing()
+        {
+            ClashReport report = Report(3);
+            WriteThePictures(report);
+            new WorkbookWriter().Write(report, workbook);
+
+            WorkbookLinks links = WorkbookLinks.Check(workbook, 4, 8);
+
+            Assert.That(links.MissingCount, Is.EqualTo(2));
+            Assert.That(links.Missing.Count, Is.EqualTo(0), "no link read reaches no file");
+            Assert.That(links.Line(), Is.EqualTo("XLSX     links    4 pictures linked, 8 links expected, 6 read, 2 missing, 2 links expected and not in the workbook"));
+            Assert.That(links.Error(), Does.Contain("2 of the 8 links"));
         }
 
         [Test]
@@ -108,12 +146,14 @@ namespace Federator.Core.Tests
                 row.ImagePath = string.Empty;
             }
 
-            new WorkbookWriter().Write(report, workbook);
+            WorkbookWriter writer = new WorkbookWriter();
+            writer.Write(report, workbook);
 
-            WorkbookLinks links = WorkbookLinks.Check(workbook);
+            WorkbookLinks links = WorkbookLinks.Check(workbook, writer.PicturesLinked, writer.LinksWritten);
 
-            Assert.That(links.Checked, Is.EqualTo(0));
-            Assert.That(links.Missing.Count, Is.EqualTo(0));
+            Assert.That(writer.LinksWritten, Is.EqualTo(0));
+            Assert.That(links.Read, Is.EqualTo(0));
+            Assert.That(links.MissingCount, Is.EqualTo(0));
             Assert.That(links.NotRead, Is.Null);
         }
 
@@ -122,11 +162,12 @@ namespace Federator.Core.Tests
         {
             File.WriteAllText(workbook, "not a zip");
 
-            WorkbookLinks links = WorkbookLinks.Check(workbook);
+            WorkbookLinks links = WorkbookLinks.Check(workbook, 1, 2);
 
             Assert.That(links.NotRead, Is.Not.Null);
             Assert.That(links.Line(), Does.Contain("UNKNOWN"));
             Assert.That(links.Line(), Does.Not.Contain("0 missing"));
+            Assert.That(links.Error(), Is.Null);
         }
 
         private ClashReport Report(int clashes)

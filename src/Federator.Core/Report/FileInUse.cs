@@ -18,10 +18,10 @@ namespace Federator.Core.Report
     public static class FileInUse
     {
         /// <summary>The Windows error a write or a delete gives where another process holds the file without sharing it.</summary>
-        public const int SharingViolation = 32;
+        internal const int SharingViolation = 32;
 
         /// <summary>The Windows error where another process holds a lock on part of the file.</summary>
-        public const int LockViolation = 33;
+        internal const int LockViolation = 33;
 
         private const string Start = "Close ";
 
@@ -76,6 +76,24 @@ namespace Federator.Core.Report
         /// The run window's end message: what it already says, then one line for each file left open, each once in the order
         /// first met. Null where it has nothing to say.
         /// </summary>
+        /// <summary>
+        /// The lines RESULT gives the files left open, a group's own and, attempt 2 on the reviewer's N4, the window's that
+        /// started a run of packages in its joined RESULT: one count line and each file's line, or none where none was left.
+        /// </summary>
+        public static IList<string> ResultLines(IList<string> closeLines)
+        {
+            List<string> lines = new List<string>();
+
+            if (closeLines == null || closeLines.Count == 0)
+            {
+                return lines;
+            }
+
+            lines.Add("files open     : " + closeLines.Count + " not written, each was open in another program");
+            lines.AddRange(closeLines);
+            return lines;
+        }
+
         public static string EndMessage(string already, IEnumerable<string> closeLines)
         {
             List<string> lines = new List<string>();

@@ -79,6 +79,32 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// F243 attempt 2, the reviewer's N4 and the breaker's C2. The window that started a run of packages writes its own files
+        /// left open, the cleanup's and its workbooks', into the joined RESULT beside the groups' own RESULT lines, in the words
+        /// RESULT gives them everywhere.
+        /// </summary>
+        [Test]
+        public void TheWindowsOwnFilesLeftOpenAreInItsJoinedResult()
+        {
+            string own = FileInUse.Line(Path.Combine(folder, "C06 clash count check.xlsx"));
+            List<PackageRunUnit> units = new List<PackageRunUnit> { new PackageRunUnit("C06", Path.Combine(folder, "a.nwf"), "1B06BC") };
+            List<PackageRunResult> results = new List<PackageRunResult> { new PackageRunResult("C06", null) };
+
+            IList<string> lines = PackageRunWords.JoinedResult(units, results, new List<string> { null }, new PackageTally(), new List<string> { own });
+
+            Assert.That(lines, Does.Contain("files open     : 1 not written, each was open in another program"));
+            Assert.That(lines, Does.Contain(own));
+            Assert.That(FileInUse.ResultLines(new List<string> { own }), Is.EqualTo(new List<string>
+            {
+                "files open     : 1 not written, each was open in another program",
+                own
+            }));
+            Assert.That(FileInUse.ResultLines(new List<string>()).Count, Is.EqualTo(0));
+            Assert.That(PackageRunWords.JoinedResult(units, results, new List<string> { null }, new PackageTally()),
+                Has.None.StartsWith("files open"), "a run with none of its own says nothing of it");
+        }
+
         /// <summary>The break: a run with no file left open writes no such line in RESULT.</summary>
         [Test]
         public void ARunWithNoFileLeftOpenSaysNoneOfItInResult()

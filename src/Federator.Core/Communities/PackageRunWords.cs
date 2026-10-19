@@ -254,11 +254,11 @@ namespace Federator.Core.Communities
         /// <summary>
         /// The lines of the one RESULT of a run of packages, since F222 one result a group: the group counts off the package
         /// tally the parent filled from the results, how many groups wrote no result and how many ran nothing, the tally, each
-        /// group that is not DONE with its reason, then each group's own RESULT under its package and name and its log, or NO
-        /// RESULT with why.
+        /// group that is not DONE with its reason, the files the window itself left open in another program, F243, then each
+        /// group's own RESULT under its package and name and its log, or NO RESULT with why.
         /// </summary>
         public static IList<string> JoinedResult(
-            IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> noResultWhy, PackageTally tally)
+            IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> noResultWhy, PackageTally tally, IList<string> filesInUse = null)
         {
             if (units == null || results == null || noResultWhy == null || tally == null
                 || results.Count != units.Count || noResultWhy.Count != units.Count)
@@ -318,6 +318,16 @@ namespace Federator.Core.Communities
                         lines.Add("why            " + units[i].Package + "  " + group.Group + " : " + OneLine(group.Reason));
                     }
                 }
+            }
+
+            // F243 attempt 2, the reviewer's N4. The files the window that started the run left open, its cleanup's and its
+            // workbooks', in the words RESULT gives them, beside the groups' own under each GROUP below.
+            IList<string> open = Federator.Core.Report.FileInUse.ResultLines(filesInUse);
+
+            if (open.Count > 0)
+            {
+                lines.Add(string.Empty);
+                lines.AddRange(open);
             }
 
             for (int i = 0; i < units.Count; i++)

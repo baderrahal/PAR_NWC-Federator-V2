@@ -2456,16 +2456,9 @@ namespace Federator.Core.Diagnostics
 
             // F243, Bader's order of 19 Oct 2026 point 6. Each file left open in another program, on its own line in his words,
             // which a group's own Navisworks hands back to the window that started the run in its RESULT lines.
-            IList<string> open = FilesInUse;
-
-            if (open.Count > 0)
+            foreach (string line in Federator.Core.Report.FileInUse.ResultLines(FilesInUse))
             {
-                Line("files open     : " + open.Count + " not written, each was open in another program");
-
-                foreach (string line in open)
-                {
-                    Line(line);
-                }
+                Line(line);
             }
 
             // Both halves of this come from the lists the counts above were taken from,

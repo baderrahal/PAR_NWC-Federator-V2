@@ -12,18 +12,20 @@ namespace Federator.Core.Communities
     /// <summary>
     /// The files earlier runs wrote under names this tool no longer writes, deleted at the start of a run, F243, Bader's order of
     /// 19 Oct 2026 point 7: "no more internal or dated named files". Inside Report\COMMUNITY\ of each community of the run and
-    /// nowhere else, never a package's folder below it, and only a file whose name is one of these EXACTLY, every other name
-    /// left alone:
+    /// nowhere else, and only a file whose name is one of these EXACTLY, every other name left alone. Since attempt 2, the
+    /// breaker's S1, the report folder of each package of the community in the run, PACKAGE below, the community's own folder
+    /// for the community's own package and Report\COMMUNITY\PATH for a package below it:
     ///
-    ///     Log\GROUP.xlsx, the clash workbook before it moved to the Clash report folder
-    ///     Log\GROUP STAMP.xlsx and Log\GROUP STAMP N.xlsx
-    ///     Log\GROUP Internal.xlsx, Log\GROUP STAMP Internal.xlsx and Log\GROUP STAMP N Internal.xlsx
-    ///     Log\Models not on the same shared coordinates, run STAMP.txt
-    ///     COMMUNITY DISC checks STAMP.xlsx and COMMUNITY DISC checks STAMP N.xlsx
-    ///     COMMUNITY clash count check STAMP.xlsx and COMMUNITY clash count check STAMP N.xlsx
-    ///     Backup\GROUP STAMP.nwf and Backup\GROUP STAMP (N).nwf, the newest renamed to Backup\GROUP.nwf where that is free
+    ///     PACKAGE\Log\GROUP.xlsx, the clash workbook before it moved to the Clash report folder
+    ///     PACKAGE\Log\GROUP STAMP.xlsx and PACKAGE\Log\GROUP STAMP N.xlsx
+    ///     PACKAGE\Log\GROUP Internal.xlsx, its STAMP form and its STAMP N form
+    ///     PACKAGE\Log\Models not on the same shared coordinates, run STAMP.txt
+    ///     PACKAGE\WORDS DISC checks STAMP.xlsx and its STAMP N form, WORDS the package's path in words, DisciplineWorkbook.NameFor
+    ///     COMMUNITY clash count check STAMP.xlsx and its STAMP N form, in the community's own folder alone
+    ///     PACKAGE\Backup\GROUP STAMP.nwf and GROUP STAMP (N).nwf, the newest renamed to GROUP.nwf where that is free
     ///
-    /// GROUP is a group of the community in the run, DISC a discipline of the discipline settings, STAMP the moment the old
+    /// GROUP is a group of the community in the run, by its NWF name or its workbook name, DISC a discipline of the discipline
+    /// settings, STAMP the moment the old
     /// names carried, yyyy-MM-dd HHmmss, read as a real moment, and N the counter the old names took, 2 or more. The names
     /// are matched Ordinal, as the tool wrote them. Where Backup\GROUP.nwf is already there the newest dated backup is left as
     /// it is and said, and the older ones go. The patterns live here and nowhere else.
@@ -41,10 +43,12 @@ namespace Federator.Core.Communities
         private const string Nwf = PackageTree.NwfExtension;
 
         /// <summary>
-        /// Which old name a file of the community's own folder or its Log folder is, by its path below Report\COMMUNITY\, or
-        /// null where it is none of them and stays.
+        /// Which old name a file of a package's report folder or of its Log folder is, by its path below that folder, or null
+        /// where it is none of them and stays. The discipline workbooks' stem is the one DisciplineWorkbook.NameFor gives that
+        /// package, its path from the parent, the community alone for the community's own package. The clash count check is
+        /// the community folder's alone and read apart, never here.
         /// </summary>
-        public static string KindOf(string relativePath, string community, ICollection<string> groups, DisciplineReportSettings disciplines)
+        internal static string KindOf(string relativePath, string packagePath, ICollection<string> groups, DisciplineReportSettings disciplines)
         {
             if (string.IsNullOrEmpty(relativePath) || groups == null || disciplines == null)
             {
@@ -56,28 +60,36 @@ namespace Federator.Core.Communities
 
             if (folder.Length == 0)
             {
-                return TopLevelKind(name, community, disciplines);
+                return TopLevelKind(name, packagePath, disciplines);
             }
 
             return string.Equals(folder, ReportPaths.Subfolder, StringComparison.Ordinal) ? LogKind(name, groups) : null;
         }
 
-        private static string TopLevelKind(string name, string community, DisciplineReportSettings disciplines)
+        private static string TopLevelKind(string name, string packagePath, DisciplineReportSettings disciplines)
         {
-            if (string.IsNullOrEmpty(community))
+            if (string.IsNullOrEmpty(packagePath))
             {
                 return null;
             }
 
             foreach (string discipline in disciplines.Disciplines)
             {
-                if (IsDated(name, Stem(DisciplineWorkbook.NameFor(community, discipline, disciplines)), Workbook))
+                if (IsDated(name, Stem(DisciplineWorkbook.NameFor(packagePath, discipline, disciplines)), Workbook))
                 {
                     return "a dated discipline workbook";
                 }
             }
 
-            return IsDated(name, Stem(ClashCountWorkbook.NameFor(community)), Workbook) ? "a dated clash count check" : null;
+            return null;
+        }
+
+        /// <summary>The dated clash count check, at the community's own folder alone, or null.</summary>
+        private static string CommunityKind(string name, string community)
+        {
+            return !string.IsNullOrEmpty(community) && IsDated(name, Stem(ClashCountWorkbook.NameFor(community)), Workbook)
+                ? "a dated clash count check"
+                : null;
         }
 
         private static string LogKind(string name, ICollection<string> groups)
@@ -199,7 +211,7 @@ namespace Federator.Core.Communities
         /// A dated backup of that group: Backup\GROUP STAMP.nwf, its counter nought, or Backup\GROUP STAMP (N).nwf. False for
         /// any other name.
         /// </summary>
-        public static bool IsDatedBackup(string fileName, string group, out DateTime moment, out int counter)
+        internal static bool IsDatedBackup(string fileName, string group, out DateTime moment, out int counter)
         {
             moment = DateTime.MinValue;
             counter = 0;
@@ -224,11 +236,17 @@ namespace Federator.Core.Communities
         }
 
         /// <summary>
-        /// Deletes the old names in one community's folder, its Log folder and its Backup folder, and renames the newest dated
-        /// backup of each group to its one name where that is free. Each file on its own: one held open is named in InUse, one
-        /// that fails otherwise in Failed with what it threw, and the rest go on. Nothing outside the three folders is read.
+        /// Deletes the old names inside one community's report folder and nowhere else, attempt 2 on the breaker's S1: the dated
+        /// clash count check at the community's own folder, then each package of the community in the run by its own report
+        /// folder, PackageOutput.FolderFor, the community's own package among them, its dated discipline workbooks by its own
+        /// stem, its Log folder and its Backup folder, the newest dated backup of each group renamed to its one name where that
+        /// is free. A package folder handed in that is not inside the community's folder is said and never read. Each file on
+        /// its own: one held open is named in InUse, one that fails otherwise in Failed with what it threw, and the rest go on.
+        /// The groups are each group's NWF name and workbook name, each read once.
         /// </summary>
-        public static OldReportFilesOutcome Clean(string communityFolder, string community, IEnumerable<string> groups, DisciplineReportSettings disciplines)
+        public static OldReportFilesOutcome Clean(
+            string communityFolder, string community, IDictionary<string, string> packageFolders, IEnumerable<string> groups,
+            DisciplineReportSettings disciplines)
         {
             if (disciplines == null)
             {
@@ -253,26 +271,62 @@ namespace Federator.Core.Communities
 
             foreach (string file in Directory.GetFiles(communityFolder))
             {
-                if (KindOf(Path.GetFileName(file), community, names, disciplines) != null)
+                string kind = CommunityKind(Path.GetFileName(file), community);
+
+                if (kind != null)
                 {
-                    outcome.Delete(file);
+                    outcome.Delete(file, kind);
                 }
             }
 
-            string log = Path.Combine(communityFolder, ReportPaths.Subfolder);
+            foreach (KeyValuePair<string, string> package in packageFolders ?? new Dictionary<string, string>())
+            {
+                if (!ReportPaths.IsInside(package.Value, communityFolder))
+                {
+                    outcome.NotInside(package.Value);
+                    continue;
+                }
+
+                CleanThePackage(package.Value, package.Key, names, disciplines, outcome);
+            }
+
+            return outcome;
+        }
+
+        private static void CleanThePackage(
+            string folder, string packagePath, List<string> names, DisciplineReportSettings disciplines, OldReportFilesOutcome outcome)
+        {
+            if (!Directory.Exists(folder))
+            {
+                return;
+            }
+
+            foreach (string file in Directory.GetFiles(folder))
+            {
+                string kind = KindOf(Path.GetFileName(file), packagePath, names, disciplines);
+
+                if (kind != null)
+                {
+                    outcome.Delete(file, kind);
+                }
+            }
+
+            string log = Path.Combine(folder, ReportPaths.Subfolder);
 
             if (Directory.Exists(log))
             {
                 foreach (string file in Directory.GetFiles(log))
                 {
-                    if (KindOf(Path.Combine(ReportPaths.Subfolder, Path.GetFileName(file)), community, names, disciplines) != null)
+                    string kind = KindOf(Path.Combine(ReportPaths.Subfolder, Path.GetFileName(file)), packagePath, names, disciplines);
+
+                    if (kind != null)
                     {
-                        outcome.Delete(file);
+                        outcome.Delete(file, kind);
                     }
                 }
             }
 
-            string backup = Path.Combine(communityFolder, NwfBackupName.FolderName);
+            string backup = Path.Combine(folder, NwfBackupName.FolderName);
 
             if (Directory.Exists(backup))
             {
@@ -283,10 +337,7 @@ namespace Federator.Core.Communities
                     CleanTheBackupsOf(group, backup, files, outcome);
                 }
             }
-
-            return outcome;
         }
-
         private static void CleanTheBackupsOf(string group, string backup, string[] files, OldReportFilesOutcome outcome)
         {
             List<KeyValuePair<string, DateTime>> dated = new List<KeyValuePair<string, DateTime>>();
@@ -334,7 +385,7 @@ namespace Federator.Core.Communities
             {
                 if (!string.Equals(file.Key, newest, StringComparison.Ordinal))
                 {
-                    outcome.Delete(file.Key);
+                    outcome.Delete(file.Key, "an older dated backup");
                 }
             }
         }
@@ -358,7 +409,7 @@ namespace Federator.Core.Communities
         }
 
         /// <summary>The community's folder.</summary>
-        public string Folder { get; private set; }
+        internal string Folder { get; private set; }
 
         /// <summary>A line for each file deleted, renamed or kept, in the order done.</summary>
         public IList<string> Lines
@@ -378,24 +429,33 @@ namespace Federator.Core.Communities
             get { return failed.AsReadOnly(); }
         }
 
-        /// <summary>How many files were deleted.</summary>
-        public int DeletedCount { get; private set; }
+        /// <summary>How many files were deleted, said by SummaryLine.</summary>
+        private int deletedCount;
 
-        /// <summary>The one line where nothing in the folder bore an old name.</summary>
-        public string NothingLine()
+        /// <summary>
+        /// The one line for the community after its own lines: how many files went, how many were held and how many failed,
+        /// or that it holds no file of an old name.
+        /// </summary>
+        public string SummaryLine()
         {
-            return lines.Count == 0 && inUse.Count == 0 && failed.Count == 0
-                ? "OLD      " + Folder + " holds no file under a name this tool no longer writes"
-                : null;
+            if (lines.Count == 0 && inUse.Count == 0 && failed.Count == 0)
+            {
+                return "OLD      " + Folder + " holds no file under a name this tool no longer writes";
+            }
+
+            return "OLD      " + Folder + ", " + deletedCount.ToString(CultureInfo.InvariantCulture)
+                + (deletedCount == 1 ? " file" : " files") + " under a name this tool no longer writes deleted"
+                + (inUse.Count == 0 ? string.Empty : ", " + inUse.Count.ToString(CultureInfo.InvariantCulture) + " held open by another program")
+                + (failed.Count == 0 ? string.Empty : ", " + failed.Count.ToString(CultureInfo.InvariantCulture) + " that would not go, each said");
         }
 
-        internal void Delete(string path)
+        internal void Delete(string path, string kind)
         {
             try
             {
                 File.Delete(path);
-                DeletedCount++;
-                lines.Add("OLD      deleted " + path + ", a name this tool no longer writes");
+                deletedCount++;
+                lines.Add("OLD      deleted " + path + ", " + kind + ", a name this tool no longer writes");
             }
             catch (Exception error)
             {
@@ -403,6 +463,10 @@ namespace Federator.Core.Communities
             }
         }
 
+        internal void NotInside(string folder)
+        {
+            lines.Add("OLD      " + folder + " is not inside " + Folder + ", so nothing in it is read");
+        }
         internal void Rename(string from, string to)
         {
             try

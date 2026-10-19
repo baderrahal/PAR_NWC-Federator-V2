@@ -553,9 +553,12 @@ namespace Federator.Addin.Ui
                 // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
                 WriteTheDisciplineReports(run, order.Units, results, whys);
                 WriteTheClashCountChecks(run, order.Units, results);
-                leftOpen.AddRange(log.FilesInUse);
+                IList<string> own = log.FilesInUse;
+                leftOpen.AddRange(own);
                 log.RunFinished();
-                log.WriteJoinedResult(PackageRunWords.JoinedResult(order.Units, results, whys, tally));
+
+                // Attempt 2, the reviewer's N4: the window's own beside the groups' in the joined RESULT.
+                log.WriteJoinedResult(PackageRunWords.JoinedResult(order.Units, results, whys, tally, own));
             }
             catch (Exception error)
             {

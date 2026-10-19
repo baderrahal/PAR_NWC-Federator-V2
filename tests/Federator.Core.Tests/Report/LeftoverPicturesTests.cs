@@ -240,7 +240,8 @@ namespace Federator.Core.Tests
 
             ClashReport second = Report(excel, 2);
             WritePictures(second, 2);
-            new WorkbookWriter().Write(second, excel);
+            WorkbookWriter writer = new WorkbookWriter();
+            writer.Write(second, excel);
 
             Assert.That(Directory.GetFiles(pictures).Select(Path.GetFileName), Is.EquivalentTo(new[] { "cd000001.jpg", "cd000002.jpg" }),
                 "the earlier run's picture, the logo and the note went with the folder");
@@ -255,10 +256,10 @@ namespace Federator.Core.Tests
             Assert.That(Directory.GetFiles(log, "*.xlsx"), Is.Empty, "no Excel in the Log folder");
 
             // Every link of the Excel resolves from the folder it sits in, the folder and the picture with nothing going up.
-            WorkbookLinks links = WorkbookLinks.Check(excel);
+            WorkbookLinks links = WorkbookLinks.Check(excel, writer.PicturesLinked, writer.LinksWritten);
 
-            Assert.That(links.Checked, Is.EqualTo(4), "a click link and a cell link for each of the two pictures");
-            Assert.That(links.Missing.Count, Is.EqualTo(0));
+            Assert.That(links.Read, Is.EqualTo(4), "a click link and a cell link for each of the two pictures");
+            Assert.That(links.MissingCount, Is.EqualTo(0));
 
             foreach (string link in ClickLinks(excel))
             {

@@ -729,25 +729,29 @@ namespace Federator.Addin.Ui
                 }
 
                 // F243 point 7. The old names, once, before any group starts: each group of the plan of every package of the
-                // run by its output name, under its community.
+                // run by its NWF name and its workbook name, and each package's own report folder, under its community.
                 Dictionary<string, List<string>> groupsOfEachCommunity = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+                Dictionary<string, Dictionary<string, string>> foldersOfEachCommunity =
+                    new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
                 List<Package> inTheRun = new List<Package>(runnable);
                 inTheRun.AddRange(run.NotBuiltOnly);
 
                 foreach (Package package in inTheRun)
                 {
                     PackagePlan plan;
+                    FoldersOf(foldersOfEachCommunity, package.Community)[package.RelativePath] = PackageOutput.FolderFor(report, package);
 
                     if (run.Plans.TryGetValue(package.RelativePath, out plan))
                     {
                         foreach (PackageGroup group in plan.Groups)
                         {
                             GroupsOf(groupsOfEachCommunity, package.Community).Add(group.NwfName);
+                            GroupsOf(groupsOfEachCommunity, package.Community).Add(group.WorkbookName);
                         }
                     }
                 }
 
-                CleanTheOldReportFiles(report, groupsOfEachCommunity, run.Disciplines);
+                CleanTheOldReportFiles(report, foldersOfEachCommunity, groupsOfEachCommunity, run.Disciplines);
                 RunPackagesInFreshStarts(PackageRunOrder.NwcPage, packageTree.Parent, run, units);
                 return;
             }
@@ -1089,20 +1093,39 @@ namespace Federator.Addin.Ui
             return names;
         }
 
+        /// <summary>The report folder of each package of one community by its path from the parent, made the first time it is asked for.</summary>
+        private static Dictionary<string, string> FoldersOf(Dictionary<string, Dictionary<string, string>> foldersOfEachCommunity, string community)
+        {
+            Dictionary<string, string> folders;
+
+            if (!foldersOfEachCommunity.TryGetValue(community, out folders))
+            {
+                folders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foldersOfEachCommunity.Add(community, folders);
+            }
+
+            return folders;
+        }
+
         /// <summary>
         /// F243, Bader's order of 19 Oct 2026 point 7. The files earlier runs wrote under names this tool no longer writes,
         /// deleted once by the window that starts the run, before any group starts, inside Report\COMMUNITY\ of each community
-        /// of the run and nowhere else, Core's OldReportFiles. Each file on its own line, one held open said in FileInUse's
-        /// words and kept for the end message, any other failure logged. Nothing here stops the run.
+        /// of the run and nowhere else, each package's own report folder among it, Core's OldReportFiles. Each file on its own
+        /// line with its kind, one held open said in FileInUse's words and kept for the end message, any other failure logged,
+        /// and one line a community with the count. Nothing here stops the run.
         /// </summary>
-        private void CleanTheOldReportFiles(string report, Dictionary<string, List<string>> groupsOfEachCommunity, DisciplineReportSettings disciplines)
+        private void CleanTheOldReportFiles(
+            string report, Dictionary<string, Dictionary<string, string>> foldersOfEachCommunity,
+            Dictionary<string, List<string>> groupsOfEachCommunity, DisciplineReportSettings disciplines)
         {
-            foreach (KeyValuePair<string, List<string>> community in groupsOfEachCommunity)
+            foreach (KeyValuePair<string, Dictionary<string, string>> community in foldersOfEachCommunity)
             {
                 try
                 {
+                    List<string> groups;
+                    groupsOfEachCommunity.TryGetValue(community.Key, out groups);
                     OldReportFilesOutcome cleaned = OldReportFiles.Clean(
-                        PackageOutput.CommunityFolderFor(report, community.Key), community.Key, community.Value, disciplines);
+                        PackageOutput.CommunityFolderFor(report, community.Key), community.Key, community.Value, groups, disciplines);
 
                     foreach (string line in cleaned.Lines)
                     {
@@ -1120,12 +1143,7 @@ namespace Federator.Addin.Ui
                             "kept going, the file is left where it is");
                     }
 
-                    string nothing = cleaned.NothingLine();
-
-                    if (nothing != null)
-                    {
-                        log.Line(nothing);
-                    }
+                    log.Line(cleaned.SummaryLine());
                 }
                 catch (Exception error)
                 {
@@ -1487,15 +1505,19 @@ namespace Federator.Addin.Ui
             {
                 List<PackageRunUnit> units = new List<PackageRunUnit>();
                 Dictionary<string, List<string>> groupsOfEachCommunity = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+                Dictionary<string, Dictionary<string, string>> foldersOfEachCommunity =
+                    new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
                 foreach (PackageNwf nwf in inPackages)
                 {
                     units.Add(new PackageRunUnit(nwf.Package.RelativePath, nwf.NwfPath, Path.GetFileNameWithoutExtension(nwf.NwfPath)));
                     GroupsOf(groupsOfEachCommunity, nwf.Package.Community).Add(Path.GetFileNameWithoutExtension(nwf.NwfPath));
+                    FoldersOf(foldersOfEachCommunity, nwf.Package.Community)[nwf.Package.RelativePath] = PackageOutput.FolderFor(report, nwf.Package);
                 }
 
-                // F243 point 7. The old names, once, before any NWF opens: each NWF of the run by its name, under its community.
-                CleanTheOldReportFiles(report, groupsOfEachCommunity, run.Disciplines);
+                // F243 point 7. The old names, once, before any NWF opens: each NWF of the run by its name, the name its group's
+                // workbook and backup carried on this page, and each package's own report folder, under its community.
+                CleanTheOldReportFiles(report, foldersOfEachCommunity, groupsOfEachCommunity, run.Disciplines);
 
                 RunPackagesInFreshStarts(PackageRunOrder.NwfPage, report, run, units);
                 return;

@@ -1242,27 +1242,33 @@ NEVER DATED, and the add-in calls them.
   workbook step and the coverage alike. `NameTheReportsSoNothingIsOverwritten`, `FederationJob.NameTheReports` and
   `ClashReportName` are gone, so the Excel, the page, the pictures folder and the XML carry the one `WorkbookName`. The XML
   stays in the Log folder under that name. No internal workbook and no INTERNAL step
-- THE PICTURES FOLDER GOES ONCE A GROUP, `DeleteThePicturesFolderOnce`, `JobOutcome.PicturesFolderDeleted`: before the
-  deferred pictures in `TakeThePicturesOfTheGroup`, before `runner.Run` where the hand button takes them inside the clash
-  step, and in `WriteWorkbook`, before the Excel and the page, where no picture was taken this run and the Excel or the page is
-  wanted. A group that never reaches a clash report deletes nothing. The leftover removal of F177 still follows the pictures
-- THE LINKS ARE READ BACK after the WORKBOOK CHECK, `WorkbookLinks.Check`, one XLSX links line, and a missing link is the
+- THE PICTURES FOLDER GOES ONCE A GROUP, `DeleteThePicturesFolderOnce`, `JobOutcome.PicturesFolderTried`: before the
+  deferred pictures in `TakeThePicturesOfTheGroup`, and in `WriteWorkbook`, before the Excel and the page, where no picture
+  was taken this run and the Excel or the page is wanted. The hand button's Run tests writes no report and deletes nothing,
+  attempt 2 on the reviewer's N2. Each file held open is named on its own FileInUse line after the folder's line. Where a
+  picture of an earlier run went, `JobOutcome.EarlierPicturesWent`, and the workbook or the page was then not written by
+  this run, `SayTheEarlierReportsLeft` names the earlier file left at its path and leaves it as it is. A group that never
+  reaches a clash report deletes nothing. The leftover removal of F177 still follows the pictures
+- THE LINKS ARE READ BACK after the WORKBOOK CHECK, `WorkbookLinks.Check` held to `WorkbookWriter.PicturesLinked` and
+  `LinksWritten`, one XLSX links line, one .tsv row `missing link` for each link reaching no file, and a missing link is the
   group's error through `outcome.AddError(links.Error())`, so the group is not DONE. A workbook that would not read back is
-  said UNKNOWN and fails nothing
-- A FILE OPEN IN ANOTHER PROGRAM, read by `FileInUse.IsInUse` off the exception of the write, is never written under another
+  said UNKNOWN and fails nothing- A FILE OPEN IN ANOTHER PROGRAM, read by `FileInUse.IsInUse` off the exception of the write, is never written under another
   name: `RunLog.NotWrittenWhileOpen` says Bader's line and keeps it, nothing is listed as written, no error goes on the group,
   and the run goes on. That holds for the clash Excel, which the coverage then reads as not written, the page, the XML, the
-  list of models off the shared coordinates, the pictures folder, the NWF's backup, whose refresh then stops as for any
-  backup not made, the discipline workbooks, the clash count check and the old files of the cleanup. The NWF and the NWD are
+  list of models off the shared coordinates, each held file of the pictures folder, the NWF's backup, whose refresh then stops
+  as for any backup not made, the line naming the NWF where the NWF is the file held, read by opening it for reading before
+  the copy, the discipline workbooks, the clash count check and the old files of the cleanup. The NWF and the NWD are
   written by Navisworks and keep their behaviour
 - THE END MESSAGE: RESULT writes every kept line, so a group's own Navisworks hands them back in its result's RESULT lines.
   `JoinTheResults` reads the window's own, `log.FilesInUse`, before the joined RESULT closes the account, finds each group's
-  with `FileInUse.LineIn`, and shows them under the run's warning, `FileInUse.EndMessage`, through `Warn`. The open document
-  run shows its own the same way once its RESULT is written
+  with `FileInUse.LineIn`, and shows them under the run's warning, `FileInUse.EndMessage`, through `Warn`. Its own go in the
+  joined RESULT too, `PackageRunWords.JoinedResult`, beside the groups'. The open document run shows its own the same way once
+  its RESULT is written
 - THE OLD NAMES ARE CLEANED ONCE, `CleanTheOldReportFiles`, by the window that starts the run, `child == null`, after the
   confirm and the pack choice and before `RunPackagesInFreshStarts`, on both pages: on the NWC page each group of the plan of
-  every package of the run, the runnable ones and the ones whose every group is of one discipline, by its NWF name, on the NWF
-  page each NWF of the run by its name, each under its community, `OldReportFiles.Clean` in Report\COMMUNITY\ and nowhere
-  else. Each line logged, each file held open said in FileInUse's words, each other failure logged, and the run goes on
-- THE COORDINATES LIST is `OffCoordinatesAcrossTheRun.ListName` in each Log folder, overwritten, and the discipline workbooks
+  every package of the run, the runnable ones and the ones whose every group is of one discipline, by its NWF name and its
+  workbook name, on the NWF page each NWF of the run by its name, and each package's own report folder,
+  `PackageOutput.FolderFor`, each under its community, `OldReportFiles.Clean` in Report\COMMUNITY\ and nowhere else. Each
+  line logged with its kind, each file held open said in FileInUse's words, each other failure logged, one count line a
+  community, and the run goes on- THE COORDINATES LIST is `OffCoordinatesAcrossTheRun.ListName` in each Log folder, overwritten, and the discipline workbooks
   and the clash count check are written under their one name, the folder and Core's name joined

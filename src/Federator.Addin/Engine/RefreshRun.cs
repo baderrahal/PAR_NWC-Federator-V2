@@ -55,11 +55,13 @@ namespace Federator.Addin.Engine
         /// of 19 Oct 2026, ONE copy under the NWF's own name, overwritten each time, the default until he answers Q217.
         /// Returns the path, or null with why on the log, and a backup that could not be made stops the refresh, since
         /// nothing may change an NWF that has no copy. A backup another program holds open is not written under another
-        /// name: the one line of FileInUse is said and the refresh of this NWF stops as for any backup not made.
+        /// name: the one line of FileInUse is said and the refresh of this NWF stops as for any backup not made. Where the
+        /// NWF itself is the file held, the line names the NWF, read by opening it before the copy, attempt 2.
         /// </summary>
         internal string BackupTheNwf(string nwfPath, string logFolder)
         {
             string target = null;
+            string held = null;
 
             try
             {
@@ -79,6 +81,16 @@ namespace Federator.Addin.Engine
 
                 target = NwfBackupName.PathFor(nwfPath, folder);
                 Directory.CreateDirectory(folder);
+
+                // Attempt 2, the breaker's W6. The NWF is opened for reading first, with the sharing the copy reads it with,
+                // so a held NWF is the file named, and only a refusal after it is the backup's.
+                held = nwfPath;
+
+                using (new FileStream(nwfPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                }
+
+                held = target;
                 File.Copy(nwfPath, target, true);
 
                 long size = new FileInfo(target).Length;
@@ -88,9 +100,9 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                if (target != null && FileInUse.IsInUse(error))
+                if (held != null && FileInUse.IsInUse(error))
                 {
-                    log.NotWrittenWhileOpen(target);
+                    log.NotWrittenWhileOpen(held);
                     return null;
                 }
 

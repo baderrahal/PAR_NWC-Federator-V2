@@ -126,6 +126,8 @@ namespace Federator.Core.Report
 
             pictures.Clear();
             PicturesLinked = 0;
+            LinksWritten = 0;
+            cellLinks = 0;
             writtenTo = path;
 
             using (XLWorkbook workbook = new XLWorkbook())
@@ -160,6 +162,7 @@ namespace Federator.Core.Report
             // F152. ClosedXML writes no linked picture, so they go in after the save, by
             // editing the package, in the form of the client's own file.
             PicturesLinked = LinkedPictures.AddTo(path, pictures);
+            LinksWritten = cellLinks + PicturesLinked;
 
             return path;
         }
@@ -169,6 +172,15 @@ namespace Federator.Core.Report
         /// F152. Each shows only while the _files folder beside the workbook stays where it was written.
         /// </summary>
         public int PicturesLinked { get; private set; }
+
+        /// <summary>
+        /// How many links the last Write made, the Image cell's link of each clash row with one and the click link of each
+        /// linked picture, F243 attempt 2, the count the read back of the workbook's links is held to, WorkbookLinks.Check.
+        /// </summary>
+        public int LinksWritten { get; private set; }
+
+        /// <summary>The Image cell links the workbook being written holds.</summary>
+        private int cellLinks;
 
         /// <summary>The clash rows of the workbook being written that carry a picture, each with its sheet row.</summary>
         private readonly List<LinkedPicture> pictures = new List<LinkedPicture>();
@@ -549,8 +561,9 @@ namespace Federator.Core.Report
             // nor a picture, so the cell carries only the link.
             if (!string.IsNullOrEmpty(clash.ImageLink))
             {
-                // F170. Relative to the folder of the workbook, which goes up where the pictures sit in the
-                // Clash report folder beside the Log folder. The row's own link is relative to the page.
+                // F170. Relative to the folder of the workbook, which since F243 sits beside the pictures in the
+                // Clash report folder, so the link is the pictures folder and the picture. The row's own link is
+                // relative to the page.
                 string link = clash.ImageLink;
 
                 if (!string.IsNullOrEmpty(clash.ImagePath) && !string.IsNullOrEmpty(writtenTo))
@@ -562,6 +575,7 @@ namespace Federator.Core.Report
                 // it as an internal address, which makes the cell jump to a sheet that
                 // does not exist instead of opening the picture.
                 cell.SetHyperlink(new XLHyperlink(new Uri(link, UriKind.RelativeOrAbsolute)));
+                cellLinks++;
             }
 
             if (!string.IsNullOrEmpty(clash.ImagePath))

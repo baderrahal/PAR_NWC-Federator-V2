@@ -244,7 +244,13 @@ namespace Federator.Addin.Engine
         /// Whether this group's pictures folder in the Clash report folder was dealt with before its clash report, F243, Bader's
         /// order of 19 Oct 2026 point 2, so it is deleted once a group whichever step reaches it first.
         /// </summary>
-        public bool PicturesFolderDeleted { get; set; }
+        public bool PicturesFolderTried { get; set; }
+
+        /// <summary>
+        /// Whether a picture of an earlier run went with that folder, so a page or a workbook of that run this run did not write
+        /// now links this run's pictures and is named, F243 attempt 2.
+        /// </summary>
+        public bool EarlierPicturesWent { get; set; }
 
         /// <summary>
         /// The tests the clash step planned for this group, F127, the clash matrix's or the ones saved in the

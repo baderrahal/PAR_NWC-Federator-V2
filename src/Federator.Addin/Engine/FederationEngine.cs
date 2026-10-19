@@ -1760,6 +1760,7 @@ namespace Federator.Addin.Engine
             // After the clash step, the viewpoints and the pictures, so the workbook links each picture the pass
             // wrote and the three outputs agree with the NWF and the NWD, which were saved from the same rows.
             WriteWorkbook(job, outcome);
+            SayTheEarlierReportsLeft(job, outcome);
             ended.Add(RunSteps.Workbook);
 
             // F127. After the clash workbook, because the count check reads it back, and while
@@ -3743,14 +3744,6 @@ namespace Federator.Addin.Engine
                     log.WriteSkipped("IMAGES", outputs.ImagesSkipReason);
                 }
 
-                // F243, Bader's order of 19 Oct 2026 point 2. Where the pictures are taken inside the run, the hand button's
-                // way, the group's pictures folder goes before the first of them. The group's own way takes them after the
-                // NWD, TakeThePicturesOfTheGroup, and deletes it there.
-                if (runner.Images != null && !deferPictures)
-                {
-                    DeleteThePicturesFolderOnce(job, outcome);
-                }
-
                 ClashRunOutcome clash = runner.Run(plan);
 
                 // F127. The plan the runner ran, each mirror under its run name and each saved test
@@ -4004,31 +3997,32 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// F243, Bader's order of 19 Oct 2026 point 2: "delete the old pictures". The group's whole NAME_files folder in the
         /// Clash report folder is deleted once, before the first file of this run's clash report lands in it: before the
-        /// pictures where they are taken, and before the workbook and the page where they are not. One line names the folder
-        /// and its picture count, Core's PicturesFolder. A folder another program holds a file of is the line of FileInUse and
-        /// the run goes on, and any other failure is logged and the run goes on.
+        /// deferred pictures, and before the workbook and the page where no picture was taken. Only the routes that write the
+        /// clash report call it, never the hand button's Run tests, which writes none, attempt 2 on the reviewer's N2. One
+        /// line names the folder, its picture count and every other file and folder that went, Core's PicturesFolder. Each
+        /// file another program holds is the line of FileInUse naming it, the rest still go and the run goes on, and any other
+        /// failure is logged and the run goes on.
         /// </summary>
         private void DeleteThePicturesFolderOnce(FederationJob job, JobOutcome outcome)
         {
-            if (outcome.PicturesFolderDeleted || string.IsNullOrEmpty(reportFolder))
+            if (outcome.PicturesFolderTried || string.IsNullOrEmpty(reportFolder))
             {
                 return;
             }
 
-            outcome.PicturesFolderDeleted = true;
+            outcome.PicturesFolderTried = true;
             string folder = ImageNaming.FolderFor(ThePagePath(job));
 
             try
             {
                 PicturesFolder deleted = PicturesFolder.Delete(folder);
-
-                if (deleted.InUse)
-                {
-                    log.NotWrittenWhileOpen(folder);
-                    return;
-                }
-
+                outcome.EarlierPicturesWent = deleted.AnyPictureWent;
                 log.Line(deleted.Line());
+
+                foreach (string held in deleted.Held)
+                {
+                    log.NotWrittenWhileOpen(held);
+                }
             }
             catch (Exception error)
             {
@@ -4395,6 +4389,32 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// F243 attempt 2, the breaker's S3 and W5. Where an earlier run's pictures went before this run's clash report and the
+        /// workbook or the page was then not written by this run, no stylesheet, the units refused, a write that threw, a file
+        /// held open or not wanted, the earlier file left at its path is named with what its links now reach. It is not touched.
+        /// </summary>
+        private void SayTheEarlierReportsLeft(FederationJob job, JobOutcome outcome)
+        {
+            if (!outcome.EarlierPicturesWent || string.IsNullOrEmpty(reportFolder))
+            {
+                return;
+            }
+
+            string workbook = ThePagePath(job);
+            string page = HtmlTabularWriter.PathFor(workbook);
+
+            if (!outcome.WorkbookOnDisk && File.Exists(workbook))
+            {
+                log.Line(PicturesFolder.EarlierFileLine(workbook));
+            }
+
+            if (!outcome.HtmlOnDisk && File.Exists(page))
+            {
+                log.Line(PicturesFolder.EarlierFileLine(page));
+            }
+        }
+
+        /// <summary>
         /// Writes the workbook, and the XML beside it when that is switched on. Both are
         /// built from the same results in memory. Neither reads the other, so a fault in
         /// one cannot corrupt the other.
@@ -4467,7 +4487,6 @@ namespace Federator.Addin.Engine
             }
 
             if (!outputs.WriteWorkbook)
-
             {
                 log.WriteSkipped(RunEvents.WorkbookKind, OutputPlan.NotWanted);
                 outcome.WorkbookNotReadBecause = "no clash workbook was written, " + OutputPlan.NotWanted;
@@ -4514,6 +4533,8 @@ namespace Federator.Addin.Engine
             Say("Writing the workbook for " + job.Building);
             log.WriteAttempted(RunEvents.WorkbookKind, path);
             bool threw = false;
+            int linked = 0;
+            int expected = 0;
 
             try
             {
@@ -4521,6 +4542,8 @@ namespace Federator.Addin.Engine
                 // that they show only while the _files folder stays where it was written.
                 WorkbookWriter writer = new WorkbookWriter();
                 writer.Write(report, path);
+                linked = writer.PicturesLinked;
+                expected = writer.LinksWritten;
                 log.Line(LinkedPictures.Line(writer.PicturesLinked, ImageNaming.FolderFor(path)));
             }
             catch (Exception error)
@@ -4579,8 +4602,15 @@ namespace Federator.Addin.Engine
 
             // F243, Bader's order of 19 Oct 2026 point 3. Every link read back off the file and looked for on the disk, the
             // count checked and the count missing said, and a link that reaches no picture is the group's error.
-            WorkbookLinks links = WorkbookLinks.Check(path);
+            // Attempt 2, the breaker's S5: held to the links the writer made, each missing one a .tsv row.
+            WorkbookLinks links = WorkbookLinks.Check(path, linked, expected);
             log.Line(links.Line());
+
+            foreach (string missing in links.Missing)
+            {
+                log.Row("missing link", job.Building, string.Empty, missing);
+            }
+
             outcome.AddError(links.Error());
         }
 

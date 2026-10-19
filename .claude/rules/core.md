@@ -1295,18 +1295,27 @@ and 6 does not read as broken.
   order of 19 Oct 2026, so is every output. The Excel, the HTML and their NAME_files folder of pictures sit in the
   Clash report folder under the group's one name, `FederationJob.WorkbookName`. A file the tool writes under a name
   already there is OVERWRITTEN. THE GROUP'S NAME_files FOLDER IS DELETED WHOLE before its clash report is written,
-  `PicturesFolder.Delete`, F243 point 2: only the folder handed in, its name ending _files, one line naming it and
-  its count of clash pictures, files named cd and digits, and a folder another program holds a file of is said
-  InUse and never taken for deleted. THE EXCEL'S LINKS ARE READ BACK, `WorkbookLinks.Check`, F243 point 3: every
-  relationship of the hyperlink type in every .rels part of the package, resolved from the Excel's folder, the
-  count checked and the count missing on one line, the first missing named, and `Error` the group's error where
-  one is missing. A file the tool cannot write over because another program holds it is read off the exception,
+  `PicturesFolder.Delete`, F243 point 2: only the folder handed in, its name ending _files, one line naming it, its
+  count of clash pictures, files named cd and digits, and apart the logo and by name every other file and folder that
+  went. ITS FILES GO ONE BY ONE, so a file another program holds is named by its full path, `Held`, the rest still go,
+  the pictures already deleted are counted and the folder is said not deleted whole. A page or a workbook of an earlier
+  run left at its path after the folder went is named by `PicturesFolder.EarlierFileLine` and never touched. THE
+  EXCEL'S LINKS ARE READ BACK, `WorkbookLinks.Check`, F243 point 3: every relationship of the hyperlink type in every
+  .rels part of the package, resolved from the Excel's folder, held to the links the writer made,
+  `WorkbookWriter.LinksWritten`, the cell link and the click link of each picture, so a link expected and not read is
+  missing as much as one reaching no file. One line says the pictures linked, the links expected, read and missing,
+  the first missing named, and `Error` is the group's error where one is missing. A file the tool cannot write over because another program holds it is read off the exception,
   an IOException carrying the Windows sharing or lock violation, 32 or 33, through any inner exception,
   `FileInUse.IsInUse`, said in Bader's words, `FileInUse.Line`, "Close PATH and run the report again", never
   written under another name, kept by `RunLog.NotWrittenWhileOpen` for RESULT and the run window's end message,
-  `FileInUse.EndMessage`, and found again in a group's RESULT lines by `FileInUse.LineIn`. The names earlier
-  runs wrote that the tool no longer writes are matched exactly in ONE class, `OldReportFiles`, F243 point 7,
-  each pattern with a test whose near miss stays. LEFTOVER PICTURES ARE REMOVED, `LeftoverPictures.Remove`, once the
+  `FileInUse.EndMessage`, and found again in a group's RESULT lines by `FileInUse.LineIn`, RESULT writing them by
+  `FileInUse.ResultLines`, a group's in its own RESULT and the window's own in the joined RESULT,
+  `PackageRunWords.JoinedResult`. The names earlier runs wrote that the tool no longer writes are matched exactly in
+  ONE class, `OldReportFiles`, F243 point 7, each pattern with a test whose near miss stays: the dated clash count
+  check at the community's own folder, and in the report folder of each package of the community in the run its Log,
+  its Backup and its dated discipline workbooks by the package's own stem, a group read by its NWF name and its
+  workbook name, a package folder not inside the community's never read, each file deleted logged with its kind and
+  one count line a community, `SummaryLine`. LEFTOVER PICTURES ARE REMOVED, `LeftoverPictures.Remove`, once the
   picture step has run to its end: from the group's NAME_files folder, TOP LEVEL ONLY, every file named cd and
   six or more digits and .jpg, lower case as the tool writes it, that this run did not write, and nothing
   else. Never the logo, another file, a folder, a link, or anything outside a folder that ends _files. Nothing

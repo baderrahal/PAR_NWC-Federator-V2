@@ -54,9 +54,19 @@ namespace Federator.Core.Tests
             return path;
         }
 
+        /// <summary>The community's own package, C06 itself, and a package below it, each with its report folder.</summary>
+        private Dictionary<string, string> Packages()
+        {
+            return new Dictionary<string, string>
+            {
+                { Community, community },
+                { Path.Combine(Community, "Infrastructure"), Path.Combine(community, "Infrastructure") }
+            };
+        }
+
         private OldReportFilesOutcome Clean()
         {
-            return OldReportFiles.Clean(community, Community, new[] { Group, Other }, new DisciplineReportSettings());
+            return OldReportFiles.Clean(community, Community, Packages(), new[] { Group, Other }, new DisciplineReportSettings());
         }
 
         private static void Gone(params string[] paths)
@@ -91,7 +101,9 @@ namespace Federator.Core.Tests
 
             Gone(old);
             Kept(near);
-            Assert.That(outcome.Lines, Does.Contain("OLD      deleted " + old + ", a name this tool no longer writes"));
+            Assert.That(outcome.Lines, Does.Contain("OLD      deleted " + old
+                + ", the clash workbook written in the Log folder before it moved to the Clash report folder, a name this tool no longer writes"));
+            Assert.That(outcome.SummaryLine(), Is.EqualTo("OLD      " + community + ", 1 file under a name this tool no longer writes deleted"));
         }
 
         [Test]
@@ -244,21 +256,67 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Lines, Does.Contain("OLD      kept " + newest + " as it is, the newest dated backup, because " + one + " is already there"));
         }
 
+        /// <summary>
+        /// F243 attempt 2, the breaker's S1. A package below the community writes its Log, its Backup and its discipline
+        /// workbooks in its own report folder, Report\C06\Infrastructure, so that folder is cleaned by its own names: the
+        /// discipline workbook's stem is the package's path in words, and the clash count check is the community's alone.
+        /// </summary>
         [Test]
-        public void APackageFolderBelowTheCommunityIsNeverRead()
+        public void APackageFolderBelowTheCommunityIsCleanedByItsOwnNames()
         {
             string package = Path.Combine(community, "Infrastructure");
-            string[] below =
+            string packageBackup = Path.Combine(package, NwfBackupName.FolderName);
+            string[] old =
             {
                 Put(Path.Combine(package, ReportPaths.Subfolder), Group + ".xlsx"),
                 Put(Path.Combine(package, ReportPaths.Subfolder), Group + " Internal.xlsx"),
-                Put(Path.Combine(package, NwfBackupName.FolderName), Group + " 2026-10-19 062133.nwf"),
                 Put(package, "C06 Infrastructure AR checks 2026-10-19 064154.xlsx")
+            };
+            string dated = Put(packageBackup, Group + " 2026-10-19 062133.nwf");
+            string[] near =
+            {
+                Put(package, "C06 AR checks 2026-10-19 064154.xlsx"),
+                Put(package, "C06 clash count check 2026-10-19 064158.xlsx"),
+                Put(Path.Combine(community, "Other", ReportPaths.Subfolder), Group + ".xlsx")
             };
 
             Clean();
 
-            Kept(below);
+            Gone(old);
+            Gone(dated);
+            Kept(near);
+            Assert.That(File.Exists(Path.Combine(packageBackup, Group + ".nwf")), Is.True, "its newest dated backup under the one name");
+        }
+
+        /// <summary>The break: a package folder handed in that is not inside the community is never read and is said.</summary>
+        [Test]
+        public void AFolderOutsideTheCommunityIsNeverRead()
+        {
+            string outside = Path.Combine(root, "C07");
+            string[] there =
+            {
+                Put(Path.Combine(outside, ReportPaths.Subfolder), Group + ".xlsx"),
+                Put(outside, "C07 AR checks 2026-10-19 064154.xlsx")
+            };
+
+            OldReportFilesOutcome outcome = OldReportFiles.Clean(community, Community,
+                new Dictionary<string, string> { { "C07", outside } }, new[] { Group }, new DisciplineReportSettings());
+
+            Kept(there);
+            Assert.That(outcome.Lines, Does.Contain("OLD      " + outside + " is not inside " + community + ", so nothing in it is read"));
+        }
+
+        /// <summary>F243 attempt 2, the reviewer's N5. A group's workbook name and its NWF name are both read, each once.</summary>
+        [Test]
+        public void AWorkbookNameAndAnNwfNameOfOneGroupAreBothRead()
+        {
+            string byWorkbook = Put(log, "BC workbook 2026-10-19 062133.xlsx");
+            string byNwf = Put(backup, Group + " 2026-10-19 062133.nwf");
+
+            OldReportFiles.Clean(community, Community, Packages(), new[] { Group, "BC workbook", Group }, new DisciplineReportSettings());
+
+            Gone(byWorkbook, byNwf);
+            Assert.That(File.Exists(Path.Combine(backup, Group + ".nwf")), Is.True);
         }
 
         [Test]
@@ -269,10 +327,10 @@ namespace Federator.Core.Tests
             OldReportFilesOutcome outcome = Clean();
 
             Assert.That(outcome.Lines.Count, Is.EqualTo(0));
-            Assert.That(outcome.NothingLine(), Is.EqualTo("OLD      " + community + " holds no file under a name this tool no longer writes"));
+            Assert.That(outcome.SummaryLine(), Is.EqualTo("OLD      " + community + " holds no file under a name this tool no longer writes"));
 
             string absent = Path.Combine(root, "C99");
-            OldReportFilesOutcome none = OldReportFiles.Clean(absent, "C99", new[] { Group }, new DisciplineReportSettings());
+            OldReportFilesOutcome none = OldReportFiles.Clean(absent, "C99", new Dictionary<string, string> { { "C99", absent } }, new[] { Group }, new DisciplineReportSettings());
 
             Assert.That(none.Lines.Count, Is.EqualTo(0));
             Assert.That(Directory.Exists(absent), Is.False);
@@ -300,18 +358,26 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheKindIsReadOffThePathBelowTheCommunityAndNoneElsewhere()
+        public void TheKindIsReadOffThePathBelowThePackageFolderAndNoneElsewhere()
         {
             ICollection<string> groups = new[] { Group };
             DisciplineReportSettings settings = new DisciplineReportSettings();
+            string infrastructure = Path.Combine(Community, "Infrastructure");
 
-            Assert.That(OldReportFiles.KindOf(Path.Combine(ReportPaths.Subfolder, Group + ".xlsx"), Community, groups, settings), Is.Not.Null);
-            Assert.That(OldReportFiles.KindOf(Group + ".xlsx", Community, groups, settings), Is.Null, "the community's own folder");
+            Assert.That(OldReportFiles.KindOf(Path.Combine(ReportPaths.Subfolder, Group + ".xlsx"), Community, groups, settings),
+                Is.EqualTo("the clash workbook written in the Log folder before it moved to the Clash report folder"));
+            Assert.That(OldReportFiles.KindOf(Group + ".xlsx", Community, groups, settings), Is.Null, "the package's own folder");
             Assert.That(OldReportFiles.KindOf(Path.Combine(ReportPaths.Subfolder, Group + " internal.xlsx"), Community, groups, settings), Is.Null,
                 "matched as the tool wrote it, Ordinal");
             Assert.That(OldReportFiles.KindOf(Path.Combine("Clash report", Group + ".xlsx"), Community, groups, settings), Is.Null);
-            Assert.That(OldReportFiles.KindOf("C06 ST checks 2026-10-19 064156.xlsx", Community, groups, settings), Is.Not.Null);
+            Assert.That(OldReportFiles.KindOf("C06 ST checks 2026-10-19 064156.xlsx", Community, groups, settings),
+                Is.EqualTo("a dated discipline workbook"));
             Assert.That(OldReportFiles.KindOf("C06 ST checks 2026-10-19 064156.xlsx", "C07", groups, settings), Is.Null);
+            Assert.That(OldReportFiles.KindOf("C06 Infrastructure ST checks 2026-10-19 064156.xlsx", infrastructure, groups, settings),
+                Is.EqualTo("a dated discipline workbook"));
+            Assert.That(OldReportFiles.KindOf("C06 ST checks 2026-10-19 064156.xlsx", infrastructure, groups, settings), Is.Null);
+            Assert.That(OldReportFiles.KindOf("C06 clash count check 2026-10-19 064158.xlsx", Community, groups, settings), Is.Null,
+                "the clash count check is the community folder's alone, read apart");
             Assert.That(OldReportFiles.KindOf(null, Community, groups, settings), Is.Null);
         }
 

@@ -26,12 +26,14 @@ seven points. Steps 1 and 2 need no Navisworks.
    Look for: `OLD      deleted` lines for the four 1B06BC files of Log, the thirty dated lists of models, `C06 AR checks 2026-10-19
    064154.xlsx` and the other three dated discipline workbooks, `C06 clash count check 2026-10-19 064158.xlsx`, and one
    `OLD      renamed ...Backup\1104-PAR-1B06BC-ZZZ-BM-MOD-000001 2026-10-19 062133.nwf to ...Backup\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf`.
-   No line names a file of another group, since only 1B06BC is in this run.
+   Each deleted line names what the file was, such as `a dated internal workbook`. No line names a file of another group,
+   since only 1B06BC is in this run, and one line `OLD      ...\C06, N files under a name this tool no longer writes deleted`.
 7. Open the log of 1B06BC's own Navisworks, the one its GROUP block in RESULT names, and search for `IMAGES   deleted`.
-   Look for: `IMAGES   deleted ...\Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files with its 173 pictures, before this run's
-   clash report of the group is written`.
+   Look for: `IMAGES   deleted ...\Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files with its 173 pictures and logo.jpg,
+   before this run's clash report of the group is written`.
 8. In the same log search for `XLSX     links`.
-   Look for: `XLSX     links    N checked, 0 missing`, N twice the pictures the run linked, a cell link and a click link each.
+   Look for: `XLSX     links    P pictures linked, E links expected, E read, 0 missing`, E twice P, a cell link and a click
+   link a picture.
 9. Open f243\Report\C06\Clash report.
    Look for: `1104-PAR-1B06BC-ZZZ-BM-MOD-000001.xlsx` beside its `.html` and its `_files` folder, both written now, and no
    name with a date in it.

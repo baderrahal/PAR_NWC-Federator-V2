@@ -131,7 +131,7 @@ namespace Federator.Core.Tests
         {
             string body = BodyOf(Engine(), "private void WriteTheWorkbook(");
 
-            Assert.That(At(body, "WorkbookLinks.Check(path)"), Is.GreaterThan(At(body, "writer.Write(report, path)")));
+            Assert.That(At(body, "WorkbookLinks.Check(path, linked, expected)"), Is.GreaterThan(At(body, "writer.Write(report, path)")));
             Assert.That(body, Does.Contain("outcome.AddError(links.Error())"));
         }
 
@@ -150,7 +150,8 @@ namespace Federator.Core.Tests
             Assert.That(At(pictures, "DeleteThePicturesFolderOnce("), Is.LessThan(At(pictures, "runner.TakeTheDeferredPictures(clash)")));
             Assert.That(At(report, "DeleteThePicturesFolderOnce("), Is.LessThan(At(report, "WriteTheWorkbook(job, outcome, report, path)")));
             Assert.That(At(report, "DeleteThePicturesFolderOnce("), Is.LessThan(At(report, "WriteHtmlTabular(job, outcome, report)")));
-            Assert.That(At(clash, "DeleteThePicturesFolderOnce("), Is.LessThan(At(clash, "runner.Run(plan)")));
+            Assert.That(clash, Does.Not.Contain("DeleteThePicturesFolderOnce("),
+                "F243 attempt 2, the reviewer's N2: the hand button, the one route taking pictures inside the clash step, writes no report");
         }
 
         /// <summary>Point 6. Each file the tool's own code writes says a file left open in one line and is never written elsewhere.</summary>
@@ -189,6 +190,50 @@ namespace Federator.Core.Tests
             Assert.That(At(nwf, "CleanTheOldReportFiles("), Is.LessThan(At(nwf, "RunPackagesInFreshStarts(PackageRunOrder.NwfPage")));
             Assert.That(At(nwc, "if (child == null)"), Is.LessThan(At(nwc, "CleanTheOldReportFiles(")));
             Assert.That(At(nwf, "if (child == null)"), Is.LessThan(At(nwf, "CleanTheOldReportFiles(")));
+
+            // F243 attempt 2, the breaker's S1 and the reviewer's N5: each package's own report folder, and both names of a group.
+            Assert.That(nwc, Does.Contain("PackageOutput.FolderFor(report, package)"));
+            Assert.That(nwf, Does.Contain("PackageOutput.FolderFor(report, nwf.Package)"));
+            Assert.That(nwc, Does.Contain(".Add(group.WorkbookName)"));
+            Assert.That(nwc, Does.Contain(".Add(group.NwfName)"));
+        }
+
+        /// <summary>
+        /// F243 attempt 2, the breaker's W6. The backup says which file is held: the NWF is opened for reading before the copy,
+        /// so a held NWF is named and never the Backup path in its place.
+        /// </summary>
+        [Test]
+        public void TheBackupNamesTheFileThatIsHeld()
+        {
+            string body = BodyOf(Source("src", "Federator.Addin", "Engine", "RefreshRun.cs"), "internal string BackupTheNwf(");
+
+            Assert.That(At(body, "new FileStream(nwfPath, FileMode.Open, FileAccess.Read, FileShare.Read)"),
+                Is.LessThan(At(body, "File.Copy(nwfPath, target, true)")));
+            Assert.That(body, Does.Contain("log.NotWrittenWhileOpen(held)"));
+        }
+
+        /// <summary>
+        /// F243 attempt 2, the breaker's S3 and W5. Once the report step is over, a page or a workbook this run did not write and
+        /// an earlier run left at its path, after the pictures folder went, is named.
+        /// </summary>
+        [Test]
+        public void TheEarlierReportsLeftAreNamedOnceTheReportIsWritten()
+        {
+            string engine = Engine();
+            string tail = engine.Substring(engine.IndexOf("private void FinishTheGroup(", StringComparison.Ordinal));
+
+            Assert.That(At(tail, "SayTheEarlierReportsLeft(job, outcome)"), Is.GreaterThan(At(tail, "WriteWorkbook(job, outcome)")));
+            Assert.That(BodyOf(engine, "private void SayTheEarlierReportsLeft("), Does.Contain("PicturesFolder.EarlierFileLine("));
+        }
+
+        /// <summary>F243 attempt 2, the breaker's S5. The links are checked against the count the writer made, each missing one a row.</summary>
+        [Test]
+        public void TheLinksAreCheckedAgainstWhatTheWriterMade()
+        {
+            string body = BodyOf(Engine(), "private void WriteTheWorkbook(");
+
+            Assert.That(body, Does.Contain("WorkbookLinks.Check(path, linked, expected)"));
+            Assert.That(body, Does.Contain("foreach (string missing in links.Missing)"));
         }
 
         /// <summary>Point 6. The window that started the run puts each file left open in its end message, its own and each group's.</summary>
@@ -200,6 +245,8 @@ namespace Federator.Core.Tests
 
             Assert.That(join, Does.Contain("FileInUse.LineIn("));
             Assert.That(join, Does.Contain("FileInUse.EndMessage("));
+            Assert.That(join, Does.Contain("PackageRunWords.JoinedResult(order.Units, results, whys, tally, own)"),
+                "F243 attempt 2, the reviewer's N4: the window's own lines are in its joined RESULT");
             Assert.That(At(join, "log.FilesInUse"), Is.LessThan(At(join, "log.WriteJoinedResult(")), "read before RESULT closes the account");
         }
     }

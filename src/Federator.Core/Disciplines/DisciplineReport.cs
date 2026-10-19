@@ -246,8 +246,8 @@ namespace Federator.Core.Disciplines
     /// One discipline's workbook of one package, F209 and since F234 Bader's layout: one sheet named after the discipline,
     /// rows 1 to 3 the title, the run date and the reference discipline, the summary table, one blank row, then the issues
     /// table, its header row frozen and carrying the filter, a High row light red and a Medium row light amber. A file of that
-    /// name in the folder is never written over, ReportPaths.FreeFilePath. Read back as the file it is, never through the
-    /// object that wrote it.
+    /// name in the folder is overwritten since F243, Bader's order of 19 Oct 2026. Read back as the file it is, never through
+    /// the object that wrote it.
     /// </summary>
     public static class DisciplineWorkbook
     {
