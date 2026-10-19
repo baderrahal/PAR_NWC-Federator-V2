@@ -26,8 +26,8 @@ and nothing is fixed until a real run on real files shows it fixed.
   run.ps1 run that finished, as its folder under %LOCALAPPDATA%\NwcFederatorLoop\runs reads,
   such as STATE OPEN, 2026-10-07 11:40, last run 04/item2-C02. Then the counts by wave, and
   then, in his order of 19 Oct 2026 b, item 4: what is done, the open bugs that matter now, his
-  turn, each question with its number or none, and the next three steps in order. Where the
-  long history is goes in a line of what is done. A new session carries on
+  turn, each question with its number or none, and the next three steps in order. One line of
+  what is done says where the long history is. A new session carries on
   from it alone and opens steps\history only for a line it needs. A finished phase is never
   done again
 - The counts are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv and never

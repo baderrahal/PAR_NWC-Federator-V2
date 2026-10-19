@@ -10,7 +10,9 @@ paths:
 - steps\01_next.md is the plan. One section per fix, F followed by a number, with the
   order at the top. A fix that is done gets one DONE line with the date and what was
   proved, under its own section and never under the section after it. A fix absorbed
-  by another gets one line saying which fix closed it and when
+  by another gets one line saying which fix closed it and when. A closed section moves to
+  steps\history\01_next-closed.md at the end of a round, and the order at the top names the open
+  sections and the open areas that have none
 - Every pull request that changes an item's status, a DONE line among them, updates the
   item's row in steps\tracker.csv in the same pull request, Bader's rule of 5 Oct 2026,
   Q129: the status, the PR, the run that proved it and the date of the last change, then
@@ -40,9 +42,10 @@ paths:
   Bader's round of 19 Oct 2026 b, item 4, it also holds the closed items of steps\01_next.md,
   steps\fix-round.md, steps\03_bader_next.md and steps\lane-b.md, each in a file of the same
   name ending -closed, moved whole and in their order, nothing deleted, and the page as it
-  stood before a rewrite that dropped a part of it. A file of steps that passes about 100 KB
-  moves its closed items there at the end of a round, the way .claude\rules\tracker.md says
-  for an FR item, and its first lines say where they went.
+  stood before a rewrite that dropped a part of it. Each of those four files is kept under 100 KB:
+  at the end of a round its closed items move there, the way .claude\rules\tracker.md says for an
+  FR item, its first lines say where they went, and a file whose open items alone pass 100 KB is
+  put to Bader in the round's form.
   steps\history\log.md holds one entry per fix, newest at the top, in the shape of the
   F26 entry: What was done, What remains, Known bugs, What comes next. Every entry says
   what was proved here, with the Core test counts before and after, and what waits

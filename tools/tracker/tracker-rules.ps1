@@ -34,6 +34,8 @@ $TrackerStatuses = @("open", "in progress", "in review", "merged", "proven by a 
 # Where the closed FR items of steps\fix-round.md are moved, F242, Bader's round of 19 Oct 2026 b,
 # item 4, named as the check's lines name it, under steps. The check reads them as fix-round.md's own.
 $FixRoundClosedName = "history\fix-round-closed.md"
+# The statuses that make an FR item closed, so it may sit in that file.
+$TrackerClosedStatuses = @("merged", "proven by a run", "dropped")
 
 # steps\PROGRESS.md, the one page a session starts from, F139. It is at most this many lines, and
 # its counts sit between these two marker lines, made by make-tracker.ps1 and never typed.
@@ -435,7 +437,9 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath, [string] $ClosedPath =
     # The closed items moved out of fix-round.md are read as its own, after it, so a row of a
     # closed item still has its heading, its class and the questions it names. The waves stay in
     # fix-round.md and place the closed items as they always did.
+    $closedRead = $false
     if ($ClosedPath -and (Test-Path -LiteralPath $ClosedPath -PathType Leaf)) {
+        $closedRead = $true
         $closed = Read-TrackerText $ClosedPath $FixRoundClosedName
         if ($null -ne $closed.Fault) {
             $faults.Add($closed.Fault)
@@ -469,6 +473,10 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath, [string] $ClosedPath =
             if ($item.ClassLine -gt 0) { $faults.Add("${where}: the class '" + $row["class"] + "' is not '" + $item.Class + "', which " + $item.File + " line " + $item.ClassLine + " gives") }
             else { $faults.Add("${where}: the class '" + $row["class"] + "' is not 'UNKNOWN', since its item at " + $item.File + " line " + $item.Line + " has no Class line") }
         }
+        # An item moved to the closed file is a closed one, so a row still open has its item moved back.
+        if ($item.File -cne "fix-round.md" -and $TrackerClosedStatuses -cnotcontains $row["status"]) {
+            $faults.Add("${where}: its item is at " + $item.File + " line " + $item.Line + " and the row reads '" + $row["status"] + "', which is not closed, so the item moves back to fix-round.md")
+        }
         if (-not $waves.Read) { continue }
         foreach ($column in @("area", "wave")) {
             if ($waves.Of.ContainsKey($item.Id)) {
@@ -494,7 +502,7 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath, [string] $ClosedPath =
         foreach ($row in $Rows) {
             $id = $row["id"].Trim()
             if ($id.StartsWith("FR-", [StringComparison]::OrdinalIgnoreCase) -and -not $itemIds.Contains($id)) {
-                $faults.Add("tracker.csv line " + $row.Line + ", id " + $row["id"] + ": fix-round.md has no item headed with that id")
+                $faults.Add("tracker.csv line " + $row.Line + ", id " + $row["id"] + ": " + $(if ($closedRead) { "neither fix-round.md nor $FixRoundClosedName has an" } else { "fix-round.md has no" }) + " item headed with that id")
             }
         }
         if ($waves.Read -and $read.Faults.Count -eq 0 -and $waves.Faults.Count -eq 0) {

@@ -1008,87 +1008,6 @@ penetration rule, and the views of F114, since the viewpoints box opens ticked n
 penetration one is AR and ME rather than ST, and what neither can show. A live run is the
 final proof and never the loop.
 
-## Get the code
-
-1. Open GitHub Desktop
-2. Pick the repo PAR_NWC-Federator-V2
-3. Make sure the current branch is main
-4. Press Fetch origin
-5. Press Pull origin if it appears
-6. Open the repo folder in VS Code
-
-## Build and install
-
-7. In VS Code open a terminal
-8. Build:
-
-```
-dotnet build ParsonsNwcFederator.sln -c Release
-```
-
-9. If the build says a Navisworks DLL is missing, run with the install path:
-
-```
-dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\Navisworks Manage 2025"
-```
-
-10. Look for: `Build succeeded.` with `0 Error(s)` and `0 Warning(s)`. That was proved on this machine on 2026-09-19 by F69, which is the first build this repo has ever had, so anything else here is new and the whole output goes into the chat. `CreateCopy` and `CopyFrom` on `DocumentSelectionSets`, which F24 and F29 could not measure, are measured now and written into `docs\history\scan.md` 4d, so a build naming either of them is a real fault and no longer an open question
-11. Look for: the build stamp. If it reads `nogit` where an eight character commit hash belongs, git is not on the PATH for the terminal that ran the build. The build itself is fine and only the stamp is affected, and the title bar and the log will read `nogit` until you build from a terminal that has git on it
-
-### If the build fails on NuGet rather than on the code
-
-This is the failure Bader hit on 2026-09-19 before he ever reached a compiler error, and it has nothing to do with the code:
-
-```
-C:\Program Files\dotnet\sdk\10.0.400\NuGet.targets(198,5): error Cannot create a file when that file already exists.
-```
-
-`dotnet build` restores all three projects at once, they collide on the same package folder, and it is a known race in NuGet's restore task. The four steps below go cheapest first.
-
-12. Run the same build command again, exactly as it was:
-
-```
-dotnet build ParsonsNwcFederator.sln -c Release
-```
-
-13. Look for: the second build finishes with no error. The race is intermittent, so repeating the build is the first thing to try and it costs nothing
-14. If the same error comes back, delete every `obj` and `bin` folder, because a half written package folder is what the race leaves behind:
-
-```
-Get-ChildItem -Path src,tests -Include obj,bin -Recurse -Directory | Remove-Item -Recurse -Force
-```
-
-15. Look for: the command prints nothing. Run `Get-ChildItem -Path src,tests -Include obj,bin -Recurse -Directory` on its own afterwards and look for: it prints nothing either. There are six of these folders when they are all there, two per project
-16. Restore on its own, one project at a time, which is what takes the race out:
-
-```
-dotnet restore ParsonsNwcFederator.sln --disable-parallel
-```
-
-17. Look for: three `Restored` lines and no error, one for `Federator.Core`, one for `Federator.Core.Tests` and one for `Federator.Addin`. If the `obj` folders were not deleted it says `All projects are up-to-date for restore` instead, which is also fine
-18. Build without restoring again, so nothing can collide:
-
-```
-dotnet build ParsonsNwcFederator.sln -c Release --no-restore
-```
-
-19. Look for: the build finishes with no error. If it says a package or a reference assembly is missing, the restore at step 16 did not finish and that is the step to read again
-20. Only if every step above failed, clear the NuGet cache. It is LAST because it re-downloads every package this solution uses, and nuget.org is a hard requirement for building at all:
-
-```
-dotnet nuget locals all --clear
-```
-
-21. Look for: it finishes with no error. Exactly what it prints was not measured here, because clearing the cache on this machine would cost the re-download it warns about. Then go back to step 8 and build again, which will pull every package down fresh
-
-22. Install:
-
-```
-powershell -ExecutionPolicy Bypass -File build\install.ps1
-```
-
-23. Read the last lines of the install. Look for: a line saying all the expected files are present and a line saying every reference is satisfied. If it stops with Install incomplete, copy the whole output into the chat
-
 ## Proof F136 FIRST, the viewpoints box, added 2026-10-05
 
 THESE STEPS COME BEFORE EVERY OTHER PROOF IN THIS FILE, right after the install. Your word
@@ -1905,19 +1824,6 @@ about a file sitting beside it under a nearly identical name.
 196. Look for: a block titled OPEN FILE naming the file, the NWD and the report folder
 197. Look for: a RESULT block at the end with groups done, partial and failed, and NO `viewpoints     :` line under them, which is written only where the box was unticked, and since F114 merged it opens ticked
 198. Look for: the RESULT block counts one group, not zero, and carries `weekly run     : 1`
-
-## Send the logs
-
-199. Open the folder `%LOCALAPPDATA%\ParsonsNwcFederator\logs`
-200. Copy every `run-*.log` written today
-201. Paste them into `steps\logs` in the repo folder
-202. Rename each with the DATE OF THE RUN, the building and the press. The shape, with 2026-09-14 standing for whatever day you run them: `2026-09-14-C06-rebuilt.log`, `2026-09-14-1B06PH-first.log`, `2026-09-14-1B06PH-second.log`, `2026-09-14-onediscipline.log`, `2026-09-14-1B06PH-noxml.log` and `2026-09-14-1B06PH-openfile.log`
-203. Open GitHub Desktop
-204. Press New Branch, name it `logs-` and the date of the run, so `logs-2026-09-14` on the fourteenth, and press Create Branch
-205. Write a summary like `logs from C06, F34 to F7 proofs`
-206. Press Commit
-207. Press Publish branch
-208. Press Create Pull Request, and tell the worker in the chat that it is open. The worker merges it and reads the logs. Nothing goes to main directly, that is the wall F38 put up
 
 ## Run the window probes
 

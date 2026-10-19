@@ -14,14 +14,26 @@ can be written here and only proved on the local machine.
 
 The open sections of this file, in the order they sit below, read on 19 Oct 2026 off steps\tracker.csv, F242. The old order, with every closed section, is at the top of steps\history\01_next-closed.md.
 
-1. F96 the restated facts check, open
-2. F137 no site and no clash groups, in progress
-3. F118 the workbook and report, in progress
-4. F121 wave 4, two sections, in progress
-5. F123 wave 5, in progress
-6. F242 the records Bader can read, this round
+1. The three proofs, P1 to P3, runs on the local machine, whether each is done UNKNOWN
+2. F96 the restated facts check, open
+3. F137 no site and no clash groups, in progress
+4. F118 the workbook and report, in progress
+5. F121 wave 4, two sections, in progress
+6. F123 wave 5, in progress
+7. The next clash test round of 14 Oct, not built
+8. F242 the records Bader can read, this round
 
-The open areas F101, F110, F111, F117, F122, F124, F134, F135 and F174 have no section here. Their work is their rows in steps\tracker.csv and the items of steps\fix-round.md that name them.
+The areas F101, F110, F111, F117, F122, F124, F134, F135 and F174 are not closed and have no section here. Their work is their rows in steps\tracker.csv and the items of steps\fix-round.md that name them.
+
+## The three proofs
+
+Not fixes. Runs on the local machine that no code change replaces. Bader runs them, Q15.
+
+- P1 one building, Run, send the log. Proves criterion 1 and shows OPENED on the second press. Closes M1
+- P2 all buildings ticked, Run, send the log. The timing block per group answers criterion 2. Closes M2
+- P3 open one NWF, read the panel count for three tests, compare to the Excel. Closes M3
+
+The alignment round closed on 2026-09-20, branch `round-alignment`, proved by TWO RUNS AGAINST BADER'S OWN LIVE FOLDERS after a backup was taken and read back, Q60. Six items were briefed and all six are done: the cheap COM write route behind a setting with both routes in the one binary, the two colours read back on what a viewpoint will SHOW rather than what it recorded, Structural Foundations on the solid list with Framing and Columns deliberately out, the 55 pair by design file, the ALIGNMENT block by shared coordinate and the EXPORT CHECK block. The round's own PART 8 found a seventh, which is the one that mattered: `F72 HAD NEVER MOVED A SINGLE CLASH` because it read a clash side through `Selection1`, whose item throws `NotSupportedException` off `PropertyCategories`, scan.md 5r. It moved 4 on the run after the fix, the first four of its life. Q67 and Q68 are open and both are Bader's.
 
 ## F96 The restated facts check
 
@@ -89,7 +101,13 @@ The open areas F101, F110, F111, F117, F122, F124, F134, F135 and F174 have no s
 - FR-170, LEFT OPEN: nothing a person reads or receives changes today. The unknown unit branch cannot be reached on 2025, UnitTable carries all eleven units, and set 03 read size could not be read : 0 in all 22 groups, so what is left is a comment and a catch that logs nothing for a property throw nobody has seen
 - PROVED here on 2026-10-13: Core tests 3065 passed, 0 failed, 0 skipped on main 402a8155. Twenty four new tests run first against the new members written with the old behaviour, 15 failed and 9 passed as guards of what the fix keeps, `%LOCALAPPDATA%\NwcFederatorLoop\turn6\f123b-failing-first.txt`, and the twenty fifth, a read that threw with no message, came with the fix. After the fix 3090 passed, 0 failed, 0 skipped. The older calls of `ClashesAcrossTheRun.Add` and `LogLine` take the tests run and the plan source their new signatures ask for, every assertion kept, and two older assertions of SourceMismatchFindingsTests read the new words, `3 NWC building codes` for `3 federations` and the sentence that says which name the tool reads, since the old ones are the words FR-167 names wrong. The solution builds in Release with 0 warnings and 0 errors before and after, the add-in included. check-locals and check-imports read clean. WHAT WAITS: the reviewer and the breaker, the merge, and steps 1200 to 1244 of `steps\03_bader_next.md`
 
+## The next clash test round, recorded 14 Oct 2026, not built
+
+Bader's order, Q165. A mirror check: a test A against B, for example a wall of AR against a wall of STR, and its
+mirror B against A must give the same clash count, and more checks. MatrixCorrections.ReadPicked and
+tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Nothing of it is built in F165.
+
 ## F242 records Bader can read
 
 - The round of 19 Oct 2026 b, item 4: steps\PROGRESS.md in his five parts under 60 lines, the closed items of steps\01_next.md, steps\fix-round.md, steps\03_bader_next.md and steps\lane-b.md moved whole into steps\history with each file's size before and after, nothing deleted, and the tracker and progress scripts passing
-- DONE 2026-10-19, merged in 323. The four moved and read back with no line lost, three under 100 KB and fix-round.md at 144,071 bytes for its 77 open items, the tracker check taught the moved FR items with four fixtures, prove-tracker 80 right, prove-progress 26, the page at 49 lines, Core tests 3451 passed before and after
+- DONE 2026-10-19, merged in 323. The four moved and read back with no line lost, three under 100 KB and fix-round.md over it for its 77 open items, put to Bader, the tracker check taught the moved FR items with its fixtures, the page at most 60 lines, Core tests 3451 passed before and after

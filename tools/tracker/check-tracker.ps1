@@ -20,7 +20,7 @@
       fix-round.md with no item heading, and a row whose id starts FR- with no item headed so.
       The closed items moved to steps\history\fix-round-closed.md, F242, are read as
       fix-round.md's own when that file is there, so a heading there names its item, one in
-      both files is a second heading, and every fault of an item there names that file
+      both files is a second heading, every fault of an item there names that file, and an item there whose row is not merged, proven by a run or dropped is refused, since it moves back
     - in the waves section of fix-round.md: no such section, a line in no shape its reader
       knows, a line starting with a letter right under a wave, area or stage line, an area
       line with no wave line above it, an FR id named where the reader places no item, an

@@ -21,11 +21,12 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 ## Done
 - 19 Oct b, Bader's new way of building, four items, no Navisworks run. F240 the agents' models by their jobs, 320. F241 the
   round rules under Rounds in CLAUDE.md and the ai-max skill version 3, 321. F239 docs\rules.md, 105 rules, ten with no test,
-  322. F242 the closed items of four steps files moved into steps\history and this page in five parts
+  322. F242 the closed items of four steps files moved into steps\history and this page in five parts, 323
 - 19 Oct, F231 to F238: packages first, one discipline groups not built, the discipline and clash count workbooks, the cap
   over 750 and penetrations on, the full run on C06 and C07, 0 red rows, 3904 and 1549 clashes, 313 to 319
 - The page as it stood before this rewrite, its speed table among it, is steps\history\PROGRESS-2026-10-19.md
 - The long record is steps\history: log.md one entry a fix, loop.md, and the four files of closed items
+- Status of every item and finding: steps\tracker.csv, read as steps\tracker.md. The plan: steps\01_next.md and steps\fix-round.md
 ## Open bugs
 - F229-R1 a run's window prunes the logs folder to 30 and deleted 18 group logs of the run before, copies kept in the Log folders
 - F223-R1 to R4 Auto-Save in a Navisworks a person started unmeasured, the hand buttons, a run under the loop, a hand start
@@ -46,4 +47,4 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 ## Next
 1. The end of the round, F242b: the QA of main, the audit, the form and the closing entry
 2. His answers to the form and the questions above, and the proof steps, the full run's 13 first
-3. The next round, three or four fixes from his answers, the code contradictions of the audit first
+3. The next round, three or four fixes from his answers, the code ones of claude\audit-round-2026-10-19.md first, 43, 46, 37, 38
