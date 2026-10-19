@@ -19,7 +19,7 @@ PenetrationSettings.ConfirmWords, the RUN SETTINGS line said YES with the tests 
 six comments still said the box is off by default, and a proof step proved one test of 1B06PK where he asked for every one.
 The picture order when a stop fires and what counts toward the 750 are Q221, and the rest are rows F235-R1 to R6.
 
-What was proved here. Core tests 3421 passed before and 3423 after, 0 failed, 0 skipped. The solution built in Release, 0
+What was proved here. Core tests 3421 passed before and 3424 after, 0 failed, 0 skipped. The solution built in Release, 0
 errors, 0 warnings. On a copy of 1B06PK's two NWCs under C:\NWC-PC-Test\work\smoke235, build 897b0008, the NWC page ran it DONE
 in its own Navisworks, run-20261019-034851: its 80 tests hold at most 655 clashes, so none is capped and every one of its 1748
 clashes got a picture, 1748 written, where the F234 run of the same group on 1597fe9b wrote 1036 and capped 4 tests, 712

@@ -141,7 +141,7 @@ Proved on a copy of 1B06PK, build 897b0008, run-20261019-034851:
 | clashes left with no picture by the cap | 712 | 0 |
 | penetrations moved to Reviewed | box off, none | 844 of 1748 |
 
-Core tests 3421 before and 3423 after. Asked: Q220, the categories of the penetration lists his words do not name.
+Core tests 3421 before and 3424 after. Asked: Q220, the categories of the penetration lists his words do not name.
 
 The NWF page on 1B06PK's NWF at 8442e4a6, with the readers' fixes, run-20261019-040532: its confirm said a small penetration is
 moved to Reviewed, the box read YES in the group's own Navisworks, 0 moved since the NWC page had moved them, 1748 pictures, DONE.
