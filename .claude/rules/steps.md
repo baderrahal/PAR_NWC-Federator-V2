@@ -14,11 +14,9 @@ paths:
 - Every pull request that changes an item's status, a DONE line among them, updates the
   item's row in steps\tracker.csv in the same pull request, Bader's rule of 5 Oct 2026,
   Q129: the status, the PR, the run that proved it and the date of the last change, then
-  runs tools\tracker\make-tracker.ps1 and commits both files. A branch writes the rows it
-  finishes as in review with PR UNKNOWN, since the number is not known before the pull
-  request opens. The lead sets them to merged with the pull request's number on the branch,
-  and runs make-tracker.ps1, before it merges, so a row reaches main as merged with its
-  number. A pull request that adds an FR item to steps\fix-round.md adds its row, and one
+  runs tools\tracker\make-tracker.ps1 and commits both files. The row goes in the fix's one
+  records commit, CLAUDE.md under Rounds, made once its pull request is open, so the row
+  reads merged with the pull request's number before the merge and reaches main that way. A pull request that adds an FR item to steps\fix-round.md adds its row, and one
   that writes a new question or Bader's answer under one in steps\02_questions.md adds or
   sets the question's row, in the same way, and one that writes a request of his there, an
   item whose text starts From Bader, adds its row. Status lives in the tracker, and

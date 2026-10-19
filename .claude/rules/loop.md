@@ -12,7 +12,7 @@ paths:
 # Rules for the loop
 
 The loop builds the add-in on Bader's machine, installs it, runs it on a copy of real NWC
-files, reads what the run did, fixes what it got wrong one pull request at a time, and
+files, reads what the run did, fixes what it got wrong one pull request a fix, and
 proves every fix with another run. It started on 2026-09-27, the first session that ran
 where Navisworks Manage 2025 is installed. A rule with no run behind it is not a feature,
 and nothing is fixed until a real run on real files shows it fixed.
@@ -362,8 +362,8 @@ and nothing is fixed until a real run on real files shows it fixed.
 
 ## The run set
 
-The baseline and the close run all five. Between them each turn runs what its fixes touch,
-plus one first run of the whole folder.
+The baseline and the close run all five. Between them each fix is proved on the smallest real
+case and the full real run happens once, at the end of a round, CLAUDE.md under Rounds.
 
 1. First run. Empty output folders, the clash XML, every group ticked
 2. Weekly run. The same folders again with no XML. Sets count as present, never created
@@ -402,8 +402,9 @@ as LifeStandIn.exe so no process named Roamer starts during another run.
 
 FAST CHECKS, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS, gave way to CLAUDE.md under
 Rounds, his rule of 19 Oct 2026: each fix is proved on the smallest real case, one group, and the full
-real run happens once, at the end of a round. After each proof the lead gives Bader three lines in the
-tab, its time, what is proven and what failed.
+real run happens once, at the end of a round, with the life check on and only once Bader has asked for
+it, in the tab or in the round's order. After each proof the lead gives Bader three lines in the tab,
+its time, what is proven and what failed.
 
 Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
 F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,

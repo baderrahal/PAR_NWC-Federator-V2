@@ -73,6 +73,8 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
     .claude\rules           the rules per folder, each with a paths line at the top
     .claude\agents          the loop's eight agents, loaded only when a session starts
     .claude\hooks           two walls run before a tool call, and the loop's Stop gate
+    .claude\skills\ai-max   Bader's ai-max skill, a copy never edited here. Where it differs
+                            from CLAUDE.md or .claude\rules, they hold
 
 ## Rules for every file
 
