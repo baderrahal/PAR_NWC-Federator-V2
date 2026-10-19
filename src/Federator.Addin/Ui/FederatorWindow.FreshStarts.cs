@@ -569,7 +569,7 @@ namespace Federator.Addin.Ui
             {
                 // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
                 // F243 attempt 2, the lead's decision on item 1: the one list of the run, over every group's carried facts.
-                WriteTheOneListOfTheRun(run, results, order.Units.Count);
+                WriteTheOneListOfTheRun(run, order.Units, results);
                 WriteTheDisciplineReports(run, order.Units, results, whys);
                 WriteTheClashCountChecks(run, order.Units, results);
                 IList<string> own = log.FilesInUse;
@@ -612,11 +612,11 @@ namespace Federator.Addin.Ui
         /// the start of this run, and written once into each Log folder the run wrote into. A group with no result or no record
         /// is counted not reached, never clean.
         /// </summary>
-        private void WriteTheOneListOfTheRun(PackageRun run, IList<PackageRunResult> results, int groups)
+        private void WriteTheOneListOfTheRun(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results)
         {
             try
             {
-                FederationEngine.WriteTheList(log, PackageRunResult.OffCoordinatesOf(run.Started, groups, results), run.LogFolders);
+                FederationEngine.WriteTheList(log, PackageRunResult.OffCoordinatesOf(run.Started, units, results), run.LogFolders);
             }
             catch (Exception error)
             {

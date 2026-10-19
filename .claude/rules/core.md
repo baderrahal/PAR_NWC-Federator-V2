@@ -1301,7 +1301,10 @@ and 6 does not read as broken.
   already there is OVERWRITTEN. THE GROUP'S NAME_files FOLDER IS DELETED WHOLE before its clash report is written,
   `PicturesFolder.Delete`, F243 point 2: only the folder handed in, its name ending _files, one line naming it, its
   count of clash pictures, files named cd and digits, and apart the logo and by name every other file and folder that
-  went. ITS FILES GO ONE BY ONE, so a file another program holds is named by its full path, `Held`, the rest still go,
+  went. ITS FILES GO ONE BY ONE, a subfolder carrying the reparse point attribute, a junction or a link, removed as the link
+  alone and never entered and any other subfolder whole, so nothing outside the folder is ever deleted, attempt 3. A file
+  another program holds is named by its full path, `Held`, one that will not go for another reason is kept with what it
+  threw, `Failed`, the rest still go,
   the pictures already deleted are counted and the folder is said not deleted whole. A page or a workbook of an earlier
   run left at its path after the folder went is named by `PicturesFolder.EarlierFileLine` and never touched. THE
   EXCEL'S LINKS ARE READ BACK, `WorkbookLinks.Check`, F243 point 3: every relationship of the hyperlink type in every
@@ -1319,7 +1322,12 @@ and 6 does not read as broken.
   check at the community's own folder, and in the report folder of each package of the community in the run its Log,
   its Backup and its dated discipline workbooks by the package's own stem, a group read by its NWF name and its
   workbook name, a package folder not inside the community's never read, each file deleted logged with its kind and
-  one count line a community, `SummaryLine`. LEFTOVER PICTURES ARE REMOVED, `LeftoverPictures.Remove`, once the
+  one count line a community, `SummaryLine`, saying the folders read and the old names looked for, those of this run's
+  groups and disciplines, and what of them was there, never a claim about a name it did not look for. A file held open is
+  said by what was left undone, `RunLog.NotWrittenWhileOpen`, `NotDeletedWhileOpen` or `NotReadWhileOpen`, before
+  Bader's Close line, and the counts of RESULT and the end message say left as it was. The one list of a run of packages
+  names each group whose result or record did not come back, `PackageRunWords.NoCoordinatesRecordCameBack`, and never
+  calls it clean. LEFTOVER PICTURES ARE REMOVED, `LeftoverPictures.Remove`, once the
   picture step has run to its end: from the group's NAME_files folder, TOP LEVEL ONLY, every file named cd and
   six or more digits and .jpg, lower case as the tool writes it, that this run did not write, and nothing
   else. Never the logo, another file, a folder, a link, or anything outside a folder that ends _files. Nothing

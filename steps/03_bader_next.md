@@ -20,14 +20,14 @@ seven points. Steps 1 and 2 need no Navisworks.
    in the Report folder and press Read.
    Look for: C06 and C07 with their NWFs, nothing ticked.
 5. Tick the NWF `1104-PAR-1B06BC-ZZZ-BM-MOD-000001` of C06 alone, press Run and OK, and click nothing more.
-   Look for: one Navisworks opening and closing, then a box ending `A file was open in another program and not written:` and
+   Look for: one Navisworks opening and closing, then a box ending `A file was open in another program and left as it was:` and
    `Close C:\NWC-PC-Test\work\f243\Report\C06\C06 clash count check.xlsx and run the report again`.
 6. Open the run's log and search for `OLD      deleted`.
    Look for: `OLD      deleted` lines for the four 1B06BC files of Log, the thirty dated lists of models, `C06 AR checks 2026-10-19
    064154.xlsx` and the other three dated discipline workbooks, `C06 clash count check 2026-10-19 064158.xlsx`, and one
    `OLD      renamed ...Backup\1104-PAR-1B06BC-ZZZ-BM-MOD-000001 2026-10-19 062133.nwf to ...Backup\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf`.
    Each deleted line names what the file was, such as `a dated internal workbook`. No line names a file of another group,
-   since only 1B06BC is in this run, and one line `OLD      ...\C06, N files under a name this tool no longer writes deleted`.
+   since only 1B06BC is in this run, and one line `OLD      ...\C06 and 1 package folder read for the old names of 1 group and 4 disciplines of this run, N files deleted`.
 7. Open the log of 1B06BC's own Navisworks, the one its GROUP block in RESULT names, and search for `IMAGES   deleted`.
    Look for: `IMAGES   deleted ...\Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files with its 173 pictures and logo.jpg,
    before this run's clash report of the group is written`.
@@ -51,8 +51,8 @@ seven points. Steps 1 and 2 need no Navisworks.
    Look for: `C06 AR checks.xlsx`, `ST`, `ME` and `EL` written now, no dated checks and no dated clash count check, and
    `C06 clash count check.xlsx` still with its 19 Oct time, since it was open.
 14. Close Excel, then on the NWF page tick the same NWF again, press Run and OK.
-   Look for: no box at the end, `C06 clash count check.xlsx` written now, and in the log `OLD      ...\C06 holds no file under a
-   name this tool no longer writes`.
+   Look for: no box at the end, `C06 clash count check.xlsx` written now, and in the log `OLD      ...\C06 and 1 package folder read for the
+   old names of 1 group and 4 disciplines of this run, none of them was there`.
 15. Copy the tool's logs off this PC, as before, and send them.
 
 ## The round of 19 Oct, F231 to F238

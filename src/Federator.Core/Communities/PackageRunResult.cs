@@ -121,27 +121,37 @@ namespace Federator.Core.Communities
         public IList<OffCoordinatesGroup> OffCoordinates { get; private set; }
 
         /// <summary>
-        /// The one tally of a run of packages over the facts every group's result carried, each group in the order of the
-        /// results, a result that is null or carries none adding nothing, so it is counted not reached and never clean.
-        /// Its ForModellers is the one list the window writes, its first line naming the run.
+        /// The one tally of a run of packages over the facts every group's result carried, one result a unit in the order of
+        /// the units, each group in the order of its result. A unit whose result is null or carries no record adds nothing, so
+        /// it is counted among the groups not judged, never clean, and since attempt 3, the breaker's 2 and 3, it is named by
+        /// its label in words true for the window that started the run, PackageRunWords.NoCoordinatesRecordCameBack. Its
+        /// ForModellers is the one list the window writes, its first line naming the run.
         /// </summary>
-        public static OffCoordinatesAcrossTheRun OffCoordinatesOf(DateTime runStarted, int groupsInTheRun, IEnumerable<PackageRunResult> results)
+        public static OffCoordinatesAcrossTheRun OffCoordinatesOf(DateTime runStarted, IList<PackageRunUnit> units, IList<PackageRunResult> results)
         {
-            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(runStarted, groupsInTheRun);
-
-            foreach (PackageRunResult result in results ?? new List<PackageRunResult>())
+            if (units == null || results == null || units.Count != results.Count)
             {
-                if (result == null)
+                throw new ArgumentException("one result or null for each group");
+            }
+
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(runStarted, units.Count);
+            List<string> none = new List<string>();
+
+            for (int i = 0; i < units.Count; i++)
+            {
+                if (results[i] == null || results[i].OffCoordinates.Count == 0)
                 {
+                    none.Add(units[i].Label);
                     continue;
                 }
 
-                foreach (OffCoordinatesGroup group in result.OffCoordinates)
+                foreach (OffCoordinatesGroup group in results[i].OffCoordinates)
                 {
                     run.Add(group.Building, group.Off, group.RunsATest);
                 }
             }
 
+            run.SayTheGroupsNotReachedAs(PackageRunWords.NoCoordinatesRecordCameBack(none));
             return run;
         }
 

@@ -1151,7 +1151,7 @@ namespace Federator.Addin.Ui
 
                     foreach (string path in cleaned.InUse)
                     {
-                        log.NotWrittenWhileOpen(path);
+                        log.NotDeletedWhileOpen(path);
                     }
 
                     foreach (KeyValuePair<string, Exception> failed in cleaned.Failed)

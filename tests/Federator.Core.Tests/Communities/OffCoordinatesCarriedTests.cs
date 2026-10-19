@@ -45,6 +45,18 @@ namespace Federator.Core.Tests
             return new OffCoordinates("1104-PAR-1B06G1-ZZZ-AR-MOD-000001.nwc", new List<string>(), 0, 4);
         }
 
+        private static IList<PackageRunUnit> Units(params string[] groups)
+        {
+            List<PackageRunUnit> units = new List<PackageRunUnit>();
+
+            foreach (string group in groups)
+            {
+                units.Add(new PackageRunUnit("C06", TestPaths.At("Report", "C06", "NWF", group + ".nwf"), group));
+            }
+
+            return units;
+        }
+
         private PackageRunResult ReadBack(PackageRunResult written)
         {
             string path = Path.Combine(folder, Guid.NewGuid().ToString("N") + ".txt");
@@ -81,15 +93,38 @@ namespace Federator.Core.Tests
             Assert.That(read.OffCoordinates[2].Off.Reference, Is.Null, "no model placed stays no reference");
             Assert.That(read.OffCoordinates[2].Off.NotJudged, Is.EqualTo(2));
 
-            OffCoordinatesAcrossTheRun before = new OffCoordinatesAcrossTheRun(Started, 3);
+            OffCoordinatesAcrossTheRun before = new OffCoordinatesAcrossTheRun(Started, 1);
 
             foreach (OffCoordinatesGroup group in result.OffCoordinates)
             {
                 before.Add(group.Building, group.Off, group.RunsATest);
             }
 
-            Assert.That(PackageRunResult.OffCoordinatesOf(Started, 3, new[] { read }).ForModellers(), Is.EqualTo(before.ForModellers()),
+            Assert.That(PackageRunResult.OffCoordinatesOf(Started, Units("1B06BC"), new[] { read }).ForModellers(), Is.EqualTo(before.ForModellers()),
                 "the list made over the carried facts is the list the group's own tally makes");
+        }
+
+        /// <summary>
+        /// F243 attempt 3, the reviewer's N7. A result of the shape before the coordinates record, 3, is refused with why, so a
+        /// group's Navisworks of an older build never reads as one whose check found nothing.
+        /// </summary>
+        [Test]
+        public void AResultOfTheShapeBeforeTheRecordIsRefusedWithWhy()
+        {
+            string path = Path.Combine(folder, "shape-3.txt");
+            string old = "parsons nwc federator, the result of one group of a run of packages, 3";
+            PackageRunFile.Write(path, old, new List<string>
+            {
+                PackageRunFile.Line("package", "C06"),
+                PackageRunFile.Line("log", string.Empty),
+                PackageRunFile.Line("end", "written whole")
+            });
+
+            string why;
+
+            Assert.That(PackageRunResult.Header, Is.Not.EqualTo(old));
+            Assert.That(PackageRunResult.Read(path, out why), Is.Null);
+            Assert.That(why, Does.Contain("does not start with the line " + PackageRunResult.Header));
         }
 
         /// <summary>The break: a facts line of the wrong shape reads the whole result as null with why, as every other key does.</summary>
@@ -139,7 +174,7 @@ namespace Federator.Core.Tests
             PackageRunResult second = new PackageRunResult("C06", null);
             second.OffCoordinates.Add(new OffCoordinatesGroup("C06  1B06G1", Clean(), true));
 
-            IList<string> list = PackageRunResult.OffCoordinatesOf(Started, 2, new[] { ReadBack(first), ReadBack(second) }).ForModellers();
+            IList<string> list = PackageRunResult.OffCoordinatesOf(Started, Units("1B06BC", "1B06G1"), new[] { ReadBack(first), ReadBack(second) }).ForModellers();
             string all = string.Join("\n", list);
 
             Assert.That(list[0], Is.EqualTo("Models not on the same shared coordinates, from the run started 2026-10-19 21:30"));
@@ -149,11 +184,13 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("   " + Far));
             Assert.That(all, Does.Not.Contain("1B06G1:"), "the clean group is judged and not listed");
 
-            IList<string> missing = PackageRunResult.OffCoordinatesOf(Started, 3, new[] { ReadBack(first), null, new PackageRunResult("C06", null) })
+            IList<string> missing = PackageRunResult.OffCoordinatesOf(Started, Units("1B06BC", "1B06K1", "1B06PK"), new[] { ReadBack(first), null, new PackageRunResult("C06", null) })
                 .ForModellers();
 
-            Assert.That(missing[1], Does.StartWith("The check judged 1 of 3 groups of this run. 2 were not reached"),
-                "a group with no result or no facts is not reached, never clean");
+            Assert.That(missing[1], Is.EqualTo("The check judged 1 of 3 groups of this run. 2 were not judged here, no result or no"
+                + " record of the check came back from C06  1B06K1, C06  1B06PK."),
+                "F243 attempt 3, the breaker's 2 and 3: named by label in words true for the window, never clean");
+            Assert.That(string.Join("\n", missing), Does.Not.Contain("the run stopped or the group ended"));
         }
     }
 }

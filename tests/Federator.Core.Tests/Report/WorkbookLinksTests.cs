@@ -77,6 +77,24 @@ namespace Federator.Core.Tests
             Assert.That(links.Error(), Is.Null);
         }
 
+        /// <summary>
+        /// F243 attempt 3, the breaker's 4. The writer says when its save is on the disk, before it links the pictures, so a
+        /// file held during the linking is this run's save and never called an earlier run's.
+        /// </summary>
+        [Test]
+        public void TheWriterSaysWhenItsSaveIsOnTheDisk()
+        {
+            WorkbookWriter writer = new WorkbookWriter();
+
+            Assert.That(writer.Saved, Is.False);
+
+            ClashReport report = Report(1);
+            WriteThePictures(report);
+            writer.Write(report, workbook);
+
+            Assert.That(writer.Saved, Is.True);
+        }
+
         /// <summary>F243 attempt 2, the breaker's S5. The writer counts each link it made, the cell link and the click link of a picture.</summary>
         [Test]
         public void TheWriterCountsEveryLinkItMade()

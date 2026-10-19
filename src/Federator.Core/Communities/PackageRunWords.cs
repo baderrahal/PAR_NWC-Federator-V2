@@ -136,6 +136,16 @@ namespace Federator.Core.Communities
                 + Words.Or(parentLog, "UNKNOWN");
         }
 
+        /// <summary>
+        /// F243 attempt 3, the breaker's 2 and 3. What the one list of a run of packages says of the groups whose result or record
+        /// of the shared coordinates check did not come back, after their count, each named by its label. The window never saw
+        /// them, so it says what it knows and never why.
+        /// </summary>
+        internal static string NoCoordinatesRecordCameBack(IList<string> labels)
+        {
+            return " not judged here, no result or no record of the check came back from " + string.Join(", ", labels ?? new List<string>());
+        }
+
         /// <summary>F222. Why a group's own Navisworks ran nothing where its package's plan there holds no group of its NWF.</summary>
         public static string NotTheGroup(string group, string nwf)
         {

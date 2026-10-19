@@ -61,7 +61,7 @@ namespace Federator.Addin.Engine
         internal string BackupTheNwf(string nwfPath, string logFolder)
         {
             string target = null;
-            string held = null;
+            bool reading = false;
 
             try
             {
@@ -84,13 +84,13 @@ namespace Federator.Addin.Engine
 
                 // Attempt 2, the breaker's W6. The NWF is opened for reading first, with the sharing the copy reads it with,
                 // so a held NWF is the file named, and only a refusal after it is the backup's.
-                held = nwfPath;
+                reading = true;
 
                 using (new FileStream(nwfPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                 }
 
-                held = target;
+                reading = false;
                 File.Copy(nwfPath, target, true);
 
                 long size = new FileInfo(target).Length;
@@ -100,9 +100,18 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                if (held != null && FileInUse.IsInUse(error))
+                // Attempt 3, the reviewer's N3: the NWF held is not read, the backup held is not written.
+                if (target != null && FileInUse.IsInUse(error))
                 {
-                    log.NotWrittenWhileOpen(held);
+                    if (reading)
+                    {
+                        log.NotReadWhileOpen(nwfPath);
+                    }
+                    else
+                    {
+                        log.NotWrittenWhileOpen(target);
+                    }
+
                     return null;
                 }
 

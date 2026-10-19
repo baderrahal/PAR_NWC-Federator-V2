@@ -103,7 +103,8 @@ namespace Federator.Core.Tests
             Kept(near);
             Assert.That(outcome.Lines, Does.Contain("OLD      deleted " + old
                 + ", the clash workbook written in the Log folder before it moved to the Clash report folder, a name this tool no longer writes"));
-            Assert.That(outcome.SummaryLine(), Is.EqualTo("OLD      " + community + ", 1 file under a name this tool no longer writes deleted"));
+            Assert.That(outcome.SummaryLine(), Is.EqualTo("OLD      " + community + " and 1 package folder read for the old names of 2 groups"
+                + " and 4 disciplines of this run, 1 file deleted"));
         }
 
         [Test]
@@ -327,7 +328,8 @@ namespace Federator.Core.Tests
             OldReportFilesOutcome outcome = Clean();
 
             Assert.That(outcome.Lines.Count, Is.EqualTo(0));
-            Assert.That(outcome.SummaryLine(), Is.EqualTo("OLD      " + community + " holds no file under a name this tool no longer writes"));
+            Assert.That(outcome.SummaryLine(), Is.EqualTo("OLD      " + community + " and 1 package folder read for the old names of 2 groups"
+                + " and 4 disciplines of this run, none of them was there"), "never a claim about names it did not look for");
 
             string absent = Path.Combine(root, "C99");
             OldReportFilesOutcome none = OldReportFiles.Clean(absent, "C99", new Dictionary<string, string> { { "C99", absent } }, new[] { Group }, new DisciplineReportSettings());

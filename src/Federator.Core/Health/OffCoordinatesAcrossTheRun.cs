@@ -36,6 +36,9 @@ namespace Federator.Core.Health
         private readonly int groupsInTheRun;
         private readonly List<OffCoordinatesGroup> entries = new List<OffCoordinatesGroup>();
 
+        /// <summary>What the groups not reached are said as, after their count, true for the run that counts them.</summary>
+        private string notReached = " not reached, the run stopped or the group ended before its models were read";
+
         public OffCoordinatesAcrossTheRun(DateTime runStarted, int groupsInTheRun)
         {
             this.runStarted = runStarted;
@@ -51,6 +54,14 @@ namespace Federator.Core.Health
             entries.Add(new OffCoordinatesGroup(building, off, runsATest));
         }
 
+        /// <summary>
+        /// F243 attempt 3, the breaker's 2 and 3. The words for the groups not reached where they are not true, the window that
+        /// started a run of packages, which never saw a group whose result or record did not come back: its words, after the count.
+        /// </summary>
+        internal void SayTheGroupsNotReachedAs(string words)
+        {
+            notReached = words ?? notReached;
+        }
         /// <summary>
         /// Every group added, in the order added, the record a group's own Navisworks carries back in its result, F243 attempt 2.
         /// </summary>
@@ -212,7 +223,7 @@ namespace Federator.Core.Health
 
             if (NotReached() > 0)
             {
-                said += ", " + NotReached() + " not reached, the run stopped or the group ended before its models were read";
+                said += ", " + NotReached() + notReached;
             }
 
             if (NotRead() > 0)
@@ -235,7 +246,7 @@ namespace Federator.Core.Health
             if (NotReached() > 0)
             {
                 said += " " + NotReached() + (NotReached() == 1 ? " was" : " were")
-                    + " not reached, the run stopped or the group ended before its models were read.";
+                    + notReached + ".";
             }
 
             if (NotRead() > 0)

@@ -3105,6 +3105,7 @@ namespace Federator.Addin.Engine
                 }
             }
         }
+
         /// <summary>The set rebuild settings this run was given, Q72, or the default which is off.</summary>
         private SetRebuildSettings Rebuilds()
         {
@@ -4036,15 +4037,24 @@ namespace Federator.Addin.Engine
 
                 foreach (string held in deleted.Held)
                 {
-                    log.NotWrittenWhileOpen(held);
+                    log.NotDeletedWhileOpen(held);
+                }
+
+                // Attempt 3, the breaker's 6: each entry that would not go, with what it threw, what already went counted above.
+                foreach (KeyValuePair<string, Exception> failed in deleted.Failed)
+                {
+                    log.Failure(
+                        "deleting " + failed.Key + " of the pictures folder of " + job.Building + " before its clash report",
+                        failed.Value,
+                        "kept going, it is left where it is");
                 }
             }
             catch (Exception error)
             {
                 log.Failure(
-                    "deleting the pictures folder of " + job.Building + " before its clash report",
+                    "reading the pictures folder " + folder + " of " + job.Building + " before its clash report",
                     error,
-                    "kept going, this run's pictures are written over the earlier ones of the same name");
+                    "kept going, what the folder holds now is UNKNOWN");
             }
         }
 
@@ -4418,14 +4428,29 @@ namespace Federator.Addin.Engine
             string workbook = ThePagePath(job);
             string page = HtmlTabularWriter.PathFor(workbook);
 
-            if (!outcome.WorkbookOnDisk && File.Exists(workbook))
+            // Attempt 3, the reviewer's N3 and N4: the line says this run's pictures only where this run took any.
+            bool tookPictures = false;
+
+            if (outcome.Report != null)
             {
-                log.Line(PicturesFolder.EarlierFileLine(workbook));
+                foreach (TestReport test in outcome.Report.Tests)
+                {
+                    foreach (ClashRow row in test.Rows)
+                    {
+                        tookPictures = tookPictures || row.HasImage;
+                    }
+                }
+            }
+
+            // Attempt 3, the breaker's 4: a workbook held after this run's save is this run's, said where it was held.
+            if (!outcome.WorkbookOnDisk && !outcome.WorkbookSavedWithoutLinks && File.Exists(workbook))
+            {
+                log.Line(PicturesFolder.EarlierFileLine(workbook, tookPictures));
             }
 
             if (!outcome.HtmlOnDisk && File.Exists(page))
             {
-                log.Line(PicturesFolder.EarlierFileLine(page));
+                log.Line(PicturesFolder.EarlierFileLine(page, tookPictures));
             }
         }
 
@@ -4550,12 +4575,12 @@ namespace Federator.Addin.Engine
             bool threw = false;
             int linked = 0;
             int expected = 0;
+            WorkbookWriter writer = new WorkbookWriter();
 
             try
             {
                 // F152. The pictures are linked in the client's form, so the log says how many and
                 // that they show only while the _files folder stays where it was written.
-                WorkbookWriter writer = new WorkbookWriter();
                 writer.Write(report, path);
                 linked = writer.PicturesLinked;
                 expected = writer.LinksWritten;
@@ -4564,14 +4589,20 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 // F243, Bader's order of 19 Oct 2026 point 6. Open in Excel: no other name is written, the one line is
-                // said and kept for the end message, and the run goes on. The file at the path is the earlier run's.
+                // said and kept for the end message, and the run goes on. Before the save the file at the path is the
+                // earlier run's. Attempt 3, the breaker's 4: held during the linking after the save, it is this run's save
+                // without its linked pictures.
                 if (FileInUse.IsInUse(error))
                 {
                     log.NotWrittenWhileOpen(path);
                     outcome.WorkbookSize = -1;
                     outcome.WorkbookOnDisk = false;
-                    outcome.WorkbookNotReadBecause = "the clash workbook was open in another program, so this run did not write it"
-                        + " and the file at its path is an earlier run's";
+                    outcome.WorkbookSavedWithoutLinks = writer.Saved;
+                    outcome.WorkbookNotReadBecause = writer.Saved
+                        ? "the clash workbook was held by another program while its pictures were linked, so this run's save is at"
+                            + " its path without its linked pictures"
+                        : "the clash workbook was open in another program, so this run did not write it and the file at its path"
+                            + " is an earlier run's";
                     log.Line("WORKBOOK CHECK " + job.Building + " not run, " + outcome.WorkbookNotReadBecause);
                     return;
                 }

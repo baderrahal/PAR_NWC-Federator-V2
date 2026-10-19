@@ -253,6 +253,12 @@ namespace Federator.Addin.Engine
         public bool EarlierPicturesWent { get; set; }
 
         /// <summary>
+        /// Whether the clash workbook was held by another program while its pictures were linked, after this run's save, so
+        /// the file at its path is this run's save without its linked pictures and never an earlier run's, F243 attempt 3.
+        /// </summary>
+        public bool WorkbookSavedWithoutLinks { get; set; }
+
+        /// <summary>
         /// The tests the clash step planned for this group, F127, the clash matrix's or the ones saved in the
         /// document, or null where it made no plan. The coverage reads every test of it.
         /// </summary>

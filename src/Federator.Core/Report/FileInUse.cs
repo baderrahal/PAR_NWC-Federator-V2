@@ -73,10 +73,6 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The run window's end message: what it already says, then one line for each file left open, each once in the order
-        /// first met. Null where it has nothing to say.
-        /// </summary>
-        /// <summary>
         /// The lines RESULT gives the files left open, a group's own and, attempt 2 on the reviewer's N4, the window's that
         /// started a run of packages in its joined RESULT: one count line and each file's line, or none where none was left.
         /// </summary>
@@ -89,11 +85,18 @@ namespace Federator.Core.Report
                 return lines;
             }
 
-            lines.Add("files open     : " + closeLines.Count + " not written, each was open in another program");
+            // Attempt 3, the reviewer's N3: left as they were, since a file held may be one not written, not deleted or not read,
+            // and each one's own OPEN line above says which.
+            lines.Add("files open     : " + closeLines.Count + (closeLines.Count == 1 ? " left as it was, open in another program"
+                : " left as they were, each open in another program"));
             lines.AddRange(closeLines);
             return lines;
         }
 
+        /// <summary>
+        /// The run window's end message: what it already says, then one line for each file left open, each once in the order
+        /// first met. Null where it has nothing to say.
+        /// </summary>
         public static string EndMessage(string already, IEnumerable<string> closeLines)
         {
             List<string> lines = new List<string>();
@@ -111,7 +114,8 @@ namespace Federator.Core.Report
                 return string.IsNullOrEmpty(already) ? null : already;
             }
 
-            string files = (lines.Count == 1 ? "A file was" : lines.Count + " files were") + " open in another program and not written:"
+            string files = (lines.Count == 1 ? "A file was open in another program and left as it was:"
+                : lines.Count + " files were open in another program and left as they were:")
                 + Environment.NewLine + string.Join(Environment.NewLine, lines.ToArray());
 
             return string.IsNullOrEmpty(already) ? files : already + Environment.NewLine + Environment.NewLine + files;

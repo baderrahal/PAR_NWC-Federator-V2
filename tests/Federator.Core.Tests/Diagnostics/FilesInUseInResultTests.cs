@@ -56,6 +56,7 @@ namespace Federator.Core.Tests
                 Assert.That(log.FilesInUse[0], Is.EqualTo(FileInUse.Line(xlsx)));
                 Assert.That(log.FilesInUse[1], Is.EqualTo(FileInUse.Line(html)));
                 Assert.That(ReadWhileOpen(log), Does.Contain(FileInUse.Line(xlsx)));
+                Assert.That(ReadWhileOpen(log), Does.Contain("OPEN     " + xlsx + " not written, it is open in another program"));
 
                 log.WriteResultBlock();
 
@@ -93,16 +94,41 @@ namespace Federator.Core.Tests
 
             IList<string> lines = PackageRunWords.JoinedResult(units, results, new List<string> { null }, new PackageTally(), new List<string> { own });
 
-            Assert.That(lines, Does.Contain("files open     : 1 not written, each was open in another program"));
+            Assert.That(lines, Does.Contain("files open     : 1 left as it was, open in another program"));
             Assert.That(lines, Does.Contain(own));
             Assert.That(FileInUse.ResultLines(new List<string> { own }), Is.EqualTo(new List<string>
             {
-                "files open     : 1 not written, each was open in another program",
+                "files open     : 1 left as it was, open in another program",
                 own
             }));
             Assert.That(FileInUse.ResultLines(new List<string>()).Count, Is.EqualTo(0));
             Assert.That(PackageRunWords.JoinedResult(units, results, new List<string> { null }, new PackageTally()),
                 Has.None.StartsWith("files open"), "a run with none of its own says nothing of it");
+        }
+
+        /// <summary>
+        /// F243 attempt 3, the reviewer's N3. Each file left open says what was left undone, not written only where a write was
+        /// skipped, not deleted where a delete was, not read where a copy could not read it, and the Close line is Bader's.
+        /// </summary>
+        [Test]
+        public void EachFileLeftOpenSaysWhatWasLeftUndone()
+        {
+            string old = Path.Combine(folder, "Log", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001 Internal.xlsx");
+            string nwf = Path.Combine(folder, "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf");
+
+            using (RunLog log = RunLog.Start(folder, new DateTime(2026, 10, 19, 21, 0, 0)))
+            {
+                log.NotDeletedWhileOpen(old);
+                log.NotReadWhileOpen(nwf);
+
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("OPEN     " + old + " not deleted, it is open in another program"));
+                Assert.That(text, Does.Contain("OPEN     " + nwf + " not read, so nothing was copied from it, it is open in another program"));
+                Assert.That(text, Does.Contain(FileInUse.Line(old)));
+                Assert.That(text, Does.Not.Contain(old + " not written"));
+                Assert.That(log.FilesInUse.Count, Is.EqualTo(2));
+            }
         }
 
         /// <summary>The break: a run with no file left open writes no such line in RESULT.</summary>

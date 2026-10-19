@@ -1245,9 +1245,13 @@ NEVER DATED, and the add-in calls them.
 - THE PICTURES FOLDER GOES ONCE A GROUP, `DeleteThePicturesFolderOnce`, `JobOutcome.PicturesFolderTried`: before the
   deferred pictures in `TakeThePicturesOfTheGroup`, and in `WriteWorkbook`, before the Excel and the page, where no picture
   was taken this run and the Excel or the page is wanted. The hand button's Run tests writes no report and deletes nothing,
-  attempt 2 on the reviewer's N2. Each file held open is named on its own FileInUse line after the folder's line. Where a
+  attempt 2 on the reviewer's N2. Each file held open is said not deleted with its FileInUse line after the folder's line, and
+  each that would not go for another reason is a failure line with what it threw, what went still counted, attempt 3. Where a
   picture of an earlier run went, `JobOutcome.EarlierPicturesWent`, and the workbook or the page was then not written by
-  this run, `SayTheEarlierReportsLeft` names the earlier file left at its path and leaves it as it is. A group that never
+  this run, `SayTheEarlierReportsLeft` names the earlier file left at its path and leaves it as it is, saying its links reach
+  this run's pictures where this run took any and otherwise that their pictures are gone. A clash workbook held during the
+  linking after this run's save, `WorkbookWriter.Saved`, is said to be this run's save without its linked pictures,
+  `JobOutcome.WorkbookSavedWithoutLinks`, and never named as an earlier run's. A group that never
   reaches a clash report deletes nothing. The leftover removal of F177 still follows the pictures
 - THE LINKS ARE READ BACK after the WORKBOOK CHECK, `WorkbookLinks.Check` held to `WorkbookWriter.PicturesLinked` and
   `LinksWritten`, one XLSX links line, one .tsv row `missing link` for each link reaching no file, and a missing link is the

@@ -128,6 +128,7 @@ namespace Federator.Core.Report
             PicturesLinked = 0;
             LinksWritten = 0;
             cellLinks = 0;
+            Saved = false;
             writtenTo = path;
 
             using (XLWorkbook workbook = new XLWorkbook())
@@ -159,6 +160,8 @@ namespace Federator.Core.Report
                 workbook.SaveAs(path);
             }
 
+            Saved = true;
+
             // F152. ClosedXML writes no linked picture, so they go in after the save, by
             // editing the package, in the form of the client's own file.
             PicturesLinked = LinkedPictures.AddTo(path, pictures);
@@ -178,6 +181,12 @@ namespace Federator.Core.Report
         /// linked picture, F243 attempt 2, the count the read back of the workbook's links is held to, WorkbookLinks.Check.
         /// </summary>
         public int LinksWritten { get; private set; }
+
+        /// <summary>
+        /// True once the last Write's save is on the disk, before the pictures are linked into it, F243 attempt 3, the breaker's
+        /// 4: a write that throws after it leaves this run's save at the path without its linked pictures, never an earlier run's.
+        /// </summary>
+        public bool Saved { get; private set; }
 
         /// <summary>The Image cell links the workbook being written holds.</summary>
         private int cellLinks;

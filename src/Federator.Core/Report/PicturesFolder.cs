@@ -12,15 +12,20 @@ namespace Federator.Core.Report
     /// reads them, and apart from them the logo and by name every other file and folder that went with it, attempt 2 on the
     /// breaker's W4.
     ///
+    /// A LINK IS NEVER ENTERED, attempt 3: a subfolder carrying the reparse point attribute, a junction or a symbolic link, is
+    /// removed as the link alone, and any other subfolder whole, so nothing outside the folder is deleted through it. A file
+    /// that will not go for another reason than a program holding it is kept in Failed with what it threw.
+    ///
     /// THE FILES GO ONE BY ONE, attempt 2 on the reviewer's N3 and the breaker's C3, so a file another program holds is the
     /// one named, by its full path, for the caller's line of FileInUse, the rest still go, and the pictures already deleted
-    /// are counted. A folder that held one is not deleted whole and says so. Any other failure is thrown to the caller, which
-    /// logs it, and never taken for this.
+    /// are counted. A folder that held one, or one that would not go, is not deleted whole and says so. Only a failure to read
+    /// the folder itself is thrown to the caller, which logs it.
     /// </summary>
     public sealed class PicturesFolder
     {
         private readonly List<string> held = new List<string>();
         private readonly List<string> others = new List<string>();
+        private readonly List<KeyValuePair<string, Exception>> failed = new List<KeyValuePair<string, Exception>>();
 
         private PicturesFolder(string folder)
         {
@@ -52,6 +57,12 @@ namespace Federator.Core.Report
         internal bool InUse
         {
             get { return held.Count > 0; }
+        }
+
+        /// <summary>Each entry that would not go for another reason than a program holding it, with what it threw, for the caller to log.</summary>
+        public IList<KeyValuePair<string, Exception>> Failed
+        {
+            get { return failed.AsReadOnly(); }
         }
 
         /// <summary>
@@ -105,39 +116,41 @@ namespace Federator.Core.Report
 
             foreach (string inner in folders)
             {
-                outcome.others.Add(Path.GetFileName(inner));
+                outcome.others.Add(Path.GetFileName(inner) + (IsALink(inner) ? ", a link removed alone" : string.Empty));
             }
 
             outcome.Pictures = pictures.Count;
 
             foreach (string file in top)
             {
-                if (outcome.DeleteOne(file) && pictures.Contains(file))
+                if (outcome.DeleteOne(file, () => File.Delete(file)) && pictures.Contains(file))
                 {
                     outcome.PicturesDeleted++;
                 }
             }
 
+            // Attempt 3, both readers' blocking finding. A link, a junction or a symbolic link to a folder, is removed as the
+            // link alone and never entered, so nothing outside the folder is deleted through it. Any other folder goes whole,
+            // and Directory.Delete does not follow a link below it on .NET Framework.
             foreach (string inner in folders)
             {
-                List<string> below = new List<string>(Directory.GetFiles(inner, "*", SearchOption.AllDirectories));
-                below.Sort(StringComparer.Ordinal);
-
-                foreach (string file in below)
-                {
-                    outcome.DeleteOne(file);
-                }
+                bool link = IsALink(inner);
+                outcome.DeleteOne(inner, () => Directory.Delete(inner, !link));
             }
 
-            if (outcome.held.Count == 0)
+            if (outcome.held.Count == 0 && outcome.failed.Count == 0)
             {
-                Directory.Delete(folder, true);
+                Directory.Delete(folder, false);
                 outcome.Deleted = true;
             }
 
             return outcome;
         }
 
+        private static bool IsALink(string folder)
+        {
+            return (File.GetAttributes(folder) & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint;
+        }
         private static bool IsAPicture(string name)
         {
             int test;
@@ -147,35 +160,48 @@ namespace Federator.Core.Report
                 && string.Equals(Path.GetExtension(name), ImageNaming.Extension, StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>Deletes one file, true where it went, and keeps its path where another program held it.</summary>
-        private bool DeleteOne(string file)
+        /// <summary>
+        /// Deletes one entry, true where it went. One another program holds is kept in Held, and since attempt 3, the breaker's
+        /// 6, one that will not go for another reason, a file read only or a denied folder among them, is kept in Failed with
+        /// what it threw, so what already went is still counted and the rest still go. Neither is ever taken for deleted.
+        /// </summary>
+        private bool DeleteOne(string path, Action delete)
         {
             try
             {
-                File.Delete(file);
+                delete();
                 return true;
             }
             catch (IOException error)
             {
-                if (!FileInUse.IsInUse(error))
+                if (FileInUse.IsInUse(error))
                 {
-                    throw;
+                    held.Add(path);
+                }
+                else
+                {
+                    failed.Add(new KeyValuePair<string, Exception>(path, error));
                 }
 
-                held.Add(file);
+                return false;
+            }
+            catch (UnauthorizedAccessException error)
+            {
+                failed.Add(new KeyValuePair<string, Exception>(path, error));
                 return false;
             }
         }
-
-        /// <summary>The log's line. A file held is named after it by the caller in FileInUse's words, one line a file.</summary>
+        /// <summary>
+        /// The log's line. Each file held is named after it by the caller in FileInUse's words, and each that would not go with
+        /// what it threw, one line each.
+        /// </summary>
         public string Line()
         {
-            if (InUse)
+            if (held.Count > 0 || failed.Count > 0)
             {
                 return "IMAGES   " + Folder + " not deleted whole, " + Number(PicturesDeleted) + " of its " + Number(Pictures)
-                    + (Pictures == 1 ? " picture" : " pictures") + " deleted and " + Number(held.Count)
-                    + (held.Count == 1 ? " file held open by another program, named on the line after"
-                        : " files held open by another program, each named on the lines after");
+                    + (Pictures == 1 ? " picture" : " pictures") + " deleted, " + Number(held.Count) + " held open by another program and "
+                    + Number(failed.Count) + " that would not go, each named on the lines after";
             }
 
             if (!Deleted)
@@ -202,14 +228,15 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// The line for a page or a workbook of an earlier run this run did not write, left at its path after the pictures
-        /// folder went, attempt 2 on the breaker's S3 and W5. The file is not touched.
+        /// folder went, attempt 2 on the breaker's S3 and W5. Since attempt 3, the reviewer's N3 and N4, it says what the links
+        /// reach: this run's pictures where this run took pictures, and otherwise that the pictures they pointed at are gone.
+        /// The file is not touched.
         /// </summary>
-        public static string EarlierFileLine(string path)
+        public static string EarlierFileLine(string path, bool tookPictures)
         {
-            return "IMAGES   " + path + " is an earlier run's, left as it is since this run did not write it, and its picture"
-                + " links now reach this run's pictures";
+            return "IMAGES   " + path + " is an earlier run's, left as it is since this run did not write it, and "
+                + (tookPictures ? "its picture links now reach this run's pictures" : "the pictures its links pointed at are gone");
         }
-
         private static string Number(int value)
         {
             return value.ToString(CultureInfo.InvariantCulture);

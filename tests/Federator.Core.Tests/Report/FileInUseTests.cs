@@ -120,7 +120,7 @@ namespace Federator.Core.Tests
             Assert.That(lines.Length, Is.EqualTo(5));
             Assert.That(lines[0], Is.EqualTo("1 of 2 groups wrote no result."));
             Assert.That(lines[1], Is.Empty);
-            Assert.That(lines[2], Is.EqualTo("2 files were open in another program and not written:"));
+            Assert.That(lines[2], Is.EqualTo("2 files were open in another program and left as they were:"));
             Assert.That(lines[3], Is.EqualTo(one));
             Assert.That(lines[4], Is.EqualTo(two));
         }
@@ -131,7 +131,7 @@ namespace Federator.Core.Tests
             Assert.That(FileInUse.EndMessage("it ran", new string[0]), Is.EqualTo("it ran"));
             Assert.That(FileInUse.EndMessage(null, null), Is.Null);
             Assert.That(FileInUse.EndMessage(null, new[] { FileInUse.Line(TestPaths.At("a.xlsx")) }),
-                Is.EqualTo("A file was open in another program and not written:" + Environment.NewLine + FileInUse.Line(TestPaths.At("a.xlsx"))));
+                Is.EqualTo("A file was open in another program and left as it was:" + Environment.NewLine + FileInUse.Line(TestPaths.At("a.xlsx"))));
         }
     }
 }

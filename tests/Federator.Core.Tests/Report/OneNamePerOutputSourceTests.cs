@@ -174,7 +174,7 @@ namespace Federator.Core.Tests
                 BodyOf(packages, "private void WriteOnePackagesReports(")
             })
             {
-                Assert.That(body, Does.Contain("NotWrittenWhileOpen("), body.Substring(0, Math.Min(80, body.Length)));
+                Assert.That(body, Does.Contain("WhileOpen("), body.Substring(0, Math.Min(80, body.Length)));
             }
         }
 
@@ -209,7 +209,8 @@ namespace Federator.Core.Tests
 
             Assert.That(At(body, "new FileStream(nwfPath, FileMode.Open, FileAccess.Read, FileShare.Read)"),
                 Is.LessThan(At(body, "File.Copy(nwfPath, target, true)")));
-            Assert.That(body, Does.Contain("log.NotWrittenWhileOpen(held)"));
+            Assert.That(body, Does.Contain("log.NotReadWhileOpen(nwfPath)"), "attempt 3: the NWF held is not read, never not written");
+            Assert.That(body, Does.Contain("log.NotWrittenWhileOpen(target)"));
         }
 
         /// <summary>
@@ -239,10 +240,39 @@ namespace Federator.Core.Tests
 
             Assert.That(At(engine, "if (packagesRun)"), Is.LessThan(At(engine, "WriteTheList(log, CoordinatesAcrossTheRun")));
             Assert.That(BodyOf(fresh, "private void WriteThePackagesResult("), Does.Contain("result.OffCoordinates.Add(group)"));
-            Assert.That(At(join, "WriteTheOneListOfTheRun(run, results, order.Units.Count)"), Is.LessThan(At(join, "log.WriteJoinedResult(")));
+            Assert.That(At(join, "WriteTheOneListOfTheRun(run, order.Units, results)"), Is.LessThan(At(join, "log.WriteJoinedResult(")));
             Assert.That(BodyOf(fresh, "private void WriteTheOneListOfTheRun("), Does.Contain("PackageRunResult.OffCoordinatesOf(run.Started"));
         }
 
+        /// <summary>
+        /// F243 attempt 3, the breaker's 4. A clash workbook held during the linking after its save is this run's save without
+        /// its linked pictures, never an earlier run's, and the earlier file line leaves it out.
+        /// </summary>
+        [Test]
+        public void AWorkbookHeldAfterItsSaveIsNeverCalledAnEarlierRuns()
+        {
+            string engine = Engine();
+            string write = BodyOf(engine, "private void WriteTheWorkbook(");
+
+            Assert.That(write, Does.Contain("writer.Saved"));
+            Assert.That(write, Does.Contain("without its linked pictures"));
+            Assert.That(BodyOf(engine, "private void SayTheEarlierReportsLeft("), Does.Contain("outcome.WorkbookSavedWithoutLinks"));
+        }
+
+        /// <summary>
+        /// F243 attempt 3, the breaker's 6 and the reviewer's N3 and N5. The pictures folder's held files are said not deleted,
+        /// a file that would not go is logged with what it threw, and nothing claims this run's pictures replaced the old ones.
+        /// </summary>
+        [Test]
+        public void ThePicturesFolderSaysEachFileLeftAndClaimsNothingItDidNotCheck()
+        {
+            string body = BodyOf(Engine(), "private void DeleteThePicturesFolderOnce(");
+
+            Assert.That(body, Does.Contain("log.NotDeletedWhileOpen(held)"));
+            Assert.That(body, Does.Contain("deleted.Failed"));
+            Assert.That(body, Does.Not.Contain("written over the earlier ones"));
+            Assert.That(BodyOf(Packages(), "private void CleanTheOldReportFiles("), Does.Contain("log.NotDeletedWhileOpen(path)"));
+        }
         /// <summary>F243 attempt 2, the breaker's S5. The links are checked against the count the writer made, each missing one a row.</summary>
         [Test]
         public void TheLinksAreCheckedAgainstWhatTheWriterMade()

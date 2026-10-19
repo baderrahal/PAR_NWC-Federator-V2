@@ -72,16 +72,96 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F243 attempt 2, the breaker's S3 and W5. A page or a workbook this run did not write, left at its path after the
-        /// folder went, is named, and the line says its links now reach this run's pictures.
+        /// F243 attempt 2, the breaker's S3 and W5, and attempt 3, the reviewer's N3 and N4. A page or a workbook this run did
+        /// not write, left at its path after the folder went, is named, and the line says what its links reach: this run's
+        /// pictures where this run took pictures, and otherwise that the pictures they pointed at are gone.
         /// </summary>
         [Test]
         public void AnEarlierFileLeftAtItsPathIsNamedWithWhatItsLinksNowReach()
         {
             string page = Path.Combine(clashReport, Name + ".html");
 
-            Assert.That(PicturesFolder.EarlierFileLine(page), Is.EqualTo("IMAGES   " + page + " is an earlier run's, left as it is since"
+            Assert.That(PicturesFolder.EarlierFileLine(page, true), Is.EqualTo("IMAGES   " + page + " is an earlier run's, left as it is since"
                 + " this run did not write it, and its picture links now reach this run's pictures"));
+            Assert.That(PicturesFolder.EarlierFileLine(page, false), Is.EqualTo("IMAGES   " + page + " is an earlier run's, left as it is since"
+                + " this run did not write it, and the pictures its links pointed at are gone"));
+        }
+
+        /// <summary>
+        /// F243 attempt 3, both readers' blocking finding. A link inside the folder, a junction to a folder outside it, is
+        /// removed as the link alone and never entered, so nothing outside the folder is deleted, and it is named.
+        /// </summary>
+        [Test]
+        public void ALinkInsideTheFolderIsRemovedAloneAndWhatItPointsAtStays()
+        {
+            TestPaths.OnWindowsOnly("a junction, which only Windows makes");
+
+            string outside = Path.Combine(Path.GetDirectoryName(clashReport), "outside");
+            Directory.CreateDirectory(outside);
+            string kept = Put(outside, "cd000001.jpg");
+            Put(pictures, "cd000001.jpg");
+            string link = Path.Combine(pictures, "link");
+
+            if (!MakeAJunction(link, outside))
+            {
+                Assert.Ignore("A junction could not be made on this machine without rights it does not have.");
+            }
+
+            PicturesFolder outcome = PicturesFolder.Delete(pictures);
+
+            Assert.That(File.Exists(kept), Is.True, "a file outside the folder was deleted through a link");
+            Assert.That(Directory.Exists(pictures), Is.False);
+            Assert.That(outcome.Line(), Does.Contain("link, a link removed alone"));
+        }
+
+        /// <summary>
+        /// F243 attempt 3, the breaker's 6 and the reviewer's N5. A file that will not go for a reason other than another
+        /// program holding it, here read only, leaves what already went counted, is named with what it threw, and the rest go.
+        /// </summary>
+        [Test]
+        public void AFileThatWillNotGoIsNamedAndWhatWentIsStillCounted()
+        {
+            TestPaths.OnWindowsOnly("a read only file refusing to be deleted");
+
+            string free = Put(pictures, "cd000001.jpg");
+            string stuck = Put(pictures, "cd000002.jpg");
+            File.SetAttributes(stuck, FileAttributes.ReadOnly);
+
+            try
+            {
+                PicturesFolder outcome = PicturesFolder.Delete(pictures);
+
+                Assert.That(File.Exists(free), Is.False);
+                Assert.That(outcome.PicturesDeleted, Is.EqualTo(1));
+                Assert.That(outcome.AnyPictureWent, Is.True, "an earlier picture went, so an earlier report left is named");
+                Assert.That(outcome.Failed.Count, Is.EqualTo(1));
+                Assert.That(outcome.Failed[0].Key, Is.EqualTo(stuck));
+                Assert.That(outcome.Failed[0].Value, Is.InstanceOf<UnauthorizedAccessException>());
+                Assert.That(outcome.Line(), Is.EqualTo("IMAGES   " + pictures + " not deleted whole, 1 of its 2 pictures deleted, 0 held"
+                    + " open by another program and 1 that would not go, each named on the lines after"));
+            }
+            finally
+            {
+                File.SetAttributes(stuck, FileAttributes.Normal);
+            }
+        }
+
+        private static bool MakeAJunction(string link, string target)
+        {
+            System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo(
+                "cmd.exe", "/c mklink /J \"" + link + "\" \"" + target + "\"")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+
+            using (System.Diagnostics.Process process = System.Diagnostics.Process.Start(start))
+            {
+                process.WaitForExit();
+                return process.ExitCode == 0 && Directory.Exists(link);
+            }
         }
 
         /// <summary>The break: another group's folder and the page and the Excel beside the folder are left as they are.</summary>
@@ -149,8 +229,8 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Held.Count, Is.EqualTo(1));
             Assert.That(outcome.Held[0], Is.EqualTo(held));
             Assert.That(outcome.PicturesDeleted, Is.EqualTo(2));
-            Assert.That(outcome.Line(), Is.EqualTo("IMAGES   " + pictures + " not deleted whole, 2 of its 3 pictures deleted and 1 file"
-                + " held open by another program, named on the line after"));
+            Assert.That(outcome.Line(), Is.EqualTo("IMAGES   " + pictures + " not deleted whole, 2 of its 3 pictures deleted, 1 held"
+                + " open by another program and 0 that would not go, each named on the lines after"));
             Assert.That(File.Exists(held), Is.True);
             Assert.That(File.Exists(free), Is.False);
         }

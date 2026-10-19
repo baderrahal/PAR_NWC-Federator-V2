@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Federator.Core.Diagnostics;
 using Federator.Core.Disciplines;
 using Federator.Core.Health;
 using Federator.Core.Report;
@@ -25,9 +26,8 @@ namespace Federator.Core.Communities
     ///     PACKAGE\Backup\GROUP STAMP.nwf and GROUP STAMP (N).nwf, the newest renamed to GROUP.nwf where that is free
     ///
     /// GROUP is a group of the community in the run, by its NWF name or its workbook name, DISC a discipline of the discipline
-    /// settings, STAMP the moment the old
-    /// names carried, yyyy-MM-dd HHmmss, read as a real moment, and N the counter the old names took, 2 or more. The names
-    /// are matched Ordinal, as the tool wrote them. Where Backup\GROUP.nwf is already there the newest dated backup is left as
+    /// settings, STAMP the moment the old names carried, yyyy-MM-dd HHmmss, read as a real moment, and N the counter the old
+    /// names took, 2 or more. The names are matched Ordinal, as the tool wrote them. Where Backup\GROUP.nwf is already there the newest dated backup is left as
     /// it is and said, and the older ones go. The patterns live here and nowhere else.
     /// </summary>
     public static class OldReportFiles
@@ -264,6 +264,8 @@ namespace Federator.Core.Communities
                 }
             }
 
+            outcome.LookedFor(names.Count, disciplines.Disciplines.Count);
+
             if (string.IsNullOrEmpty(communityFolder) || !Directory.Exists(communityFolder))
             {
                 return outcome;
@@ -300,6 +302,8 @@ namespace Federator.Core.Communities
             {
                 return;
             }
+
+            outcome.ReadAPackage();
 
             foreach (string file in Directory.GetFiles(folder))
             {
@@ -338,6 +342,7 @@ namespace Federator.Core.Communities
                 }
             }
         }
+
         private static void CleanTheBackupsOf(string group, string backup, string[] files, OldReportFilesOutcome outcome)
         {
             List<KeyValuePair<string, DateTime>> dated = new List<KeyValuePair<string, DateTime>>();
@@ -432,25 +437,48 @@ namespace Federator.Core.Communities
         /// <summary>How many files were deleted, said by SummaryLine.</summary>
         private int deletedCount;
 
+        /// <summary>How many files of the names looked for were found, deleted, renamed, kept, held or failed.</summary>
+        private int found;
+
+        private int packagesRead;
+        private int groupsLookedFor;
+        private int disciplinesLookedFor;
+
+        internal void LookedFor(int groups, int disciplines)
+        {
+            groupsLookedFor = groups;
+            disciplinesLookedFor = disciplines;
+        }
+
+        internal void ReadAPackage()
+        {
+            packagesRead++;
+        }
+
         /// <summary>
-        /// The one line for the community after its own lines: how many files went, how many were held and how many failed,
-        /// or that it holds no file of an old name.
+        /// The one line for the community after its own lines, attempt 3 on the breaker's 1: the folder and the package folders
+        /// read, the names looked for, those of this run's groups and disciplines, and what of them was found, how many files
+        /// went, were held and would not go. Never a claim about a name it did not look for.
         /// </summary>
         public string SummaryLine()
         {
-            if (lines.Count == 0 && inUse.Count == 0 && failed.Count == 0)
+            string looked = "OLD      " + Folder + " and " + Words.Counted(packagesRead, "package folder", "package folders")
+                + " read for the old names of " + Words.Counted(groupsLookedFor, "group", "groups") + " and "
+                + Words.Counted(disciplinesLookedFor, "discipline", "disciplines") + " of this run, ";
+
+            if (found == 0)
             {
-                return "OLD      " + Folder + " holds no file under a name this tool no longer writes";
+                return looked + "none of them was there";
             }
 
-            return "OLD      " + Folder + ", " + deletedCount.ToString(CultureInfo.InvariantCulture)
-                + (deletedCount == 1 ? " file" : " files") + " under a name this tool no longer writes deleted"
+            return looked + Words.Counted(deletedCount, "file", "files") + " deleted"
                 + (inUse.Count == 0 ? string.Empty : ", " + inUse.Count.ToString(CultureInfo.InvariantCulture) + " held open by another program")
                 + (failed.Count == 0 ? string.Empty : ", " + failed.Count.ToString(CultureInfo.InvariantCulture) + " that would not go, each said");
         }
-
         internal void Delete(string path, string kind)
         {
+            found++;
+
             try
             {
                 File.Delete(path);
@@ -467,8 +495,11 @@ namespace Federator.Core.Communities
         {
             lines.Add("OLD      " + folder + " is not inside " + Folder + ", so nothing in it is read");
         }
+
         internal void Rename(string from, string to)
         {
+            found++;
+
             try
             {
                 File.Move(from, to);
@@ -482,6 +513,7 @@ namespace Federator.Core.Communities
 
         internal void Keep(string newest, string one)
         {
+            found++;
             lines.Add("OLD      kept " + newest + " as it is, the newest dated backup, because " + one + " is already there");
         }
 
