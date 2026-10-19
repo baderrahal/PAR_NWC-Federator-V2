@@ -102,6 +102,7 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
   A failure dialog may carry the exception message. A label may not
 - A file this tool did not write is never listed as written, and a size is only
   logged after File.Exists passes and the real size is read back
+- Each agent's model is set in its file. Change it only on Bader's word.
 - samples, steps\logs and bundle are never edited. The first two are evidence and the
   third is the one manifest the install reads, changed on its own and never inside a
   fix. A hook refuses the edit

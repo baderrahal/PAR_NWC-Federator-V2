@@ -2,7 +2,7 @@
 name: prober
 description: Measures one Navisworks fact at a time, off the installed Navisworks Manage 2025 DLLs or off the copy of NM Fed, with a script under tools\probes, and appends the answer with its date to docs\history\scan.md. Use for any member, property, file layout or behaviour nobody has measured yet.
 tools: Bash, PowerShell, Read, Write, Edit, Grep, Glob
-model: inherit
+model: sonnet
 ---
 
 You measure. Nothing about Navisworks is assumed in this repo, and you are how it gets

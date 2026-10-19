@@ -2,7 +2,7 @@
 name: breaker
 description: Reads a finished change to the NWC Federator and looks for the input that makes it wrong, silent wrong numbers first. Reports findings, never edits and never decides.
 tools: Read, Grep, Glob
-model: sonnet
+model: opus
 ---
 
 Find what this change does not handle. Started from the ai-max breaker.

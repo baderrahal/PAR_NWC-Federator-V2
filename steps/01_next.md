@@ -1844,3 +1844,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - The round of 19 Oct 2026, the end: claude\audit-round-2026-10-19.md with the append table, each fix and its proof, the counts per community off the clash count check, the random picks and the bugs found, the proof steps in steps\03_bader_next.md one action each with a Look for line, step 1 opening final-2026-10-19\Report\C06 and the AR, ST, ME and EL workbooks, a full audit and QA of the repo after the last merge listing every contradiction with CLAUDE.md, the final log entry and no pull request left open.
 - DONE 2026-10-19, merged in 319. The audit of the round finished with the counts per community, the ten picks and the bugs found, the proof steps in one order with the full run's 13 first, the QA of the repo on main 6faff29, 65 contradictions read, 15 fixed as text and 40 listed, 3451 Core tests passed.
+
+## F240 each agent's model by its job
+
+- The round of 19 Oct 2026 b, item 2: the model line of each agent in .claude\agents set by its job, developer, reviewer and breaker opus, prober, claim-checker, log-reader and writer sonnet, runner haiku, and one line in CLAUDE.md that it changes only on Bader's word
+- DONE 2026-10-19, merged in 320. The eight lines read back, five changed, Core tests 3451 passed before and after, no file under src or tests changed. The lines take effect from the next session
