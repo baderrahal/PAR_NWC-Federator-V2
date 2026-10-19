@@ -20,8 +20,8 @@ namespace Federator.Core.Report
     /// how many objects, and the run goes on with the rest of the group. The
     /// run 20261014-105308 crashed Navisworks at picture 8907 of 10170 at 9999 objects, in lcodwin.dll.
     ///
-    /// The five numbers are settings on ImageOptions since F227, Bader's answer to Q210, and the consts here are
-    /// their defaults.
+    /// The five numbers are settings on ImageOptions since F227, Bader's answer to Q210, and since F235 the 750 a sixth,
+    /// and the consts here are their defaults.
     /// </summary>
     public static class PictureLimits
     {

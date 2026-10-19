@@ -124,3 +124,21 @@ The two routes the C06 and C07 run did not take were run on build a339b626, the 
 file, row F233-R3. The NWF page on Report3, run-20261019-032541: 1B06PG not built, its NWF the same SHA-256, and its row in the
 EL workbook off the files its result carried back, row F233-R2. Every workbook of both runs read back with its summary counts
 equal to its rows. The NWF page run also showed row F234-R5, a pattern learned off the AR names of one building.
+
+## F235, Q187 and Q195 as Bader answered them
+
+Q187: the caps of A 150, B 100 and C 50 only on a test of more than 750 clashes, a setting, a test of 750 or fewer pictured for
+every clash, the GDI and memory stops unchanged, the IMAGES line of a capped test naming its clashes and the 750. Q195: the
+penetration box ticked by default on both pages, the NWF page's own box read by its run, by design unchanged.
+
+Proved on a copy of 1B06PK, build 897b0008, run-20261019-034851:
+
+| 1B06PK | F234 run, old caps, 1597fe9b | F235 run, 897b0008 |
+|---|---|---|
+| largest test | 655 clashes | 655 clashes |
+| tests capped | 4 | 0 |
+| pictures written | 1036 | 1748 |
+| clashes left with no picture by the cap | 712 | 0 |
+| penetrations moved to Reviewed | box off, none | 844 of 1748 |
+
+Core tests 3421 before and 3423 after. Asked: Q220, the categories of the penetration lists his words do not name.

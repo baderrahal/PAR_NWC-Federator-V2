@@ -200,6 +200,9 @@ namespace Federator.Core.Tests
             Assert.That(packages, Does.Contain("MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel"));
             Assert.That(packages, Does.Contain("ShowTheNwfTable(outcomes);"));
             Assert.That(packages, Does.Contain("nwfSteps.Apply(options);"));
+            Assert.That(packages.IndexOf("options.MarkPenetrations = NwfMarkPenetrations.IsChecked == true;", StringComparison.Ordinal),
+                Is.GreaterThan(packages.IndexOf("nwfSteps.Apply(options);", StringComparison.Ordinal)), "F235: the NWF page's run reads its own penetration box");
+            Assert.That(packages, Does.Contain("options.MarkPenetrations && options.RunTests);"), "its RUN SETTINGS and its confirm say YES only where the tests run");
             Assert.That(packages, Does.Contain("RunPackagesInFreshStarts(PackageRunOrder.NwfPage, report, run, units);"));
             Assert.That(packages, Does.Contain("RunPackagesInFreshStarts(PackageRunOrder.NwcPage, packageTree.Parent, run, units);"));
         }

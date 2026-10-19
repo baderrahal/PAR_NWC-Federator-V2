@@ -204,6 +204,17 @@ namespace Federator.Core.Clash
         /// </summary>
         public const bool DefaultMarkPenetrations = true;
 
+        /// <summary>
+        /// What a confirm says where the box is ticked, F235 on the breaker's finding, since a confirm that said every status
+        /// is kept read false once the box opened ticked.
+        /// </summary>
+        public static string ConfirmWords(SizeSettings sizes)
+        {
+            SizeSettings how = sizes ?? new SizeSettings();
+            return "but a New or Active clash of a service of " + Millimetres(how.ThresholdMillimetres)
+                + " or less through a wall, floor, roof or foundation is moved to Reviewed with a comment, as the penetrations box is ticked";
+        }
+
         private static string Millimetres(double value)
         {
             return value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + "mm";

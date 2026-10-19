@@ -193,8 +193,8 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// Move a clash between two sets named as a by design connection to Reviewed,
-        /// F72b. OFF by default, for the same reason the penetration box is: it writes
-        /// into the NWF, which is the only record of what has been fixed.
+        /// F72b. OFF by default, and left so by Bader's answer to Q195 that ticked the penetration box: it
+        /// writes into the NWF, which is the only record of what has been fixed.
         ///
         /// It reads the by design pairs of the built in matrix pack, F154, and where no pack
         /// can be read it moves nothing and says so, rather than inventing a list.

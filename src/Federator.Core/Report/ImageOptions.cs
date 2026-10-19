@@ -142,7 +142,15 @@ namespace Federator.Core.Report
         public int CapOverClashes
         {
             get { return capOverClashes; }
-            set { capOverClashes = NoughtOrMore(value, "the clashes over which the caps hold, which"); }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "The clashes over which a test's pictures are capped are nought or more.");
+                }
+
+                capOverClashes = value;
+            }
         }
 
         /// <summary>

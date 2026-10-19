@@ -1236,7 +1236,7 @@ namespace Federator.Addin.Engine
                 // F54's slot is here. Its own resolve again, and a walk that only reads,
                 // so nothing is holding a handle across the mutator below.
                 //
-                // Off by default, so a run that did not ask for it resolves nothing and
+                // On by default since F235, Q195. A run with the box off resolves nothing and
                 // walks nothing and costs exactly what it cost before F72.
                 IList<WantedStatus> wanted = WantedStatuses;
 

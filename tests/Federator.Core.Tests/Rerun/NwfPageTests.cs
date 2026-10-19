@@ -130,6 +130,21 @@ namespace Federator.Core.Tests
             Assert.That(text, Does.EndWith("Nothing is changed before OK. Cancel is the default."));
         }
 
+        /// <summary>
+        /// F235 on the breaker's finding: with the penetration box ticked, as it opens since Q195, the confirm says the small
+        /// penetrations are moved to Reviewed, and never that every status is kept. With it off it says what it said before.
+        /// </summary>
+        [Test]
+        public void WithThePenetrationBoxTickedTheConfirmSaysSmallPenetrationsAreMovedToReviewed()
+        {
+            string on = RefreshConfirm.Text("C04.nwf", null, null, "Refresh", 0, -1, -1, -1, "Clash Status", true);
+            string off = RefreshConfirm.Text("C04.nwf", null, null, "Refresh", 0, -1, -1, -1, "Clash Status", false);
+
+            Assert.That(on, Does.Contain("Statuses, assigned to and comments of clashes still there are kept, but a New or Active clash of a service of 150mm or less through a wall, floor, roof or foundation is moved to Reviewed with a comment, as the penetrations box is ticked."));
+            Assert.That(off, Does.Contain("Statuses, assigned to and comments of clashes still there are kept."));
+            Assert.That(off, Does.Not.Contain("Reviewed"));
+        }
+
         [Test]
         public void WhatIsNotKnownIsSaidUnknownAndNeverInvented()
         {

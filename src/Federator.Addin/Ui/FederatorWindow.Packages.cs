@@ -1170,7 +1170,8 @@ namespace Federator.Addin.Ui
                 -1,
                 -1,
                 OldPicturesIn(pictureFolders),
-                ToolViewFolder.Name);
+                ToolViewFolder.Name,
+                options.MarkPenetrations && options.RunTests);
 
             log.Block("CONFIRM packages", new List<string>(text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)));
 
@@ -1229,7 +1230,7 @@ namespace Federator.Addin.Ui
                     "NWFs             : " + nwfs.Count + " in " + packagesWithNwfs + " of " + nwfTicks.PackagesTicked().Count + " packages with an NWF ticked",
                     "steps            : " + nwfSteps.Words()
                 });
-                SayTheRunsChoices(options.Tolerance, options.MarkPenetrations);
+                SayTheRunsChoices(options.Tolerance, options.MarkPenetrations && options.RunTests);
 
                 TeamMap teams;
                 ExchangeDocument exchange = ReadTheMatrixForAnOpenFileRun(out teams);

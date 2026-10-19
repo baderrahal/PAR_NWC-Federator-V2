@@ -30,8 +30,9 @@ namespace Federator.Addin.Engine
     /// is how Clash Detective numbers them, and the editor applies per test. Nothing here
     /// matches a name across two tests.
     ///
-    /// IT IS OFF BY DEFAULT and a run with the box off never calls this at all, so a
-    /// weekly run costs exactly what it cost before F72.
+    /// IT IS ON BY DEFAULT since F235, Bader's answer to Q195, on both pages, and a run with the box off never
+    /// calls this at all, so such a run costs exactly what it cost before F72. Its walk has no progress line yet,
+    /// row F143-R1.
     ///
     /// THE SIDE READER IS SHARED WITH F85, ServiceSizeOf below, so the viewpoint tree reads
     /// a clash side exactly the way this rule does, the largest size property, and the two

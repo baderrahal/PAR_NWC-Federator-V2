@@ -1742,7 +1742,12 @@ and 6 does not read as broken.
   picture of the small ones. Measured on the C04 run of 15 Oct 14:11: the stop at 3275 pictures left 163 tests with
   none, all 162 under 50 clashes among them, while the 174 tests at or under their cap wanted 2518. A picture taken
   out of report order is renamed by the renumber to its report order name, so the names and the links are as
-  before. PictureWalkTests prove the order, a stop after four pictures in each order, and the rename
+  before. PictureWalkTests prove the order, a stop after four pictures in each order, and the rename. SINCE F235,
+  Q187, A TEST OF 750 CLASHES OR FEWER HAS NO CAP, so every such test is in the first part, in report order, most
+  clashes first, and where a stop fires the smallest of them and every test over 750 get none, which no longer holds
+  what this bullet says of the small tests. Which order Bader wants then is Q221. The clashes counted toward the 750
+  are `TestReport.RawClashes`, every row of every status as the Clashes cell and the panel count them, a kept test
+  of a mirrored pair with the clashes only its mirror found among them, Q221
 - THE MEMORY STOP AND THE ORDER OF A GROUP, F182, Bader's answer C to Q175, `MemoryBackstop`,
   `ImageOptions.MemoryStopBytes` and `GroupOrder`. Navisworks's private memory grew about 3.3 MB for each
   picture, to 26 GB on C04 on a PC with 15.8 GB of RAM, and the NWD publish after the pictures hung with a 0

@@ -13,8 +13,10 @@ build step 5 is step 1. Packages and the picker is the NWF page's tree.
    five step boxes. `Mark by design as Reviewed` unticked.
 2. After a run of 1B06PK, open its log and search for `IMAGES` and `above which a test's pictures are capped`.
    Look for: a line only for tests of more than 750 clashes, each naming its clashes and the 750.
-3. Open 1B06PK's Excel and pick a test of 750 clashes or fewer.
-   Look for: every clash row of a status that takes a picture has its picture.
+3. Open 1B06PK's Excel and look through every test, all of them 750 clashes or fewer in 1B06PK, and search its log for
+   `NOTICE` near `IMAGES`.
+   Look for: every clash row at New, Active or Reviewed, the statuses that take a picture, has its picture, and no NOTICE
+   of the memory or the GDI stop. Approved and Resolved rows take none, Q194.
 4. In Navisworks, open 1B06PK's NWF, Clash Detective, and pick a pipe through a wall of 150 mm or less.
    Look for: status Reviewed, and a larger pipe through a wall still New.
 

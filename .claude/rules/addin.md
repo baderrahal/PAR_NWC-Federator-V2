@@ -877,7 +877,7 @@ well as to pass.
   calls that can be long, TestsRunTest and TestsImageForResult, are timed alone on the log's clock and
   named on a CALL line with its .tsv row where they took ProgressSettings.LongCallSeconds or more,
   LongCall.Say, in a finally, so one that throws is named too. Other passes over every clash, the
-  penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
+  penetration pass, on by default since F235, and the by design pass, off by default, have no piece yet, row F143-R1. The runner's
   ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
   ClashImages. The running count after every CountEveryTests tests, 25, is read off the same Progress since
   F227, where it was ClashRunner's const

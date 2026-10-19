@@ -379,8 +379,8 @@
                         </StackPanel>
 
                         <!-- F72b. The second rule that moves a clash to Reviewed, a LIST and
-                             not a judgement, off by default for the same reason the box
-                             above is. Its label and grey line are read off Core in the
+                             not a judgement, off by default, left so by Bader's answer
+                             to Q195, which ticked the box above. Its label and grey line are read off Core in the
                              constructor and never typed here. The pairs file is picked in
                              the grid above, beside the clash XML. -->
                         <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,8">
