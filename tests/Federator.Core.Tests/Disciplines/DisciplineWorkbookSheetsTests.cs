@@ -235,7 +235,8 @@ namespace Federator.Core.Tests
                 Assert.That(summary.Cell("D9").GetDouble(), Is.EqualTo(3), "three buildings, where the files are nine");
                 Assert.That(summary.Cell("D9").Style.NumberFormat.Format, Is.EqualTo("[=1]0\" building\";0\" buildings\""));
                 Assert.That(summary.Cell("E9").GetDouble(), Is.EqualTo(2));
-                Assert.That(summary.Cell("E9").Style.NumberFormat.Format, Is.EqualTo("[=1]0\" building\";0\" buildings\";\"none\""));
+                Assert.That(summary.Cell("E9").Style.NumberFormat.Format, Is.EqualTo("[=1]0\" building\";[>1]0\" buildings\";\"none\""),
+                    "Bader's decision of 20 Oct 2026, a count above 1 never printed none");
             }
         }
 

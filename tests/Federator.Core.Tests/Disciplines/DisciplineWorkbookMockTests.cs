@@ -39,9 +39,31 @@ namespace Federator.Core.Tests
         [Test]
         public void TheWorkbookOfC06MeMatchesTheMockSheetBySheet()
         {
-            IList<string> differences = WorkbookComparison.Differences(WriteMe(), Samples.DisciplineWorkbookMock(), WorkbookComparison.OpenpyxlWidthPadding);
+            IList<string> differences = WorkbookComparison.Differences(WriteMe(), Samples.DisciplineWorkbookMock(), true);
 
             Assert.That(differences, Is.Empty, string.Join("\n", differences));
+        }
+
+        /// <summary>
+        /// Bader's decision of 20 Oct 2026: the mock's With issue format, [=1]0" model";0" models";"none", gives its second section
+        /// to negative numbers, so Excel printed none for every count above 1, FIX beside none. With issue holds a [>1] section.
+        /// </summary>
+        [Test]
+        public void WithIssueHoldsASectionAboveOneSoACountOfFiveNeverPrintsNone()
+        {
+            using (XLWorkbook workbook = new XLWorkbook(WriteMe()))
+            {
+                IXLWorksheet summary = workbook.Worksheet("Summary");
+
+                for (int r = 8; r <= 13; r++)
+                {
+                    string unit = summary.Cell(r, 2).GetString() == "Missing model" ? "building" : "model";
+                    Assert.That(summary.Cell(r, 5).Style.NumberFormat.Format, Is.EqualTo("[=1]0\" " + unit + "\";[>1]0\" " + unit + "s\";\"none\""), "Summary E" + r);
+                    Assert.That(summary.Cell(r, 4).Style.NumberFormat.Format, Is.EqualTo("[=1]0\" " + unit + "\";0\" " + unit + "s\""), "Checked keeps the mock's, Summary D" + r);
+                }
+
+                Assert.That(summary.Cell("E8").GetDouble(), Is.EqualTo(5), "Coordinates of C06 ME, five models");
+            }
         }
 
         /// <summary>The measurement the width comparison stands on: the mock's XML holds the script's 18 and ClosedXML reads it less its padding.</summary>
@@ -75,7 +97,7 @@ namespace Federator.Core.Tests
                 workbook.Save();
             }
 
-            IList<string> differences = WorkbookComparison.Differences(broken, written, 0);
+            IList<string> differences = WorkbookComparison.Differences(broken, written, false);
 
             Assert.That(differences.Count, Is.EqualTo(3), string.Join("\n", differences));
             Assert.That(differences, Has.Some.StartsWith("Models!C width"));

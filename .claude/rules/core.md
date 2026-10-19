@@ -2667,6 +2667,9 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   navy. A WIDTH IS STORED AS CLOSEDXML STORES IT: openpyxl wrote the mock's 18 as 18 and ClosedXML writes 18 as 18.710625 and
   reads every stored width less 0.710625, `WorkbookComparison.OpenpyxlWidthPadding`, so the written widths are the order's numbers
   as Excel shows them and the mock's read 0.71 narrower in Excel
+- THE MOCK IN DOCS\DESIGN IS KEPT AS APPROVED, and its With issue format is corrected by Bader's decision of 20 Oct 2026, since
+  its second section read as negative numbers and printed none for every count above 1: `[=1]0" model";[>1]0" models";"none"`,
+  buildings the same, held by `DisciplineWorkbookMockTests.WithIssueHoldsASectionAboveOneSoACountOfFiveNeverPrintsNone`
 - FOUR SHEETS, `SummarySheet`, `ModelsSheet`, `ToFixSheet`, `ElementIdsSheet`, tabs navy, cyan, red and #8A94A3. Every sheet:
   gridlines off, column A a margin of 2, rows 1 to 3 the band, navy 34 with the title in Demi 18 white, navy 20 with the line under
   it in Book 10 cyan, cyan 4, filled from A to one column past the table. The header row Demi 10 navy on #E8EDF4 with a medium cyan
@@ -2681,8 +2684,8 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   Models, a part that is nought left out. All nought says every model passes only where every model was judged by every check
   that judges it, `DisciplineReport.EveryModelChecked`, and otherwise says nought of them need a fix. Row 7 the header, then the
   six checks in Bader's order, `CheckWords.All`: Coordinates, Missing model, Naming, File age, CAD imports, Generic Models, each
-  with what it checks, Checked and With issue as numbers in the units format, `[=1]0" model";0" models"` and with `;"none"` for
-  With issue, buildings for Missing model, the status and the modeller's words or Nothing to do in grey,
+  with what it checks, Checked and With issue as numbers in the units format, `[=1]0" model";0" models"` for Checked and
+  `[=1]0" model";[>1]0" models";"none"` for With issue, buildings for Missing model, the status and the modeller's words or Nothing to do in grey,
   `DisciplineReport.SummaryFor`. CHECKED IS THE MODELS THE CHECK JUDGED, `CheckFindings.CheckedFor`, and for Missing model THE
   BUILDINGS, one per group of two disciplines or more, never its files, F245 item 6, which the AR workbook of 19 Oct read as 58.
   WITH ISSUE IS THOSE OF THEM WITH A ROW OF THAT CHECK ON TO FIX. Status OK where nought, else FIX for a High check and REVIEW

@@ -173,6 +173,16 @@ namespace Federator.Core.Tests
         /// </summary>
         public const double OpenpyxlWidthPadding = 0.710625;
 
+        /// <summary>
+        /// Bader's decision of 20 Oct 2026: the mock's With issue format gave its second section to negative numbers, so Excel
+        /// printed none for every count above 1. Against the mock, a With issue cell of the Summary, column E, is compared with
+        /// the mock's format corrected to [=1]0" model";[>1]0" models";"none", and every other format with the mock's own.
+        /// </summary>
+        public static string WithIssueCorrected(string mockFormat)
+        {
+            return mockFormat.Replace("\";0\" ", "\";[>1]0\" ");
+        }
+
         /// <summary>The header row of each sheet and the column of its Status chips, 0 where it has none.</summary>
         private static readonly Dictionary<string, int[]> Layout = new Dictionary<string, int[]>(StringComparer.Ordinal)
         {
@@ -182,9 +192,14 @@ namespace Federator.Core.Tests
             { "Element IDs", new[] { 5, 0 } }
         };
 
-        /// <summary>The differences of a written workbook from another, whose widths are read plus the padding given, nought for one ClosedXML wrote.</summary>
-        public static IList<string> Differences(string written, string mock, double mockWidthPadding)
+        /// <summary>
+        /// The differences of a written workbook from another. Against the mock, its widths are read plus the padding and its With
+        /// issue formats corrected by Bader's decision of 20 Oct 2026. Against a workbook ClosedXML wrote, neither.
+        /// </summary>
+        public static IList<string> Differences(string written, string mock, bool againstTheMock)
         {
+            double mockWidthPadding = againstTheMock ? OpenpyxlWidthPadding : 0.0;
+
             List<string> found = new List<string>();
 
             using (XLWorkbook a = new XLWorkbook(written))
@@ -207,14 +222,14 @@ namespace Federator.Core.Tests
                         continue;
                     }
 
-                    Compare(mine, theirs, Layout[mine.Name][0], Layout[mine.Name][1], mockWidthPadding, found);
+                    Compare(mine, theirs, Layout[mine.Name][0], Layout[mine.Name][1], mockWidthPadding, againstTheMock, found);
                 }
             }
 
             return found;
         }
 
-        private static void Compare(IXLWorksheet mine, IXLWorksheet theirs, int header, int status, double padding, List<string> found)
+        private static void Compare(IXLWorksheet mine, IXLWorksheet theirs, int header, int status, double padding, bool againstTheMock, List<string> found)
         {
             string sheet = mine.Name + "!";
             int lastColumn = Math.Max(Last(mine.Row(header)), Last(theirs.Row(header)));
@@ -255,7 +270,8 @@ namespace Federator.Core.Tests
                     IXLCell y = theirs.Cell(r, c);
                     string at = sheet + x.Address.ToStringRelative();
                     Same(found, at + " value", Value(x), Value(y));
-                    Same(found, at + " number format", Format(x), Format(y));
+                    bool withIssue = againstTheMock && mine.Name == "Summary" && c == 5;
+                    Same(found, at + " number format", Format(x), withIssue ? WithIssueCorrected(Format(y)) : Format(y));
 
                     if (c == status)
                     {

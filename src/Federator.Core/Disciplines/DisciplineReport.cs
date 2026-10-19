@@ -521,7 +521,8 @@ namespace Federator.Core.Disciplines
                 Cell(sheet.Cell(r, 2), row.Check, band, XLAlignmentHorizontalValues.Left, Navy, false).Style.Font.FontName = Demi;
                 Cell(sheet.Cell(r, 3), row.WhatIsChecked, band, XLAlignmentHorizontalValues.Left, Ink, true);
                 Number(sheet.Cell(r, 4), row.Checked, "[=1]0\" " + row.Unit + "\";0\" " + many + "\"", band, XLAlignmentHorizontalValues.Right, Ink);
-                Number(sheet.Cell(r, 5), row.WithIssue, "[=1]0\" " + row.Unit + "\";0\" " + many + "\";\"none\"", band, XLAlignmentHorizontalValues.Right, Ink);
+                // Bader's decision of 20 Oct 2026: the mock's second section read as negative numbers, so above 1 printed none.
+                Number(sheet.Cell(r, 5), row.WithIssue, "[=1]0\" " + row.Unit + "\";[>1]0\" " + many + "\";\"none\"", band, XLAlignmentHorizontalValues.Right, Ink);
 
                 if (row.WithIssue > 0)
                 {
