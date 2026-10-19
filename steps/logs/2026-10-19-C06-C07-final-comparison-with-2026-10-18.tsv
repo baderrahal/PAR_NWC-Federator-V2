@@ -1,0 +1,1085 @@
+community	page	building	test	side	old cd	new cd	old excel	new excel	old html	new html	old views	new views	old pictures	new pictures	old reviewed	new reviewed
+C06	NWC	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWC	1B06BC	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWC	1B06BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	0	9	9	0	9
+C06	NWC	1B06BC	BLD-FF-Sprinklers-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWC	1B06BC	BLD-ST-Columns-vs-BLD-AR-Columns	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06BC	BLD-ST-Columns-vs-BLD-AR-Floors	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWC	1B06BC	BLD-ST-Columns-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	10	10	10	0	0
+C06	NWC	1B06BC	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	21	21	21	21	21	21	21	21	21	21	0	0
+C06	NWC	1B06BC	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06BC	BLD-ST-Framing-vs-BLD-AR-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06BC	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWC	1B06BC	BLD-ST-Framing-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06BC	BLD-ST-Framing-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWC	1B06BC	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06BC	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06BC	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	11	11	11	11	11	11	11	11	11	11	0	0
+C06	NWC	1B06BC	BLD-ST-Walls-vs-BLD-AR-Doors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06BC	BLD-ST-Walls-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06BC	BLD-ST-Walls-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	20	20	20	20	20	20	20	0	20	20	0	20
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	71	71	71	71	71	71	71	0	71	71	0	71
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	36	36	36	36	36	36	36	0	36	36	0	36
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	38	38	38	38	38	38	38	38	38	38	0	0
+C06	NWC	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	5	5	5	5	5	5	5	0	5	5	0	5
+C06	NWC	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	11	11	11	11	11	11	11	11	11	11	0	0
+C06	NWC	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	both	14	14	14	14	14	14	14	14	14	14	0	0
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	6	6	6	6	6	6	6	0	6	6	0	6
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	5	5	5	5	5	5	5	0	5	5	0	5
+C06	NWC	1B06G1	BLD-ME-Air Terminals-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	both	10	10	10	10	10	10	10	10	10	10	0	0
+C06	NWC	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	both	41	41	41	41	41	41	41	20	41	41	0	21
+C06	NWC	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ceilings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	34	34	34	34	34	34	34	0	34	34	0	34
+C06	NWC	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	11	11	11	11	11	11	11	0	11	11	0	11
+C06	NWC	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	11	11	11	11	11	11	11	11	11	11	0	0
+C06	NWC	1B06G1	BLD-PL-Mechanical Equipment-vs-BLD-AR-Ceilings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-PL-Mechanical Equipment-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-PL-Pipe Accessories-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	both	14	14	14	14	14	14	14	14	14	14	0	0
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	85	85	85	85	85	85	85	0	85	85	0	85
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWC	1B06G1	BLD-ST-Columns-vs-BLD-AR-Ceilings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-ST-Columns-vs-BLD-AR-Floors	both	23	23	23	23	23	23	23	23	23	23	0	0
+C06	NWC	1B06G1	BLD-ST-Columns-vs-BLD-AR-Walls	both	23	23	23	23	23	23	23	23	23	23	0	0
+C06	NWC	1B06G1	BLD-ST-Floors-vs-BLD-AR-Ceilings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06G1	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-ST-Floors-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-ST-Floors-vs-BLD-AR-Ramps	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-ST-Floors-vs-BLD-AR-Walls	both	75	75	75	75	75	75	75	75	75	75	0	0
+C06	NWC	1B06G1	BLD-ST-Foundation-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-ST-Framing-vs-BLD-AR-Ceilings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06G1	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWC	1B06G1	BLD-ST-Framing-vs-BLD-AR-Curtain Panels	both	12	12	12	12	12	12	12	12	12	12	0	0
+C06	NWC	1B06G1	BLD-ST-Framing-vs-BLD-AR-Doors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-ST-Framing-vs-BLD-AR-Floors	both	13	13	13	13	13	13	13	13	13	13	0	0
+C06	NWC	1B06G1	BLD-ST-Framing-vs-BLD-AR-Walls	both	43	43	43	43	43	43	43	43	43	43	0	0
+C06	NWC	1B06G1	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-ST-Stair-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06G1	BLD-ST-Walls-vs-BLD-AR-Ceilings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWC	1B06G1	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06G1	BLD-ST-Walls-vs-BLD-AR-Curtain Panels	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06G1	BLD-ST-Walls-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06G1	BLD-ST-Walls-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06G1	BLD-ST-Walls-vs-BLD-AR-Walls	both	14	14	14	14	14	14	14	14	14	14	0	0
+C06	NWC	1B06K1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWC	1B06K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06K1	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06M1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06M1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06M1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06M1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06P1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWC	1B06P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	75	75	75	75	75	75	75	0	75	75	0	75
+C06	NWC	1B06P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	47	47	47	47	47	47	47	0	47	47	0	47
+C06	NWC	1B06P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06P1	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWC	1B06P1	BLD-ME-Air Terminals-vs-BLD-AR-Ceilings	both	36	36	36	36	36	36	36	36	36	36	0	0
+C06	NWC	1B06P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	2	8	8	0	6
+C06	NWC	1B06P1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	88	88	88	88	88	88	88	0	88	88	0	88
+C06	NWC	1B06PE	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWC	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	5	5	5	5	5	5	5	0	5	5	0	5
+C06	NWC	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	6	6	6	6	6	6	6	3	6	6	0	3
+C06	NWC	1B06PE	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Doors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06PE	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PE	BLD-EL-Lighting Devices-vs-BLD-AR-Doors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PE	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PE	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PE	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06PE	BLD-ST-Floors-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PE	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PE	BLD-ST-Walls-vs-BLD-AR-Floors	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWC	1B06PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	12	12	12	12	12	12	12	0	12	12	0	12
+C06	NWC	1B06PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06PH	BLD-ST-Columns-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PH	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06PH	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PH	BLD-ST-Framing-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	96	96	96	96	96	96	96	96	96	96	0	0
+C06	NWC	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWC	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	211	211	211	211	211	211	211	211	150	211	0	0
+C06	NWC	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	655	655	655	655	655	655	655	7	150	655	0	648
+C06	NWC	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	90	90	90	90	90	90	90	90	90	90	0	0
+C06	NWC	1B06PK	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06PK	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWC	1B06PK	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	both	73	73	73	73	73	73	73	73	73	73	0	0
+C06	NWC	1B06PK	BLD-ME-Air Terminals-vs-BLD-ST-Columns	both	36	36	36	36	36	36	36	36	36	36	0	0
+C06	NWC	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	both	32	32	32	32	32	32	32	32	32	32	0	0
+C06	NWC	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	256	256	256	256	256	256	256	112	150	256	0	144
+C06	NWC	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWC	1B06PK	BLD-PL-Mechanical Equipment-vs-BLD-ST-Floors	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWC	1B06PK	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	190	190	190	190	190	190	190	190	150	190	0	0
+C06	NWC	1B06PK	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	51	51	51	51	51	51	51	0	51	51	0	51
+C06	NWC	1B06PK	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	13	13	13	13	13	13	13	0	13	13	0	13
+C06	NWC	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWC	1B06PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06PO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWC	1B06PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWC	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	3	9	9	0	6
+C06	NWC	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	both	6	6	6	6	6	6	6	5	6	6	0	1
+C06	NWC	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	34	34	34	34	34	34	34	0	34	34	0	34
+C06	NWC	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	19	19	19	19	19	19	19	19	19	19	0	0
+C06	NWC	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWC	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	9	9	9	9	9	9	9	0	9	9	0	9
+C06	NWC	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	17	17	17	17	17	17	17	17	17	17	0	0
+C06	NWC	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	18	18	18	18	18	18	18	0	18	18	0	18
+C06	NWC	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWC	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06PP	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWC	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PP	BLD-EL-Lighting Devices-vs-BLD-ST-Columns	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PP	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWC	1B06PP	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PP	BLD-Security Devices-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWC	1B06PP	BLD-Security Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-ST-Columns-vs-BLD-AR-Curtain Mullions	both	12	12	12	12	12	12	12	12	12	12	0	0
+C06	NWC	1B06PP	BLD-ST-Columns-vs-BLD-AR-Floors	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06PP	BLD-ST-Columns-vs-BLD-AR-Railings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PP	BLD-ST-Columns-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PP	BLD-ST-Columns-vs-BLD-AR-Walls	both	65	65	65	65	65	65	65	65	65	65	0	0
+C06	NWC	1B06PP	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	13	13	13	13	13	13	13	13	13	13	0	0
+C06	NWC	1B06PP	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-ST-Floors-vs-BLD-AR-Stairs	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-ST-Floors-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWC	1B06PP	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	60	60	60	60	60	60	60	60	60	60	0	0
+C06	NWC	1B06PP	BLD-ST-Framing-vs-BLD-AR-Floors	both	23	23	23	23	23	23	23	23	23	23	0	0
+C06	NWC	1B06PP	BLD-ST-Framing-vs-BLD-AR-Walls	both	24	24	24	24	24	24	24	24	24	24	0	0
+C06	NWC	1B06PP	BLD-ST-Stair-vs-BLD-AR-Railings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06PP	BLD-ST-Stair-vs-BLD-AR-Stairs	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06PP	BLD-ST-Stair-vs-BLD-AR-Walls	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWC	1B06PP	BLD-ST-Walls-vs-BLD-AR-Floors	both	21	21	21	21	21	21	21	21	21	21	0	0
+C06	NWC	1B06PP	BLD-ST-Walls-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WL	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WL	BLD-ME-Pipe Accessories-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WL	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WL	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	13	13	13	13	13	13	13	7	13	13	0	6
+C06	NWC	1B06WL	BLD-Security Devices-vs-BLD-EL-Lighting Fixtures	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWC	1B06WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWC	1B06WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WM	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WM	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	42	42	42	42	42	42	42	0	42	42	0	42
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	17	17	17	17	17	17	17	17	17	17	0	0
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	25	25	25	25	25	25	25	0	25	25	0	25
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWC	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWC	1B06WM	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WM	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WM	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWC	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WM	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WM	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	48	48	48	48	48	48	48	0	48	48	0	48
+C06	NWC	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWC	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWC	1B06WM	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WM	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WM	BLD-ST-Framing-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WM	BLD-ST-Walls-vs-BLD-AR-Floors	both	12	12	12	12	12	12	12	12	12	12	0	0
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	13	13	13	13	13	13	13	0	13	13	0	13
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWC	1B06WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1B06WO	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WO	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WO	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WO	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WO	BLD-EL-Lighting Devices-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWC	1B06WO	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWC	1B06WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWC	1B06WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1B06WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWC	1B06WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWC	1B06WO	BLD-ST-Columns-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1B06WO	BLD-ST-Floors-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWC	1B06WO	BLD-ST-Floors-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWC	1B06WO	BLD-ST-Framing-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1C06M2	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWC	1C06M2	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWC	1C06M2	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWC	1C06M2	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWF	1B06BC	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWF	1B06BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	0	9	9	0	9
+C06	NWF	1B06BC	BLD-FF-Sprinklers-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWF	1B06BC	BLD-ST-Columns-vs-BLD-AR-Columns	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06BC	BLD-ST-Columns-vs-BLD-AR-Floors	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWF	1B06BC	BLD-ST-Columns-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	10	10	10	0	0
+C06	NWF	1B06BC	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	21	21	21	21	21	21	21	21	21	21	0	0
+C06	NWF	1B06BC	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06BC	BLD-ST-Framing-vs-BLD-AR-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06BC	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWF	1B06BC	BLD-ST-Framing-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06BC	BLD-ST-Framing-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWF	1B06BC	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06BC	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06BC	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	11	11	11	11	11	11	11	11	11	11	0	0
+C06	NWF	1B06BC	BLD-ST-Walls-vs-BLD-AR-Doors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06BC	BLD-ST-Walls-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06BC	BLD-ST-Walls-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	20	20	20	20	20	20	20	0	20	20	0	20
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	71	71	71	71	71	71	71	0	71	71	0	71
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	36	36	36	36	36	36	36	0	36	36	0	36
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	38	38	38	38	38	38	38	38	38	38	0	0
+C06	NWF	1B06G1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	5	5	5	5	5	5	5	0	5	5	0	5
+C06	NWF	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	11	11	11	11	11	11	11	11	11	11	0	0
+C06	NWF	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	both	14	14	14	14	14	14	14	14	14	14	0	0
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	6	6	6	6	6	6	6	0	6	6	0	6
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	5	5	5	5	5	5	5	0	5	5	0	5
+C06	NWF	1B06G1	BLD-ME-Air Terminals-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	both	10	10	10	10	10	10	10	10	10	10	0	0
+C06	NWF	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	both	41	41	41	41	41	41	41	20	41	41	0	21
+C06	NWF	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ceilings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	34	34	34	34	34	34	34	0	34	34	0	34
+C06	NWF	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	11	11	11	11	11	11	11	0	11	11	0	11
+C06	NWF	1B06G1	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	11	11	11	11	11	11	11	11	11	11	0	0
+C06	NWF	1B06G1	BLD-PL-Mechanical Equipment-vs-BLD-AR-Ceilings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-PL-Mechanical Equipment-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-PL-Pipe Accessories-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings	both	14	14	14	14	14	14	14	14	14	14	0	0
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	85	85	85	85	85	85	85	0	85	85	0	85
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWF	1B06G1	BLD-ST-Columns-vs-BLD-AR-Ceilings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-ST-Columns-vs-BLD-AR-Floors	both	23	23	23	23	23	23	23	23	23	23	0	0
+C06	NWF	1B06G1	BLD-ST-Columns-vs-BLD-AR-Walls	both	23	23	23	23	23	23	23	23	23	23	0	0
+C06	NWF	1B06G1	BLD-ST-Floors-vs-BLD-AR-Ceilings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06G1	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-ST-Floors-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-ST-Floors-vs-BLD-AR-Ramps	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-ST-Floors-vs-BLD-AR-Walls	both	75	75	75	75	75	75	75	75	75	75	0	0
+C06	NWF	1B06G1	BLD-ST-Foundation-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-ST-Framing-vs-BLD-AR-Ceilings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06G1	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWF	1B06G1	BLD-ST-Framing-vs-BLD-AR-Curtain Panels	both	12	12	12	12	12	12	12	12	12	12	0	0
+C06	NWF	1B06G1	BLD-ST-Framing-vs-BLD-AR-Doors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-ST-Framing-vs-BLD-AR-Floors	both	13	13	13	13	13	13	13	13	13	13	0	0
+C06	NWF	1B06G1	BLD-ST-Framing-vs-BLD-AR-Walls	both	43	43	43	43	43	43	43	43	43	43	0	0
+C06	NWF	1B06G1	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-ST-Stair-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06G1	BLD-ST-Walls-vs-BLD-AR-Ceilings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWF	1B06G1	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06G1	BLD-ST-Walls-vs-BLD-AR-Curtain Panels	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06G1	BLD-ST-Walls-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06G1	BLD-ST-Walls-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06G1	BLD-ST-Walls-vs-BLD-AR-Walls	both	14	14	14	14	14	14	14	14	14	14	0	0
+C06	NWF	1B06K1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWF	1B06K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06K1	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06M1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06M1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06M1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06M1	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06P1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWF	1B06P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	75	75	75	75	75	75	75	0	75	75	0	75
+C06	NWF	1B06P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	47	47	47	47	47	47	47	0	47	47	0	47
+C06	NWF	1B06P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06P1	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWF	1B06P1	BLD-ME-Air Terminals-vs-BLD-AR-Ceilings	both	36	36	36	36	36	36	36	36	36	36	0	0
+C06	NWF	1B06P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	2	8	8	0	6
+C06	NWF	1B06P1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	88	88	88	88	88	88	88	0	88	88	0	88
+C06	NWF	1B06PE	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWF	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	5	5	5	5	5	5	5	0	5	5	0	5
+C06	NWF	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	6	6	6	6	6	6	6	3	6	6	0	3
+C06	NWF	1B06PE	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Doors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06PE	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PE	BLD-EL-Lighting Devices-vs-BLD-AR-Doors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PE	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PE	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PE	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06PE	BLD-ST-Floors-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PE	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PE	BLD-ST-Walls-vs-BLD-AR-Floors	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWF	1B06PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	12	12	12	12	12	12	12	0	12	12	0	12
+C06	NWF	1B06PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06PH	BLD-ST-Columns-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PH	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06PH	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PH	BLD-ST-Framing-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	96	96	96	96	96	96	96	96	96	96	0	0
+C06	NWF	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWF	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	211	211	211	211	211	211	211	211	150	211	0	0
+C06	NWF	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	655	655	655	655	655	655	655	7	150	655	0	648
+C06	NWF	1B06PK	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	90	90	90	90	90	90	90	90	90	90	0	0
+C06	NWF	1B06PK	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06PK	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWF	1B06PK	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	both	73	73	73	73	73	73	73	73	73	73	0	0
+C06	NWF	1B06PK	BLD-ME-Air Terminals-vs-BLD-ST-Columns	both	36	36	36	36	36	36	36	36	36	36	0	0
+C06	NWF	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	both	32	32	32	32	32	32	32	32	32	32	0	0
+C06	NWF	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	256	256	256	256	256	256	256	112	150	256	0	144
+C06	NWF	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06PK	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWF	1B06PK	BLD-PL-Mechanical Equipment-vs-BLD-ST-Floors	both	18	18	18	18	18	18	18	18	18	18	0	0
+C06	NWF	1B06PK	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	190	190	190	190	190	190	190	190	150	190	0	0
+C06	NWF	1B06PK	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	51	51	51	51	51	51	51	0	51	51	0	51
+C06	NWF	1B06PK	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	13	13	13	13	13	13	13	0	13	13	0	13
+C06	NWF	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWF	1B06PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06PO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWF	1B06PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWF	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	3	9	9	0	6
+C06	NWF	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	both	6	6	6	6	6	6	6	5	6	6	0	1
+C06	NWF	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	34	34	34	34	34	34	34	0	34	34	0	34
+C06	NWF	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	19	19	19	19	19	19	19	19	19	19	0	0
+C06	NWF	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWF	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	9	9	9	9	9	9	9	0	9	9	0	9
+C06	NWF	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	17	17	17	17	17	17	17	17	17	17	0	0
+C06	NWF	1B06PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	18	18	18	18	18	18	18	0	18	18	0	18
+C06	NWF	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWF	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06PP	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWF	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PP	BLD-EL-Lighting Devices-vs-BLD-ST-Columns	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PP	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWF	1B06PP	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PP	BLD-Security Devices-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C06	NWF	1B06PP	BLD-Security Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-ST-Columns-vs-BLD-AR-Curtain Mullions	both	12	12	12	12	12	12	12	12	12	12	0	0
+C06	NWF	1B06PP	BLD-ST-Columns-vs-BLD-AR-Floors	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06PP	BLD-ST-Columns-vs-BLD-AR-Railings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PP	BLD-ST-Columns-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PP	BLD-ST-Columns-vs-BLD-AR-Walls	both	65	65	65	65	65	65	65	65	65	65	0	0
+C06	NWF	1B06PP	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	13	13	13	13	13	13	13	13	13	13	0	0
+C06	NWF	1B06PP	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-ST-Floors-vs-BLD-AR-Stairs	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-ST-Floors-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWF	1B06PP	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	60	60	60	60	60	60	60	60	60	60	0	0
+C06	NWF	1B06PP	BLD-ST-Framing-vs-BLD-AR-Floors	both	23	23	23	23	23	23	23	23	23	23	0	0
+C06	NWF	1B06PP	BLD-ST-Framing-vs-BLD-AR-Walls	both	24	24	24	24	24	24	24	24	24	24	0	0
+C06	NWF	1B06PP	BLD-ST-Stair-vs-BLD-AR-Railings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06PP	BLD-ST-Stair-vs-BLD-AR-Stairs	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06PP	BLD-ST-Stair-vs-BLD-AR-Walls	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWF	1B06PP	BLD-ST-Walls-vs-BLD-AR-Floors	both	21	21	21	21	21	21	21	21	21	21	0	0
+C06	NWF	1B06PP	BLD-ST-Walls-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WL	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WL	BLD-ME-Pipe Accessories-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WL	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WL	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	13	13	13	13	13	13	13	7	13	13	0	6
+C06	NWF	1B06WL	BLD-Security Devices-vs-BLD-EL-Lighting Fixtures	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWF	1B06WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C06	NWF	1B06WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WM	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WM	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	42	42	42	42	42	42	42	0	42	42	0	42
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	17	17	17	17	17	17	17	17	17	17	0	0
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	25	25	25	25	25	25	25	0	25	25	0	25
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	5	5	5	5	5	5	5	5	5	5	0	0
+C06	NWF	1B06WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWF	1B06WM	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WM	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WM	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWF	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WM	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WM	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	48	48	48	48	48	48	48	0	48	48	0	48
+C06	NWF	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWF	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWF	1B06WM	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WM	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WM	BLD-ST-Framing-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WM	BLD-ST-Walls-vs-BLD-AR-Floors	both	12	12	12	12	12	12	12	12	12	12	0	0
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	13	13	13	13	13	13	13	0	13	13	0	13
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C06	NWF	1B06WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1B06WO	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WO	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WO	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WO	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WO	BLD-EL-Lighting Devices-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C06	NWF	1B06WO	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C06	NWF	1B06WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C06	NWF	1B06WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1B06WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C06	NWF	1B06WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWF	1B06WO	BLD-ST-Columns-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1B06WO	BLD-ST-Floors-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C06	NWF	1B06WO	BLD-ST-Floors-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C06	NWF	1B06WO	BLD-ST-Framing-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1C06M2	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C06	NWF	1C06M2	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C06	NWF	1C06M2	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C06	NWF	1C06M2	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWC	1C07BC	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1C07BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWC	1C07BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	0	9	9	0	9
+C07	NWC	1C07BC	BLD-FF-Sprinklers-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWC	1C07BC	BLD-ST-Columns-vs-BLD-AR-Columns	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWC	1C07BC	BLD-ST-Columns-vs-BLD-AR-Floors	both	18	18	18	18	18	18	18	18	18	18	0	0
+C07	NWC	1C07BC	BLD-ST-Columns-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	10	10	10	0	0
+C07	NWC	1C07BC	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	21	21	21	21	21	21	21	21	21	21	0	0
+C07	NWC	1C07BC	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07BC	BLD-ST-Framing-vs-BLD-AR-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07BC	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C07	NWC	1C07BC	BLD-ST-Framing-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07BC	BLD-ST-Framing-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C07	NWC	1C07BC	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07BC	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07BC	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	11	11	11	11	11	11	11	11	11	11	0	0
+C07	NWC	1C07BC	BLD-ST-Walls-vs-BLD-AR-Doors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07BC	BLD-ST-Walls-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07BC	BLD-ST-Walls-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07G1	BLD-ST-Columns-vs-BLD-AR-Ceilings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07G1	BLD-ST-Columns-vs-BLD-AR-Floors	both	23	23	23	23	23	23	23	23	23	23	0	0
+C07	NWC	1C07G1	BLD-ST-Columns-vs-BLD-AR-Walls	both	23	23	23	23	23	23	23	23	23	23	0	0
+C07	NWC	1C07G1	BLD-ST-Floors-vs-BLD-AR-Ceilings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07G1	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07G1	BLD-ST-Floors-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07G1	BLD-ST-Floors-vs-BLD-AR-Ramps	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07G1	BLD-ST-Floors-vs-BLD-AR-Walls	both	75	75	75	75	75	75	75	75	75	75	0	0
+C07	NWC	1C07G1	BLD-ST-Foundation-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07G1	BLD-ST-Framing-vs-BLD-AR-Ceilings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07G1	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C07	NWC	1C07G1	BLD-ST-Framing-vs-BLD-AR-Curtain Panels	both	12	12	12	12	12	12	12	12	12	12	0	0
+C07	NWC	1C07G1	BLD-ST-Framing-vs-BLD-AR-Doors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07G1	BLD-ST-Framing-vs-BLD-AR-Floors	both	13	13	13	13	13	13	13	13	13	13	0	0
+C07	NWC	1C07G1	BLD-ST-Framing-vs-BLD-AR-Walls	both	43	43	43	43	43	43	43	43	43	43	0	0
+C07	NWC	1C07G1	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07G1	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07G1	BLD-ST-Stair-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWC	1C07G1	BLD-ST-Walls-vs-BLD-AR-Ceilings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C07	NWC	1C07G1	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07G1	BLD-ST-Walls-vs-BLD-AR-Curtain Panels	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07G1	BLD-ST-Walls-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07G1	BLD-ST-Walls-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07G1	BLD-ST-Walls-vs-BLD-AR-Walls	both	14	14	14	14	14	14	14	14	14	14	0	0
+C07	NWC	1C07K1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1C07K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1C07K1	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07P1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1C07P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	75	75	75	75	75	75	75	0	75	75	0	75
+C07	NWC	1C07P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	47	47	47	47	47	47	47	0	47	47	0	47
+C07	NWC	1C07P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07P1	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C07	NWC	1C07P1	BLD-ME-Air Terminals-vs-BLD-AR-Ceilings	both	36	36	36	36	36	36	36	36	36	36	0	0
+C07	NWC	1C07P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	2	8	8	0	6
+C07	NWC	1C07P1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	88	88	88	88	88	88	88	0	88	88	0	88
+C07	NWC	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07PG	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07PG	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07PG	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07PG	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07PG	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07PG	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07PG	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07PG	BLD-Security Devices-vs-BLD-EL-Fire Alarm Devices	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WE	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07WE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	6	6	6	6	6	6	6	3	6	6	0	3
+C07	NWC	1C07WE	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07WE	BLD-ST-Floors-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07WE	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WE	BLD-ST-Framing-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07WE	BLD-ST-Walls-vs-BLD-AR-Floors	both	13	13	13	13	13	13	13	13	13	13	0	0
+C07	NWC	1C07WL	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WL	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1C07WL	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	16	16	16	16	16	16	16	16	16	16	0	0
+C07	NWC	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	12	12	12	12	12	12	12	0	12	12	0	12
+C07	NWC	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	5	5	5	5	5	5	5	0	5	5	0	5
+C07	NWC	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1C07WM	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	22	22	22	22	22	22	22	0	22	22	0	22
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	17	17	17	17	17	17	17	17	17	17	0	0
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	10	10	10	10	10	10	10	10	10	10	0	0
+C07	NWC	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1C07WM	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WM	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WM	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WM	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WM	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WM	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	60	60	60	60	60	60	60	0	60	60	0	60
+C07	NWC	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWC	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	10	10	10	10	10	10	10	10	10	10	0	0
+C07	NWC	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWC	1C07WM	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WM	BLD-ST-Floors-vs-BLD-AR-Walls	both	26	26	26	26	26	26	26	26	26	26	0	0
+C07	NWC	1C07WM	BLD-ST-Framing-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07WM	BLD-ST-Walls-vs-BLD-AR-Floors	both	16	16	16	16	16	16	16	16	16	16	0	0
+C07	NWC	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	12	12	12	12	12	12	12	12	12	12	0	0
+C07	NWC	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1C07WN	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	13	13	13	13	13	13	13	0	13	13	0	13
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1C07WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1C07WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1C07WO	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WO	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WO	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WO	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-EL-Lighting Devices-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1C07WO	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1C07WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWC	1C07WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1C07WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1C07WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWC	1C07WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1C07WO	BLD-ST-Columns-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07MM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1D07MM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07MM	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PE	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1D07PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1D07PE	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PE	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PH	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWC	1D07PH	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	7	7	7	7	7	7	7	7	7	7	0	0
+C07	NWC	1D07PH	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	5	5	5	5	5	5	5	5	5	5	0	0
+C07	NWC	1D07PH	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PH	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PH	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	12	12	12	12	12	12	12	0	12	12	0	12
+C07	NWC	1D07PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1D07PH	BLD-ST-Columns-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PH	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PH	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PH	BLD-ST-Framing-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWC	1D07PH	BLD-ST-Walls-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1D07PN	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1D07PN	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWC	1D07PN	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PN	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1D07PN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1D07PN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PN	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PN	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PN	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PN	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PN	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PN	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PN	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1D07PN	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PN	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PN	BLD-Security Devices-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PN	BLD-ST-Columns-vs-BLD-AR-Doors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PN	BLD-ST-Columns-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PN	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PN	BLD-ST-Floors-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PN	BLD-ST-Framing-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PN	BLD-ST-Framing-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1D07PN	BLD-ST-Walls-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	14	14	14	14	14	14	14	0	14	14	0	14
+C07	NWC	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWC	1D07PO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1D07PO	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PO	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PO	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PO	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1D07PO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWC	1D07PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWC	1D07PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	both	7	7	7	7	7	7	7	4	7	7	0	3
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	7	7	7	7	7	7	7	0	7	7	0	7
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	7	7	7	7	7	7	7	7	7	7	0	0
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	5	5	5	5	5	5	5	0	5	5	0	5
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWC	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	0	9	9	0	9
+C07	NWC	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWC	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PP	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C07	NWC	1D07PP	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PP	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-Security Devices-vs-BLD-EL-Electrical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-Security Devices-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-Security Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWC	1D07PP	BLD-ST-Columns-vs-BLD-AR-Floors	both	12	12	12	12	12	12	12	12	12	12	0	0
+C07	NWC	1D07PP	BLD-ST-Columns-vs-BLD-AR-Walls	both	50	50	50	50	50	50	50	50	50	50	0	0
+C07	NWC	1D07PP	BLD-ST-Framing-vs-BLD-AR-Walls	both	38	38	38	38	38	38	38	38	38	38	0	0
+C07	NWC	1D07PP	BLD-ST-Walls-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWC	1D07PP	BLD-ST-Walls-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1C07BC	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWF	1C07BC	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1C07BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWF	1C07BC	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	0	9	9	0	9
+C07	NWF	1C07BC	BLD-FF-Sprinklers-vs-BLD-ST-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07BC	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWF	1C07BC	BLD-ST-Columns-vs-BLD-AR-Columns	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWF	1C07BC	BLD-ST-Columns-vs-BLD-AR-Floors	both	18	18	18	18	18	18	18	18	18	18	0	0
+C07	NWF	1C07BC	BLD-ST-Columns-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	10	10	10	0	0
+C07	NWF	1C07BC	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	21	21	21	21	21	21	21	21	21	21	0	0
+C07	NWF	1C07BC	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07BC	BLD-ST-Framing-vs-BLD-AR-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07BC	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C07	NWF	1C07BC	BLD-ST-Framing-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07BC	BLD-ST-Framing-vs-BLD-AR-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C07	NWF	1C07BC	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07BC	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07BC	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	11	11	11	11	11	11	11	11	11	11	0	0
+C07	NWF	1C07BC	BLD-ST-Walls-vs-BLD-AR-Doors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07BC	BLD-ST-Walls-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07BC	BLD-ST-Walls-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07G1	BLD-ST-Columns-vs-BLD-AR-Ceilings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07G1	BLD-ST-Columns-vs-BLD-AR-Floors	both	23	23	23	23	23	23	23	23	23	23	0	0
+C07	NWF	1C07G1	BLD-ST-Columns-vs-BLD-AR-Walls	both	23	23	23	23	23	23	23	23	23	23	0	0
+C07	NWF	1C07G1	BLD-ST-Floors-vs-BLD-AR-Ceilings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07G1	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07G1	BLD-ST-Floors-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07G1	BLD-ST-Floors-vs-BLD-AR-Ramps	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07G1	BLD-ST-Floors-vs-BLD-AR-Walls	both	75	75	75	75	75	75	75	75	75	75	0	0
+C07	NWF	1C07G1	BLD-ST-Foundation-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07G1	BLD-ST-Framing-vs-BLD-AR-Ceilings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07G1	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	both	18	18	18	18	18	18	18	18	18	18	0	0
+C07	NWF	1C07G1	BLD-ST-Framing-vs-BLD-AR-Curtain Panels	both	12	12	12	12	12	12	12	12	12	12	0	0
+C07	NWF	1C07G1	BLD-ST-Framing-vs-BLD-AR-Doors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07G1	BLD-ST-Framing-vs-BLD-AR-Floors	both	13	13	13	13	13	13	13	13	13	13	0	0
+C07	NWF	1C07G1	BLD-ST-Framing-vs-BLD-AR-Walls	both	43	43	43	43	43	43	43	43	43	43	0	0
+C07	NWF	1C07G1	BLD-ST-Stair-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07G1	BLD-ST-Stair-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07G1	BLD-ST-Stair-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWF	1C07G1	BLD-ST-Walls-vs-BLD-AR-Ceilings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C07	NWF	1C07G1	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07G1	BLD-ST-Walls-vs-BLD-AR-Curtain Panels	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07G1	BLD-ST-Walls-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07G1	BLD-ST-Walls-vs-BLD-AR-Stairs	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07G1	BLD-ST-Walls-vs-BLD-AR-Walls	both	14	14	14	14	14	14	14	14	14	14	0	0
+C07	NWF	1C07K1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1C07K1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1C07K1	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07P1	BLD-DR-Pipe Accessories-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1C07P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	75	75	75	75	75	75	75	0	75	75	0	75
+C07	NWF	1C07P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	47	47	47	47	47	47	47	0	47	47	0	47
+C07	NWF	1C07P1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07P1	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	5	5	5	5	5	5	5	5	5	5	0	0
+C07	NWF	1C07P1	BLD-ME-Air Terminals-vs-BLD-AR-Ceilings	both	36	36	36	36	36	36	36	36	36	36	0	0
+C07	NWF	1C07P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07P1	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	2	8	8	0	6
+C07	NWF	1C07P1	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	88	88	88	88	88	88	88	0	88	88	0	88
+C07	NWF	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07PG	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07PG	BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07PG	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07PG	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07PG	BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07PG	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07PG	BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07PG	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07PG	BLD-Security Devices-vs-BLD-EL-Fire Alarm Devices	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WE	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07WE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1C07WE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	6	6	6	6	6	6	6	3	6	6	0	3
+C07	NWF	1C07WE	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07WE	BLD-ST-Floors-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07WE	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WE	BLD-ST-Framing-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07WE	BLD-ST-Walls-vs-BLD-AR-Floors	both	13	13	13	13	13	13	13	13	13	13	0	0
+C07	NWF	1C07WL	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WL	BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1C07WL	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	16	16	16	16	16	16	16	16	16	16	0	0
+C07	NWF	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	12	12	12	12	12	12	12	0	12	12	0	12
+C07	NWF	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	5	5	5	5	5	5	5	0	5	5	0	5
+C07	NWF	1C07WM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1C07WM	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	22	22	22	22	22	22	22	0	22	22	0	22
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	17	17	17	17	17	17	17	17	17	17	0	0
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	10	10	10	10	10	10	10	10	10	10	0	0
+C07	NWF	1C07WM	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1C07WM	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WM	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WM	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WM	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WM	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07WM	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WM	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	60	60	60	60	60	60	60	0	60	60	0	60
+C07	NWF	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWF	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	10	10	10	10	10	10	10	10	10	10	0	0
+C07	NWF	1C07WM	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWF	1C07WM	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WM	BLD-ST-Floors-vs-BLD-AR-Walls	both	26	26	26	26	26	26	26	26	26	26	0	0
+C07	NWF	1C07WM	BLD-ST-Framing-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07WM	BLD-ST-Walls-vs-BLD-AR-Floors	both	16	16	16	16	16	16	16	16	16	16	0	0
+C07	NWF	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	12	12	12	12	12	12	12	12	12	12	0	0
+C07	NWF	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1C07WN	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	13	13	13	13	13	13	13	0	13	13	0	13
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07WO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1C07WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1C07WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07WO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1C07WO	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WO	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WO	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WO	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-EL-Lighting Devices-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1C07WO	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1C07WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWF	1C07WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1C07WO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1C07WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWF	1C07WO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1C07WO	BLD-ST-Columns-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07MM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1D07MM	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07MM	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PE	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1D07PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PE	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PE	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1D07PE	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PE	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PE	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PH	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	0	4	4	0	4
+C07	NWF	1D07PH	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	7	7	7	7	7	7	7	7	7	7	0	0
+C07	NWF	1D07PH	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	5	5	5	5	5	5	5	5	5	5	0	0
+C07	NWF	1D07PH	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PH	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PH	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PH	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	12	12	12	12	12	12	12	0	12	12	0	12
+C07	NWF	1D07PH	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1D07PH	BLD-ST-Columns-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PH	BLD-ST-Floors-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PH	BLD-ST-Foundation-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PH	BLD-ST-Framing-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	8	8	8	0	0
+C07	NWF	1D07PH	BLD-ST-Walls-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1D07PN	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1D07PN	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	0	2	2	0	2
+C07	NWF	1D07PN	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PN	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1D07PN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1D07PN	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PN	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PN	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PN	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PN	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PN	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PN	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PN	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1D07PN	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PN	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PN	BLD-Security Devices-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PN	BLD-ST-Columns-vs-BLD-AR-Doors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PN	BLD-ST-Columns-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PN	BLD-ST-Floors-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PN	BLD-ST-Floors-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PN	BLD-ST-Framing-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PN	BLD-ST-Framing-vs-BLD-AR-Walls	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1D07PN	BLD-ST-Walls-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	14	14	14	14	14	14	14	0	14	14	0	14
+C07	NWF	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PO	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PO	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	both	4	4	4	4	4	4	4	4	4	4	0	0
+C07	NWF	1D07PO	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1D07PO	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PO	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PO	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PO	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PO	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1D07PO	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	both	10	10	10	10	10	10	10	0	10	10	0	10
+C07	NWF	1D07PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PO	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	both	8	8	8	8	8	8	8	0	8	8	0	8
+C07	NWF	1D07PP	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	both	7	7	7	7	7	7	7	4	7	7	0	3
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	both	3	3	3	3	3	3	3	0	3	3	0	3
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	both	7	7	7	7	7	7	7	0	7	7	0	7
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	both	7	7	7	7	7	7	7	7	7	7	0	0
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	both	1	1	1	1	1	1	1	0	1	1	0	1
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	both	5	5	5	5	5	5	5	0	5	5	0	5
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	both	6	6	6	6	6	6	6	6	6	6	0	0
+C07	NWF	1D07PP	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	0	9	9	0	9
+C07	NWF	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	both	3	3	3	3	3	3	3	3	3	3	0	0
+C07	NWF	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PP	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	both	9	9	9	9	9	9	9	9	9	9	0	0
+C07	NWF	1D07PP	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PP	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-Security Devices-vs-BLD-EL-Electrical Equipment	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-Security Devices-vs-BLD-ST-Columns	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-Security Devices-vs-BLD-ST-Framing	both	1	1	1	1	1	1	1	1	1	1	0	0
+C07	NWF	1D07PP	BLD-ST-Columns-vs-BLD-AR-Floors	both	12	12	12	12	12	12	12	12	12	12	0	0
+C07	NWF	1D07PP	BLD-ST-Columns-vs-BLD-AR-Walls	both	50	50	50	50	50	50	50	50	50	50	0	0
+C07	NWF	1D07PP	BLD-ST-Framing-vs-BLD-AR-Walls	both	38	38	38	38	38	38	38	38	38	38	0	0
+C07	NWF	1D07PP	BLD-ST-Walls-vs-BLD-AR-Floors	both	2	2	2	2	2	2	2	2	2	2	0	0
+C07	NWF	1D07PP	BLD-ST-Walls-vs-BLD-AR-Walls	both	1	1	1	1	1	1	1	1	1	1	0	0

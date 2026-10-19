@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 05:45, the round of F231 to F238, F236 merged in 317, F237 the full run next, last run 94/item1-C02
+STATE OPEN, 2026-10-19 07:05, the round of F231 to F238, F237 the full run done on main 6faff29, in review, last run 94/item1-C02
 
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
@@ -16,27 +16,28 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 319 | 16 | 0 | 28 | 133 | 7 | 503 |
-| total | 523 | 24 | 0 | 28 | 233 | 18 | 826 |
+| outside the waves | 320 | 16 | 0 | 28 | 135 | 7 | 506 |
+| total | 524 | 24 | 0 | 28 | 235 | 18 | 829 |
 <!-- the end of the counts -->
 ## Now
 - 19 Oct, the round of F231 to F238 open, Bader's six fixes, the full run on final-2026-10-19 and the end, plan in log.md.
   F231 the append measured, 0.000 mm, scan.md 5z-zn. F232 packages first, 313. F233 one discipline groups not built, 314.
   F234 the discipline workbooks, 315. F235 caps only over 750 clashes and penetrations on by default, 316, Q220, Q221.
   F236 the clash count check, 317, on both pages on 1B06PK at f8b485e4, the NWC page at b7e98128, 17 tests, 0 red,
-  a count not read UNKNOWN, views read back, mirrors, groups not read, Q223, rows F236-R1 to R10, no merge yet run
+  a count not read UNKNOWN, views read back, mirrors, groups not read, Q223, rows F236-R1 to R10. F237 the full run, both
+  pages 32 DONE, 12 not built, 0 red, C06 3904 and C07 1549 clashes as on 18 Oct, 10 picks found, rows F237-R1, R2
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 
 | date | build | a picture | 1A02MM | longest freeze | most time |
 |---|---|---|---|---|---|
 | Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
-| 18 Oct 13:30, multi2, C06, C07, Corrupt, both pages | 026a1447, main after 299 | C06 3605 and 3623, C07 2709 twice, C06 stops from group 11 | not run | none read | NWC page 22.1 min, NWF page 19.6 min |
 | 18 Oct 20:24, multi3, C06, C07, SKY, both pages, a Navisworks a group | e38344c7, main after 309 | no stop in any of 46 groups, 1B06PK 4330 MB at most | not run | none read | NWC page 28.2 min, NWF page 26.4 min, 46 starts about 200 s and 46 quits 93 s a page |
+| 19 Oct 05:57, final-2026-10-19, C06, C07, both pages, a Navisworks a group | 6faff297, main after 317 | no test over 750, every clash pictured, 3904 and 1549 | not run | none read | runner 1331 s NWC page, 1228 s NWF page, 32 starts about 134 s and 32 quits 62 s a page |
 ## Next
-1. F237 the full run on final-2026-10-19, C06 and C07 on both pages, 5 picks a community, the clash count check
-2. The comparison of the check with claude-check-2026-10-18, the logs into steps/logs as 2026-10-19-C06-C07-final
-3. F238 the audit, the QA of the repo, the proof steps and the closing entry
+1. F237 merged, then F238 the audit of the round, claude\audit-round-2026-10-19.md
+2. The proof steps in steps\03_bader_next.md, step 1 opening final-2026-10-19\Report\C06
+3. The QA of the repo against CLAUDE.md, the closing entry, no PR open
 
 ## Waiting for Bader
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits

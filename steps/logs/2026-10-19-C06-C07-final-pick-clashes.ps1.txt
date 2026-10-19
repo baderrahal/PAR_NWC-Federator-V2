@@ -1,0 +1,57 @@
+param(
+  [Parameter(Mandatory = $true)][string]$Report,
+  [Parameter(Mandatory = $true)][string]$Communities,
+  [int]$Count = 5,
+  [int]$Seed = 20261019,
+  [Parameter(Mandatory = $true)][string]$Dump,
+  [Parameter(Mandatory = $true)][string]$Out
+)
+# F237. Read only. For each community, the newest clash workbook of each group under Report\<community>\...\Log, the Internal
+# workbook, the discipline workbooks and the clash count check left out, read through the dump, every clash row with its test,
+# clash name, status, the two Element IDs and the Image cell's link. Then Count rows a community drawn at random with the seed
+# given, so the draw can be made again. Writes the picks in the shape probe-pick.ps1 reads: nwf, pick, test, id 1, id 2, then
+# the workbook, the clash, the status and the picture's full path.
+$rng = New-Object System.Random($Seed)
+$lines = New-Object System.Collections.Generic.List[string]
+$lines.Add("nwf`tpick`ttest`tid1`tid2`tworkbook`tclash`tstatus`tpicture`tpicture bytes")
+foreach ($c in ($Communities -split ",")) {
+  $books = Get-ChildItem -LiteralPath (Join-Path $Report $c) -Recurse -File -Filter '*.xlsx' |
+    Where-Object { $_.Directory.Name -eq 'Log' -and $_.Name -notmatch ' Internal' }
+  $newest = @{}
+  foreach ($b in $books) {
+    $stem = $b.BaseName -replace ' \d{4}-\d{2}-\d{2} \d{6}$', ''
+    $key = $b.DirectoryName + '|' + $stem
+    if (-not $newest.ContainsKey($key) -or $newest[$key].LastWriteTime -lt $b.LastWriteTime) { $newest[$key] = $b }
+  }
+  $rows = New-Object System.Collections.Generic.List[object]
+  foreach ($key in ($newest.Keys | Sort-Object)) {
+    $b = $newest[$key]
+    $stem = $key.Split('|')[1]
+    $nwf = Join-Path (Join-Path $b.Directory.Parent.FullName 'NWF') ($stem + '.nwf')
+    $test = $null
+    foreach ($line in (& $Dump $b.FullName)) {
+      if ($line -notmatch '^\d+ \[[^\]]*\] (.*)$') { continue }
+      $body = $Matches[1]
+      $link = ''
+      $at = $body.IndexOf(' || LINK ')
+      if ($at -ge 0) { $link = $body.Substring($at + 9); $body = $body.Substring(0, $at) }
+      $cells = $body -split ' \| '
+      if ($cells.Count -gt 2 -and $cells[2] -eq 'Tolerance' -and $cells[0] -ne '') { $test = $cells[0]; continue }
+      if ($test -ne $null -and $cells.Count -gt 15 -and $cells[2] -ne '' -and $cells[2] -ne 'Clash Name' -and $cells[11].StartsWith('Element ID: ') -and $cells[15].StartsWith('Element ID: ')) {
+        $picture = if ($link -ne '') { [IO.Path]::GetFullPath((Join-Path $b.DirectoryName ($link -replace '/', '\'))) } else { '' }
+        $rows.Add([pscustomobject]@{ Nwf = $nwf; Test = $test; Id1 = $cells[11].Substring(12); Id2 = $cells[15].Substring(12); Book = $b.FullName; Clash = $cells[2]; Status = $cells[4]; Picture = $picture })
+      }
+    }
+  }
+  "$c  workbooks $($newest.Count), clash rows with two Element IDs $($rows.Count)"
+  $taken = @{}
+  for ($i = 1; $i -le $Count -and $taken.Count -lt $rows.Count; $i++) {
+    do { $n = $rng.Next($rows.Count) } while ($taken.ContainsKey($n))
+    $taken[$n] = $true
+    $r = $rows[$n]
+    $bytes = if ($r.Picture -ne '' -and (Test-Path -LiteralPath $r.Picture)) { (Get-Item -LiteralPath $r.Picture).Length } else { 'NOT THERE' }
+    $lines.Add("$($r.Nwf)`t$c-$i`t$($r.Test)`t$($r.Id1)`t$($r.Id2)`t$($r.Book)`t$($r.Clash)`t$($r.Status)`t$($r.Picture)`t$bytes")
+  }
+}
+[IO.File]::WriteAllLines($Out, [string[]]$lines)
+"picks written: " + ($lines.Count - 1)

@@ -1,0 +1,1194 @@
+﻿06:32:41.097  +0000.000s  Log opened at C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261019-063241.log
+06:32:41.102  +0000.005s  ROWS     the machine readable log is C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261019-063241.tsv
+
+================================================================
+SESSION
+================================================================
+06:32:41.113  +0000.017s  started        : 2026-10-19 06:32:41
+06:32:41.115  +0000.018s  plugin version : 1.0.0.0 6faff297 built 2026-10-19 05:56:28
+06:32:41.116  +0000.020s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+06:32:41.117  +0000.021s  open document  : none, the document is clear
+06:32:41.118  +0000.021s  log file       : C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261019-063241.log
+06:32:41.160  +0000.064s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+06:32:41.187  +0000.091s  PackageParentC:\NWC-PC-Test\work\final-2026-10-19\Parent
+06:32:41.188  +0000.091s  PackageReportC:\NWC-PC-Test\work\final-2026-10-19\Report
+06:32:41.356  +0000.260s  MATRIX   the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml holds 61 sets and 1830 tests.
+06:32:41.359  +0000.263s  TEAMS    the teams are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, the team map beside this file. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code
+06:32:41.360  +0000.264s  TEAMS    Architecture is AR
+06:32:41.361  +0000.265s  TEAMS    Structure is ST
+06:32:41.362  +0000.266s  TEAMS    Mechanical is HV, PL, FP, ME, DR and FF
+06:32:41.362  +0000.266s  TEAMS    Electrical is EL and EV
+06:32:41.363  +0000.267s  TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN
+06:32:41.364  +0000.268s  TEAMS    a pair holding Mechanical or Electrical carries the size folder
+06:32:41.366  +0000.271s  TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder above it in the clash XML's set tree names, unless a model of its group carries a code its name holds
+06:32:41.367  +0000.271s  MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+06:32:41.368  +0000.272s  MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  0 occurrences. this file does not hold that name
+06:32:41.374  +0000.278s  MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  0 occurrences. that set already asks exactly this, so it was left alone. contains, then one negated equals per category another set asks for, F87 since scan.md 5g
+06:32:41.375  +0000.279s  MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:41.376  +0000.280s  MATRIX   the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:41.376  +0000.280s  MATRIX   the value ME-PIPING is asked as ME-PIPING or ME-Piping, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:41.377  +0000.281s  MATRIX   the value FF-Fire Fighting is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+06:32:41.378  +0000.282s  MATRIX   the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+06:32:41.379  +0000.282s  MATRIX   the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:41.379  +0000.283s  MATRIX   the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it
+06:32:41.380  +0000.284s  MATRIX   every set beside those asking Source File contains -AR- whose category another discipline also uses asks it already  0 occurrences
+06:32:41.381  +0000.285s  MATRIX   a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box "Rebuild sets that drifted from the file" is ticked. The SETS block of each group names every such set as DRIFTED
+06:32:41.382  +0000.285s  MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change
+
+================================================================
+HEALTH 1104-PAR
+================================================================
+06:32:41.404  +0000.308s  Tests: 1830
+06:32:41.405  +0000.308s  Sets: 61
+06:32:41.405  +0000.309s  Locators resolved: 61 of 61
+06:32:41.406  +0000.310s  Tests with an unresolved side: 0
+06:32:41.407  +0000.311s  Conditions: 146 across 58 distinct rules
+06:32:41.408  +0000.311s  Sets at the root with no folder: 0
+06:32:41.408  +0000.312s  Duplicate set names: 0
+06:32:41.409  +0000.313s  Sets asking exactly the same question: 1
+06:32:41.410  +0000.313s      BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices
+06:32:41.410  +0000.314s  Revit categories known: 374, measured on the C02 folder only
+06:32:41.411  +0000.315s  Sets asking for a category no model carries: 13, against the list measured on the C02 folder only
+06:32:41.411  +0000.316s      BLD-AR-Ramps asks for "Ramps"
+06:32:41.412  +0000.316s      BLD-AR-Roofs asks for "Roofs"
+06:32:41.413  +0000.317s      BLD-AR-Columns asks for "Columns"
+06:32:41.414  +0000.318s      BLD-AR-Casework asks for "Casework"
+06:32:41.414  +0000.318s      BLD-AR-Parking asks for "Parking"
+06:32:41.415  +0000.319s      and 8 more, counted and not listed
+06:32:41.416  +0000.320s  Set names breaking their folder's pattern: 1
+06:32:41.417  +0000.321s      BLD-Security Devices reads BLD where 13 others in the same folder read BLD-EL
+06:32:41.656  +0000.560s  PACKAGES this Navisworks runs group 15 of 32, C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001, for the run whose log is C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261019-062111.log
+06:32:41.662  +0000.566s  PACKAGES 34 controls of the window set as the run that started it left them
+
+================================================================
+NWF TREE
+================================================================
+06:32:41.682  +0000.585s  parent      : C:\NWC-PC-Test\work\final-2026-10-19\Report
+06:32:41.683  +0000.586s  found       : 2 communities, 2 packages, 32 NWF files
+06:32:41.684  +0000.587s  community   C06  1 package, 15 NWF files
+06:32:41.685  +0000.589s     package  C06  15 NWF files, at C:\NWC-PC-Test\work\final-2026-10-19\Report\C06
+06:32:41.686  +0000.589s  community   C07  1 package, 17 NWF files
+06:32:41.687  +0000.590s     package  C07  17 NWF files, at C:\NWC-PC-Test\work\final-2026-10-19\Report\C07
+06:32:41.688  +0000.591s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+NWF TREE
+================================================================
+06:32:41.719  +0000.623s  parent      : C:\NWC-PC-Test\work\final-2026-10-19\Report
+06:32:41.720  +0000.624s  found       : 2 communities, 2 packages, 32 NWF files
+06:32:41.721  +0000.625s  community   C06  1 package, 15 NWF files
+06:32:41.722  +0000.626s     package  C06  15 NWF files, at C:\NWC-PC-Test\work\final-2026-10-19\Report\C06
+06:32:41.723  +0000.627s  community   C07  1 package, 17 NWF files
+06:32:41.724  +0000.628s     package  C07  17 NWF files, at C:\NWC-PC-Test\work\final-2026-10-19\Report\C07
+06:32:41.725  +0000.629s  left out    : nothing, every file of the kind is in a package
+
+================================================================
+NWFS TICKED
+================================================================
+06:32:41.732  +0000.636s  report      : C:\NWC-PC-Test\work\final-2026-10-19\Report
+06:32:41.733  +0000.637s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+06:32:41.734  +0000.638s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06G1-ZZZ-BM-MOD-000001.nwf
+06:32:41.735  +0000.639s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf
+06:32:41.736  +0000.640s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06M1-ZZZ-BM-MOD-000001.nwf
+06:32:41.737  +0000.641s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf
+06:32:41.738  +0000.642s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf
+06:32:41.739  +0000.643s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf
+06:32:41.740  +0000.644s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf
+06:32:41.741  +0000.645s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PO-ZZZ-BM-MOD-000001.nwf
+06:32:41.742  +0000.647s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf
+06:32:41.744  +0000.648s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf
+06:32:41.746  +0000.650s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06WL-ZZZ-BM-MOD-000001.nwf
+06:32:41.747  +0000.651s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf
+06:32:41.748  +0000.652s  left out    C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06WO-ZZZ-BM-MOD-000001.nwf
+06:32:41.749  +0000.653s  ticked      C06  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+06:32:41.750  +0000.654s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwf
+06:32:41.751  +0000.655s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwf
+06:32:41.752  +0000.656s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07K1-ZZZ-BM-MOD-000001.nwf
+06:32:41.754  +0000.657s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07P1-ZZZ-BM-MOD-000001.nwf
+06:32:41.755  +0000.658s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07PG-ZZZ-BM-MOD-000001.nwf
+06:32:41.756  +0000.659s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07PS-ZZZ-BM-MOD-000001.nwf
+06:32:41.757  +0000.660s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WE-ZZZ-BM-MOD-000001.nwf
+06:32:41.758  +0000.661s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WL-ZZZ-BM-MOD-000001.nwf
+06:32:41.759  +0000.663s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WM-ZZZ-BM-MOD-000001.nwf
+06:32:41.761  +0000.664s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WN-ZZZ-BM-MOD-000001.nwf
+06:32:41.762  +0000.665s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WO-ZZZ-BM-MOD-000001.nwf
+06:32:41.763  +0000.666s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1D07MM-ZZZ-BM-MOD-000001.nwf
+06:32:41.764  +0000.668s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1D07PE-ZZZ-BM-MOD-000001.nwf
+06:32:41.769  +0000.673s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1D07PH-ZZZ-BM-MOD-000001.nwf
+06:32:41.771  +0000.674s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1D07PN-ZZZ-BM-MOD-000001.nwf
+06:32:41.772  +0000.675s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1D07PO-ZZZ-BM-MOD-000001.nwf
+06:32:41.773  +0000.677s  left out    C07  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1D07PP-ZZZ-BM-MOD-000001.nwf
+06:32:41.774  +0000.678s  ticked      : 1 NWF file
+06:32:41.775  +0000.679s  left out    : 31 NWF files
+
+================================================================
+PACKAGE NWFS
+================================================================
+06:32:41.781  +0000.685s  C06  runs  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf, NWD C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd, Log C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log
+
+================================================================
+CONFIRM packages
+================================================================
+06:32:41.921  +0000.824s  This run refreshes 1 NWFs of 1 packages.
+06:32:41.922  +0000.825s  Steps: Refresh, Run tests, Pictures, Viewpoints, Reports.
+06:32:41.923  +0000.826s  
+06:32:41.924  +0000.827s  A copy of the NWF is made first in the Backup folder under its package's report folder, one copy of each NWF.
+06:32:41.924  +0000.828s  
+06:32:41.926  +0000.830s  NWC files changed since the last run:
+06:32:41.927  +0000.831s      UNKNOWN. No earlier run of this NWF left a list, so every file is read as it is.
+06:32:41.929  +0000.833s  
+06:32:41.930  +0000.834s  Tests: the 1830 of the built in matrix, and the tests saved in the NWF, run again where they sit. A test whose two sides carry one set code is not run, and one saved in the NWF keeps its earlier results there. Statuses, assigned to and comments of clashes still there are kept, but a New or Active clash of a service of 150mm or less through a wall, floor, roof or foundation is moved to Reviewed with a comment, as the penetrations box is ticked.
+06:32:41.931  +0000.835s  Viewpoints: the folder Clash Status with UNKNOWN viewpoints is deleted and made again. A viewpoint moved by hand into that folder is deleted with it.
+06:32:41.932  +0000.836s  ALL viewpoints and folders outside the tool folder Clash Status and the folder Comments will be deleted from the NWF. How many is UNKNOWN until the NWF opens, and the log says it. Put your own viewpoints in Comments.
+06:32:41.933  +0000.837s  Pictures: 8 old jpg files in the Clash report folder are written again or removed.
+06:32:41.934  +0000.838s  
+06:32:41.935  +0000.839s  Nothing is changed before OK. Cancel is the default.
+06:32:41.936  +0000.840s  PACKAGES The refresh was confirmed once in the window that started the run, so it is not asked again here
+06:32:41.942  +0000.845s  RUN      started, 1 group
+06:32:41.944  +0000.848s  AUTOSAVE the option general.autosave.enable reads off as the run starts, left as it is
+
+================================================================
+RUN SETTINGS
+================================================================
+06:32:41.949  +0000.853s  report folder    : C:\NWC-PC-Test\work\final-2026-10-19\Report
+06:32:41.950  +0000.854s  NWFs             : 1 in 1 of 1 packages with an NWF ticked
+06:32:41.951  +0000.855s  steps            : Refresh, Run tests, Pictures, Viewpoints, Reports
+06:32:41.952  +0000.856s  apply file to old: no, differences are reported and nothing is changed
+06:32:41.953  +0000.857s  penetrations     : YES, a small service through a wall, floor, roof or structural foundation becomes Reviewed
+06:32:41.954  +0000.858s  clash tolerance  : 25 mm, chosen in the tool, the drop down being its only source, set on every test and beats the built in matrix and the document
+06:32:41.955  +0000.859s  priority         : built in, read off the matrix pack built into the tool, so a Priority column where the pack reads, which its PACK and PRIORITY lines say
+06:32:41.956  +0000.860s  by design        : no, the built in pairs are not read
+06:32:41.957  +0000.861s  viewpoints       : yes, saved viewpoints are made for the clashes
+06:32:41.958  +0000.862s  NWD naming       : overwrites, so only the latest week exists
+06:32:41.959  +0000.863s  republish NWD    : yes, fixed
+06:32:41.960  +0000.864s  model units      : as each NWC carries them, never set, F201
+06:32:41.961  +0000.865s  report units     : Meters (m), always, converted before anything is written
+06:32:42.060  +0000.965s  OPEN     clash matrix the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+06:32:42.063  +0000.967s  TEAMS    the teams are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, the team map beside this file. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code
+06:32:42.064  +0000.968s  TEAMS    Architecture is AR
+06:32:42.065  +0000.969s  TEAMS    Structure is ST
+06:32:42.066  +0000.970s  TEAMS    Mechanical is HV, PL, FP, ME, DR and FF
+06:32:42.067  +0000.971s  TEAMS    Electrical is EL and EV
+06:32:42.069  +0000.972s  TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN
+06:32:42.069  +0000.974s  TEAMS    a pair holding Mechanical or Electrical carries the size folder
+06:32:42.070  +0000.975s  TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder above it in the clash XML's set tree names, unless a model of its group carries a code its name holds
+06:32:42.072  +0000.976s  MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+06:32:42.073  +0000.977s  MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  0 occurrences. this file does not hold that name
+06:32:42.074  +0000.978s  MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  0 occurrences. that set already asks exactly this, so it was left alone. contains, then one negated equals per category another set asks for, F87 since scan.md 5g
+06:32:42.075  +0000.979s  MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:42.076  +0000.980s  MATRIX   the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:42.077  +0000.982s  MATRIX   the value ME-PIPING is asked as ME-PIPING or ME-Piping, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:42.079  +0000.983s  MATRIX   the value FF-Fire Fighting is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+06:32:42.080  +0000.984s  MATRIX   the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+06:32:42.081  +0000.985s  MATRIX   the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+06:32:42.082  +0000.986s  MATRIX   the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it
+06:32:42.083  +0000.987s  MATRIX   every set beside those asking Source File contains -AR- whose category another discipline also uses asks it already  0 occurrences
+06:32:42.084  +0000.988s  MATRIX   a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box "Rebuild sets that drifted from the file" is ticked. The SETS block of each group names every such set as DRIFTED
+06:32:42.085  +0000.989s  MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change
+06:32:42.099  +0001.003s  COVERAGE the clash matrix the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml reads sha256 94897667adb466ae97a29b8df80b17b7fe52ac701f7f5ff174b975308471ebc9
+06:32:42.106  +0001.010s  GROUP    started  C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001  its files are read once its NWF opens
+06:32:42.109  +0001.012s  REPORT   1104-PAR-1C06M2-ZZZ-BM-MOD-000001 is already in C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log, so this run writes its Excel and XML there as 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242 and leaves the earlier files as they are. The HTML and its pictures in C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Clash report keep the name 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 and overwrite the earlier ones
+06:32:42.110  +0001.014s  OPEN     running a picked NWF, opened by this run where it sits, no scan
+06:32:42.111  +0001.015s  OPEN     file     C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+06:32:42.112  +0001.016s  OPEN     NWD      C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd
+06:32:42.113  +0001.017s  OPEN     report   C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log  (the Log folder, beside the folder of the file)
+06:32:42.116  +0001.020s  REFRESH  backup   C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Backup\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242.nwf  53,407 bytes, a copy of C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf made before anything was opened, and never over an earlier backup
+06:32:42.119  +0001.023s  STEP     DECIDE        started
+06:32:42.129  +0001.032s  CENSUS   before DECIDE  models 0  sets 0  tests 0  results 0  views 0
+06:32:42.141  +0001.045s  MEMORY   at the start of DECIDE, private bytes 840.6 MB, working set 714.5 MB, managed heap 105.0 MB
+06:32:42.177  +0001.081s  OPEN     opening the picked NWF C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+06:32:43.021  +0001.925s  LOADING  the NWF reported 2 models after 0.619s, steady over 3 reads 0.250s apart, over 3 readings in all
+06:32:43.023  +0001.927s  LOADING  the scene loaded event fired 2 times, first at 0.0s and last at 0.1s after the open began, and the open returned at 0.2s
+06:32:43.031  +0001.935s  MEMORY   at the end of DECIDE, private bytes 845.7 MB up 5.1 MB, working set 723.2 MB up 8.7 MB, managed heap 102.7 MB down 2.3 MB
+06:32:43.034  +0001.938s  CENSUS   after  DECIDE  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.043  +0001.947s  STEP     DECIDE        finished 0.907s  Weekly run plus matrix
+06:32:43.045  +0001.949s  REFRESH  FileResolving fired 12 times while the NWF opened, one for each file it links and each file those link
+06:32:43.050  +0001.953s  STEP     REFRESH       started
+06:32:43.051  +0001.956s  CENSUS   before REFRESH  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.061  +0001.964s  MEMORY   at the start of REFRESH, private bytes 845.8 MB, working set 723.4 MB, managed heap 103.1 MB
+06:32:43.097  +0002.001s  REFRESH  added    C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc
+06:32:43.098  +0002.002s  REFRESH  added    C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc
+06:32:43.100  +0002.003s  REFRESH  removed  C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1B06WO-ZZZ-AR-MOD-000001.nwc  (the NWF no longer links it)
+06:32:43.101  +0002.005s  REFRESH  removed  C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1B06WO-ZZZ-EL-MOD-000001.nwc  (the NWF no longer links it)
+06:32:43.102  +0002.006s  REFRESH  removed  C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1B06WO-ZZZ-ME-MOD-000001.nwc  (the NWF no longer links it)
+06:32:43.103  +0002.007s  REFRESH  removed  C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1B06WO-ZZZ-ST-MOD-000001.nwc  (the NWF no longer links it)
+06:32:43.107  +0002.011s  REFRESH  before UpdateFiles  document units Feet; 1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc Feet at 0 -13.419 -0.492; 1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc Feet at 0 -13.419 -0.254
+06:32:43.109  +0002.013s  REFRESH  UpdateFiles returned False after 0.0 s
+06:32:43.110  +0002.014s  REFRESH  after UpdateFiles   document units Feet; 1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc Feet at 0 -13.419 -0.492; 1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc Feet at 0 -13.419 -0.254
+06:32:43.112  +0002.015s  REFRESH  units and origin are as they were before UpdateFiles
+06:32:43.114  +0002.018s  REFRESH  TryCloseFileHandles returned True, so a new export may overwrite a linked NWC
+06:32:43.116  +0002.019s  NOTICE   Document.UpdateFiles returned False, which is read as nothing left out of date: the NWF reads its linked files as it opens, so 2 changed since the last manifest were read then. UNKNOWN whether False ever means a failure
+06:32:43.120  +0002.024s  MEMORY   at the end of REFRESH, private bytes 845.3 MB down 0.5 MB, working set 722.9 MB down 0.5 MB, managed heap 103.8 MB up 0.7 MB
+06:32:43.121  +0002.025s  CENSUS   after  REFRESH  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.126  +0002.030s  STEP     REFRESH       finished 0.067s  the linked files compared and brought up to date
+06:32:43.132  +0002.036s           holds   C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06MM-ZZZ-ME-MOD-001001.rvt, file C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc]
+06:32:43.134  +0002.037s           holds   C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1B06MM-ZZZ-ST-MOD-000001.rvt, file C:\NWC-PC-Test\work\final-2026-10-19\Parent\C06\1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc]
+06:32:43.141  +0002.045s  CENSUS CLEAR  the document was not emptied for this group, which is what the open file run does, and it held 2 models, 63 selection sets, 31 clash tests, 8 clash results, 3 saved viewpoints
+06:32:43.144  +0002.048s  STEP     UNITS         started
+06:32:43.147  +0002.050s  CENSUS   before UNITS  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.154  +0002.058s  MEMORY   at the start of UNITS, private bytes 845.3 MB, working set 722.9 MB, managed heap 99.9 MB
+06:32:43.194  +0002.099s  MEMORY   at the end of UNITS, private bytes 845.5 MB up 0.2 MB, working set 723.1 MB up 0.1 MB, managed heap 100.2 MB up 0.2 MB
+06:32:43.196  +0002.100s  CENSUS   after  UNITS  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.202  +0002.106s  STEP     UNITS         finished 0.047s  the models left in the units their NWC carries, 2 read, none set
+
+================================================================
+ALIGNMENT 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:43.222  +0002.125s  ME  1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc is the reference, because this group carries no AR model
+06:32:43.223  +0002.127s     ME  1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc   reference, shared coordinate "PW3_Shared_Location"
+06:32:43.224  +0002.128s     ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc   DIFFERENT  dx 0 mm  dy 0 mm  dz 72.5 mm, shared coordinate "Internal"
+06:32:43.225  +0002.129s        ask the ST originator to re-export on the project shared coordinates
+06:32:43.226  +0002.130s  1 of 2 model(s) sit somewhere the reference does not. Nothing is changed and the run goes on.
+06:32:43.227  +0002.131s  NOTICE. 1 model(s) are not on the same shared coordinates. The clash results may be wrong for these models. The clash is run and nothing is skipped:
+06:32:43.228  +0002.132s     ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc   shared site "Internal", Revit's own origin and not a shared site   X 0 mm  Y 0 mm  Z 72.5 mm from the reference, 0.072 m in a straight line
+06:32:43.229  +0002.133s  this group names 2 different shared coordinates: Internal, PW3_Shared_Location
+06:32:43.230  +0002.134s  1 model(s) name their site "Internal", which is what Revit calls a model that was not exported on a shared site at all
+06:32:43.232  +0002.135s  NOTICE   1104-PAR-1C06M2-ZZZ-BM-MOD-000001: 1 model is not on the same shared coordinates, measured from the reference model ME  1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc. The clash results may be wrong for these models. The clash was run and nothing was skipped. 1 model sits on Revit's internal origin and not on a shared site: ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc. Their clash results may be wrong. This is a notice and the group does not end FAILED for it.
+                                   ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc   shared site "Internal", Revit's own origin and not a shared site   X 0 mm  Y 0 mm  Z 72.5 mm from the reference, 0.072 m in a straight line
+
+================================================================
+EXPORT CHECK 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:43.266  +0002.170s     ME  1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc   elements 273   with a workset 273   worksets 6   element id 100%
+06:32:43.267  +0002.171s     ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc   elements 54   with a workset 54   worksets 2   element id 100%
+06:32:43.269  +0002.172s  all 2 model(s) carry a workset on every element and an element id on every element
+06:32:43.270  +0002.173s  worksets seen: ME-Air Terminal, PL-Fire Protection, PL-Drainage, ME-Ductwork, ME-Equipment, PL-Drainage equipmen, ST-SUP, ST-SUB
+06:32:43.271  +0002.175s  no workset name a set of the clash matrix asks for differs by letter case alone from one a model here carries
+06:32:43.272  +0002.176s  no two workset names in this group are close enough to be one word typed twice. 1 more pair(s) are close enough too and are NOT listed, because a person has already decided they are two different worksets.
+
+================================================================
+TEAMS 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:43.288  +0002.192s     ME  1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc   ME in Mechanical, 11 of the 16 set(s) of its team with another code cannot reach it
+06:32:43.289  +0002.193s     ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc   ST in Structure, no set of its team with another code was judged against it
+06:32:43.290  +0002.194s  11 set and model pair(s) of one team where the set cannot reach the model are not listed, because whether the model holds items of the set's categories that no set catches is UNKNOWN until the coverage counts them
+06:32:43.337  +0002.241s  DISCIPLINE C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001 read 2 models, 2 placements, 2 sites, 0 CAD imports, 0 Generic Models elements, 0 element ids not readable, in 0.0 s
+06:32:43.338  +0002.243s  CLASH    source   tests from XML, the clash matrix holds 61 sets and 1830 tests
+06:32:43.341  +0002.244s  STEP     SETS          started
+06:32:43.345  +0002.249s  CENSUS   before SETS  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.353  +0002.257s  MEMORY   at the start of SETS, private bytes 847.0 MB, working set 724.5 MB, managed heap 100.8 MB
+06:32:43.372  +0002.276s  SETS     1104-PAR-1C06M2-ZZZ-BM-MOD-000001 Generic Models, 2 sets planned in the folder Generic Models, one search set a model asking Category equals "Generic Models" and its Source File contains the model's Revit file name, no clash test
+06:32:43.377  +0002.281s  SETS     1104-PAR-1C06M2-ZZZ-BM-MOD-000001, 61 to build, 0 skipped
+06:32:43.381  +0002.285s  SET      ran against C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+06:32:43.393  +0002.297s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Floors  2 conditions  0 items  already there, left alone
+06:32:43.398  +0002.302s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Stairs  2 conditions  0 items  already there, left alone
+06:32:43.399  +0002.303s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Ramps  2 conditions  0 items  already there, left alone
+06:32:43.401  +0002.305s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Roofs  1 condition  0 items  already there, left alone
+06:32:43.403  +0002.306s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Ceilings  1 condition  0 items  already there, left alone
+06:32:43.404  +0002.308s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Columns  1 condition  0 items  already there, left alone
+06:32:43.406  +0002.309s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Walls  2 conditions  0 items  already there, left alone
+06:32:43.407  +0002.311s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Windows  1 condition  0 items  already there, left alone
+06:32:43.408  +0002.312s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels  1 condition  0 items  already there, left alone
+06:32:43.410  +0002.313s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions  1 condition  0 items  already there, left alone
+06:32:43.410  +0002.315s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Doors  1 condition  0 items  already there, left alone
+06:32:43.412  +0002.316s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Casework  1 condition  0 items  already there, left alone
+06:32:43.413  +0002.317s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Furniture  2 conditions  0 items  already there, left alone
+06:32:43.415  +0002.319s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Parking  1 condition  0 items  already there, left alone
+06:32:43.416  +0002.320s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Railings  2 conditions  0 items  already there, left alone
+06:32:43.418  +0002.321s  SET      present lcop_selection_set_tree/Architecture/BLD-AR-Site  2 conditions  0 items  already there, left alone
+06:32:43.419  +0002.323s  SET      present lcop_selection_set_tree/Structure/BLD-ST-Foundation  1 condition  12 items  already there, left alone
+06:32:43.421  +0002.324s  SET      present lcop_selection_set_tree/Structure/BLD-ST-Columns  1 condition  9 items  already there, left alone
+06:32:43.422  +0002.326s  SET      present lcop_selection_set_tree/Structure/BLD-ST-Framing  1 condition  26 items  already there, left alone
+06:32:43.424  +0002.327s  SET      present lcop_selection_set_tree/Structure/BLD-ST-Walls  2 conditions  4 items  already there, left alone
+06:32:43.424  +0002.328s  SET      present lcop_selection_set_tree/Structure/BLD-ST-Floors  2 conditions  2 items  already there, left alone
+06:32:43.426  +0002.330s  SET      present lcop_selection_set_tree/Structure/BLD-ST-Stair  2 conditions  0 items  already there, left alone
+06:32:43.428  +0002.332s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings  8 conditions  62 items  already there, left alone
+06:32:43.429  +0002.333s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory  4 conditions  17 items  already there, left alone
+06:32:43.431  +0002.335s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment  4 conditions  2 items  already there, left alone
+06:32:43.432  +0002.336s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts  4 conditions  0 items  already there, left alone
+06:32:43.434  +0002.338s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals  4 conditions  0 items  already there, left alone
+06:32:43.436  +0002.340s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings  8 conditions  0 items  already there, left alone
+06:32:43.438  +0002.342s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories  4 conditions  0 items  already there, left alone
+06:32:43.439  +0002.343s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures  4 conditions  0 items  already there, left alone
+06:32:43.441  +0002.345s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes  4 conditions  0 items  already there, left alone
+06:32:43.442  +0002.346s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment  2 conditions  0 items  already there, left alone
+06:32:43.444  +0002.348s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings  4 conditions  0 items  already there, left alone
+06:32:43.446  +0002.349s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories  2 conditions  0 items  already there, left alone
+06:32:43.447  +0002.351s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations  2 conditions  0 items  already there, left alone
+06:32:43.449  +0002.352s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures  2 conditions  0 items  already there, left alone
+06:32:43.450  +0002.354s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers  2 conditions  0 items  already there, left alone
+06:32:43.451  +0002.355s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment  4 conditions  0 items  already there, left alone
+06:32:43.453  +0002.357s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings  8 conditions  0 items  already there, left alone
+06:32:43.454  +0002.359s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories  4 conditions  0 items  already there, left alone
+06:32:43.456  +0002.360s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations  4 conditions  0 items  already there, left alone
+06:32:43.458  +0002.362s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures  4 conditions  0 items  already there, left alone
+06:32:43.460  +0002.363s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment  2 conditions  0 items  already there, left alone
+06:32:43.461  +0002.365s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings  4 conditions  45 items  already there, left alone
+06:32:43.462  +0002.366s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories  2 conditions  0 items  already there, left alone
+06:32:43.464  +0002.368s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations  2 conditions  0 items  already there, left alone
+06:32:43.466  +0002.369s  SET      present lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures  2 conditions  5 items  already there, left alone
+06:32:43.467  +0002.371s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings  1 condition  0 items  already there, left alone
+06:32:43.468  +0002.372s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment  1 condition  0 items  already there, left alone
+06:32:43.469  +0002.373s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures  1 condition  0 items  already there, left alone
+06:32:43.470  +0002.375s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings  1 condition  0 items  already there, left alone
+06:32:43.472  +0002.376s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Devices  7 conditions  0 items  already there, left alone
+06:32:43.473  +0002.378s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures  1 condition  0 items  already there, left alone
+06:32:43.475  +0002.379s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices  1 condition  0 items  already there, left alone
+06:32:43.476  +0002.380s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices  1 condition  0 items  already there, left alone
+06:32:43.477  +0002.382s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment  1 condition  0 items  already there, left alone
+06:32:43.479  +0002.383s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures  1 condition  0 items  already there, left alone
+06:32:43.480  +0002.385s  SET      present lcop_selection_set_tree/Electrical/BLD-Security Devices  1 condition  0 items  already there, left alone
+06:32:43.482  +0002.386s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices  1 condition  0 items  already there, left alone
+06:32:43.483  +0002.387s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices  1 condition  0 items  already there, left alone
+06:32:43.485  +0002.389s  SET      present lcop_selection_set_tree/Electrical/BLD-EL-Data Devices  1 condition  0 items  already there, left alone
+06:32:43.496  +0002.400s  SETS     1104-PAR-1C06M2-ZZZ-BM-MOD-000001 put into the document: 0 created, 61 already there and left alone
+06:32:43.499  +0002.403s  SET      ran against C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+06:32:43.501  +0002.404s  SET      present lcop_selection_set_tree/Generic Models/1104-PAR-1C06M2-ZZZ-ME-MOD-000001  2 conditions  0 items  already there, left alone
+06:32:43.502  +0002.406s  SET      present lcop_selection_set_tree/Generic Models/1104-PAR-1C06M2-ZZZ-ST-MOD-000001  2 conditions  0 items  already there, left alone
+06:32:43.505  +0002.409s  SETS     1104-PAR-1C06M2-ZZZ-BM-MOD-000001 Generic Models put into the document: 0 created, 2 already there and left alone
+
+================================================================
+GENERIC MODELS 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:43.512  +0002.416s  asked   : Category equals "Generic Models", found in each model by its Source File
+06:32:43.513  +0002.417s  models  : 2 models in this group, 0 found some, 2 found none and are left out, 0 were not counted
+06:32:43.514  +0002.418s  items   : 0 in all
+06:32:43.515  +0002.419s  nought  : a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in
+06:32:43.516  +0002.420s  nought  : every model was counted at nought, which is also the count a category value or a Source File text that no item carries gives
+06:32:43.517  +0002.421s  no clash test is made for these sets
+06:32:43.526  +0002.430s  MEMORY   at the end of SETS, private bytes 847.2 MB up 0.2 MB, working set 724.9 MB up 0.4 MB, managed heap 106.2 MB up 5.4 MB
+06:32:43.527  +0002.431s  CENSUS   after  SETS  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.531  +0002.436s  STEP     SETS          finished 0.182s  0 created, 61 already there (10 finding items, 51 at zero).. Generic Models: 0 created, 2 already there (0 finding items, 2 at zero).
+06:32:43.543  +0002.447s  CLASH    1104-PAR-1C06M2-ZZZ-BM-MOD-000001, 1830 in the file, 0 skipped before the model, 1830 left, how many of them are created is said once the sets are counted
+06:32:43.553  +0002.457s  PACK     the built in matrix pack 1104-PAR, project code 1104, holding 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, by-design-pairs.csv, clash-priority-map.csv, project-code.txt
+06:32:43.559  +0002.464s  PRIORITY read the built in matrix pack 1104-PAR, clash-priority-map.csv, 1830 rows
+06:32:43.563  +0002.467s  OUTPUTS  workbook on, XML off, HTML on, images on
+06:32:43.569  +0002.473s  CLASH    Images on, 1024 by 1024 pixels, New, Active, Reviewed only, no cap of your own per test, and a test of 750 clashes or fewer gets a picture for every clash, and a test of more gets pictures for at most its first 150 clashes at priority A, 100 at priority B and 50 at priority C, linked rather than pasted in, only the models of each test shown, Clash Detective asked to hide the other items.
+06:32:43.573  +0002.477s  CLASH    HIDDEN   nothing is hidden in the document, so every item is clashed as it stands
+06:32:43.580  +0002.484s  CLASH    ran against C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+06:32:43.581  +0002.485s  CLASH    the document measures in ft, every tolerance was converted into it
+06:32:43.589  +0002.493s  CLASH    the document holds 63 sets and the tests name 61 sets
+06:32:43.597  +0002.502s  CLASH    the rule of two set codes left out 284 of the 1830 tests planned, each setting a set code against itself, AR 120, DR 10, EL 78, FF 15, ME 36, PL 10, ST 15, so none of them is created or run, and 60 of the tests that run have a side whose set name reads no set code, so the rule could not judge them and they run, Bader's answer to Q209
+
+================================================================
+MIRROR C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+================================================================
+06:32:43.626  +0002.530s  MIRROR   48 pairs of tests that ask the same question among the 1546 tests whose two sets were read, 0 with the same two sets swapped and 48 whose sets carry the same rule lists. Both tests of each pair are run. 0 mirrors are to be merged by the pair of items into the one kept once both tests of the pair run, the higher priority, A before B before C before no priority, and where equal the one first in the XML, and 48 keep their own clashes, since a mirror is merged only where this run created both tests of the pair and every set of both from the clash matrix
+06:32:43.627  +0002.532s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors and its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror) keep their own clashes under their own names, not merged, because the set lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, the set lcop_selection_set_tree/Architecture/BLD-AR-Floors was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search and the set lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, and a clash both find may be counted twice
+06:32:43.629  +0002.533s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Stairs and its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Stairs (mirror) keep their own clashes under their own names, not merged, because the set lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, the set lcop_selection_set_tree/Architecture/BLD-AR-Stairs was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search and the set lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, and a clash both find may be counted twice
+06:32:43.631  +0002.535s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Ramps and its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Ramps (mirror) keep their own clashes under their own names, not merged, because the set lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, the set lcop_selection_set_tree/Architecture/BLD-AR-Ramps was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search and the set lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, and a clash both find may be counted twice
+06:32:43.633  +0002.537s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Roofs and its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Roofs (mirror) keep their own clashes under their own names, not merged, because the set lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, the set lcop_selection_set_tree/Architecture/BLD-AR-Roofs was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search and the set lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, and a clash both find may be counted twice
+06:32:43.635  +0002.539s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Ceilings and its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings (mirror) keep their own clashes under their own names, not merged, because the set lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, the set lcop_selection_set_tree/Architecture/BLD-AR-Ceilings was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search and the set lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices was already in the document and not created by this run, so whether it asks what the clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags or search, and a clash both find may be counted twice
+06:32:43.636  +0002.540s  MIRROR   and 43 more tests kept whose mirrors are not merged, each test keeping its own clashes under its own name, counted and not listed
+06:32:43.638  +0002.542s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors is kept, BLD-EL-Telephone Devices-vs-BLD-AR-Floors is its mirror, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror)
+06:32:43.639  +0002.543s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Stairs is kept, BLD-EL-Telephone Devices-vs-BLD-AR-Stairs is its mirror, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Stairs's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Stairs (mirror)
+06:32:43.640  +0002.544s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Ramps is kept, BLD-EL-Telephone Devices-vs-BLD-AR-Ramps is its mirror, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Ramps's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Ramps (mirror)
+06:32:43.641  +0002.545s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Roofs is kept, BLD-EL-Telephone Devices-vs-BLD-AR-Roofs is its mirror, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Roofs's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Roofs (mirror)
+06:32:43.643  +0002.547s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Ceilings is kept, BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings is its mirror, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Ceilings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings (mirror)
+06:32:43.644  +0002.548s  MIRROR   and 43 more pairs alike in priority and in every test setting compared, counted and not listed
+
+================================================================
+MIRROR RENAMES C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+================================================================
+06:32:43.650  +0002.554s  MIRROR   0 of the 31 tests saved in the document are renamed as the mirror they were saved for before the mirror rule, and 0 under the XML's name of a mirror are not
+06:32:43.652  +0002.555s  MIRROR   0 of the 31 tests saved in the document are renamed to the name of a test the XML runs under its own name, whose mirror an earlier run made them, and 0 are not
+
+================================================================
+MIRROR COVERAGE C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+================================================================
+06:32:43.660  +0002.563s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror) keeping its own clashes
+06:32:43.660  +0002.564s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Stairs  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Stairs (mirror) keeping its own clashes
+06:32:43.661  +0002.565s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Ramps  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Ramps (mirror) keeping its own clashes
+06:32:43.662  +0002.567s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Roofs  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Roofs (mirror) keeping its own clashes
+06:32:43.664  +0002.568s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Ceilings  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings (mirror) keeping its own clashes
+06:32:43.665  +0002.569s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Columns  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Columns (mirror) keeping its own clashes
+06:32:43.666  +0002.570s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Walls  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Walls (mirror) keeping its own clashes
+06:32:43.667  +0002.571s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Windows  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Windows (mirror) keeping its own clashes
+06:32:43.668  +0002.572s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Panels  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Panels (mirror) keeping its own clashes
+06:32:43.669  +0002.573s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Mullions  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Mullions (mirror) keeping its own clashes
+06:32:43.671  +0002.574s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Doors  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Doors (mirror) keeping its own clashes
+06:32:43.672  +0002.576s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Casework  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Casework (mirror) keeping its own clashes
+06:32:43.673  +0002.577s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Furniture  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Furniture (mirror) keeping its own clashes
+06:32:43.674  +0002.578s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Parking  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Parking (mirror) keeping its own clashes
+06:32:43.675  +0002.579s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Railings  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Railings (mirror) keeping its own clashes
+06:32:43.676  +0002.580s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Site  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Site (mirror) keeping its own clashes
+06:32:43.677  +0002.581s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ST-Foundation  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ST-Foundation (mirror) keeping its own clashes
+06:32:43.678  +0002.582s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ST-Columns  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ST-Columns (mirror) keeping its own clashes
+06:32:43.679  +0002.583s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ST-Framing  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ST-Framing (mirror) keeping its own clashes
+06:32:43.680  +0002.584s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ST-Walls  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ST-Walls (mirror) keeping its own clashes
+06:32:43.681  +0002.585s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ST-Floors  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ST-Floors (mirror) keeping its own clashes
+06:32:43.682  +0002.586s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ST-Stair  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ST-Stair (mirror) keeping its own clashes
+06:32:43.683  +0002.587s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Ducts&Duct Fittings  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Ducts&Duct Fittings (mirror) keeping its own clashes
+06:32:43.685  +0002.588s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Duct Accessory  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Duct Accessory (mirror) keeping its own clashes
+06:32:43.686  +0002.589s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Mechanical Equipment  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Mechanical Equipment (mirror) keeping its own clashes
+06:32:43.687  +0002.590s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Ducts  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Flex Ducts (mirror) keeping its own clashes
+06:32:43.688  +0002.592s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Air Terminals  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Air Terminals (mirror) keeping its own clashes
+06:32:43.689  +0002.593s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipes&Pipe Fittings  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Pipes&Pipe Fittings (mirror) keeping its own clashes
+06:32:43.690  +0002.594s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipe Accessories  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Pipe Accessories (mirror) keeping its own clashes
+06:32:43.691  +0002.595s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Plumbing Fixtures  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Plumbing Fixtures (mirror) keeping its own clashes
+06:32:43.693  +0002.596s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Pipes  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-ME-Flex Pipes (mirror) keeping its own clashes
+06:32:43.693  +0002.597s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-FF-Mechanical Equipment  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-FF-Mechanical Equipment (mirror) keeping its own clashes
+06:32:43.694  +0002.598s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipes & Pipe Fittings  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-FF-Pipes & Pipe Fittings (mirror) keeping its own clashes
+06:32:43.695  +0002.599s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Accessories  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Accessories (mirror) keeping its own clashes
+06:32:43.697  +0002.601s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Insulations  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Insulations (mirror) keeping its own clashes
+06:32:43.698  +0002.602s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-FF-Plumbing Fixtures  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-FF-Plumbing Fixtures (mirror) keeping its own clashes
+06:32:43.699  +0002.603s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-FF-Sprinklers  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-FF-Sprinklers (mirror) keeping its own clashes
+06:32:43.700  +0002.604s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-PL-Mechanical Equipment  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-PL-Mechanical Equipment (mirror) keeping its own clashes
+06:32:43.701  +0002.605s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipes & Pipe Fittings  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-PL-Pipes & Pipe Fittings (mirror) keeping its own clashes
+06:32:43.702  +0002.606s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Accessories  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Accessories (mirror) keeping its own clashes
+06:32:43.703  +0002.607s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Insulations  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Insulations (mirror) keeping its own clashes
+06:32:43.704  +0002.608s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-PL-Plumbing Fixtures  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-PL-Plumbing Fixtures (mirror) keeping its own clashes
+06:32:43.705  +0002.609s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-DR-Mechanical Equipment  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-DR-Mechanical Equipment (mirror) keeping its own clashes
+06:32:43.706  +0002.610s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipes & Pipe Fittings  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-DR-Pipes & Pipe Fittings (mirror) keeping its own clashes
+06:32:43.707  +0002.611s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Accessories  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Accessories (mirror) keeping its own clashes
+06:32:43.708  +0002.612s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Insulations  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Insulations (mirror) keeping its own clashes
+06:32:43.709  +0002.613s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-DR-Plumbing Fixtures  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-DR-Plumbing Fixtures (mirror) keeping its own clashes
+06:32:43.710  +0002.614s  MIRROR   BLD-Security Devices-vs-BLD-EL-Telecom Fixtures  kept of a mirrored pair, its mirror BLD-EL-Telephone Devices-vs-BLD-Security Devices (mirror) keeping its own clashes
+06:32:43.711  +0002.615s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Floors  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror), its clashes kept under its own name
+06:32:43.713  +0002.616s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Stairs  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Stairs, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Stairs's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Stairs (mirror), its clashes kept under its own name
+06:32:43.714  +0002.618s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Ramps  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Ramps, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Ramps's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Ramps (mirror), its clashes kept under its own name
+06:32:43.715  +0002.619s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Roofs  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Roofs, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Roofs's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Roofs (mirror), its clashes kept under its own name
+06:32:43.716  +0002.620s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Ceilings, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Ceilings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings (mirror), its clashes kept under its own name
+06:32:43.717  +0002.621s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Columns  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Columns, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Columns's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Columns (mirror), its clashes kept under its own name
+06:32:43.719  +0002.623s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Walls  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Walls, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Walls's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Walls (mirror), its clashes kept under its own name
+06:32:43.720  +0002.624s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Windows  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Windows, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Windows's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Windows (mirror), its clashes kept under its own name
+06:32:43.721  +0002.625s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Panels  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Panels, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Panels's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Panels (mirror), its clashes kept under its own name
+06:32:43.723  +0002.626s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Mullions  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Mullions, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Curtain Mullions's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Curtain Mullions (mirror), its clashes kept under its own name
+06:32:43.724  +0002.628s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Doors  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Doors, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Doors's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Doors (mirror), its clashes kept under its own name
+06:32:43.725  +0002.629s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Casework  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Casework, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Casework's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Casework (mirror), its clashes kept under its own name
+06:32:43.726  +0002.630s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Furniture  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Furniture, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Furniture's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Furniture (mirror), its clashes kept under its own name
+06:32:43.728  +0002.631s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Parking  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Parking, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Parking's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Parking (mirror), its clashes kept under its own name
+06:32:43.729  +0002.633s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Railings  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Railings, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Railings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Railings (mirror), its clashes kept under its own name
+06:32:43.730  +0002.634s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Site  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Site, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Site's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Site (mirror), its clashes kept under its own name
+06:32:43.731  +0002.635s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ST-Foundation  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ST-Foundation, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ST-Foundation's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ST-Foundation (mirror), its clashes kept under its own name
+06:32:43.732  +0002.636s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ST-Columns  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ST-Columns, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ST-Columns's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ST-Columns (mirror), its clashes kept under its own name
+06:32:43.733  +0002.637s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ST-Framing  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ST-Framing, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ST-Framing's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ST-Framing (mirror), its clashes kept under its own name
+06:32:43.735  +0002.639s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ST-Walls  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ST-Walls, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ST-Walls's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ST-Walls (mirror), its clashes kept under its own name
+06:32:43.736  +0002.640s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ST-Floors  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ST-Floors, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ST-Floors's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ST-Floors (mirror), its clashes kept under its own name
+06:32:43.737  +0002.641s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ST-Stair  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ST-Stair, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ST-Stair's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ST-Stair (mirror), its clashes kept under its own name
+06:32:43.738  +0002.642s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Ducts&Duct Fittings  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Ducts&Duct Fittings, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Ducts&Duct Fittings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Ducts&Duct Fittings (mirror), its clashes kept under its own name
+06:32:43.739  +0002.643s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Duct Accessory  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Duct Accessory, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Duct Accessory's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Duct Accessory (mirror), its clashes kept under its own name
+06:32:43.741  +0002.645s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Mechanical Equipment  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Mechanical Equipment, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Mechanical Equipment's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Mechanical Equipment (mirror), its clashes kept under its own name
+06:32:43.742  +0002.646s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Flex Ducts  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Ducts, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Ducts's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Flex Ducts (mirror), its clashes kept under its own name
+06:32:43.743  +0002.647s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Air Terminals  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Air Terminals, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Air Terminals's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Air Terminals (mirror), its clashes kept under its own name
+06:32:43.744  +0002.648s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Pipes&Pipe Fittings  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipes&Pipe Fittings, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipes&Pipe Fittings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Pipes&Pipe Fittings (mirror), its clashes kept under its own name
+06:32:43.746  +0002.650s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Pipe Accessories  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipe Accessories, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Pipe Accessories's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Pipe Accessories (mirror), its clashes kept under its own name
+06:32:43.747  +0002.651s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Plumbing Fixtures  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Plumbing Fixtures, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Plumbing Fixtures's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Plumbing Fixtures (mirror), its clashes kept under its own name
+06:32:43.748  +0002.652s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-ME-Flex Pipes  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Pipes, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-ME-Flex Pipes's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-ME-Flex Pipes (mirror), its clashes kept under its own name
+06:32:43.750  +0002.653s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-FF-Mechanical Equipment  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-FF-Mechanical Equipment, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-FF-Mechanical Equipment's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-FF-Mechanical Equipment (mirror), its clashes kept under its own name
+06:32:43.751  +0002.655s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-FF-Pipes & Pipe Fittings  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipes & Pipe Fittings, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipes & Pipe Fittings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-FF-Pipes & Pipe Fittings (mirror), its clashes kept under its own name
+06:32:43.752  +0002.656s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Accessories  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Accessories, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Accessories's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Accessories (mirror), its clashes kept under its own name
+06:32:43.753  +0002.657s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Insulations  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Insulations, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-FF-Pipe Insulations's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-FF-Pipe Insulations (mirror), its clashes kept under its own name
+06:32:43.755  +0002.658s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-FF-Plumbing Fixtures  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-FF-Plumbing Fixtures, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-FF-Plumbing Fixtures's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-FF-Plumbing Fixtures (mirror), its clashes kept under its own name
+06:32:43.756  +0002.660s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-FF-Sprinklers  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-FF-Sprinklers, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-FF-Sprinklers's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-FF-Sprinklers (mirror), its clashes kept under its own name
+06:32:43.757  +0002.661s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-PL-Mechanical Equipment  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-PL-Mechanical Equipment, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-PL-Mechanical Equipment's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-PL-Mechanical Equipment (mirror), its clashes kept under its own name
+06:32:43.758  +0002.662s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-PL-Pipes & Pipe Fittings  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipes & Pipe Fittings, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipes & Pipe Fittings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-PL-Pipes & Pipe Fittings (mirror), its clashes kept under its own name
+06:32:43.760  +0002.663s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Accessories  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Accessories, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Accessories's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Accessories (mirror), its clashes kept under its own name
+06:32:43.760  +0002.665s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Insulations  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Insulations, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-PL-Pipe Insulations's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-PL-Pipe Insulations (mirror), its clashes kept under its own name
+06:32:43.763  +0002.666s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-PL-Plumbing Fixtures  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-PL-Plumbing Fixtures, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-PL-Plumbing Fixtures's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-PL-Plumbing Fixtures (mirror), its clashes kept under its own name
+06:32:43.764  +0002.667s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-DR-Mechanical Equipment  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-DR-Mechanical Equipment, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-DR-Mechanical Equipment's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-DR-Mechanical Equipment (mirror), its clashes kept under its own name
+06:32:43.765  +0002.669s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-DR-Pipes & Pipe Fittings  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipes & Pipe Fittings, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipes & Pipe Fittings's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-DR-Pipes & Pipe Fittings (mirror), its clashes kept under its own name
+06:32:43.767  +0002.670s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Accessories  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Accessories, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Accessories's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Accessories (mirror), its clashes kept under its own name
+06:32:43.769  +0002.673s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Insulations  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Insulations, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-DR-Pipe Insulations's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-DR-Pipe Insulations (mirror), its clashes kept under its own name
+06:32:43.770  +0002.674s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-DR-Plumbing Fixtures  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-DR-Plumbing Fixtures, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-DR-Plumbing Fixtures's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-DR-Plumbing Fixtures (mirror), its clashes kept under its own name
+06:32:43.771  +0002.675s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-Security Devices  a mirror of BLD-Security Devices-vs-BLD-EL-Telecom Fixtures, its sets carry the same rule lists as BLD-Security Devices-vs-BLD-EL-Telecom Fixtures's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-Security Devices (mirror), its clashes kept under its own name
+06:32:43.818  +0002.722s  CLASH    SKIPPED  BLD-AR-Stairs-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:43.819  +0002.723s  CLASH    SKIPPED  BLD-AR-Ramps-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:43.820  +0002.724s  CLASH    SKIPPED  BLD-AR-Ramps-vs-BLD-AR-Stairs  both sides carry the set code AR, and only tests across two set codes run
+06:32:43.821  +0002.726s  CLASH    SKIPPED  BLD-AR-Roofs-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:43.823  +0002.727s  CLASH    SKIPPED  BLD-AR-Roofs-vs-BLD-AR-Stairs  both sides carry the set code AR, and only tests across two set codes run
+06:32:43.824  +0002.728s  CLASH    further skips for "both sides carry one set code, and only tests across two set codes run" are counted, not listed. The block at the end carries the total.
+06:32:43.829  +0002.733s  CLASH    the document already holds 31 clash tests, they keep their results and are not recreated
+06:32:43.833  +0002.737s  CLASH    counted the items of 61 sets for the creation plan in 0.0000349s
+06:32:43.836  +0002.740s  CLASH 1830 in the file, 0 created, 1515 not created, a side finds nothing
+06:32:43.838  +0002.742s  CLASH    SKIPPED  BLD-ST-Foundation-vs-BLD-AR-Floors  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Floors" finds nothing in this model, the left finds 12
+06:32:43.839  +0002.743s  CLASH    SKIPPED  BLD-ST-Foundation-vs-BLD-AR-Stairs  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Stairs" finds nothing in this model, the left finds 12
+06:32:43.840  +0002.744s  CLASH    SKIPPED  BLD-ST-Foundation-vs-BLD-AR-Ramps  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Ramps" finds nothing in this model, the left finds 12
+06:32:43.841  +0002.745s  CLASH    SKIPPED  BLD-ST-Foundation-vs-BLD-AR-Roofs  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Roofs" finds nothing in this model, the left finds 12
+06:32:43.842  +0002.746s  CLASH    SKIPPED  BLD-ST-Foundation-vs-BLD-AR-Ceilings  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Ceilings" finds nothing in this model, the left finds 12
+06:32:43.843  +0002.747s  CLASH    further skips for "a side finds nothing in this model" are counted, not listed. The block at the end carries the total.
+06:32:43.869  +0002.773s  STEP     TESTS RUN     started
+06:32:43.871  +0002.776s  CENSUS   before TESTS RUN  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.880  +0002.784s  MEMORY   at the start of TESTS RUN, private bytes 850.6 MB, working set 728.5 MB, managed heap 106.6 MB
+06:32:43.904  +0002.808s  MEMORY   at the end of TESTS RUN, private bytes 853.6 MB up 3.0 MB, working set 729.4 MB up 0.9 MB, managed heap 106.9 MB up 0.2 MB
+06:32:43.906  +0002.810s  CENSUS   after  TESTS RUN  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.911  +0002.815s  STEP     TESTS RUN     finished 0.031s  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation
+06:32:43.916  +0002.819s  STEP     HARVEST       started
+06:32:43.918  +0002.821s  CENSUS   before HARVEST  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.925  +0002.829s  MEMORY   at the start of HARVEST, private bytes 853.5 MB, working set 729.3 MB, managed heap 107.2 MB
+06:32:43.944  +0002.848s  MEMORY   at the end of HARVEST, private bytes 853.5 MB unchanged, working set 729.3 MB unchanged, managed heap 107.5 MB up 0.2 MB
+06:32:43.945  +0002.850s  CENSUS   after  HARVEST  models 2  sets 63  tests 31  results 8  views 3
+06:32:43.951  +0002.855s  STEP     HARVEST       finished 0.026s  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation
+06:32:43.954  +0002.859s  ROWS     BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation  0 rows for the workbook, 0 clashes in the document, they agree
+06:32:43.957  +0002.861s  CLASH    passed  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation  items 62 v 12  none  0.0s
+06:32:43.969  +0002.873s  STEP     TESTS RUN     entered again. Every further visit in this group is counted, not written out
+06:32:43.990  +0002.893s  STEP     HARVEST       entered again. Every further visit in this group is counted, not written out
+06:32:44.002  +0002.905s  ROWS     BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns  0 rows for the workbook, 0 clashes in the document, they agree
+06:32:44.004  +0002.907s  CLASH    passed  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns  items 62 v 9  none  0.0s
+06:32:44.083  +0002.987s  ROWS     BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing  1 row for the workbook, 1 clash in the document, they agree
+06:32:44.085  +0002.989s  CLASH    clashes BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing  items 62 v 26  Active 1  0.0s
+06:32:44.143  +0003.046s  ROWS     BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls  0 rows for the workbook, 0 clashes in the document, they agree
+06:32:44.145  +0003.048s  CLASH    passed  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls  items 62 v 4  none  0.0s
+06:32:44.214  +0003.118s  ROWS     BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors  2 rows for the workbook, 2 clashes in the document, they agree
+06:32:44.216  +0003.120s  CLASH    clashes BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors  items 62 v 2  Active 2  0.0s
+06:32:44.269  +0003.173s           every further line of this kind is counted and not written out. The machine readable log carries every one of them
+06:32:44.271  +0003.175s  CLASH    passed  BLD-ME-Duct Accessory-vs-BLD-ST-Foundation  items 17 v 12  none  0.0s
+06:32:44.315  +0003.219s  CLASH    passed  BLD-ME-Duct Accessory-vs-BLD-ST-Columns  items 17 v 9  none  0.0s
+06:32:44.362  +0003.265s           every further line of this kind is counted and not written out. The machine readable log carries every one of them
+06:32:44.912  +0003.815s  CLASH    clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing  items 45 v 26  Active 4  0.0s
+06:32:45.052  +0003.955s  CLASH    clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors  items 45 v 2  Reviewed 1  0.0s
+06:32:45.468  +0004.372s  CLASH    25 of 31 tests, 25 run, 1799 skipped, 8 clashes so far
+06:32:45.920  +0004.823s  CLASH    31 of 31 tests, 31 run, 1799 skipped, 8 clashes so far
+06:32:45.923  +0004.827s  TOLERANCE 25 mm chosen in the tool, so it beats both the built in matrix and the document. Set on 0 tests, 0 created fresh and 0 already in the document. Not set on 31 saved tests: 31 already at the value. 25 mm is 0.082021 ft in this document
+
+================================================================
+DRIFT C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+================================================================
+06:32:45.929  +0004.833s  31 tests were already in the document and were compared against the file.
+06:32:45.930  +0004.834s  Nothing has drifted. Every one of them matches the file.
+06:32:45.937  +0004.841s  PRIORITY 1830 in the file, 1830 tests in this run, 1782 matched, 48 not named by the file
+06:32:45.938  +0004.842s           BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror)
+06:32:45.939  +0004.843s           BLD-EL-Telephone Devices-vs-BLD-AR-Stairs (mirror)
+06:32:45.940  +0004.845s           BLD-EL-Telephone Devices-vs-BLD-AR-Ramps (mirror)
+06:32:45.942  +0004.846s           BLD-EL-Telephone Devices-vs-BLD-AR-Roofs (mirror)
+06:32:45.942  +0004.847s           BLD-EL-Telephone Devices-vs-BLD-AR-Ceilings (mirror)
+06:32:45.944  +0004.848s           and 43 more not named by the file, counted and not listed
+
+================================================================
+PRIORITY 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:45.950  +0004.854s  PRIORITY clashes by priority, 8 in all
+06:32:45.951  +0004.855s           A           : 8
+06:32:45.952  +0004.856s           B           : 0
+06:32:45.953  +0004.857s           C           : 0
+06:32:45.954  +0004.858s           No priority : 0
+
+================================================================
+CLASH 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:45.965  +0004.868s  clashes BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing  items 62 v 26  Active 1  0.0s
+06:32:45.966  +0004.870s  clashes BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors  items 62 v 2  Active 2  0.0s
+06:32:45.967  +0004.871s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing  items 45 v 26  Active 4  0.0s
+06:32:45.968  +0004.872s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors  items 45 v 2  Reviewed 1  0.0s
+06:32:45.969  +0004.873s  PASSED 27 tests, ran and found nothing
+06:32:45.970  +0004.874s          passed  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation  items 62 v 12  none  0.0s
+06:32:45.971  +0004.874s          passed  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns  items 62 v 9  none  0.0s
+06:32:45.972  +0004.876s          passed  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls  items 62 v 4  none  0.0s
+06:32:45.973  +0004.877s          passed  BLD-ME-Duct Accessory-vs-BLD-ST-Foundation  items 17 v 12  none  0.0s
+06:32:45.974  +0004.878s          passed  BLD-ME-Duct Accessory-vs-BLD-ST-Columns  items 17 v 9  none  0.0s
+06:32:45.974  +0004.879s          and 22 more that ran and found nothing, counted and not listed
+06:32:45.975  +0004.880s  SKIPPED 284 tests, both sides carry one set code, and only tests across two set codes run
+06:32:45.976  +0004.881s          BLD-AR-Stairs-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:45.977  +0004.882s          BLD-AR-Ramps-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:45.978  +0004.883s          BLD-AR-Ramps-vs-BLD-AR-Stairs  both sides carry the set code AR, and only tests across two set codes run
+06:32:45.979  +0004.884s          BLD-AR-Roofs-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:45.981  +0004.885s          BLD-AR-Roofs-vs-BLD-AR-Stairs  both sides carry the set code AR, and only tests across two set codes run
+06:32:45.981  +0004.886s          and 279 more skipped for the same reason, counted and not listed
+06:32:45.983  +0004.887s  SKIPPED 1515 tests, a side finds nothing in this model
+06:32:45.985  +0004.888s          BLD-ST-Foundation-vs-BLD-AR-Floors  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Floors" finds nothing in this model, the left finds 12
+06:32:45.985  +0004.889s          BLD-ST-Foundation-vs-BLD-AR-Stairs  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Stairs" finds nothing in this model, the left finds 12
+06:32:45.987  +0004.891s          BLD-ST-Foundation-vs-BLD-AR-Ramps  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Ramps" finds nothing in this model, the left finds 12
+06:32:45.988  +0004.892s          BLD-ST-Foundation-vs-BLD-AR-Roofs  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Roofs" finds nothing in this model, the left finds 12
+06:32:45.989  +0004.893s          BLD-ST-Foundation-vs-BLD-AR-Ceilings  the right side "lcop_selection_set_tree/Architecture/BLD-AR-Ceilings" finds nothing in this model, the left finds 12
+06:32:45.990  +0004.894s          and 1510 more skipped for the same reason, counted and not listed
+06:32:45.991  +0004.895s  
+06:32:45.992  +0004.896s  ran against       : C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  (2 models loaded)
+06:32:45.993  +0004.897s  tests in the file : 1830
+06:32:45.994  +0004.898s  tests created     : 0
+06:32:45.995  +0004.899s  already there     : 31, left alone with their results
+06:32:45.996  +0004.900s  tests skipped     : 1799, not run and not passed
+06:32:45.997  +0004.901s        284  both sides carry one set code, and only tests across two set codes run
+06:32:45.998  +0004.902s       1515  a side finds nothing in this model
+06:32:45.999  +0004.903s  tests run         : 31
+06:32:46.000  +0004.904s      passed        : 27, ran and found nothing
+06:32:46.001  +0004.905s      with clashes  : 4
+06:32:46.002  +0004.906s  clashes found     : 8
+06:32:46.003  +0004.907s      New       : 0
+06:32:46.004  +0004.908s      Active    : 7
+06:32:46.005  +0004.909s      Reviewed  : 1
+06:32:46.007  +0004.910s      Approved  : 0
+06:32:46.007  +0004.911s      Resolved  : 0
+06:32:46.019  +0004.923s  clash step took   : 2.4 seconds
+
+================================================================
+EMPTY SETS 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:46.027  +0004.931s  51 set(s) found nothing in this group, and this is why:
+06:32:46.028  +0004.932s     13 ask for a value NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES, so the condition is wrong or the project has not been measured that far
+06:32:46.029  +0004.933s     38 ask for a value models in this project DO carry, so either this group holds no model of that kind or something else is wrong
+06:32:46.030  +0004.934s     0 this reader cannot tell about
+06:32:46.031  +0004.935s     lcop_selection_set_tree/Architecture/BLD-AR-Floors   asks for "Floors", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.032  +0004.936s     lcop_selection_set_tree/Architecture/BLD-AR-Stairs   asks for "Stairs", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.033  +0004.937s     lcop_selection_set_tree/Architecture/BLD-AR-Ramps   asks for "Ramps" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.034  +0004.938s     lcop_selection_set_tree/Architecture/BLD-AR-Roofs   asks for "Roofs" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT. The nearest the models carry is "Doors", which is a suggestion and not a correction
+06:32:46.035  +0004.940s     lcop_selection_set_tree/Architecture/BLD-AR-Ceilings   asks for "Ceilings", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.037  +0004.941s     lcop_selection_set_tree/Architecture/BLD-AR-Columns   asks for "Columns" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.038  +0004.942s     lcop_selection_set_tree/Architecture/BLD-AR-Walls   asks for "Walls", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.039  +0004.943s     lcop_selection_set_tree/Architecture/BLD-AR-Windows   asks for "Windows", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.040  +0004.944s     lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels   asks for "Curtain Panels", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.041  +0004.946s     lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions   asks for "Curtain Wall Mullions", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.043  +0004.947s     lcop_selection_set_tree/Architecture/BLD-AR-Doors   asks for "Doors", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.044  +0004.948s     lcop_selection_set_tree/Architecture/BLD-AR-Casework   asks for "Casework" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.046  +0004.949s     lcop_selection_set_tree/Architecture/BLD-AR-Furniture   asks for "Furniture", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.047  +0004.950s     lcop_selection_set_tree/Architecture/BLD-AR-Parking   asks for "Parking" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.048  +0004.952s     lcop_selection_set_tree/Architecture/BLD-AR-Railings   asks for "Railings" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT. The nearest the models carry is "Ceilings", which is a suggestion and not a correction
+06:32:46.049  +0004.953s     lcop_selection_set_tree/Architecture/BLD-AR-Site   asks for "Site", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.050  +0004.954s     lcop_selection_set_tree/Structure/BLD-ST-Stair   asks for "Stairs", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.052  +0004.955s     lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts   asks for "Flex Ducts" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.053  +0004.956s     lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals   asks for "Air Terminals", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.054  +0004.958s     lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings   asks for "Pipes", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.055  +0004.959s     lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories   asks for "Pipe Accessories", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.056  +0004.960s     lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures   asks for "Plumbing Fixtures", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.057  +0004.961s     lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes   asks for "Flex Pipes", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.058  +0004.962s     lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment   asks for "Mechanical Equipment", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.059  +0004.964s     lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings   asks for "Pipes", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.061  +0004.965s     lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories   asks for "Pipe Accessories", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.062  +0004.966s     lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations   asks for "Pipe Insulation" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.063  +0004.967s     lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures   asks for "Plumbing Fixtures", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.064  +0004.968s     lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers   asks for "Sprinklers", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.066  +0004.969s     lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment   asks for "Mechanical Equipment", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.067  +0004.970s     lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings   asks for "Pipes", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.068  +0004.972s     lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories   asks for "Pipe Accessories", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.069  +0004.973s     lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations   asks for "Pipe Insulation" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.070  +0004.974s     lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures   asks for "Plumbing Fixtures", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.071  +0004.975s     lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment   asks for "Mechanical Equipment", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.072  +0004.976s     lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories   asks for "Pipe Accessories", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.074  +0004.978s     lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations   asks for "Pipe Insulation" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.075  +0004.979s     lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings   asks for "Cable Tray", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.076  +0004.980s     lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment   asks for "Electrical Equipment", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.078  +0004.982s     lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures   asks for "Electrical Fixtures", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.079  +0004.983s     lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings   asks for "Conduit", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.081  +0004.984s     lcop_selection_set_tree/Electrical/BLD-EL-Devices   asks for "Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.082  +0004.985s     lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures   asks for "Lighting Fixtures", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.083  +0004.986s     lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices   asks for "Lighting Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.084  +0004.988s     lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices   asks for "Fire Alarm Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.085  +0004.989s     lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment   asks for "Telephone Equipment" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.086  +0004.990s     lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures   asks for "Telephone Devices" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.087  +0004.991s     lcop_selection_set_tree/Electrical/BLD-Security Devices   asks for "Security Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.088  +0004.992s     lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices   asks for "Communication Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.089  +0004.993s     lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices   asks for "Telephone Devices" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+06:32:46.090  +0004.994s     lcop_selection_set_tree/Electrical/BLD-EL-Data Devices   asks for "Data Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+06:32:46.092  +0004.996s  IT COSTS 1515 of this group's 1830 clash tests, which have a side that finds nothing and so can never report a clash
+
+================================================================
+PENETRATION 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:46.135  +0005.039s  
+06:32:46.135  +0005.040s  clashes looked at : 8
+06:32:46.137  +0005.041s  moved to Reviewed : 0
+06:32:46.138  +0005.042s          2  the service is over the size, left alone
+06:32:46.139  +0005.043s          0  no size could be read off the service, left alone
+06:32:46.140  +0005.044s          1  a person had already set it, left alone
+06:32:46.141  +0005.045s          0  both sides a service, left alone
+06:32:46.142  +0005.046s          0  both sides a solid, left alone
+06:32:46.143  +0005.047s          5  not a service against a solid, left alone
+06:32:46.144  +0005.048s  the size in use   : 150mm or under is a penetration, over it stays as it was
+06:32:46.145  +0005.049s  Nothing moved. Every clash is exactly as it was.
+
+================================================================
+ITEM IDS 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:46.153  +0005.057s  Id supplied 16 item ids of 16, written as "Element ID"
+06:32:46.154  +0005.058s  CLASH    1104-PAR-1C06M2-ZZZ-BM-MOD-000001 finished. 0 created, 31 already there, 31 run, 27 passed, 1799 skipped, 8 clashes in 2.4s.
+06:32:46.167  +0005.071s  STEP     VIEWS         started
+06:32:46.169  +0005.073s  CENSUS   before VIEWS  models 2  sets 63  tests 31  results 8  views 3
+06:32:46.177  +0005.081s  MEMORY   at the start of VIEWS, private bytes 825.9 MB, working set 736.5 MB, managed heap 111.3 MB
+06:32:46.203  +0005.107s  VIEWS    the tree read before anything was written: 3 viewpoint(s) and 4 folder(s)
+06:32:46.209  +0005.113s  VIEWS    the tool folder Clash Status of the earlier run: 1 found by its name and its marker and deleted with its 3 items, so every view of this run is made new
+06:32:46.210  +0005.115s  VIEWS    PROOF the delete left the clash tests and results as they were: 31 tests and 8 results before, 31 tests and 8 results after. The counts say nothing of statuses, which the snapshot of a weekly run compares
+06:32:46.297  +0005.202s  VIEWS    8 row(s) of the report read for the views, the size read for 7 in a pair carrying the size folder
+06:32:46.622  +0005.525s  VIEWS    3 of 3 planned view(s) written, 3 folder(s) made and marked, the hiding skipped for 2 view(s) showing the same models as the one before
+06:32:46.634  +0005.538s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 3 views, 0.305 s in all, 0.102 s on average, the shortest 0.061 s and the longest 0.184 s
+06:32:46.636  +0005.540s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 where the seconds of the views went: making the view 0.047 s, hiding and dimming 0.011 s, the add into its folder 0.008 s, the mark 0.017 s, the collection after the read back 0.181 s, the read back 0.007 s, of which the hidden items 0 s, the walk of the overrides 0.004 s (getting the list 0.003 s, the colour of each override 0 s, the item of each coloured one 0 s, its path 0 s), and the colour of the clashing items 0 s
+06:32:46.637  +0005.541s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 in the order they were written, the first 1 views took 0.184 s each on average and the last 1 took 0.061 s, with the tree at 7 items at the start and 9 at the end
+06:32:46.639  +0005.542s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 Navisworks private bytes 816.125 MB after the first view and 816.059 MB after the last
+06:32:46.640  +0005.543s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 how the seconds of a view follow, Pearson r over 3 views: its clashes 0.95, its overrides UNKNOWN, the tree at its start -0.87, the order it was written -0.87
+06:32:46.641  +0005.545s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 slowest 1: Clash Status/A/Mechanical/BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing 0.184 s, 4 clashes, 440 overrides, made 0.047 s, hidden and dimmed 0.008 s, added 0.003 s, marked 0.016 s, read back 0.006 s
+06:32:46.642  +0005.546s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 slowest 2: Clash Status/A/Mechanical/BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors 0.061 s, 2 clashes, 440 overrides, made 0 s, hidden and dimmed 0.001 s, added 0.002 s, marked 0 s, read back 0.001 s
+06:32:46.643  +0005.547s  VIEWS    TIMING 1104-PAR-1C06M2-ZZZ-BM-MOD-000001 slowest 3: Clash Status/A/Mechanical/BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing 0.061 s, 1 clashes, 440 overrides, made 0 s, hidden and dimmed 0.001 s, added 0.003 s, marked 0 s, read back 0 s
+06:32:46.644  +0005.548s  VIEWS    the tree read after this run's views were written: 3 viewpoint(s) and 4 folder(s)
+
+================================================================
+VIEWS INVENTORY 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:46.658  +0005.562s  inventory : 3 views and 3 folders, read after this run wrote its own
+06:32:46.659  +0005.563s          3  kept, written, marked and read back by this run
+06:32:46.660  +0005.564s          3  kept, a folder
+06:32:46.661  +0005.565s  removals : 0, deepest first and the latest index first within a folder
+06:32:46.663  +0005.568s  VIEWS    3 of 0 RemoveAt call(s) made
+06:32:46.669  +0005.573s  VIEWS    OUTSIDE 0 items deleted outside the tool folder and the Comments folder, the root held nothing else. The Comments folder was kept with its 0 items
+06:32:46.670  +0005.574s  VIEWS    PROOF the delete left the clash tests and results as they were: 31 tests and 8 results before, 31 tests and 8 results after. The counts say nothing of statuses, which the snapshot of a weekly run compares
+06:32:46.672  +0005.576s  VIEWS    the dimming and the paint were taken off the models this tool dimmed, so the document is back to its own appearance
+06:32:46.674  +0005.578s  VIEWS    hidden state put back: nothing was hidden before the views and nothing is hidden now
+06:32:46.676  +0005.580s  VIEWS    the tree read after the removals, for the VIEWS TREE block: 3 viewpoint(s) and 4 folder(s)
+06:32:46.702  +0005.606s  VIEWS    the step's seconds went: 0.094s reading the clashes and planning, 0.000s saying how far it has got, 0.002s showing and hiding the models, 0.006s dimming, 0.002s framing the camera on the clashes, 0.012s finding or making the folders, 0.047s making the view and setting its camera, 0.002s finding its folder again in the COM tree, 0.006s adding the view, 0.005s marking the view and its folders, 0.007s reading back, 0.015s taking the inventory of the tree, 0.003s removing the views of earlier runs, 0.004s putting the document back, 0.025s reading the tree for the VIEWS TREE block, 0.007s deleting the items outside the tool folder, 0.005s deleting the tool folder of the earlier run, 0.181s collecting the objects the read back left, and 0.079s in none of these, of 0.503s from the first clash read to the document put back
+06:32:46.708  +0005.612s  MEMORY   at the end of VIEWS, private bytes 816.2 MB down 9.7 MB, working set 729.1 MB down 7.5 MB, managed heap 54.4 MB down 57.0 MB
+06:32:46.709  +0005.613s  CENSUS   after  VIEWS  models 2  sets 63  tests 31  results 8  views 3
+06:32:46.715  +0005.618s  STEP     VIEWS         finished 0.538s  3 created.
+
+================================================================
+VIEWS 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:46.724  +0005.628s  clashes looked at : 8, open in views 7, left out by status 1, of mirrored tests 0
+06:32:46.725  +0005.629s  open clashes in views : 7, in 3 views
+06:32:46.726  +0005.630s          1  Reviewed, left out because a view shows only New and Active
+06:32:46.727  +0005.631s          0  Approved, left out because a view shows only New and Active
+06:32:46.728  +0005.632s          0  Resolved, left out because a view shows only New and Active
+06:32:46.729  +0005.633s  tests whose every clash is at a status no view shows, so no view : 1, a test with no clash at all is not handed to the plan and not counted here
+06:32:46.730  +0005.634s  mirrored tests, so no view : 0, their 0 clashes left out
+06:32:46.731  +0005.635s  tests with a side on a team the team map does not name, or on UNKNOWN, so no view : 0, their 0 open clashes in no view, and nothing deleted from the NWF, the clashes, the sets or the report
+06:32:46.732  +0005.636s  discipline folders, views planned in each : A Mechanical 3, B none, C none
+06:32:46.733  +0005.637s  saved tests the pack does not name, in Other : 0
+06:32:46.734  +0005.638s  Over 150mm folder, inside Mechanical and Electrical of C only : 0 views of tests of priority C in a pair that carries the size folder
+06:32:46.735  +0005.639s  tests of priority A or B with clashes over the threshold, no Over 150mm view made, all in the test's one view : 2 tests, 2 of A and 0 of B, 3 clashes, for Bader's decision
+06:32:46.736  +0005.640s      BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing : priority A, Mechanical, 1 clashes over the threshold stay in the test's one view
+06:32:46.737  +0005.641s      BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors : priority A, Mechanical, 2 clashes over the threshold stay in the test's one view
+06:32:46.738  +0005.642s  tests of priority C in Architecture, Structure or Other with clashes over the threshold, no Over 150mm view made, all in the test's one view, Q185 : 0 tests, 0 clashes
+06:32:46.739  +0005.643s  clashes in a pair that carries the size folder whose size could not be read, so they stay in the test's main view : 0
+06:32:46.740  +0005.644s  a side read as a team of UNKNOWN, by its set name : 0, each named with why and none guessed at
+
+================================================================
+VIEWS BUILT 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:46.746  +0005.651s  VIEW     Clash Status/A/Mechanical/BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing  created, shows ME ST, hides 0 models
+06:32:46.748  +0005.652s  VIEW     Clash Status/A/Mechanical/BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors  created, shows ME ST, hides 0 models
+06:32:46.749  +0005.653s  VIEW     Clash Status/A/Mechanical/BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing  created, shows ME ST, hides 0 models
+06:32:46.750  +0005.654s  
+06:32:46.751  +0005.655s  views created     : 3
+06:32:46.752  +0005.656s  put into the document: 3 created
+
+================================================================
+VIEWS TREE 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:46.757  +0005.661s  VIEWS TREE 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+06:32:46.758  +0005.662s  team map   : the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, 4 teams, 10 codes
+06:32:46.759  +0005.663s  models     : ME Mechanical, ST Structure
+06:32:46.760  +0005.664s  before     : 3 views once this run had written its own: 3 written by this run, 0 this tool's of earlier runs, 0 per clash viewpoints of earlier runs, 0 this tool's changed by a person, 0 not this tool's
+06:32:46.762  +0005.665s  Clash Status  3 views, 7 open clashes
+06:32:46.763  +0005.666s    A  3 views, 7 open clashes
+06:32:46.764  +0005.667s      Mechanical  3 views, 7 open clashes
+06:32:46.765  +0005.668s        BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing  4 open clashes, shows ME ST, hides nothing, read back
+06:32:46.766  +0005.669s        BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors  2 open clashes, shows ME ST, hides nothing, read back
+06:32:46.767  +0005.670s        BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing  1 open clashes, shows ME ST, hides nothing, read back
+06:32:46.768  +0005.672s  left out   : 1 Reviewed, 0 Approved, 0 Resolved, 0 clashes of 0 mirrored tests, 31 tests ran, 3 with a view and 28 with no open clash
+06:32:46.769  +0005.673s  after      : written 3, read back 3, removed 0 at once, 0 this tool's earlier views, 0 per clash viewpoints and 0 folders, as the removals reported, 0 not removed, and kept 0 named with why
+06:32:46.770  +0005.674s  CHECK 1  every view of this run sits in the tool folder under the letter of its test's priority and its discipline  0 broke it, 3 views of this run of 3 planned, off the document
+06:32:46.772  +0005.675s  CHECK 2  no folder under the tool folder is anything but A, B or C, then a discipline folder, and Over 150mm only inside Mechanical and Electrical of C  0 broke it, 2 folders of this run, off the document
+06:32:46.772  +0005.676s  CHECK 3  no view shows a model of a third team  0 broke it, 3 views, their hidden models read back off the document
+06:32:46.773  +0005.677s  CHECK 4  no clash is in two views  0 broke it, the plan's keys of 7 open clashes, and the painted items of 3 of 3 views read back off the document
+06:32:46.774  +0005.678s  CHECK 5  no mirrored test has a view of this tool's  0 broke it, 48 mirrors against the 3 views of the walk after
+06:32:46.776  +0005.679s  CHECK 6  every view and folder the inventory kept is there after, same place and name  0 broke it, 6 of 6 kept there after, off the document
+06:32:46.776  +0005.680s  CHECK 7  no per clash viewpoint of an earlier run is left without a reason  0 broke it, 0 left, 0 kept and named, off the document
+06:32:46.777  +0005.681s  open clashes in views 7, tests with open clashes 3, views planned 3, views written 3
+06:32:46.778  +0005.682s  7 of 7 hold
+06:32:46.794  +0005.698s  STEP     NWF SAVE      started
+06:32:46.796  +0005.700s  CENSUS   before NWF SAVE  models 2  sets 63  tests 31  results 8  views 3
+06:32:46.804  +0005.708s  MEMORY   at the start of NWF SAVE, private bytes 817.8 MB, working set 730.7 MB, managed heap 56.6 MB
+06:32:46.838  +0005.742s  NWF      attempt  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+06:32:46.870  +0005.774s  NWF      written  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  54,107 bytes
+06:32:46.876  +0005.780s  MEMORY   at the end of NWF SAVE, private bytes 818.3 MB up 0.5 MB, working set 731.4 MB up 0.7 MB, managed heap 57.1 MB up 0.5 MB
+06:32:46.877  +0005.781s  CENSUS   after  NWF SAVE  models 2  sets 63  tests 31  results 8  views 3
+06:32:46.882  +0005.786s  STEP     NWF SAVE      finished 0.078s  saved 54107 bytes
+06:32:46.884  +0005.788s  STEP     NWD           started
+06:32:46.886  +0005.790s  CENSUS   before NWD  models 2  sets 63  tests 31  results 8  views 3
+06:32:46.894  +0005.798s  MEMORY   at the start of NWD, private bytes 818.6 MB, working set 731.7 MB, managed heap 57.5 MB
+06:32:46.909  +0005.813s  PLACE    each model as it was appended or opened, against the same model as the NWD is published, F201. The tool sets no model's units and moves no model, as the Append command does not. Held means it moved 1 mm or less
+06:32:46.910  +0005.814s  PLACE    1104-PAR-1C06M2-ZZZ-ME-MOD-000001.nwc  Feet  centre E 8.360 N -1.255 Z 2.426 m when appended, moved 0 mm before the NWD, held
+06:32:46.912  +0005.815s  PLACE    1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc  Feet  centre E 8.140 N -2.700 Z 1.275 m when appended, moved 0 mm before the NWD, held
+06:32:46.913  +0005.816s  PLACE    2 of 2 models held, 0 moved, 0 not read, 0 in units that are not the document's
+06:32:46.930  +0005.834s  NWD      attempt  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd
+06:32:46.933  +0005.837s  NWD      publish properties set: Title=1104-PAR-1C06M2-ZZZ-BM-MOD-000001, Publisher=Parsons NWC Federator, Subject=Federation of building 1104-PAR-1C06M2-ZZZ-BM-MOD-000001, Author=bader, AllowResave=true, EmbedDatabaseProperties=true, PreventObjectPropertyExport=false
+06:32:47.020  +0005.924s  NWD      written  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd  518,459 bytes
+06:32:47.052  +0005.956s  MEMORY   at the end of NWD, private bytes 820.1 MB up 1.4 MB, working set 733.2 MB up 1.5 MB, managed heap 58.0 MB up 0.5 MB
+06:32:47.053  +0005.957s  CENSUS   after  NWD  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.058  +0005.962s  STEP     NWD           finished 0.165s  published 518459 bytes
+06:32:47.060  +0005.964s  STEP     CONFIRM       started
+06:32:47.062  +0005.966s  CENSUS   before CONFIRM  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.071  +0005.974s  MEMORY   at the start of CONFIRM, private bytes 820.0 MB, working set 733.2 MB, managed heap 58.3 MB
+06:32:47.119  +0006.023s  NWF      intact   C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  54,107 bytes, unchanged by publishing the NWD
+06:32:47.126  +0006.030s  MEMORY   at the end of CONFIRM, private bytes 822.7 MB up 2.7 MB, working set 736.1 MB up 2.9 MB, managed heap 59.3 MB up 1.0 MB
+06:32:47.127  +0006.031s  CENSUS   after  CONFIRM  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.132  +0006.036s  STEP     CONFIRM       finished 0.061s  the NWF is 54107 bytes
+06:32:47.139  +0006.043s  ORDER    1104-PAR-1C06M2-ZZZ-BM-MOD-000001: the NWF is 54,107 bytes and the NWD is 518,459 bytes, both before the pictures. The pictures follow. If they stop early or fail, both files are already written
+06:32:47.141  +0006.046s  IMAGES   HIDDEN   nothing is hidden in the document, so every picture shows its clash as it stands
+06:32:47.144  +0006.048s  STEP     PICTURES      started
+06:32:47.147  +0006.050s  CENSUS   before PICTURES  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.155  +0006.059s  MEMORY   at the start of PICTURES, private bytes 822.9 MB, working set 736.3 MB, managed heap 55.4 MB
+06:32:47.198  +0006.102s  MEMORY   PICTURES at the start, 0 of 8 pictures, private bytes 822.9 MB, working set 736.3 MB, managed heap 56.1 MB, GDI objects 1118, USER objects 611
+06:32:47.210  +0006.113s  IMAGES   BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing: its sides live in every model of the document, so every model stays shown for its pictures
+06:32:47.212  +0006.116s  STEP       IMAGES        started
+06:32:47.214  +0006.118s  CENSUS   before IMAGES  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.222  +0006.127s  MEMORY   at the start of IMAGES, private bytes 822.9 MB, working set 736.3 MB, managed heap 56.5 MB
+06:32:47.270  +0006.174s  MEMORY   at the end of IMAGES, private bytes 862.9 MB up 40.0 MB, working set 759.0 MB up 22.7 MB, managed heap 61.0 MB up 4.5 MB
+06:32:47.272  +0006.176s  CENSUS   after  IMAGES  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.278  +0006.181s  STEP       IMAGES        finished 0.055s  BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing
+06:32:47.280  +0006.184s  STEP     IMAGES        entered again. Every further visit in this group is counted, not written out
+06:32:47.377  +0006.280s  IMAGES   BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors: its sides live in every model of the document, so every model stays shown for its pictures
+06:32:47.441  +0006.344s  IMAGES   BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing: its sides live in every model of the document, so every model stays shown for its pictures
+06:32:47.473  +0006.377s  IMAGES   BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors: its sides live in every model of the document, so every model stays shown for its pictures
+06:32:47.510  +0006.413s  IMAGES   Clash Detective's Hide Other asked on for the pictures, to hide the other items: it read on before the pictures, already on, so nothing was set. It read on after the pictures, the user's own setting
+06:32:47.512  +0006.416s  IMAGES   the undo for the pictures read on with Hide/Required as the step Undo would take next before them, off with Hide/Required as the step Undo would take next during them, and on with Hide/Required as the step Undo would take next after
+06:32:47.516  +0006.420s  IMAGES   the texture cache at C:\Users\bader\AppData\Local\Temp\ogs held 6.2 MB in 248 files as the pictures began and 6.2 MB (6458880 bytes) in 248 files as they ended, checked 1 time against the limit of 5.00 GB (5368709120 bytes), cleared 0 times, 0.003 s in all
+06:32:47.518  +0006.421s  IMAGES   RETAKE   every one of the 8 pictures read drew an item of its clash, so none was taken again, Bader's answer to Q208
+06:32:47.523  +0006.427s  MEMORY   at the end of PICTURES, private bytes 1000.9 MB up 178.0 MB, working set 837.9 MB up 101.6 MB, managed heap 64.5 MB up 9.1 MB
+06:32:47.524  +0006.428s  CENSUS   after  PICTURES  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.528  +0006.433s  STEP     PICTURES      finished 0.375s  8 rows in report order in 4 stretches
+06:32:47.531  +0006.435s  IMAGES   only the models of each test shown for its pictures: 0 test(s) with models hidden, 4 test(s) kept every model shown, why said above on an IMAGES or a failure line, a repeated reason counted rather than written again, reading the tests' sides took 0.007s and the hiding and the putting back took 0.000s
+06:32:47.532  +0006.437s  ORDER    1104-PAR-1C06M2-ZZZ-BM-MOD-000001: the last step to end was PICTURES, at the end of its rows. The workbook, the HTML and the txt files follow
+06:32:47.534  +0006.438s  STEP     RENUMBER      started
+06:32:47.536  +0006.440s  CENSUS   before RENUMBER  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.544  +0006.448s  MEMORY   at the start of RENUMBER, private bytes 1001.2 MB, working set 838.2 MB, managed heap 65.0 MB
+06:32:47.579  +0006.483s  IMAGES   numbered in report order: 0 renamed, 8 already right, 0 missing
+06:32:47.584  +0006.487s  MEMORY   at the end of RENUMBER, private bytes 1001.6 MB up 0.3 MB, working set 838.7 MB up 0.5 MB, managed heap 59.6 MB down 5.4 MB
+06:32:47.585  +0006.489s  CENSUS   after  RENUMBER  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.590  +0006.493s  STEP     RENUMBER      finished 0.046s  the pictures of 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+06:32:47.594  +0006.498s  IMAGES   removed 0 leftover picture(s) from C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001_files, files named cd and digits.jpg that this run did not write, kept the 8 it wrote and every other file. An older Excel in the Log folder links to these names, so it now shows this run's pictures
+06:32:47.597  +0006.501s  IMAGES   8 written, 0.27 MB, 0.2 seconds in total.
+06:32:47.598  +0006.502s           0.028 seconds each on average, quickest 0.026, slowest 0.037.
+06:32:47.599  +0006.503s           35 KB each on average.
+06:32:47.603  +0006.506s  IMAGES   the step's seconds went: 0.145s rendering, 0.028s saving the JPEG, 0.000s reading the file back, and 0.084s in none of these, of 0.257s over 8 visits to the step
+06:32:47.606  +0006.510s  UNITS    every number converted from ft to m, one ft is 0.3048 m, 1830 tests and 8 rows. The report is written in Meters (m)
+06:32:47.608  +0006.512s  GRID     Grid Location filled on every one of 8 clash rows
+06:32:47.610  +0006.514s  STEP     WORKBOOK      started
+06:32:47.612  +0006.516s  CENSUS   before WORKBOOK  models 2  sets 63  tests 31  results 8  views 3
+06:32:47.620  +0006.524s  MEMORY   at the start of WORKBOOK, private bytes 1001.6 MB, working set 838.7 MB, managed heap 60.6 MB
+06:32:47.650  +0006.554s  XLSX     attempt  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242.xlsx
+06:32:47.736  +0006.640s  BUNDLE   System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a resolved from C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\System.Numerics.Vectors.dll
+06:32:47.743  +0006.647s  BUNDLE   System.Memory was already loaded, that one was used
+06:32:47.749  +0006.653s  BUNDLE   System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a resolved from C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\System.Runtime.CompilerServices.Unsafe.dll
+06:32:47.769  +0006.673s  BUNDLE   System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51 resolved from C:\Users\bader\AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\System.Buffers.dll
+06:32:48.622  +0007.526s  XLSX     8 linked pictures in the workbook, each pointing at its jpg in C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001_files. None is embedded, so they show only while that folder stays where it was written
+06:32:48.623  +0007.527s  XLSX     written  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242.xlsx  12,038 bytes
+
+================================================================
+WORKBOOK CHECK 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:49.091  +0007.995s  CHECK    1 sheet, "1104-PAR-1C06M2-ZZZ-BM-MOD-0000", 4 test blocks with clashes, 8 clash rows. A test with no clash writes no row here since F153.
+06:32:49.092  +0007.996s           the first blocks hold 4, 2, 1, 1 clash rows.
+06:32:49.093  +0007.997s           The column headings of every block with clashes match the client's report, and so do the fill, border and row height of every cell of the first block, five values of its first clash row, the column widths and the title row. The blocks are in their order, and no row of a test with no clash is on the sheet. The values of the other blocks and clash rows were not read.
+06:32:49.094  +0007.998s           Not compared: the font, the sheet name, freeze panes, print setup, merged ranges, and whether a value is true. See docs\history\scan.md 4q.
+06:32:49.095  +0007.999s           The client column set was read from clash_report_html_tabular.xsl in the Navisworks install and from the exports in samples\client-report, never from a list typed into this tool.
+06:32:49.097  +0008.001s  BLOCKS   4 in the workbook, one for every test with a clash. The other 1826 of the 1830 tests of the report found none and are on the page and the Coverage sheet alone
+06:32:49.113  +0008.017s  MEMORY   at the end of WORKBOOK, private bytes 1016.6 MB up 15.0 MB, working set 860.0 MB up 21.3 MB, managed heap 76.8 MB up 16.2 MB
+06:32:49.114  +0008.018s  CENSUS   after  WORKBOOK  models 2  sets 63  tests 31  results 8  views 3
+06:32:49.119  +0008.023s  STEP     WORKBOOK      finished 1.499s  wrote 12038 bytes
+06:32:49.121  +0008.025s  STEP     HTML          started
+06:32:49.123  +0008.027s  CENSUS   before HTML  models 2  sets 63  tests 31  results 8  views 3
+06:32:49.131  +0008.035s  MEMORY   at the start of HTML, private bytes 1016.8 MB, working set 860.2 MB, managed heap 77.2 MB
+06:32:49.166  +0008.070s  HTML     attempt  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.html
+06:32:49.168  +0008.072s  LOGO     C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg copied into C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001_files
+06:32:49.307  +0008.211s  HTML     written  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.html  3,861,871 bytes
+
+================================================================
+REPORT CHECK 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:49.422  +0008.325s  CHECK    8 clash rows on the page.
+06:32:49.423  +0008.327s           Item ID filled on 8 of 8 for item 1 and 8 of 8 for item 2.
+06:32:49.424  +0008.328s           the first one reads Element ID: 2356585
+06:32:49.425  +0008.329s           no column the client's report does not have.
+06:32:49.426  +0008.330s           the tolerance cell reads 0.025m
+06:32:49.427  +0008.331s           8 picture references, 8 with a backslash, 8 on disk.
+06:32:49.428  +0008.332s           the logo is 1104-PAR-1C06M2-ZZZ-BM-MOD-000001_files\logo.jpg and it is on disk.
+06:32:49.429  +0008.333s           Nothing wrong with it.
+06:32:49.430  +0008.334s           The client column set was read from clash_report_html_tabular.xsl in the Navisworks install and from the exports in samples\client-report, never from a list typed into this tool.
+06:32:49.444  +0008.348s  MEMORY   at the end of HTML, private bytes 1022.0 MB up 5.2 MB, working set 868.3 MB up 8.0 MB, managed heap 93.0 MB up 15.8 MB
+06:32:49.446  +0008.350s  CENSUS   after  HTML  models 2  sets 63  tests 31  results 8  views 3
+06:32:49.450  +0008.355s  STEP     HTML          finished 0.320s  wrote 3861871 bytes
+06:32:49.453  +0008.357s  XML      skipped  not wanted this run
+06:32:49.454  +0008.358s  STEP     COVERAGE      started
+06:32:49.456  +0008.360s  CENSUS   before COVERAGE  models 2  sets 63  tests 31  results 8  views 3
+06:32:49.465  +0008.368s  MEMORY   at the start of COVERAGE, private bytes 1021.9 MB, working set 868.2 MB, managed heap 93.4 MB
+
+================================================================
+COVERAGE 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:49.550  +0008.453s  the tests        : 1830 in the clash matrix, the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, sha256 94897667adb466ae97a29b8df80b17b7fe52ac701f7f5ff174b975308471ebc9, MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+06:32:49.551  +0008.455s  counted          : 1830 tests in the clash matrix: 0 created this run, 31 already there, 1515 not created, 284 whose presence is UNKNOWN, 31 run, 4 with clashes, 27 without
+06:32:49.552  +0008.456s  one reason each  :
+06:32:49.553  +0008.457s           4  has clashes
+06:32:49.555  +0008.458s          27  ran and found no clashes
+06:32:49.556  +0008.459s         361  a side's set found no items in this group
+06:32:49.557  +0008.460s        1144  a side's set found no items and no model of this run carries its discipline code, so whether its discipline is in the group is UNKNOWN
+06:32:49.558  +0008.461s          10  a side's set found no items and its name carries no discipline code, so whether its discipline is in the group is UNKNOWN
+06:32:49.559  +0008.462s         284  not created or run, both sides carry one set code
+06:32:49.560  +0008.463s      a side's set found no items in this group  BLD-ST-Stair-vs-BLD-AR-Floors  left "lcop_selection_set_tree/Structure/BLD-ST-Stair" 0 items, code ST, right "lcop_selection_set_tree/Architecture/BLD-AR-Floors" 0 items, code AR, the group holds ME, ST
+06:32:49.561  +0008.464s      a side's set found no items in this group  BLD-ST-Stair-vs-BLD-AR-Stairs  left "lcop_selection_set_tree/Structure/BLD-ST-Stair" 0 items, code ST, right "lcop_selection_set_tree/Architecture/BLD-AR-Stairs" 0 items, code AR, the group holds ME, ST
+06:32:49.562  +0008.466s      a side's set found no items in this group  BLD-ST-Stair-vs-BLD-AR-Ramps  left "lcop_selection_set_tree/Structure/BLD-ST-Stair" 0 items, code ST, right "lcop_selection_set_tree/Architecture/BLD-AR-Ramps" 0 items, code AR, the group holds ME, ST
+06:32:49.563  +0008.467s      a side's set found no items in this group  BLD-ST-Stair-vs-BLD-AR-Roofs  left "lcop_selection_set_tree/Structure/BLD-ST-Stair" 0 items, code ST, right "lcop_selection_set_tree/Architecture/BLD-AR-Roofs" 0 items, code AR, the group holds ME, ST
+06:32:49.564  +0008.468s      a side's set found no items in this group  BLD-ST-Stair-vs-BLD-AR-Ceilings  left "lcop_selection_set_tree/Structure/BLD-ST-Stair" 0 items, code ST, right "lcop_selection_set_tree/Architecture/BLD-AR-Ceilings" 0 items, code AR, the group holds ME, ST
+06:32:49.565  +0008.469s      and 356 more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv
+06:32:49.566  +0008.470s      a side's set found no items and no model of this run carries its discipline code, so whether its discipline is in the group is UNKNOWN  BLD-ST-Foundation-vs-BLD-AR-Floors  right "lcop_selection_set_tree/Architecture/BLD-AR-Floors" 0 items, code AR, the group holds ME, ST
+06:32:49.567  +0008.471s      a side's set found no items and no model of this run carries its discipline code, so whether its discipline is in the group is UNKNOWN  BLD-ST-Foundation-vs-BLD-AR-Stairs  right "lcop_selection_set_tree/Architecture/BLD-AR-Stairs" 0 items, code AR, the group holds ME, ST
+06:32:49.568  +0008.472s      a side's set found no items and no model of this run carries its discipline code, so whether its discipline is in the group is UNKNOWN  BLD-ST-Foundation-vs-BLD-AR-Ramps  right "lcop_selection_set_tree/Architecture/BLD-AR-Ramps" 0 items, code AR, the group holds ME, ST
+06:32:49.569  +0008.474s      a side's set found no items and no model of this run carries its discipline code, so whether its discipline is in the group is UNKNOWN  BLD-ST-Foundation-vs-BLD-AR-Roofs  right "lcop_selection_set_tree/Architecture/BLD-AR-Roofs" 0 items, code AR, the group holds ME, ST
+06:32:49.571  +0008.475s      a side's set found no items and no model of this run carries its discipline code, so whether its discipline is in the group is UNKNOWN  BLD-ST-Foundation-vs-BLD-AR-Ceilings  right "lcop_selection_set_tree/Architecture/BLD-AR-Ceilings" 0 items, code AR, the group holds ME, ST
+06:32:49.573  +0008.477s      and 1139 more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv
+06:32:49.574  +0008.479s      a side's set found no items and its name carries no discipline code, so whether its discipline is in the group is UNKNOWN  BLD-Security Devices-vs-BLD-ST-Foundation  left "lcop_selection_set_tree/Electrical/BLD-Security Devices" 0 items, no discipline code in its name, the group holds ME, ST
+06:32:49.576  +0008.480s      a side's set found no items and its name carries no discipline code, so whether its discipline is in the group is UNKNOWN  BLD-Security Devices-vs-BLD-ST-Columns  left "lcop_selection_set_tree/Electrical/BLD-Security Devices" 0 items, no discipline code in its name, the group holds ME, ST
+06:32:49.577  +0008.481s      a side's set found no items and its name carries no discipline code, so whether its discipline is in the group is UNKNOWN  BLD-Security Devices-vs-BLD-ST-Framing  left "lcop_selection_set_tree/Electrical/BLD-Security Devices" 0 items, no discipline code in its name, the group holds ME, ST
+06:32:49.579  +0008.482s      a side's set found no items and its name carries no discipline code, so whether its discipline is in the group is UNKNOWN  BLD-Security Devices-vs-BLD-ST-Walls  left "lcop_selection_set_tree/Electrical/BLD-Security Devices" 0 items, no discipline code in its name, the group holds ME, ST
+06:32:49.580  +0008.483s      a side's set found no items and its name carries no discipline code, so whether its discipline is in the group is UNKNOWN  BLD-Security Devices-vs-BLD-ST-Floors  left "lcop_selection_set_tree/Electrical/BLD-Security Devices" 0 items, no discipline code in its name, the group holds ME, ST
+06:32:49.581  +0008.485s      and 5 more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv
+06:32:49.582  +0008.486s      not created or run, both sides carry one set code  BLD-AR-Stairs-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:49.583  +0008.487s      not created or run, both sides carry one set code  BLD-AR-Ramps-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:49.584  +0008.488s      not created or run, both sides carry one set code  BLD-AR-Ramps-vs-BLD-AR-Stairs  both sides carry the set code AR, and only tests across two set codes run
+06:32:49.585  +0008.489s      not created or run, both sides carry one set code  BLD-AR-Roofs-vs-BLD-AR-Floors  both sides carry the set code AR, and only tests across two set codes run
+06:32:49.586  +0008.490s      not created or run, both sides carry one set code  BLD-AR-Roofs-vs-BLD-AR-Stairs  both sides carry the set code AR, and only tests across two set codes run
+06:32:49.588  +0008.491s      and 279 more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv
+06:32:49.589  +0008.492s  workbook against Clash Detective : 31 compared, 31 agree, 0 FAILED, 0 not compared, 1799 held by neither side
+06:32:49.590  +0008.493s  not run by the rule : 284 tests left out by the rule of one discipline or of two set codes, 0 still held in Clash Detective from an earlier run with 0 clashes, kept in the NWF and never deleted, not compared and never FAILED, 284 held by neither side, 0 whose holding in Clash Detective is UNKNOWN, a side or a count not read or a name on two tests, whether those held are removed is Bader's to decide, Q212
+06:32:49.591  +0008.495s  items no set catches : UNKNOWN, not counted in this build
+06:32:49.592  +0008.496s  the group keeps its own result, a coverage count never fails a group
+06:32:50.943  +0009.847s  MEMORY   at the end of COVERAGE, private bytes 939.9 MB down 82.0 MB, working set 858.5 MB down 9.7 MB, managed heap 98.5 MB up 5.1 MB
+06:32:50.944  +0009.848s  CENSUS   after  COVERAGE  models 2  sets 63  tests 31  results 8  views 3
+06:32:50.949  +0009.853s  STEP     COVERAGE      finished 1.486s  1830 tests covered
+06:32:50.952  +0009.856s  STEP     INTERNAL      started
+06:32:50.954  +0009.858s  CENSUS   before INTERNAL  models 2  sets 63  tests 31  results 8  views 3
+06:32:50.963  +0009.867s  MEMORY   at the start of INTERNAL, private bytes 939.9 MB, working set 858.5 MB, managed heap 98.8 MB
+06:32:50.991  +0009.895s  INTERNAL attempt  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242 Internal.xlsx
+06:32:51.114  +0010.018s  INTERNAL written  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242 Internal.xlsx  135,666 bytes
+06:32:51.230  +0010.133s  INTERNAL read back, it holds 2 sheets, Generic Models, Coverage, each found by the name it was written under
+06:32:51.235  +0010.139s  MEMORY   at the end of INTERNAL, private bytes 934.7 MB down 5.2 MB, working set 853.4 MB down 5.1 MB, managed heap 93.7 MB down 5.2 MB
+06:32:51.236  +0010.140s  CENSUS   after  INTERNAL  models 2  sets 63  tests 31  results 8  views 3
+06:32:51.241  +0010.145s  STEP     INTERNAL      finished 0.279s  wrote 135666 bytes
+06:32:51.244  +0010.147s  ORDER    1104-PAR-1C06M2-ZZZ-BM-MOD-000001: the steps ended in this order, VIEWS, NWF SAVE, NWD, CONFIRM, PICTURES, WORKBOOK, COVERAGE, INTERNAL
+
+================================================================
+GAP 1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:51.252  +0010.155s  2 numbers are measured off every item and reach no output. Nothing here is a fault and nothing acts on it
+06:32:51.253  +0010.156s  Source File         read on 16 item cells and empty on every one  the mirror merge reads it and the SOURCE FINDINGS block names each model's source, Q38
+06:32:51.254  +0010.157s  Id From             16 of 16 item cells carry it  the ITEM IDS block counts it per property and no output names it per item
+06:32:51.260  +0010.165s  REFRESH  manifest C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\nwc-manifest.tsv  2 linked files, size, last write time and hash, written for the next refresh to compare with
+06:32:51.266  +0010.171s  REFRESH  8 clashes found again. Of 1 Reviewed or Approved before, 1 keep that status. 8 keep every assigned to, comment, approver and group and their Reviewed or Approved status, 0 things a coordinator wrote changed, 7 moved status, a New found again being Active, 0 new, 0 no longer held at all. Matched by Guid 8 and by test and name 0
+06:32:51.269  +0010.173s  REFRESH  per test, before to after: New, Active, Reviewed, Approved, Resolved
+06:32:51.270  +0010.174s  REFRESH  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing  1>0  0>1  0>0  0>0  0>0
+06:32:51.271  +0010.175s  REFRESH  BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors  2>0  0>2  0>0  0>0  0>0
+06:32:51.272  +0010.176s  REFRESH  BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing  4>0  0>4  0>0  0>0  0>0
+06:32:51.280  +0010.184s  STEP     TESTS RUN     31 visits, 0.670s in total
+06:32:51.280  +0010.185s  STEP     HARVEST       31 visits, 0.614s in total
+06:32:51.282  +0010.186s  STEP     IMAGES        8 visits, 0.272s in total
+06:32:51.288  +0010.192s  MEMORY   across the 31 visits of TESTS RUN in this group, from the start of the first to now, private bytes 934.7 MB up 84.2 MB, working set 853.4 MB up 124.9 MB, managed heap 95.9 MB down 10.7 MB. The end line of the first visit covers that visit only
+06:32:51.290  +0010.193s  MEMORY   across the 31 visits of HARVEST in this group, from the start of the first to now, private bytes 934.7 MB up 81.2 MB, working set 853.4 MB up 124.1 MB, managed heap 95.9 MB down 11.3 MB. The end line of the first visit covers that visit only
+06:32:51.291  +0010.194s  MEMORY   across the 8 visits of IMAGES in this group, from the start of the first to now, private bytes 934.7 MB up 111.8 MB, working set 853.4 MB up 117.1 MB, managed heap 95.9 MB up 39.4 MB. The end line of the first visit covers that visit only
+06:32:51.295  +0010.199s  CENSUS   cost 0.010s over 34 counts in this group. That is inside the 1.000s a group is allowed
+06:32:51.297  +0010.200s  GROUP    finished C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001  DONE  9.169s  Weekly run plus matrix
+
+================================================================
+TIMING C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001
+================================================================
+06:32:51.305  +0010.209s  WORKBOOK                   1.499s   16.4%
+06:32:51.306  +0010.210s  COVERAGE                   1.486s   16.2%
+06:32:51.307  +0010.211s  DECIDE                     0.907s    9.9%
+06:32:51.308  +0010.212s  TESTS RUN                  0.670s    7.3%  31 visits
+06:32:51.309  +0010.213s  HARVEST                    0.614s    6.7%  31 visits
+06:32:51.310  +0010.214s  VIEWS                      0.538s    5.9%
+06:32:51.310  +0010.215s  PICTURES                   0.375s    4.1%
+06:32:51.313  +0010.216s  HTML                       0.320s    3.5%
+06:32:51.314  +0010.218s  INTERNAL                   0.279s    3.0%
+06:32:51.315  +0010.219s  SETS                       0.182s    2.0%
+06:32:51.317  +0010.220s  NWD                        0.165s    1.8%
+06:32:51.318  +0010.221s  NWF SAVE                   0.078s    0.9%
+06:32:51.319  +0010.222s  REFRESH                    0.067s    0.7%
+06:32:51.320  +0010.224s  CONFIRM                    0.061s    0.7%
+06:32:51.321  +0010.225s  UNITS                      0.047s    0.5%
+06:32:51.322  +0010.226s  RENUMBER                   0.046s    0.5%
+06:32:51.323  +0010.227s  outside every step         1.835s   20.0%
+06:32:51.324  +0010.228s  
+06:32:51.325  +0010.229s  group total                9.169s
+06:32:51.326  +0010.230s  outside every step is the work between them and the work nothing times yet
+06:32:51.327  +0010.231s  
+06:32:51.328  +0010.232s  inside another step, so these seconds are already counted above
+06:32:51.329  +0010.233s  IMAGES                     0.272s    3.0%  8 visits
+06:32:51.345  +0010.249s  GAPS     2 things are measured on every item and reach no output, over 1 group: Source File, Id From. Each is a question rather than a fault and nothing acts on them
+06:32:51.347  +0010.251s  LIST     attempt  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\Models not on the same shared coordinates, run 2026-10-19 063242.txt
+06:32:51.355  +0010.259s  LIST     written  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\Models not on the same shared coordinates, run 2026-10-19 063242.txt  952 bytes
+
+================================================================
+TIMING BESIDE SIZE
+================================================================
+06:32:51.363  +0010.267s  by group, slowest first, with what each group held
+06:32:51.364  +0010.268s  C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001      9.169s  2 NWC files  620,915 bytes  327 elements  8 clashes  3 viewpoints
+06:32:51.365  +0010.269s  
+06:32:51.366  +0010.270s  where each number comes from
+06:32:51.367  +0010.271s    seconds     the group's own clock, the number on its GROUP finished line
+06:32:51.368  +0010.272s    NWC         the files the group was handed, each sized on the disk when the group finished
+06:32:51.370  +0010.273s    elements    the Revit elements the EXPORT CHECK counted in the group's models
+06:32:51.371  +0010.274s    clashes     every clash of every test the group ran, as its CLASH finished line counts them
+06:32:51.372  +0010.276s    viewpoints  the viewpoints the VIEWS step created, as its VIEWS BUILT block counts them
+06:32:51.373  +0010.277s    UNKNOWN is a number that could not be read, and never a zero
+
+================================================================
+PICKED NWF
+================================================================
+06:32:51.380  +0010.283s  file          : C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf
+06:32:51.381  +0010.284s  decision      : picked NWF, opened by this run where it sits, its file list not compared, nothing appended and nothing cleared
+06:32:51.382  +0010.286s  clash file    : the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+06:32:51.383  +0010.287s  clash         : 0 created, 31 already there, 31 run, 27 passed, 1799 skipped, 8 clashes in 2.4s.
+06:32:51.384  +0010.288s  NWD           : C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd
+06:32:51.385  +0010.289s  report folder : C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log
+06:32:51.386  +0010.290s  source folder : not applicable, nothing was scanned
+06:32:51.387  +0010.291s  grouping      : not applicable, each picked NWF is one group
+06:32:51.388  +0010.292s  files ticked  : not applicable, the models are the ones inside the file
+06:32:51.390  +0010.294s  outcome       : DONE
+06:32:51.393  +0010.297s  ALIGNMENT across the run: 1 model(s) sit somewhere their group's reference model does not. Nothing was changed in any model, and no clash was skipped. 1 group held models not on the same shared coordinates, so the clash results may be wrong for them, which RESULT lists.
+06:32:51.394  +0010.298s  EXPORT CHECK across the run: 0 model(s) carry no workset at all, 0 carry one on only some of their elements, 0 do not carry an element id on every element, 0 hold no Revit element, and 0 could not be counted
+06:32:51.396  +0010.300s  WORKBOOK 1,830 test blocks, 31 ran and 1,799 are tests that never ran. Where each block's tolerance was read is on the line below
+06:32:51.397  +0010.302s  TOLERANCE on the report, read off the clash test in the document for 31, chosen in the tool for 1515, UNKNOWN for 284, 1830 tests in all
+
+================================================================
+SETS ACROSS THE RUN
+================================================================
+06:32:51.405  +0010.309s  groups in this run : 1
+06:32:51.406  +0010.310s  sets looked at     : 61
+06:32:51.407  +0010.311s  found nothing in every group : 51
+06:32:51.408  +0010.312s      lcop_selection_set_tree/Architecture/BLD-AR-Floors  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Floors" and LcOaNodeSourceFile contains "-AR-"
+06:32:51.409  +0010.313s      lcop_selection_set_tree/Architecture/BLD-AR-Stairs  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Stairs" and LcOaNodeSourceFile contains "-AR-"
+06:32:51.410  +0010.314s      lcop_selection_set_tree/Architecture/BLD-AR-Ramps  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Ramps" and LcOaNodeSourceFile contains "-AR-"
+06:32:51.411  +0010.315s      lcop_selection_set_tree/Architecture/BLD-AR-Roofs  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Roofs"
+06:32:51.413  +0010.317s      lcop_selection_set_tree/Architecture/BLD-AR-Ceilings  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Ceilings"
+06:32:51.414  +0010.318s      lcop_selection_set_tree/Architecture/BLD-AR-Columns  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Columns"
+06:32:51.416  +0010.319s      lcop_selection_set_tree/Architecture/BLD-AR-Walls  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Walls" and LcOaNodeSourceFile contains "-AR-"
+06:32:51.417  +0010.320s      lcop_selection_set_tree/Architecture/BLD-AR-Windows  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Windows"
+06:32:51.418  +0010.321s      lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Curtain Panels"
+06:32:51.419  +0010.322s      lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Curtain Wall Mullions"
+06:32:51.420  +0010.323s      lcop_selection_set_tree/Architecture/BLD-AR-Doors  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Doors"
+06:32:51.421  +0010.324s      lcop_selection_set_tree/Architecture/BLD-AR-Casework  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Casework"
+06:32:51.422  +0010.326s      lcop_selection_set_tree/Architecture/BLD-AR-Furniture  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Furniture" and LcOaNodeSourceFile contains "-AR-"
+06:32:51.423  +0010.327s      lcop_selection_set_tree/Architecture/BLD-AR-Parking  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Parking"
+06:32:51.423  +0010.328s      lcop_selection_set_tree/Architecture/BLD-AR-Railings  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Railings" and LcOaNodeSourceFile contains "-AR-"
+06:32:51.425  +0010.329s      lcop_selection_set_tree/Architecture/BLD-AR-Site  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Site" and LcOaNodeSourceFile contains "-AR-"
+06:32:51.426  +0010.330s      lcop_selection_set_tree/Structure/BLD-ST-Stair  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Stairs" and LcOaNodeSourceFile contains "-ST-"
+06:32:51.427  +0010.331s      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Flex Ducts" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-DUCTWORK") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Flex Ducts" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-Ductwork")
+06:32:51.428  +0010.332s      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Air Terminals" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-DUCTWORK") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Air Terminals" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-Ductwork")
+06:32:51.430  +0010.333s      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-Piping") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Fittings" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Fittings" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-Piping")
+06:32:51.431  +0010.335s      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-Piping")
+06:32:51.432  +0010.336s      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Plumbing Fixtures" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Plumbing Fixtures" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-Piping")
+06:32:51.434  +0010.337s      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Flex Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Flex Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "ME-Piping")
+06:32:51.435  +0010.339s      lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Mechanical Equipment" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "FF-Fire Fighting"
+06:32:51.436  +0010.340s      lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "FP-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Fittings" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "FP-PIPING")
+06:32:51.437  +0010.341s      lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "FP-PIPING"
+06:32:51.438  +0010.342s      lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "FP-PIPING"
+06:32:51.439  +0010.343s      lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Plumbing Fixtures" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "FF-Fire Fighting"
+06:32:51.441  +0010.344s      lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Sprinklers" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "FP-PIPING"
+06:32:51.442  +0010.345s      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Mechanical Equipment" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic Water") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Mechanical Equipment" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic water")
+06:32:51.443  +0010.346s      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic Water") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic water") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Fittings" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic Water") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Fittings" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic water")
+06:32:51.444  +0010.348s      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic Water") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic water")
+06:32:51.446  +0010.349s      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic Water") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic water")
+06:32:51.447  +0010.350s      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures  asks (LcRevitData_Element/LcRevitPropertyElementCategory equals "Plumbing Fixtures" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic Water") or (LcRevitData_Element/LcRevitPropertyElementCategory equals "Plumbing Fixtures" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Domestic water")
+06:32:51.448  +0010.352s      lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Mechanical Equipment" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Drainage"
+06:32:51.449  +0010.353s      lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Drainage"
+06:32:51.451  +0010.354s      lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 equals "PL-Drainage"
+06:32:51.452  +0010.355s      lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings  asks LcRevitData_Element/LcRevitPropertyElementCategory contains "Cable Tray"
+06:32:51.453  +0010.356s      lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Electrical Equipment"
+06:32:51.454  +0010.358s      lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Electrical Fixtures"
+06:32:51.455  +0010.359s      lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings  asks LcRevitData_Element/LcRevitPropertyElementCategory contains "Conduit"
+06:32:51.456  +0010.360s      lcop_selection_set_tree/Electrical/BLD-EL-Devices  asks LcRevitData_Element/LcRevitPropertyElementCategory contains "Devices" and LcRevitData_Element/LcRevitPropertyElementCategory not equals "Communication Devices" and LcRevitData_Element/LcRevitPropertyElementCategory not equals "Data Devices" and LcRevitData_Element/LcRevitPropertyElementCategory not equals "Fire Alarm Devices" and LcRevitData_Element/LcRevitPropertyElementCategory not equals "Lighting Devices" and LcRevitData_Element/LcRevitPropertyElementCategory not equals "Security Devices" and LcRevitData_Element/LcRevitPropertyElementCategory not equals "Telephone Devices"
+06:32:51.457  +0010.361s      lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Lighting Fixtures"
+06:32:51.458  +0010.362s      lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Lighting Devices"
+06:32:51.460  +0010.364s      lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Fire Alarm Devices"
+06:32:51.460  +0010.365s      lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Telephone Equipment"
+06:32:51.462  +0010.366s      lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Telephone Devices"
+06:32:51.463  +0010.367s      lcop_selection_set_tree/Electrical/BLD-Security Devices  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Security Devices"
+06:32:51.464  +0010.368s      lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Communication Devices"
+06:32:51.466  +0010.369s      lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Telephone Devices"
+06:32:51.467  +0010.370s      lcop_selection_set_tree/Electrical/BLD-EL-Data Devices  asks LcRevitData_Element/LcRevitPropertyElementCategory equals "Data Devices"
+06:32:51.468  +0010.372s  RUN      finished
+06:32:51.492  +0010.396s  AUTOSAVE the option general.autosave.enable was not changed by this run, it reads off as the run ends
+
+================================================================
+TIMING, THE WHOLE RUN
+================================================================
+06:32:51.507  +0010.412s  session                 : 10 seconds, 10.4 seconds
+06:32:51.509  +0010.413s  waiting for the person  : 1 second, 0.8 seconds
+06:32:51.510  +0010.414s  the run                 : 10 seconds, 9.5 seconds
+06:32:51.511  +0010.415s  after the run finished  : 0 seconds, 0.0 seconds
+06:32:51.511  +0010.416s  the run is RUN started to RUN finished, and every share below is worked off it. The other two are not work this tool did
+06:32:51.514  +0010.417s  
+06:32:51.515  +0010.418s  by group, slowest first
+06:32:51.516  +0010.419s  C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001      9.169s   96.2%
+06:32:51.517  +0010.420s  outside every group        0.357s    3.8%
+06:32:51.518  +0010.421s  
+06:32:51.519  +0010.422s  run total                  9.526s
+06:32:51.520  +0010.424s  outside every group is the work between them and the work nothing times yet
+06:32:51.521  +0010.425s  
+06:32:51.522  +0010.426s  by step across every group, slowest first
+06:32:51.523  +0010.427s  WORKBOOK                   1.499s   15.7%
+06:32:51.524  +0010.428s  COVERAGE                   1.486s   15.6%
+06:32:51.525  +0010.429s  DECIDE                     0.907s    9.5%
+06:32:51.526  +0010.430s  TESTS RUN                  0.670s    7.0%  31 visits
+06:32:51.527  +0010.431s  HARVEST                    0.614s    6.4%  31 visits
+06:32:51.528  +0010.432s  VIEWS                      0.538s    5.6%
+06:32:51.529  +0010.433s  PICTURES                   0.375s    3.9%
+06:32:51.530  +0010.434s  HTML                       0.320s    3.4%
+06:32:51.531  +0010.435s  INTERNAL                   0.279s    2.9%
+06:32:51.532  +0010.436s  SETS                       0.182s    1.9%
+06:32:51.534  +0010.437s  NWD                        0.165s    1.7%
+06:32:51.535  +0010.438s  NWF SAVE                   0.078s    0.8%
+06:32:51.536  +0010.439s  REFRESH                    0.067s    0.7%
+06:32:51.537  +0010.440s  CONFIRM                    0.061s    0.6%
+06:32:51.538  +0010.441s  UNITS                      0.047s    0.5%
+06:32:51.539  +0010.442s  RENUMBER                   0.046s    0.5%
+06:32:51.539  +0010.443s  outside every step         2.193s   23.0%
+06:32:51.540  +0010.444s  
+06:32:51.541  +0010.445s  inside another step, so these seconds are already counted above
+06:32:51.542  +0010.446s  IMAGES                     0.272s    2.9%  8 visits
+06:32:51.543  +0010.447s  
+06:32:51.544  +0010.448s  The run took 10 seconds, 9.526s. That is inside the 45 minutes 0 seconds a run has to finish in, by 44 minutes 50 seconds.
+
+================================================================
+RESULT
+================================================================
+06:32:51.549  +0010.453s  groups done    : 1
+06:32:51.552  +0010.456s  groups partial : 0
+06:32:51.553  +0010.457s  groups failed  : 0
+
+06:32:51.555  +0010.459s  group          C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001  DONE  8 clashes
+06:32:51.556  +0010.460s  package        C06 : 1 group, 1 done, 0 partial, 0 failed, 8 clashes
+06:32:51.557  +0010.461s  community      C06 : 1 package, 1 group, 1 done, 0 partial, 0 failed, 8 clashes
+06:32:51.558  +0010.462s  run            : 1 community, 1 package, 1 group, 1 done, 0 partial, 0 failed, 8 clashes
+
+06:32:51.561  +0010.465s  first run      : 0
+06:32:51.562  +0010.466s  weekly run     : 0
+06:32:51.563  +0010.467s  weekly + matrix: 1
+06:32:51.565  +0010.468s  rebuilt        : 0
+06:32:51.566  +0010.469s  skipped        : 0
+06:32:51.567  +0010.470s  penetrations   : 0 clashes moved to Reviewed
+06:32:51.569  +0010.472s  penetrations   : 0 clash(es) moved to Reviewed, of 8 looked at across 1 group
+
+06:32:51.571  +0010.476s  clashes found  : 8 across 1 group
+06:32:51.573  +0010.477s        C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001      8  from 4 test(s) that found something
+06:32:51.576  +0010.479s  clash skipped  : none, every clash is run whatever the coordinates are. 1 group holds a model not on the same shared coordinates, so the clash results may be wrong for it
+06:32:51.577  +0010.480s  coordinates    : 1 of 1 group judged
+06:32:51.578  +0010.481s        C06  1104-PAR-1C06M2-ZZZ-BM-MOD-000001 1 model(s) not on the same shared coordinates, the clash results may be wrong. NOTICE, on Revit's internal origin: ST  1104-PAR-1C06M2-ZZZ-ST-MOD-000001.nwc, the group is not FAILED for it
+
+06:32:51.581  +0010.486s  COVERAGE tests counted            : 1830 names, each once across 1 group
+06:32:51.583  +0010.487s  COVERAGE in the document in one group at least : 31, never in the document 1799
+06:32:51.584  +0010.488s  COVERAGE run in one group at least : 31
+06:32:51.585  +0010.489s  COVERAGE with clashes in one group at least : 4
+06:32:51.586  +0010.490s  COVERAGE run, never with a clash  : 27
+06:32:51.587  +0010.491s  COVERAGE over 1 group, added up : 1830 places, 0 created this run, 31 already there, 1515 not created, 284 whose presence is UNKNOWN, 31 run, 4 with clashes, 27 without, 0 in the document and not run
+06:32:51.588  +0010.492s  COVERAGE checked : 31 compared, 31 agree, 0 FAILED in 0 of 1 group, 0 not compared, 1799 held by neither side, tests no count was set beside, every group keeps its own result, 1830 test places in the groups checked, a test once for each group it is in
+06:32:51.589  +0010.494s  generic models : 0 items in 0 models of 2 over 1 group, 2 at nought, 0 not counted
+
+06:32:51.592  +0010.496s  by priority    : A 8, B 0, C 0, No priority 0, 8 in all
+
+06:32:51.595  +0010.499s  pictures       : 8 written beside the files listed below, 0.27 MB, every size read back off the disk
+06:32:51.596  +0010.500s                   counted and not listed one by one. The logo copied beside each report is not counted
+06:32:51.597  +0010.501s  files written  : 6, every size read back off the disk
+                          NWF   C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwf  54,107 bytes
+                          NWD   C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWD\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.nwd  518,459 bytes
+                          XLSX  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242.xlsx  12,038 bytes
+                          HTML  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Clash report\1104-PAR-1C06M2-ZZZ-BM-MOD-000001.html  3,861,871 bytes
+                          INTERNAL C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\1104-PAR-1C06M2-ZZZ-BM-MOD-000001 2026-10-19 063242 Internal.xlsx  135,666 bytes
+                          LIST  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\Models not on the same shared coordinates, run 2026-10-19 063242.txt  952 bytes
+
+06:32:51.607  +0010.510s  Nothing failed.
+
+06:32:51.610  +0010.514s  lines collapsed in this file, all of them kept in the .tsv beside it:
+06:32:51.610  +0010.515s      CLASH passed, found nothing: 27 written as 5 and 22 counted. Every one is in the machine readable log
+06:32:51.612  +0010.516s      ROWS the two numbers agree: 31 written as 5 and 26 counted. Every one is in the machine readable log
+
+06:32:51.615  +0010.518s  run time       : 9.526s
+06:32:51.616  +0010.519s  waiting for the person : 0.845s, which is not work this tool did
+06:32:51.617  +0010.520s  total elapsed  : 10.520s
+06:32:51.625  +0010.529s  the .log so far: 182,457 bytes, read before this block finished writing
+06:32:51.633  +0010.537s  the .tsv       : 849,001 bytes, which keeps every line the .log collapsed
+06:32:51.644  +0010.548s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261019-063241.log to C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\run-20261019-063241.log, 182657 bytes
+06:32:51.645  +0010.549s  LOGS     copied C:\Users\bader\AppData\Local\ParsonsNwcFederator\logs\run-20261019-063241.tsv to C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\Log\run-20261019-063241.tsv, 849001 bytes
+06:32:51.662  +0010.566s  PACKAGES the result of this group is written to C:\Users\bader\AppData\Local\ParsonsNwcFederator\package-runs\20261019-062126\result-015.txt
+06:32:51.748  +0010.652s  Window closed.

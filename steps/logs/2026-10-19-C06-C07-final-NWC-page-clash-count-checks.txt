@@ -1,0 +1,652 @@
+==== C:/NWC-PC-Test/work/final-2026-10-19/Report/C06/C06 clash count check.xlsx
+1 [Color Index: 64] C06 clash count check |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+2 [Color Index: 64] Run date 2026-10-19 |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+3 [Color Index: 64]  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+4 [FFD9D9D9] Building | Test | Priority | Clashes in Clash Detective | Excel rows | HTML rows | Clashes in viewpoints | Pictures made | Pictures skipped | Why skipped | New | Active | Reviewed | Approved | Resolved
+5 [Color Index: 64] 1B06BC | BLD-ST-Columns-vs-BLD-AR-Floors | A | 18 | 18 | 18 | 18 | 18 | 0 |  | 18 | 0 | 0 | 0 | 0
+6 [Color Index: 64] 1B06BC | BLD-ST-Columns-vs-BLD-AR-Columns | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+7 [Color Index: 64] 1B06BC | BLD-ST-Columns-vs-BLD-AR-Walls | A | 10 | 10 | 10 | 10 | 10 | 0 |  | 10 | 0 | 0 | 0 | 0
+8 [Color Index: 64] 1B06BC | BLD-ST-Framing-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+9 [Color Index: 64] 1B06BC | BLD-ST-Framing-vs-BLD-AR-Columns | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+10 [Color Index: 64] 1B06BC | BLD-ST-Framing-vs-BLD-AR-Walls | A | 9 | 9 | 9 | 9 | 9 | 0 |  | 9 | 0 | 0 | 0 | 0
+11 [Color Index: 64] 1B06BC | BLD-ST-Framing-vs-BLD-AR-Curtain Mullions | A | 18 | 18 | 18 | 18 | 18 | 0 |  | 18 | 0 | 0 | 0 | 0
+12 [Color Index: 64] 1B06BC | BLD-ST-Walls-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+13 [Color Index: 64] 1B06BC | BLD-ST-Walls-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+14 [Color Index: 64] 1B06BC | BLD-ST-Walls-vs-BLD-AR-Curtain Mullions | A | 11 | 11 | 11 | 11 | 11 | 0 |  | 11 | 0 | 0 | 0 | 0
+15 [Color Index: 64] 1B06BC | BLD-ST-Walls-vs-BLD-AR-Doors | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+16 [Color Index: 64] 1B06BC | BLD-ST-Floors-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+17 [Color Index: 64] 1B06BC | BLD-ST-Floors-vs-BLD-AR-Curtain Mullions | A | 21 | 21 | 21 | 21 | 21 | 0 |  | 21 | 0 | 0 | 0 | 0
+18 [Color Index: 64] 1B06BC | BLD-ST-Stair-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+19 [Color Index: 64] 1B06BC | BLD-ST-Stair-vs-BLD-AR-Stairs | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+20 [Color Index: 64] 1B06BC | BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+21 [Color Index: 64] 1B06BC | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+22 [Color Index: 64] 1B06BC | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 9 | 9 | 9 | 0 | 9 | 0 |  | 0 | 0 | 9 | 0 | 0
+23 [Color Index: 64] 1B06BC | BLD-FF-Sprinklers-vs-BLD-ST-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+24 [Color Index: 64] 1B06BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+25 [Color Index: 64] 1B06BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+26 [Color Index: 64] 1B06BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+27 [Color Index: 64] 1B06BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+28 [Color Index: 64] 1B06BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+29 [Color Index: 64] 1B06BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+30 [Color Index: 64] 1B06BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+31 [Color Index: 64] 1B06BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+32 [Color Index: 64] 1B06BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+33 [Color Index: 64] 1B06BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+34 [Color Index: 64] 1B06BC | BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+35 [Color Index: 64] 1B06BC | Total 1B06BC |  | 173 | 173 | 173 | 131 | 173 | 0 |  | 131 | 0 | 42 | 0 | 0
+36 [Color Index: 64] 1B06G1 | BLD-ST-Foundation-vs-BLD-AR-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+37 [Color Index: 64] 1B06G1 | BLD-ST-Columns-vs-BLD-AR-Floors | A | 23 | 23 | 23 | 23 | 23 | 0 |  | 23 | 0 | 0 | 0 | 0
+38 [Color Index: 64] 1B06G1 | BLD-ST-Columns-vs-BLD-AR-Ceilings | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+39 [Color Index: 64] 1B06G1 | BLD-ST-Columns-vs-BLD-AR-Walls | A | 23 | 23 | 23 | 23 | 23 | 0 |  | 23 | 0 | 0 | 0 | 0
+40 [Color Index: 64] 1B06G1 | BLD-ST-Framing-vs-BLD-AR-Floors | A | 13 | 13 | 13 | 13 | 13 | 0 |  | 13 | 0 | 0 | 0 | 0
+41 [Color Index: 64] 1B06G1 | BLD-ST-Framing-vs-BLD-AR-Ceilings | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+42 [Color Index: 64] 1B06G1 | BLD-ST-Framing-vs-BLD-AR-Walls | A | 43 | 43 | 43 | 43 | 43 | 0 |  | 43 | 0 | 0 | 0 | 0
+43 [Color Index: 64] 1B06G1 | BLD-ST-Framing-vs-BLD-AR-Curtain Panels | A | 12 | 12 | 12 | 12 | 12 | 0 |  | 12 | 0 | 0 | 0 | 0
+44 [Color Index: 64] 1B06G1 | BLD-ST-Framing-vs-BLD-AR-Curtain Mullions | A | 18 | 18 | 18 | 18 | 18 | 0 |  | 18 | 0 | 0 | 0 | 0
+45 [Color Index: 64] 1B06G1 | BLD-ST-Framing-vs-BLD-AR-Doors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+46 [Color Index: 64] 1B06G1 | BLD-ST-Walls-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+47 [Color Index: 64] 1B06G1 | BLD-ST-Walls-vs-BLD-AR-Stairs | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+48 [Color Index: 64] 1B06G1 | BLD-ST-Walls-vs-BLD-AR-Ceilings | A | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+49 [Color Index: 64] 1B06G1 | BLD-ST-Walls-vs-BLD-AR-Walls | A | 14 | 14 | 14 | 14 | 14 | 0 |  | 14 | 0 | 0 | 0 | 0
+50 [Color Index: 64] 1B06G1 | BLD-ST-Walls-vs-BLD-AR-Curtain Panels | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+51 [Color Index: 64] 1B06G1 | BLD-ST-Walls-vs-BLD-AR-Curtain Mullions | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+52 [Color Index: 64] 1B06G1 | BLD-ST-Floors-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+53 [Color Index: 64] 1B06G1 | BLD-ST-Floors-vs-BLD-AR-Ramps | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+54 [Color Index: 64] 1B06G1 | BLD-ST-Floors-vs-BLD-AR-Ceilings | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+55 [Color Index: 64] 1B06G1 | BLD-ST-Floors-vs-BLD-AR-Walls | A | 75 | 75 | 75 | 75 | 75 | 0 |  | 75 | 0 | 0 | 0 | 0
+56 [Color Index: 64] 1B06G1 | BLD-ST-Floors-vs-BLD-AR-Curtain Mullions | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+57 [Color Index: 64] 1B06G1 | BLD-ST-Stair-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+58 [Color Index: 64] 1B06G1 | BLD-ST-Stair-vs-BLD-AR-Stairs | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+59 [Color Index: 64] 1B06G1 | BLD-ST-Stair-vs-BLD-AR-Walls | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+60 [Color Index: 64] 1B06G1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors | A | 10 | 10 | 10 | 10 | 10 | 0 |  | 10 | 0 | 0 | 0 | 0
+61 [Color Index: 64] 1B06G1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls | A | 41 | 41 | 41 | 20 | 41 | 0 |  | 20 | 0 | 21 | 0 | 0
+62 [Color Index: 64] 1B06G1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+63 [Color Index: 64] 1B06G1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+64 [Color Index: 64] 1B06G1 | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+65 [Color Index: 64] 1B06G1 | BLD-ME-Air Terminals-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+66 [Color Index: 64] 1B06G1 | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+67 [Color Index: 64] 1B06G1 | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Ceilings | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+68 [Color Index: 64] 1B06G1 | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 34 | 34 | 34 | 0 | 34 | 0 |  | 0 | 0 | 34 | 0 | 0
+69 [Color Index: 64] 1B06G1 | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing | A | 11 | 11 | 11 | 11 | 11 | 0 |  | 11 | 0 | 0 | 0 | 0
+70 [Color Index: 64] 1B06G1 | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors | A | 11 | 11 | 11 | 0 | 11 | 0 |  | 0 | 0 | 11 | 0 | 0
+71 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+72 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings | B | 14 | 14 | 14 | 14 | 14 | 0 |  | 14 | 0 | 0 | 0 | 0
+73 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+74 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Foundation | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+75 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Columns | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+76 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+77 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 5 | 5 | 5 | 0 | 5 | 0 |  | 0 | 0 | 5 | 0 | 0
+78 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 6 | 6 | 6 | 0 | 6 | 0 |  | 0 | 0 | 6 | 0 | 0
+79 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+80 [Color Index: 64] 1B06G1 | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+81 [Color Index: 64] 1B06G1 | BLD-PL-Mechanical Equipment-vs-BLD-AR-Ceilings | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+82 [Color Index: 64] 1B06G1 | BLD-PL-Mechanical Equipment-vs-BLD-AR-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+83 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+84 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings | B | 14 | 14 | 14 | 14 | 14 | 0 |  | 14 | 0 | 0 | 0 | 0
+85 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 85 | 85 | 85 | 0 | 85 | 0 |  | 0 | 0 | 85 | 0 | 0
+86 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+87 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+88 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+89 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+90 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+91 [Color Index: 64] 1B06G1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+92 [Color Index: 64] 1B06G1 | BLD-PL-Pipe Accessories-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+93 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 20 | 20 | 20 | 0 | 20 | 0 |  | 0 | 0 | 20 | 0 | 0
+94 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Ceilings | B | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+95 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 71 | 71 | 71 | 0 | 71 | 0 |  | 0 | 0 | 71 | 0 | 0
+96 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+97 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 38 | 38 | 38 | 38 | 38 | 0 |  | 38 | 0 | 0 | 0 | 0
+98 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 5 | 5 | 5 | 0 | 5 | 0 |  | 0 | 0 | 5 | 0 | 0
+99 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 36 | 36 | 36 | 0 | 36 | 0 |  | 0 | 0 | 36 | 0 | 0
+100 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+101 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+102 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+103 [Color Index: 64] 1B06G1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+104 [Color Index: 64] 1B06G1 | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 11 | 11 | 11 | 11 | 11 | 0 |  | 11 | 0 | 0 | 0 | 0
+105 [Color Index: 64] 1B06G1 | BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+106 [Color Index: 64] 1B06G1 | BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings | C | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+107 [Color Index: 64] 1B06G1 | BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings | C | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+108 [Color Index: 64] 1B06G1 | Total 1B06G1 |  | 756 | 756 | 756 | 429 | 756 | 0 |  | 429 | 0 | 327 | 0 | 0
+109 [Color Index: 64] 1B06K1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+110 [Color Index: 64] 1B06K1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+111 [Color Index: 64] 1B06K1 | BLD-DR-Pipe Accessories-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+112 [Color Index: 64] 1B06K1 | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+113 [Color Index: 64] 1B06K1 | Total 1B06K1 |  | 11 | 11 | 11 | 4 | 11 | 0 |  | 4 | 0 | 7 | 0 | 0
+114 [Color Index: 64] 1B06M1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+115 [Color Index: 64] 1B06M1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+116 [Color Index: 64] 1B06M1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+117 [Color Index: 64] 1B06M1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+118 [Color Index: 64] 1B06M1 | Total 1B06M1 |  | 8 | 8 | 8 | 7 | 8 | 0 |  | 7 | 0 | 1 | 0 | 0
+119 [Color Index: 64] 1B06P1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+120 [Color Index: 64] 1B06P1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls | A | 8 | 8 | 8 | 2 | 8 | 0 |  | 2 | 0 | 6 | 0 | 0
+121 [Color Index: 64] 1B06P1 | BLD-ME-Air Terminals-vs-BLD-AR-Ceilings | B | 36 | 36 | 36 | 36 | 36 | 0 |  | 36 | 0 | 0 | 0 | 0
+122 [Color Index: 64] 1B06P1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 88 | 88 | 88 | 0 | 88 | 0 |  | 0 | 0 | 88 | 0 | 0
+123 [Color Index: 64] 1B06P1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 75 | 75 | 75 | 0 | 75 | 0 |  | 0 | 0 | 75 | 0 | 0
+124 [Color Index: 64] 1B06P1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 47 | 47 | 47 | 0 | 47 | 0 |  | 0 | 0 | 47 | 0 | 0
+125 [Color Index: 64] 1B06P1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+126 [Color Index: 64] 1B06P1 | BLD-DR-Pipe Accessories-vs-BLD-AR-Floors | B | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+127 [Color Index: 64] 1B06P1 | BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings | C | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+128 [Color Index: 64] 1B06P1 | Total 1B06P1 |  | 269 | 269 | 269 | 49 | 269 | 0 |  | 49 | 0 | 220 | 0 | 0
+129 [Color Index: 64] 1B06PE | BLD-ST-Foundation-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+130 [Color Index: 64] 1B06PE | BLD-ST-Walls-vs-BLD-AR-Floors | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+131 [Color Index: 64] 1B06PE | BLD-ST-Floors-vs-BLD-AR-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+132 [Color Index: 64] 1B06PE | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+133 [Color Index: 64] 1B06PE | BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+134 [Color Index: 64] 1B06PE | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+135 [Color Index: 64] 1B06PE | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+136 [Color Index: 64] 1B06PE | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+137 [Color Index: 64] 1B06PE | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+138 [Color Index: 64] 1B06PE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+139 [Color Index: 64] 1B06PE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 5 | 5 | 5 | 0 | 5 | 0 |  | 0 | 0 | 5 | 0 | 0
+140 [Color Index: 64] 1B06PE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+141 [Color Index: 64] 1B06PE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+142 [Color Index: 64] 1B06PE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls | A | 6 | 6 | 6 | 3 | 6 | 0 |  | 3 | 0 | 3 | 0 | 0
+143 [Color Index: 64] 1B06PE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+144 [Color Index: 64] 1B06PE | BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+145 [Color Index: 64] 1B06PE | BLD-EL-Lighting Devices-vs-BLD-AR-Doors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+146 [Color Index: 64] 1B06PE | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+147 [Color Index: 64] 1B06PE | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Doors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+148 [Color Index: 64] 1B06PE | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+149 [Color Index: 64] 1B06PE | Total 1B06PE |  | 52 | 52 | 52 | 34 | 52 | 0 |  | 34 | 0 | 18 | 0 | 0
+150 [Color Index: 64] 1B06PH | BLD-ST-Foundation-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+151 [Color Index: 64] 1B06PH | BLD-ST-Columns-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+152 [Color Index: 64] 1B06PH | BLD-ST-Framing-vs-BLD-AR-Walls | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+153 [Color Index: 64] 1B06PH | BLD-ST-Floors-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+154 [Color Index: 64] 1B06PH | BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+155 [Color Index: 64] 1B06PH | BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+156 [Color Index: 64] 1B06PH | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 12 | 12 | 12 | 0 | 12 | 0 |  | 0 | 0 | 12 | 0 | 0
+157 [Color Index: 64] 1B06PH | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+158 [Color Index: 64] 1B06PH | Total 1B06PH |  | 30 | 30 | 30 | 17 | 30 | 0 |  | 17 | 0 | 13 | 0 | 0
+159 [Color Index: 64] 1B06PK | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns | A | 32 | 32 | 32 | 32 | 32 | 0 |  | 32 | 0 | 0 | 0 | 0
+160 [Color Index: 64] 1B06PK | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+161 [Color Index: 64] 1B06PK | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls | A | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+162 [Color Index: 64] 1B06PK | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors | A | 256 | 256 | 256 | 112 | 256 | 0 |  | 112 | 0 | 144 | 0 | 0
+163 [Color Index: 64] 1B06PK | BLD-ME-Air Terminals-vs-BLD-ST-Columns | A | 36 | 36 | 36 | 36 | 36 | 0 |  | 36 | 0 | 0 | 0 | 0
+164 [Color Index: 64] 1B06PK | BLD-PL-Mechanical Equipment-vs-BLD-ST-Floors | A | 18 | 18 | 18 | 18 | 18 | 0 |  | 18 | 0 | 0 | 0 | 0
+165 [Color Index: 64] 1B06PK | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Columns | A | 190 | 190 | 190 | 190 | 190 | 0 |  | 190 | 0 | 0 | 0 | 0
+166 [Color Index: 64] 1B06PK | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+167 [Color Index: 64] 1B06PK | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 51 | 51 | 51 | 0 | 51 | 0 |  | 0 | 0 | 51 | 0 | 0
+168 [Color Index: 64] 1B06PK | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns | A | 211 | 211 | 211 | 211 | 211 | 0 |  | 211 | 0 | 0 | 0 | 0
+169 [Color Index: 64] 1B06PK | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 90 | 90 | 90 | 90 | 90 | 0 |  | 90 | 0 | 0 | 0 | 0
+170 [Color Index: 64] 1B06PK | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 655 | 655 | 655 | 7 | 655 | 0 |  | 7 | 0 | 648 | 0 | 0
+171 [Color Index: 64] 1B06PK | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings | A | 96 | 96 | 96 | 96 | 96 | 0 |  | 96 | 0 | 0 | 0 | 0
+172 [Color Index: 64] 1B06PK | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings | B | 9 | 9 | 9 | 9 | 9 | 0 |  | 9 | 0 | 0 | 0 | 0
+173 [Color Index: 64] 1B06PK | BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns | A | 9 | 9 | 9 | 9 | 9 | 0 |  | 9 | 0 | 0 | 0 | 0
+174 [Color Index: 64] 1B06PK | BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors | A | 73 | 73 | 73 | 73 | 73 | 0 |  | 73 | 0 | 0 | 0 | 0
+175 [Color Index: 64] 1B06PK | BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings | C | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+176 [Color Index: 64] 1B06PK | Total 1B06PK |  | 1748 | 1748 | 1748 | 904 | 1748 | 0 |  | 904 | 0 | 844 | 0 | 0
+177 [Color Index: 64] 1B06PO | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+178 [Color Index: 64] 1B06PO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+179 [Color Index: 64] 1B06PO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+180 [Color Index: 64] 1B06PO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+181 [Color Index: 64] 1B06PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+182 [Color Index: 64] 1B06PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 13 | 13 | 13 | 0 | 13 | 0 |  | 0 | 0 | 13 | 0 | 0
+183 [Color Index: 64] 1B06PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+184 [Color Index: 64] 1B06PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+185 [Color Index: 64] 1B06PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment | A | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+186 [Color Index: 64] 1B06PO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+187 [Color Index: 64] 1B06PO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+188 [Color Index: 64] 1B06PO | Total 1B06PO |  | 47 | 47 | 47 | 15 | 47 | 0 |  | 15 | 0 | 32 | 0 | 0
+189 [Color Index: 64] 1B06PP | BLD-ST-Columns-vs-BLD-AR-Floors | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+190 [Color Index: 64] 1B06PP | BLD-ST-Columns-vs-BLD-AR-Stairs | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+191 [Color Index: 64] 1B06PP | BLD-ST-Columns-vs-BLD-AR-Walls | A | 65 | 65 | 65 | 65 | 65 | 0 |  | 65 | 0 | 0 | 0 | 0
+192 [Color Index: 64] 1B06PP | BLD-ST-Columns-vs-BLD-AR-Curtain Mullions | A | 12 | 12 | 12 | 12 | 12 | 0 |  | 12 | 0 | 0 | 0 | 0
+193 [Color Index: 64] 1B06PP | BLD-ST-Columns-vs-BLD-AR-Railings | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+194 [Color Index: 64] 1B06PP | BLD-ST-Framing-vs-BLD-AR-Floors | A | 23 | 23 | 23 | 23 | 23 | 0 |  | 23 | 0 | 0 | 0 | 0
+195 [Color Index: 64] 1B06PP | BLD-ST-Framing-vs-BLD-AR-Walls | A | 24 | 24 | 24 | 24 | 24 | 0 |  | 24 | 0 | 0 | 0 | 0
+196 [Color Index: 64] 1B06PP | BLD-ST-Framing-vs-BLD-AR-Curtain Mullions | A | 60 | 60 | 60 | 60 | 60 | 0 |  | 60 | 0 | 0 | 0 | 0
+197 [Color Index: 64] 1B06PP | BLD-ST-Walls-vs-BLD-AR-Floors | A | 21 | 21 | 21 | 21 | 21 | 0 |  | 21 | 0 | 0 | 0 | 0
+198 [Color Index: 64] 1B06PP | BLD-ST-Walls-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+199 [Color Index: 64] 1B06PP | BLD-ST-Floors-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+200 [Color Index: 64] 1B06PP | BLD-ST-Floors-vs-BLD-AR-Stairs | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+201 [Color Index: 64] 1B06PP | BLD-ST-Floors-vs-BLD-AR-Walls | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+202 [Color Index: 64] 1B06PP | BLD-ST-Floors-vs-BLD-AR-Curtain Mullions | A | 13 | 13 | 13 | 13 | 13 | 0 |  | 13 | 0 | 0 | 0 | 0
+203 [Color Index: 64] 1B06PP | BLD-ST-Stair-vs-BLD-AR-Stairs | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+204 [Color Index: 64] 1B06PP | BLD-ST-Stair-vs-BLD-AR-Walls | A | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+205 [Color Index: 64] 1B06PP | BLD-ST-Stair-vs-BLD-AR-Railings | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+206 [Color Index: 64] 1B06PP | BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+207 [Color Index: 64] 1B06PP | BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls | A | 9 | 9 | 9 | 3 | 9 | 0 |  | 3 | 0 | 6 | 0 | 0
+208 [Color Index: 64] 1B06PP | BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+209 [Color Index: 64] 1B06PP | BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls | A | 6 | 6 | 6 | 5 | 6 | 0 |  | 5 | 0 | 1 | 0 | 0
+210 [Color Index: 64] 1B06PP | BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+211 [Color Index: 64] 1B06PP | BLD-EL-Electrical Equipment-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+212 [Color Index: 64] 1B06PP | BLD-EL-Electrical Equipment-vs-BLD-AR-Walls | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+213 [Color Index: 64] 1B06PP | BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+214 [Color Index: 64] 1B06PP | BLD-EL-Electrical Equipment-vs-BLD-ST-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+215 [Color Index: 64] 1B06PP | BLD-EL-Electrical Equipment-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+216 [Color Index: 64] 1B06PP | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+217 [Color Index: 64] 1B06PP | BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+218 [Color Index: 64] 1B06PP | BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+219 [Color Index: 64] 1B06PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+220 [Color Index: 64] 1B06PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 34 | 34 | 34 | 0 | 34 | 0 |  | 0 | 0 | 34 | 0 | 0
+221 [Color Index: 64] 1B06PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation | A | 9 | 9 | 9 | 0 | 9 | 0 |  | 0 | 0 | 9 | 0 | 0
+222 [Color Index: 64] 1B06PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 19 | 19 | 19 | 19 | 19 | 0 |  | 19 | 0 | 0 | 0 | 0
+223 [Color Index: 64] 1B06PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing | A | 17 | 17 | 17 | 17 | 17 | 0 |  | 17 | 0 | 0 | 0 | 0
+224 [Color Index: 64] 1B06PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls | A | 18 | 18 | 18 | 0 | 18 | 0 |  | 0 | 0 | 18 | 0 | 0
+225 [Color Index: 64] 1B06PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+226 [Color Index: 64] 1B06PP | BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls | B | 9 | 9 | 9 | 9 | 9 | 0 |  | 9 | 0 | 0 | 0 | 0
+227 [Color Index: 64] 1B06PP | BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+228 [Color Index: 64] 1B06PP | BLD-EL-Lighting Devices-vs-BLD-ST-Columns | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+229 [Color Index: 64] 1B06PP | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Floors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+230 [Color Index: 64] 1B06PP | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+231 [Color Index: 64] 1B06PP | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+232 [Color Index: 64] 1B06PP | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+233 [Color Index: 64] 1B06PP | BLD-Security Devices-vs-BLD-AR-Walls | C | 9 | 9 | 9 | 9 | 9 | 0 |  | 9 | 0 | 0 | 0 | 0
+234 [Color Index: 64] 1B06PP | BLD-Security Devices-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+235 [Color Index: 64] 1B06PP | Total 1B06PP |  | 427 | 427 | 427 | 351 | 427 | 0 |  | 351 | 0 | 76 | 0 | 0
+236 [Color Index: 64] 1B06PS | Total 1B06PS |  | 0 | 0 | 0 | 0 | 0 | 0 |  | 0 | 0 | 0 | 0 | 0
+237 [Color Index: 64] 1B06WL | BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+238 [Color Index: 64] 1B06WL | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls | A | 13 | 13 | 13 | 7 | 13 | 0 |  | 7 | 0 | 6 | 0 | 0
+239 [Color Index: 64] 1B06WL | BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+240 [Color Index: 64] 1B06WL | BLD-ME-Pipe Accessories-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+241 [Color Index: 64] 1B06WL | BLD-Security Devices-vs-BLD-EL-Lighting Fixtures | C | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+242 [Color Index: 64] 1B06WL | Total 1B06WL |  | 25 | 25 | 25 | 19 | 25 | 0 |  | 19 | 0 | 6 | 0 | 0
+243 [Color Index: 64] 1B06WM | BLD-ST-Framing-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+244 [Color Index: 64] 1B06WM | BLD-ST-Walls-vs-BLD-AR-Floors | A | 12 | 12 | 12 | 12 | 12 | 0 |  | 12 | 0 | 0 | 0 | 0
+245 [Color Index: 64] 1B06WM | BLD-ST-Floors-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+246 [Color Index: 64] 1B06WM | BLD-ST-Floors-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+247 [Color Index: 64] 1B06WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 48 | 48 | 48 | 0 | 48 | 0 |  | 0 | 0 | 48 | 0 | 0
+248 [Color Index: 64] 1B06WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+249 [Color Index: 64] 1B06WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls | A | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+250 [Color Index: 64] 1B06WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors | A | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+251 [Color Index: 64] 1B06WM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+252 [Color Index: 64] 1B06WM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+253 [Color Index: 64] 1B06WM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+254 [Color Index: 64] 1B06WM | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+255 [Color Index: 64] 1B06WM | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+256 [Color Index: 64] 1B06WM | BLD-EL-Electrical Equipment-vs-BLD-AR-Walls | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+257 [Color Index: 64] 1B06WM | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+258 [Color Index: 64] 1B06WM | BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+259 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+260 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 42 | 42 | 42 | 0 | 42 | 0 |  | 0 | 0 | 42 | 0 | 0
+261 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 17 | 17 | 17 | 17 | 17 | 0 |  | 17 | 0 | 0 | 0 | 0
+262 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing | A | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+263 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls | A | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+264 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 25 | 25 | 25 | 0 | 25 | 0 |  | 0 | 0 | 25 | 0 | 0
+265 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings | C | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+266 [Color Index: 64] 1B06WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures | C | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+267 [Color Index: 64] 1B06WM | BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+268 [Color Index: 64] 1B06WM | BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+269 [Color Index: 64] 1B06WM | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+270 [Color Index: 64] 1B06WM | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+271 [Color Index: 64] 1B06WM | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+272 [Color Index: 64] 1B06WM | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+273 [Color Index: 64] 1B06WM | Total 1B06WM |  | 251 | 251 | 251 | 93 | 251 | 0 |  | 93 | 0 | 158 | 0 | 0
+274 [Color Index: 64] 1B06WO | BLD-ST-Columns-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+275 [Color Index: 64] 1B06WO | BLD-ST-Framing-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+276 [Color Index: 64] 1B06WO | BLD-ST-Floors-vs-BLD-AR-Floors | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+277 [Color Index: 64] 1B06WO | BLD-ST-Floors-vs-BLD-AR-Walls | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+278 [Color Index: 64] 1B06WO | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+279 [Color Index: 64] 1B06WO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+280 [Color Index: 64] 1B06WO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+281 [Color Index: 64] 1B06WO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+282 [Color Index: 64] 1B06WO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+283 [Color Index: 64] 1B06WO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+284 [Color Index: 64] 1B06WO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+285 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+286 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 13 | 13 | 13 | 0 | 13 | 0 |  | 0 | 0 | 13 | 0 | 0
+287 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+288 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+289 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+290 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+291 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+292 [Color Index: 64] 1B06WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+293 [Color Index: 64] 1B06WO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+294 [Color Index: 64] 1B06WO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+295 [Color Index: 64] 1B06WO | BLD-EL-Electrical Equipment-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+296 [Color Index: 64] 1B06WO | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+297 [Color Index: 64] 1B06WO | BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+298 [Color Index: 64] 1B06WO | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+299 [Color Index: 64] 1B06WO | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+300 [Color Index: 64] 1B06WO | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+301 [Color Index: 64] 1B06WO | BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+302 [Color Index: 64] 1B06WO | BLD-EL-Lighting Devices-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+303 [Color Index: 64] 1B06WO | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+304 [Color Index: 64] 1B06WO | Total 1B06WO |  | 99 | 99 | 99 | 61 | 99 | 0 |  | 61 | 0 | 38 | 0 | 0
+305 [Color Index: 64] 1C06M2 | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+306 [Color Index: 64] 1C06M2 | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+307 [Color Index: 64] 1C06M2 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+308 [Color Index: 64] 1C06M2 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+309 [Color Index: 64] 1C06M2 | Total 1C06M2 |  | 8 | 8 | 8 | 7 | 8 | 0 |  | 7 | 0 | 1 | 0 | 0
+310 [Color Index: 64] C06 | Total C06 |  | 3904 | 3904 | 3904 | 2121 | 3904 | 0 |  | 2121 | 0 | 1783 | 0 | 0
+311 [Color Index: 64]  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+312 [FFD9D9D9] Groups not built for one discipline |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+313 [Color Index: 64] 1B06BS |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+314 [Color Index: 64] 1B06KI |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+315 [Color Index: 64] 1B06PG |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+316 [Color Index: 64] 1B06PT |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+317 [Color Index: 64] 1B06PW |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+318 [Color Index: 64] 1C06PK |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+319 [Color Index: 64]  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+320 [FFD9D9D9] Tests left out by a rule |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+321 [FFD9D9D9] Building | Left out by one discipline | Left out by two set codes |  |  |  |  |  |  |  |  |  |  |  | 
+322 [Color Index: 64] 1B06BC | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+323 [Color Index: 64] 1B06G1 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+324 [Color Index: 64] 1B06K1 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+325 [Color Index: 64] 1B06M1 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+326 [Color Index: 64] 1B06P1 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+327 [Color Index: 64] 1B06PE | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+328 [Color Index: 64] 1B06PH | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+329 [Color Index: 64] 1B06PK | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+330 [Color Index: 64] 1B06PO | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+331 [Color Index: 64] 1B06PP | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+332 [Color Index: 64] 1B06PS | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+333 [Color Index: 64] 1B06WL | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+334 [Color Index: 64] 1B06WM | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+335 [Color Index: 64] 1B06WO | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+336 [Color Index: 64] 1C06M2 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+337 [Color Index: 64] 1B06BS | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+338 [Color Index: 64] 1B06KI | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+339 [Color Index: 64] 1B06PG | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+340 [Color Index: 64] 1B06PT | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+341 [Color Index: 64] 1B06PW | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+342 [Color Index: 64] 1C06PK | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+==== C:/NWC-PC-Test/work/final-2026-10-19/Report/C07/C07 clash count check.xlsx
+1 [Color Index: 64] C07 clash count check |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+2 [Color Index: 64] Run date 2026-10-19 |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+3 [Color Index: 64]  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+4 [FFD9D9D9] Building | Test | Priority | Clashes in Clash Detective | Excel rows | HTML rows | Clashes in viewpoints | Pictures made | Pictures skipped | Why skipped | New | Active | Reviewed | Approved | Resolved
+5 [Color Index: 64] 1C07BC | BLD-ST-Columns-vs-BLD-AR-Floors | A | 18 | 18 | 18 | 18 | 18 | 0 |  | 18 | 0 | 0 | 0 | 0
+6 [Color Index: 64] 1C07BC | BLD-ST-Columns-vs-BLD-AR-Columns | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+7 [Color Index: 64] 1C07BC | BLD-ST-Columns-vs-BLD-AR-Walls | A | 10 | 10 | 10 | 10 | 10 | 0 |  | 10 | 0 | 0 | 0 | 0
+8 [Color Index: 64] 1C07BC | BLD-ST-Framing-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+9 [Color Index: 64] 1C07BC | BLD-ST-Framing-vs-BLD-AR-Columns | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+10 [Color Index: 64] 1C07BC | BLD-ST-Framing-vs-BLD-AR-Walls | A | 9 | 9 | 9 | 9 | 9 | 0 |  | 9 | 0 | 0 | 0 | 0
+11 [Color Index: 64] 1C07BC | BLD-ST-Framing-vs-BLD-AR-Curtain Mullions | A | 18 | 18 | 18 | 18 | 18 | 0 |  | 18 | 0 | 0 | 0 | 0
+12 [Color Index: 64] 1C07BC | BLD-ST-Walls-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+13 [Color Index: 64] 1C07BC | BLD-ST-Walls-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+14 [Color Index: 64] 1C07BC | BLD-ST-Walls-vs-BLD-AR-Curtain Mullions | A | 11 | 11 | 11 | 11 | 11 | 0 |  | 11 | 0 | 0 | 0 | 0
+15 [Color Index: 64] 1C07BC | BLD-ST-Walls-vs-BLD-AR-Doors | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+16 [Color Index: 64] 1C07BC | BLD-ST-Floors-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+17 [Color Index: 64] 1C07BC | BLD-ST-Floors-vs-BLD-AR-Curtain Mullions | A | 21 | 21 | 21 | 21 | 21 | 0 |  | 21 | 0 | 0 | 0 | 0
+18 [Color Index: 64] 1C07BC | BLD-ST-Stair-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+19 [Color Index: 64] 1C07BC | BLD-ST-Stair-vs-BLD-AR-Stairs | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+20 [Color Index: 64] 1C07BC | BLD-FF-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+21 [Color Index: 64] 1C07BC | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+22 [Color Index: 64] 1C07BC | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 9 | 9 | 9 | 0 | 9 | 0 |  | 0 | 0 | 9 | 0 | 0
+23 [Color Index: 64] 1C07BC | BLD-FF-Sprinklers-vs-BLD-ST-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+24 [Color Index: 64] 1C07BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+25 [Color Index: 64] 1C07BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+26 [Color Index: 64] 1C07BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+27 [Color Index: 64] 1C07BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+28 [Color Index: 64] 1C07BC | BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+29 [Color Index: 64] 1C07BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+30 [Color Index: 64] 1C07BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+31 [Color Index: 64] 1C07BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls | A | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+32 [Color Index: 64] 1C07BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+33 [Color Index: 64] 1C07BC | BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+34 [Color Index: 64] 1C07BC | BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+35 [Color Index: 64] 1C07BC | Total 1C07BC |  | 173 | 173 | 173 | 131 | 173 | 0 |  | 131 | 0 | 42 | 0 | 0
+36 [Color Index: 64] 1C07G1 | BLD-ST-Foundation-vs-BLD-AR-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+37 [Color Index: 64] 1C07G1 | BLD-ST-Columns-vs-BLD-AR-Floors | A | 23 | 23 | 23 | 23 | 23 | 0 |  | 23 | 0 | 0 | 0 | 0
+38 [Color Index: 64] 1C07G1 | BLD-ST-Columns-vs-BLD-AR-Ceilings | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+39 [Color Index: 64] 1C07G1 | BLD-ST-Columns-vs-BLD-AR-Walls | A | 23 | 23 | 23 | 23 | 23 | 0 |  | 23 | 0 | 0 | 0 | 0
+40 [Color Index: 64] 1C07G1 | BLD-ST-Framing-vs-BLD-AR-Floors | A | 13 | 13 | 13 | 13 | 13 | 0 |  | 13 | 0 | 0 | 0 | 0
+41 [Color Index: 64] 1C07G1 | BLD-ST-Framing-vs-BLD-AR-Ceilings | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+42 [Color Index: 64] 1C07G1 | BLD-ST-Framing-vs-BLD-AR-Walls | A | 43 | 43 | 43 | 43 | 43 | 0 |  | 43 | 0 | 0 | 0 | 0
+43 [Color Index: 64] 1C07G1 | BLD-ST-Framing-vs-BLD-AR-Curtain Panels | A | 12 | 12 | 12 | 12 | 12 | 0 |  | 12 | 0 | 0 | 0 | 0
+44 [Color Index: 64] 1C07G1 | BLD-ST-Framing-vs-BLD-AR-Curtain Mullions | A | 18 | 18 | 18 | 18 | 18 | 0 |  | 18 | 0 | 0 | 0 | 0
+45 [Color Index: 64] 1C07G1 | BLD-ST-Framing-vs-BLD-AR-Doors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+46 [Color Index: 64] 1C07G1 | BLD-ST-Walls-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+47 [Color Index: 64] 1C07G1 | BLD-ST-Walls-vs-BLD-AR-Stairs | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+48 [Color Index: 64] 1C07G1 | BLD-ST-Walls-vs-BLD-AR-Ceilings | A | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+49 [Color Index: 64] 1C07G1 | BLD-ST-Walls-vs-BLD-AR-Walls | A | 14 | 14 | 14 | 14 | 14 | 0 |  | 14 | 0 | 0 | 0 | 0
+50 [Color Index: 64] 1C07G1 | BLD-ST-Walls-vs-BLD-AR-Curtain Panels | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+51 [Color Index: 64] 1C07G1 | BLD-ST-Walls-vs-BLD-AR-Curtain Mullions | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+52 [Color Index: 64] 1C07G1 | BLD-ST-Floors-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+53 [Color Index: 64] 1C07G1 | BLD-ST-Floors-vs-BLD-AR-Ramps | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+54 [Color Index: 64] 1C07G1 | BLD-ST-Floors-vs-BLD-AR-Ceilings | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+55 [Color Index: 64] 1C07G1 | BLD-ST-Floors-vs-BLD-AR-Walls | A | 75 | 75 | 75 | 75 | 75 | 0 |  | 75 | 0 | 0 | 0 | 0
+56 [Color Index: 64] 1C07G1 | BLD-ST-Floors-vs-BLD-AR-Curtain Mullions | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+57 [Color Index: 64] 1C07G1 | BLD-ST-Stair-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+58 [Color Index: 64] 1C07G1 | BLD-ST-Stair-vs-BLD-AR-Stairs | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+59 [Color Index: 64] 1C07G1 | BLD-ST-Stair-vs-BLD-AR-Walls | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+60 [Color Index: 64] 1C07G1 | Total 1C07G1 |  | 264 | 264 | 264 | 264 | 264 | 0 |  | 264 | 0 | 0 | 0 | 0
+61 [Color Index: 64] 1C07K1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+62 [Color Index: 64] 1C07K1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+63 [Color Index: 64] 1C07K1 | BLD-DR-Pipe Accessories-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+64 [Color Index: 64] 1C07K1 | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+65 [Color Index: 64] 1C07K1 | Total 1C07K1 |  | 11 | 11 | 11 | 4 | 11 | 0 |  | 4 | 0 | 7 | 0 | 0
+66 [Color Index: 64] 1C07P1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+67 [Color Index: 64] 1C07P1 | BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls | A | 8 | 8 | 8 | 2 | 8 | 0 |  | 2 | 0 | 6 | 0 | 0
+68 [Color Index: 64] 1C07P1 | BLD-ME-Air Terminals-vs-BLD-AR-Ceilings | B | 36 | 36 | 36 | 36 | 36 | 0 |  | 36 | 0 | 0 | 0 | 0
+69 [Color Index: 64] 1C07P1 | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 88 | 88 | 88 | 0 | 88 | 0 |  | 0 | 0 | 88 | 0 | 0
+70 [Color Index: 64] 1C07P1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 75 | 75 | 75 | 0 | 75 | 0 |  | 0 | 0 | 75 | 0 | 0
+71 [Color Index: 64] 1C07P1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 47 | 47 | 47 | 0 | 47 | 0 |  | 0 | 0 | 47 | 0 | 0
+72 [Color Index: 64] 1C07P1 | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+73 [Color Index: 64] 1C07P1 | BLD-DR-Pipe Accessories-vs-BLD-AR-Floors | B | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+74 [Color Index: 64] 1C07P1 | BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings | C | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+75 [Color Index: 64] 1C07P1 | Total 1C07P1 |  | 269 | 269 | 269 | 49 | 269 | 0 |  | 49 | 0 | 220 | 0 | 0
+76 [Color Index: 64] 1C07PG | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+77 [Color Index: 64] 1C07PG | BLD-FF-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+78 [Color Index: 64] 1C07PG | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+79 [Color Index: 64] 1C07PG | BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+80 [Color Index: 64] 1C07PG | BLD-PL-Pipes & Pipe Fittings-vs-BLD-FF-Pipe Accessories | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+81 [Color Index: 64] 1C07PG | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+82 [Color Index: 64] 1C07PG | BLD-DR-Pipes & Pipe Fittings-vs-BLD-FF-Pipes & Pipe Fittings | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+83 [Color Index: 64] 1C07PG | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+84 [Color Index: 64] 1C07PG | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+85 [Color Index: 64] 1C07PG | BLD-DR-Plumbing Fixtures-vs-BLD-FF-Pipes & Pipe Fittings | C | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+86 [Color Index: 64] 1C07PG | BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings | C | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+87 [Color Index: 64] 1C07PG | BLD-Security Devices-vs-BLD-EL-Fire Alarm Devices | C | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+88 [Color Index: 64] 1C07PG | Total 1C07PG |  | 21 | 21 | 21 | 21 | 21 | 0 |  | 21 | 0 | 0 | 0 | 0
+89 [Color Index: 64] 1C07PS | Total 1C07PS |  | 0 | 0 | 0 | 0 | 0 | 0 |  | 0 | 0 | 0 | 0 | 0
+90 [Color Index: 64] 1C07WE | BLD-ST-Foundation-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+91 [Color Index: 64] 1C07WE | BLD-ST-Framing-vs-BLD-AR-Walls | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+92 [Color Index: 64] 1C07WE | BLD-ST-Walls-vs-BLD-AR-Floors | A | 13 | 13 | 13 | 13 | 13 | 0 |  | 13 | 0 | 0 | 0 | 0
+93 [Color Index: 64] 1C07WE | BLD-ST-Floors-vs-BLD-AR-Walls | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+94 [Color Index: 64] 1C07WE | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+95 [Color Index: 64] 1C07WE | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+96 [Color Index: 64] 1C07WE | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+97 [Color Index: 64] 1C07WE | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+98 [Color Index: 64] 1C07WE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+99 [Color Index: 64] 1C07WE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+100 [Color Index: 64] 1C07WE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+101 [Color Index: 64] 1C07WE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+102 [Color Index: 64] 1C07WE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls | A | 6 | 6 | 6 | 3 | 6 | 0 |  | 3 | 0 | 3 | 0 | 0
+103 [Color Index: 64] 1C07WE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+104 [Color Index: 64] 1C07WE | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+105 [Color Index: 64] 1C07WE | Total 1C07WE |  | 53 | 53 | 53 | 35 | 53 | 0 |  | 35 | 0 | 18 | 0 | 0
+106 [Color Index: 64] 1C07WL | BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+107 [Color Index: 64] 1C07WL | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls | A | 16 | 16 | 16 | 16 | 16 | 0 |  | 16 | 0 | 0 | 0 | 0
+108 [Color Index: 64] 1C07WL | BLD-ME-Pipe Accessories-vs-BLD-ST-Foundation | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+109 [Color Index: 64] 1C07WL | Total 1C07WL |  | 23 | 23 | 23 | 23 | 23 | 0 |  | 23 | 0 | 0 | 0 | 0
+110 [Color Index: 64] 1C07WM | BLD-ST-Framing-vs-BLD-AR-Walls | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+111 [Color Index: 64] 1C07WM | BLD-ST-Walls-vs-BLD-AR-Floors | A | 16 | 16 | 16 | 16 | 16 | 0 |  | 16 | 0 | 0 | 0 | 0
+112 [Color Index: 64] 1C07WM | BLD-ST-Floors-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+113 [Color Index: 64] 1C07WM | BLD-ST-Floors-vs-BLD-AR-Walls | A | 26 | 26 | 26 | 26 | 26 | 0 |  | 26 | 0 | 0 | 0 | 0
+114 [Color Index: 64] 1C07WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 60 | 60 | 60 | 0 | 60 | 0 |  | 0 | 0 | 60 | 0 | 0
+115 [Color Index: 64] 1C07WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing | A | 10 | 10 | 10 | 10 | 10 | 0 |  | 10 | 0 | 0 | 0 | 0
+116 [Color Index: 64] 1C07WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls | A | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+117 [Color Index: 64] 1C07WM | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors | A | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+118 [Color Index: 64] 1C07WM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 12 | 12 | 12 | 0 | 12 | 0 |  | 0 | 0 | 12 | 0 | 0
+119 [Color Index: 64] 1C07WM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+120 [Color Index: 64] 1C07WM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 5 | 5 | 5 | 0 | 5 | 0 |  | 0 | 0 | 5 | 0 | 0
+121 [Color Index: 64] 1C07WM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+122 [Color Index: 64] 1C07WM | BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+123 [Color Index: 64] 1C07WM | BLD-EL-Electrical Equipment-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+124 [Color Index: 64] 1C07WM | BLD-EL-Electrical Equipment-vs-BLD-ST-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+125 [Color Index: 64] 1C07WM | BLD-EL-Electrical Equipment-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+126 [Color Index: 64] 1C07WM | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+127 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+128 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 22 | 22 | 22 | 0 | 22 | 0 |  | 0 | 0 | 22 | 0 | 0
+129 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 17 | 17 | 17 | 17 | 17 | 0 |  | 17 | 0 | 0 | 0 | 0
+130 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing | A | 10 | 10 | 10 | 10 | 10 | 0 |  | 10 | 0 | 0 | 0 | 0
+131 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+132 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+133 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment | C | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+134 [Color Index: 64] 1C07WM | BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings | C | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+135 [Color Index: 64] 1C07WM | BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+136 [Color Index: 64] 1C07WM | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+137 [Color Index: 64] 1C07WM | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+138 [Color Index: 64] 1C07WM | Total 1C07WM |  | 245 | 245 | 245 | 109 | 245 | 0 |  | 109 | 0 | 136 | 0 | 0
+139 [Color Index: 64] 1C07WN | BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+140 [Color Index: 64] 1C07WN | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+141 [Color Index: 64] 1C07WN | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 12 | 12 | 12 | 12 | 12 | 0 |  | 12 | 0 | 0 | 0 | 0
+142 [Color Index: 64] 1C07WN | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+143 [Color Index: 64] 1C07WN | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls | A | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+144 [Color Index: 64] 1C07WN | Total 1C07WN |  | 20 | 20 | 20 | 14 | 20 | 0 |  | 14 | 0 | 6 | 0 | 0
+145 [Color Index: 64] 1C07WO | BLD-ST-Columns-vs-BLD-AR-Floors | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+146 [Color Index: 64] 1C07WO | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+147 [Color Index: 64] 1C07WO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+148 [Color Index: 64] 1C07WO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+149 [Color Index: 64] 1C07WO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+150 [Color Index: 64] 1C07WO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+151 [Color Index: 64] 1C07WO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+152 [Color Index: 64] 1C07WO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+153 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+154 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 13 | 13 | 13 | 0 | 13 | 0 |  | 0 | 0 | 13 | 0 | 0
+155 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+156 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+157 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+158 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+159 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+160 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+161 [Color Index: 64] 1C07WO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+162 [Color Index: 64] 1C07WO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+163 [Color Index: 64] 1C07WO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+164 [Color Index: 64] 1C07WO | BLD-EL-Electrical Equipment-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+165 [Color Index: 64] 1C07WO | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+166 [Color Index: 64] 1C07WO | BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+167 [Color Index: 64] 1C07WO | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+168 [Color Index: 64] 1C07WO | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+169 [Color Index: 64] 1C07WO | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+170 [Color Index: 64] 1C07WO | BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+171 [Color Index: 64] 1C07WO | BLD-EL-Lighting Devices-vs-BLD-AR-Walls | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+172 [Color Index: 64] 1C07WO | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+173 [Color Index: 64] 1C07WO | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+174 [Color Index: 64] 1C07WO | Total 1C07WO |  | 89 | 89 | 89 | 51 | 89 | 0 |  | 51 | 0 | 38 | 0 | 0
+175 [Color Index: 64] 1D07MM | BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+176 [Color Index: 64] 1D07MM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+177 [Color Index: 64] 1D07MM | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+178 [Color Index: 64] 1D07MM | Total 1D07MM |  | 7 | 7 | 7 | 6 | 7 | 0 |  | 6 | 0 | 1 | 0 | 0
+179 [Color Index: 64] 1D07PE | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+180 [Color Index: 64] 1D07PE | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+181 [Color Index: 64] 1D07PE | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+182 [Color Index: 64] 1D07PE | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+183 [Color Index: 64] 1D07PE | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+184 [Color Index: 64] 1D07PE | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+185 [Color Index: 64] 1D07PE | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+186 [Color Index: 64] 1D07PE | Total 1D07PE |  | 22 | 22 | 22 | 16 | 22 | 0 |  | 16 | 0 | 6 | 0 | 0
+187 [Color Index: 64] 1D07PH | BLD-ST-Foundation-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+188 [Color Index: 64] 1D07PH | BLD-ST-Columns-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+189 [Color Index: 64] 1D07PH | BLD-ST-Framing-vs-BLD-AR-Walls | A | 8 | 8 | 8 | 8 | 8 | 0 |  | 8 | 0 | 0 | 0 | 0
+190 [Color Index: 64] 1D07PH | BLD-ST-Walls-vs-BLD-AR-Walls | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+191 [Color Index: 64] 1D07PH | BLD-ST-Floors-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+192 [Color Index: 64] 1D07PH | BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+193 [Color Index: 64] 1D07PH | BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+194 [Color Index: 64] 1D07PH | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 12 | 12 | 12 | 0 | 12 | 0 |  | 0 | 0 | 12 | 0 | 0
+195 [Color Index: 64] 1D07PH | BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+196 [Color Index: 64] 1D07PH | BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+197 [Color Index: 64] 1D07PH | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+198 [Color Index: 64] 1D07PH | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 4 | 4 | 4 | 0 | 4 | 0 |  | 0 | 0 | 4 | 0 | 0
+199 [Color Index: 64] 1D07PH | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 7 | 7 | 7 | 7 | 7 | 0 |  | 7 | 0 | 0 | 0 | 0
+200 [Color Index: 64] 1D07PH | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing | A | 5 | 5 | 5 | 5 | 5 | 0 |  | 5 | 0 | 0 | 0 | 0
+201 [Color Index: 64] 1D07PH | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+202 [Color Index: 64] 1D07PH | Total 1D07PH |  | 58 | 58 | 58 | 41 | 58 | 0 |  | 41 | 0 | 17 | 0 | 0
+203 [Color Index: 64] 1D07PN | BLD-ST-Columns-vs-BLD-AR-Walls | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+204 [Color Index: 64] 1D07PN | BLD-ST-Columns-vs-BLD-AR-Doors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+205 [Color Index: 64] 1D07PN | BLD-ST-Framing-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+206 [Color Index: 64] 1D07PN | BLD-ST-Framing-vs-BLD-AR-Walls | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+207 [Color Index: 64] 1D07PN | BLD-ST-Walls-vs-BLD-AR-Floors | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+208 [Color Index: 64] 1D07PN | BLD-ST-Floors-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+209 [Color Index: 64] 1D07PN | BLD-ST-Floors-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+210 [Color Index: 64] 1D07PN | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+211 [Color Index: 64] 1D07PN | BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+212 [Color Index: 64] 1D07PN | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+213 [Color Index: 64] 1D07PN | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+214 [Color Index: 64] 1D07PN | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 0 | 2 | 0 |  | 0 | 0 | 2 | 0 | 0
+215 [Color Index: 64] 1D07PN | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+216 [Color Index: 64] 1D07PN | BLD-EL-Electrical Equipment-vs-BLD-AR-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+217 [Color Index: 64] 1D07PN | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+218 [Color Index: 64] 1D07PN | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+219 [Color Index: 64] 1D07PN | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+220 [Color Index: 64] 1D07PN | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+221 [Color Index: 64] 1D07PN | BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+222 [Color Index: 64] 1D07PN | BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+223 [Color Index: 64] 1D07PN | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+224 [Color Index: 64] 1D07PN | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Columns | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+225 [Color Index: 64] 1D07PN | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+226 [Color Index: 64] 1D07PN | BLD-Security Devices-vs-BLD-ST-Columns | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+227 [Color Index: 64] 1D07PN | Total 1D07PN |  | 60 | 60 | 60 | 50 | 60 | 0 |  | 50 | 0 | 10 | 0 | 0
+228 [Color Index: 64] 1D07PO | BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls | B | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+229 [Color Index: 64] 1D07PO | BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls | B | 10 | 10 | 10 | 0 | 10 | 0 |  | 0 | 0 | 10 | 0 | 0
+230 [Color Index: 64] 1D07PO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 8 | 8 | 8 | 0 | 8 | 0 |  | 0 | 0 | 8 | 0 | 0
+231 [Color Index: 64] 1D07PO | BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+232 [Color Index: 64] 1D07PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+233 [Color Index: 64] 1D07PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls | B | 14 | 14 | 14 | 0 | 14 | 0 |  | 0 | 0 | 14 | 0 | 0
+234 [Color Index: 64] 1D07PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Casework | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+235 [Color Index: 64] 1D07PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment | B | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+236 [Color Index: 64] 1D07PO | BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment | A | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+237 [Color Index: 64] 1D07PO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+238 [Color Index: 64] 1D07PO | BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls | B | 4 | 4 | 4 | 4 | 4 | 0 |  | 4 | 0 | 0 | 0 | 0
+239 [Color Index: 64] 1D07PO | BLD-EL-Electrical Equipment-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+240 [Color Index: 64] 1D07PO | BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+241 [Color Index: 64] 1D07PO | BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+242 [Color Index: 64] 1D07PO | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+243 [Color Index: 64] 1D07PO | BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+244 [Color Index: 64] 1D07PO | Total 1D07PO |  | 58 | 58 | 58 | 24 | 58 | 0 |  | 24 | 0 | 34 | 0 | 0
+245 [Color Index: 64] 1D07PP | BLD-ST-Columns-vs-BLD-AR-Floors | A | 12 | 12 | 12 | 12 | 12 | 0 |  | 12 | 0 | 0 | 0 | 0
+246 [Color Index: 64] 1D07PP | BLD-ST-Columns-vs-BLD-AR-Walls | A | 50 | 50 | 50 | 50 | 50 | 0 |  | 50 | 0 | 0 | 0 | 0
+247 [Color Index: 64] 1D07PP | BLD-ST-Framing-vs-BLD-AR-Walls | A | 38 | 38 | 38 | 38 | 38 | 0 |  | 38 | 0 | 0 | 0 | 0
+248 [Color Index: 64] 1D07PP | BLD-ST-Walls-vs-BLD-AR-Floors | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+249 [Color Index: 64] 1D07PP | BLD-ST-Walls-vs-BLD-AR-Walls | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+250 [Color Index: 64] 1D07PP | BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls | A | 7 | 7 | 7 | 4 | 7 | 0 |  | 4 | 0 | 3 | 0 | 0
+251 [Color Index: 64] 1D07PP | BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+252 [Color Index: 64] 1D07PP | BLD-EL-Electrical Equipment-vs-BLD-ST-Walls | A | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+253 [Color Index: 64] 1D07PP | BLD-EL-Electrical Equipment-vs-BLD-ST-Floors | A | 3 | 3 | 3 | 3 | 3 | 0 |  | 3 | 0 | 0 | 0 | 0
+254 [Color Index: 64] 1D07PP | BLD-EL-Electrical Equipment-vs-BLD-ST-Stair | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+255 [Color Index: 64] 1D07PP | BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+256 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors | C | 3 | 3 | 3 | 0 | 3 | 0 |  | 0 | 0 | 3 | 0 | 0
+257 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Stairs | C | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+258 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls | C | 7 | 7 | 7 | 0 | 7 | 0 |  | 0 | 0 | 7 | 0 | 0
+259 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings | C | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+260 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation | A | 5 | 5 | 5 | 0 | 5 | 0 |  | 0 | 0 | 5 | 0 | 0
+261 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns | A | 7 | 7 | 7 | 7 | 7 | 0 |  | 7 | 0 | 0 | 0 | 0
+262 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing | A | 6 | 6 | 6 | 6 | 6 | 0 |  | 6 | 0 | 0 | 0 | 0
+263 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls | A | 9 | 9 | 9 | 0 | 9 | 0 |  | 0 | 0 | 9 | 0 | 0
+264 [Color Index: 64] 1D07PP | BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors | A | 1 | 1 | 1 | 0 | 1 | 0 |  | 0 | 0 | 1 | 0 | 0
+265 [Color Index: 64] 1D07PP | BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls | B | 2 | 2 | 2 | 2 | 2 | 0 |  | 2 | 0 | 0 | 0 | 0
+266 [Color Index: 64] 1D07PP | BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+267 [Color Index: 64] 1D07PP | BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+268 [Color Index: 64] 1D07PP | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+269 [Color Index: 64] 1D07PP | BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls | A | 9 | 9 | 9 | 9 | 9 | 0 |  | 9 | 0 | 0 | 0 | 0
+270 [Color Index: 64] 1D07PP | BLD-Security Devices-vs-BLD-ST-Columns | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+271 [Color Index: 64] 1D07PP | BLD-Security Devices-vs-BLD-ST-Framing | A | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+272 [Color Index: 64] 1D07PP | BLD-Security Devices-vs-BLD-EL-Electrical Equipment | C | 1 | 1 | 1 | 1 | 1 | 0 |  | 1 | 0 | 0 | 0 | 0
+273 [Color Index: 64] 1D07PP | Total 1D07PP |  | 176 | 176 | 176 | 148 | 176 | 0 |  | 148 | 0 | 28 | 0 | 0
+274 [Color Index: 64] C07 | Total C07 |  | 1549 | 1549 | 1549 | 986 | 1549 | 0 |  | 986 | 0 | 563 | 0 | 0
+275 [Color Index: 64]  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+276 [FFD9D9D9] Groups not built for one discipline |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+277 [Color Index: 64] 1A07PP |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+278 [Color Index: 64] 1C07BS |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+279 [Color Index: 64] 1C07KI |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+280 [Color Index: 64] 1C07PK |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+281 [Color Index: 64] 1C07PW |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+282 [Color Index: 64] 1D07PT |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+283 [Color Index: 64]  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+284 [FFD9D9D9] Tests left out by a rule |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+285 [FFD9D9D9] Building | Left out by one discipline | Left out by two set codes |  |  |  |  |  |  |  |  |  |  |  | 
+286 [Color Index: 64] 1C07BC | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+287 [Color Index: 64] 1C07G1 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+288 [Color Index: 64] 1C07K1 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+289 [Color Index: 64] 1C07P1 | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+290 [Color Index: 64] 1C07PG | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+291 [Color Index: 64] 1C07PS | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+292 [Color Index: 64] 1C07WE | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+293 [Color Index: 64] 1C07WL | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+294 [Color Index: 64] 1C07WM | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+295 [Color Index: 64] 1C07WN | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+296 [Color Index: 64] 1C07WO | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+297 [Color Index: 64] 1D07MM | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+298 [Color Index: 64] 1D07PE | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+299 [Color Index: 64] 1D07PH | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+300 [Color Index: 64] 1D07PN | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+301 [Color Index: 64] 1D07PO | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+302 [Color Index: 64] 1D07PP | 0 | 284 |  |  |  |  |  |  |  |  |  |  |  | 
+303 [Color Index: 64] 1A07PP | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+304 [Color Index: 64] 1C07BS | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+305 [Color Index: 64] 1C07KI | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+306 [Color Index: 64] 1C07PK | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+307 [Color Index: 64] 1C07PW | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 
+308 [Color Index: 64] 1D07PT | every test, the group was not built |  |  |  |  |  |  |  |  |  |  |  |  | 

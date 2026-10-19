@@ -1,0 +1,49 @@
+param(
+  [Parameter(Mandatory = $true)][string]$Old,
+  [Parameter(Mandatory = $true)][string]$NwcDump,
+  [Parameter(Mandatory = $true)][string]$NwfDump,
+  [Parameter(Mandatory = $true)][string]$Out
+)
+# F237. Read only. Sets the clash count checks of the full run, read through the dump, beside claude-check-2026-10-18's
+# clash-count-check.tsv, row by row on the community, the page, the building and the test, and writes every row with what
+# each side read: clashes in Clash Detective, Excel rows, HTML rows, clashes in views, pictures, Reviewed. A group named by its
+# NWF on the NWF page is keyed by its building, the third part of the name.
+function BuildingOf([string]$g) { $p = $g -split '-'; if ($p.Count -ge 3 -and $g.StartsWith('1104-')) { $p[2] } else { $g } }
+$rows = @{}
+foreach ($line in [IO.File]::ReadAllLines($Old) | Select-Object -Skip 1) {
+  $f = $line -split "`t"
+  if ($f[4] -eq "TOTAL") { continue }
+  $reviewed = if ($f[10] -match "'Reviewed': (\d+)") { [int]$Matches[1] } else { 0 }
+  $key = $f[0] + "`t" + $f[2] + "`t" + (BuildingOf $f[1]) + "`t" + $f[4]
+  $rows[$key] = [pscustomobject]@{ Key = $key; Old = @([int]$f[5], [int]$f[7], [int]$f[12], [int]$f[14], [int]$f[8], $reviewed); New = $null }
+}
+foreach ($pair in @(@('NWC', $NwcDump), @('NWF', $NwfDump))) {
+  $community = $null
+  foreach ($line in [IO.File]::ReadAllLines($pair[1])) {
+    if ($line -match '^==== .*[\\/](C\d\d) clash count check') { $community = $Matches[1]; continue }
+    if ($line -notmatch '^(\d+) \[[^\]]*\] (.*)$') { continue }
+    if ([int]$Matches[1] -lt 5) { continue }
+    $c = $Matches[2] -split ' \| '
+    if ($c.Count -lt 15 -or $c[1] -eq '' -or $c[1].StartsWith('Total ') -or $c[3] -notmatch '^\d+$') { continue }
+    $key = $community + "`t" + $pair[0] + "`t" + (BuildingOf $c[0]) + "`t" + $c[1]
+    $new = @([int]$c[3], [int]$c[4], [int]$c[5], [int]$c[6], [int]$c[7], [int]$c[12])
+    if ($rows.ContainsKey($key)) { $rows[$key].New = $new } else { $rows[$key] = [pscustomobject]@{ Key = $key; Old = $null; New = $new } }
+  }
+}
+$names = @('cd', 'excel', 'html', 'views', 'pictures', 'reviewed')
+$lines = New-Object System.Collections.Generic.List[string]
+$lines.Add("community`tpage`tbuilding`ttest`tside`t" + (($names | ForEach-Object { "old $_`tnew $_" }) -join "`t"))
+foreach ($r in ($rows.Values | Sort-Object Key)) {
+  $side = if ($r.Old -eq $null) { 'new only' } elseif ($r.New -eq $null) { 'old only' } else { 'both' }
+  $cells = for ($i = 0; $i -lt 6; $i++) { $(if ($r.Old) { $r.Old[$i] } else { '' }) ; $(if ($r.New) { $r.New[$i] } else { '' }) }
+  $lines.Add($r.Key + "`t" + $side + "`t" + ($cells -join "`t"))
+}
+[IO.File]::WriteAllLines($Out, [string[]]$lines)
+foreach ($g in ($rows.Values | Group-Object { ($_.Key -split "`t")[0] + ' ' + ($_.Key -split "`t")[1] } | Sort-Object Name)) {
+  $both = @($g.Group | Where-Object { $_.Old -and $_.New })
+  $sum = { param($set, $side, $i) $t = 0; foreach ($x in $set) { $v = $x.$side; if ($v) { $t += $v[$i] } }; $t }
+  $line = $g.Name + "  rows old " + @($g.Group | Where-Object { $_.Old }).Count + ", new " + @($g.Group | Where-Object { $_.New }).Count + ", in both " + $both.Count
+  for ($i = 0; $i -lt 6; $i++) { $line += ", " + $names[$i] + " " + (& $sum $g.Group 'Old' $i) + " to " + (& $sum $g.Group 'New' $i) }
+  $same = @($both | Where-Object { $_.Old[0] -eq $_.New[0] }).Count
+  $line + ", rows in both with the same Clash Detective count " + $same
+}

@@ -1,0 +1,1 @@
+Passed!  - Failed:     0, Passed:  3451, Skipped:     0, Total:  3451, Duration: 57 s - Federator.Core.Tests.dll (net48)

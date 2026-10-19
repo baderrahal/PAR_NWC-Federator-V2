@@ -1,0 +1,4 @@
+C06 NWC  rows old 290, new 290, in both 290, cd 3904 to 3904, excel 3904 to 3904, html 3904 to 3904, views 3904 to 2121, pictures 3192 to 3904, reviewed 0 to 1783, rows in both with the same Clash Detective count 290
+C06 NWF  rows old 290, new 290, in both 290, cd 3904 to 3904, excel 3904 to 3904, html 3904 to 3904, views 3904 to 2121, pictures 3192 to 3904, reviewed 0 to 1783, rows in both with the same Clash Detective count 290
+C07 NWC  rows old 252, new 252, in both 252, cd 1549 to 1549, excel 1549 to 1549, html 1549 to 1549, views 1549 to 986, pictures 1549 to 1549, reviewed 0 to 563, rows in both with the same Clash Detective count 252
+C07 NWF  rows old 252, new 252, in both 252, cd 1549 to 1549, excel 1549 to 1549, html 1549 to 1549, views 1549 to 986, pictures 1549 to 1549, reviewed 0 to 563, rows in both with the same Clash Detective count 252
