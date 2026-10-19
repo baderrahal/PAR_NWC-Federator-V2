@@ -2,8 +2,8 @@
 
 Navisworks Manage 2025 add-in. Reads a folder of discipline NWC files, gathers them
 into federations, saves an NWF and an NWD per federation, imports a clash test XML,
-runs the tests, and writes one Excel report per federation. Per building is the
-default way of gathering them and there are three others.
+runs the tests, and writes one Excel report per federation. How the files are gathered
+is GR1 of docs\rules.md.
 
 This file holds the rules for every file in the repo. The rules for one folder are in
 .claude\rules, one file per folder, read when a file under that folder is touched.
@@ -14,7 +14,7 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
 Every session reads CLAUDE.md, .claude\rules and steps\PROGRESS.md first, and opens
 steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
 
-Bader's rules for what the tool does are in docs\rules.md and nowhere else, one line a rule with its test.
+Bader's rules for what the tool does are listed in docs\rules.md, one line a rule with its test, and the code rules that carry them out are in .claude\rules.
 
 ## Host and target
 
@@ -43,7 +43,7 @@ The three are PR7 of docs\rules.md.
     tests\Federator.Core.Tests  NUnit, one folder per Core folder. Samples.cs at the root
                             holds the sample files, the path helper and the temp folder
     build\install.ps1       installs and checks the bundle on this machine
-    build\package.ps1       makes the team zip, only when Bader writes make the team package, Q149
+    build\package.ps1       makes the team zip, only on Bader's word, PR8 of docs\rules.md
     build\team-install.ps1  with build\team's two .cmd files, how the zip reaches the 27 machines
     build\install-common.ps1  what install.ps1 and the team install both hold to, written once
     Directory.Build.targets the build stamp, the commit and the moment of the build
@@ -94,7 +94,7 @@ The three are PR7 of docs\rules.md.
   project's built in matrix pack as its data, F155
 - The tool reports what it noticed and never acts on it. Findings, mismatches and
   drift are information in the log and the window. Bader decides
-- A report check never fails a group, and logging is LO2 of docs\rules.md
+- Report checks and logging against a run are RE11 and LO2 of docs\rules.md
 - Say UNKNOWN rather than filling a gap. Confirm against the install and never
   assume. A number in a help line or a doc is measured, never estimated
 - A public member nothing in src calls is deleted with its tests, unless a decision
