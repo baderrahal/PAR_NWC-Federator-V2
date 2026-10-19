@@ -16,15 +16,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 319 | 16 | 0 | 28 | 132 | 7 | 502 |
-| total | 523 | 24 | 0 | 28 | 232 | 18 | 825 |
+| outside the waves | 319 | 16 | 0 | 28 | 133 | 7 | 503 |
+| total | 523 | 24 | 0 | 28 | 233 | 18 | 826 |
 <!-- the end of the counts -->
 ## Now
 - 19 Oct, the round of F231 to F238 open, Bader's six fixes, the full run on final-2026-10-19 and the end, plan in log.md.
   F231 the append measured, 0.000 mm, scan.md 5z-zn. F232 packages first, 313. F233 one discipline groups not built, 314.
   F234 the discipline workbooks, 315. F235 caps only over 750 clashes and penetrations on by default, 316, Q220, Q221.
-  F236 the clash count check, 317, proved on both pages on 1B06PK at f8b485e4 and b7e98128, 17 tests, 0 red, 0 UNKNOWN,
-  a count not read UNKNOWN, views read back, mirrors, groups not read, Q223, rows F236-R1 to R9, no merge yet run
+  F236 the clash count check, 317, on both pages on 1B06PK at f8b485e4, the NWC page at b7e98128, 17 tests, 0 red,
+  a count not read UNKNOWN, views read back, mirrors, groups not read, Q223, rows F236-R1 to R10, no merge yet run
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
 

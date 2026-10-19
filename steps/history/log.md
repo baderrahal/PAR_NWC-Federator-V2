@@ -19,20 +19,24 @@ clash step so a merged mirror is no row and its kept test is held to its count a
 unmerged mirror held to no view, the groups whose files could not be read named, the page whose write threw listed as not written,
 the run's view statuses and picture settings read, the community's sheet name and folder by the one rule, the read back held to
 the check written, the members nothing called removed, a count Clash Detective took before the harvest threw kept on a row of its own, a group whose .tsv names no test named as not read and never a total of noughts, a left-out count with no coverage row UNKNOWN, and the community's total a lower bound where a group was not read. Two cases his words leave open are Q223, and the rest are rows F236-R1
-to R9.
+to R10.
 
 What was proved here. Core tests 3424 passed before and 3451 after, 0 failed, 0 skipped. The solution built in Release, 0
 errors, 0 warnings, at 5366d36, f8b485e and b7e9812. On copies of 1B06PK's two NWCs and 1B06PG's one, attempt 1 at 5366d362 ran
-the NWC page and then the NWF page on its NWF, each writing C06 clash count check.xlsx, 17 tests with clashes and 0 red, the
+the NWC page and then the NWF page on its NWF, the NWC page writing C06 clash count check.xlsx and the NWF page a dated one beside it, the first name being taken, each 17 tests with clashes and 0 red, the
 NWC page's naming 1B06PG not built and 284 tests left out by the rule of two set codes. Attempt 2 at f8b485e4 under smoke236b: the NWC
 page, run-20261019-051350, and the NWF page, run-20261019-051912, each 17 tests, 0 red, 0 with a count UNKNOWN, the read back as
 written, the group DONE with 1748 clashes, the .tsv carrying the sheet row and 48 mirror rows. Attempt 3 at b7e98128 under
-smoke236c: the NWC page, run-20261019-053118, the same counts. No mirror merged in these runs, each of the 48 kept tests
-a BLD-EL-Telecom Fixtures test that a group of ME and ST does not run, so the merge rows and the kept test's count with its mirrors' clashes are
-proved by their tests alone until F237. The desktop folder 0 lines differing after every run, Navisworks' settings put back with
-0 lines differing.
+smoke236c: the NWC page, run-20261019-053118, the same counts. No mirror merged in these runs, each of the 48 kept tests holding
+a BLD-EL-Telecom Fixtures side, and none of them ran in a group of ME and ST, so the merge rows and the kept test's count with its mirrors' clashes are
+proved by their tests alone until F237, and so are a red row, its COUNTS DIFFER line, a count UNKNOWN and a group not read, none
+of which a run met. The 3451 counts the 26 tests of ClashCountCheckTests and the one added to ViewsTreeCheckTests. The build and
+the tests of b7e9812 are saved under C:\NWC-PC-Test\work\run-evidence\2026-10-19-F236c as build-b7e9812.txt and tests-b7e9812.txt,
+the five sheets of the three smoke folders read back in clash-count-check-sheets.txt, and the comparisons in diffs.txt. The desktop
+folder read 0 lines differing after all five runs. Navisworks' settings differed by 10 to 20 lines after each, and were put back
+from the export before the first run of each folder, 0 lines differing after.
 
-What remains. Bader's proof steps of F236, Q222 and Q223. Known bugs: rows F236-R1 to R9, a result group a person made, the
+What remains. Bader's proof steps of F236, Q222 and Q223. Known bugs: rows F236-R1 to R10, a result group a person made, the
 check on the window thread, two packages of one building code, a picture link to a file gone, a test not read whole by the views, the cap per test, the tests held from an earlier run, a .tsv cut short and a read back of two counts. What comes next: F237, the full
 run on final-2026-10-19.
 
