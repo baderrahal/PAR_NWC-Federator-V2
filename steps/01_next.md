@@ -1843,3 +1843,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F238 the end of the round of 19 Oct
 
 - The round of 19 Oct 2026, the end: claude\audit-round-2026-10-19.md with the append table, each fix and its proof, the counts per community off the clash count check, the random picks and the bugs found, the proof steps in steps\03_bader_next.md one action each with a Look for line, step 1 opening final-2026-10-19\Report\C06 and the AR, ST, ME and EL workbooks, a full audit and QA of the repo after the last merge listing every contradiction with CLAUDE.md, the final log entry and no pull request left open.
+- DONE 2026-10-19, merged in 319. The audit of the round finished with the counts per community, the ten picks and the bugs found, the proof steps in one order with the full run's 13 first, the QA of the repo on main 6faff29, 65 contradictions read, 15 fixed as text and 40 listed, 3451 Core tests passed.
