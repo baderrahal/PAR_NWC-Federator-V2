@@ -1849,3 +1849,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - The round of 19 Oct 2026 b, item 2: the model line of each agent in .claude\agents set by its job, developer, reviewer and breaker opus, prober, claim-checker, log-reader and writer sonnet, runner haiku, and one line in CLAUDE.md that it changes only on Bader's word
 - DONE 2026-10-19, merged in 320. The eight lines read back, five changed, Core tests 3451 passed before and after, no file under src or tests changed. The lines take effect from the next session
+
+## F241 the round rules in the repo and the ai-max skill
+
+- The round of 19 Oct 2026 b, item 3: Bader's nine round rules under one heading, Rounds, in CLAUDE.md, every older line they replace taken out or pointed at it, and the ai-max skill of Version 3, 19 Oct 2026 copied into .claude\skills\ai-max
+- DONE 2026-10-19, merged in 321. The nine rules word for word, the older lines of CLAUDE.md, loop.md, steps.md and developer.md pointed at Rounds, the 39 files of the skill read back equal by sha256, Core tests 3451 passed before and after, no file under src or tests changed

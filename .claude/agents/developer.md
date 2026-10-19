@@ -50,7 +50,7 @@ House rules you never bend:
 - never weaken, skip or delete a test to get green. Never change a Look for line to match
   wrong output
 - no NWC, NWF, NWD, workbook or picture is ever committed
-- when the same finding survives three fix attempts, stop and write what was tried and
-  what each run showed
+- a fix stops on its third attempt, CLAUDE.md under Rounds. Write what was tried and what
+  each run showed
 - the writing rule in CLAUDE.md in every comment, log line, window text, commit and pull
   request body: no em dash, no semicolon in prose, no emoji, plain words

@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F241, the round rules in the repo and the ai-max skill, item 3
+
+Branch fix-F241 off main a85e946, worktree wt-F241, pull request 321, main taken in after F240 merged as 320.
+
+What was done. CLAUDE.md gains the heading Rounds with Bader's nine rules word for word as his round prompt gives them. The older lines they replace now point
+at it: in CLAUDE.md the last bullet of Rules for every file and steps 6 and 7 of How a fix is worked, in .claude\rules\loop.md
+the opening line, items 8 and 12 of How a finding is worked, the run set's line on what runs between the baseline and the close
+and FAST CHECKS of 11 Oct, whose gate on Bader's word stays for the run at the end of a round, in .claude\rules\steps.md the two
+commits of a tracker row, now the one records commit, and in .claude\agents\developer.md the three attempts, changed after F240
+merged so the one file ran in order. The ai-max skill, Version 3, 19 Oct 2026, is copied into .claude\skills\ai-max, 39 files read
+whole first and read back equal to their source by sha256, and the folder list of CLAUDE.md names it as a copy never edited
+here, CLAUDE.md and .claude\rules holding where it differs. The repo held no copy before, so none of version 2 was replaced.
+The reviewer's first reading found the missed lines, the dropped gate, the folder list and the developer line, all fixed here.
+
+What was proved here. Core tests 3451 passed, 0 failed, 0 skipped, before and after, run by the pre-commit on each commit. No
+file under src or tests changed, so the add-in was not built. check-evidence-ids read the 41 files of the first commit clean.
+
+What remains. Where the skill copy says otherwise, never two pull requests open at once, CLAUDE.md under 200 lines, the rules
+file docs\rules.md, CLAUDE.md now holds, and they are left for the audit of the round to list. The two .cmd files of the copy carry no CRLF pin
+in .gitattributes, so a checkout with core.autocrlf false gives them LF, and what cmd.exe does with these two then is UNKNOWN,
+since neither holds a label, the case .gitattributes measured. Known bugs: none
+new. What comes next: F239, then F242.
+
 ## 2026-10-19 F240, each agent's model by its job, item 2
 
 Branch fix-F240 off main a85e946, worktree wt-F240, pull request 320.
