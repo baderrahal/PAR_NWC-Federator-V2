@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 832 rows: open 235, in progress 24, in review 0, merged 486, proven by a run 41, waiting for Bader 28, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 361, outside the waves 2, right after F133 merges 6
+- By status, of 834 rows: open 235, in progress 24, in review 0, merged 487, proven by a run 41, waiting for Bader 29, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 363, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader, 28 rows: Q182, Q184, Q185, Q186, Q188, Q189, Q190, Q191, Q192, Q194, Q196, Q197, Q198, Q199, Q200, Q201, Q212, Q213, Q214, Q215, Q216, Q217, Q218, Q219, Q220, Q221, Q222, Q223
+- Waits for Bader, 29 rows: Q182, Q184, Q185, Q186, Q188, Q189, Q190, Q191, Q192, Q194, Q196, Q197, Q198, Q199, Q200, Q201, Q212, Q213, Q214, Q215, Q216, Q217, Q218, Q219, Q220, Q221, Q222, Q223, Q224
 
 ## Wave 1
 
@@ -925,6 +925,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F238 | the end of the round of 19 Oct, the audit finished, the proof steps in one order, the full run's output first, the QA of the repo against CLAUDE.md, 15 contradictions fixed as text and the rest listed | F238 | fix | merged | 319 | none | 2026-10-19 |
 | F240 | each agent's model by its job, developer, reviewer and breaker opus, prober, claim-checker, log-reader and writer sonnet, runner haiku, and the line in CLAUDE.md | F240 | fix | merged | 320 | none | 2026-10-19 |
 | F241 | the round rules under Rounds in CLAUDE.md with the older lines they replace taken out, and the ai-max skill version 3 copied into .claude\skills\ai-max | F241 | fix | merged | 321 | none | 2026-10-19 |
+| Q224 | the ten rules of docs\rules.md with no test, a Core test for the DEFAULT site and the compact rules and the other eight left, or all ten left | none | question | waiting for Bader | none | none | 2026-10-19 |
+| F239 | one rules file, docs\rules.md, 105 rules by area each with its question and its test or NO TEST, the chat notes checked line by line, Q224, and the copies in CLAUDE.md pointed at it | F239 | fix | merged | 322 | none | 2026-10-19 |
 
 ## outside the waves
 

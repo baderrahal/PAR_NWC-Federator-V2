@@ -2,6 +2,26 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F239, one rules file, docs\rules.md, item 1
+
+Branch fix-F239 off main a85e946 in the main clone, pull request 322, main taken in after F241 merged as 321.
+
+What was done. docs\rules.md, the one list of Bader's rules for the tool, 105 rules in eleven areas, each naming its question or
+order, the newest where two disagree, and the Core test that proves it: 83 a test, 12 a test that proves part, written Test, in
+part, and 10 NO TEST, MA2, MA6, MA9, CT15, CT22, PI10, OF7, RE6, PR7 and PR8, which are Q224. Every line of the chat notes of his
+round prompt is a rule of the file, and four lines say CONFLICT where a note and an answer disagree, VP2, VP4, SP4 and CT15, for
+the form at the end of the round, since the day each note was written is not recorded. CLAUDE.md gains one line pointing at the
+file, and its copies of these rules point at it: the opening's grouping, the host, the three of done, the team package, the
+numbers that are settings, a project's file named by no code, report checks and logging. The reviewer's first reading found
+two rules on an older answer, five sources wrong, a question named before it was written, dated chat notes, eleven weak tests,
+seven rules missing and three copies left, and the claim-checker the same faults, all fixed in the second commit.
+
+What was proved here. Every test the file names is a method of its class, read by a script over the file. Core tests 3451
+passed, 0 failed, 0 skipped, before and after, no file under src or tests changed, so the add-in was not built. No em dash and no
+semicolon in the file.
+
+What remains. Q224 and the four conflicts, for the form. Known bugs: none new. What comes next: F242, the records Bader can read.
+
 ## 2026-10-19 F241, the round rules in the repo and the ai-max skill, item 3
 
 Branch fix-F241 off main a85e946, worktree wt-F241, pull request 321, main taken in after F240 merged as 320.

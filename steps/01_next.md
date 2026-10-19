@@ -1854,3 +1854,8 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - The round of 19 Oct 2026 b, item 3: Bader's nine round rules under one heading, Rounds, in CLAUDE.md, every older line they replace taken out or pointed at it, and the ai-max skill of Version 3, 19 Oct 2026 copied into .claude\skills\ai-max
 - DONE 2026-10-19, merged in 321. The nine rules word for word, the older lines of CLAUDE.md, loop.md, steps.md and developer.md pointed at Rounds, the 39 files of the skill read back equal by sha256, Core tests 3451 passed before and after, no file under src or tests changed
+
+## F239 one rules file, docs\rules.md
+
+- The round of 19 Oct 2026 b, item 1: docs\rules.md as the only list of Bader's rules for the tool, one line a rule by area, each naming its question and the test that proves it or NO TEST, his chat notes checked line by line, the rules with no test as one question, Q224, and the copies in CLAUDE.md pointed at it
+- DONE 2026-10-19, merged in 322. 105 rules, 83 with a test, 12 with a test that proves part, 10 NO TEST in Q224, four CONFLICT lines for the form, every named test a method of its class, Core tests 3451 passed before and after, no file under src or tests changed

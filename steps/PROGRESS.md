@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 09:40, the round of 19 Oct b, F239 to F242, in work, F241 merged in 321
+STATE OPEN, 2026-10-19 11:30, the round of 19 Oct b, F239 to F242, in work, F239 merged in 322
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,11 +15,11 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 323 | 16 | 0 | 28 | 135 | 7 | 509 |
-| total | 527 | 24 | 0 | 28 | 235 | 18 | 832 |
+| outside the waves | 324 | 16 | 0 | 29 | 135 | 7 | 511 |
+| total | 528 | 24 | 0 | 29 | 235 | 18 | 834 |
 <!-- the end of the counts -->
 ## Now
-- 19 Oct b, four items, no Navisworks run, plan in log.md. F240 models 320, F241 Rounds and ai-max 321. Next F239, F242
+- 19 Oct b, no Navisworks run, plan in log.md. F240 models 320, F241 Rounds 321, F239 docs\rules.md 322. Next F242
 - 19 Oct, the round of F231 to F238 done, Bader's six fixes, the full run on final-2026-10-19 and the end, F238 in 319.
   F231 the append measured, 0.000 mm, scan.md 5z-zn. F232 packages first, 313. F233 one discipline groups not built, 314.
   F234 the discipline workbooks, 315. F235 caps only over 750 clashes and penetrations on by default, 316, Q220, Q221.
@@ -42,7 +42,7 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 ## Waiting for Bader
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
 - Q216 the groupings, Q217 the Backup, Q218, Q219 the workbooks, Q220 the lists, Q221 the picture order, Q222, Q223 the count check
-- Q212 the tests a rule left out still held in an NWF refreshed before it, leave them, delete once or a folder of their own
+- Q212 the tests a rule left out still held in an NWF, leave them, delete or a folder, Q224 the ten rules with no test
 - Q194 Approved pictures, Q196 Layer, Q197 Item Name, Q198 logo, Q199 relative links, Q200 foundations, Q201 the pictures
 - Q188 512 pixels, Q189 by design pairs, Q190 folders, Q191 C02, Q192 numbers
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
