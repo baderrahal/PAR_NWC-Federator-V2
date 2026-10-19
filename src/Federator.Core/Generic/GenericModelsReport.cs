@@ -46,8 +46,8 @@ namespace Federator.Core.Generic
     /// bound. Only a model counted at nought is left out of the list, and it is counted in the line above.
     ///
     /// THE LINES ARE THE GENERIC BLOCK, with the plan's notes carried through, and the rows are the
-    /// ones the sheet writes, so the two cannot say one model two ways. No clash test is made for any
-    /// of these sets, and the block says so.
+    /// ones the .tsv carries, one a model, the sheet that wrote them too gone since F243. No clash test is
+    /// made for any of these sets, and the block says so.
     /// </summary>
     public sealed class GenericModelsReport
     {

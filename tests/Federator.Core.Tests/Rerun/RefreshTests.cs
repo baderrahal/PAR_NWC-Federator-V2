@@ -164,23 +164,19 @@ namespace Federator.Core.Tests
             Assert.That(NwfBackupName.FolderBeside(null), Is.Null);
         }
 
+        /// <summary>
+        /// F243, Bader's order of 19 Oct 2026, point 1: Backup\GROUP.nwf, one copy per NWF with no date in the name, the
+        /// default until he answers Q217. Until then each backup carried the moment of its run and a counter where that was taken.
+        /// </summary>
         [Test]
-        public void TheBackupNameCarriesTheMomentAndNeverTakesAnExistingName()
+        public void TheBackupIsTheNwfsOwnNameInTheBackupFolderWithNoMoment()
         {
-            DateTime now = new DateTime(2026, 10, 14, 19, 5, 9);
-            string first = NwfBackupName.PathFor(@"C:\n\NWF\C04\Model.nwf", @"C:\n\Backup", now, p => false);
+            string backup = TestPaths.At("Report", "C06", NwfBackupName.FolderName);
+            string nwf = TestPaths.At("Report", "C06", "NWF", "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf");
 
-            Assert.That(first, Is.EqualTo(@"C:\n\Backup\Model 2026-10-14 190509.nwf"));
-
-            HashSet<string> taken = new HashSet<string> { first };
-            string second = NwfBackupName.PathFor(@"C:\n\NWF\C04\Model.nwf", @"C:\n\Backup", now, p => taken.Contains(p));
-
-            Assert.That(second, Is.EqualTo(@"C:\n\Backup\Model 2026-10-14 190509 (2).nwf"));
-            Assert.That(second, Is.Not.EqualTo(first));
-
-            taken.Add(second);
-            Assert.That(NwfBackupName.PathFor(@"C:\n\NWF\C04\Model.nwf", @"C:\n\Backup", now, p => taken.Contains(p)),
-                Is.EqualTo(@"C:\n\Backup\Model 2026-10-14 190509 (3).nwf"));
+            Assert.That(NwfBackupName.PathFor(nwf, backup), Is.EqualTo(Path.Combine(backup, "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf")));
+            Assert.That(NwfBackupName.PathFor(nwf, null), Is.Null);
+            Assert.That(NwfBackupName.PathFor(null, backup), Is.Null);
         }
 
         // ---------- the snapshot and what it keeps ----------
@@ -340,13 +336,18 @@ namespace Federator.Core.Tests
             Assert.That(source, Does.Contain("document.UpdateFiles()"));
         }
 
+        /// <summary>
+        /// F243, Bader's order of 19 Oct 2026, point 1: Backup\GROUP.nwf, ONE copy per NWF, no date in the name, overwritten
+        /// each time, the default until he answers Q217. Until then a copy could never overwrite an earlier one.
+        /// </summary>
         [Test]
-        public void TheBackupIsACopyThatCannotOverwriteAnEarlierOne()
+        public void TheBackupIsOneCopyOverwrittenUnderTheNwfsName()
         {
             string path = Path.Combine(Samples.Repo(), "src", "Federator.Addin", "Engine", "RefreshRun.cs");
             string source = File.ReadAllText(path);
 
-            Assert.That(source, Does.Contain("File.Copy(nwfPath, target, false)"), "overwrite is false");
+            Assert.That(source, Does.Contain("File.Copy(nwfPath, target, true)"), "overwrite is true");
+            Assert.That(source, Does.Contain("NwfBackupName.PathFor(nwfPath, folder)"), "the one name, with no moment");
         }
     }
 }

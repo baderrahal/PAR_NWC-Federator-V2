@@ -8,6 +8,7 @@ using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
+using Federator.Core.Report;
 using Federator.Core.Rerun;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
@@ -22,7 +23,7 @@ namespace Federator.Addin.Engine
     ///
     /// WHAT IT NEVER DOES. It removes no model from the tree and appends none again, moves and renames no NWC, and
     /// deletes and overwrites nothing of the person's: the one file it writes is the manifest, by Bader's order, and the
-    /// one it copies is the NWF into the Backup folder under a name no file has. A linked file that does not resolve
+    /// one it copies is the NWF into the Backup folder under the NWF's own name, over the last backup, F243. A linked file that does not resolve
     /// stops the run and is named. Every refusal says why.
     /// </summary>
     internal sealed class RefreshRun
@@ -50,12 +51,18 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Copies the NWF into the Backup folder beside the Log folder, to a name no file has, before anything is
-        /// opened. Never overwrites: File.Copy is told not to. Returns the path, or null with why on the log, and a
-        /// backup that could not be made stops the refresh, since nothing may change an NWF that has no copy.
+        /// Copies the NWF into the Backup folder beside the Log folder before anything is opened. Since F243, Bader's order
+        /// of 19 Oct 2026, ONE copy under the NWF's own name, overwritten each time, the default until he answers Q217.
+        /// Returns the path, or null with why on the log, and a backup that could not be made stops the refresh, since
+        /// nothing may change an NWF that has no copy. A backup another program holds open is not written under another
+        /// name: the one line of FileInUse is said and the refresh of this NWF stops as for any backup not made. Where the
+        /// NWF itself is the file held, the line names the NWF, read by opening it before the copy, attempt 2.
         /// </summary>
         internal string BackupTheNwf(string nwfPath, string logFolder)
         {
+            string target = null;
+            bool reading = false;
+
             try
             {
                 if (!File.Exists(nwfPath))
@@ -72,24 +79,42 @@ namespace Federator.Addin.Engine
                     return null;
                 }
 
-                string target = NwfBackupName.PathFor(nwfPath, folder, DateTime.Now, File.Exists);
+                target = NwfBackupName.PathFor(nwfPath, folder);
+                Directory.CreateDirectory(folder);
 
-                if (target == null)
+                // Attempt 2, the breaker's W6. The NWF is opened for reading first, with the sharing the copy reads it with,
+                // so a held NWF is the file named, and only a refusal after it is the backup's.
+                reading = true;
+
+                using (new FileStream(nwfPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    log.Line("REFRESH  no backup, no free name was found in " + folder);
-                    return null;
                 }
 
-                Directory.CreateDirectory(folder);
-                File.Copy(nwfPath, target, false);
+                reading = false;
+                File.Copy(nwfPath, target, true);
 
                 long size = new FileInfo(target).Length;
                 log.Line("REFRESH  backup   " + target + "  " + size.ToString("#,##0", CultureInfo.InvariantCulture) + " bytes, a copy of "
-                    + nwfPath + " made before anything was opened, and never over an earlier backup");
+                    + nwfPath + " made before anything was opened, over the one backup of this NWF");
                 return target;
             }
             catch (Exception error)
             {
+                // Attempt 3, the reviewer's N3: the NWF held is not read, the backup held is not written.
+                if (target != null && FileInUse.IsInUse(error))
+                {
+                    if (reading)
+                    {
+                        log.NotReadWhileOpen(nwfPath);
+                    }
+                    else
+                    {
+                        log.NotWrittenWhileOpen(target);
+                    }
+
+                    return null;
+                }
+
                 log.Failure(
                     "copying the NWF into the Backup folder before the refresh",
                     error,

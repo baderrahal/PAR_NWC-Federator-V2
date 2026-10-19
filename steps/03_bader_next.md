@@ -2,6 +2,59 @@
 
 The closed items of this file moved to steps\history\03_bader_next-closed.md on 19 Oct 2026, whole and in their order, F242, Bader's round of 19 Oct b.
 
+## F243, one name per output, overwritten, no dated and no internal files
+
+Simple words. One group, 1B06BC of C06, on the NWF page, on a copy of the 19 Oct Report folder, so every old name is there to
+be cleaned and nothing of the 19 Oct run is touched. It comes first because one build, one install and one run prove all
+seven points. Steps 1 and 2 need no Navisworks.
+
+1. Install the build of branch fix-F243 as the Build and install section below says.
+   Look for: `Build succeeded.` with `0 Error(s)` and `0 Warning(s)`, and the install's last line saying it finished.
+2. In File Explorer copy the folder C:\NWC-PC-Test\work\final-2026-10-19\Report to C:\NWC-PC-Test\work\f243\Report.
+   Look for: in f243\Report\C06\Log the four files of 1B06BC, `1104-PAR-1B06BC-ZZZ-BM-MOD-000001.xlsx`, the same name with
+   Internal after it, and both again with 2026-10-19 062133 after the name, thirty files `Models not on the same shared coordinates, run ...txt`, and in
+   f243\Report\C06 the files `C06 AR checks 2026-10-19 064154.xlsx` and `C06 clash count check 2026-10-19 064158.xlsx`.
+3. Open f243\Report\C06\`C06 clash count check.xlsx` in Excel and leave it open.
+   Look for: Excel showing it, and no change of its date in File Explorer.
+4. Start Navisworks Manage 2025 from the Start menu, open the tool, open the NWF page, type C:\NWC-PC-Test\work\f243\Report
+   in the Report folder and press Read.
+   Look for: C06 and C07 with their NWFs, nothing ticked.
+5. Tick the NWF `1104-PAR-1B06BC-ZZZ-BM-MOD-000001` of C06 alone, press Run and OK, and click nothing more.
+   Look for: one Navisworks opening and closing, then a box ending `A file was open in another program and left as it was:` and
+   `Close C:\NWC-PC-Test\work\f243\Report\C06\C06 clash count check.xlsx and run the report again`.
+6. Open the run's log and search for `OLD      deleted`.
+   Look for: `OLD      deleted` lines for the four 1B06BC files of Log, the thirty dated lists of models, `C06 AR checks 2026-10-19
+   064154.xlsx` and the other three dated discipline workbooks, `C06 clash count check 2026-10-19 064158.xlsx`, and one
+   `OLD      renamed ...Backup\1104-PAR-1B06BC-ZZZ-BM-MOD-000001 2026-10-19 062133.nwf to ...Backup\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf`.
+   Each deleted line names what the file was, such as `a dated internal workbook`. No line names a file of another group,
+   since only 1B06BC is in this run, and one line `OLD      ...\C06 and 1 package folder read for the old names of 1 group and 4 disciplines of this run, N files deleted`.
+7. Open the log of 1B06BC's own Navisworks, the one its GROUP block in RESULT names, and search for `IMAGES   deleted`.
+   Look for: `IMAGES   deleted ...\Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files with its 173 pictures and logo.jpg,
+   before this run's clash report of the group is written`.
+8. In the same log search for `XLSX     links`.
+   Look for: `XLSX     links    P pictures linked, E links expected, E read, 0 missing`, E twice P, a cell link and a click
+   link a picture.
+9. Open f243\Report\C06\Clash report.
+   Look for: `1104-PAR-1B06BC-ZZZ-BM-MOD-000001.xlsx` beside its `.html` and its `_files` folder, both written now, and no
+   name with a date in it.
+10. Open that xlsx and click the picture of its first clash row.
+   Look for: a jpg opening from Clash report\1104-PAR-1B06BC-ZZZ-BM-MOD-000001_files.
+11. Open f243\Report\C06\Log.
+   Look for: no xlsx of 1B06BC, no file with Internal in its name for 1B06BC, one `Models not on the same shared
+   coordinates.txt` whose first line names this run's start and whose second reads `The check judged 1 of 1 group of this
+   run.`, and the run-....log and .tsv of this run beside the old ones. In the log of 1B06BC's own Navisworks the line
+   `LIST     skipped  this is a group's own Navisworks`, and in the run's log one `LIST     attempt` for the C06 Log folder.
+12. Open f243\Report\C06\Backup.
+   Look for: `1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf` with today's time and no date in its name, and the other groups' dated
+   backups as they were.
+13. Look at f243\Report\C06 in File Explorer.
+   Look for: `C06 AR checks.xlsx`, `ST`, `ME` and `EL` written now, no dated checks and no dated clash count check, and
+   `C06 clash count check.xlsx` still with its 19 Oct time, since it was open.
+14. Close Excel, then on the NWF page tick the same NWF again, press Run and OK.
+   Look for: no box at the end, `C06 clash count check.xlsx` written now, and in the log `OLD      ...\C06 and 1 package folder read for the
+   old names of 1 group and 4 disciplines of this run, none of them was there`.
+15. Copy the tool's logs off this PC, as before, and send them.
+
 ## The round of 19 Oct, F231 to F238
 
 Simple words. One order for the round, F238's: first the full run's output, read where it sits with nothing to build or install,

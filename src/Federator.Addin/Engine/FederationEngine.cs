@@ -212,8 +212,8 @@ namespace Federator.Addin.Engine
         private List<IList<string>> scannedGroupCodes;
 
         /// <summary>
-        /// The clash matrix's sha256, F127, read once when the run starts so the COVERAGE blocks and the
-        /// Coverage sheets of every group name the same bytes. Null where no clash matrix was read.
+        /// The clash matrix's sha256, F127, read once when the run starts so the COVERAGE blocks of every
+        /// group name the same bytes. Null where no clash matrix was read.
         /// </summary>
         private string xmlFingerprint;
 
@@ -897,7 +897,6 @@ namespace Federator.Addin.Engine
                     : string.Empty;
                 reportFolder = knownLog.Length > 0 ? knownLog : OpenDocumentJob.ReportFolder(open);
                 NoteTheLogFolder(reportFolder);
-                NameTheReportsSoNothingIsOverwritten(job);
 
                 log.Line(openItHere ? NwfPick.RunningLine : "OPEN     running the document that is already open, no scan");
                 log.Line("OPEN     file     " + open);
@@ -1297,34 +1296,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// F158, narrowed by F177. Nothing in the Log folder is overwritten. Where this group's file names
-        /// are already there, from an earlier run, the group's Excel, Internal workbook and XML take the
-        /// same name with the moment of the run after it, said on one line. The Clash report folder is not
-        /// looked at: the HTML and the _files folder there keep the plain name and are overwritten, by
-        /// Bader's order of 14 Oct 2026.
-        /// </summary>
-        private void NameTheReportsSoNothingIsOverwritten(FederationJob job)
-        {
-            if (reportFolder == null || reportFolder.Length == 0 || string.IsNullOrEmpty(job.WorkbookName))
-            {
-                return;
-            }
-
-            string internalSuffix = reports.GenericModels == null ? null : reports.GenericModels.WorkbookSuffix;
-            string free = ReportPaths.NameThatOverwritesNothing(
-                reportFolder, job.WorkbookName, internalSuffix, DateTime.Now, null);
-
-            if (!string.Equals(free, job.WorkbookName, StringComparison.Ordinal))
-            {
-                log.Line("REPORT   " + job.WorkbookName + " is already in " + reportFolder
-                    + ", so this run writes its Excel and XML there as " + free + " and leaves the earlier files as they are."
-                    + " The HTML and its pictures in " + ReportPaths.ClashReportFolder(reportFolder)
-                    + " keep the name " + job.ClashReportName + " and overwrite the earlier ones");
-                job.NameTheReports(free);
-            }
-        }
-
-        /// <summary>
         /// F188, Bader's answer 3 of Q174, the NWC page's Rebuild. A group whose NWF or NWD is already there is
         /// built again only where the person ticked Rebuild and confirmed, and then into a new dated folder beside
         /// the old files, so nothing of his is overwritten and the clash history of the old NWF stays where it is.
@@ -1361,13 +1332,14 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// F170, Bader's answer to Q169. The HTML and its _files folder of pictures go in the Clash report
-        /// folder beside the Log folder, so the picture links of the page work. This is the path the Excel
-        /// would have there under the group's plain name, the one the pictures folder and the page are named
-        /// by. F177: the plain name and never a dated one, so a later run overwrites the same files.
+        /// folder beside the Log folder, so the picture links of the page work. F243, Bader's order of 19 Oct
+        /// 2026: "clash test excel files must be inside Clash Report Folder", so this is the clash Excel's own
+        /// path, the one the pictures folder and the page are named by, and every picture link of the Excel is
+        /// the folder and the picture. F177: the plain name and never a dated one, so a later run overwrites.
         /// </summary>
         private string ThePagePath(FederationJob job)
         {
-            return ReportPaths.Workbook(ReportPaths.ClashReportFolder(reportFolder), job.ClashReportName);
+            return ReportPaths.Workbook(ReportPaths.ClashReportFolder(reportFolder), job.WorkbookName);
         }
 
         private JobOutcome RunOne(FederationJob job)
@@ -1384,7 +1356,6 @@ namespace Federator.Addin.Engine
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
-            NameTheReportsSoNothingIsOverwritten(job);
 
             try
             {
@@ -1789,6 +1760,7 @@ namespace Federator.Addin.Engine
             // After the clash step, the viewpoints and the pictures, so the workbook links each picture the pass
             // wrote and the three outputs agree with the NWF and the NWD, which were saved from the same rows.
             WriteWorkbook(job, outcome);
+            SayTheEarlierReportsLeft(job, outcome);
             ended.Add(RunSteps.Workbook);
 
             // F127. After the clash workbook, because the count check reads it back, and while
@@ -1801,12 +1773,6 @@ namespace Federator.Addin.Engine
                     ? "no coverage taken"
                     : Words.Counted(outcome.Coverage.Tests.Count, "test", "tests") + " covered");
             ended.Add(RunSteps.Coverage);
-
-            // F128 and F127, Q146 answered B. The internal workbook beside the clash workbook,
-            // holding the Generic Models sheet and the Coverage sheet, written whether or not
-            // the clash step ran, because the count comes from the sets step.
-            WriteTheInternalWorkbook(job, outcome);
-            ended.Add(RunSteps.InternalWorkbook);
 
             log.Line(GroupOrder.EndedInOrder(job.Building, ended));
             string outOfOrder = GroupOrder.FaultIn(ended);
@@ -3074,13 +3040,18 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// The run's one list for the modellers, Bader's answer to Q99 and Q100, in the Log
-        /// folder, its own file named for the second this run started, so a smaller run never
-        /// writes over a fuller run's list and every run's list is kept. Written on every run,
+        /// folder. Since F243, Bader's order of 19 Oct 2026, ONE file under one name, overwritten
+        /// by each run, its first line saying which run wrote it. Written on every run,
         /// the list empty or not, saying how many groups the check judged. Since F159 it
         /// carries a NOTICE for each group holding a model not on the same shared coordinates,
         /// which models, and that the clash results may be wrong for them, and the same words
         /// are in the run log. With no Log folder it is not written, and the NOTICE lines in the
         /// log carry the same words.
+        ///
+        /// A GROUP'S OWN NAVISWORKS WRITES NONE, F243 attempt 2, the lead's decision on the reviewer's B1: since F232 a run
+        /// of packages runs only there, one group a Navisworks, so its list would hold its one group and the next group's
+        /// would write over it. Its tally's groups ride back in its result, and the window that started the run writes the
+        /// one list over every group, FederatorWindow.WriteTheOneListOfTheRun. The open file run writes its own as before.
         /// </summary>
         private void WriteTheListForTheModellers()
         {
@@ -3091,24 +3062,42 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            // F208. A run of packages writes the run's list into the Log folder of every package it ran, as the window
-            // copies the run log into each, so no package's folder holds a list another package's run left. Any other run
-            // writes it into its one Log folder, as it always has.
-            List<string> folders = packagesRun ? new List<string>(logFolders) : new List<string> { reportFolder };
+            if (packagesRun)
+            {
+                log.WriteSkipped("LIST", "this is a group's own Navisworks, so the window that started the run writes the one"
+                    + " list over every group of the run from what each group's result carries");
+                return;
+            }
 
+            WriteTheList(log, CoordinatesAcrossTheRun, new List<string> { reportFolder });
+        }
+
+        /// <summary>
+        /// The one list written into each Log folder handed in, under its one name, overwritten, the file open in another program
+        /// left as it is and named, any other failure logged. The engine's open file run and the window that started a run of
+        /// packages both write through it.
+        /// </summary>
+        internal static void WriteTheList(RunLog log, OffCoordinatesAcrossTheRun run, IEnumerable<string> folders)
+        {
             foreach (string folder in folders)
             {
-                string path = ReportPaths.FreeFilePath(folder, CoordinatesAcrossTheRun.ListName, DateTime.Now, null);
+                string path = Path.Combine(folder, OffCoordinatesAcrossTheRun.ListName);
 
                 try
                 {
                     log.WriteAttempted("LIST", path);
-                    EnsureFolder(path);
-                    File.WriteAllLines(path, CoordinatesAcrossTheRun.ForModellers());
+                    Directory.CreateDirectory(folder);
+                    File.WriteAllLines(path, run.ForModellers());
                     log.WriteFinished("LIST", path);
                 }
                 catch (Exception error)
                 {
+                    if (FileInUse.IsInUse(error))
+                    {
+                        log.NotWrittenWhileOpen(path);
+                        continue;
+                    }
+
                     log.Failure(
                         "the list of models not on the same shared coordinates at " + path,
                         error,
@@ -3487,7 +3476,6 @@ namespace Federator.Addin.Engine
                 outcome.GenericSets = sets;
 
                 GenericModelsReport report = GenericModelsReport.From(plan, sets.Results);
-                outcome.GenericModels = report;
                 genericAcrossTheRun.Add(report);
 
                 log.Line("SETS     " + job.Building + " Generic Models " + sets.PutInLine());
@@ -3995,6 +3983,9 @@ namespace Federator.Addin.Engine
             ClashRunOutcome clash = outcome.Clash ?? new ClashRunOutcome();
             bool threw = false;
 
+            // F243, Bader's order of 19 Oct 2026 point 2: the old pictures go before the first of this run's is taken.
+            DeleteThePicturesFolderOnce(job, outcome);
+
             try
             {
                 runner.TakeTheDeferredPictures(clash);
@@ -4017,6 +4008,54 @@ namespace Federator.Addin.Engine
 
             AfterThePictures(job, outcome, runner, clash);
             SayTheStopOfTheClash(outcome, clash);
+        }
+
+        /// <summary>
+        /// F243, Bader's order of 19 Oct 2026 point 2: "delete the old pictures". The group's whole NAME_files folder in the
+        /// Clash report folder is deleted once, before the first file of this run's clash report lands in it: before the
+        /// deferred pictures, and before the workbook and the page where no picture was taken. Only the routes that write the
+        /// clash report call it, never the hand button's Run tests, which writes none, attempt 2 on the reviewer's N2. One
+        /// line names the folder, its picture count and every other file and folder that went, Core's PicturesFolder. Each
+        /// file another program holds is the line of FileInUse naming it, the rest still go and the run goes on, and any other
+        /// failure is logged and the run goes on.
+        /// </summary>
+        private void DeleteThePicturesFolderOnce(FederationJob job, JobOutcome outcome)
+        {
+            if (outcome.PicturesFolderTried || string.IsNullOrEmpty(reportFolder))
+            {
+                return;
+            }
+
+            outcome.PicturesFolderTried = true;
+            string folder = ImageNaming.FolderFor(ThePagePath(job));
+
+            try
+            {
+                PicturesFolder deleted = PicturesFolder.Delete(folder);
+                outcome.EarlierPicturesWent = deleted.AnyPictureWent;
+                log.Line(deleted.Line());
+
+                foreach (string held in deleted.Held)
+                {
+                    log.NotDeletedWhileOpen(held);
+                }
+
+                // Attempt 3, the breaker's 6: each entry that would not go, with what it threw, what already went counted above.
+                foreach (KeyValuePair<string, Exception> failed in deleted.Failed)
+                {
+                    log.Failure(
+                        "deleting " + failed.Key + " of the pictures folder of " + job.Building + " before its clash report",
+                        failed.Value,
+                        "kept going, it is left where it is");
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the pictures folder " + folder + " of " + job.Building + " before its clash report",
+                    error,
+                    "kept going, what the folder holds now is UNKNOWN");
+            }
         }
 
         /// <summary>
@@ -4242,6 +4281,15 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
+                // F243, Bader's order of 19 Oct 2026 point 6. A page another program holds is left as it is and named.
+                if (FileInUse.IsInUse(error))
+                {
+                    log.NotWrittenWhileOpen(path);
+                    outcome.HtmlSize = -1;
+                    outcome.HtmlOnDisk = false;
+                    return;
+                }
+
                 threw = true;
                 outcome.AddError(
                     "writing the client report threw " + error.GetType().Name + ": " + error.Message);
@@ -4366,6 +4414,47 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// F243 attempt 2, the breaker's S3 and W5. Where an earlier run's pictures went before this run's clash report and the
+        /// workbook or the page was then not written by this run, no stylesheet, the units refused, a write that threw, a file
+        /// held open or not wanted, the earlier file left at its path is named with what its links now reach. It is not touched.
+        /// </summary>
+        private void SayTheEarlierReportsLeft(FederationJob job, JobOutcome outcome)
+        {
+            if (!outcome.EarlierPicturesWent || string.IsNullOrEmpty(reportFolder))
+            {
+                return;
+            }
+
+            string workbook = ThePagePath(job);
+            string page = HtmlTabularWriter.PathFor(workbook);
+
+            // Attempt 3, the reviewer's N3 and N4: the line says this run's pictures only where this run took any.
+            bool tookPictures = false;
+
+            if (outcome.Report != null)
+            {
+                foreach (TestReport test in outcome.Report.Tests)
+                {
+                    foreach (ClashRow row in test.Rows)
+                    {
+                        tookPictures = tookPictures || row.HasImage;
+                    }
+                }
+            }
+
+            // Attempt 3, the breaker's 4: a workbook held after this run's save is this run's, said where it was held.
+            if (!outcome.WorkbookOnDisk && !outcome.WorkbookSavedWithoutLinks && File.Exists(workbook))
+            {
+                log.Line(PicturesFolder.EarlierFileLine(workbook, tookPictures));
+            }
+
+            if (!outcome.HtmlOnDisk && File.Exists(page))
+            {
+                log.Line(PicturesFolder.EarlierFileLine(page, tookPictures));
+            }
+        }
+
+        /// <summary>
         /// Writes the workbook, and the XML beside it when that is switched on. Both are
         /// built from the same results in memory. Neither reads the other, so a fault in
         /// one cannot corrupt the other.
@@ -4430,15 +4519,22 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            if (!outputs.WriteWorkbook)
+            // F243, Bader's order of 19 Oct 2026 point 2. Where no picture was taken this run, the group's old pictures go
+            // before its clash report, the Excel or the page, is written. Where they were, this is already done.
+            if (outputs.WriteWorkbook || outputs.WriteHtml)
+            {
+                DeleteThePicturesFolderOnce(job, outcome);
+            }
 
+            if (!outputs.WriteWorkbook)
             {
                 log.WriteSkipped(RunEvents.WorkbookKind, OutputPlan.NotWanted);
                 outcome.WorkbookNotReadBecause = "no clash workbook was written, " + OutputPlan.NotWanted;
             }
             else
             {
-                string path = ReportPaths.Workbook(reportFolder, job.WorkbookName);
+                // F243, Bader's order of 19 Oct 2026: the clash Excel inside the Clash report folder, beside its pictures.
+                string path = ThePagePath(job);
 
                 InStep(
                     RunSteps.Workbook,
@@ -4477,17 +4573,40 @@ namespace Federator.Addin.Engine
             Say("Writing the workbook for " + job.Building);
             log.WriteAttempted(RunEvents.WorkbookKind, path);
             bool threw = false;
+            int linked = 0;
+            int expected = 0;
+            WorkbookWriter writer = new WorkbookWriter();
 
             try
             {
                 // F152. The pictures are linked in the client's form, so the log says how many and
                 // that they show only while the _files folder stays where it was written.
-                WorkbookWriter writer = new WorkbookWriter();
                 writer.Write(report, path);
-                log.Line(LinkedPictures.Line(writer.PicturesLinked, ImageNaming.FolderFor(ThePagePath(job))));
+                linked = writer.PicturesLinked;
+                expected = writer.LinksWritten;
+                log.Line(LinkedPictures.Line(writer.PicturesLinked, ImageNaming.FolderFor(path)));
             }
             catch (Exception error)
             {
+                // F243, Bader's order of 19 Oct 2026 point 6. Open in Excel: no other name is written, the one line is
+                // said and kept for the end message, and the run goes on. Before the save the file at the path is the
+                // earlier run's. Attempt 3, the breaker's 4: held during the linking after the save, it is this run's save
+                // without its linked pictures.
+                if (FileInUse.IsInUse(error))
+                {
+                    log.NotWrittenWhileOpen(path);
+                    outcome.WorkbookSize = -1;
+                    outcome.WorkbookOnDisk = false;
+                    outcome.WorkbookSavedWithoutLinks = writer.Saved;
+                    outcome.WorkbookNotReadBecause = writer.Saved
+                        ? "the clash workbook was held by another program while its pictures were linked, so this run's save is at"
+                            + " its path without its linked pictures"
+                        : "the clash workbook was open in another program, so this run did not write it and the file at its path"
+                            + " is an earlier run's";
+                    log.Line("WORKBOOK CHECK " + job.Building + " not run, " + outcome.WorkbookNotReadBecause);
+                    return;
+                }
+
                 threw = true;
                 outcome.AddError(
                     "writing the workbook threw " + error.GetType().Name + ": " + error.Message);
@@ -4526,6 +4645,19 @@ namespace Federator.Addin.Engine
             }
 
             CheckTheWorkbook(job, path, report);
+
+            // F243, Bader's order of 19 Oct 2026 point 3. Every link read back off the file and looked for on the disk, the
+            // count checked and the count missing said, and a link that reaches no picture is the group's error.
+            // Attempt 2, the breaker's S5: held to the links the writer made, each missing one a .tsv row.
+            WorkbookLinks links = WorkbookLinks.Check(path, linked, expected);
+            log.Line(links.Line());
+
+            foreach (string missing in links.Missing)
+            {
+                log.Row("missing link", job.Building, string.Empty, missing);
+            }
+
+            outcome.AddError(links.Error());
         }
 
         /// <summary>
@@ -4567,7 +4699,7 @@ namespace Federator.Addin.Engine
 
                 if (noWorkbook == null)
                 {
-                    string path = ReportPaths.Workbook(reportFolder, job.WorkbookName);
+                    string path = ThePagePath(job);
 
                     try
                     {
@@ -4596,11 +4728,8 @@ namespace Federator.Addin.Engine
                     exchange == null ? null : exchange.SourcePath,
                     xmlFingerprint,
                     exchange == null || exchange.Corrections.Count == 0 ? null : exchange.Corrections[0],
-                    groupExports,
                     tests,
-                    check,
-                    outcome.Sets == null ? null : outcome.Sets.Results,
-                    ThePriorities());
+                    check);
 
                 log.Block(title, CoverageBlock.Lines(building, data, reports.Coverage));
 
@@ -4626,7 +4755,7 @@ namespace Federator.Addin.Engine
                 log.Failure(
                     "taking the coverage of " + building,
                     error,
-                    "kept going, the coverage of this group is UNKNOWN, no Coverage sheet is written for it and the group keeps its own result");
+                    "kept going, the coverage of this group is UNKNOWN and the group keeps its own result");
                 log.Block(title, CoverageBlock.NotTakenLines("taking it threw " + error.GetType().Name + ": " + error.Message));
 
                 // Once, the breaker's fifth finding on F127b: a group whose check was already counted
@@ -4691,118 +4820,8 @@ namespace Federator.Addin.Engine
                 log.Failure(
                     "reading the sha256 of the clash matrix " + exchange.SourcePath,
                     error,
-                    "kept going, the Coverage sheets and the COVERAGE blocks read its sha256 as UNKNOWN");
+                    "kept going, the COVERAGE blocks read its sha256 as UNKNOWN");
             }
-        }
-
-        /// <summary>
-        /// The kind the internal workbook's lines and rows are written under, never XLSX, so a reader of
-        /// the log or the .tsv, the loop's documents read among them, finds one clash workbook a group and
-        /// never takes the internal workbook for it. Eight letters, the width of the kind column.
-        /// </summary>
-        private const string InternalKind = "INTERNAL";
-
-        /// <summary>
-        /// The internal workbook of the group, Bader's answer B to Q146 of 11 Oct 2026, beside the clash
-        /// workbook in the Log folder, named by GenericModelsSettings.WorkbookNameFor: the Generic
-        /// Models sheet of F128 and the Coverage sheet of F127 in one save, written with what the group has.
-        /// The clash workbook goes to the client and keeps the Navisworks export's layout. Written whether or
-        /// not the clash step ran, since the count does not depend on it, and only where a workbook is wanted
-        /// this run. Listed in the files written and read back by size as every file is, then read back by
-        /// its sheets' names.
-        /// </summary>
-        private void WriteTheInternalWorkbook(FederationJob job, JobOutcome outcome)
-        {
-            GenericModelsReport generic = outcome.GenericModels;
-            CoverageSheetData coverage = outcome.Coverage;
-            GenericModelsSettings settings = reports.GenericModels;
-            string coverageSheet = reports.Coverage.SheetName;
-
-            if (generic == null && coverage == null)
-            {
-                log.WriteSkipped(InternalKind, "no Generic Models count and no coverage were taken for " + job.Building + ", so no internal workbook");
-                return;
-            }
-
-            if (reportFolder == null)
-            {
-                log.WriteSkipped(InternalKind, "no report folder, so no internal workbook");
-                return;
-            }
-
-            if (!OutputPlan.From(reports).WriteWorkbook)
-            {
-                log.WriteSkipped(InternalKind, OutputPlan.NotWanted + ", so no internal workbook");
-                return;
-            }
-
-            string path = ReportPaths.Workbook(reportFolder, settings.WorkbookNameFor(job.WorkbookName));
-
-            if (generic == null)
-            {
-                log.Line(InternalKind + " no Generic Models count was taken for " + job.Building + ", so the internal workbook holds the Coverage sheet alone");
-            }
-
-            if (coverage == null)
-            {
-                log.Line(InternalKind + " no coverage was taken for " + job.Building + ", so the internal workbook holds the Generic Models sheet alone");
-            }
-
-            string whyNoGeneric = generic == null ? null : InternalWorkbook.WhyNoGenericSheet(coverage, settings.SheetName, coverageSheet);
-
-            if (whyNoGeneric != null)
-            {
-                log.Line(InternalKind + " " + whyNoGeneric);
-            }
-
-            InStep(
-                RunSteps.InternalWorkbook,
-                () =>
-                {
-                    Say("Writing the internal workbook for " + job.Building);
-                    log.WriteAttempted(InternalKind, path);
-                    IList<string> written = null;
-
-                    try
-                    {
-                        written = InternalWorkbook.Write(path, job.Building, generic, settings.SheetName, coverage, coverageSheet);
-                    }
-                    catch (Exception error)
-                    {
-                        // Never the group's error, the lead's decision on attempt 2 of F128. A FILE THIS
-                        // TOOL DID NOT WRITE IS NEVER LISTED AS WRITTEN: the save goes straight onto the
-                        // final path, so a throw with last week's file still there must not read that
-                        // file's size back as this run's, the breaker's finding on F128.
-                        log.Failure(
-                            "writing the internal workbook for " + job.Building,
-                            error,
-                            "kept going, nothing is listed as written, the path is looked at for a file of an earlier run, and the group keeps its own result");
-                    }
-
-                    if (written == null)
-                    {
-                        // A file at the path is not called an earlier run's untouched, because a save
-                        // that threw after opening the path, a full disk or a fault while writing the
-                        // package, leaves the old file cut short and File.Exists still reads true.
-                        outcome.InternalWorkbookSize = log.WriteThrew(InternalKind, path);
-                        outcome.InternalWorkbookOnDisk = false;
-                        return;
-                    }
-
-                    outcome.InternalWorkbookSize = log.WriteFinished(InternalKind, path);
-                    outcome.InternalWorkbookOnDisk = outcome.InternalWorkbookSize >= 0;
-
-                    if (outcome.InternalWorkbookOnDisk)
-                    {
-                        foreach (string line in InternalWorkbook.Check(path, written))
-                        {
-                            log.Line(InternalKind + " " + line);
-                        }
-                    }
-                },
-                () => outcome.InternalWorkbookOnDisk
-                    ? "wrote " + outcome.InternalWorkbookSize + " bytes"
-                    : "nothing written");
         }
 
         /// <summary>The clash XML itself, split out for the same reason.</summary>
@@ -4817,6 +4836,14 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
+                // F243, Bader's order of 19 Oct 2026 point 6. An XML another program holds is left as it is and named.
+                if (FileInUse.IsInUse(error))
+                {
+                    log.NotWrittenWhileOpen(xmlPath);
+                    outcome.XmlSize = -1;
+                    return;
+                }
+
                 outcome.AddError(
                     "writing the clash XML threw " + error.GetType().Name + ": " + error.Message);
                 log.Failure(

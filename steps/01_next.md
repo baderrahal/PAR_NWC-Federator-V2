@@ -21,7 +21,8 @@ The open sections of this file, in the order they sit below, read on 19 Oct 2026
 5. F121 wave 4, two sections, in progress
 6. F123 wave 5, in progress
 7. The next clash test round of 14 Oct, not built
-8. F242 the records Bader can read, this round
+8. F242 the records Bader can read, the round of 19 Oct b
+9. F243 to F245, the round of 20 Oct, Bader's order of 19 Oct 20:58
 
 The areas F101, F110, F111, F117, F122, F124, F134, F135 and F174 are not closed and have no section here. Their work is their rows in steps\tracker.csv and the items of steps\fix-round.md that name them.
 
@@ -112,3 +113,9 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 - The round of 19 Oct 2026 b, item 4: steps\PROGRESS.md in his five parts under 60 lines, the closed items of steps\01_next.md, steps\fix-round.md, steps\03_bader_next.md and steps\lane-b.md moved whole into steps\history with each file's size before and after, nothing deleted, and the tracker and progress scripts passing
 - DONE 2026-10-19, merged in 323. The four moved and read back with no line lost, three under 100 KB and fix-round.md over it for its 77 open items, put to Bader, the tracker check taught the moved FR items with its fixtures, the page at most 60 lines, Core tests 3451 passed before and after
 - The end of the round, F242b, merged in 324: claude\audit-round-2026-10-19b.md with the QA of main, contradictions 57 to 73 and the 19 Oct ones that stand, three merged branches deleted, and Q225, the round's one form
+
+## F243 One name per output, overwritten, no dated and no internal files
+
+- The round of 20 Oct, Bader's order of 19 Oct 20:58, F243 points 1 to 7: every output under Report\<community>\ one plain name and overwritten, the clash Excel moved from Log to Clash report beside its pictures, its links read back, a group's pictures folder deleted whole before its clash report, a file held open in another program skipped and named as Close it and run the report again, the old dated and Internal names deleted at the start of a run, and no Internal workbook
+- Files: Core Report\FileInUse.cs, WorkbookLinks.cs, PicturesFolder.cs and Communities\OldReportFiles.cs new, ReportPaths, NwfBackupName, OffCoordinatesAcrossTheRun, PackageRunResult, PackageRunWords, RunLog, RunSteps, WorkbookWriter and the coverage and Generic Models settings changed, InternalWorkbook.cs and GenericSheet.cs deleted. The add-in's FederationEngine, FederationJob, JobOutcome, RefreshRun and the window's Packages and FreshStarts
+- DONE 2026-10-19, pull request 325, after three attempts and a guard pass by Bader's decision at the third, each read by the reviewer and the breaker. Core tests 3451 passed before and 3463 after, 0 failed, 0 skipped, the build 0 errors and 0 warnings. What waits for the local machine: the steps at the top of steps\03_bader_next.md and the round's proof run in proof-2026-10-20. The readers' points left are rows F243-R1 to F243-R9, the questions Q226 onward in the round's form

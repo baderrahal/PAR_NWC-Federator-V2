@@ -90,7 +90,7 @@ namespace Federator.Core.Report
         /// A space, a per cent sign and a hash are escaped as the link is read as an address, and nothing
         /// is added after the file name, which the client's own workbook carried a stray %20 after.
         /// Where the jpg is on another drive no relative path exists, and the full path as an address is used.
-        /// With the Excel in the Log folder and the jpgs in the Clash report folder it goes up one folder.
+        /// Since F243 the Excel sits beside its jpgs in the Clash report folder, so the link is the pictures folder and the jpg.
         /// </summary>
         public static string RelativeLinkFor(string workbookPath, string imagePath)
         {

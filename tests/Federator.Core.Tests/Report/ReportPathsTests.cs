@@ -260,108 +260,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void AnEarlierPageOrPicturesFolderInTheClashReportFolderForcesNoDatedNameAndIsLeftForTheRunToOverwrite()
-        {
-            string root = TempFolder.Make("FederatorClashReport");
-
-            try
-            {
-                string log = Path.Combine(root, "Log");
-                string clash = ReportPaths.ClashReportFolder(log);
-                Directory.CreateDirectory(log);
-                Directory.CreateDirectory(Path.Combine(clash, OutputName + "_files"));
-                File.WriteAllText(Path.Combine(clash, OutputName + "_files", "cd000001.jpg"), "earlier");
-
-                string name = ReportPaths.NameThatOverwritesNothing(
-                    log, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), null);
-
-                Assert.That(name, Is.EqualTo(OutputName), "the Clash report folder is overwritten by name and never forces a dated one");
-                Assert.That(File.ReadAllText(Path.Combine(clash, OutputName + "_files", "cd000001.jpg")), Is.EqualTo("earlier"));
-            }
-            finally
-            {
-                TempFolder.Remove(root);
-            }
-        }
-
-        [Test]
-        public void AFreeNameIsKeptAsItIs()
-        {
-            string name = ReportPaths.NameThatOverwritesNothing(
-                OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), p => false);
-
-            Assert.That(name, Is.EqualTo(OutputName));
-        }
-
-        [Test]
-        public void ANameWhoseWorkbookIsAlreadyThereTakesTheMomentOfTheRun()
-        {
-            HashSet<string> there = new HashSet<string> { ReportPaths.Workbook(OutReports, OutputName) };
-
-            string name = ReportPaths.NameThatOverwritesNothing(
-                OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
-
-            Assert.That(name, Is.EqualTo(OutputName + " 2026-10-14 153012"));
-        }
-
-        [Test]
-        public void EachOfTheGroupsFilesInTheLogFolderAloneForcesTheDatedName()
-        {
-            string[] one =
-            {
-                ReportPaths.Xml(OutReports, OutputName),
-                ReportPaths.Workbook(OutReports, OutputName),
-                Path.Combine(OutReports, OutputName + " Internal.xlsx")
-            };
-
-            foreach (string path in one)
-            {
-                HashSet<string> there = new HashSet<string> { path };
-                string name = ReportPaths.NameThatOverwritesNothing(
-                    OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
-
-                Assert.That(name, Is.EqualTo(OutputName + " 2026-10-14 153012"), path + " did not force a dated name");
-            }
-        }
-
-        /// <summary>
-        /// F177, Bader's order of 14 Oct 2026. The HTML and the _files folder in the Clash report folder are
-        /// overwritten by name, so neither forces a dated name for the group's files in the Log folder.
-        /// </summary>
-        [Test]
-        public void TheHtmlAndThePicturesFolderInTheClashReportFolderForceNoDatedName()
-        {
-            string workbook = ReportPaths.Workbook(ClashReportFolder, OutputName);
-
-            foreach (string path in new[] { HtmlTabularWriter.PathFor(workbook), ImageNaming.FolderFor(workbook) })
-            {
-                HashSet<string> there = new HashSet<string> { path };
-
-                Assert.That(
-                    ReportPaths.NameThatOverwritesNothing(
-                        OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains),
-                    Is.EqualTo(OutputName),
-                    path + " in the Clash report folder forced a dated name");
-            }
-        }
-
-        [Test]
-        public void ADatedNameAlreadyThereGetsANumberAfterItNeverTheSameName()
-        {
-            string dated = OutputName + " 2026-10-14 153012";
-            HashSet<string> there = new HashSet<string>
-            {
-                ReportPaths.Workbook(OutReports, OutputName),
-                ReportPaths.Workbook(OutReports, dated)
-            };
-
-            string name = ReportPaths.NameThatOverwritesNothing(
-                OutReports, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), there.Contains);
-
-            Assert.That(name, Is.EqualTo(dated + " 2"));
-        }
-
-        [Test]
         public void AFileNameTakenInTheLogFolderIsNotReplacedTheMomentIsAddedAndThenANumber()
         {
             string plain = Path.Combine(OutReports, "run-1.log");
@@ -375,9 +273,13 @@ namespace Federator.Core.Tests
                 Is.EqualTo(Path.Combine(OutReports, "run-1 2026-10-14 153012 2.log")));
         }
 
-        // A real folder, written to and found again, which is the thing that has to hold.
+        /// <summary>
+        /// A real folder, written to and found again, which is the thing that has to hold. F243, Bader's order of 19 Oct
+        /// 2026: every output has one name and a second run writes over the first under it, where until then the second
+        /// took a dated name beside it.
+        /// </summary>
         [Test]
-        public void AWorkbookWrittenAtTheComputedPathIsFoundAtTheComputedPathAndTheEarlierOneIsLeftAlone()
+        public void AWorkbookWrittenAtTheComputedPathIsFoundThereAndASecondRunWritesOverIt()
         {
             string root = TempFolder.Make("FederatorReportPaths");
 
@@ -386,22 +288,20 @@ namespace Federator.Core.Tests
                 string nwf = Path.Combine(root, "NWF", "C04");
                 string nwd = Path.Combine(root, "NWD", "C04");
                 string folder = ReportPaths.LogFolder(nwf, nwd, null);
-                Directory.CreateDirectory(folder);
+                string clash = ReportPaths.ClashReportFolder(folder);
+                Directory.CreateDirectory(clash);
 
                 Assert.That(folder, Is.EqualTo(Path.Combine(root, "Log")));
 
-                string first = ReportPaths.Workbook(folder, OutputName);
+                string first = ReportPaths.Workbook(clash, OutputName);
                 File.WriteAllText(first, "the earlier run's workbook");
 
-                string name = ReportPaths.NameThatOverwritesNothing(
-                    folder, OutputName, "Internal", new DateTime(2026, 10, 14, 15, 30, 12), null);
-                string second = ReportPaths.Workbook(folder, name);
+                string second = ReportPaths.Workbook(clash, OutputName);
                 File.WriteAllText(second, "this run's workbook");
 
-                Assert.That(second, Is.Not.EqualTo(first));
-                Assert.That(File.ReadAllText(first), Is.EqualTo("the earlier run's workbook"),
-                    "an earlier workbook was overwritten");
-                Assert.That(File.ReadAllText(second), Is.EqualTo("this run's workbook"));
+                Assert.That(second, Is.EqualTo(first));
+                Assert.That(File.ReadAllText(first), Is.EqualTo("this run's workbook"));
+                Assert.That(Directory.GetFiles(clash).Length, Is.EqualTo(1), "no second name beside the first");
             }
             finally
             {

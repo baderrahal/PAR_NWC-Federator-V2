@@ -1,6 +1,5 @@
 using System;
 using Federator.Core.Diagnostics;
-using Federator.Core.Report;
 
 namespace Federator.Core.Coverage
 {
@@ -8,16 +7,11 @@ namespace Federator.Core.Coverage
     /// Every number that shapes the coverage, F127, section 1.1 of the F127 design, which the loop keeps outside the repo as turn5\f127-design.md, a
     /// setting and never a constant. A value that cannot work is refused where it is set,
     /// never at the end of a run. Nought on a count of lines means every one, the way the
-    /// image cap and the viewpoint cap read nought.
-    ///
-    /// The width of each column of the Coverage sheet joins these with the sheet itself,
-    /// step 6 of the design, because nothing here lays the sheet out yet.
+    /// image cap and the viewpoint cap read nought. The Coverage sheet's name went with the
+    /// sheet, F243, Bader's order of 19 Oct 2026 point 4.
     /// </summary>
     public sealed class CoverageSettings
     {
-        /// <summary>Bader's own word for the sheet, request 2 under Q112.</summary>
-        public const string DefaultSheetName = "Coverage";
-
         /// <summary>The five and a count every repeated line in the log follows, A14.</summary>
         public const int DefaultExamplesPerReason = RunLog.KeptOfARepeat;
 
@@ -38,7 +32,6 @@ namespace Federator.Core.Coverage
         /// </summary>
         public const int DefaultSetsAtZeroNamedInTheRun = 0;
 
-        private string sheetName;
         private int examplesPerReason;
         private int categoriesNamedPerModel;
         private int failedLinesInResult;
@@ -46,34 +39,10 @@ namespace Federator.Core.Coverage
 
         public CoverageSettings()
         {
-            sheetName = DefaultSheetName;
             examplesPerReason = DefaultExamplesPerReason;
             categoriesNamedPerModel = DefaultCategoriesNamedPerModel;
             failedLinesInResult = DefaultFailedLinesInResult;
             setsAtZeroNamedInTheRun = DefaultSetsAtZeroNamedInTheRun;
-        }
-
-        /// <summary>The sheet's name. One Excel refuses is refused here, by SheetNames' own rule.</summary>
-        public string SheetName
-        {
-            get
-            {
-                return sheetName;
-            }
-
-            set
-            {
-                if (!SheetNames.IsAcceptable(value))
-                {
-                    throw new ArgumentException(
-                        "The Coverage sheet needs a name Excel accepts: 1 to " + SheetNames.MaxLength
-                            + " characters, none of " + new string(SheetNames.Refused)
-                            + ", no apostrophe at either end and not blank.",
-                        "value");
-                }
-
-                sheetName = value;
-            }
         }
 
         /// <summary>The tests named for each reason in the COVERAGE block before the rest are counted, one or more.</summary>

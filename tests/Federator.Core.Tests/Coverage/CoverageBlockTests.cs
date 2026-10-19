@@ -10,8 +10,8 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// The COVERAGE block of one group, F127's add-in half, and the codes it judges a side by. The block is
-    /// read off the same CoverageSheetData the Coverage sheet is written from, so the two cannot say two
-    /// things of one test. Each test breaks one thing and asserts the block names it.
+    /// read off CoverageSheetData, the Coverage sheet that was written from it gone since F243. Each test
+    /// breaks one thing and asserts the block names it.
     /// </summary>
     [TestFixture]
     public class CoverageBlockTests
@@ -44,7 +44,7 @@ namespace Federator.Core.Tests
 
         private static CoverageSheetData Data(IList<TestCoverage> tests, CountCheck check)
         {
-            return new CoverageSheetData(@"C:\picked\clash.xml", "ab12", null, null, tests, check, null, null);
+            return new CoverageSheetData(@"C:\picked\clash.xml", "ab12", null, tests, check);
         }
 
         private static string Joined(IList<string> lines)
@@ -71,7 +71,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheSavedTestsAreNamedAsTheSavedTests()
         {
-            CoverageSheetData data = new CoverageSheetData(null, null, null, null, new List<TestCoverage> { Ran(1, "T1", 0) }, null, null, null);
+            CoverageSheetData data = new CoverageSheetData(null, null, null, new List<TestCoverage> { Ran(1, "T1", 0) }, null);
 
             Assert.That(CoverageBlock.Lines("g", data, new CoverageSettings())[0],
                 Is.EqualTo("the tests        : 1 the tests saved in the document"));
@@ -95,7 +95,7 @@ namespace Federator.Core.Tests
             Assert.That(block, Does.Contain("  K1  "));
             Assert.That(block, Does.Contain("  K2  "));
             Assert.That(block, Does.Not.Contain("  K3  "));
-            Assert.That(block, Does.Contain("    and 2 more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv"));
+            Assert.That(block, Does.Contain("    and 2 more of this reason, every one in the .tsv"));
         }
 
         /// <summary>No check taken reads UNKNOWN and never nought FAILED.</summary>

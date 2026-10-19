@@ -101,8 +101,9 @@ namespace Federator.Core.Report
         ///
         /// THE CLIENT'S SHEET ALONE. FR-200 put the Coverage sheet second in this workbook,
         /// and Bader's answer B to Q146 of 11 Oct 2026 took it out again: this workbook goes
-        /// to the client and keeps the Navisworks export's layout, so the Coverage sheet is in
-        /// the internal workbook beside it, InternalWorkbook, with the Generic Models sheet.
+        /// to the client and keeps the Navisworks export's layout. Since F243, Bader's order of
+        /// 19 Oct 2026, it is written into the Clash report folder beside its pictures, and no
+        /// internal workbook is written beside it.
         /// </summary>
         public string Write(ClashReport report, string path)
         {
@@ -125,6 +126,9 @@ namespace Federator.Core.Report
 
             pictures.Clear();
             PicturesLinked = 0;
+            LinksWritten = 0;
+            cellLinks = 0;
+            Saved = false;
             writtenTo = path;
 
             using (XLWorkbook workbook = new XLWorkbook())
@@ -156,9 +160,12 @@ namespace Federator.Core.Report
                 workbook.SaveAs(path);
             }
 
+            Saved = true;
+
             // F152. ClosedXML writes no linked picture, so they go in after the save, by
             // editing the package, in the form of the client's own file.
             PicturesLinked = LinkedPictures.AddTo(path, pictures);
+            LinksWritten = cellLinks + PicturesLinked;
 
             return path;
         }
@@ -168,6 +175,21 @@ namespace Federator.Core.Report
         /// F152. Each shows only while the _files folder beside the workbook stays where it was written.
         /// </summary>
         public int PicturesLinked { get; private set; }
+
+        /// <summary>
+        /// How many links the last Write made, the Image cell's link of each clash row with one and the click link of each
+        /// linked picture, F243 attempt 2, the count the read back of the workbook's links is held to, WorkbookLinks.Check.
+        /// </summary>
+        public int LinksWritten { get; private set; }
+
+        /// <summary>
+        /// True once the last Write's save is on the disk, before the pictures are linked into it, F243 attempt 3, the breaker's
+        /// 4: a write that throws after it leaves this run's save at the path without its linked pictures, never an earlier run's.
+        /// </summary>
+        public bool Saved { get; private set; }
+
+        /// <summary>The Image cell links the workbook being written holds.</summary>
+        private int cellLinks;
 
         /// <summary>The clash rows of the workbook being written that carry a picture, each with its sheet row.</summary>
         private readonly List<LinkedPicture> pictures = new List<LinkedPicture>();
@@ -226,9 +248,8 @@ namespace Federator.Core.Report
             // F153, Bader's decision of 2026-10-13, which retires Q73's answer b. A TEST WITH NO
             // CLASH WRITES NOTHING IN THE WORKBOOK. His run of that day held 130 tests with
             // clashes and then rows 5204 to 6903, 1700 tests of one row each with nothing in
-            // them. Every test is still on the page, which keeps all of its blocks, and on the
-            // Coverage sheet of the internal workbook, which lists every test, so no test goes
-            // unreported. The workbook check expects a block for each test with a clash alone,
+            // them. Every test is still on the page, which keeps all of its blocks, and in the
+            // .tsv, a row for every test, so no test goes unreported. The workbook check expects a block for each test with a clash alone,
             // CreationPlan.BlockCountLine, and names any row of a test with no clash.
             if (test.Rows.Count == 0)
             {
@@ -549,8 +570,9 @@ namespace Federator.Core.Report
             // nor a picture, so the cell carries only the link.
             if (!string.IsNullOrEmpty(clash.ImageLink))
             {
-                // F170. Relative to the folder of the workbook, which goes up where the pictures sit in the
-                // Clash report folder beside the Log folder. The row's own link is relative to the page.
+                // F170. Relative to the folder of the workbook, which since F243 sits beside the pictures in the
+                // Clash report folder, so the link is the pictures folder and the picture. The row's own link is
+                // relative to the page.
                 string link = clash.ImageLink;
 
                 if (!string.IsNullOrEmpty(clash.ImagePath) && !string.IsNullOrEmpty(writtenTo))
@@ -562,6 +584,7 @@ namespace Federator.Core.Report
                 // it as an internal address, which makes the cell jump to a sheet that
                 // does not exist instead of opening the picture.
                 cell.SetHyperlink(new XLHyperlink(new Uri(link, UriKind.RelativeOrAbsolute)));
+                cellLinks++;
             }
 
             if (!string.IsNullOrEmpty(clash.ImagePath))

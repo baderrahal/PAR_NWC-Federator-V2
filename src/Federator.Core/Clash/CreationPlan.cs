@@ -30,7 +30,7 @@ namespace Federator.Core.Clash
     /// real test out of the NWF because a count was not taken.
     ///
     /// Not creating a test changes what goes in the document, never what goes in the report:
-    /// the page carries a block for every test and the Coverage sheet lists every test of the
+    /// the page carries a block for every test and the .tsv a row for every test of the
     /// file. The clash workbook carries a block for every test with a clash and nothing for a
     /// test that found none since F153, BlockCountLine below. A mirror merged into its kept
     /// test, F132, is carried in that test's block, and the check counts it there.
@@ -157,8 +157,8 @@ namespace Federator.Core.Clash
             if (blocksInTheWorkbook == testsWithAClash)
             {
                 return "BLOCKS   " + blocksInTheWorkbook + " in the workbook, one for every test with a clash. The other "
-                    + none + " of the " + testsInTheReport + " tests of the report found none and are on the page and the "
-                    + "Coverage sheet alone" + merged;
+                    + none + " of the " + testsInTheReport + " tests of the report found none and are on the page and in the "
+                    + ".tsv alone" + merged;
             }
 
             return "BLOCKS   " + blocksInTheWorkbook + " in the workbook against " + testsWithAClash

@@ -60,10 +60,10 @@ namespace Federator.Addin.Ui
         private readonly TeamMapSettings teamSettings = new TeamMapSettings();
 
         /// <summary>
-        /// How the internal workbook is named, the one copy the run's options and the checks before a run
-        /// both read, so a check never reads the tolerance box to reach it, F127-R5 attempt 2.
+        /// What names the Generic Models of a model for the sets of F128, the run's one copy. It also named the internal
+        /// workbook until F243, Bader's order of 19 Oct 2026, took that workbook out.
         /// </summary>
-        private readonly GenericModelsSettings internalWorkbook = new GenericModelsSettings();
+        private readonly GenericModelsSettings genericModels = new GenericModelsSettings();
 
         private bool running;
 
@@ -955,7 +955,7 @@ namespace Federator.Addin.Ui
             options.MakeViewpoints = MakeViewpoints.IsChecked == true;
             options.LogoPath = Trimmed(LogoBox.Text);
             options.Names = settings;
-            options.GenericModels = internalWorkbook;
+            options.GenericModels = genericModels;
             return options;
         }
 
@@ -1187,6 +1187,7 @@ namespace Federator.Addin.Ui
 
                 // F214. The groups this run ended with, those before a throw among them, for a package's own result.
                 lastOutcomes = engine == null ? null : engine.OutcomesSoFar;
+                lastCoordinates = engine == null ? null : engine.CoordinatesAcrossTheRun;
                 running = false;
                 SetTheRunButtons(true);
             }
@@ -1470,12 +1471,21 @@ namespace Federator.Addin.Ui
                     autoSave.Dispose();
                 }
 
+                // F243, Bader's order of 19 Oct 2026 point 6. A file left open in another program is in the end message,
+                // read before RESULT closes the account.
+                string leftOpen = FileInUse.EndMessage(null, log.FilesInUse);
+
                 // The RESULT block is written whatever happened, the same as the scanned run.
                 // This used to be missing, so an open file run ended with no RESULT block.
                 WriteTheResult(engine);
                 running = false;
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();
+
+                if (leftOpen != null)
+                {
+                    Warn(leftOpen);
+                }
             }
         }
 

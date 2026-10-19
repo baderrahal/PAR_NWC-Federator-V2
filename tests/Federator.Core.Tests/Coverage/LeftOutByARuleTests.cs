@@ -97,7 +97,7 @@ namespace Federator.Core.Tests
                 + " tests, whether those held are removed is Bader's to decide, Q212"));
 
             string block = string.Join("\n", CoverageBlock.Lines("100000",
-                new CoverageSheetData(TestPaths.At("picked", "clash.xml"), "ab12", null, null, tests, check, null, null), new CoverageSettings()));
+                new CoverageSheetData(TestPaths.At("picked", "clash.xml"), "ab12", null, tests, check), new CoverageSettings()));
             Assert.That(block, Does.Contain(check.LeftOutByARuleLine()));
         }
 

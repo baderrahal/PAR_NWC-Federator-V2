@@ -25,11 +25,19 @@ namespace Federator.Core.Health
     /// </summary>
     public sealed class OffCoordinatesAcrossTheRun
     {
-        private const string ListNameStart = "Models not on the same shared coordinates, run ";
+        /// <summary>
+        /// The name of the one list in the Log folder, F243, Bader's order of 19 Oct 2026: ONE file, overwritten by each run, its
+        /// first line saying which run wrote it, ForModellers. Until then each run's list was its own file named for the second
+        /// its run started, which Communities.OldReportFiles now cleans.
+        /// </summary>
+        public const string ListName = "Models not on the same shared coordinates.txt";
 
         private readonly DateTime runStarted;
         private readonly int groupsInTheRun;
-        private readonly List<Entry> entries = new List<Entry>();
+        private readonly List<OffCoordinatesGroup> entries = new List<OffCoordinatesGroup>();
+
+        /// <summary>What the groups not reached are said as, after their count, true for the run that counts them.</summary>
+        private string notReached = " not reached, the run stopped or the group ended before its models were read";
 
         public OffCoordinatesAcrossTheRun(DateTime runStarted, int groupsInTheRun)
         {
@@ -38,22 +46,28 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// The name of this run's list, its own file named for the second the run started.
-        /// One fixed name let a smaller run, or the open file run of one group, write over
-        /// the list of a fuller run, so every run's list is kept and none stands for another.
-        /// </summary>
-        public string ListName
-        {
-            get { return ListNameStart + runStarted.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture) + ".txt"; }
-        }
-
-        /// <summary>
         /// One group, added as its ALIGNMENT block is written: what the check judged of its
         /// models, or null where the read threw, and whether this run runs a clash test in it.
         /// </summary>
         public void Add(string building, OffCoordinates off, bool runsATest)
         {
-            entries.Add(new Entry(string.IsNullOrEmpty(building) ? "UNKNOWN" : building, off, runsATest));
+            entries.Add(new OffCoordinatesGroup(building, off, runsATest));
+        }
+
+        /// <summary>
+        /// F243 attempt 3, the breaker's 2 and 3. The words for the groups not reached where they are not true, the window that
+        /// started a run of packages, which never saw a group whose result or record did not come back: its words, after the count.
+        /// </summary>
+        internal void SayTheGroupsNotReachedAs(string words)
+        {
+            notReached = words ?? notReached;
+        }
+        /// <summary>
+        /// Every group added, in the order added, the record a group's own Navisworks carries back in its result, F243 attempt 2.
+        /// </summary>
+        public IList<OffCoordinatesGroup> Groups
+        {
+            get { return entries.AsReadOnly(); }
         }
 
         /// <summary>How many groups held at least one model not on the same shared coordinates.</summary>
@@ -77,7 +91,7 @@ namespace Federator.Core.Health
 
             lines.Add("coordinates    : " + Judged() + " of " + Words.Counted(groupsInTheRun, "group", "groups") + " judged" + NotJudgedResult());
 
-            foreach (Entry entry in entries)
+            foreach (OffCoordinatesGroup entry in entries)
             {
                 if (entry.Off != null && entry.Off.Any)
                 {
@@ -122,7 +136,7 @@ namespace Federator.Core.Health
             lines.Add("NOTICE. Every clash was run and none was skipped. " + OffCoordinates.ResultsMayBeWrong
                 + " Export them again on the project's shared coordinates and run again.");
 
-            foreach (Entry entry in entries)
+            foreach (OffCoordinatesGroup entry in entries)
             {
                 if (entry.Off == null || !entry.Off.Any)
                 {
@@ -180,7 +194,7 @@ namespace Federator.Core.Health
         {
             int models = 0;
 
-            foreach (Entry entry in entries)
+            foreach (OffCoordinatesGroup entry in entries)
             {
                 if (entry.Off != null)
                 {
@@ -209,7 +223,7 @@ namespace Federator.Core.Health
 
             if (NotReached() > 0)
             {
-                said += ", " + NotReached() + " not reached, the run stopped or the group ended before its models were read";
+                said += ", " + NotReached() + notReached;
             }
 
             if (NotRead() > 0)
@@ -232,7 +246,7 @@ namespace Federator.Core.Health
             if (NotReached() > 0)
             {
                 said += " " + NotReached() + (NotReached() == 1 ? " was" : " were")
-                    + " not reached, the run stopped or the group ended before its models were read.";
+                    + notReached + ".";
             }
 
             if (NotRead() > 0)
@@ -249,26 +263,31 @@ namespace Federator.Core.Health
             return said;
         }
 
-        private int Count(Predicate<Entry> which)
+        private int Count(Predicate<OffCoordinatesGroup> which)
         {
             return entries.FindAll(which).Count;
         }
+    }
 
-        /// <summary>One group as the check left it.</summary>
-        private sealed class Entry
+    /// <summary>
+    /// One group as the check left it: its name, what the check judged of its models, or null where the read threw, and
+    /// whether a clash test was to run in it. F243 attempt 2: the record a group's own Navisworks carries back in its result,
+    /// so the window that started the run makes the one list over every group with the tally's own rules.
+    /// </summary>
+    public sealed class OffCoordinatesGroup
+    {
+        public OffCoordinatesGroup(string building, OffCoordinates off, bool runsATest)
         {
-            public Entry(string building, OffCoordinates off, bool runsATest)
-            {
-                Building = building;
-                Off = off;
-                RunsATest = runsATest;
-            }
-
-            public string Building { get; private set; }
-
-            public OffCoordinates Off { get; private set; }
-
-            public bool RunsATest { get; private set; }
+            Building = string.IsNullOrEmpty(building) ? "UNKNOWN" : building;
+            Off = off;
+            RunsATest = runsATest;
         }
+
+        public string Building { get; private set; }
+
+        /// <summary>What the check judged, or null where the read threw.</summary>
+        public OffCoordinates Off { get; private set; }
+
+        public bool RunsATest { get; private set; }
     }
 }

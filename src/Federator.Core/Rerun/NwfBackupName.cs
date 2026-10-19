@@ -1,13 +1,13 @@
-using System;
-using System.Globalization;
 using System.IO;
 
 namespace Federator.Core.Rerun
 {
     /// <summary>
-    /// Where the NWF is copied before a refresh, F187, Bader's order of 14 Oct 2026, task 7.4. A Backup folder beside
-    /// the Log folder, one timestamped copy a run, and an older backup is NEVER overwritten: a name already taken
-    /// gets a counter. The NWF folder keeps only the NWF and the NWD, so the copy does not go there.
+    /// Where the NWF is copied before a refresh, F187, Bader's order of 14 Oct 2026, task 7.4, a Backup folder beside the Log
+    /// folder. Since F243, Bader's order of 19 Oct 2026, "no more internal or dated named files": ONE copy per NWF under the
+    /// NWF's own name, Backup\NAME.nwf, with no moment in it, overwritten by each refresh, the default until he answers Q217.
+    /// The dated copies earlier runs left are cleaned at the start of a run, Communities.OldReportFiles. The NWF folder keeps
+    /// only the NWF and the NWD, so the copy does not go there.
     /// </summary>
     public static class NwfBackupName
     {
@@ -27,38 +27,15 @@ namespace Federator.Core.Rerun
             return string.IsNullOrEmpty(parent) ? null : Path.Combine(parent, FolderName);
         }
 
-        /// <summary>
-        /// The path of the copy: the NWF's name, the moment of the run to the second, and a counter where that name
-        /// is taken. Never a name that exists, so nothing is overwritten.
-        /// </summary>
-        public static string PathFor(string nwfPath, string backupFolder, DateTime now, Func<string, bool> exists)
+        /// <summary>The path of the copy, the NWF's own file name in the Backup folder, or null where either is missing.</summary>
+        public static string PathFor(string nwfPath, string backupFolder)
         {
             if (string.IsNullOrEmpty(nwfPath) || string.IsNullOrEmpty(backupFolder))
             {
                 return null;
             }
 
-            string name = Path.GetFileNameWithoutExtension(nwfPath);
-            string extension = Path.GetExtension(nwfPath);
-            string stamp = now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
-            string first = Path.Combine(backupFolder, name + " " + stamp + extension);
-
-            if (exists == null || !exists(first))
-            {
-                return first;
-            }
-
-            for (int counter = 2; counter < 10000; counter++)
-            {
-                string next = Path.Combine(backupFolder, name + " " + stamp + " (" + counter.ToString(CultureInfo.InvariantCulture) + ")" + extension);
-
-                if (!exists(next))
-                {
-                    return next;
-                }
-            }
-
-            return null;
+            return Path.Combine(backupFolder, Path.GetFileName(nwfPath));
         }
     }
 }

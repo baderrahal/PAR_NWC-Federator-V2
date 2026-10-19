@@ -10,6 +10,8 @@ using Federator.Addin.Engine;
 using Federator.Core.Communities;
 using Federator.Core.Diagnostics;
 using Federator.Core.Disciplines;
+using Federator.Core.Health;
+using Federator.Core.Report;
 using Federator.Core.Rerun;
 
 namespace Federator.Addin.Ui
@@ -73,6 +75,12 @@ namespace Federator.Addin.Ui
 
         /// <summary>The groups the last run of this window ended with, read by a child to write its result.</summary>
         private IList<JobOutcome> lastOutcomes;
+
+        /// <summary>
+        /// The shared coordinates tally the last run of this window ended with, read by a child to carry its groups back in its
+        /// result, F243 attempt 2, or null where no engine was made.
+        /// </summary>
+        private OffCoordinatesAcrossTheRun lastCoordinates;
 
         /// <summary>Why a child ran no group, where it knows, or null.</summary>
         private string childRanNoGroupBecause;
@@ -168,6 +176,15 @@ namespace Federator.Addin.Ui
             try
             {
                 PackageRunResult result = new PackageRunResult(child.Package, log.IsWritingToDisk ? log.Path : null);
+
+                // F243 attempt 2. The shared coordinates check's record of each group, for the one list of the run.
+                if (lastCoordinates != null)
+                {
+                    foreach (OffCoordinatesGroup group in lastCoordinates.Groups)
+                    {
+                        result.OffCoordinates.Add(group);
+                    }
+                }
 
                 // F233. A group of one discipline was opened and not built, so it ends with no group and its one line.
                 List<JobOutcome> built = lastOutcomes == null ? new List<JobOutcome>() : new List<JobOutcome>(lastOutcomes).FindAll(o => o == null || o.NotBuiltBecause == null);
@@ -371,6 +388,7 @@ namespace Federator.Addin.Ui
             running = true;
             SetTheRunButtons(false);
             log.RunStarted(units.Count, "group", "groups");
+            run.Started = DateTime.Now;
             SetProgress(PackageRunWords.Waiting(units.Count));
             bool runnerEnded = false;
 
@@ -542,25 +560,67 @@ namespace Federator.Addin.Ui
                 }
             }
 
+            // F243, Bader's order of 19 Oct 2026 point 6. Each file left open in another program goes in the end message: this
+            // window's own, the cleanup and its workbooks among them, read before RESULT closes the account, and each group's,
+            // found again in the RESULT lines its own Navisworks handed back.
+            List<string> leftOpen = new List<string>();
+
             try
             {
                 // F209 and F222. One workbook per discipline of every package that ran, once all its groups have.
+                // F243 attempt 2, the lead's decision on item 1: the one list of the run, over every group's carried facts.
+                WriteTheOneListOfTheRun(run, order.Units, results);
                 WriteTheDisciplineReports(run, order.Units, results, whys);
                 WriteTheClashCountChecks(run, order.Units, results);
+                IList<string> own = log.FilesInUse;
+                leftOpen.AddRange(own);
                 log.RunFinished();
-                log.WriteJoinedResult(PackageRunWords.JoinedResult(order.Units, results, whys, tally));
+
+                // Attempt 2, the reviewer's N4: the window's own beside the groups' in the joined RESULT.
+                log.WriteJoinedResult(PackageRunWords.JoinedResult(order.Units, results, whys, tally, own));
             }
             catch (Exception error)
             {
                 log.Failure("joining the results of the groups", error, "each group's own log still holds its RESULT");
             }
 
+            foreach (PackageRunResult result in results)
+            {
+                foreach (string line in result == null ? new List<string>() : result.ResultLines)
+                {
+                    string open = FileInUse.LineIn(line);
+
+                    if (open != null)
+                    {
+                        leftOpen.Add(open);
+                    }
+                }
+            }
+
             SetProgress(PackageRunWords.Finished(ran, notBuilt, order.Units.Count));
-            string warning = PackageRunWords.Warning(ran, notBuilt, order.Units.Count);
+            string warning = FileInUse.EndMessage(PackageRunWords.Warning(ran, notBuilt, order.Units.Count), leftOpen);
 
             if (warning != null)
             {
                 Warn(warning);
+            }
+        }
+
+        /// <summary>
+        /// F243 attempt 2, the lead's decision on item 1. The one list of models not on the same shared coordinates of a run of
+        /// packages, made over the record each group's result carried back, PackageRunResult.OffCoordinatesOf, its first line
+        /// the start of this run, and written once into each Log folder the run wrote into. A group with no result or no record
+        /// is counted not reached, never clean.
+        /// </summary>
+        private void WriteTheOneListOfTheRun(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results)
+        {
+            try
+            {
+                FederationEngine.WriteTheList(log, PackageRunResult.OffCoordinatesOf(run.Started, units, results), run.LogFolders);
+            }
+            catch (Exception error)
+            {
+                log.Failure("writing the one list of models not on the same shared coordinates", error, "the run's RESULT is still written");
             }
         }
 

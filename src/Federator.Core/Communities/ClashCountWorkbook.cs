@@ -10,8 +10,8 @@ namespace Federator.Core.Communities
     /// The workbook of a community's clash count check, F236: one sheet, its title and the run date, the table of Bader's
     /// columns with one row per group per test with clashes, a total per group and one for the community, a row red where its
     /// four counts differ, then the groups not built, the tests the two rules left out, a count a group, and the groups whose
-    /// files could not be read. Saved in the community's report folder as "community clash count check.xlsx", a name already
-    /// there taking a dated one, and read back off the disk.
+    /// files could not be read. Saved in the community's report folder as "community clash count check.xlsx", a file of that
+    /// name overwritten since F243, Bader's order of 19 Oct 2026, and read back off the disk.
     /// </summary>
     public static class ClashCountWorkbook
     {

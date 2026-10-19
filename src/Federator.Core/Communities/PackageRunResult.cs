@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Federator.Core.Diagnostics;
 using Federator.Core.Disciplines;
+using Federator.Core.Health;
 
 namespace Federator.Core.Communities
 {
@@ -76,9 +77,10 @@ namespace Federator.Core.Communities
     {
         /// <summary>
         /// The first line of a result file, its last word the shape, 2 since F222 carried the discipline facts, 3 since F234
-        /// each model's placement in place of its box and the files of a group not built.
+        /// each model's placement in place of its box and the files of a group not built, 4 since F243 the shared coordinates
+        /// record of each group.
         /// </summary>
-        public const string Header = "parsons nwc federator, the result of one group of a run of packages, 3";
+        public const string Header = "parsons nwc federator, the result of one group of a run of packages, 4";
 
         private const string ReadWord = "read";
         private const string NotReadWord = "not";
@@ -90,6 +92,7 @@ namespace Federator.Core.Communities
             Groups = new List<PackageRunGroup>();
             ResultLines = new List<string>();
             NotBuiltFiles = new List<string>();
+            OffCoordinates = new List<OffCoordinatesGroup>();
         }
 
         public string Package { get; private set; }
@@ -109,6 +112,48 @@ namespace Federator.Core.Communities
         /// off the models of its NWF, so the discipline reports name them. None for any other group.
         /// </summary>
         public IList<string> NotBuiltFiles { get; private set; }
+
+        /// <summary>
+        /// F243 attempt 2, the lead's decision on item 1. The shared coordinates check's own record of each group this
+        /// Navisworks ran, its tally's groups, so the window that started the run makes the one list of models not on the
+        /// same shared coordinates over every group, OffCoordinatesOf. Empty where the check reached no group.
+        /// </summary>
+        public IList<OffCoordinatesGroup> OffCoordinates { get; private set; }
+
+        /// <summary>
+        /// The one tally of a run of packages over the facts every group's result carried, one result a unit in the order of
+        /// the units, each group in the order of its result. A unit whose result is null or carries no record adds nothing, so
+        /// it is counted among the groups not judged, never clean, and since attempt 3, the breaker's 2 and 3, it is named by
+        /// its label in words true for the window that started the run, PackageRunWords.NoCoordinatesRecordCameBack. Its
+        /// ForModellers is the one list the window writes, its first line naming the run.
+        /// </summary>
+        public static OffCoordinatesAcrossTheRun OffCoordinatesOf(DateTime runStarted, IList<PackageRunUnit> units, IList<PackageRunResult> results)
+        {
+            if (units == null || results == null || units.Count != results.Count)
+            {
+                throw new ArgumentException("one result or null for each group");
+            }
+
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(runStarted, units.Count);
+            List<string> none = new List<string>();
+
+            for (int i = 0; i < units.Count; i++)
+            {
+                if (results[i] == null || results[i].OffCoordinates.Count == 0)
+                {
+                    none.Add(units[i].Label);
+                    continue;
+                }
+
+                foreach (OffCoordinatesGroup group in results[i].OffCoordinates)
+                {
+                    run.Add(group.Building, group.Off, group.RunsATest);
+                }
+            }
+
+            run.SayTheGroupsNotReachedAs(PackageRunWords.NoCoordinatesRecordCameBack(none));
+            return run;
+        }
 
         /// <summary>
         /// The lines of the last RESULT block of a log, every line after the rule under its title, the title and the rule
@@ -185,8 +230,138 @@ namespace Federator.Core.Communities
                 lines.Add(PackageRunFile.Line("result", line));
             }
 
+            foreach (OffCoordinatesGroup group in OffCoordinates)
+            {
+                WriteTheOffCoordinatesOf(group, lines);
+            }
+
             lines.Add(PackageRunFile.Line("end", "written whole"));
             PackageRunFile.Write(path, Header, lines);
+        }
+
+        private const string Yes = "yes";
+        private const string No = "no";
+
+        /// <summary>
+        /// F243 attempt 2. One group's shared coordinates record: an offgroup line, its name, whether a clash test was to run,
+        /// whether the check read it, whether a reference was placed and which, the models not judged and the models read,
+        /// then one offmodel line a model off, one offinternal line a model on Internal and one offnosite line a model naming
+        /// no site, under it. A read that threw writes the word not and nothing under it.
+        /// </summary>
+        private static void WriteTheOffCoordinatesOf(OffCoordinatesGroup group, List<string> lines)
+        {
+            OffCoordinates off = group.Off;
+
+            lines.Add(PackageRunFile.Line(
+                "offgroup",
+                group.Building,
+                group.RunsATest ? Yes : No,
+                off == null ? NotReadWord : ReadWord,
+                off == null || off.Reference == null ? NotReadWord : ReadWord,
+                off == null ? string.Empty : off.Reference ?? string.Empty,
+                Number(off == null ? 0 : off.NotJudged),
+                Number(off == null ? 0 : off.ModelsRead)));
+
+            if (off == null)
+            {
+                return;
+            }
+
+            foreach (string model in off.Models)
+            {
+                lines.Add(PackageRunFile.Line("offmodel", model));
+            }
+
+            foreach (string model in off.OnInternal)
+            {
+                lines.Add(PackageRunFile.Line("offinternal", model));
+            }
+
+            foreach (string model in off.NoSite)
+            {
+                lines.Add(PackageRunFile.Line("offnosite", model));
+            }
+        }
+
+        private static string Number(int value)
+        {
+            return value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>One group's shared coordinates record read back, its lists gathered until the result has been read whole.</summary>
+        private sealed class OffRead
+        {
+            public string Building;
+            public bool RunsATest;
+            public bool Read;
+            public string Reference;
+            public int NotJudged;
+            public int ModelsRead;
+            public readonly List<string> Models = new List<string>();
+            public readonly List<string> OnInternal = new List<string>();
+            public readonly List<string> NoSite = new List<string>();
+
+            public OffCoordinatesGroup Group()
+            {
+                return new OffCoordinatesGroup(
+                    Building,
+                    Read ? new OffCoordinates(Reference, Models, NotJudged, ModelsRead, OnInternal, NoSite) : null,
+                    RunsATest);
+            }
+        }
+
+        /// <summary>The fault of a shared coordinates line, or null where it read into the record it belongs to.</summary>
+        private static string TakeAnOffLine(string[] line, List<OffRead> offs)
+        {
+            if (line[0] == "offgroup")
+            {
+                int notJudged;
+                int modelsRead;
+
+                if (line.Length != 8)
+                {
+                    return "an offgroup line holds " + (line.Length - 1) + " values where it holds 7";
+                }
+
+                if ((line[2] != Yes && line[2] != No) || (line[3] != ReadWord && line[3] != NotReadWord)
+                    || (line[4] != ReadWord && line[4] != NotReadWord))
+                {
+                    return "the offgroup line of " + line[1] + " reads " + line[2] + " " + line[3] + " " + line[4]
+                        + " where it reads yes or no, then read or not twice";
+                }
+
+                if (!int.TryParse(line[6], NumberStyles.None, CultureInfo.InvariantCulture, out notJudged)
+                    || !int.TryParse(line[7], NumberStyles.None, CultureInfo.InvariantCulture, out modelsRead))
+                {
+                    return "the counts " + line[6] + " and " + line[7] + " of " + line[1] + " are not counts";
+                }
+
+                offs.Add(new OffRead
+                {
+                    Building = line[1],
+                    RunsATest = line[2] == Yes,
+                    Read = line[3] == ReadWord,
+                    Reference = line[4] == ReadWord ? line[5] : null,
+                    NotJudged = notJudged,
+                    ModelsRead = modelsRead
+                });
+                return null;
+            }
+
+            if (line.Length != 2)
+            {
+                return "an " + line[0] + " line holds " + (line.Length - 1) + " values where it holds 1";
+            }
+
+            OffRead last = offs.Count == 0 ? null : offs[offs.Count - 1];
+
+            if (last == null || !last.Read)
+            {
+                return "an " + line[0] + " line comes with no offgroup line read above it";
+            }
+
+            (line[0] == "offmodel" ? last.Models : line[0] == "offinternal" ? last.OnInternal : last.NoSite).Add(line[1]);
+            return null;
         }
 
         /// <summary>
@@ -422,6 +597,7 @@ namespace Federator.Core.Communities
             List<PackageRunGroup> groups = new List<PackageRunGroup>();
             List<string> result = new List<string>();
             List<string> notBuilt = new List<string>();
+            List<OffRead> offs = new List<OffRead>();
             Dictionary<PackageRunGroup, FactsRead> facts = new Dictionary<PackageRunGroup, FactsRead>();
 
             foreach (string[] line in lines)
@@ -431,6 +607,10 @@ namespace Federator.Core.Communities
                 if (line[0] == "file" || line[0] == "facts" || line[0] == "model" || line[0] == "cad" || line[0] == "generic")
                 {
                     fault = TakeAFactsLine(line, groups.Count == 0 ? null : groups[groups.Count - 1], facts);
+                }
+                else if (line[0] == "offgroup" || line[0] == "offmodel" || line[0] == "offinternal" || line[0] == "offnosite")
+                {
+                    fault = TakeAnOffLine(line, offs);
                 }
                 else if (line[0] == "group")
                 {
@@ -517,6 +697,11 @@ namespace Federator.Core.Communities
             foreach (string file in notBuilt)
             {
                 read.NotBuiltFiles.Add(file);
+            }
+
+            foreach (OffRead off in offs)
+            {
+                read.OffCoordinates.Add(off.Group());
             }
 
             why = null;

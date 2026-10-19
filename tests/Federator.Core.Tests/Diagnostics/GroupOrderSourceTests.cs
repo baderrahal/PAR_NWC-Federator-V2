@@ -72,7 +72,6 @@ namespace Federator.Core.Tests
 
             Assert.That(At(tail, "WriteWorkbook(job, outcome)"), Is.GreaterThan(pictures), "the Excel, HTML and XML link the jpgs");
             Assert.That(At(tail, "TakeTheCoverage(document, job, outcome)"), Is.GreaterThan(pictures));
-            Assert.That(At(tail, "WriteTheInternalWorkbook(job, outcome)"), Is.GreaterThan(pictures));
         }
 
         [Test]

@@ -136,6 +136,16 @@ namespace Federator.Core.Communities
                 + Words.Or(parentLog, "UNKNOWN");
         }
 
+        /// <summary>
+        /// F243 attempt 3, the breaker's 2 and 3. What the one list of a run of packages says of the groups whose result or record
+        /// of the shared coordinates check did not come back, after their count, each named by its label. The window never saw
+        /// them, so it says what it knows and never why.
+        /// </summary>
+        internal static string NoCoordinatesRecordCameBack(IList<string> labels)
+        {
+            return " not judged here, no result or no record of the check came back from " + string.Join(", ", labels ?? new List<string>());
+        }
+
         /// <summary>F222. Why a group's own Navisworks ran nothing where its package's plan there holds no group of its NWF.</summary>
         public static string NotTheGroup(string group, string nwf)
         {
@@ -254,11 +264,11 @@ namespace Federator.Core.Communities
         /// <summary>
         /// The lines of the one RESULT of a run of packages, since F222 one result a group: the group counts off the package
         /// tally the parent filled from the results, how many groups wrote no result and how many ran nothing, the tally, each
-        /// group that is not DONE with its reason, then each group's own RESULT under its package and name and its log, or NO
-        /// RESULT with why.
+        /// group that is not DONE with its reason, the files the window itself left open in another program, F243, then each
+        /// group's own RESULT under its package and name and its log, or NO RESULT with why.
         /// </summary>
         public static IList<string> JoinedResult(
-            IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> noResultWhy, PackageTally tally)
+            IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> noResultWhy, PackageTally tally, IList<string> filesInUse = null)
         {
             if (units == null || results == null || noResultWhy == null || tally == null
                 || results.Count != units.Count || noResultWhy.Count != units.Count)
@@ -318,6 +328,16 @@ namespace Federator.Core.Communities
                         lines.Add("why            " + units[i].Package + "  " + group.Group + " : " + OneLine(group.Reason));
                     }
                 }
+            }
+
+            // F243 attempt 2, the reviewer's N4. The files the window that started the run left open, its cleanup's and its
+            // workbooks', in the words RESULT gives them, beside the groups' own under each GROUP below.
+            IList<string> open = Federator.Core.Report.FileInUse.ResultLines(filesInUse);
+
+            if (open.Count > 0)
+            {
+                lines.Add(string.Empty);
+                lines.AddRange(open);
             }
 
             for (int i = 0; i < units.Count; i++)

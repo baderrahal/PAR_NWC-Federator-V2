@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Federator.Core.Generic;
 using Federator.Core.Grouping;
 using Federator.Core.Naming;
 using Federator.Core.Communities;
@@ -47,7 +46,7 @@ namespace Federator.Core.Tests
         {
             return PackagePlan.For(
                 package, Report, GroupingModes.Default, new ContainerNameSettings(), new OutputNaming(),
-                new GenericModelsSettings(), new DateTime(2026, 10, 17));
+                new DateTime(2026, 10, 17));
         }
 
         [Test]
@@ -181,7 +180,7 @@ namespace Federator.Core.Tests
 
             PackagePlan plan = PackagePlan.For(
                 package, Report, GroupingModes.Default, new ContainerNameSettings(), naming,
-                new GenericModelsSettings(), new DateTime(2026, 10, 17));
+                new DateTime(2026, 10, 17));
 
             Assert.That(plan.WhyNot, Is.EqualTo(
                 OutputNameTable.From(
@@ -191,7 +190,7 @@ namespace Federator.Core.Tests
                         new ContainerNameSettings()).Groups,
                     naming,
                     new ContainerNameSettings(),
-                    new DateTime(2026, 10, 17)).WhyTheRunCannotStart(new GenericModelsSettings())));
+                    new DateTime(2026, 10, 17)).WhyTheRunCannotStart()));
             Assert.That(plan.WhyNot, Is.Not.Null);
         }
 

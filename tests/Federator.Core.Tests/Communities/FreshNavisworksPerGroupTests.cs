@@ -6,7 +6,6 @@ using System.Text;
 using Federator.Core.Communities;
 using Federator.Core.Diagnostics;
 using Federator.Core.Disciplines;
-using Federator.Core.Generic;
 using Federator.Core.Grouping;
 using Federator.Core.Naming;
 using NUnit.Framework;
@@ -353,7 +352,7 @@ namespace Federator.Core.Tests
 
             package = PackageTree.Read(Path.Combine(root, "Parent"), ".nwc").Packages()[0];
             return PackagePlan.For(package, Report, GroupingModes.Default, new ContainerNameSettings(), new OutputNaming(),
-                new GenericModelsSettings(), new DateTime(2026, 10, 18));
+                new DateTime(2026, 10, 18));
         }
 
         [Test]
