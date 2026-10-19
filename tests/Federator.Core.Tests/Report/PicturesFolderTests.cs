@@ -146,6 +146,34 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// F243, the guard pass on Bader's decision. NAME_files itself a junction to a folder outside: it is removed as the link
+        /// alone, nothing inside it is listed or deleted, and its line says so.
+        /// </summary>
+        [Test]
+        public void APicturesFolderThatIsALinkIsRemovedAloneAndNothingItPointsAtIsTouched()
+        {
+            TestPaths.OnWindowsOnly("a junction, which only Windows makes");
+
+            string outside = Path.Combine(Path.GetDirectoryName(clashReport), "outside");
+            Directory.CreateDirectory(outside);
+            string picture = Put(outside, "cd000001.jpg");
+            string other = Put(outside, "notes.txt");
+            Directory.Delete(pictures);
+
+            if (!MakeAJunction(pictures, outside))
+            {
+                Assert.Ignore("A junction could not be made on this machine without rights it does not have.");
+            }
+
+            PicturesFolder outcome = PicturesFolder.Delete(pictures);
+
+            Assert.That(File.Exists(picture), Is.True, "a picture outside the folder was deleted through the link");
+            Assert.That(File.Exists(other), Is.True, "a file outside the folder was deleted through the link");
+            Assert.That(Directory.Exists(pictures), Is.False, "the link is gone");
+            Assert.That(outcome.Line(), Is.EqualTo("IMAGES   " + pictures + " was a link, removed alone, nothing it points at was touched"));
+        }
+
         private static bool MakeAJunction(string link, string target)
         {
             System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo(

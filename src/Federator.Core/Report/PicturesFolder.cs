@@ -27,6 +27,9 @@ namespace Federator.Core.Report
         private readonly List<string> others = new List<string>();
         private readonly List<KeyValuePair<string, Exception>> failed = new List<KeyValuePair<string, Exception>>();
 
+        /// <summary>True where the folder handed in was itself a link, removed alone.</summary>
+        private bool wasALink;
+
         private PicturesFolder(string folder)
         {
             Folder = folder ?? string.Empty;
@@ -86,6 +89,16 @@ namespace Federator.Core.Report
 
             if (!Directory.Exists(folder))
             {
+                return outcome;
+            }
+
+            // The guard pass on Bader's decision: a folder handed in that is itself a link is removed as the link alone, and
+            // nothing inside it is listed or deleted.
+            if (IsALink(folder))
+            {
+                Directory.Delete(folder, false);
+                outcome.Deleted = true;
+                outcome.wasALink = true;
                 return outcome;
             }
 
@@ -197,6 +210,11 @@ namespace Federator.Core.Report
         /// </summary>
         public string Line()
         {
+            if (wasALink)
+            {
+                return "IMAGES   " + Folder + " was a link, removed alone, nothing it points at was touched";
+            }
+
             if (held.Count > 0 || failed.Count > 0)
             {
                 return "IMAGES   " + Folder + " not deleted whole, " + Number(PicturesDeleted) + " of its " + Number(Pictures)
