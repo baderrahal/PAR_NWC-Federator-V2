@@ -14,9 +14,11 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
 Every session reads CLAUDE.md, .claude\rules and steps\PROGRESS.md first, and opens
 steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
 
+Bader's rules for what the tool does are in docs\rules.md and nowhere else, one line a rule with its test.
+
 ## Host and target
 
-- Navisworks Manage 2025 only. API series Nw22, bundle folder Contents\v22
+- The host is MA2 of docs\rules.md. API series Nw22, bundle folder Contents\v22
 - .NET Framework 4.8 and C# 7.3. Navisworks has been on 4.8 since 2021 and 2025
   did not move. No syntax newer than 7.3 anywhere, because the add-in cannot be
   built with a newer compiler than the one Navisworks binds to
@@ -31,9 +33,7 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
 
 ## Done means all three
 
-1. One building federates, clashes and writes Excel with no errors
-2. Every ticked building runs unattended in under 45 minutes
-3. Clash counts in the Excel match the Clash Detective panel exactly
+The three are PR7 of docs\rules.md.
 
 ## Where things are
 
@@ -55,6 +55,7 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
     claude                  the audits of a round, written at its end
     .github                 the Actions workflow that runs the checks and the Core tests
     .githooks               the pre-commit hook, on once per clone by core.hooksPath
+    docs\rules.md           Bader's rules for the tool, one line each with its test or NO TEST
     docs\workflow.md        the two pages, the packages, the labels and the open file run
     docs\history            measurements and old rules, never current
     samples                 real files from the project, read by tests, never edited
@@ -85,15 +86,15 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
 - A rule that can be tested lives in Core, even when only the add-in reads it. That
   is how the file list rule, the group judgement, the open file guard and the units
   table were found and fixed without Navisworks
-- Every number that shapes a run is a setting, never a constant: the split character,
-  the part positions, the grouping choice, the name fields, the date format, the
-  stop after count, the log count, the open statuses, the image size
-- Nothing in the code names any one project's file. Names, counts and property
+- The numbers that shape a run are PR6 of docs\rules.md: the split character, the part
+  positions, the grouping choice, the name fields, the date format, the stop after
+  count, the log count, the open statuses, the image size among them
+- A project's file is named by no code, CT1 of docs\rules.md. Names, counts and property
   internal names from the clash XML appear in tests as sample data only, and in the
-  project's built in matrix pack, which Bader supplies, as its data, F155
+  project's built in matrix pack as its data, F155
 - The tool reports what it noticed and never acts on it. Findings, mismatches and
   drift are information in the log and the window. Bader decides
-- Logging never stops a run, and a report check never fails a group
+- A report check never fails a group, and logging is LO2 of docs\rules.md
 - Say UNKNOWN rather than filling a gap. Confirm against the install and never
   assume. A number in a help line or a doc is measured, never estimated
 - A public member nothing in src calls is deleted with its tests, unless a decision
