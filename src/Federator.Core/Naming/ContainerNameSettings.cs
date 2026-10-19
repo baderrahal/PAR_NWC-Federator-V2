@@ -16,6 +16,9 @@ namespace Federator.Core.Naming
         public const int DefaultBuildingPart = 3;
         public const int DefaultDisciplinePart = 5;
 
+        /// <summary>The number, part 7 of 1104-PAR-1B06BC-ZZZ-AR-MOD-000001, F244, which the discipline workbooks' short name reads.</summary>
+        public const int DefaultNumberPart = 7;
+
         public ContainerNameSettings()
         {
             Separator = DefaultSeparator;
@@ -23,6 +26,7 @@ namespace Federator.Core.Naming
             OriginatorPart = DefaultOriginatorPart;
             BuildingPart = DefaultBuildingPart;
             DisciplinePart = DefaultDisciplinePart;
+            NumberPart = DefaultNumberPart;
         }
 
         public char Separator { get; set; }
@@ -38,10 +42,18 @@ namespace Federator.Core.Naming
         public int DisciplinePart { get; set; }
 
         /// <summary>
+        /// Which part carries the number. Read where the name has that many parts and never needed to read a name, so it does
+        /// not raise MinimumParts and a name of five or six parts still reads, with no number.
+        /// </summary>
+        public int NumberPart { get; set; }
+
+        /// <summary>
         /// A name has to split into at least this many parts before every field the
         /// output name is built from can be read out of it. Only parts 1, 2, 3 and 5 are
-        /// read, so the floor is 5. The level, the type code and the number come from the
-        /// pattern and are never read from the input, so they never raise it.
+        /// needed, so the floor is 5. The level and the type code come from the pattern and
+        /// are never read from the input. The number of the output name comes from the
+        /// pattern too, and the input's number, NumberPart, is read only where the name has
+        /// that part, for the discipline workbooks' short name, F244, so none of them raises it.
         /// </summary>
         public int MinimumParts
         {
@@ -58,6 +70,7 @@ namespace Federator.Core.Naming
             RequireOneBased(OriginatorPart, "OriginatorPart");
             RequireOneBased(BuildingPart, "BuildingPart");
             RequireOneBased(DisciplinePart, "DisciplinePart");
+            RequireOneBased(NumberPart, "NumberPart");
 
             if (BuildingPart == DisciplinePart)
             {

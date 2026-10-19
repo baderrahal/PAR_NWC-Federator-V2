@@ -240,6 +240,23 @@ namespace Federator.Core.Tests
             return Path.Combine(repo, "tools", "probes", "ViewpointProbe", name);
         }
 
+        /// <summary>
+        /// The mock of the discipline workbook Bader approved on 19 Oct 2026, F244, kept in docs\design with the script
+        /// that made it, found off the checkout the same way the probe results are.
+        /// </summary>
+        public static string DisciplineWorkbookMock()
+        {
+            string repo = Repo();
+
+            if (repo == null)
+            {
+                throw new DirectoryNotFoundException(
+                    "No checkout found above the test assembly, so there is no design folder.");
+            }
+
+            return Path.Combine(repo, "docs", "design", "discipline-workbook-mock.xlsx");
+        }
+
         /// <summary>The clash priority file, F83, one priority per test off the matrix.</summary>
         public static readonly string[] PriorityMapNames = { "clash-priority-map.csv" };
 

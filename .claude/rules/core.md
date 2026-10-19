@@ -2650,70 +2650,115 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   group of the run in that package, a group with no facts kept with its files and why. A facts line out of its place, of the
   wrong count or a number that is not one makes the whole result no result. Proved by `FreshNavisworksPerGroupTests`
 
-## The discipline reports, F209 and F234
+## The discipline reports, F209, F234 and F244
 
-Bader's message of 17 Oct 2026 late evening, feature 2, rewritten by his round of 19 Oct 2026, fix 4, F234.
-Federator.Core.Disciplines. ONE WORKBOOK PER DISCIPLINE PER PACKAGE, AR, ST, ME and EL by default,
-`DisciplineReportSettings.Disciplines`, each one sheet named after the discipline, saved in the package's report folder under
-`DisciplineWorkbook.NameFor`, the package's path in words, the discipline and the suffix, the name it had before F234. A file of
-that name is overwritten, F243, Bader's order of 19 Oct 2026, where it took a dated name until then, and one open in another
-program is left as it is and named in `FileInUse`'s words.
+Bader's message of 17 Oct 2026 late evening, feature 2, rewritten by his round of 19 Oct 2026, fix 4, F234, and by his order of
+19 Oct 20:58, F244, the workbook copied from the mock. Federator.Core.Disciplines. ONE WORKBOOK PER DISCIPLINE PER PACKAGE, AR,
+ST, ME and EL by default, `DisciplineReportSettings.Disciplines`, saved in the package's report folder under
+`DisciplineWorkbook.NameFor`, the package's path in words, the discipline and the suffix. A file of that name is overwritten,
+F243, and one open in another program is left as it is and named in `FileInUse`'s words.
 
-- EVERY CELL IS MADE BY A RULE OF THE FOLDER and none is free text, the words `CheckWords`. Rows 1 to 3 the title
-  `<community> <package> <discipline> model checks`, `CheckWords.Title` with the package's name, the run date and the reference
-  discipline. Then the summary table from row 4, `DisciplineWorkbook.SummaryHeaderRow`, Check, Files checked, Issues and Result,
-  `CheckWords.SummaryColumns`, the seven checks in Bader's order, `CheckWords.All`: Coordinates, Missing model, One discipline
-  group, Naming, File age, CAD, Generic Models. Result is OK where Issues is nought and Issues otherwise. One blank row, then the
-  issues table, `DisciplineWorkbook.IssuesHeaderRow`, its header row frozen and carrying the filter, columns No., Severity,
-  Building, File, Check, What is wrong, Value, Action, Element IDs, `CheckWords.IssueColumns`. Headers bold on grey, every
-  issue cell wrapped, the widths `DisciplineWorkbook.Widths`
-- ONLY ROWS THAT NEED ACTION, `DisciplineIssue`, and no row for a file that passed. What a check could not read is never a
-  pass and never a row: it is a line of the DISCIPLINE REPORT block in the log, `CheckFindings.Notes`, and the file is not in
-  the check's Files checked. THE SUMMARY'S ISSUES ARE THE ROWS OF THAT CHECK IN THE SAME WORKBOOK, `DisciplineReport.SummaryFor`,
-  by construction, and the workbook read back off the disk is held to it, `DisciplineWorkbookRead.SummaryMatchesTheRows`, the
-  CHECKS line saying THE SUMMARY AND THE ROWS DIFFER where it does not. Files checked is the files of the workbook's discipline the
-  check read, and for Missing model the files of the groups of two disciplines or more, the lead's reading, Q218
-- SEVERITY, `CheckWords.SeverityOf`: High for Coordinates and Missing model, a light red row, `DisciplineWorkbook.HighFill`,
-  Medium for Naming, File age and One discipline group, light amber, `MediumFill`, Low for CAD and Generic Models with no fill.
-  The rows are sorted by severity, then building, then file, Ordinal, and where all three are one in the order the checks
-  made them, a stable sort, `DisciplineReport.Sort`. Building is the code read off the file's name, and for a row about a group
-  and no one file the codes of its files, `DisciplineOf.BuildingsOf`
+- THE MOCK IS THE SPEC. docs\design\discipline-workbook-mock.xlsx with its pdf and the script that made it,
+  discipline-workbook-mock.py, which holds every colour, size and word. `DisciplineWorkbook.Write` copies it and
+  `DisciplineWorkbookMockTests` holds the workbook written from C06 ME, built off the mock's own cells, to it sheet by sheet: the
+  sheet names and order, every header, every width, the band, the header's font and fill, the Status chips, every number format
+  and value, the freeze cell and the filter. Every cell's font, fill, alignment, border and format was read against the mock on
+  20 Oct 2026 and the one difference is the order's: a Missing model's Model cell on To fix is none in grey where the mock has it
+  navy. A WIDTH IS STORED AS CLOSEDXML STORES IT: openpyxl wrote the mock's 18 as 18 and ClosedXML writes 18 as 18.710625 and
+  reads every stored width less 0.710625, `WorkbookComparison.OpenpyxlWidthPadding`, so the written widths are the order's numbers
+  as Excel shows them and the mock's read 0.71 narrower in Excel
+- THE MOCK IN DOCS\DESIGN IS KEPT AS APPROVED, and its With issue format is corrected by Bader's decision of 20 Oct 2026, since
+  its second section read as negative numbers and printed none for every count above 1: `[=1]0" model";[>1]0" models";"none"`,
+  buildings the same, held by `DisciplineWorkbookMockTests.WithIssueHoldsASectionAboveOneSoACountOfFiveNeverPrintsNone`
+- FOUR SHEETS, `SummarySheet`, `ModelsSheet`, `ToFixSheet`, `ElementIdsSheet`, tabs navy, cyan, red and #8A94A3. Every sheet:
+  gridlines off, column A a margin of 2, rows 1 to 3 the band, navy 34 with the title in Demi 18 white, navy 20 with the line under
+  it in Book 10 cyan, cyan 4, filled from A to one column past the table. The header row Demi 10 navy on #E8EDF4 with a medium cyan
+  line under it, wrapped. Table cells Book 10 with a thin #D5DBE3 line under each, every second row #F6F8FB, centred in height.
+  Chips one cell, Demi 9, centred: FIX and MISSING red, REVIEW amber, OK green, NOT CHECKED #BFC5CC, and High, Medium and Low.
+  Numbers stored as numbers, no formula, no merged cell. Landscape A3, one page wide, the header row repeating, the sheet's name
+  left and Page &P of &N right in the footer. Every word is `CheckWords`, the sheet names, the title words and the column headers
+  among them, and the widths are `DisciplineWorkbook`'s beside them
+- THE TITLES, `CheckWords.Heading`: the community, and the package's path in words where it is a subfolder, `CheckWords.InWords`,
+  the one rule `DisciplineWorkbook.NameFor` reads too, never a backslash and never C06 C06 itself, three spaces, then the
+  discipline and model checks, models, to fix or element IDs
+- SUMMARY. B2 the run, the reference and the models in buildings, five spaces apart, `CheckWords.RunLine`. B5, `CheckWords.Lead`:
+  where To fix holds no row and every model was judged by every check with no value not read, `DisciplineReport.AllPass`, All n
+  models pass every check. Otherwise one sentence a part, the models with a FIX chip of the models kept even at nought, the
+  buildings with none and the models with CAD imports or Generic Models left out at nought, the breaker's S2 on a92838b. The words
+  bent to one where a count is 1, 1 of 1 ME model needs a fix. Row 7 the header, then the
+  six checks in Bader's order, `CheckWords.All`, the one order `DisciplineReport.For` runs them in: Coordinates, Missing model, Naming, File age, CAD imports, Generic Models, each
+  with what it checks, Checked and With issue as numbers in the units format, `[=1]0" model";0" models"` for Checked and
+  `[=1]0" model";[>1]0" models";"none"` for With issue, buildings for Missing model, the status and the modeller's words or Nothing to do in grey,
+  `DisciplineReport.SummaryFor`. CHECKED IS THE MODELS THE CHECK JUDGED, `CheckFindings.CheckedFor`, and for Missing model THE
+  BUILDINGS, one per group of two disciplines or more, never its files, F245 item 6, which the AR workbook of 19 Oct read as 58.
+  WITH ISSUE IS THOSE OF THEM WITH A ROW OF THAT CHECK ON TO FIX. Status OK where nought, else FIX for a High check and REVIEW
+  for a Medium or Low one, With issue in the High or the Low issue fill to match. A check that judged none, and Naming in the
+  reference's own workbook, is NOT CHECKED with both counts blank, the reference's row saying its names set the pattern. Under
+  it Tabs, the three lines of the mock and the grey line naming each building whose reference is not the setting's, saying only
+  what its files show, `CheckWords.ReferencesLine`: by the discipline that is its reference, in Ordinal order and the mock's words,
+  a building named under no AR, or no AR or EL, only where its files hold none of them, one with an AR file said in its own words,
+  its AR model was not placed so it is measured from the other, and any other in its own words, none where every reference is the
+  setting's
+- MODELS, `DisciplineReport.ModelsFor`: one row per NWC of the discipline and one per building that has others and none of it,
+  by building then file name, out of `ModelRows`, which makes a row for every file of every group before any check runs, and each
+  check writes what it read into the row of the model it read. Model the short name, the discipline and the number at the naming
+  settings' `NumberPart`, part 7, read by `ContainerName.Parse` as `ParsedContainerName.Number`, never the last part of the name,
+  the file's name where it has none. Status, `ModelRow.Status`: FIX where the model has a High row, REVIEW where it has any, NOT
+  CHECKED where it has none and a value was not read, `ModelRow.SomethingNotRead`, the breaker's S1 and the reviewer's B1: its
+  placement or every placement of its building, its site, its CAD walk, its Generic walk, no facts of it at all, its file date,
+  its name where Naming was to judge it and could not, as in a package with no reference file, or the model in its group's facts
+  and not among its files, or its building not judged on Coordinates. OK only where everything was read and nothing found,
+  MISSING, and NOT CHECKED for a group of one discipline. WHERE A PLACED MODEL OF A BUILDING HAS ITS SITE NOT READ, THE BUILDING
+  IS NOT JUDGED ON COORDINATES AT ALL, Bader's decision on the guard pass: no model of it counted in Coordinates' Checked, no
+  Coordinates row made for any model of it, far, internal origin or cannot be judged, each model of it NOT CHECKED unless another
+  check found a row, its distances still shown as measured, and the DISCIPLINE REPORT block naming the building and the model
+  whose site was not read. Compared with
+  and Off the reference out of Coordinates, `ModelMeasure`: the reference's discipline and the metres, under 1 in grey below
+  `DisciplineWorkbook.UnderMetres`, itself and reference in grey on the reference, internal origin on a reference on Internal,
+  none and alone in grey on a group of one discipline, UNKNOWN in grey where not measured. Naming OK in green, wrong, or not checked
+  in grey where not judged. File age in days, CAD imports the distinct CAD files and Generic Models the elements each id once, in
+  `0;;"-"`, UNKNOWN in grey where the items were not walked. A cell of a check the model has a row of takes the issue fill, red for
+  a High row and amber for any other. Frozen at D6 with the filter on the header
+- TO FIX, `DisciplineReport.IssuesFor`: only what needs action, `DisciplineIssue`, sorted High, Medium, Low, then building, model
+  and check, Ordinal, stable. No. counts from 1, the value a number with its unit, the Fix words the modeller is sent. Frozen under
+  the header with the filter. ELEMENT IDS, `DisciplineReport.ElementIdsFor`: one element a row, by file name, a model's CAD imports
+  then its Generic Models, each id once a model, a number in format 0, an id not read the setting's words
 - COORDINATES, `CoordinatesCheck`: ALIGNMENT'S RULE AND NUMBERS AND NEVER THE BOX GAP. Each model is placed by the translation of
-  its transform in millimetres, the one read of it, `ModelFactsReader.TranslationOf`, carried as `ModelFacts.X`, `Y` and `Z`,
-  measured from the group's reference, `AlignmentCheck.ReferenceIn` with the setting's reference discipline, by the straight line
-  of the differences, `AlignmentCheck.StraightLineMillimetres`, which the ALIGNMENT block reads too. Over `FarMetres`, 30 m,
-  Bader's answer to Q202, a model is a row in its own discipline's workbook, the value the distance in metres to three decimals
-  and both shared sites, `CheckWords.FarValue`, Action Export again on the project shared coordinates. A reference on Internal,
-  `AlignmentCheck.NamesInternal`, while another model of its group names a shared site that is not Internal is one row in the
-  reference discipline's workbook, on Revit internal origin, its value the other models' sites, Action Export on the project
-  shared coordinates. ST of 1B06BC sits 34.014 m and 34.472 m from AR, read off its ALIGNMENT block of 19 Oct 2026 and held by a test
-- MISSING MODEL, `GroupDisciplinesCheck.Missing`, off the file names by F219's one rule, `BuildingGroup.DisciplinesOf`: in a
-  group of two disciplines or more, one row in the workbook of each discipline of the setting it holds no file of, no
-  <discipline> model in this group, its value the disciplines the group holds, Action Issue the <discipline> model for this
-  building. A group whose files were not read, or whose disciplines that rule says are UNKNOWN, a name that does not read or a
-  model of the federated discipline, is a line of the log and never counted as missing one, F222. ONE DISCIPLINE GROUP,
-  `GroupDisciplinesCheck.OneDiscipline`: a group F233 did not build is a row in that discipline's workbook, only discipline in
-  this group, not federated, its value its file names. The decision is the run's, carried as
-  `DisciplineGroup.NotBuiltForOneDiscipline` by `PackageRunFacts`, the plan's `BuildingGroup.CannotClashWith` on the NWC page and
-  the NOT BUILT line, `OneDisciplineGroups.IsTheLine`, on the NWF page, and never judged a second time off the files, so an NWF
-  built with a link not on the disk is never such a row, the reviewer's finding on F234's first pass. Its files reach the report on both pages: on the NWC page off its plan, on the NWF page
-  off its result's `PackageRunResult.NotBuiltFiles`, read off its NWF's models, and a package whose every group is of one
-  discipline still gets its workbooks, rows F233-R2 and R3
+  its transform in millimetres, `ModelFacts.X`, `Y` and `Z`, measured from the group's reference, `AlignmentCheck.ReferenceIn`
+  with the setting's reference discipline, by `AlignmentCheck.StraightLineMillimetres`, and EVERY DISTANCE MEASURED IS CARRIED TO
+  ITS ROW OF MODELS, F245 item 7, not only the far ones. More than `FarMetres`, 30 m, Bader's answer to Q202, is a High row, the
+  metres to one decimal and both shared sites as `AlignmentCheck.SiteName` reads them, Fix Export the NWC again on the project
+  shared coordinates. A REFERENCE ON INTERNAL, `AlignmentCheck.NamesInternal`, while another model of its group names a shared
+  site that is not Internal, F234's rule, is a High row of its own, On Revit's internal origin, and EVERY OTHER MODEL MEASURED FROM
+  IT A MEDIUM ROW, its distance not judged, Fix the reference first, NEVER A HIGH ONE, F245 item 3. ST of 1B06BC sits 34.014 m and
+  34.472 m from AR, read off its ALIGNMENT block of 19 Oct 2026 and held by a test
+- MISSING MODEL, `GroupDisciplinesCheck.Missing`, off the file names by F219's one rule, `BuildingGroup.DisciplinesOf`: a group of
+  two disciplines or more is one building checked in every workbook and one High row in the workbook of each discipline it holds
+  no file of, with its MISSING row on Models. A group whose files were not read, or whose disciplines that rule says are UNKNOWN,
+  is a line of the log and never counted as missing one, F222
+- A GROUP OF ONE DISCIPLINE IS NOT PROCESSED AND NOT HIGHLIGHTED, Bader's words of 19 Oct, F245 item 4: no row on To fix, no row on
+  the Summary, counted in no check's Checked, its models on Models as NOT CHECKED, compared with none, alone, Naming and File age
+  as read with no fill and CAD imports and Generic Models UNKNOWN. The decision is the run's, carried as
+  `DisciplineGroup.NotBuiltForOneDiscipline` by `PackageRunFacts`, never judged a second time off the files
 - NAMING, `ReferenceNaming`, not against ISO: the reference discipline's names split on the naming separator, the part count
-  most of them have, each part all of them hold alike, and each part's MERGED SHAPE, `MergedShape`, a letter, a digit, either
-  where a letter and a digit meet, or a mark, the length kept, so C06's building codes 1B06BC and 1B06G1 share one. The
-  discipline's own part is left out and the parts of `ShapeOnlyParts` are judged by their shape alone. Only a file of another
-  discipline that breaks the pattern is a row, one row per part broken, `NamingBreak`, What is wrong the part and what it reads,
-  Value what the reference has there, a shape said by naming a real part that has it. The pattern learned is a line of the log,
-  and with no reference file none is learned and the log says so. The reference's own files are the pattern and not judged
-- FILE AGE, `FileAgeCheck`: only a file whose date the disk gives older than `OlderThanDays`, 7, is a row, its value the date
-  and the age in whole days. Exactly the limit is within it
-- CAD AND GENERIC MODELS, `ElementChecks.Cad` and `Generic`: one row per file and CAD file name, and one per file, family and
-  type, each with its count in Value and every element id comma separated, the setting's words, not readable, for an id not read.
-  `LevelName` and `CadFileName` read what the add-in hands in, both measured in 5z-zg. A model with none is no row, and one whose
-  items were not walked is a line of the log
-- The Action cell of One discipline group, Naming, File age, CAD and Generic Models is empty, since Bader's words give it for
-  the other two checks alone, Q218
+  most of them have, each part all of them hold alike, and each part's MERGED SHAPE, `MergedShape`, the length kept. The
+  discipline's own part is left out and the parts of `ShapeOnlyParts` are judged by their shape alone, its default the naming
+  settings' number part, built from `ContainerNameSettings.DefaultNumberPart`, the one place that says where the number sits. The
+  pattern as the workbook says it, `Pattern`, `<number>` at the naming settings' `NumberPart`, such as
+  1104-PAR-<building>-ZZZ-ME-MOD-<number>. A file of another discipline that breaks it is one Medium
+  row, Name should be the pattern, and each part it breaks a line of the log with what the reference has there. The pattern
+  learned is a line of the log, and with no reference file none is learned and the log says so
+- FILE AGE, `FileAgeCheck`: each file's age in whole days off the date the disk gives on its row of Models, and one whose whole
+  days are over `OlderThanDays`, 7, a Medium row, Saved and the date, the days its value. JUDGED ON THE WHOLE DAYS THE CELL WRITES,
+  so 7 days and 3 hours writes 7 and is within it, never a fill beside a 7, the breaker's reading of a92838b
+- CAD IMPORTS AND GENERIC MODELS, `ElementChecks.Cad` and `Generic`: one Low row per model and CAD file, and one per model, family
+  and type, each with its elements counted each id once and every id on Element IDs. `LevelName` and `CadFileName` read what the
+  add-in hands in, both measured in 5z-zg. A model with none is no row, and one whose items were not walked is a line of the log
+- WHAT A CHECK COULD NOT READ is never a pass and never a row: UNKNOWN on Models, left out of the check's Checked, and a line of the
+  DISCIPLINE REPORT block, `CheckFindings.Notes`. The block says per discipline its rows to fix, its element IDs and each check's
+  Checked and With issue, `DisciplineReport.Lines`
+- READ BACK. `DisciplineWorkbook.Read` reads the rows of To fix and of Element IDs off the file, and the CHECKS line,
+  `DisciplineWorkbookWords.ReadBackLine`, says them against the rows written and says in capitals where they differ
 - A ROW NO WORKBOOK TAKES, a file of a code outside the list or whose name does not read, is in `DisciplineReport.LeftOut` and
   counted by its code on the DISCIPLINE REPORT block. The internal names the add-in reads are `DisciplineProperties`, each
   measured and typed once

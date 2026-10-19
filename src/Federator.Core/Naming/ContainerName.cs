@@ -66,7 +66,8 @@ namespace Federator.Core.Naming
                 return ParsedContainerName.Unreadable(stem, parts, empty);
             }
 
-            return ParsedContainerName.Readable(stem, parts, project, originator, building, discipline);
+            string number = parts.Count >= settings.NumberPart && parts[settings.NumberPart - 1].Length > 0 ? parts[settings.NumberPart - 1] : null;
+            return ParsedContainerName.Readable(stem, parts, project, originator, building, discipline, number);
         }
 
         private static string FirstEmpty(int[] positions, string[] values, string[] labels)

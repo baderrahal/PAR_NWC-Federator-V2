@@ -1066,7 +1066,8 @@ namespace Federator.Addin.Ui
             {
                 // F243, Bader's order of 19 Oct 2026: one name, overwritten.
                 string path = Path.Combine(folder, DisciplineWorkbook.NameFor(package.RelativePath, discipline, disciplines));
-                IList<DisciplineIssue> rows = made.IssuesFor(discipline);
+                int toFix = made.IssuesFor(discipline).Count;
+                int ids = made.ElementIdsFor(discipline).Count;
                 log.WriteAttempted("CHECKS", path);
 
                 try
@@ -1092,7 +1093,7 @@ namespace Federator.Addin.Ui
                 DisciplineWorkbookRead back = DisciplineWorkbook.Read(path, out why);
                 log.Line(back == null
                     ? "CHECKS   read back FAILED  " + path + ", " + why
-                    : DisciplineWorkbookWords.ReadBackLine(back, rows.Count, discipline, package.RelativePath));
+                    : DisciplineWorkbookWords.ReadBackLine(back, toFix, ids, discipline, package.RelativePath));
             }
         }
 

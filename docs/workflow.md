@@ -155,17 +155,21 @@ said as not run, because whether its groups wrote files before their Navisworks 
 
 ### The discipline workbooks
 
-Each package gets one workbook per discipline, AR, ST, ME and EL, one sheet each, F234 (Bader's round
-of 19 Oct 2026, fix 4). Rows 1 to 3 hold the title, `<community> <package> <discipline> model checks`,
-the run date and the reference discipline, AR. Then a summary of the seven checks, Coordinates,
-Missing model, One discipline group, Naming, File age, CAD and Generic Models, each with the files it
-read, its issues and OK or Issues. After one blank row comes the issues table, its header frozen with
-a filter, which holds only what needs action, sorted High, Medium, Low, then by building and file.
-High rows are light red and Medium rows light amber. Coordinates are measured as the ALIGNMENT block
-measures them, by the translation of each model from the reference model, and a model more than 30 m
-from it is a row of its own discipline. What a check could not read is said in the log under
-DISCIPLINE REPORT, never written as a pass. Each summary count is the rows of its check, and the log
-reads that back off the file on a CHECKS line.
+Each package gets one workbook per discipline, AR, ST, ME and EL, F244 (Bader's order of 19 Oct
+2026), copied from the mock in docs\design, whose script gives every colour, size and word. Four
+sheets. Summary: the title, `<community>   <discipline> model checks`, the run and the reference, one
+sentence of what needs a fix, then the six checks, Coordinates, Missing model, Naming, File age, CAD
+imports and Generic Models, each with what it checks, the models or buildings it checked, those with
+an issue, a status chip and the words for the modeller. Models: one row per NWC of the discipline
+and one per building that has none, with the model it was compared with and its distance, every
+distance and not only the far ones. To fix: one row per thing to fix, High first, with the words to
+send the modeller. Element IDs: one element a row, to paste into Revit's Select by ID. Coordinates
+are measured as the ALIGNMENT block measures them, and a model more than 30 m from the reference is
+High. A reference on Revit's internal origin is High itself, and every other model of its building a
+Medium row until it is fixed. A group of one discipline is on Models as NOT CHECKED and nowhere else.
+What a check could not read is UNKNOWN on Models and said in the log under DISCIPLINE REPORT, never
+written as a pass, and the log reads the rows of To fix and Element IDs back off the file on a CHECKS
+line.
 
 ### The clash count check
 

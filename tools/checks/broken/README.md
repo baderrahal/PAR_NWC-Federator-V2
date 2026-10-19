@@ -70,6 +70,11 @@ the made up name appended after it. The xlsx opens PK 03 04 and has no end of ce
 directory. The check has to refuse each as binary at a path the rule names whose first or
 last bytes are not its format's.
 
+`docs/design/discipline-workbook-mock.pdf` is at the one pdf path the binary rule names, F244.
+It opens %PDF- and holds a NUL byte, and its last 8 bytes hold no %%EOF, with fabricated words
+after the opening. The check has to refuse it as binary at a path the rule names whose first or
+last bytes are not its format's, so the pdf line of the rule is proved to refuse.
+
 `rules/` holds rules files for the test that the check and the mask read a rules file the
 same way. `valid.txt` is whole and both have to read it. Every other file there is
 `valid.txt` with one fault, and both have to refuse it. Actions puts each in the place of
@@ -92,4 +97,4 @@ GUID after it.
 
 Actions reads the whole tree with this folder left out, because the fault here is on
 purpose, and the pre-commit leaves it out of what is staged for the same reason. Over this
-folder the check has to come back with exactly twenty faults.
+folder the check has to come back with exactly twenty one faults.
