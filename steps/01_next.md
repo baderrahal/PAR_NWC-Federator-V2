@@ -111,3 +111,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 
 - The round of 19 Oct 2026 b, item 4: steps\PROGRESS.md in his five parts under 60 lines, the closed items of steps\01_next.md, steps\fix-round.md, steps\03_bader_next.md and steps\lane-b.md moved whole into steps\history with each file's size before and after, nothing deleted, and the tracker and progress scripts passing
 - DONE 2026-10-19, merged in 323. The four moved and read back with no line lost, three under 100 KB and fix-round.md over it for its 77 open items, put to Bader, the tracker check taught the moved FR items with its fixtures, the page at most 60 lines, Core tests 3451 passed before and after
+- The end of the round, F242b, merged in 324: claude\audit-round-2026-10-19b.md with the QA of main, contradictions 57 to 73 and the 19 Oct ones that stand, three merged branches deleted, and Q225, the round's one form

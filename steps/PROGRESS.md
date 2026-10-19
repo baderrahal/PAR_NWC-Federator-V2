@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 10:01, the round of 19 Oct b, F242 merged in 323, the end next, last run 94/item1-C02
+STATE WAITING, 2026-10-19 10:48, the round of 19 Oct b done, F239 to F242 merged in 320 to 324, waiting for Bader's answers to the form Q225
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,13 +15,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 325 | 16 | 0 | 29 | 135 | 7 | 512 |
-| total | 529 | 24 | 0 | 29 | 235 | 18 | 835 |
+| outside the waves | 325 | 16 | 0 | 30 | 135 | 7 | 513 |
+| total | 529 | 24 | 0 | 30 | 235 | 18 | 836 |
 <!-- the end of the counts -->
 ## Done
 - 19 Oct b, Bader's new way of building, four items, no Navisworks run. F240 the agents' models by their jobs, 320. F241 the
   round rules under Rounds in CLAUDE.md and the ai-max skill version 3, 321. F239 docs\rules.md, 105 rules, ten with no test,
-  322. F242 the closed items of four steps files moved into steps\history and this page in five parts, 323
+  322. F242 the closed items of four steps files moved into steps\history and this page in five parts, 323, and the end, 324
 - 19 Oct, F231 to F238: packages first, one discipline groups not built, the discipline and clash count workbooks, the cap
   over 750 and penetrations on, the full run on C06 and C07, 0 red rows, 3904 and 1549 clashes, 313 to 319
 - The page as it stood before this rewrite, its speed table among it, is steps\history\PROGRESS-2026-10-19.md
@@ -33,10 +33,11 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - F224-R1 to R4, F225-R1 to R3, F226-R1 to R5 the retake's colour and sky assumptions, F222-R1 to R4, F213-R1, R2, F214-R1 to R4
 - F207-R1 views check 4 fails on C04 since the NWF holds hidden models, 2 painted items not its clashes in each view, UNKNOWN which
 - F236-R1 to R10 and F237-R1, R2, the clash count check's and the full run's rows, every one in steps\tracker.csv
+- The QA's contradictions 57 to 73 and those of 19 Oct that stand, in claude\audit-round-2026-10-19b.md
 - One DIALOG finding at the close of set 94 UNKNOWN. T6-R-WPFBOX and F149-R1. The 0 byte NWD in NWD\C04\run 2026-10-14 1615, yours to delete
 ## Bader's turn
 - The proof steps at the top of steps\03_bader_next.md, the full run's 13 first, step 1 opening final-2026-10-19\Report\C06
-- The form at the end of steps\02_questions.md, written by the round's last pull request
+- The form, Q225 at the end of steps\02_questions.md, eleven parts, recommended answers first
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
 - Q216 the groupings, Q217 the Backup, Q218, Q219 the workbooks, Q220 the lists, Q221 the picture order, Q222, Q223 the count check
 - Q212 the tests a rule left out still held in an NWF, leave them, delete or a folder, Q224 the ten rules with no test
@@ -45,6 +46,6 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
 - The agents' new models and the ai-max copy load from the next session he starts
 ## Next
-1. The end of the round, F242b: the QA of main, the audit, the form and the closing entry
-2. His answers to the form and the questions above, and the proof steps, the full run's 13 first
-3. The next round, three or four fixes from his answers, the code ones of claude\audit-round-2026-10-19.md first, 43, 46, 37, 38
+1. His answers to Q225 and the questions it lists, by number and letter
+2. The proof steps at the top of steps\03_bader_next.md, the full run's 13 first
+3. The next round, three or four fixes from his answers, the code ones of claude\audit-round-2026-10-19b.md first

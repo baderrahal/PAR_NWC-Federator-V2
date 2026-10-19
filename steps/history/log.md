@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F242b, the end of the round of 19 Oct b
+
+Branch fix-F242b off main 72e5842, worktree wt-F242b, pull request 324. The end of Bader's round of 19 Oct 2026 b, F239 to F242,
+and the round's last entry.
+
+What was done. claude\audit-round-2026-10-19b.md: the round against its own rules, each item with its pull request, the agents'
+model lines before and after, the sizes before and after, docs\rules.md's 105 rules with 10 NO TEST, and the QA of main. The QA,
+read only by an agent on main 72e5842: of the 40 contradictions listed on 19 Oct, 23 and 50 closed and the rest stand, since no
+fix of the round changed the code, and 17 are new, 57 to 73, the code ones the counts with no setting, members only tests read
+and one called by nothing. Three merged branches still on GitHub, fix-F233 to fix-F235, and one merged local branch were each read
+as merged and deleted, Bader's answer to Q206, closing 72. Q225, the round's one form, eleven parts: the four conflicts of his
+chat notes, the tsv's while, fix-round.md over 100 KB, his words missing under Q163 to Q168, the ai-max copy against CLAUDE.md,
+Q224, the QA's contradictions and the 45 minutes of done, then every older question waiting by number. The page is rewritten to
+WAITING.
+
+What was proved here. Core tests 3451 passed, 0 failed, 0 skipped, at the start of the round and after every commit, and the QA's
+own run on main. check-tracker and check-progress clean, prove-tracker 84 right, prove-progress 26 right. No commit of the round
+carries a generated-by or co-author line, read back off main. No pull request is open once 324 merges.
+
+What remains. Bader's answers to Q225 and the questions it lists, and his proof steps at the top of steps\03_bader_next.md, the
+full run's 13 first. Known bugs: the QA's 57 to 73 and the 19 Oct ones that stand, in the audit, and the rows of steps\tracker.csv
+the page names. What comes next: the next round, three or four fixes from his answers, the code contradictions first.
+
 ## 2026-10-19 F242, records Bader can read, item 4
 
 Branch fix-F242 off main cb01f32, worktree wt-F242, pull request 323, main taken in after F239 merged as 322.
