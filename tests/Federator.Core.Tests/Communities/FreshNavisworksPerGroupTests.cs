@@ -390,7 +390,7 @@ namespace Federator.Core.Tests
             DisciplineGroup third = groups.First(g => g.Name == "1B06KI");
             Assert.That(third.Models, Is.Null);
             Assert.That(third.WhyNoModels, Is.EqualTo(PackageRunFacts.DidNotRun));
-            Assert.That(third.NotBuiltForOneDiscipline, Is.True, "left out by F233's rule, so its row is a One discipline group");
+            Assert.That(third.NotBuiltForOneDiscipline, Is.True, "left out by F233's rule, so its models are NOT CHECKED on Models");
             Assert.That(first.NotBuiltForOneDiscipline, Is.False, "a group that ran was built, whatever its files read");
         }
 
@@ -432,7 +432,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// F234 on row F233-R2. An NWF its own Navisworks found to be one discipline and did not build carries its files back
-        /// through its result, so its group of the discipline reports names them and its One discipline group row is written.
+        /// through its result, so its group of the discipline reports names them and its models are on Models, F244.
         /// </summary>
         [Test]
         public void OnTheNwfPageAGroupNotBuiltForOneDisciplineKeepsItsFilesThroughItsResult()
@@ -456,7 +456,9 @@ namespace Federator.Core.Tests
             Assert.That(groups.Single().Files.ToArray(), Is.EqualTo(new[] { pg }));
             Assert.That(groups.Single().Models, Is.Null);
             Assert.That(groups.Single().NotBuiltForOneDiscipline, Is.True);
-            Assert.That(GroupDisciplinesCheck.OneDiscipline(groups, new Federator.Core.Naming.ContainerNameSettings()).Issues.Single().Discipline, Is.EqualTo("EL"));
+            ModelRow row = ModelRows.Of(groups, new Federator.Core.Naming.ContainerNameSettings()).All.Single();
+            Assert.That(row.Discipline, Is.EqualTo("EL"));
+            Assert.That(row.Status, Is.EqualTo("NOT CHECKED"), "on Models and never a row to fix, Bader's order of 19 Oct 2026");
         }
     }
 }

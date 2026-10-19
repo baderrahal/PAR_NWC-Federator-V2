@@ -2,6 +2,43 @@
 
 The closed items of this file moved to steps\history\03_bader_next-closed.md on 19 Oct 2026, whole and in their order, F242, Bader's round of 19 Oct b.
 
+## F244, the discipline workbook copied from the mock
+
+Simple words. One group, 1B06PH of C06, on the NWF page, on a copy of the 19 Oct Report folder, because the mock shows its ME
+models: ME-000002 118.7 m from AR with two CAD files and one Generic Models family. The add-in change is the CHECKS line alone, so
+one build, one install and one run prove it. Steps 1 and 2 need no Navisworks.
+
+1. Install the build of branch fix-F244 as the Build and install section below says.
+   Look for: `Build succeeded.` with `0 Error(s)` and `0 Warning(s)`, and the install's last line saying it finished.
+2. In File Explorer copy the folder C:\NWC-PC-Test\work\final-2026-10-19\Report to C:\NWC-PC-Test\work\f244\Report.
+   Look for: f244\Report\C06 holding the Backup folder with `1104-PAR-1B06PH-ZZZ-BM-MOD-000001.nwf`.
+3. Start Navisworks Manage 2025 from the Start menu, open the tool, open the NWF page, type C:\NWC-PC-Test\work\f244\Report
+   in the Report folder and press Read.
+   Look for: C06 and C07 with their NWFs, nothing ticked.
+4. Tick the NWF `1104-PAR-1B06PH-ZZZ-BM-MOD-000001` of C06 alone, press Run and OK, and click nothing more.
+   Look for: one Navisworks opening and closing, and the run ending with no box.
+5. Open the run's log and search for `CHECKS   read back`.
+   Look for: four lines, one each for AR, ST, ME and EL of C06, the ME one reading `CHECKS   read back N of N rows to fix and
+   M of M element ID rows, ME of C06` with the two numbers of each pair alike, and no line with `DIFFER` in capitals.
+6. In the same log search for `DISCIPLINE REPORT C06`.
+   Look for: a line starting `ME  ` that says its rows to fix, its element IDs and, for each check, the models or buildings
+   checked and how many have an issue, and the same numbers as the CHECKS line of ME.
+7. Open f244\Report\C06\`C06 ME checks.xlsx` in Excel.
+   Look for: four tabs in this order, Summary navy, Models cyan, To fix red, Element IDs grey, no gridlines, and on Summary
+   `C06   ME model checks` in white on navy in B1.
+8. Open docs\design\discipline-workbook-mock.pdf from the repo beside it.
+   Look for: the same colours, fonts, column widths, chips and layout on every sheet. The mock's columns read a little
+   narrower, about 0.7 of a character, since its script stored the widths the way openpyxl does.
+9. On Models find the row of ME-000002.
+   Look for: Status FIX in red, Compared with AR, Off the reference about 118.7 on the light red fill, CAD imports 2 and
+   Generic Models 1 on the light amber fill, and ME-000001 of the same building with its own distance, about 8.1, with no fill.
+10. On To fix read the first row.
+   Look for: Priority High, 1B06PH, ME-000002, Coordinates, a Finding starting `118.7 m from the AR model. ME on site`, Value
+   118.7 and Unit m.
+11. On Element IDs filter Model to ME-000002.
+   Look for: one row per element, the Element ID cells numbers with no green triangle, 1819523 among them.
+12. Copy the tool's logs off this PC, as before, and send them with the workbook.
+
 ## F243, one name per output, overwritten, no dated and no internal files
 
 Simple words. One group, 1B06BC of C06, on the NWF page, on a copy of the 19 Oct Report folder, so every old name is there to
