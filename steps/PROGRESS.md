@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-20, the round of 20 Oct, F243 merged in 325, F244 merged in 326, F245 next, then the form and the proof copy, last run 94/item1-C02
+STATE WAITING, 2026-10-20, the round of 20 Oct done, F243 to F245 merged in 325 to 327, waiting for Bader's proof run in proof-2026-10-20 and the form Q228, last run 94/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,10 +15,11 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 327 | 16 | 0 | 30 | 153 | 7 | 533 |
-| total | 531 | 24 | 0 | 30 | 253 | 18 | 856 |
+| outside the waves | 328 | 16 | 0 | 33 | 154 | 7 | 538 |
+| total | 532 | 24 | 0 | 33 | 254 | 18 | 861 |
 <!-- the end of the counts -->
 ## Done
+- 20 Oct, F245 the wrong data of 19 Oct, the CAD words, the ST models read, items 3 to 7 carried by F244, 327, the form Q228 with Q226 and Q227 and the proof steps
 - 20 Oct, F244 the discipline workbook copied from the mock, four sheets, 326, three attempts and a guard pass by his decision, the With issue format corrected by his decision, rows F244-R1 to R9
 - 20 Oct, Bader's order of 19 Oct 20:58, F243 one name per output, overwritten, the clash Excel in Clash report, no dated and no Internal files, 325, three attempts and a guard pass by his decision, rows F243-R1 to R9
 - 19 Oct b, Bader's new way of building, four items, no Navisworks run. F240 the agents' models by their jobs, 320. F241 the
@@ -38,6 +39,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - The QA's contradictions 57 to 73 and those of 19 Oct that stand, in claude\audit-round-2026-10-19b.md
 - One DIALOG finding at the close of set 94 UNKNOWN. T6-R-WPFBOX and F149-R1. The 0 byte NWD in NWD\C04\run 2026-10-14 1615, yours to delete
 ## Bader's turn
+- The proof run of the round at the top of steps\03_bader_next.md, C06 1B06PS and 1B06WL in proof-2026-10-20, seven steps
+- The form of the round, Q228 at the end of steps\02_questions.md, twenty four parts, with Q226 and Q227 above it
 - The proof steps at the top of steps\03_bader_next.md, the full run's 13 first, step 1 opening final-2026-10-19\Report\C06
 - The form, Q225 at the end of steps\02_questions.md, eleven parts, recommended answers first
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
@@ -48,6 +51,6 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
 - The agents' new models and the ai-max copy load from the next session he starts
 ## Next
-1. F245 the wrong data of 19 Oct, then the round's form Q226 onward and the proof copy proof-2026-10-20
+1. Bader's proof run, then Code's after.txt, its checks against F243 point 1 and the two workbooks, and the report to him
 2. The proof steps at the top of steps\03_bader_next.md, the full run's 13 first
 3. The next round, three or four fixes from his answers, the code ones of claude\audit-round-2026-10-19b.md first

@@ -2,6 +2,33 @@
 
 The closed items of this file moved to steps\history\03_bader_next-closed.md on 19 Oct 2026, whole and in their order, F242, Bader's round of 19 Oct b.
 
+## The proof run of the round of 20 Oct, F243 to F245, C06 1B06PS and 1B06WL
+
+Simple words. One run, two groups of C06, on the NWF page, in a copy of the whole 19 Oct run Code made, so the old dated and
+Internal files are there to be cleaned and nothing of the 19 Oct run is touched. 1B06PS has its AR on Revit's internal origin and
+no ME model. 1B06WL has no AR, so EL is its reference, its ME 30.2 m off, with CAD imports and Generic Models. This run replaces
+the F243 and F244 runs above. Plain Navisworks Manage 2025 from the Start menu, never the BIM360 one. Code has already copied
+final-2026-10-19 to C:\NWC-PC-Test\work\proof-2026-10-20 and listed Report\C06 in proof-2026-10-20\before.txt.
+
+1. Install the build of main as the Build and install section below says.
+   Look for: `Build succeeded.` with `0 Error(s)` and `0 Warning(s)`, and the install's last line saying it finished.
+2. Close every Excel window, so no file of the run is held open.
+   Look for: no Excel on the taskbar.
+3. Start Navisworks Manage 2025 from the Start menu and open the tool.
+   Look for: the tool's window with the NWC page and the NWF page.
+4. Open the NWF page, type C:\NWC-PC-Test\work\proof-2026-10-20\Report in the Report folder and press Read.
+   Look for: C06 and C07 with their NWFs, nothing ticked.
+5. Under C06 tick `1104-PAR-1B06PS-ZZZ-BM-MOD-000001` and `1104-PAR-1B06WL-ZZZ-BM-MOD-000001`, nothing else.
+   Look for: two NWFs ticked, and every step box, Refresh, Run tests, Pictures, Viewpoints and Reports, ticked as the page opens.
+6. Press Run, then OK on the confirm, and click nothing more.
+   Look for: one Navisworks opening and closing for 1B06PS, then one for 1B06WL, and the run ending with no box.
+7. Tell Code the run has ended. Code writes after.txt, the list of what was deleted, added and overwritten, checks the folder
+   against F243, opens C06 ME checks.xlsx and C06 AR checks.xlsx against the run's coordinate list and log, and reports.
+   Look for: Code's report naming what passed, what failed and the questions, and no check it did not run.
+
+The NWFs of the copy link their NWC files by the path they were built with, final-2026-10-19\Parent. Whether Navisworks reads
+those or the copies in proof-2026-10-20\Parent is UNKNOWN, and either holds the same files, so the run proves the same.
+
 ## F244, the discipline workbook copied from the mock
 
 Simple words. One group, 1B06PH of C06, on the NWF page, on a copy of the 19 Oct Report folder, because the mock shows its ME

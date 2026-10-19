@@ -2757,7 +2757,7 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   THE IMPORTS OF A MODEL WHOSE NAMES CARRY NO FILE NAME ARE ONE ROW, `CheckWords.ImportedNameNotRead`, Imported CAD file, name not
   readable, Bader's order of 19 Oct 20:58, F245 item 1, its Value the distinct ids and its CAD file or family cell on Element IDs
   the setting's not readable. The AR models of 1B06PO and 1B06WO hold ten such imports under element 784492, which the workbook of
-  19 Oct counted as 10 and listed ten times, and which is now 1 element and one row of Element IDs a model
+  19 Oct counted as 10 and listed ten times, and which since F244 is 1 element and one row of Element IDs a model, F245 writing the order's words
 - WHAT A CHECK COULD NOT READ is never a pass and never a row: UNKNOWN on Models, left out of the check's Checked, and a line of the
   DISCIPLINE REPORT block, `CheckFindings.Notes`. The block says per discipline its rows to fix, its element IDs and each check's
   Checked and With issue, `DisciplineReport.Lines`
