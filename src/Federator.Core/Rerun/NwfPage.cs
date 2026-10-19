@@ -149,7 +149,8 @@ namespace Federator.Core.Rerun
             int toolViews,
             int outsideAtTheLastRun,
             int oldPictures,
-            string viewpointFolderName)
+            string viewpointFolderName,
+            bool penetrations = false)
         {
             StringBuilder text = new StringBuilder();
             text.AppendLine("This run refreshes " + nwfName + ".");
@@ -186,7 +187,8 @@ namespace Federator.Core.Rerun
                 ? "the " + testsInMatrix.ToString(CultureInfo.InvariantCulture) + " of the built in matrix, and the tests saved in the NWF, run again where they sit. "
                 : "the tests saved in the NWF run again where they sit. ")
                 + "A test whose two sides carry one set code is not run, and one saved in the NWF keeps its earlier results there. "
-                + "Statuses, assigned to and comments of clashes still there are kept.");
+                + "Statuses, assigned to and comments of clashes still there are kept"
+                + (penetrations ? ", " + Federator.Core.Clash.PenetrationSettings.ConfirmWords(new Federator.Core.Views.SizeSettings()) : string.Empty) + ".");
             text.AppendLine("Viewpoints: the folder " + viewpointFolderName + " with "
                 + (toolViews >= 0 ? toolViews.ToString(CultureInfo.InvariantCulture) : "UNKNOWN") + " viewpoints is deleted and made again."
                 + " A viewpoint moved by hand into that folder is deleted with it.");

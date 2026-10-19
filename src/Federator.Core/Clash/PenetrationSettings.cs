@@ -197,6 +197,24 @@ namespace Federator.Core.Clash
         /// </summary>
         public const string TickLabel = "Mark penetrations as Reviewed";
 
+        /// <summary>
+        /// Whether the box opens ticked, on both pages, F235, Bader's answer to Q195 of 18 Oct 2026: a pipe, duct, cable tray
+        /// or conduit, or their fittings, of the threshold or less hitting a wall, floor or roof becomes Reviewed, a larger one
+        /// stays New, Reviewed is the only status set, and the by design box is unchanged. It was off until then.
+        /// </summary>
+        public const bool DefaultMarkPenetrations = true;
+
+        /// <summary>
+        /// What a confirm says where the box is ticked, F235 on the breaker's finding, since a confirm that said every status
+        /// is kept read false once the box opened ticked.
+        /// </summary>
+        public static string ConfirmWords(SizeSettings sizes)
+        {
+            SizeSettings how = sizes ?? new SizeSettings();
+            return "but a New or Active clash of a service of " + Millimetres(how.ThresholdMillimetres)
+                + " or less through a wall, floor, roof or foundation is moved to Reviewed with a comment, as the penetrations box is ticked";
+        }
+
         private static string Millimetres(double value)
         {
             return value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + "mm";

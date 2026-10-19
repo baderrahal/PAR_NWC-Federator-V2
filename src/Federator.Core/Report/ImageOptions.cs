@@ -31,6 +31,7 @@ namespace Federator.Core.Report
         private int picturesForA = PictureLimits.DefaultPicturesForA;
         private int picturesForB = PictureLimits.DefaultPicturesForB;
         private int picturesForC = PictureLimits.DefaultPicturesForC;
+        private int capOverClashes = PictureLimits.DefaultCapOverClashes;
         private long gdiStop = PictureLimits.DefaultGdiStop;
         private long memoryStopBytes = PictureLimits.DefaultMemoryStopBytes;
 
@@ -132,6 +133,24 @@ namespace Federator.Core.Report
         {
             get { return picturesForC; }
             set { picturesForC = NoughtOrMore(value, "priority C"); }
+        }
+
+        /// <summary>
+        /// The clashes a test may hold and still get a picture for every one, 750, F235, Bader's answer to Q187 of 18 Oct 2026:
+        /// the caps of A, B and C hold only for a test of more than this. Refused below nought, since no test holds fewer.
+        /// </summary>
+        public int CapOverClashes
+        {
+            get { return capOverClashes; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "The clashes over which a test's pictures are capped are nought or more.");
+                }
+
+                capOverClashes = value;
+            }
         }
 
         /// <summary>
@@ -298,10 +317,11 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// F172, F175 and F190, Bader's answers to Q171. Is there room for one more picture on this test: under
-        /// the box's cap where it is not zero, and under the rule of PictureLimits, which gives the first PicturesForA,
-        /// PicturesForB or PicturesForC clashes of every test, 150, 100 and 50 by default, whatever its clash count, a picture by its priority A, B or C
-        /// and skips the rest. The least of the two holds. The box keeps its own job, a cap of the user's
+        /// F172, F175 and F190, Bader's answers to Q171, and since F235 his answer to Q187. Is there room for one more
+        /// picture on this test: under the box's cap where it is not zero, and under the rule of PictureLimits, which gives
+        /// a test of more than CapOverClashes clashes, 750 by default, a picture for its first PicturesForA, PicturesForB or
+        /// PicturesForC clashes by its priority A, B or C, 150, 100 and 50 by default, and skips the rest, and a test of 750
+        /// or fewer a picture for every clash. The least of the two holds. The box keeps its own job, a cap of the user's
         /// choosing for every test, and the rule is there whatever the box says.
         /// </summary>
         public bool RoomFor(TestReport test, int alreadyWritten)
@@ -309,10 +329,10 @@ namespace Federator.Core.Report
             return alreadyWritten < LimitOf(test);
         }
 
-        /// <summary>The most pictures this test may have, F175: the rule of its picture priority and the box, the least.</summary>
+        /// <summary>The most pictures this test may have, F175 and F235: the rule of its picture priority and its clashes, and the box, the least.</summary>
         public int LimitOf(TestReport test)
         {
-            return PictureLimits.LimitFor(test.PicturePriority, this);
+            return PictureLimits.LimitFor(test.PicturePriority, test.RawClashes, this);
         }
 
         /// <summary>Only the statuses asked for, in the order the tally reports them.</summary>

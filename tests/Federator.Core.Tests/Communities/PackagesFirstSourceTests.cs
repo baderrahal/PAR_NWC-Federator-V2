@@ -158,7 +158,7 @@ namespace Federator.Core.Tests
             string[] inOrder =
             {
                 "NwfPackageReportBox", "NwfReadPackagesButton", "NwfTickAllPackagesButton", "NwfClearAllPackagesButton", "NwfPackagesTree",
-                "NwfToleranceBox", "NwfStepRefresh", "NwfStepTests", "NwfStepPictures", "NwfStepViewpoints", "NwfStepReports", "RunNwfPackagesButton"
+                "NwfToleranceBox", "NwfStepRefresh", "NwfStepTests", "NwfStepPictures", "NwfStepViewpoints", "NwfStepReports", "NwfMarkPenetrations", "RunNwfPackagesButton"
             };
             int at = 0;
 
@@ -170,6 +170,8 @@ namespace Federator.Core.Tests
             }
 
             Assert.That(page, Does.Contain("Click=\"OnRunNwfPackages\""));
+            Assert.That(Regex.IsMatch(Xaml(), "x:Name=\"(Nwf)?MarkPenetrations\"[^>]*IsChecked"), Is.False,
+                "F235, Q195: both penetration boxes open as Core's default says, never a default typed into the XAML");
             Assert.That(page, Does.Contain("ItemsSource=\"{Binding NwfNodes}\""));
             Assert.That(Regex.Matches(page, "<Button[^>]*FontWeight=\"Bold\"").Count, Is.EqualTo(2), "Read and Run");
 
@@ -198,6 +200,9 @@ namespace Federator.Core.Tests
             Assert.That(packages, Does.Contain("MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel"));
             Assert.That(packages, Does.Contain("ShowTheNwfTable(outcomes);"));
             Assert.That(packages, Does.Contain("nwfSteps.Apply(options);"));
+            Assert.That(packages.IndexOf("options.MarkPenetrations = NwfMarkPenetrations.IsChecked == true;", StringComparison.Ordinal),
+                Is.GreaterThan(packages.IndexOf("nwfSteps.Apply(options);", StringComparison.Ordinal)), "F235: the NWF page's run reads its own penetration box");
+            Assert.That(packages, Does.Contain("options.MarkPenetrations && options.RunTests);"), "its RUN SETTINGS and its confirm say YES only where the tests run");
             Assert.That(packages, Does.Contain("RunPackagesInFreshStarts(PackageRunOrder.NwfPage, report, run, units);"));
             Assert.That(packages, Does.Contain("RunPackagesInFreshStarts(PackageRunOrder.NwcPage, packageTree.Parent, run, units);"));
         }

@@ -331,7 +331,9 @@ block in the log with one line per clash moved and one line per reason nothing m
 150 are settings. The 150 is the same number the viewpoints read, named once, and the two read it in
 opposite directions: a viewpoint takes an item OVER it and a penetration takes a service AT OR UNDER it.
 
-It is OFF by default, because it writes into the NWF. A service whose size cannot be read is LEFT
+It writes into the NWF, so it was off by default until F235 (Bader's answer to Q195), which ticks it
+by default on both pages. The NWF page has a box of its own and its run reads that box. The by design
+box is unchanged, off and on the NWC page alone. A service whose size cannot be read is LEFT
 ALONE, which is the opposite of what the viewpoints do with the same unknown, and that is deliberate:
 the safe mistake in a viewpoint is showing something unnecessary, and the safe mistake here is leaving a
 clash for a person to look at.
@@ -399,8 +401,11 @@ started.
 
 Pictures are taken after the NWD is published, F182, one per clash row that takes one.
 
-- A cap per test, F172, F175 and F190: at most the first 150 clashes of a test at priority A, 100 at
-  B and 50 at C. A saved test the matrix does not name is C, and so is a test with no priority read.
+- A cap per test, F172, F175 and F190, only on a test of more than 750 clashes since F235 (Bader's
+  answer to Q187): at most the first 150 clashes of such a test at priority A, 100 at B and 50 at C,
+  and a test of 750 or fewer gets a picture for every clash. The 750 is a setting, and the IMAGES line
+  of a capped test names its clashes and the 750. A saved test the matrix does not name is C, and so is
+  a test with no priority read.
   The cap per test of `ImageOptions.CapPerTest`, off by default and with no box since F232, keeps its
   own job, and the lesser of it and the rule holds.
   The clashes stay in the HTML, the Excel and the viewpoints. Only the picture is skipped.

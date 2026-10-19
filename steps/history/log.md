@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F235, Q187 and Q195 as Bader answered them, fix 5
+
+Branch fix-F235 off main dee781f. Fix 5 of the round: Q187 and Q195 written as answered on 2026-10-18 and built.
+
+What was done. Q187: the caps of A 150, B 100 and C 50 hold only for a test of more than 750 clashes, the setting
+ImageOptions.CapOverClashes read off TestReport.RawClashes by PictureLimits.LimitFor, the one rule every reader of the cap goes
+through, and a test of 750 or fewer gets a picture for every clash. The GDI and memory stops are unchanged, and the IMAGES line
+of each capped test names its clashes and the 750. Q195: the penetration box opens ticked on both pages,
+PenetrationSettings.DefaultMarkPenetrations, the NWF page given a box of its own, NwfMarkPenetrations, which its run reads, its
+RUN SETTINGS line saying the box its page read, and the by design box unchanged. Both answers are written under their
+questions, and Q220 asks about the categories of the penetration lists his words do not name. The reviewer and the breaker
+read 897b000, and what they found of it is fixed: the NWF page's confirm said every status is kept while the box ticked by
+default moves small penetrations, so it says so where the box is on and the tests run, RefreshConfirm.Text with
+PenetrationSettings.ConfirmWords, the RUN SETTINGS line said YES with the tests step off, a refusal message read as nonsense,
+six comments still said the box is off by default, and a proof step proved one test of 1B06PK where he asked for every one.
+The picture order when a stop fires and what counts toward the 750 are Q221, and the rest are rows F235-R1 to R6.
+
+What was proved here. Core tests 3421 passed before and 3424 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors, 0 warnings. On a copy of 1B06PK's two NWCs under C:\NWC-PC-Test\work\smoke235, build 897b0008, the NWC page ran it DONE
+in its own Navisworks, run-20261019-034851: its 80 tests hold at most 655 clashes, so none is capped and every one of its 1748
+clashes got a picture, 1748 written, where the F234 run of the same group on 1597fe9b wrote 1036 and capped 4 tests, 712
+skipped. The same run read penetrations YES on its RUN SETTINGS and moved 844 of 1748 clashes to Reviewed, the 124 services
+over the size left alone. Then on build 8442e4a6, with the readers' fixes, the NWF page on 1B06PK's NWF, run-20261019-040532:
+its confirm read that a small penetration is moved to Reviewed, its group's own Navisworks read the NWF page's box as YES and
+moved 0, the NWC page having moved them already, and 1748 pictures again, the group DONE. A first try of that run passed the
+launcher a stamp of 8442e4a0 where the build is 8442e4a6, so the driver pressed nothing and the window was closed. No IMAGES line
+of a capped test was read off a run, since no test of 1B06PK holds more than 750 clashes, so that line is proved by its test
+alone. The desktop folder 0 lines differing after every run, Navisworks' settings put back with 0 lines differing.
+
+What remains. Bader's proof steps of F235, Q220 and Q221. Known bugs: rows F235-R1 to R6, the penetration pass with no progress, a person's Active moved again, the NWF page reading three NWC page boxes, a window of an older build, the capped line under the per test box, the picture workload. What comes next: F236,
+the clash count check.
+
 ## 2026-10-19 F234, the discipline workbooks rewritten, fix 4
 
 Branch fix-F234 off main fe4d0ef. Fix 4 of the round: the discipline report rewritten to Bader's layout.

@@ -154,7 +154,7 @@ namespace Federator.Core.Tests
             Assert.That(said, Does.Contain("New, Active, Reviewed"));
             Assert.That(said, Does.Contain("no cap of your own per test"));
             Assert.That(said, Does.Contain(
-                "every test gets pictures for at most its first 150 clashes at priority A, "
+                "a test of 750 clashes or fewer gets a picture for every clash, and a test of more gets pictures for at most its first 150 clashes at priority A, "
                 + "100 at priority B and 50 at priority C"));
             Assert.That(said, Does.Contain("linked rather than pasted in"));
         }
