@@ -7,8 +7,8 @@ Newest entry at the top.
 Branch fix-F242 off main cb01f32, worktree wt-F242, pull request 323, main taken in after F239 merged as 322.
 
 What was done. The closed items of four steps files moved whole and in their order into steps\history: steps\01_next.md from
-602,344 to 27,488 bytes, 172 sections, the old order among them, into 01_next-closed.md, with a new order of the eight open
-sections, steps\fix-round.md from 379,484 to 144,071, its 126 closed FR items into fix-round-closed.md, steps\03_bader_next.md
+602,344 to 27,488 bytes, 172 sections, the old order among them, into 01_next-closed.md, with a new order of eight items over the
+nine open sections, steps\fix-round.md from 379,484 to 144,071, its 126 closed FR items into fix-round-closed.md, steps\03_bader_next.md
 from 364,612 to 47,652, the proofs before 18 Oct into 03_bader_next-closed.md with the steps to get, build and install kept, and
 steps\lane-b.md from 95,023 to 51,844, the record of the stopped lane into lane-b-closed.md with every point left for the laptop
 lane and what is left kept. No line of the four was lost, read twice, by the script that moved them and off git, four pointer
