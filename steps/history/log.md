@@ -6,7 +6,7 @@ Newest entry at the top.
 
 Branch fix-F241 off main a85e946, worktree wt-F241, pull request 321, main taken in after F240 merged as 320.
 
-What was done. CLAUDE.md gains the heading Rounds with Bader's nine rules word for word. The older lines they replace now point
+What was done. CLAUDE.md gains the heading Rounds with Bader's nine rules word for word as his round prompt gives them. The older lines they replace now point
 at it: in CLAUDE.md the last bullet of Rules for every file and steps 6 and 7 of How a fix is worked, in .claude\rules\loop.md
 the opening line, items 8 and 12 of How a finding is worked, the run set's line on what runs between the baseline and the close
 and FAST CHECKS of 11 Oct, whose gate on Bader's word stays for the run at the end of a round, in .claude\rules\steps.md the two
@@ -20,8 +20,9 @@ What was proved here. Core tests 3451 passed, 0 failed, 0 skipped, before and af
 file under src or tests changed, so the add-in was not built. check-evidence-ids read the 41 files of the first commit clean.
 
 What remains. Where the skill copy says otherwise, never two pull requests open at once, CLAUDE.md under 200 lines, the rules
-file docs\rules.md, CLAUDE.md now holds and the audit of the round lists them. The two .cmd files of the copy carry no CRLF pin
-in .gitattributes, so a checkout with core.autocrlf false gives them LF, which cmd.exe misreads round a label. Known bugs: none
+file docs\rules.md, CLAUDE.md now holds, and they are left for the audit of the round to list. The two .cmd files of the copy carry no CRLF pin
+in .gitattributes, so a checkout with core.autocrlf false gives them LF, and what cmd.exe does with these two then is UNKNOWN,
+since neither holds a label, the case .gitattributes measured. Known bugs: none
 new. What comes next: F239, then F242.
 
 ## 2026-10-19 F240, each agent's model by its job, item 2
