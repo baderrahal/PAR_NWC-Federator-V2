@@ -106,9 +106,8 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
   third is the one manifest the install reads, changed on its own and never inside a
   fix. A hook refuses the edit
 - Nothing is committed or pushed on main. Every fix goes on its own branch, named
-  fix-FNN for the fix in steps\01_next.md, reaches main through one pull request
-  merged once Actions is green, and the local branch is deleted after. A hook
-  refuses a commit or a push while main is checked out
+  fix-FNN for the fix in steps\01_next.md, and reaches main as Rounds below says. A
+  hook refuses a commit or a push while main is checked out
 
 ## How a fix is worked
 
@@ -120,9 +119,23 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
    steps\01_next.md, and the proof steps in steps\03_bader_next.md where the add-in
    changed
 6. One draft pull request, whose body says what was proved here and what waits for
-   the local machine. Merge it when Actions is green. Never merge red, never stop
-   with a pull request open
-7. A new question goes in steps\02_questions.md, numbered after the last one
+   the local machine, merged as Rounds below says
+7. A question goes in steps\02_questions.md, numbered after the last one, in the
+   round's one form
+
+## Rounds
+
+Bader's new way of building, 19 Oct 2026, for this round and every round after.
+
+- Three or four fixes per round, never more.
+- Fixes that touch different files run side by side in worktrees. Fixes that touch the same files run in order.
+- Prove each fix on the smallest real case, one group. The full real run happens once, at the end of a round.
+- A round closes only on the outputs: each output opened and judged against what Bader asked for, the counts reconciled across Clash Detective, Excel, HTML and viewpoints, random picks checked by element ID, what was skipped named with why.
+- One records commit per fix: the log entry, the DONE line, the tracker row and PROGRESS together.
+- Questions go in one form at the end of the round.
+- A fix on its third attempt stops and goes back to measuring.
+- One PR per fix, merged on green, branch deleted, never leave a PR open.
+- Follow the writing rule at the end of CLAUDE.md.
 
 ## Build
 

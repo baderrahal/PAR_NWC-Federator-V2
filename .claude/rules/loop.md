@@ -347,17 +347,16 @@ and nothing is fixed until a real run on real files shows it fixed.
 7. The one who wrote a change never reviews it. The reviewer and the breaker read every
    change before its pull request, and the claim-checker reads every pull request body
    and every turn entry before it is final
-8. A finding that survives three fix attempts stops, with what was tried and what each
-   run showed, and moves to the form
+8. A fix stops on its third attempt as CLAUDE.md under Rounds says, and its entry names
+   what was tried and what each run showed
 9. From now on, a reading of the loop's own scripts blocks a run only for a fault that
    could harm Bader's things or make a run's evidence wrong. Words, polish and edge cases
    that cannot do either become register rows, not fix attempts. The product code keeps
    every house rule as written. Bader's words of 2026-10-01, Q93
 10. Never report a check that did not run in this session
 11. The writing rule at the end of CLAUDE.md holds everywhere
-12. Every pull request is merged by the lead once Actions is green, watched with
-    gh pr checks <number> --watch, and its branch deleted. Never merge red. Never stop
-    with a pull request open. The add-in is built after every add-in change and the
+12. The lead merges every pull request as CLAUDE.md under Rounds says, watched with
+    gh pr checks <number> --watch. The add-in is built after every add-in change and the
     counts pasted in the body. A turn that changes no code ends with its own record pull
     request, so main is never behind the loop
 
@@ -401,12 +400,10 @@ close for being stuck. The lead's own waiter, outside the repo, reads life.txt a
 lines in the tab on a LIFE CLASS line. tools\loop\prove-life.ps1 proves it, its stand-in copied
 as LifeStandIn.exe so no process named Roamer starts during another run.
 
-FAST CHECKS, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS: a full run of
-1A04PK takes hours, so a fix is proved on 1A02MM and on a cut down 1A04PK, the same models run with the
-copy tools\loop\cut-xml.ps1 writes of the picked XML, the first 50 tests in its order, mirrors included,
-under the run set's copy, the full XML never edited. After each fast check the lead gives Bader three
-lines in the tab, its time, what is proven and what failed. The whole 1A04PK runs once, after the speed
-fix and the fast checks pass, with the life check on, and only once Bader has said in the tab to start it.
+FAST CHECKS, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS, gave way to CLAUDE.md under
+Rounds, his rule of 19 Oct 2026: each fix is proved on the smallest real case, one group, and the full
+real run happens once, at the end of a round. After each proof the lead gives Bader three lines in the
+tab, its time, what is proven and what failed.
 
 Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
 F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,
