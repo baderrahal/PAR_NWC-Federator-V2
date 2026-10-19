@@ -2,9 +2,49 @@
 
 ## The round of 19 Oct, F231 to F238
 
-Simple words. Each fix of this round adds its steps here as it merges, and F238 orders them, its step 1 opening the Report
-folder of the full run. The steps of the round of 18 Oct below name step 5 and the NWF picker, which F232 took out: on this
-build step 5 is step 1. Packages and the picker is the NWF page's tree.
+Simple words. One order for the round, F238's: first the full run's output, read where it sits with nothing to build or install,
+then the steps of each fix on the build after F237, newest first, F236, F235, F234, F233 and F232, each opening the tool from
+the Start menu on a copy of the files. F231 changed no code and has no steps. The steps of the round of 18 Oct below name step
+5 and the NWF picker, which F232 took out: on this build step 5 is step 1. Packages and the picker is the NWF page's tree.
+
+### The round of 19 Oct 2026, the full run on final-2026-10-19
+
+Read off what the run left in C:\NWC-PC-Test\work\final-2026-10-19\Report, main 6faff29, the NWC page then the NWF page, C06
+and C07. These come first, since they need nothing built or installed, steps 8 and 9 alone opening Navisworks. The steps of each
+fix follow, F236 first.
+
+1. In File Explorer open C:\NWC-PC-Test\work\final-2026-10-19\Report\C06 and open `C06 AR checks.xlsx`, `C06 ST checks.xlsx`,
+   `C06 ME checks.xlsx` and `C06 EL checks.xlsx`, the four without a date in the name.
+   Look for: in each, row 1 `C06 C06 itself <discipline> model checks`, the seven checks from Coordinates to Generic Models,
+   and Issues AR 10, ST 28, ME 17, EL 14. In ST, rows 1 and 2 on a red fill, 1B06BC at `34.014 m, ST on T1, AR on Internal`
+   and `34.472 m, ST on BCTANK, AR on Internal`. In EL, four One discipline group rows, 1B06BS, 1B06KI, 1B06PG and 1B06PW.
+2. In the same folder open `C06 clash count check.xlsx`.
+   Look for: no red row, the row `Total C06` reading 3904, 3904, 3904, 2121, 3904, 0, and Reviewed 1783, then under
+   `Groups not built for one discipline` 1B06BS, 1B06KI, 1B06PG, 1B06PT, 1B06PW and 1C06PK.
+3. Open Report\C07\`C07 clash count check.xlsx`.
+   Look for: no red row, `Total C07` reading 1549, 1549, 1549, 986, 1549, 0, and Reviewed 563, and six groups not built,
+   1A07PP, 1C07BS, 1C07KI, 1C07PK, 1C07PW and 1D07PT.
+4. Open Report\C06\NWF.
+   Look for: 15 NWF files, and none named 1B06BS, 1B06KI, 1B06PG, 1B06PT, 1B06PW or 1C06PK.
+5. Open Report\C06\Log\`1104-PAR-1B06PK-ZZZ-BM-MOD-000001 2026-10-19 062626.xlsx`, the one the NWF page wrote.
+   Look for: one sheet, the test BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors first, its Clashes 655.
+6. Press Ctrl+F and find Clash91 under that test.
+   Look for: the row Reviewed, Item 1 `Element ID: 6608970`, Item 2 `Element ID: 3910160`.
+7. Click that row's picture.
+   Look for: cd000098.jpg, a red pipe standing through a green floor.
+8. Start Navisworks Manage 2025 from the Start menu and open Report\C06\NWF\`1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf`.
+   Look for: it opens with no message.
+9. Open Clash Detective and pick the test BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors.
+   Look for: 655 clashes, and Clash91 at Reviewed with its two items Element ID 6608970 and 3910160 on the Results tab.
+10. Open Report\C07\Log\`1104-PAR-1C07P1-ZZZ-BM-MOD-000001 2026-10-19 063457.xlsx`.
+    Look for: one sheet, BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls among its tests.
+11. Press Ctrl+F and find Clash2 under that test.
+    Look for: Reviewed, Item 1 `Element ID: 5709507`, Item 2 `Element ID: 456237`.
+12. Click that row's picture.
+    Look for: cd020002.jpg, a red pipe against a green wall.
+13. Open steps\logs\`2026-10-19-C06-C07-final-comparison-summary.txt` in the repo.
+    Look for: four lines, C06 NWC, C06 NWF, C07 NWC and C07 NWF, each with cd, excel and html the same on both sides, 3904 or
+    1549, and only views, pictures and reviewed moving.
 
 ### F236, the clash count check
 
