@@ -118,3 +118,9 @@ ST of 1B06BC reads 34.014 m, ST on T1, AR on Internal and 34.472 m, ST on BCTANK
 3421 after. Asked: Q218, the Action of five checks and what Files checked counts, and Q219, OK beside nought files, rows
 measured from a reference on Internal, the words the message does not give, and the C02 case of scan.md 5z-zg. Open as rows
 F234-R1 to R9.
+
+The two routes the C06 and C07 run did not take were run on build a339b626, the final source. The NWC page on a parent holding
+1B06PG alone, run-20261019-032430: the package's folders made and its four workbooks written, EL holding the 1B06PG row with its
+file, row F233-R3. The NWF page on Report3, run-20261019-032541: 1B06PG not built, its NWF the same SHA-256, and its row in the
+EL workbook off the files its result carried back, row F233-R2. Every workbook of both runs read back with its summary counts
+equal to its rows. The NWF page run also showed row F234-R5, a pattern learned off the AR names of one building.

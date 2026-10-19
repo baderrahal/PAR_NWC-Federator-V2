@@ -8,8 +8,8 @@ Branch fix-F234 off main fe4d0ef. Fix 4 of the round: the discipline report rewr
 
 What was done. One workbook per discipline per package, one sheet, the same name. Rows 1 to 3 the title, the run date and the
 reference discipline, then the summary of the seven checks with Files checked, Issues and OK or Issues, one blank row, then
-the issues table, its header frozen and filtered, only rows that need action, sorted by severity, building and file, High
-light red, Medium light amber, Low no fill, headers bold on grey and every cell wrapped. Every cell is Core's, CheckWords,
+the issues table, frozen down to its header row and filtered, only rows that need action, sorted by severity, building and
+file, High light red, Medium light amber, Low given no fill, headers bold on grey and every cell of the issues table wrapped. Every cell is Core's, CheckWords,
 DisciplineIssue and CheckSummary. Coordinates are ALIGNMENT's: the transform's translation read by its own
 ModelFactsReader.TranslationOf, carried in the facts in place of the box, its reference and its straight line,
 AlignmentCheck.ReferenceIn and StraightLineMillimetres, far over 30 m, and a reference on Internal is one row. Missing model
@@ -26,8 +26,12 @@ their dates and every SHA-256 matching, build 1597fe9b, the NWC page ran 32 grou
 built for one discipline, run-20261019-025319. The 8 workbooks were read back off the disk, each check's summary count the
 rows of that check: C06 AR 10, ST 28, ME 17, EL 14, C07 AR 10, ST 28, ME 21, EL 9. C06 ST holds 34.014 m, ST on T1, AR on
 Internal and 34.472 m, ST on BCTANK, AR on Internal for 1B06BC, C06 AR the 1B06BC row on Revit internal origin, and C06 EL the
-1B06PG row of one discipline. The fixes after 1597fe9 change Core rules alone, proved by tests, and the full run of F237 runs
-the final build. The desktop folder 0 lines differing, Navisworks' settings put back with 0 lines differing.
+1B06PG row of one discipline. The 134 copies matched their source in size, date and SHA-256, copies-against-source.tsv. Then
+on build a339b626, the final source: the NWC page on a parent holding 1B06PG alone made the package's folders and wrote its four
+workbooks, the EL one holding the 1B06PG row with its file, run-20261019-032430, row F233-R3, and the NWF page on Report3 left
+1B06PG's NWF unbuilt and the same SHA-256 and wrote its row into the EL workbook off the files its result carried back,
+run-20261019-032541, row F233-R2, every workbook of both runs read back with its summary counts equal to its rows. The desktop
+folder 0 lines differing after every run, Navisworks' settings put back with 0 lines differing.
 
 What remains. Bader's proof steps of F234, Q218 and Q219. Known bugs: rows F234-R1 to R9, unreadable names and blocked groups
 in no workbook, the reference moving while row 3 says AR, the units of the translation, codes outside the four disciplines, a
