@@ -24,7 +24,12 @@ errors, 0 warnings. On a copy of 1B06PK's two NWCs under C:\NWC-PC-Test\work\smo
 in its own Navisworks, run-20261019-034851: its 80 tests hold at most 655 clashes, so none is capped and every one of its 1748
 clashes got a picture, 1748 written, where the F234 run of the same group on 1597fe9b wrote 1036 and capped 4 tests, 712
 skipped. The same run read penetrations YES on its RUN SETTINGS and moved 844 of 1748 clashes to Reviewed, the 124 services
-over the size left alone. The desktop folder 0 lines differing, Navisworks' settings put back with 0 lines differing.
+over the size left alone. Then on build 8442e4a6, with the readers' fixes, the NWF page on 1B06PK's NWF, run-20261019-040532:
+its confirm read that a small penetration is moved to Reviewed, its group's own Navisworks read the NWF page's box as YES and
+moved 0, the NWC page having moved them already, and 1748 pictures again, the group DONE. A first try of that run passed the
+launcher a stamp of 8442e4a0 where the build is 8442e4a6, so the driver pressed nothing and the window was closed. No IMAGES line
+of a capped test was read off a run, since no test of 1B06PK holds more than 750 clashes, so that line is proved by its test
+alone. The desktop folder 0 lines differing after every run, Navisworks' settings put back with 0 lines differing.
 
 What remains. Bader's proof steps of F235, Q220 and Q221. Known bugs: rows F235-R1 to R6, the penetration pass with no progress, a person's Active moved again, the NWF page reading three NWC page boxes, a window of an older build, the capped line under the per test box, the picture workload. What comes next: F236,
 the clash count check.
