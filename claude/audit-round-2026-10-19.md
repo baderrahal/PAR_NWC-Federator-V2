@@ -92,3 +92,29 @@ open, one discipline or not. Open as rows F233-R1 to R10: the Backup and Log fol
 facts and those of a package of such groups alone, which F234 takes, a partner file whose name does not read, the open file
 run of the Clash step, the federated discipline a constant, the building of an NWF of several buildings, the skip paths no
 longer reached, a link Navisworks leaves out with the refresh off, and the FINDINGS sentence with nothing between two words.
+
+## F234, the discipline workbooks rewritten
+
+One workbook per discipline per package, one sheet, the same name, every cell Core's. Rows 1 to 3 the title, the run date and
+the reference discipline, the summary of the seven checks, one blank row, then the issues table with its header frozen and
+filtered, holding only what needs action, High light red, Medium light amber, Low no fill, sorted by severity, building and
+file. Coordinates are ALIGNMENT's translation from the reference model, never the box gap, far over 30 m.
+
+Proved on copies of C06 and C07, 134 NWC files, build 1597fe9b, the NWC page, run-20261019-025319, 32 groups DONE and 12 not
+built for one discipline:
+
+| workbook | issue rows read back | summary counts | the two agree |
+|---|---|---|---|
+| C06 AR | 10 | 10 | yes |
+| C06 ST | 28 | 28 | yes |
+| C06 ME | 17 | 17 | yes |
+| C06 EL | 14 | 14 | yes |
+| C07 AR | 10 | 10 | yes |
+| C07 ST | 28 | 28 | yes |
+| C07 ME | 21 | 21 | yes |
+| C07 EL | 9 | 9 | yes |
+
+ST of 1B06BC reads 34.014 m, ST on T1, AR on Internal and 34.472 m, ST on BCTANK, AR on Internal. Core tests 3415 before and
+3421 after. Asked: Q218, the Action of five checks and what Files checked counts, and Q219, OK beside nought files, rows
+measured from a reference on Internal, the words the message does not give, and the C02 case of scan.md 5z-zg. Open as rows
+F234-R1 to R9.

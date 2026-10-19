@@ -22,6 +22,9 @@ build step 5 is step 1. Packages and the picker is the NWF page's tree.
    Look for: a 1B06BC row `on Revit internal origin` with `Export on the project shared coordinates`.
 6. Open `C06 EL checks.xlsx`.
    Look for: a row `only discipline in this group, not federated` for 1B06PG with its file name, and no row of a file that passed.
+7. Open the Report folder's C07 folder and open each of its four workbooks, the names ending `checks.xlsx`, or the newest dated
+   one where a second run left one beside it.
+   Look for: in each, the Issues column of the summary adds up to the rows of the issues table.
 
 ### F233, one discipline groups are not built
 

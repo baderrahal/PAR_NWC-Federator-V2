@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F234, the discipline workbooks rewritten, fix 4
+
+Branch fix-F234 off main fe4d0ef. Fix 4 of the round: the discipline report rewritten to Bader's layout.
+
+What was done. One workbook per discipline per package, one sheet, the same name. Rows 1 to 3 the title, the run date and the
+reference discipline, then the summary of the seven checks with Files checked, Issues and OK or Issues, one blank row, then
+the issues table, its header frozen and filtered, only rows that need action, sorted by severity, building and file, High
+light red, Medium light amber, Low no fill, headers bold on grey and every cell wrapped. Every cell is Core's, CheckWords,
+DisciplineIssue and CheckSummary. Coordinates are ALIGNMENT's: the transform's translation read by its own
+ModelFactsReader.TranslationOf, carried in the facts in place of the box, its reference and its straight line,
+AlignmentCheck.ReferenceIn and StraightLineMillimetres, far over 30 m, and a reference on Internal is one row. Missing model
+reads F219's rule. One discipline group rows come from F233's own decision, carried as DisciplineGroup.NotBuiltForOneDiscipline,
+their files reaching the report on the NWF page through PackageRunResult.NotBuiltFiles, row F233-R2, and a package of such groups
+alone gets its workbooks, row F233-R3. Naming, File age, CAD and Generic Models as his words give them. What a check could not
+read is a line of the DISCIPLINE REPORT block and never a row. The reviewer and the breaker read the first commit, and what
+they found of it is fixed: the one discipline rows judged a second time off the files, a blank where a reference's name does
+not read, the members only tests read, two stale comments, the rule text. The rest are rows F234-R1 to R9, Q218 and Q219.
+
+What was proved here. Core tests 3415 passed before and 3421 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors, 0 warnings. On copies of C06 and C07 under C:\NWC-PC-Test\work\f234, 134 NWC files copied from the desktop folder with
+their dates and every SHA-256 matching, build 1597fe9b, the NWC page ran 32 groups DONE each in its own Navisworks and 12 not
+built for one discipline, run-20261019-025319. The 8 workbooks were read back off the disk, each check's summary count the
+rows of that check: C06 AR 10, ST 28, ME 17, EL 14, C07 AR 10, ST 28, ME 21, EL 9. C06 ST holds 34.014 m, ST on T1, AR on
+Internal and 34.472 m, ST on BCTANK, AR on Internal for 1B06BC, C06 AR the 1B06BC row on Revit internal origin, and C06 EL the
+1B06PG row of one discipline. The fixes after 1597fe9 change Core rules alone, proved by tests, and the full run of F237 runs
+the final build. The desktop folder 0 lines differing, Navisworks' settings put back with 0 lines differing.
+
+What remains. Bader's proof steps of F234, Q218 and Q219. Known bugs: rows F234-R1 to R9, unreadable names and blocked groups
+in no workbook, the reference moving while row 3 says AR, the units of the translation, codes outside the four disciplines, a
+pattern of one building, a cell past Excel's limit, workbooks written by a refused run, the NWF page's ticked NWFs alone, a why
+dropped by ALIGNMENT. What comes next: F235, Q187 and Q195 as Bader answered them.
+
 ## 2026-10-19 F233, one discipline groups are not built, fix 3
 
 Branch fix-F233 off main 66bc601. Fix 3 of the round: a group of one discipline is not built, on both pages.
