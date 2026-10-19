@@ -16,8 +16,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 319 | 16 | 1 | 28 | 135 | 7 | 506 |
-| total | 523 | 24 | 1 | 28 | 235 | 18 | 829 |
+| outside the waves | 320 | 16 | 0 | 28 | 135 | 7 | 506 |
+| total | 524 | 24 | 0 | 28 | 235 | 18 | 829 |
 <!-- the end of the counts -->
 ## Now
 - 19 Oct, the round of F231 to F238 open, Bader's six fixes, the full run on final-2026-10-19 and the end, plan in log.md.

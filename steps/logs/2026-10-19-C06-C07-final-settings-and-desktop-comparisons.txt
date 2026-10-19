@@ -1,0 +1,7 @@
+Navisworks settings, nwc-page\reg-before.reg against nwf-page\reg-after.reg, lines differing: 66
+reg-putback.reg is an export of HKCU\Software\Autodesk\Navisworks Manage\22.0 taken after reg import of nwc-page\reg-before.reg
+nwc-page\reg-before.reg against reg-putback.reg, lines differing: 0
+a fresh export now, reg-now.reg, against nwc-page\reg-before.reg, lines differing: 0
+nwc-page desktop listing of the launcher, lines differing before and after: 0
+nwf-page desktop listing of the launcher, lines differing before and after: 0
+desktop-before.tsv against desktop-after.tsv, every file with its SHA-256, lines differing: 0
