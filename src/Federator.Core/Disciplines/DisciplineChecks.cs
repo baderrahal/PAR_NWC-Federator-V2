@@ -97,7 +97,9 @@ namespace Federator.Core.Disciplines
 
                 foreach (ModelFacts model in group.Models ?? new List<ModelFacts>().AsReadOnly())
                 {
-                    rows.In(group, model.File);
+                    int before = rows.all.Count;
+                    ModelRow row = rows.In(group, model.File);
+                    row.NotInFiles = row.NotInFiles || rows.all.Count > before;
                 }
             }
 
@@ -284,7 +286,12 @@ namespace Federator.Core.Disciplines
                         continue;
                     }
 
-                    found.Judged(model.Discipline);
+                    // A model whose site was not read is measured and is not counted as judged, as it is not on Models, the
+                    // breaker's 4 on 4f5b5bb.
+                    if (model.SiteRead)
+                    {
+                        found.Judged(model.Discipline);
+                    }
                     row.ComparedWith = NameOf(reference);
 
                     if (model == reference)
@@ -454,7 +461,6 @@ namespace Federator.Core.Disciplines
         private readonly List<string> fixedValues = new List<string>();
         private readonly List<string> shapes = new List<string>();
         private readonly List<string> examples = new List<string>();
-        private readonly List<int> shapeOnly = new List<int>();
 
         private ReferenceNaming()
         {
@@ -475,6 +481,9 @@ namespace Federator.Core.Disciplines
 
         public int BuildingPart { get; private set; }
 
+        /// <summary>The naming settings' NumberPart, the one rule for where the number sits, F244 attempt 3.</summary>
+        public int NumberPart { get; private set; }
+
         public bool WasLearned
         {
             get { return NameCount > 0; }
@@ -487,7 +496,7 @@ namespace Federator.Core.Disciplines
             naming.Separator = names.Separator;
             naming.DisciplinePart = names.DisciplinePart;
             naming.BuildingPart = names.BuildingPart;
-            naming.shapeOnly.AddRange(settings.ShapeOnlyParts);
+            naming.NumberPart = names.NumberPart;
             List<string[]> parts = new List<string[]>();
 
             foreach (string file in referenceFiles)
@@ -664,7 +673,7 @@ namespace Federator.Core.Disciplines
 
         /// <summary>
         /// The pattern as the Summary and To fix say it for a discipline, F244: each part the reference names hold alike as it
-        /// reads, the discipline's part the discipline, the building part &lt;building&gt;, a part judged by its shape alone
+        /// reads, the discipline's part the discipline, the building part &lt;building&gt;, the naming settings' NumberPart
         /// &lt;number&gt;, any other &lt;part N&gt;, such as 1104-PAR-&lt;building&gt;-ZZZ-ME-MOD-&lt;number&gt;. The words of
         /// Describe where no pattern was learned.
         /// </summary>
@@ -682,7 +691,7 @@ namespace Federator.Core.Disciplines
                 words.Add(i + 1 == DisciplinePart ? discipline
                     : fixedValues[i] != null ? fixedValues[i]
                     : i + 1 == BuildingPart ? "<building>"
-                    : shapeOnly.Contains(i + 1) ? "<number>"
+                    : i + 1 == NumberPart ? "<number>"
                     : "<part " + (i + 1) + ">");
             }
 
@@ -773,11 +782,6 @@ namespace Federator.Core.Disciplines
             naming = Learn(referenceFiles, settings, names);
             found.Note(naming.Describe());
 
-            if (!naming.WasLearned)
-            {
-                return found;
-            }
-
             foreach (DisciplineGroup group in groups)
             {
                 foreach (string file in group.Files)
@@ -786,7 +790,11 @@ namespace Federator.Core.Disciplines
 
                     if (code == null)
                     {
-                        found.Note(DisciplineOf.FileName(file) + " not judged, its name does not read");
+                        if (naming.WasLearned)
+                        {
+                            found.Note(DisciplineOf.FileName(file) + " not judged, its name does not read");
+                        }
+
                         continue;
                     }
 
@@ -795,7 +803,15 @@ namespace Federator.Core.Disciplines
                         continue;
                     }
 
+                    // Naming is to judge this model, so a name it could not judge, with no pattern learned, is not read.
                     ModelRow row = rows.In(group, file);
+                    row.NamingDue = true;
+
+                    if (!naming.WasLearned)
+                    {
+                        continue;
+                    }
+
                     IList<NamingBreak> breaks = naming.Breaks(file);
                     row.NameFollows = breaks.Count == 0;
 

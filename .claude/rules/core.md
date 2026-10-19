@@ -2704,9 +2704,11 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   check writes what it read into the row of the model it read. Model the short name, the discipline and the number at the naming
   settings' `NumberPart`, part 7, read by `ContainerName.Parse` as `ParsedContainerName.Number`, never the last part of the name,
   the file's name where it has none. Status, `ModelRow.Status`: FIX where the model has a High row, REVIEW where it has any, NOT
-  CHECKED where it has none and a value was not read, its placement, its site, its CAD or Generic walk or no facts of it at all,
-  `ModelRow.SomethingNotRead`, the breaker's S1, OK only where everything was read and nothing found, MISSING, and NOT CHECKED for
-  a group of one discipline. Compared with
+  CHECKED where it has none and a value was not read, `ModelRow.SomethingNotRead`, the breaker's S1 and the reviewer's B1: its
+  placement or every placement of its building, its site, its CAD walk, its Generic walk, no facts of it at all, its file date,
+  its name where Naming was to judge it and could not, as in a package with no reference file, or the model in its group's facts
+  and not among its files. OK only where everything was read and nothing found, MISSING, and NOT CHECKED for a group of one
+  discipline. A model whose site was not read is measured and not counted in Coordinates' Checked, as it is not on Models. Compared with
   and Off the reference out of Coordinates, `ModelMeasure`: the reference's discipline and the metres, under 1 in grey below
   `DisciplineWorkbook.UnderMetres`, itself and reference in grey on the reference, internal origin on a reference on Internal,
   none and alone in grey on a group of one discipline, UNKNOWN in grey where not measured. Naming OK in green, wrong, or not checked
@@ -2736,8 +2738,10 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   `DisciplineGroup.NotBuiltForOneDiscipline` by `PackageRunFacts`, never judged a second time off the files
 - NAMING, `ReferenceNaming`, not against ISO: the reference discipline's names split on the naming separator, the part count
   most of them have, each part all of them hold alike, and each part's MERGED SHAPE, `MergedShape`, the length kept. The
-  discipline's own part is left out and the parts of `ShapeOnlyParts` are judged by their shape alone. The pattern as the workbook
-  says it, `Pattern`, such as 1104-PAR-<building>-ZZZ-ME-MOD-<number>. A file of another discipline that breaks it is one Medium
+  discipline's own part is left out and the parts of `ShapeOnlyParts` are judged by their shape alone, its default the naming
+  settings' number part, built from `ContainerNameSettings.DefaultNumberPart`, the one place that says where the number sits. The
+  pattern as the workbook says it, `Pattern`, `<number>` at the naming settings' `NumberPart`, such as
+  1104-PAR-<building>-ZZZ-ME-MOD-<number>. A file of another discipline that breaks it is one Medium
   row, Name should be the pattern, and each part it breaks a line of the log with what the reference has there. The pattern
   learned is a line of the log, and with no reference file none is learned and the log says so
 - FILE AGE, `FileAgeCheck`: each file's age in whole days off the date the disk gives on its row of Models, and one whose whole

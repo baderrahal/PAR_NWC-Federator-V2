@@ -50,8 +50,10 @@ namespace Federator.Core.Naming
         /// <summary>
         /// A name has to split into at least this many parts before every field the
         /// output name is built from can be read out of it. Only parts 1, 2, 3 and 5 are
-        /// read, so the floor is 5. The level, the type code and the number come from the
-        /// pattern and are never read from the input, so they never raise it.
+        /// needed, so the floor is 5. The level and the type code come from the pattern and
+        /// are never read from the input. The number of the output name comes from the
+        /// pattern too, and the input's number, NumberPart, is read only where the name has
+        /// that part, for the discipline workbooks' short name, F244, so none of them raises it.
         /// </summary>
         public int MinimumParts
         {

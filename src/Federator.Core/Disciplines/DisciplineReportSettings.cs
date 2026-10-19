@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Federator.Core.Generic;
+using Federator.Core.Naming;
 
 namespace Federator.Core.Disciplines
 {
@@ -36,10 +37,11 @@ namespace Federator.Core.Disciplines
 
         /// <summary>
         /// The parts of a file name the naming check judges by their shape alone and never as a value every reference name
-        /// must share, counted from 1: the number, part 7, which counts the files of a discipline and differs by its nature,
-        /// so an ST-MOD-000002 beside one AR-MOD-000001 is not a break, read on the copies of 18 Oct 2026.
+        /// must share, counted from 1: the number, which counts the files of a discipline and differs by its nature, so an
+        /// ST-MOD-000002 beside one AR-MOD-000001 is not a break, read on the copies of 18 Oct 2026. Built from the naming
+        /// settings' number part, ContainerNameSettings.DefaultNumberPart, the one place that says where the number sits, F244.
         /// </summary>
-        public static readonly ReadOnlyCollection<int> DefaultShapeOnlyParts = new ReadOnlyCollection<int>(new[] { 7 });
+        public static readonly ReadOnlyCollection<int> DefaultShapeOnlyParts = new ReadOnlyCollection<int>(new[] { ContainerNameSettings.DefaultNumberPart });
 
         private ReadOnlyCollection<int> shapeOnlyParts = DefaultShapeOnlyParts;
 

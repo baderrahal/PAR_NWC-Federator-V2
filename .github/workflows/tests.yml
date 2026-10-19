@@ -66,8 +66,9 @@ jobs:
       # F102. A probe result committed from Bader's machine carried the machine's name and
       # two Autodesk licensing ids. Every file in the tree is read as text for every kind in
       # tools/checks/evidence-ids.txt, or named and refused. Left out: tools/checks/broken,
-      # whose faults are on purpose, .git, bin and obj, and a .jpg or .xlsx under samples
-      # whose first and last bytes are its format's own. It names the file, the line and the kind,
+      # whose faults are on purpose, .git, bin and obj, a .jpg or .xlsx under samples and,
+      # since F244, the mock's xlsx and pdf in docs/design, each named exactly, whose first and
+      # last bytes are its format's own. It names the file, the line and the kind,
       # never the text, because this log is public. COMPUTERNAME here is the runner's, so
       # this reads for the runner's name and never for Bader's. Only the pre-commit on his
       # machine reads for his.

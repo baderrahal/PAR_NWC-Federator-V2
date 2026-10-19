@@ -259,6 +259,53 @@ namespace Federator.Core.Tests
             Assert.That(report.ModelsFor("ME").Single().Status, Is.EqualTo("FIX"), "40 m away, found, wins over its Generic walk not read");
         }
 
+        /// <summary>F244 attempt 3, the reviewer's B1: a model whose file date was not read reads NOT CHECKED, never OK.</summary>
+        [Test]
+        public void AModelWhoseDateWasNotReadIsNotChecked()
+        {
+            string[] files = { Nwc("1B06PS", "AR"), Nwc("1B06PS", "ST") };
+            DisciplineReport report = DisciplineReport.For("C06", "C06 itself",
+                new List<DisciplineGroup> { new DisciplineGroup("1B06PS", files, files.Select(f => Model(f, 0, "S")), null) },
+                new List<FileDate> { new FileDate(files[0], Now.AddDays(-1), null), new FileDate(files[1], null, "the file is gone") },
+                Now, new DisciplineReportSettings(), Names);
+
+            Assert.That(report.ModelsFor("AR").Single().Status, Is.EqualTo("OK"));
+            Assert.That(report.ModelsFor("ST").Single().Status, Is.EqualTo("NOT CHECKED"), "its date not read");
+        }
+
+        /// <summary>F244 attempt 3, the reviewer's B1: in a package with no AR file Naming could judge no name, so no model reads OK.</summary>
+        [Test]
+        public void AModelNamingCouldNotJudgeInAPackageWithNoReferenceFileIsNotChecked()
+        {
+            string[] files = { Nwc("1B06PS", "EL"), Nwc("1B06PS", "ST") };
+            DisciplineReport report = DisciplineReport.For("C06", "C06 itself",
+                new List<DisciplineGroup> { new DisciplineGroup("1B06PS", files, files.Select(f => Model(f, 0, "S")), null) },
+                files.Select(f => new FileDate(f, Now.AddDays(-1), null)).ToList(), Now, new DisciplineReportSettings(), Names);
+
+            Assert.That(report.ModelsFor("EL").Single().Status, Is.EqualTo("NOT CHECKED"));
+            Assert.That(report.ModelsFor("ST").Single().Status, Is.EqualTo("NOT CHECKED"));
+        }
+
+        /// <summary>
+        /// F244 attempt 3, the breaker's 4 and the reviewer's B1: a model whose site was not read is not counted as judged by
+        /// Coordinates, as it is not on Models, and a model of the facts that is not among the group's files reads NOT CHECKED.
+        /// </summary>
+        [Test]
+        public void AModelWhoseSiteWasNotReadIsNotJudgedByCoordinatesAndOneNotAmongTheFilesIsNotChecked()
+        {
+            string[] files = { Nwc("1B06PS", "AR"), Nwc("1B06PS", "EL") };
+            ModelFacts[] models = { Model(files[0], 0, "S"), Model(files[1], 0, "S").SiteNot("the read threw"), Model(Nwc("1B06PS", "ST"), 0, "S") };
+            DisciplineReport report = DisciplineReport.For("C06", "C06 itself",
+                new List<DisciplineGroup> { new DisciplineGroup("1B06PS", files, models, null) },
+                models.Select(m => new FileDate(m.File, Now.AddDays(-1), null)).ToList(), Now, new DisciplineReportSettings(), Names);
+
+            SummaryRow coordinates = report.SummaryFor("EL").Single(s => s.Check == CheckWords.Coordinates);
+            Assert.That(coordinates.Checked, Is.Null, "the one EL model's site was not read");
+            Assert.That(coordinates.Status, Is.EqualTo("NOT CHECKED"));
+            Assert.That(report.SummaryFor("AR").Single(s => s.Check == CheckWords.Coordinates).Checked, Is.EqualTo(1));
+            Assert.That(report.ModelsFor("ST").Single(r => r.Model == "ST-000001").Status, Is.EqualTo("NOT CHECKED"), "in the facts and not among the group's files");
+        }
+
         /// <summary>
         /// F244 attempt 2, the reviewer's 3 and the breaker's S8: the grey line says only what the files show. 1B06XX has an AR
         /// file not placed, so it is named in its own words. 1B06YY has no AR file and an EL file, so it is never under no AR or

@@ -159,13 +159,25 @@ namespace Federator.Core.Disciplines
         /// <summary>The disciplines the files of the model's building read, what the grey line under Tabs may say it has.</summary>
         internal IList<string> BuildingHas { get; set; }
 
+        /// <summary>Whether Naming was to judge the model's name, a model not of the reference discipline whose name reads.</summary>
+        internal bool NamingDue { get; set; }
+
+        /// <summary>Whether the model is in its group's facts and not among the group's files.</summary>
+        internal bool NotInFiles { get; set; }
+
         /// <summary>
         /// Whether a value of the model was not read: its placement or the placement of every model of its building, its site,
-        /// its CAD walk or its Generic walk, or no facts of it at all, the breaker's S1 on a92838b.
+        /// its CAD walk or its Generic walk, no facts of it at all, the breaker's S1 on a92838b, its file date, its name where
+        /// Naming was to judge it and could not, such as in a package with no reference file, or the model not among its group's
+        /// files, the reviewer's B1 on 4f5b5bb.
         /// </summary>
         public bool SomethingNotRead
         {
-            get { return Measure == ModelMeasure.Unknown || SiteNotRead || !CadFiles.HasValue || !GenericElements.HasValue; }
+            get
+            {
+                return Measure == ModelMeasure.Unknown || SiteNotRead || !CadFiles.HasValue || !GenericElements.HasValue
+                    || !AgeDays.HasValue || (NamingDue && !NameFollows.HasValue) || NotInFiles;
+            }
         }
 
         /// <summary>
