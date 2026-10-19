@@ -6,8 +6,9 @@ tool behaves. Main was a85e946 at the start and 72e5842 after the last fix merge
 ## The round against its own rules
 
 - Three or four fixes per round: four, F239 to F242, and F242b the end of F242, the audit, the QA, the form and the entry
-- Fixes that touch different files side by side in worktrees, the same files in order: items 1, 2 and 3 were each built in a
-  worktree of their own, wt-F239 in the main clone, wt-F240 and wt-F241, and opened their pull requests side by side. They did
+- Fixes that touch different files side by side in worktrees, the same files in order: items 1, 2 and 3 were built side by side,
+  F240 and F241 each in a worktree of its own and F239 in the main clone on its own branch, and F240's and F241's pull requests
+  were open together, F239's opening once F241 had merged. They did
   not touch different files, since each wrote a line of CLAUDE.md and each one's records wrote the same five steps files, so they
   merged one at a time, F240, F241, F239, each taking main in first. F241 changed .claude\agents\developer.md only after F240,
   which wrote the same folder, had merged
@@ -18,10 +19,10 @@ tool behaves. Main was a85e946 at the start and 72e5842 after the last fix merge
   viewpoints and the random picks by element ID were not made, since no run was made, and stand as the full run of 19 Oct left
   them, claude\audit-round-2026-10-19.md
 - One records commit per fix: each fix had one records commit, the log entry, the DONE line, the tracker row and the page.
-  Each also had one or two commits after it on the readers' findings, which touched those files again
+  Each also had one to three commits after it on the readers' findings, which touched those files again
 - Questions in one form at the end: Q225, with Q224 written by F239 as item 1 asked
 - A fix on its third attempt stops: no fix reached a third attempt. Each had its first reading and a fix of what it found,
-  then one re-read
+  then one re-read. F242's move was made twice, its first and second attempts
 - One PR per fix, merged on green, branch deleted, no PR left open: 320, 321, 322 and 323 merged green, their branches deleted
   on GitHub and here, the worktrees removed, and 324, F242b's, is merged the same way as the last act of the round
 - The writing rule: no em dash or semicolon in the lines the round wrote, read by grep and by the readers. The commits of the
@@ -54,7 +55,7 @@ They load when a session starts, so they take effect from Bader's next session.
 ### The ai-max skill, F241
 
 The repo held no copy at .claude\skills\ai-max before the round, in no commit, so there was no version 2 copy to replace. The
-installed skill reads Version 3, 19 Oct 2026, and its 39 files were read whole, copied as they are and read back equal by sha256.
+installed skill reads Version 3, 19 Oct 2026, and its 39 files were read whole, copied as they are and read back equal by sha256 at the copy, the working files of both sides.
 
 ### docs\rules.md, F239
 
@@ -101,8 +102,8 @@ fix-round.md stays over 100 KB, its 77 open items holding 104,165 bytes alone, p
 Read only, by an agent on main 72e5842 once F242 merged, git status printing nothing before and after. No file under src or tests
 changed from 6faff29 to 72e5842, so every contradiction in the code stands as it was.
 
-What it ran: the Core tests, 3451 passed, 0 failed, 0 skipped, with the one Explicit test WriteTheCorrectedFile skipped by
-NUnit's own rule. check-tracker clean at 835 rows, check-progress clean at 50 lines, prove-tracker all 84 right, prove-progress
+What it ran: the Core tests, 3451 passed, 0 failed, 0 skipped, the one Explicit test, WriteTheCorrectedFile, not counted in
+the totals by NUnit's own rule. check-tracker clean at 835 rows, check-progress clean at 50 lines, prove-tracker all 84 right, prove-progress
 all 26 right. No pull request open. docs\rules.md read as 105 rules, 82 Test, 13 Test in part, 10 NO TEST and 4 CONFLICT lines,
 all 93 distinct tests named there plain tests of their classes. One em dash in a tracked text file, a literal in a test that
 asserts there is none. Semicolons in prose in open files only at steps\01_next.md lines 43 and 61 and steps\02_questions.md lines
@@ -132,9 +133,10 @@ m21 in part.
 58. One records commit per fix: each fix had one, and then one or two more commits on the readers' findings that touched the
     records again, F239's 2a58e44, F241's 4ee9a5e and F242's c37ccc7, 5fdbe3a and ef8d9d7. Records
 59. Questions in one form at the end: Q224 was written by F239, since item 1 asked for it, and the form is Q225. Records
-60. steps.md keeps each of the four files under 100 KB, and fix-round.md is 144,071 bytes, part 6 of the form. Records
-61. docs\rules.md RE6 reads NO TEST, while GapRuleTests.TheFourDeletedPropertiesAreNotOnTheItem and two tests of
-    ClashReportXmlTests assert the properties are not read. Words
+60. fix-round.md is 144,071 bytes, over the 100 KB steps.md keeps the four files under, the case steps.md hands to Bader, part 6 of
+    the form, so it is held as the rule says and listed for his answer. Records
+61. docs\rules.md RE6 reads NO TEST, while GapRuleTests.TheFourDeletedPropertiesAreNotOnTheItem and one test of
+    ClashReportXmlTests, TheIdIsTheOneObjectattributeAndEverythingElseIsAQuickProperty, assert the properties are not read. Words
 62. docs\rules.md GR3 names a test that asserts a group is or is not of one discipline and reaches neither federated nor clashed,
     so it is a test in part. Words
 63. docs\rules.md cites CLAUDE.md as the source of GR1, LO2, PR6 and PR7, while CLAUDE.md points at those lines, so the source
