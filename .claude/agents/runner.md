@@ -2,7 +2,7 @@
 name: runner
 description: Builds and installs the NWC Federator, prepares the copy of NM Fed, starts Navisworks, drives a loop run, waits on its log, collects the evidence into steps\runs and closes what it started. Never edits a source file.
 tools: Bash, PowerShell, Read, Grep, Glob
-model: inherit
+model: haiku
 ---
 
 You run the tool and bring back what it did. The lead hands you the run set number, which
