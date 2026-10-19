@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F236, the clash count check, fix 6
+
+Branch fix-F236 off main 136bdd2. Fix 6 of the round: every run writes one clash count check a community.
+
+What was done. "<community> clash count check.xlsx" in the community's report folder, written by the window that started the
+run once every group has run, on both pages: one row per group per test with clashes in Bader's fifteen columns, a total per
+group and one for the community, a red row with a COUNTS DIFFER line where the four counts differ, then the groups not built for
+one discipline and the tests the two rules left out, a count a group. Every number is read off the files the group wrote: its
+.tsv by EventRow.Parse and the event names of RunEvents, its clash workbook test by test by WorkbookTests with each row's status,
+picture and priority, and its page by PageTests, read on the client's own page in samples. The views are held to the rows at the
+statuses a view shows, Q222. The reviewer and the breaker read attempt 1, 5366d36, and what they found is fixed in attempt 2,
+f8b485e, and the second readings in attempt 3, b7e9812: the sheet read by the name the writer gave it, now a row of the .tsv, a count not read written UNKNOWN and never a
+nought, never totalled and never red, a view not read back never counted as agreeing, the mirrors written to the .tsv by the
+clash step so a merged mirror is no row and its kept test is held to its count and the clashes only its mirrors found, an
+unmerged mirror held to no view, the groups whose files could not be read named, the page whose write threw listed as not written,
+the run's view statuses and picture settings read, the community's sheet name and folder by the one rule, the read back held to
+the check written, the members nothing called removed, a count Clash Detective took before the harvest threw kept on a row of its own, a group whose .tsv names no test named as not read and never a total of noughts, a left-out count with no coverage row UNKNOWN, and the community's total a lower bound where a group was not read. Two cases his words leave open are Q223, and the rest are rows F236-R1
+to R9.
+
+What was proved here. Core tests 3424 passed before and 3451 after, 0 failed, 0 skipped. The solution built in Release, 0
+errors, 0 warnings, at 5366d36, f8b485e and b7e9812. On copies of 1B06PK's two NWCs and 1B06PG's one, attempt 1 at 5366d362 ran
+the NWC page and then the NWF page on its NWF, each writing C06 clash count check.xlsx, 17 tests with clashes and 0 red, the
+NWC page's naming 1B06PG not built and 284 tests left out by the rule of two set codes. Attempt 2 at f8b485e4 under smoke236b: the NWC
+page, run-20261019-051350, and the NWF page, run-20261019-051912, each 17 tests, 0 red, 0 with a count UNKNOWN, the read back as
+written, the group DONE with 1748 clashes, the .tsv carrying the sheet row and 48 mirror rows. Attempt 3 at b7e98128 under
+smoke236c: the NWC page, run-20261019-053118, the same counts. No mirror merged in these runs, each of the 48 kept tests
+a BLD-EL-Telecom Fixtures test that a group of ME and ST does not run, so the merge rows and the kept test's count with its mirrors' clashes are
+proved by their tests alone until F237. The desktop folder 0 lines differing after every run, Navisworks' settings put back with
+0 lines differing.
+
+What remains. Bader's proof steps of F236, Q222 and Q223. Known bugs: rows F236-R1 to R9, a result group a person made, the
+check on the window thread, two packages of one building code, a picture link to a file gone, a test not read whole by the views, the cap per test, the tests held from an earlier run, a .tsv cut short and a read back of two counts. What comes next: F237, the full
+run on final-2026-10-19.
+
 ## 2026-10-19 F235, Q187 and Q195 as Bader answered them, fix 5
 
 Branch fix-F235 off main dee781f. Fix 5 of the round: Q187 and Q195 written as answered on 2026-10-18 and built.
