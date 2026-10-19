@@ -2,7 +2,42 @@
 
 Newest entry at the top.
 
-## 2026-10-19 F238, the end of the round of 19 Oct
+## 2026-10-19 The plan of the round of 19 Oct b, F239 to F242
+
+Bader's new way of building, 19 Oct 2026, from the NWC Federator's lessons. Four items, no Navisworks run and no change to how
+the tool behaves. Written before the first edit of the round, on main a85e946.
+
+Preflight. The session runs from the repo folder, main is a85e946 and reads the same as origin/main after a pull, and both walls
+refused a test call, the paths wall a command naming the Desktop Connector folder and the branch wall a commit on main, so the
+hooks of .claude\settings.json are live. Every file the order names is there but one: .claude\skills\ai-max has never been in the
+repo, in no commit of any branch. It is where item 3 copies to and nothing reads it, so the round goes on and says so. The ai-max
+skill this session loads reads Version 3, 19 Oct 2026, so item 3 copies it in as a new folder and no repo copy of version 2 was
+read.
+
+What the reading changed in the order. Items 1, 2 and 3 do not touch different files: each adds lines to CLAUDE.md, and each one's
+records commit writes this file, steps\01_next.md, steps\tracker.csv, steps\tracker.md and steps\PROGRESS.md. By the round's own
+rule they are built side by side, each in its own worktree and its own pull request, and merged one at a time in the order F240,
+F241, F239, each branch taking main in before its merge, both sides kept and the tracker's maker run again. The tracker check reads
+every FR item's heading, class line and questions off steps\fix-round.md, so the closed items of item 4 can move into steps\history
+only once the reader reads the moved file too, with its fixtures. The 77 open FR items hold 104,165 bytes alone, so fix-round.md
+cannot get under 100 KB with every open item kept whole, measured on a85e946. The Answer lines of Q163 to Q168 hold no words of
+his, so the rules they carried name the fix that built them.
+
+The order.
+1. F240, item 2, worktree wt-F240: the model line of each of the eight agents and one line in CLAUDE.md, one reviewer, the
+   claim-checker on the body, merged first. This entry rides in its first commit
+2. F241, item 3, worktree wt-F241, beside F240: the heading Rounds in CLAUDE.md with the round rules, the older lines they replace
+   taken out of CLAUDE.md and .claude\rules\loop.md, and the ai-max skill copied whole into .claude\skills\ai-max after it is read.
+   Merged second
+3. F239, item 1, worktree wt-F239, beside both: docs\rules.md, one line a rule grouped by area, each naming its question and the
+   test that proves it or NO TEST, the chat notes checked line by line against it, every conflict for the pull request body,
+   Q224 for the rules with no test, and the copies in CLAUDE.md replaced by one line. Merged third
+4. F242, item 4, after the three merged: the tracker reader taught the history file of fix-round.md with its fixtures, the closed
+   items of steps\01_next.md, steps\fix-round.md, steps\03_bader_next.md and steps\lane-b.md moved into steps\history and every
+   line read back, the sizes before and after, steps\PROGRESS.md rewritten under 60 lines, and the tracker and progress scripts
+   and the Core tests run
+5. F242b, the end, after F242 merged: the QA of main against CLAUDE.md by a read only agent, claude\audit-round-2026-10-19b.md,
+   one questions form, Q225, and the closing entry of this file. No pull request is left open
 
 Branch fix-F238 off main d5f34d1. The end of Bader's round of 19 Oct 2026, F231 to F238, and the round's last entry.
 
