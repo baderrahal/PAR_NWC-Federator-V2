@@ -2707,8 +2707,12 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   CHECKED where it has none and a value was not read, `ModelRow.SomethingNotRead`, the breaker's S1 and the reviewer's B1: its
   placement or every placement of its building, its site, its CAD walk, its Generic walk, no facts of it at all, its file date,
   its name where Naming was to judge it and could not, as in a package with no reference file, or the model in its group's facts
-  and not among its files. OK only where everything was read and nothing found, MISSING, and NOT CHECKED for a group of one
-  discipline. A model whose site was not read is measured and not counted in Coordinates' Checked, as it is not on Models. Compared with
+  and not among its files, or its building not judged on Coordinates. OK only where everything was read and nothing found,
+  MISSING, and NOT CHECKED for a group of one discipline. WHERE A PLACED MODEL OF A BUILDING HAS ITS SITE NOT READ, THE BUILDING
+  IS NOT JUDGED ON COORDINATES AT ALL, Bader's decision on the guard pass: no model of it counted in Coordinates' Checked, no
+  Coordinates row made for any model of it, far, internal origin or cannot be judged, each model of it NOT CHECKED unless another
+  check found a row, its distances still shown as measured, and the DISCIPLINE REPORT block naming the building and the model
+  whose site was not read. Compared with
   and Off the reference out of Coordinates, `ModelMeasure`: the reference's discipline and the metres, under 1 in grey below
   `DisciplineWorkbook.UnderMetres`, itself and reference in grey on the reference, internal origin on a reference on Internal,
   none and alone in grey on a group of one discipline, UNKNOWN in grey where not measured. Naming OK in green, wrong, or not checked

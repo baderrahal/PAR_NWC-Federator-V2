@@ -272,13 +272,24 @@ namespace Federator.Core.Disciplines
                     continue;
                 }
 
-                bool onInternal = ReferenceOnInternal(placements, reference);
+                // Bader's decision on the guard pass of F244: where a placed model's site was not read, the building is not judged
+                // on Coordinates at all, no model counted, no row made, each model flagged, its distances still shown.
+                ModelPlacement siteNotRead = placements.Find(p => p.Placed && !p.SiteRead);
+                bool judged = siteNotRead == null;
+
+                if (!judged)
+                {
+                    found.Note(group.Name + " not judged, the site of " + siteNotRead.File + " was not read, so no model of it is judged on Coordinates");
+                }
+
+                bool onInternal = judged && ReferenceOnInternal(placements, reference);
 
                 for (int i = 0; i < placements.Count; i++)
                 {
                     ModelPlacement model = placements[i];
                     ModelRow row = rows.In(group, group.Models[i].File);
                     row.SiteNotRead = !model.SiteRead;
+                    row.CoordinatesNotJudged = !judged;
 
                     if (!model.Placed)
                     {
@@ -287,11 +298,12 @@ namespace Federator.Core.Disciplines
                     }
 
                     // A model whose site was not read is measured and is not counted as judged, as it is not on Models, the
-                    // breaker's 4 on 4f5b5bb.
-                    if (model.SiteRead)
+                    // breaker's 4 on 4f5b5bb, and since the guard pass no model of its building is.
+                    if (judged)
                     {
                         found.Judged(model.Discipline);
                     }
+
                     row.ComparedWith = NameOf(reference);
 
                     if (model == reference)
@@ -314,7 +326,7 @@ namespace Federator.Core.Disciplines
                     {
                         found.Add(Row(model, names, CheckWords.Medium, CheckWords.FromInternal(NameOf(reference)), metres, CheckWords.FixFirst(NameOf(reference))), row);
                     }
-                    else if (metres > settings.FarMetres)
+                    else if (judged && metres > settings.FarMetres)
                     {
                         found.Add(Row(model, names, CheckWords.High,
                             CheckWords.FarFinding(metres, NameOf(model), AlignmentCheck.SiteName(model), NameOf(reference), AlignmentCheck.SiteName(reference)),

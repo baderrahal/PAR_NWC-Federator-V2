@@ -240,22 +240,29 @@ namespace Federator.Core.Tests
         [Test]
         public void AModelWithAValueNotReadAndNothingFoundIsNotCheckedAndARowFoundStillWins()
         {
+            // The EL whose site was not read sits in a group of its own, since the guard pass leaves a group with a site not read
+            // unjudged on Coordinates, which would hide the other cases here. Its name keeps 1B06PS, so the one AR name's pattern,
+            // which holds 1B06PS alike, finds no break in it.
             string[] files = { Nwc("1B06PS", "AR"), Nwc("1B06PS", "ST"), Nwc("1B06PS", "EL"), Nwc("1B06PS", "ME"), Nwc("1B06PS", "ST", "000002") };
             ModelFacts[] models =
             {
                 Model(files[0], 0, "S"),
                 Model(files[1], 0, "S").CadNot("the walk threw"),
-                Model(files[2], 0, "S").SiteNot("the read threw"),
                 Model(files[3], 40000, "S").GenericNot("the walk threw")
             };
+            ModelFacts el = Model(files[2], 0, "S").SiteNot("the read threw");
             DisciplineReport report = DisciplineReport.For("C06", "C06 itself",
-                new List<DisciplineGroup> { new DisciplineGroup("1B06PS", files, models, null) },
+                new List<DisciplineGroup>
+                {
+                    new DisciplineGroup("1B06PS", files.Where(f => f != files[2]), models, null),
+                    new DisciplineGroup("1B06PS EL", new[] { files[2] }, new[] { el }, null)
+                },
                 files.Select(f => new FileDate(f, Now.AddDays(-1), null)).ToList(), Now, new DisciplineReportSettings(), Names);
 
             Assert.That(report.ModelsFor("AR").Single().Status, Is.EqualTo("OK"), "every value read and nothing found");
             Assert.That(report.ModelsFor("ST").Single(r => r.Model == "ST-000001").Status, Is.EqualTo("NOT CHECKED"), "its CAD walk not read");
             Assert.That(report.ModelsFor("ST").Single(r => r.Model == "ST-000002").Status, Is.EqualTo("NOT CHECKED"), "no facts of it");
-            Assert.That(report.ModelsFor("EL").Single().Status, Is.EqualTo("NOT CHECKED"), "its site not read");
+            Assert.That(report.ModelsFor("EL").Single(r => r.Model == "EL-000001").Status, Is.EqualTo("NOT CHECKED"), "its site not read");
             Assert.That(report.ModelsFor("ME").Single().Status, Is.EqualTo("FIX"), "40 m away, found, wins over its Generic walk not read");
         }
 
@@ -302,8 +309,66 @@ namespace Federator.Core.Tests
             SummaryRow coordinates = report.SummaryFor("EL").Single(s => s.Check == CheckWords.Coordinates);
             Assert.That(coordinates.Checked, Is.Null, "the one EL model's site was not read");
             Assert.That(coordinates.Status, Is.EqualTo("NOT CHECKED"));
-            Assert.That(report.SummaryFor("AR").Single(s => s.Check == CheckWords.Coordinates).Checked, Is.EqualTo(1));
+            Assert.That(report.SummaryFor("AR").Single(s => s.Check == CheckWords.Coordinates).Checked, Is.Null,
+                "Bader's decision on the guard pass: a building with a site not read is not judged on Coordinates, its AR neither");
             Assert.That(report.ModelsFor("ST").Single(r => r.Model == "ST-000001").Status, Is.EqualTo("NOT CHECKED"), "in the facts and not among the group's files");
+        }
+
+        private DisciplineReport OneBuilding(params ModelFacts[] models)
+        {
+            return DisciplineReport.For("C06", "C06 itself",
+                new List<DisciplineGroup> { new DisciplineGroup("1B06PS", models.Select(m => m.File), models, null) },
+                models.Select(m => new FileDate(m.File, Now.AddDays(-1), null)).ToList(), Now, new DisciplineReportSettings(), Names);
+        }
+
+        /// <summary>
+        /// F244 guard pass, Bader's decision: a building with a placed model whose site was not read is not judged on Coordinates.
+        /// (a) Its reference's site not read and ST 12 m off: ST NOT CHECKED, no row, not counted, and B5 never says all pass.
+        /// </summary>
+        [Test]
+        public void GuardA_AReferenceWhoseSiteWasNotReadLeavesItsBuildingNotJudgedOnCoordinates()
+        {
+            DisciplineReport report = OneBuilding(Model(Nwc("1B06PS", "AR"), 0, "S").SiteNot("the read threw"), Model(Nwc("1B06PS", "ST"), 12000, "S"));
+            string path = Path.Combine(folder, "st.xlsx");
+
+            DisciplineWorkbook.Write(path, report, "ST");
+
+            Assert.That(report.ModelsFor("ST").Single().Status, Is.EqualTo("NOT CHECKED"));
+            Assert.That(report.IssuesFor("ST").Any(i => i.Check == CheckWords.Coordinates), Is.False);
+            Assert.That(report.SummaryFor("ST").Single(s => s.Check == CheckWords.Coordinates).Checked, Is.Null, "no model of it counted");
+            Assert.That(report.ModelsFor("ST").Single().Metres, Is.EqualTo(12.0), "its distance still shows as measured");
+            Assert.That(report.Lines(), Has.Some.EqualTo("Coordinates  1B06PS not judged, the site of 1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc was not read, so no model of it is judged on Coordinates"));
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                Assert.That(workbook.Worksheet("Summary").Cell("B5").GetString(), Does.Not.StartWith("All"));
+            }
+        }
+
+        /// <summary>(b) AR on Internal as read, EL on a shared site and ST's site not read: no internal origin row, AR NOT CHECKED.</summary>
+        [Test]
+        public void GuardB_AReferenceOnInternalBesideASiteNotReadIsNoRowAndNotChecked()
+        {
+            DisciplineReport report = OneBuilding(
+                Model(Nwc("1B06PS", "AR"), 0, "Internal"), Model(Nwc("1B06PS", "EL"), 0, "S"), Model(Nwc("1B06PS", "ST"), 0, "S").SiteNot("the read threw"));
+
+            Assert.That(report.IssuesFor("AR"), Is.Empty);
+            Assert.That(report.IssuesFor("EL"), Is.Empty, "no Medium row either");
+            Assert.That(report.ModelsFor("AR").Single().Status, Is.EqualTo("NOT CHECKED"));
+            Assert.That(report.ModelsFor("EL").Single().Status, Is.EqualTo("NOT CHECKED"));
+        }
+
+        /// <summary>(c) ST's site not read and 40 m off: no row, and Coordinates' With issue is never above its Checked.</summary>
+        [Test]
+        public void GuardC_AFarModelWhoseSiteWasNotReadIsNoRowAndTheSummaryNeverDisagrees()
+        {
+            DisciplineReport report = OneBuilding(Model(Nwc("1B06PS", "AR"), 0, "S"), Model(Nwc("1B06PS", "ST"), 40000, "S").SiteNot("the read threw"));
+
+            Assert.That(report.IssuesFor("ST"), Is.Empty);
+            SummaryRow coordinates = report.SummaryFor("ST").Single(s => s.Check == CheckWords.Coordinates);
+            Assert.That(coordinates.WithIssue ?? 0, Is.LessThanOrEqualTo(coordinates.Checked ?? 0));
+            Assert.That(coordinates.Checked, Is.Null);
+            Assert.That(report.ModelsFor("ST").Single().Status, Is.EqualTo("NOT CHECKED"));
         }
 
         /// <summary>
