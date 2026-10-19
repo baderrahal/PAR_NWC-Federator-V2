@@ -1405,7 +1405,7 @@ namespace Federator.Addin.Engine
                 log.NumberedRepeat(
                     result.Passed ? "CLASH passed, found nothing" : "CLASH found clashes",
                     "CLASH    " + result.Line(),
-                    result.Passed ? "test passed" : "test found clashes",
+                    result.Passed ? RunEvents.TestPassed : RunEvents.TestFoundClashes,
                     planned.Name,
                     EventRow.Count(tally.Total),
                     result.Passed ? "ran and found nothing" : "ran and found clashes");

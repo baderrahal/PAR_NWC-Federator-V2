@@ -166,6 +166,18 @@ from it is a row of its own discipline. What a check could not read is said in t
 DISCIPLINE REPORT, never written as a pass. Each summary count is the rows of its check, and the log
 reads that back off the file on a CHECKS line.
 
+### The clash count check
+
+Every run writes `<community> clash count check.xlsx` in each community's report folder, F236
+(Bader's round of 19 Oct 2026, fix 6). It holds one row per group per test with clashes:
+the building, the test, its priority, its clashes in Clash Detective, its rows in the Excel and in
+the HTML, its clashes in viewpoints, the pictures made and skipped with why, and its rows by status.
+Each number is read off the files the group wrote, its .tsv, its Excel and its HTML. A row is red,
+with a COUNTS DIFFER line in the log, where Clash Detective's count differs from the Excel rows or the
+HTML rows, or the views differ from the open clashes, New and Active, the statuses a view shows. A
+total follows each group and the community. Under the table come the groups not built for one
+discipline and, per group, the tests left out by the rule of one discipline or of two set codes.
+
 Since F232 each page has this one route. The run of the open file on the Clash step and the hand
 buttons still run in the Navisworks the person started.
 

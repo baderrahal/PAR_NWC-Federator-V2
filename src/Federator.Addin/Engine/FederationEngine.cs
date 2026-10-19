@@ -4206,7 +4206,7 @@ namespace Federator.Addin.Engine
         {
             if (!reports.WriteHtml)
             {
-                log.WriteSkipped("HTML", OutputPlan.NotWanted);
+                log.WriteSkipped(RunEvents.PageKind, OutputPlan.NotWanted);
                 return;
             }
 
@@ -4221,14 +4221,14 @@ namespace Federator.Addin.Engine
                     log.Line(line);
                 }
 
-                log.WriteSkipped("HTML", "the stylesheet was not found in the install, see the lines above");
+                log.WriteSkipped(RunEvents.PageKind, "the stylesheet was not found in the install, see the lines above");
                 return;
             }
 
             string path = HtmlTabularWriter.PathFor(ThePagePath(job));
 
             Say("Writing the client report for " + job.Building);
-            log.WriteAttempted("HTML", path);
+            log.WriteAttempted(RunEvents.PageKind, path);
 
             try
             {
@@ -4249,7 +4249,7 @@ namespace Federator.Addin.Engine
                     "kept going, the workbook and the XML are unaffected");
             }
 
-            outcome.HtmlSize = log.WriteFinished("HTML", path);
+            outcome.HtmlSize = log.WriteFinished(RunEvents.PageKind, path);
             outcome.HtmlOnDisk = outcome.HtmlSize >= 0;
 
             CheckThePage(job, path);
@@ -4382,8 +4382,8 @@ namespace Federator.Addin.Engine
                         ? "no clash step ran for this group, so there is nothing to report"
                         : OutputPlan.NotWanted;
 
-                log.WriteSkipped("XLSX", outputs.WriteWorkbook ? why : OutputPlan.NotWanted);
-                log.WriteSkipped("HTML", outputs.WriteHtml ? why : OutputPlan.NotWanted);
+                log.WriteSkipped(RunEvents.WorkbookKind, outputs.WriteWorkbook ? why : OutputPlan.NotWanted);
+                log.WriteSkipped(RunEvents.PageKind, outputs.WriteHtml ? why : OutputPlan.NotWanted);
                 log.WriteSkipped("XML", outputs.WriteXml ? why : OutputPlan.NotWanted);
                 outcome.WorkbookNotReadBecause = "no clash workbook was written, " + (outputs.WriteWorkbook ? why : OutputPlan.NotWanted);
                 return;
@@ -4416,8 +4416,8 @@ namespace Federator.Addin.Engine
                 outcome.AddError(
                     "the report was not written because its numbers could not be converted to "
                     + ReportUnits.Name + ": " + units.Problem);
-                log.WriteSkipped("XLSX", "the numbers are not in " + ReportUnits.Name);
-                log.WriteSkipped("HTML", "the numbers are not in " + ReportUnits.Name);
+                log.WriteSkipped(RunEvents.WorkbookKind, "the numbers are not in " + ReportUnits.Name);
+                log.WriteSkipped(RunEvents.PageKind, "the numbers are not in " + ReportUnits.Name);
                 log.WriteSkipped("XML", "the numbers are not in " + ReportUnits.Name);
                 outcome.WorkbookNotReadBecause = "no clash workbook was written, the numbers are not in " + ReportUnits.Name;
                 return;
@@ -4426,7 +4426,7 @@ namespace Federator.Addin.Engine
             if (!outputs.WriteWorkbook)
 
             {
-                log.WriteSkipped("XLSX", OutputPlan.NotWanted);
+                log.WriteSkipped(RunEvents.WorkbookKind, OutputPlan.NotWanted);
                 outcome.WorkbookNotReadBecause = "no clash workbook was written, " + OutputPlan.NotWanted;
             }
             else
@@ -4468,7 +4468,7 @@ namespace Federator.Addin.Engine
             FederationJob job, JobOutcome outcome, ClashReport report, string path)
         {
             Say("Writing the workbook for " + job.Building);
-            log.WriteAttempted("XLSX", path);
+            log.WriteAttempted(RunEvents.WorkbookKind, path);
             bool threw = false;
 
             try
@@ -4493,7 +4493,7 @@ namespace Federator.Addin.Engine
             // F118-R3. A FILE THIS TOOL DID NOT WRITE IS NEVER LISTED AS WRITTEN. The save goes
             // straight onto the final path, so after a throw the file there may be last week's,
             // and WriteFinished would list it with last week's size as this run's.
-            outcome.WorkbookSize = threw ? log.WriteThrew("XLSX", path) : log.WriteFinished("XLSX", path);
+            outcome.WorkbookSize = threw ? log.WriteThrew(RunEvents.WorkbookKind, path) : log.WriteFinished(RunEvents.WorkbookKind, path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
             // F127, the readers' point on the stamp. The count check reads the clash workbook
@@ -4595,7 +4595,7 @@ namespace Federator.Addin.Engine
                 foreach (TestCoverage test in tests)
                 {
                     log.Row(
-                        "coverage test",
+                        RunEvents.CoverageTest,
                         test.Name,
                         test.Ran ? EventRow.Count(test.ClashesFound) : string.Empty,
                         CoverageBlock.RowText(test));
@@ -4985,7 +4985,7 @@ namespace Federator.Addin.Engine
                 foreach (string line in builder.TreeRows ?? new List<string>())
                 {
                     row++;
-                    log.Row("views tree", job.Building, row.ToString(System.Globalization.CultureInfo.InvariantCulture), line);
+                    log.Row(RunEvents.ViewsTree, job.Building, row.ToString(System.Globalization.CultureInfo.InvariantCulture), line);
                 }
             }
 

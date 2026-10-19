@@ -6,6 +6,19 @@ Simple words. Each fix of this round adds its steps here as it merges, and F238 
 folder of the full run. The steps of the round of 18 Oct below name step 5 and the NWF picker, which F232 took out: on this
 build step 5 is step 1. Packages and the picker is the NWF page's tree.
 
+### F236, the clash count check
+
+1. After a run, open the Report folder's C06 folder and open `C06 clash count check.xlsx`.
+   Look for: one row per group per test with clashes, its columns from Building to Resolved, a bold Total under each group
+   and one Total C06 at the end.
+2. Filter the table for rows with a red fill.
+   Look for: none, and in the log no line starting `COUNTS   DIFFER`.
+3. Pick one row and open that group's Excel and HTML on the same test.
+   Look for: the same Excel rows, HTML rows and statuses as the row says, and in Clash Detective the same clash count.
+4. Scroll below the table.
+   Look for: the groups not built for one discipline by name, and for each group the tests left out by one discipline and by
+   two set codes.
+
 ### F235, the picture caps over 750 clashes and penetrations on by default
 
 1. Start Navisworks Manage 2025 from the Start menu and open the tool.

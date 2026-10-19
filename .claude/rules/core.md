@@ -2685,6 +2685,36 @@ already there taking a dated one by `ReportPaths.FreeFilePath`.
   counted by its code on the DISCIPLINE REPORT block. The internal names the add-in reads are `DisciplineProperties`, each
   measured and typed once
 
+## The clash count check, F236
+
+Bader's round of 19 Oct 2026, fix 6. Federator.Core.Communities. EVERY RUN WRITES ONE WORKBOOK A COMMUNITY,
+`ClashCountWorkbook.NameFor`, "<community> clash count check.xlsx" in the community's report folder, a name already there
+taking a dated one by `ReportPaths.FreeFilePath`, written by the window that started the run once every group has run, on both
+pages, and on a run of the NWC page whose every group is of one discipline too.
+
+- EVERY NUMBER IS READ OFF THE FILES THE GROUP WROTE. `GroupRunFiles.Read` reads the group's .tsv by the event names of
+  `RunEvents`, the one place the writers and this reader name them: each test's clashes as Clash Detective counted them, the
+  paths of the clash workbook and the HTML page written, each test's open clashes in its views off the VIEWS TREE lines,
+  `ViewsTree.ReadViewLine`, the one reader of the shape the block writes, the views of one test added up, and the tests the rule
+  of one discipline and of two set codes left out, by the words of `CoverageWords` on each coverage row. The clash workbook is
+  read test by test by `WorkbookTests`, each block's rows, its pictures by the link its Image cell carries, its rows by the
+  Status column and its letter off the Priority column. The page is read test by test by `Federator.Core.Report.PageTests`, off
+  the shape Navisworks' stylesheet gives it
+- ONE ROW PER GROUP PER TEST WITH CLASHES, `ClashCountRow`, Bader's columns in his order, `ClashCountRow.Columns`: building,
+  test, priority, clashes in Clash Detective, Excel rows, HTML rows, clashes in viewpoints, pictures made, pictures skipped, why
+  skipped, New, Active, Reviewed, Approved, Resolved. A test is one Clash Detective found clashes in or one the workbook holds a
+  block of. Pictures skipped are the Excel rows with no picture, and why, `ClashCountCheck.WhySkipped`, splits them into those at
+  a status the pictures do not take, those past the cap of a test of more than the setting's clashes, Q187, and the rest UNKNOWN,
+  a stop or a failure the group's IMAGES lines name
+- THE FOUR COUNTS, `ClashCountRow.Differs`: a row is red and has a COUNTS DIFFER line where Clash Detective's count differs from
+  the Excel rows or the HTML rows, or the clashes in its views differ from its rows at the statuses a view shows,
+  `OpenClashes.StatusesFor(ViewpointSettings.DefaultViewStatuses)`, New and Active, since a view holds the open clashes alone and
+  a clash the penetration rule set Reviewed is in none, the lead's reading of his words, Q222
+- A TOTAL PER GROUP AND ONE FOR THE COMMUNITY, `ClashCountRow.Total`, then the groups not built for one discipline, off the plans
+  on the NWC page and the NOT BUILT line of a result on the NWF page, then the tests a rule left out, a count a group, a group not
+  built reading every test left out. The CHECKS line reads the workbook back off the disk, its test rows and its red ones,
+  `ClashCountWorkbook.ReadBackLine`
+
 ## The diagnostic log
 
 The log is what Bader sends back when something goes wrong, so it is built to

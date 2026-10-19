@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Federator.Core.Report
 {
     /// <summary>
@@ -13,6 +16,7 @@ namespace Federator.Core.Report
             Row = row;
             Rows = rows;
             Clashes = clashes;
+            Priority = string.Empty;
         }
 
         /// <summary>The name in column A, exactly as written, never trimmed.</summary>
@@ -26,5 +30,34 @@ namespace Federator.Core.Report
 
         /// <summary>Its Clashes cell as a whole number, minus one where the cell holds none.</summary>
         public int Clashes { get; private set; }
+
+        /// <summary>F236. Its clash rows whose Image cell carries a link to a picture, read off the file.</summary>
+        public int Pictures { get; private set; }
+
+        /// <summary>F236. The letter its rows carry in the Priority column, empty where none is written.</summary>
+        public string Priority { get; private set; }
+
+        /// <summary>F236. How many of its clash rows read each status, the words of the Status column as written.</summary>
+        public IDictionary<string, int> Statuses
+        {
+            get { return statuses; }
+        }
+
+        /// <summary>The rows of one status, nought where none reads it.</summary>
+        public int RowsAt(string status)
+        {
+            int count;
+            return status != null && statuses.TryGetValue(status, out count) ? count : 0;
+        }
+
+        private IDictionary<string, int> statuses = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        internal WorkbookTest Read(int pictures, IDictionary<string, int> byStatus, string priority)
+        {
+            Pictures = pictures;
+            statuses = new Dictionary<string, int>(byStatus ?? new Dictionary<string, int>(), StringComparer.Ordinal);
+            Priority = priority ?? string.Empty;
+            return this;
+        }
     }
 }

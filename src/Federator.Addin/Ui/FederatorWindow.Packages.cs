@@ -527,7 +527,7 @@ namespace Federator.Addin.Ui
             GroupingMode mode = ChosenGrouping();
             string report = Trimmed(packagePanel.Report);
             ReportOptions options = ReportsWanted(tolerance);
-            PackageRun run = new PackageRun(report, options.Disciplines);
+            PackageRun run = new PackageRun(report, options.Disciplines) { Images = options.Images };
             PackageTally tally = run.Tally;
             List<FederationJob> jobs = new List<FederationJob>();
             List<Package> runnable = run.Runnable;
@@ -668,6 +668,7 @@ namespace Federator.Addin.Ui
                 if (child == null && tally.NotBuiltCount > 0)
                 {
                     WriteTheDisciplineReports(run, new List<PackageRunUnit>(), new List<PackageRunResult>(), new List<string>());
+                    WriteTheClashCountChecks(run, new List<PackageRunUnit>(), new List<PackageRunResult>());
                     WriteTheResult(null, tally.Lines());
                 }
 
@@ -754,6 +755,9 @@ namespace Federator.Addin.Ui
             /// <summary>F234 on row F233-R3. The ticked packages whose every group is of one discipline, which run nothing and still get their workbooks.</summary>
             public List<Package> NotBuiltOnly { get; private set; }
 
+            /// <summary>F236. The run's picture settings, which the clash count check reads to say why a row has no picture.</summary>
+            public ImageOptions Images { get; set; }
+
             public string Report { get; private set; }
 
             public DisciplineReportSettings Disciplines { get; private set; }
@@ -770,6 +774,123 @@ namespace Federator.Addin.Ui
         /// the facts each group's result carried, Core's PackageRunFacts, each package in a try of its own, so one package's
         /// fault never stops the others' reports, and every package's DISCIPLINE REPORT block in the log.
         /// </summary>
+        /// <summary>
+        /// F236, Bader's round of 19 Oct 2026, fix 6. Every run writes one clash count check a community, written by the window
+        /// that started the run once every group has run, off the files each group wrote: its .tsv beside its log, its clash
+        /// workbook and its HTML page, Core's GroupRunFiles, WorkbookTests and PageTests. The groups not built are read off the
+        /// plans on the NWC page and off the results on the NWF page. Each community in a try of its own.
+        /// </summary>
+        private void WriteTheClashCountChecks(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results)
+        {
+            List<Package> reported = new List<Package>(run.Runnable);
+            reported.AddRange(run.NotBuiltOnly);
+            Dictionary<string, ClashCountCheck> checks = new Dictionary<string, ClashCountCheck>(StringComparer.OrdinalIgnoreCase);
+            List<string> order = new List<string>();
+            Dictionary<string, Package> packages = new Dictionary<string, Package>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Package package in reported)
+            {
+                packages[package.RelativePath] = package;
+
+                if (!checks.ContainsKey(package.Community))
+                {
+                    checks[package.Community] = new ClashCountCheck(package.Community);
+                    order.Add(package.Community);
+                }
+
+                PackagePlan plan;
+
+                if (run.Plans.TryGetValue(package.RelativePath, out plan))
+                {
+                    foreach (PackageGroup group in plan.Groups)
+                    {
+                        if (BuildingGroup.CannotClashWith(group.Disciplines.Count))
+                        {
+                            checks[package.Community].AddNotBuilt(group.Building);
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < units.Count && i < results.Count; i++)
+            {
+                Package package;
+
+                if (!packages.TryGetValue(units[i].Package, out package))
+                {
+                    continue;
+                }
+
+                ClashCountCheck check = checks[package.Community];
+
+                try
+                {
+                    PackageRunResult result = results[i];
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    if (result.Groups.Count == 0)
+                    {
+                        if (OneDisciplineGroups.IsTheLine(result.NoGroupBecause))
+                        {
+                            check.AddNotBuilt(units[i].Name);
+                        }
+
+                        continue;
+                    }
+
+                    string tsv = result.Log == null ? null : RowLog.PathFor(result.Log);
+
+                    if (tsv == null || !File.Exists(tsv))
+                    {
+                        log.Line("COUNTS   " + units[i].Label + " is not in the check, its .tsv " + (tsv ?? "UNKNOWN") + " is not there");
+                        continue;
+                    }
+
+                    GroupRunFiles files = GroupRunFiles.Read(File.ReadAllLines(tsv));
+                    string why = null;
+                    WorkbookTests workbook = files.Workbook != null && File.Exists(files.Workbook)
+                        ? WorkbookTests.ReadFile(files.Workbook, SheetNames.ForReport(Path.GetFileNameWithoutExtension(files.Workbook)), out why)
+                        : null;
+                    PageTests page = files.Page != null && File.Exists(files.Page) ? PageTests.Read(File.ReadAllText(files.Page)) : null;
+
+                    if (workbook == null || page == null)
+                    {
+                        log.Line("COUNTS   " + units[i].Label + " read with no " + (workbook == null ? "workbook, " + (why ?? "none was written") : "page, none was written"));
+                    }
+
+                    check.AddGroup(result.Groups[0].Group, files, workbook, page, run.Images);
+                }
+                catch (Exception error)
+                {
+                    log.Failure("reading the files of " + units[i].Label + " for the clash count check", error, "the other groups are still counted");
+                }
+            }
+
+            foreach (string community in order)
+            {
+                try
+                {
+                    ClashCountCheck check = checks[community];
+                    string folder = Path.Combine(run.Report, community);
+                    Directory.CreateDirectory(folder);
+                    string path = ReportPaths.FreeFilePath(folder, ClashCountWorkbook.NameFor(community), DateTime.Now, null);
+                    log.Block("CLASH COUNT CHECK " + community, check.Lines());
+                    log.WriteAttempted("COUNTS", path);
+                    ClashCountWorkbook.Write(path, check, DateTime.Now);
+                    log.WriteFinished("COUNTS", path);
+                    log.Line(ClashCountWorkbook.ReadBackLine(path, community));
+                }
+                catch (Exception error)
+                {
+                    log.Failure("writing the clash count check of " + community, error, "the other communities are still written");
+                }
+            }
+        }
+
         private void WriteTheDisciplineReports(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> whys)
         {
             List<Package> reported = new List<Package>(run.Runnable);
@@ -1071,7 +1192,7 @@ namespace Federator.Addin.Ui
             // F235, Bader's answer to Q195. The NWF page's run reads the NWF page's own penetration box.
             options.MarkPenetrations = NwfMarkPenetrations.IsChecked == true;
             string report = nwfTree.Parent;
-            PackageRun run = new PackageRun(report, options.Disciplines);
+            PackageRun run = new PackageRun(report, options.Disciplines) { Images = options.Images };
             PackageTally tally = run.Tally;
             List<string> nwfs = new List<string>();
             List<PackageNwf> inPackages = new List<PackageNwf>();

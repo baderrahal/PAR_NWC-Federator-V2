@@ -1228,3 +1228,11 @@ package's report folder, each one CHECKS attempt and written line with its size 
 reading its issue rows and its summary back off the file, `DisciplineWorkbookWords.ReadBackLine`. A PACKAGE WHOSE EVERY GROUP IS
 OF ONE DISCIPLINE, `PackageRun.NotBuiltOnly`, runs nothing and still gets its folders and its workbooks, and a run of the NWC
 page whose every group is of one discipline writes them before its RESULT.
+
+THE CLASH COUNT CHECK, F236, `WriteTheClashCountChecks`, right after the discipline reports and before RESULT: for each group of
+the run whose result names a group, its .tsv beside its log, `RowLog.PathFor`, read by `GroupRunFiles`, then the clash workbook and
+the page that .tsv names, read off the disk by `WorkbookTests.ReadFile` with the sheet named after the workbook, and `PageTests`, each
+group in a try of its own and a group whose .tsv is not there named on a COUNTS line. The groups not built come off the plans and
+the results. One workbook a community in its report folder, the CLASH COUNT CHECK block, its CHECKS attempt and written lines and
+the read back line. The run's picture settings ride on `PackageRun.Images`. Every rule and every word is Core's, core.md The
+clash count check.
