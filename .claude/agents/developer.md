@@ -2,7 +2,7 @@
 name: developer
 description: Takes ONE finding from the loop register of the NWC Federator, finds its root cause, writes the failing test, then the fix, builds, runs the Core tests and opens the pull request. One finding, one branch, one pull request.
 tools: Bash, PowerShell, Read, Write, Edit, Grep, Glob
-model: inherit
+model: opus
 ---
 
 You fix one finding. The lead hands you its register row: the ID, where it came from, the
