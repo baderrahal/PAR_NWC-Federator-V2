@@ -70,7 +70,7 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   which merge put the answer there, which a reader reads by git
 - A question row's area and wave are read off fix-round.md, one rule for every question: the
   FR items whose section names it, Q and its number or a range Q<a> to Q<b>, give their areas
-  in file order joined by a comma and their waves joined by and, leaving out an item in no
+  in file order, fix-round.md first and then the moved items, joined by a comma and their waves joined by and, leaving out an item in no
   area. With no such item both read none. A line outside an item does not count, such as the
   Source ids left out naming Q35 to Q40, which gives those six no area of its own. The check
   compares them
@@ -101,6 +101,14 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   an F area such a line places reads its own id as its area and the wave it is placed at. The
   check compares them, so a pull request that moves an item or an area between areas or waves
   changes its row too
+- A CLOSED FR ITEM MOVES, WHOLE, TO steps\history\fix-round-closed.md, F242, Bader's round of 19
+  Oct 2026 b, item 4, so fix-round.md keeps the open items, its waves and its narrative. Closed is
+  a row reading merged, proven by a run or dropped. The check reads the moved file after
+  fix-round.md as its own, `$FixRoundClosedName` in tracker-rules.ps1, so a moved item keeps its
+  row, its class and the questions it names, its waves line stays in fix-round.md and places it as
+  before, an item headed in both files is a second heading, and every fault of a moved item names
+  that file. An item that opens again moves back, and the check refuses a moved item whose row is
+  not closed, $TrackerClosedStatuses
 - Every line of the waves section is in a shape tracker-rules.ps1 lists. A line of prose,
   starting with a letter after a blank line or another line of prose, is narrative and is not
   read for ids, so an FR id or an F area named there places nothing and is not checked. A line

@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-19 11:30, the round of 19 Oct b, F239 to F242, in work, F239 merged in 322
+STATE OPEN, 2026-10-19 10:01, the round of 19 Oct b, F242 merged in 323, the end next, last run 94/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,46 +15,36 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 324 | 16 | 0 | 29 | 135 | 7 | 511 |
-| total | 528 | 24 | 0 | 29 | 235 | 18 | 834 |
+| outside the waves | 325 | 16 | 0 | 29 | 135 | 7 | 512 |
+| total | 529 | 24 | 0 | 29 | 235 | 18 | 835 |
 <!-- the end of the counts -->
-## Now
-- 19 Oct b, no Navisworks run, plan in log.md. F240 models 320, F241 Rounds 321, F239 docs\rules.md 322. Next F242
-- 19 Oct, the round of F231 to F238 done, Bader's six fixes, the full run on final-2026-10-19 and the end, F238 in 319.
-  F231 the append measured, 0.000 mm, scan.md 5z-zn. F232 packages first, 313. F233 one discipline groups not built, 314.
-  F234 the discipline workbooks, 315. F235 caps only over 750 clashes and penetrations on by default, 316, Q220, Q221.
-  F236 the clash count check, 317, on both pages on 1B06PK at f8b485e4, the NWC page at b7e98128, 17 tests, 0 red,
-  a count not read UNKNOWN, views read back, mirrors, groups not read, Q223, rows F236-R1 to R10. F237 the full run, both
-  pages 32 DONE, 12 not built, 0 red, C06 3904 and C07 1549 clashes as on 18 Oct, 10 picks found, 318. F238 the audit,
-  claude\audit-round-2026-10-19.md, the QA, 15 of 65 contradictions fixed as text, 40 listed, the proof steps, 319
-## Speed
-Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
-
-| date | build | a picture | 1A02MM | longest freeze | most time |
-|---|---|---|---|---|---|
-| Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
-| 18 Oct 20:24, multi3, C06, C07, SKY, both pages, a Navisworks a group | e38344c7, main after 309 | no stop in any of 46 groups, 1B06PK 4330 MB at most | not run | none read | NWC page 28.2 min, NWF page 26.4 min, 46 starts about 200 s and 46 quits 93 s a page |
-| 19 Oct 05:57, final-2026-10-19, C06, C07, both pages, a Navisworks a group | 6faff297, main after 317 | no test over 750, every clash pictured, 3904 and 1549 | not run | none read | runner 1331 s NWC page, 1228 s NWF page, 32 starts about 134 s and 32 quits 62 s a page |
-## Next
-1. Bader's proof steps at the top of steps\03_bader_next.md, the full run's 13 first, step 1 opening final-2026-10-19\Report\C06
-2. His answers to Q212 to Q223 and the older questions below
-3. The 40 contradictions listed in claude\audit-round-2026-10-19.md, 43, 46, 37 and 38 the code ones first
-## Waiting for Bader
+## Done
+- 19 Oct b, Bader's new way of building, four items, no Navisworks run. F240 the agents' models by their jobs, 320. F241 the
+  round rules under Rounds in CLAUDE.md and the ai-max skill version 3, 321. F239 docs\rules.md, 105 rules, ten with no test,
+  322. F242 the closed items of four steps files moved into steps\history and this page in five parts, 323
+- 19 Oct, F231 to F238: packages first, one discipline groups not built, the discipline and clash count workbooks, the cap
+  over 750 and penetrations on, the full run on C06 and C07, 0 red rows, 3904 and 1549 clashes, 313 to 319
+- The page as it stood before this rewrite, its speed table among it, is steps\history\PROGRESS-2026-10-19.md
+- The long record is steps\history: log.md one entry a fix, loop.md, and the four files of closed items
+- Status of every item and finding: steps\tracker.csv, read as steps\tracker.md. The plan: steps\01_next.md and steps\fix-round.md
+## Open bugs
+- F229-R1 a run's window prunes the logs folder to 30 and deleted 18 group logs of the run before, copies kept in the Log folders
+- F223-R1 to R4 Auto-Save in a Navisworks a person started unmeasured, the hand buttons, a run under the loop, a hand start
+- F224-R1 to R4, F225-R1 to R3, F226-R1 to R5 the retake's colour and sky assumptions, F222-R1 to R4, F213-R1, R2, F214-R1 to R4
+- F207-R1 views check 4 fails on C04 since the NWF holds hidden models, 2 painted items not its clashes in each view, UNKNOWN which
+- F236-R1 to R10 and F237-R1, R2, the clash count check's and the full run's rows, every one in steps\tracker.csv
+- One DIALOG finding at the close of set 94 UNKNOWN. T6-R-WPFBOX and F149-R1. The 0 byte NWD in NWD\C04\run 2026-10-14 1615, yours to delete
+## Bader's turn
+- The proof steps at the top of steps\03_bader_next.md, the full run's 13 first, step 1 opening final-2026-10-19\Report\C06
+- The form at the end of steps\02_questions.md, written by the round's last pull request
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
 - Q216 the groupings, Q217 the Backup, Q218, Q219 the workbooks, Q220 the lists, Q221 the picture order, Q222, Q223 the count check
 - Q212 the tests a rule left out still held in an NWF, leave them, delete or a folder, Q224 the ten rules with no test
 - Q194 Approved pictures, Q196 Layer, Q197 Item Name, Q198 logo, Q199 relative links, Q200 foundations, Q201 the pictures
 - Q188 512 pixels, Q189 by design pairs, Q190 folders, Q191 C02, Q192 numbers
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
-
-## Blockers and known bugs
-- F229-R1 a run's window prunes the logs folder to 30 and deleted 18 group logs of the run before, copies kept in the Log folders
-- F223-R1 to R4 Auto-Save in a Navisworks a person started unmeasured, the hand buttons, a run under the loop, a hand start
-- F224-R1 to R4, F225-R1 to R3, F226-R1 to R5 the retake's colour and sky assumptions, F222-R1 to R4, F213-R1, R2, F214-R1 to R4
-- F207-R1 views check 4 fails on C04 since the NWF holds hidden models, 2 painted items not its clashes in each view, UNKNOWN which
-- One DIALOG finding at the close of set 94 UNKNOWN. T6-R-WPFBOX and F149-R1. The 0 byte NWD in NWD\C04\run 2026-10-14 1615, yours to delete
-## Where the long history is
-- steps\history\loop.md: every turn, the form and the register table, its closed rows the record
-- steps\history\log.md: one entry per fix, newest at the top
-- Status of every item and finding: steps\tracker.csv, read as steps\tracker.md
-- Questions and answers: steps\02_questions.md. The plan: steps\01_next.md and steps\fix-round.md
+- The agents' new models and the ai-max copy load from the next session he starts
+## Next
+1. The end of the round, F242b: the QA of main, the audit, the form and the closing entry
+2. His answers to the form and the questions above, and the proof steps, the full run's 13 first
+3. The next round, three or four fixes from his answers, the code ones of claude\audit-round-2026-10-19.md first, 43, 46, 37, 38

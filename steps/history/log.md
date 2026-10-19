@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F242, records Bader can read, item 4
+
+Branch fix-F242 off main cb01f32, worktree wt-F242, pull request 323, main taken in after F239 merged as 322.
+
+What was done. The closed items of four steps files moved whole and in their order into steps\history: steps\01_next.md from
+602,344 to 27,488 bytes, 172 sections, the old order among them, into 01_next-closed.md, with a new order of eight items over the
+nine open sections, steps\fix-round.md from 379,484 to 144,071, its 126 closed FR items into fix-round-closed.md, steps\03_bader_next.md
+from 364,612 to 47,652, the proofs before 18 Oct into 03_bader_next-closed.md with the steps to get, build and install kept, and
+steps\lane-b.md from 95,023 to 51,844, the record of the stopped lane into lane-b-closed.md with every point left for the laptop
+lane and what is left kept. No line of the four was lost, read twice, by the script that moved them and off git, four pointer
+lines of lane-b.md rewritten to name the history file. The tracker check reads fix-round-closed.md as fix-round.md's own, refuses
+a moved item whose row is not closed, and names both files where a row has no item, with eight fixtures, since it reads each FR
+row's item. steps\PROGRESS.md is rewritten in Bader's five parts, 50 lines, the old page kept whole as PROGRESS-2026-10-19.md, its
+STATE line naming last run 94/item1-C02 again, which the round's three OPEN lines had left out, and the time read off the clock,
+where F239's line read 11:30 typed without reading it. loop.md, steps.md, tracker.md and CLAUDE.md say what the files hold now.
+The reviewer's first reading found open sections moved, the build steps, two of 01_next.md, three sets of lane B's points, and
+pointers to moved sections, four gaps of the reader and the fixtures' heads cut short, and the claim-checker the counts that
+moved after the records, all fixed in the move made again from the files as they were.
+
+What was proved here. prove-tracker 84 cases right, prove-progress 26, check-tracker 835 rows clean, check-progress 50 of 60.
+Core tests 3451 passed, 0 failed, 0 skipped, before and after, no file under src or tests changed, so the add-in was not built.
+
+What remains. fix-round.md stays over 100 KB, its 77 open items holding 104,165 bytes alone, for the form. Known bugs: none new.
+What comes next: F242b, the QA of main, the audit, the form and the closing entry.
+
 ## 2026-10-19 F239, one rules file, docs\rules.md, item 1
 
 Branch fix-F239 off main a85e946 in the main clone, pull request 322, main taken in after F241 merged as 321.
