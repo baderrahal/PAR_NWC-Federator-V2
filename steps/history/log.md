@@ -2,7 +2,23 @@
 
 Newest entry at the top.
 
-## 2026-10-19 The plan of the round of 19 Oct b, F239 to F242
+## 2026-10-19 F240, each agent's model by its job, item 2
+
+Branch fix-F240 off main a85e946, worktree wt-F240, pull request 320.
+
+What was done. The model line of the eight agents in .claude\agents set to Bader's list: breaker, developer and reviewer opus,
+claim-checker, log-reader, prober and writer sonnet, runner haiku. Five lines changed, breaker from sonnet and developer, prober,
+reviewer and runner from inherit. The claim-checker, the log-reader and the writer read sonnet already. CLAUDE.md gains one line
+under Rules for every file, each agent's model is set in its file and changed only on his word. The plan of the round rides in
+the branch's first commit. The reviewer found that the plan's edit had taken the heading of the F238 entry under it, and the
+heading is back, the diff of this file against main removing no line.
+
+What was proved here. The eight lines read back off the files. Core tests 3451 passed, 0 failed, 0 skipped, before and after, run
+by the pre-commit on each commit, no file under src or tests changed. The add-in was not built, since nothing under src changed.
+
+What remains. Agents load when a session starts, .claude\rules\loop.md The team, so the new lines take effect from the next
+session and this one runs each agent on the model it read at its start. Known bugs: none new. What comes next: F241 and F239,
+built beside it, merged after it.
 
 Bader's new way of building, 19 Oct 2026, from the NWC Federator's lessons. Four items, no Navisworks run and no change to how
 the tool behaves. Written before the first edit of the round, on main a85e946.
@@ -38,6 +54,8 @@ The order.
    and the Core tests run
 5. F242b, the end, after F242 merged: the QA of main against CLAUDE.md by a read only agent, claude\audit-round-2026-10-19b.md,
    one questions form, Q225, and the closing entry of this file. No pull request is left open
+
+## 2026-10-19 F238, the end of the round of 19 Oct
 
 Branch fix-F238 off main d5f34d1. The end of Bader's round of 19 Oct 2026, F231 to F238, and the round's last entry.
 

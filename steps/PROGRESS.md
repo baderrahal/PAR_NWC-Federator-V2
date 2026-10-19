@@ -1,4 +1,4 @@
-STATE WAITING, 2026-10-19 07:55, the round of F231 to F238 done, F238 merged in 319, waiting for Bader's proof steps and answers
+STATE OPEN, 2026-10-19 09:03, the round of 19 Oct b, F239 to F242, in work, F240 merged in 320
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,10 +15,11 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 321 | 16 | 0 | 28 | 135 | 7 | 507 |
-| total | 525 | 24 | 0 | 28 | 235 | 18 | 830 |
+| outside the waves | 322 | 16 | 0 | 28 | 135 | 7 | 508 |
+| total | 526 | 24 | 0 | 28 | 235 | 18 | 831 |
 <!-- the end of the counts -->
 ## Now
+- 19 Oct b, four items, no Navisworks run, the plan in log.md. F240 the agents' models, 320. In work F241, F239, then F242
 - 19 Oct, the round of F231 to F238 done, Bader's six fixes, the full run on final-2026-10-19 and the end, F238 in 319.
   F231 the append measured, 0.000 mm, scan.md 5z-zn. F232 packages first, 313. F233 one discipline groups not built, 314.
   F234 the discipline workbooks, 315. F235 caps only over 750 clashes and penetrations on by default, 316, Q220, Q221.
@@ -38,7 +39,6 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 1. Bader's proof steps at the top of steps\03_bader_next.md, the full run's 13 first, step 1 opening final-2026-10-19\Report\C06
 2. His answers to Q212 to Q223 and the older questions below
 3. The 40 contradictions listed in claude\audit-round-2026-10-19.md, 43, 46, 37 and 38 the code ones first
-
 ## Waiting for Bader
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
 - Q216 the groupings, Q217 the Backup, Q218, Q219 the workbooks, Q220 the lists, Q221 the picture order, Q222, Q223 the count check
