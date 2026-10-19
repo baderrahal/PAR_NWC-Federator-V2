@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    F237, the full run of Bader's round of 19 Oct 2026. A probe that runs INSIDE Navisworks, in AppendProbe's shape,
+    started through the automation API by tools\probes\ClashPickProbe\probe-pick.ps1. It opens each NWF it is handed and
+    finds each clash it is asked for by its test and its two element ids, writing the clash's name and its status. It
+    references no project of this repo and saves nothing.
+
+        dotnet build tools\probes\ClashPickProbe\ClashPickProbe.csproj -c Release
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>ClashPickProbe</AssemblyName>
+    <RootNamespace>ClashPickProbe</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+    <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
+    <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+    <NavisworksClashDll>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</NavisworksClashDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api">
+      <HintPath>$(NavisworksApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash">
+      <HintPath>$(NavisworksClashDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckNavisworks" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(NavisworksApiDll)')" Text="Autodesk.Navisworks.Api.dll was not found at $(NavisworksApiDll). Pass -p:NavisworksPath with the real install folder." />
+    <Error Condition="!Exists('$(NavisworksClashDll)')" Text="Autodesk.Navisworks.Clash.dll was not found at $(NavisworksClashDll)." />
+  </Target>
+
+</Project>

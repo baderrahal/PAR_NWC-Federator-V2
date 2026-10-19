@@ -2,6 +2,51 @@
 
 Newest entry at the top.
 
+## 2026-10-19 F237, the full run on final-2026-10-19
+
+Branch fix-F237 off main 6faff29. The full run of the round, on main after F236.
+
+What was done. Main at 6faff29 built and installed, stamp 6faff297. The desktop folder listed with every file's size, date and
+SHA-256, 141 files, then C06 and C07 copied into C:\NWC-PC-Test\work\final-2026-10-19\Parent, 134 NWC files, each read back with
+its source's size, date and SHA-256, 0 differing, and Report\C06 and Report\C07 made empty. The NWC page with C06 and C07 ticked,
+Run pressed once and nothing answered, then the NWF page on the same Report folder, each group in its own Navisworks. Five
+clashes a community drawn at random from the Excel with the seed 20261019, and each found in Navisworks by a probe that opens
+its NWF and walks its tests for the two element IDs, tools\probes\ClashPickProbe, added by this branch and built here. The two
+clash count checks of each page set beside claude-check-2026-10-18\clash-count-check.tsv. The output is left in
+final-2026-10-19\Report, and the logs and tsv of both pages, each masked, are in steps\logs as 2026-10-19-C06-C07-final, with
+the groups table, the picks, the probe's result, the comparison and the sheets read back.
+
+What was proved here. The NWC page, run-20261019-055704: 32 groups DONE, 0 partial, 0 failed, 12 not built for one discipline,
+the runner 1331.0 s for 32 groups of 2 packages, 32 starts 135.2 s and 32 quits 61.9 s. The NWF page, run-20261019-062111: 32
+groups DONE, 0 partial, 0 failed, the runner 1228.2 s, 32 starts 133.4 s and 32 quits 62.1 s. Both under the 45 minutes.
+- One discipline groups not built: 1B06BS, 1B06KI, 1B06PG, 1B06PT, 1B06PW, 1C06PK, 1A07PP, 1C07BS, 1C07KI, 1C07PK, 1C07PW and
+  1D07PT each on a NOT BUILT line, and no file of any of them under Report.
+- One route a page: each page ran its groups through the runner alone, one Navisworks a group, 32 on each.
+- The report sheets of fix 4: the 8 discipline workbooks of each page read back with each summary count the rows of its check,
+  C06 AR 10, ST 28, ME 17, EL 14, C07 AR 10, ST 28, ME 21, EL 9 on the NWC page. The NWF page's carry 12 rows fewer, the One
+  discipline group rows of the 12 groups never built, which have no NWF for that page to read, row F237-R1.
+- No red row: C06 290 tests with clashes and C07 252 on both pages, 0 red, 0 with a count UNKNOWN, 0 not read, each read back as
+  written. C06 3904 clashes in Clash Detective, Excel and HTML alike, 2121 in views, all New, 1783 Reviewed. C07 1549, 986 in
+  views, 563 Reviewed.
+- The pictures by the 750 rule: no test holds more than 750 clashes, the largest 655 in 1B06PK, no IMAGES line of a capped test,
+  and every clash has its picture, 3904 and 1549, 0 skipped.
+- Small penetrations Reviewed: the groups' penetration lines move 2346 clashes to Reviewed, the 1783 and 563 of the checks.
+- The five picks a community: all ten found once in their NWF by their two element IDs, each under the test, the clash name and
+  the status the Excel gives, none in a group, every picture on the disk, three of them read and each showing the clash's first
+  item red and its second green. The seven NWFs read the same SHA-256 after the probe as before it.
+- The comparison with 18 Oct: the same 290 C06 tests and 252 C07 tests on each page, every one with the same Clash Detective
+  count, Excel rows and HTML rows, 3904 and 1549. Two columns differ, and each is explained. The views of 79 C06 rows and 63 C07
+  rows on each page, by exactly the clashes the penetration rule set Reviewed, since F235 ticks the rule by default, Q195, and a
+  view holds the open clashes alone, Q222. The pictures of 4 C06 rows, all of 1B06PK, at 150 on 18 Oct by the caps of then and
+  now one a clash, F235, Q187. The 18 Oct file also holds a TOTAL row a group, which the comparison leaves out.
+- No mirror merged: every one of the 1536 merges of the NWC page reads that its kept test, holding a BLD-EL-Telecom Fixtures
+  side, did not run, row F237-R2.
+- The desktop folder listed with every SHA-256 again after both runs and the probe, 0 lines differing. Navisworks' settings
+  differed by 66 lines after the two runs and were put back, 0 lines differing.
+
+What remains. Bader's proof steps of the round, F238. Known bugs: rows F237-R1 and R2, and F236-R10 seen on the NWF page's
+sheets. What comes next: F238, the audit, the QA of the repo, the proof steps and the closing entry.
+
 ## 2026-10-19 F236, the clash count check, fix 6
 
 Branch fix-F236 off main 136bdd2. Fix 6 of the round: every run writes one clash count check a community.

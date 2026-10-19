@@ -1,0 +1,11 @@
+﻿time	seconds	group	step	event	name	number	text
+06:19:38.136	1353.458			written	CHECKS	8903	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C06\\C06 AR checks.xlsx
+06:19:38.638	1353.959			written	CHECKS	10051	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C06\\C06 ST checks.xlsx
+06:19:38.659	1353.981			written	CHECKS	9551	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C06\\C06 ME checks.xlsx
+06:19:38.690	1354.012			written	CHECKS	9100	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C06\\C06 EL checks.xlsx
+06:19:38.769	1354.091			written	CHECKS	8909	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C07\\C07 AR checks.xlsx
+06:19:38.789	1354.111			written	CHECKS	10118	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C07\\C07 ST checks.xlsx
+06:19:38.810	1354.131			written	CHECKS	9924	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C07\\C07 ME checks.xlsx
+06:19:38.829	1354.151			written	CHECKS	8793	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C07\\C07 EL checks.xlsx
+06:19:41.207	1356.529			written	COUNTS	24582	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C06\\C06 clash count check.xlsx
+06:19:41.267	1356.588			written	COUNTS	22772	C:\\NWC-PC-Test\\work\\final-2026-10-19\\Report\\C07\\C07 clash count check.xlsx

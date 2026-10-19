@@ -1,0 +1,27 @@
+probe started, mode read
+ROWHEAD	label	nwf	pick	test	id 1	id 2	found	clash	status	in a group
+---- 1B06WM  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf
+TryOpenFile returned True, models 4
+ROW	1B06WM	C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06WM-ZZZ-BM-MOD-000001.nwf	C06-1	BLD-ST-Walls-vs-BLD-AR-Floors	1528426	1083754	1	Clash4	Active	no
+---- 1B06BC  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf
+TryOpenFile returned True, models 5
+ROW	1B06BC	C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf	C06-2	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	2284203	1966788	1	Clash13	Active	no
+---- 1B06PK  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf
+TryOpenFile returned True, models 2
+ROW	1B06PK	C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf	C06-3	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	6523865	3910368	1	Clash29	Active	no
+ROW	1B06PK	C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PK-ZZZ-BM-MOD-000001.nwf	C06-5	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	6608970	3910160	1	Clash91	Reviewed	no
+---- 1B06PP  C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf
+TryOpenFile returned True, models 8
+ROW	1B06PP	C:\NWC-PC-Test\work\final-2026-10-19\Report\C06\NWF\1104-PAR-1B06PP-ZZZ-BM-MOD-000001.nwf	C06-4	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	2311490	1771696	1	Clash22	Reviewed	no
+---- 1C07WM  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WM-ZZZ-BM-MOD-000001.nwf
+TryOpenFile returned True, models 4
+ROW	1C07WM	C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WM-ZZZ-BM-MOD-000001.nwf	C07-1	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	2124723	1259928	1	Clash12	Reviewed	no
+ROW	1C07WM	C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07WM-ZZZ-BM-MOD-000001.nwf	C07-3	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	2124781	1529912	1	Clash5	Active	no
+---- 1C07G1  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwf
+TryOpenFile returned True, models 3
+ROW	1C07G1	C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwf	C07-2	BLD-ST-Framing-vs-BLD-AR-Walls	2269060	499499	1	Clash14	Active	no
+ROW	1C07G1	C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07G1-ZZZ-BM-MOD-000001.nwf	C07-5	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	2401607	864612	1	Clash3	Active	no
+---- 1C07P1  C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07P1-ZZZ-BM-MOD-000001.nwf
+TryOpenFile returned True, models 4
+ROW	1C07P1	C:\NWC-PC-Test\work\final-2026-10-19\Report\C07\NWF\1104-PAR-1C07P1-ZZZ-BM-MOD-000001.nwf	C07-4	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	5709507	456237	1	Clash2	Reviewed	no
+probe finished, code 0
