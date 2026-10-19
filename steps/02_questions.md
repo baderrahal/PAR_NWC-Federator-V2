@@ -1210,3 +1210,79 @@ wc-nwf-design.md.
     Still waiting from before, each answered under its own number: Q182, Q184, Q185, Q186, Q188 to Q192, Q194, Q196 to Q201, Q212 to Q223.
 
     Answer:
+
+226. From the loop, 2026-10-20, F243 point 4 of your order of 19 Oct 20:58. THE COLUMNS THE COVERAGE SHEET HELD THAT THE CLASH COUNT CHECK DOES NOT. The Internal workbook is no longer written and its Coverage sheet went with it, moved nowhere, as you said. The clash count check, <community> clash count check.xlsx, holds building, test, priority, clashes in Clash Detective, Excel rows, HTML rows, clashes in viewpoints, pictures made, pictures skipped, why skipped, New, Active, Reviewed, Approved and Resolved. Read off CoverageSheet.cs at f5c9bee, the Coverage sheet held these that it does not, one row per test of the matrix, the tests not created and those with no clash among them, where the count check has a row only for a test with a clash:
+    a. Position, the test's place in the clash matrix
+    b. Left set and Left items, the set and how many items it found in this group
+    c. Right set and Right items
+    d. In the document: created this run, already there, or not created
+    e. Run, yes or no
+    f. Results at the top level in Clash Detective, a result group counting as one
+    g. Clashes cell in the workbook
+    h. Check: AGREE, FAILED with why, NOT COMPARED with why, or held by neither
+    i. Reason: has clashes, ran and found none, a side found nothing, one discipline, two set codes, and the rest
+    j. Detail, the words behind the reason
+    k. The head lines: the matrix read and its sha256, its list of corrections, each model with its discipline and element count, and the counts line, which the run log's COVERAGE block still writes
+    l. The SETS table: each set, its conditions, its items in this group and whether it is at zero
+    m. The tests Clash Detective holds that the matrix does not name
+    The run log keeps a COVERAGE block per group, which names five tests a reason and counts the rest, and one .tsv coverage row a test, which keeps a, d, e, i and j. b, c, f, g, h beyond the FAILED lines, k but the counts, l and m are now written nowhere. Recommended: A, add d, e and i to the clash count check as three columns, with a row for every test of the matrix, and leave the rest to the run log. Or: B, name the letters to add. Or: C, none, the run log is enough.
+
+    Answer:
+
+227. From the loop, 2026-10-20, F245 item 1 of your order of 19 Oct 20:58. TEN IMPORT ITEMS UNDER ONE ELEMENT IN THE AR MODELS OF 1B06PO AND 1B06WO. What the code and the logs show: the run of 19 Oct read 10 CAD imports in each of the two groups, run-20261019-060530.log line 309 and run-20261019-060852.log line 305, all ten in the AR model. The add-in hands one fact per topmost item whose Item tab Type reads Imports in Families, its element id taken from the nearest item above it carrying one, so ten import items under one family instance are ten facts with one id, 784492. The check of that run counted facts and joined every id, so the AR workbook of 19 Oct wrote Value 10 and 784492 ten times in each row, ten and not nine as your order reads, read off the workbook. Since F244 the count is the distinct ids and each id is listed once a model, and since F245 the row reads Imported CAD file, name not readable, so the same models now give one row, Value 1, one Element IDs row of 784492 a model. What they do not show, UNKNOWN: whether the ten items are ten CAD files or ten parts of one import, why their display names carry no file name, which the tool reads as not readable, and why the two models hold the same element id. Only a probe of the AR model of 1B06PO in Navisworks measures it: each import item's display name, its Item tab, the items above it and whether a property names the source file. Recommended: A, a probe in the next round, one model, read only. Or: B, no probe, one row a model as now is what you want.
+
+    Answer:
+
+228. From the loop, 2026-10-20, F245, the end of your round of 20 Oct, F243 to F245. THE FORM OF THE ROUND, every question it raised in one place, each with the recommended answer first. Answer by its letter, such as 1 A, 2 B. Q226 and Q227 are above it, as your order named them, and the older questions still waiting are listed at the end by number.
+
+    1. A FILE OPEN IN ANOTHER PROGRAM LEAVES ITS GROUP DONE, F243 point 6. Your words say skip that one file, log Close it and run the report again, put it in the end message and carry on. They do not say what the group is. As built the group stays DONE and the line is in the log, RESULT and the end message. Recommended: A, keep it DONE, the Close line being the word that something was left. Or: B, PARTIAL with the reason a file was open.
+
+    2. A LOCKED NWF OR NWD, F243 point 6. Navisworks writes the NWF and the NWD, which already overwrite under one name, and a save or publish that fails still fails the group as before. Recommended: A, keep that, since an NWF not saved loses this run's clash results. Or: B, the Close line for them too, and the group goes on.
+
+    3. A BACKUP HELD OPEN STOPS THAT NWF'S REFRESH, F243 point 6. As built the refresh of that NWF stops, since nothing may change an NWF with no copy, and the Close line names the file held. Recommended: A, keep the stop. Or: B, the refresh goes on with no backup.
+
+    4. A MISSING PICTURE LINK FAILS THE GROUP, F243 point 3, against RE11 of docs\rules.md, a report check never fails a group, marked CONFLICT there. As built, your newer words hold. Recommended: A, point 3 holds for the links and RE11 for every other report check. Or: B, RE11 holds and a missing link is a log line only.
+
+    5. THE LINKED PICTURE'S OWN TARGET, F243 point 3 and Q199. The cell link and the click link of each picture now read NAME_files/cdNNNNNN.jpg. The picture shown in the cell is a linked picture whose target is the jpg's full path, file:///, the form of your own xlsx, F152, which Q199 still asks about. Recommended: A, answer Q199, which decides it. Or: B, make that target relative now too.
+
+    6. THE CLEANUP OF OLD NAMES, F243 point 7. Four readings. First, it reads the community folder and every package folder below it, Report\C06\Infrastructure among them, since a package writes its Log and Backup there. Second, a group is matched by its NWF name and by its workbook name, since the old Log files carry the workbook name. Third, it deletes the old Log\NAME.xlsx of every group of the community, not only those this run builds, as your words say a group name of that community. Fourth, it runs at the start of the run, before any group succeeds. Recommended: A, keep all four. Or: B, name the one to change.
+
+    7. OLD NAMES YOUR LIST DOES NOT NAME, F243 point 7. These are left as they are: a dated XML, Log\NAME STAMP.xml, the internal workbook under its older suffix, NAME Generic Models.xlsx, a backup whose extension is upper case, .NWF, the doubled list name, run STAMP STAMP2.txt, and the dated rebuild folders of the NWC page's Rebuild, F188. Recommended: A, add the first four to the list, and keep the rebuild folders, which hold whole NWFs. Or: B, leave them all.
+
+    8. THE BACKUP, F243 point 7 and Q217. Where Backup\NAME.nwf is already there the newest dated backup is kept as it is, and the older dated ones are deleted. A renamed backup on the NWC page, or with Refresh off, can stay old under the plain name. Recommended: A, answer Q217, and until then keep both as built. Or: B, delete the newest dated one where the plain name is taken.
+
+    9. THE ONE LIST OF MODELS NOT ON THE SAME SHARED COORDINATES, F243 point 1. Each group runs in its own Navisworks, so the window that started the run writes the one list of the whole run, every group in it, into each Log folder of the run, so the Log folder of a package carries the other packages' groups too. A run that judged nothing, such as a refresh with Run tests off, writes a list saying so over last week's. Recommended: A, keep one list of the run in every Log folder. Or: B, one list a package, holding that package's groups alone.
+
+    10. STILL PRUNED TO 30, F243 point 1. Only the logs under %LOCALAPPDATA%\ParsonsNwcFederator\logs are pruned to 30, LO4. Nothing prunes the copies of the run log in a Log folder, and nothing did before. Recommended: A, keep it so. Or: B, prune each Log folder's run logs to 30 too.
+
+    11. WHERE YOUR WORDS AND THE MOCK DIFFER, F244. Three small ones, each built as said here. The Tabs block starts in B15 as the mock has it, where your words say B16. The Model cell of a Missing model row on To fix reads none in grey as your words say, where the mock has it dark blue. The widths are your numbers, 18, 46 and the rest, where the mock's script stored each about 0.7 of a character narrower, so the mock's columns show a little narrower in Excel. Recommended: A, keep the three as built. Or: B, name the one to change.
+
+    12. A GROUP OF ONE DISCIPLINE ON MODELS, F244 and F245 item 4. Your words: one discipline groups are not processed and not highlighted, and lone models still appear on Models as alone with no To fix row. As built, such a model's row reads Compared with none and Off the reference alone, in grey, Status NOT CHECKED in grey, Naming and File age as read with no fill, CAD imports and Generic Models UNKNOWN in grey since its items were never walked, it is on no other sheet and counts in no check. Recommended: A, keep it so. Or: B, Status OK, or C, leave Naming and File age empty too.
+
+    13. WHAT WAS NOT READ, F244. A model whose placement, site or items could not be read shows UNKNOWN in grey in that cell, never a nought or a dash, and is left out of that check's Checked count, the run log saying why. A check that judged no model is NOT CHECKED with its counts empty, never OK, and the line in B5 says All models pass every check only where every model was judged by every check. Recommended: A, keep it so.
+
+    14. A REFERENCE ON REVIT'S INTERNAL ORIGIN, F244 and F245 item 3. As built, the reference's own High row is written where another model of its building names a real shared site, the rule F234 had, and then every other model of that building gets the Medium row, cannot be judged, even one under 1 m. Where every model of the building is on Internal there is no such row and a far model is High. Those Medium rows count in the Coordinates row's With issue, so the Summary reads FIX. Recommended: A, keep it so. Or: B, the High row whenever the reference names Internal, whatever the others name.
+
+    15. NAMING ON MODELS, F244. A wrong name takes the amber fill, as File age does, since both are Medium checks. The reference discipline's own models and a name that could not be judged read not checked in grey. The words of each part a name breaks are now a Naming line in the run log, since the Finding cell holds the pattern alone. Recommended: A, keep it so.
+
+    16. ONE ELEMENT ID UNDER TWO ROWS, F244. Each element ID is listed once per model on Element IDs, the first kept. A To fix Value counts the distinct IDs of its own row, so where one ID sits under two CAD files or families the Value and the Element IDs rows can differ by that ID. Recommended: A, keep it so, F245 item 1 below saying why IDs repeat.
+
+    17. THE MOCK IN docs\design, F244. Your order puts the mock's xlsx and pdf in docs\design, where the house rule says no workbook is committed. They are committed as the reference of the test, and the evidence check names them by their first and last bytes. Its With issue format printed none for any count above 1, so the workbook writes the corrected one, your decision of 20 Oct, and the mock is kept as approved. Recommended: A, keep the files.
+
+    18. THE SENTENCE IN B5 AND THE MEDIUM ROWS, F244. Your parts are the models that need a fix, the buildings with no model and the models with CAD imports or Generic Models. A wrong name, an old file and a model measured from a reference on internal origin are Medium rows on To fix and REVIEW on Models, and none of your parts counts them. As built, B5 never says All models pass every check while To fix holds a row, and writes the first part at nought instead, 0 of 18 ME models need a fix. Recommended: A, add a fourth part, <r> models have a name, a date or a reference to review. Or: B, keep the three parts as built.
+
+    19. A CHECK THAT JUDGED NO MODEL, F244. Such a Summary row reads NOT CHECKED with its counts empty, and its last cell reads Nothing to do in grey as your words give an empty cell, which can read as nothing found. Recommended: A, write not checked, see the run log, in grey there. Or: B, keep Nothing to do.
+
+    20. A DISTANCE JUST OVER 30 M, F244. A model 30.04 m off is over 30 m, so it is FIX with the red fill, and the cell, written to one decimal as your format says, reads 30.0. Recommended: A, two decimals between 29.95 and 30.05 m. Or: B, keep one decimal.
+
+    21. THE CELL OF AN UNREADABLE CAD FILE ON ELEMENT IDS, F245 item 1. Your words give the To fix Finding, Imported CAD file, name not readable. The CAD file or family cell of Element IDs for such an import reads not readable, the setting's words. Recommended: A, keep not readable there. Or: B, CAD file, name not readable.
+
+    22. THE DISCIPLINE LINE OF THE RUN LOG, F245 item 1. Each group's line still counts the import items, so the next run's log reads 10 CAD imports for 1B06PO where the workbook says one element. Recommended: A, the line counts the distinct element ids of each model, in the next round. Or: B, keep it counting items.
+
+    23. UNREADABLE IMPORTS, F245 item 1. An import whose element id could not be read is counted on its own each time, so ten such items would read Value 10. Unreadable names under different elements of one model are one row, and CAD imports (files) reads 1 where they may be more files. Recommended: A, keep both until Q227's probe says what the items are. Or: B, one row per element.
+
+    24. THE TWO ST MODELS WITH THE SAME GENERIC MODELS IDS, F245 item 2. 1104-PAR-1B06BC-ZZZ-ST-MOD-000002.nwc is 39,869 bytes, SHA-256 c431d88715c688cbb9676df5453dd53e5a4a2aa949e054667b62793cb2c54c32, and 1104-PAR-1B06G1-ZZZ-ST-MOD-000002.nwc is 39,205 bytes, SHA-256 660430d6bb2b8807a3644d899781f12d22a8b4fa74a1571e5b2fcf6cf4b8a282, both in final-2026-10-19\Parent\C06, both written 17 Oct 23:08. They are two different files. Each group's facts are read in its own Navisworks, so no code can carry one model's ids to the other, and no code fault was found. The same ids in two Revit models usually mean one was saved from the other. Nothing was changed. Recommended: A, ask the ST modeller whether one model was copied from the other. Or: B, nothing.
+
+    Still waiting from before, each answered under its own number: Q182, Q184, Q185, Q186, Q188 to Q192, Q194, Q196 to Q201, Q212 to Q225.
+
+    Answer:

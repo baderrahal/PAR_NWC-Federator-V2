@@ -406,6 +406,62 @@ namespace Federator.Core.Tests
             Assert.That(CheckWords.Heading("C06", Path.Combine("Infrastructure", "Roads")), Is.EqualTo("C06 Infrastructure Roads"));
         }
 
+        /// <summary>
+        /// F245 item 1, Bader's order of 19 Oct 2026 20:58. The AR models of 1B06PO and 1B06WO as the run of 19 Oct read them,
+        /// ten imports under element 784492 whose names carry no file name, which the AR workbook of that run wrote as Value 10
+        /// with 784492 ten times in each row. The count is the distinct ids, each id once a model, the finding the order's words.
+        /// </summary>
+        [Test]
+        public void TenImportsOfOneElementWithNoFileNameAreOneRowWithItsIdOnceAModel()
+        {
+            List<DisciplineGroup> groups = new List<DisciplineGroup>();
+
+            foreach (string building in new[] { "1B06PO", "1B06WO" })
+            {
+                ElementFact[] imports = Enumerable.Range(0, 10).Select(i => new ElementFact("784492", null, null, null, null)).ToArray();
+                groups.Add(Built(building,
+                    Model(Nwc(building, "AR"), 0, "S").WithCad(imports),
+                    Model(Nwc(building, "EL"), 0, "S"),
+                    Model(Nwc(building, "ME"), 0, "S"),
+                    Model(Nwc(building, "ST"), 0, "S")));
+            }
+
+            DisciplineReport report = DisciplineReport.For("C06", "C06 itself", groups, new List<FileDate>(), Now, new DisciplineReportSettings(), Names);
+            string ar = Path.Combine(folder, "ar.xlsx");
+
+            DisciplineWorkbook.Write(ar, report, "AR");
+
+            IList<DisciplineIssue> issues = report.IssuesFor("AR");
+            Assert.That(issues.Count, Is.EqualTo(2), "one row a model");
+            IList<ElementIdRow> ids = report.ElementIdsFor("AR");
+            Assert.That(ids.Count, Is.EqualTo(2), "784492 once in each model");
+
+            using (XLWorkbook workbook = new XLWorkbook(ar))
+            {
+                IXLWorksheet toFix = workbook.Worksheet("To fix");
+                IXLWorksheet elements = workbook.Worksheet("Element IDs");
+                IXLWorksheet models = workbook.Worksheet("Models");
+
+                for (int i = 0; i < 2; i++)
+                {
+                    int r = 6 + i;
+                    Assert.That(toFix.Cell(r, 4).GetString(), Is.EqualTo(groups[i].Name));
+                    Assert.That(toFix.Cell(r, 7).GetString(), Is.EqualTo("Imported CAD file, name not readable"));
+                    Assert.That(toFix.Cell(r, 8).GetDouble(), Is.EqualTo(1), "one distinct id, never the ten items");
+                    Assert.That(toFix.Cell(r, 9).GetString(), Is.EqualTo("element"));
+                    Assert.That(elements.Cell(r, 2).GetString(), Is.EqualTo(groups[i].Name));
+                    Assert.That(elements.Cell(r, 4).GetString(), Is.EqualTo("CAD import"));
+                    Assert.That(elements.Cell(r, 5).GetString(), Is.EqualTo("not readable"), "the setting's words, as main wrote them");
+                    Assert.That(elements.Cell(r, 7).GetDouble(), Is.EqualTo(784492));
+                    Assert.That(models.Cell(r, 3).GetString(), Is.EqualTo("AR-000001"));
+                    Assert.That(models.Cell(r, 9).GetDouble(), Is.EqualTo(1), "CAD imports (files)");
+                }
+
+                Assert.That(toFix.Cell(8, 2).IsEmpty(), Is.True);
+                Assert.That(elements.Cell(8, 2).IsEmpty(), Is.True);
+            }
+        }
+
         [Test]
         public void ALowRowIsAGreyChipAndAWorkbookWithNothingToFixHoldsItsHeadersAlone()
         {

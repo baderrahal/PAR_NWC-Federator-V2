@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-10-20 F245, the wrong data of 19 Oct, and the end of the round of 20 Oct
+
+Branch fix-F245 off main b3f9f6f, worktree agent-a316c577ee95a7939, pull request 327. Bader's order of 19 Oct 2026 20:58, the
+third of three fixes, F243 to F245, and the round's last entry.
+
+What was done. Item 1: the AR models of 1B06PO and 1B06WO wrote CAD file not readable with Value 10 and 784492 ten times in each
+row of the AR workbook of 19 Oct, read off the workbook, ten and not nine as the order reads. The cause is in the code and the
+logs: the add-in hands one fact per topmost import item, its id that of the nearest item above it, so ten items under one element
+are ten facts with one id, and the check of that run counted facts and joined every id. F244 counts the distinct ids and lists
+each once a model, and this fix writes the order's words, Imported CAD file, name not readable, one constant in CheckWords. Why
+the ten items carry no file name, and whether they are ten files or one, is Q227. Item 2: the two ST NWCs of 1B06BC and 1B06G1 are
+two files, 39,869 and 39,205 bytes, their SHA-256 different, each read in its own Navisworks, so no code carries one model's ids
+to the other, and nothing was changed. Items 3 to 7 were built in F244, each with a test seen failing on main before it,
+F245Item3 to F245Item7. The round's form is Q228 with Q226 and Q227 beside it, and the proof run's steps are at the top of
+steps\03_bader_next.md.
+
+The readings. The reviewer approved. The breaker found two silent points older than this fix, both from F244's keying, an unread
+CAD name counted as one file on Models and one id under two rows listed once on Element IDs, rows F245-R1 and F244-R3.
+
+What was proved here. Core tests 3486 passed before and 3487 after, 0 failed, 0 skipped, the new test failing on main on the
+Finding. The solution builds in Release with 0 errors and 0 warnings, the add-in included. check-locals and check-imports clean.
+Nothing in the add-in changed and nothing ran in Navisworks.
+
+What remains. Bader's proof run of C06 1B06PS and 1B06WL in proof-2026-10-20, then Code's after.txt, its checks against F243
+point 1 and the two workbooks, and the report. His answers to Q226, Q227 and the form Q228. Known bugs: F243-R1 to R9, F244-R1
+to R9 and F245-R1.
+
 ## 2026-10-20 F244, the discipline workbook copied from the mock, the round of 20 Oct
 
 Branch fix-F244 off main 6ed8417, worktree agent-a67a0ca22a4f152e4, pull request 326. Bader's order of 19 Oct 2026 20:58,

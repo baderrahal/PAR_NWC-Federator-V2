@@ -2753,7 +2753,11 @@ F243, and one open in another program is left as it is and named in `FileInUse`'
   so 7 days and 3 hours writes 7 and is within it, never a fill beside a 7, the breaker's reading of a92838b
 - CAD IMPORTS AND GENERIC MODELS, `ElementChecks.Cad` and `Generic`: one Low row per model and CAD file, and one per model, family
   and type, each with its elements counted each id once and every id on Element IDs. `LevelName` and `CadFileName` read what the
-  add-in hands in, both measured in 5z-zg. A model with none is no row, and one whose items were not walked is a line of the log
+  add-in hands in, both measured in 5z-zg. A model with none is no row, and one whose items were not walked is a line of the log.
+  THE IMPORTS OF A MODEL WHOSE NAMES CARRY NO FILE NAME ARE ONE ROW, `CheckWords.ImportedNameNotRead`, Imported CAD file, name not
+  readable, Bader's order of 19 Oct 20:58, F245 item 1, its Value the distinct ids and its CAD file or family cell on Element IDs
+  the setting's not readable. The AR models of 1B06PO and 1B06WO hold ten such imports under element 784492, which the workbook of
+  19 Oct counted as 10 and listed ten times, and which since F244 is 1 element and one row of Element IDs a model, F245 writing the order's words
 - WHAT A CHECK COULD NOT READ is never a pass and never a row: UNKNOWN on Models, left out of the check's Checked, and a line of the
   DISCIPLINE REPORT block, `CheckFindings.Notes`. The block says per discipline its rows to fix, its element IDs and each check's
   Checked and With issue, `DisciplineReport.Lines`
