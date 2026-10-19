@@ -1693,9 +1693,12 @@ and 6 does not read as broken.
   line, and a said that throws is named once in the outcome and the renaming goes on. A holding name an
   earlier, cut off renaming left is taken out before the move onto it and said
 - THE PICTURE LIMITS, F172, F175 and F190, Bader's answers to Q171 and his order of 15 Oct 2026, `PictureLimits` and
-  `GdiBackstop`. Every test, whatever its clash count, gets pictures for at most its first 150 clashes at priority A,
-  100 at priority B and 50 at priority C, and the rest are skipped, per test and not for the run. A test with fewer
-  clashes than its cap gets a picture for each. A saved test the built in
+  `GdiBackstop`. SINCE F235, BADER'S ANSWER TO Q187 OF 18 OCT 2026, ONLY A TEST OF MORE THAN 750 CLASHES IS CAPPED, the
+  setting `ImageOptions.CapOverClashes`, its default `PictureLimits.DefaultCapOverClashes`, read off the test's clashes,
+  `TestReport.RawClashes`, by `PictureLimits.LimitFor`, the one rule. Such a test gets pictures for at most its first 150
+  clashes at priority A, 100 at priority B and 50 at priority C, and the rest are skipped, per test and not for the run, and
+  a test of 750 or fewer gets a picture for every clash. Its IMAGES line, `PictureLimits.TestLine`, names its clashes and the
+  750 rule. The GDI and memory stops below are unchanged. A test with fewer clashes than its cap gets a picture for each. A saved test the built in
   matrix does not name is C, F168, and so is a test with no priority read, so the cap is never the most
   by a doubt. The priority is read off the built in priority map at the start of the picture pass into
   `TestReport.PicturePriority`, because `TestReport.Priority` is put on the report only after the clash
@@ -2355,8 +2358,12 @@ and 6 does not read as broken.
   measures the threshold OR LESS, and the clash is at New or Active. Everything else is
   left exactly as it is and counted by reason. The rule is
   Federator.Core.Clash.PenetrationRule, the lists are PenetrationSettings and the block is
-  PenetrationTally, all three with their tests. OFF by default, because it writes into the
-  NWF and a project has to say it wants that
+  PenetrationTally, all three with their tests. It was off by default, because it writes into
+  the NWF, until Bader's answer to Q195 of 18 Oct 2026, F235, ticked it by default on both pages,
+  `PenetrationSettings.DefaultMarkPenetrations`, read by `ReportOptions`: a pipe, duct, cable tray or
+  conduit, or their fittings, of 150 mm or less hitting a wall, floor or roof becomes Reviewed, a
+  larger one stays New, Reviewed is the only status set and the by design box is unchanged. The lists
+  keep what his earlier answers added, Q220
 - THE 150 IS THE SAME NUMBER F53 USES AND IT IS NAMED ONCE, in
   Federator.Core.Views.SizeSettings. F53 puts an item in a viewpoint when it is OVER the
   threshold, so exactly 150 is OUT there. F72 marks a service Reviewed when it is AT OR

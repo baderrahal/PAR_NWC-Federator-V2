@@ -46,6 +46,15 @@ namespace Federator.Core.Tests
         // ---------- the four the brief names by size ----------
 
         [Test]
+        public void A100PipeAgainstAWallMovesAndTheRuleIsOnByDefaultSinceQ195()
+        {
+            Assert.That(PenetrationSettings.DefaultMarkPenetrations, Is.True, "Bader's answer to Q195 of 18 Oct 2026, F235");
+            Assert.That(new Federator.Core.Report.ReportOptions().MarkPenetrations, Is.True);
+            Assert.That(new Federator.Core.Report.ReportOptions().MarkByDesign, Is.False, "the by design box is unchanged");
+            A100PipeAgainstAWallMoves();
+        }
+
+        [Test]
         public void A100PipeAgainstAWallMoves()
         {
             PenetrationDecision decision =

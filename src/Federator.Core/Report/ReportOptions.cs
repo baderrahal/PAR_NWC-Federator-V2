@@ -30,7 +30,7 @@ namespace Federator.Core.Report
             Tolerance = ToleranceChoice.Default();
             MarkByDesign = false;
             RebuildDriftedSets = SetRebuildSettings.DefaultRebuildDriftedSets;
-            MarkPenetrations = false;
+            MarkPenetrations = PenetrationSettings.DefaultMarkPenetrations;
             Penetrations = new PenetrationSettings();
             Sizes = new SizeSettings();
             StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
@@ -180,9 +180,9 @@ namespace Federator.Core.Report
         /// <summary>
         /// Move a small service through a wall, a floor, a roof or a structural foundation to
         /// Reviewed. F72 and Q63, and
-        /// the answer to Q33. OFF by default, because it writes into the NWF, which is the
-        /// only record of what has been fixed, and a project has to say it wants this
-        /// before a run starts changing statuses in it.
+        /// the answer to Q33. It writes into the NWF, which is the only record of what has
+        /// been fixed, so it was off by default until Bader's answer to Q195 of 18 Oct 2026,
+        /// F235, which ticks it by default on both pages, PenetrationSettings.DefaultMarkPenetrations.
         ///
         /// Nothing is destroyed either way: a person moves a clash back in one click and
         /// only New and Active ever move, so a decision somebody made is never overwritten.

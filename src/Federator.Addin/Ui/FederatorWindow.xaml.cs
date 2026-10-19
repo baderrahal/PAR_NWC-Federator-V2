@@ -573,6 +573,21 @@ namespace Federator.Addin.Ui
             {
                 MarkPenetrationsHelp.Text = PenetrationSettings.HelpLine(defaults);
             }
+
+            // F235, Bader's answer to Q195. The box opens as the Core default says, ticked, on both pages, and the NWF page's run
+            // reads its own box.
+            MarkPenetrations.IsChecked = new ReportOptions().MarkPenetrations;
+
+            if (NwfMarkPenetrations != null)
+            {
+                NwfMarkPenetrations.Content = PenetrationSettings.TickLabel;
+                NwfMarkPenetrations.IsChecked = new ReportOptions().MarkPenetrations;
+            }
+
+            if (NwfMarkPenetrationsHelp != null)
+            {
+                NwfMarkPenetrationsHelp.Text = PenetrationSettings.HelpLine(defaults);
+            }
         }
 
 
@@ -950,14 +965,14 @@ namespace Federator.Addin.Ui
         /// The choices on the Outputs and Clash steps that every run of groups reads, under
         /// RUN SETTINGS, for both pages, one method so the two say them alike.
         /// </summary>
-        private void SayTheRunsChoices(ToleranceChoice tolerance)
+        private void SayTheRunsChoices(ToleranceChoice tolerance, bool penetrations)
         {
             log.Line("apply file to old: "
                 + (ApplyFileSettings.IsChecked == true
                     ? "YES, which changes WHICH CLASHES every test it changes will find next time it runs. It resets nothing by itself, measured 5y"
                     : "no, differences are reported and nothing is changed"));
             log.Line("penetrations     : "
-                + (MarkPenetrations.IsChecked == true
+                + (penetrations
                     ? "YES, a small service through a wall, floor, roof or structural foundation becomes Reviewed"
                     : "no, every clash keeps the status it has"));
             log.Line("clash tolerance  : " + tolerance.Label() + ", chosen in the tool, the drop down being its only source, "

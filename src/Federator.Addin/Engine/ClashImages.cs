@@ -236,10 +236,16 @@ namespace Federator.Addin.Engine
             return count;
         }
 
-        /// <summary>The most pictures this test may have, the rule of F172 by its priority, F175, and the box's cap, the least of the two.</summary>
+        /// <summary>The most pictures this test may have, the rule of F172 by its priority and since F235 its clashes, and the box's cap, the least of the two.</summary>
         public int PictureLimitOf(TestReport test)
         {
             return options.LimitOf(test);
+        }
+
+        /// <summary>F235, Bader's answer to Q187. The clashes over which a test's pictures are capped, the run's setting, for the line of a capped test.</summary>
+        public int CapOverClashes
+        {
+            get { return options.CapOverClashes; }
         }
 
         /// <summary>

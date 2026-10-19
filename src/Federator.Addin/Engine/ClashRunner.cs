@@ -2931,7 +2931,7 @@ namespace Federator.Addin.Engine
                 int made = test.ImageCount;
                 int skipped = Math.Max(0, Images.RowsThatWantAPicture(test) - Images.PictureLimitOf(test));
 
-                log.Line(PictureLimits.TestLine(test.Name, test.PicturePriority, test.Rows.Count, made, skipped));
+                log.Line(PictureLimits.TestLine(test.Name, test.PicturePriority, test.RawClashes, Images.CapOverClashes, made, skipped));
             }
         }
 

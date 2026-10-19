@@ -8,10 +8,10 @@ namespace Federator.Core.Report
     /// F172 and F175, Bader's answers to Q171. How many pictures a clash test gets, and where the pictures
     /// stop so the run cannot crash on the GDI limit. Two rules and nothing else:
     ///
-    /// ONE RULE PER TEST BY ITS PRIORITY, F190, Bader's order of 15 Oct 2026. Every test, whatever its
-    /// clash count, gets pictures for at most its first clashes in the order Navisworks lists them: priority A
-    /// the first 150, priority B the first 100 and priority C the first 50. A test with fewer clashes than its
-    /// cap gets a picture for each. A test the matrix does not name counts as C, F168, and so does a test whose
+    /// ONE RULE PER TEST BY ITS PRIORITY, F190, Bader's order of 15 Oct 2026, and since F235 his answer to Q187 of
+    /// 18 Oct 2026. A test of more than 750 clashes, a setting, gets pictures for at most its first clashes in the
+    /// order Navisworks lists them: priority A the first 150, priority B the first 100 and priority C the first 50.
+    /// A test of 750 clashes or fewer gets a picture for every clash. A test the matrix does not name counts as C, F168, and so does a test whose
     /// priority is not known. It is the test that counts, not the run. The clashes stay in the HTML, the Excel
     /// and the viewpoints, only their Image cell is empty, and every clash keeps its viewpoint.
     ///
@@ -33,6 +33,12 @@ namespace Federator.Core.Report
 
         /// <summary>The most pictures a test of priority C gets by default, and of one with no priority.</summary>
         public const int DefaultPicturesForC = 50;
+
+        /// <summary>
+        /// The clashes a test may hold by default and still get a picture for every one, F235, Bader's answer to Q187 of
+        /// 18 Oct 2026: the caps above hold only for a test of more than 750 clashes.
+        /// </summary>
+        public const int DefaultCapOverClashes = 750;
 
         /// <summary>The GDI objects of the Navisworks process past which no picture is made, by default.</summary>
         public const long DefaultGdiStop = 9000;
@@ -69,13 +75,19 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The most pictures a test may have, F190. The cap of its priority, whatever its clash count, and
-        /// the least of it and the box's number, the run's CapPerTest, where the box is not zero. A test with
-        /// fewer clashes than the limit gets a picture for each, because the pictures stop at the end of its clashes.
+        /// The most pictures a test may have, F190 and since F235 Bader's answer to Q187 of 18 Oct 2026. A test of
+        /// CapOverClashes clashes or fewer, 750 by default, gets a picture for every clash, and a test of more the cap of
+        /// its priority, each the least of it and the box's number, the run's CapPerTest, where the box is not zero. A test
+        /// with fewer clashes than the limit gets a picture for each, because the pictures stop at the end of its clashes.
         /// </summary>
-        public static int LimitFor(ClashPriority priority, ImageOptions options)
+        public static int LimitFor(ClashPriority priority, int clashes, ImageOptions options)
         {
-            int limit = PicturesFor(priority, options);
+            if (options == null)
+            {
+                throw new ArgumentNullException("options");
+            }
+
+            int limit = clashes > options.CapOverClashes ? PicturesFor(priority, options) : int.MaxValue;
 
             if (options.CapPerTest > 0 && options.CapPerTest < limit)
             {
@@ -86,14 +98,15 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The one line a test whose clashes exceed its cap gets in the log: its name, its priority letter,
-        /// its clashes, the pictures made and the clashes whose picture was skipped.
+        /// The one line a test whose clashes exceed its cap gets in the log: its name, its priority letter, its clashes and
+        /// the rule of CapOverClashes it is over, F235, the pictures made and the clashes whose picture was skipped.
         /// </summary>
-        public static string TestLine(string testName, ClashPriority priority, int clashes, int made, int skipped)
+        public static string TestLine(string testName, ClashPriority priority, int clashes, int capOverClashes, int made, int skipped)
         {
             return "IMAGES   " + testName + " has priority " + Letter(priority) + " and "
                 + clashes.ToString(CultureInfo.InvariantCulture)
-                + " clashes, more than its cap, so " + made.ToString(CultureInfo.InvariantCulture) + " pictures were made and "
+                + " clashes, more than the " + capOverClashes.ToString(CultureInfo.InvariantCulture)
+                + " above which a test's pictures are capped, so " + made.ToString(CultureInfo.InvariantCulture) + " pictures were made and "
                 + skipped.ToString(CultureInfo.InvariantCulture) + " were skipped. The clashes stay in the "
                 + "HTML, the Excel and the viewpoints, only their Image cell is empty";
         }
@@ -115,7 +128,9 @@ namespace Federator.Core.Report
                 throw new ArgumentNullException("options");
             }
 
-            return "every test gets pictures for at most its first " + options.PicturesForA.ToString(CultureInfo.InvariantCulture)
+            return "a test of " + options.CapOverClashes.ToString(CultureInfo.InvariantCulture)
+                + " clashes or fewer gets a picture for every clash, and a test of more gets pictures for at most its first "
+                + options.PicturesForA.ToString(CultureInfo.InvariantCulture)
                 + " clashes at priority A, " + options.PicturesForB.ToString(CultureInfo.InvariantCulture)
                 + " at priority B and " + options.PicturesForC.ToString(CultureInfo.InvariantCulture) + " at priority C";
         }

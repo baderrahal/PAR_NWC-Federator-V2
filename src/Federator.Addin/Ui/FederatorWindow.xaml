@@ -374,7 +374,7 @@
                              size setting, never typed here, because two copies of 150
                              drift and the XAML copy is the one nothing can test. -->
                         <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,8">
-                            <CheckBox x:Name="MarkPenetrations" IsChecked="False" />
+                            <CheckBox x:Name="MarkPenetrations" />
                             <TextBlock x:Name="MarkPenetrationsHelp" Style="{StaticResource TickHelp}" />
                         </StackPanel>
 
@@ -588,6 +588,8 @@
                                       Click="OnNwfStepChanged" />
                         </StackPanel>
                         <TextBlock x:Name="NwfStepsHelp" Style="{StaticResource FindingLine}" />
+                        <CheckBox x:Name="NwfMarkPenetrations" Margin="0,8,0,0" />
+                        <TextBlock x:Name="NwfMarkPenetrationsHelp" Style="{StaticResource TickHelp}" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="7" Orientation="Horizontal" Margin="0,8,0,0">

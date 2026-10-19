@@ -197,6 +197,13 @@ namespace Federator.Core.Clash
         /// </summary>
         public const string TickLabel = "Mark penetrations as Reviewed";
 
+        /// <summary>
+        /// Whether the box opens ticked, on both pages, F235, Bader's answer to Q195 of 18 Oct 2026: a pipe, duct, cable tray
+        /// or conduit, or their fittings, of the threshold or less hitting a wall, floor or roof becomes Reviewed, a larger one
+        /// stays New, Reviewed is the only status set, and the by design box is unchanged. It was off until then.
+        /// </summary>
+        public const bool DefaultMarkPenetrations = true;
+
         private static string Millimetres(double value)
         {
             return value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + "mm";

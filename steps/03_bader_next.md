@@ -6,6 +6,18 @@ Simple words. Each fix of this round adds its steps here as it merges, and F238 
 folder of the full run. The steps of the round of 18 Oct below name step 5 and the NWF picker, which F232 took out: on this
 build step 5 is step 1. Packages and the picker is the NWF page's tree.
 
+### F235, the picture caps over 750 clashes and penetrations on by default
+
+1. Start Navisworks Manage 2025 from the Start menu and open the tool.
+   Look for: on 4. Clash the box `Mark penetrations as Reviewed` ticked, and on the NWF page the same box, ticked, under the
+   five step boxes. `Mark by design as Reviewed` unticked.
+2. After a run of 1B06PK, open its log and search for `IMAGES` and `above which a test's pictures are capped`.
+   Look for: a line only for tests of more than 750 clashes, each naming its clashes and the 750.
+3. Open 1B06PK's Excel and pick a test of 750 clashes or fewer.
+   Look for: every clash row of a status that takes a picture has its picture.
+4. In Navisworks, open 1B06PK's NWF, Clash Detective, and pick a pipe through a wall of 150 mm or less.
+   Look for: status Reviewed, and a larger pipe through a wall still New.
+
 ### F234, the discipline workbooks
 
 1. After a run of the NWC page on C06, open the Report folder's C06 folder and open `C06 ST checks.xlsx`.

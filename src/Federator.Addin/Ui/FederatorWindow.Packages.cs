@@ -704,7 +704,7 @@ namespace Federator.Addin.Ui
                 tickedFiles,
                 jobs.Count);
             log.Line("grouping         : " + GroupingModes.Describe(mode));
-            SayTheRunsChoices(tolerance);
+            SayTheRunsChoices(tolerance, MarkPenetrations.IsChecked == true);
 
             try
             {
@@ -1067,6 +1067,9 @@ namespace Federator.Addin.Ui
             ReportOptions options = ReportsWanted(tolerance);
             NwfPageSteps nwfSteps = TheNwfSteps();
             nwfSteps.Apply(options);
+
+            // F235, Bader's answer to Q195. The NWF page's run reads the NWF page's own penetration box.
+            options.MarkPenetrations = NwfMarkPenetrations.IsChecked == true;
             string report = nwfTree.Parent;
             PackageRun run = new PackageRun(report, options.Disciplines);
             PackageTally tally = run.Tally;
@@ -1226,7 +1229,7 @@ namespace Federator.Addin.Ui
                     "NWFs             : " + nwfs.Count + " in " + packagesWithNwfs + " of " + nwfTicks.PackagesTicked().Count + " packages with an NWF ticked",
                     "steps            : " + nwfSteps.Words()
                 });
-                SayTheRunsChoices(options.Tolerance);
+                SayTheRunsChoices(options.Tolerance, options.MarkPenetrations);
 
                 TeamMap teams;
                 ExchangeDocument exchange = ReadTheMatrixForAnOpenFileRun(out teams);

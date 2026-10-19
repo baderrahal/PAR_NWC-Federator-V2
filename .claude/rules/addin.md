@@ -547,8 +547,11 @@ well as to pass.
   over the clash itself. F72 supplies the list. Penetrations in the add-in walks the
   results of one test, reads a category off each side with the reader ClashHarvest already
   has and the service size with ItemSizes, and hands the facts to
-  Federator.Core.Clash.PenetrationRule, which decides. It is OFF by default, so a run that
-  did not ask for it resolves nothing and walks nothing and costs what it cost before F72.
+  Federator.Core.Clash.PenetrationRule, which decides. It was off by default until Bader's answer
+  to Q195, F235, which ticks it on both pages: the NWC page's box, MarkPenetrations, and the NWF page's
+  own, NwfMarkPenetrations, each opening as `ReportOptions` says and the NWF page's run reading its own,
+  `OnRunNwfPackages`, and its RUN SETTINGS line saying the box its page read. A run with it unticked
+  resolves nothing and walks nothing and costs what it cost before F72.
   The pass only READS, and the list it hands back goes through ClashStatusEditor, so there
   is still exactly one place that calls TestsEditResultStatus. Two walks rather than one is
   the price of that, and it is worth paying because the mutator kills the handle given to
@@ -1058,10 +1061,11 @@ opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash s
 added GhostOtherItems under More, F152 took EmbedThumbnails out of it and F159 took SkipClashOffCoordinates out,
 F188 added RebuildExisting and the five step boxes of the NWF page, and F232, Bader's round of 19 Oct 2026, fix 2,
 took out IncludeSubfolders with the Source step and the eight boxes under More, rarely changed with it, step 3 holding
-the naming boxes and the logo only, so src\Federator.Addin\Ui\FederatorWindow.xaml holds ELEVEN named tick boxes, of
-which TEN sit under no expander, by x:Name RebuildExisting on the Grouping step, MarkPenetrations, MarkByDesign,
-RebuildDriftedSets and MakeViewpoints on the Clash step, and NwfStepRefresh, NwfStepTests, NwfStepPictures,
-NwfStepViewpoints and NwfStepReports on the NWF page, each picking a step of the weekly run. The one other is under
+the naming boxes and the logo only, and F235, Bader's answer to Q195, added NwfMarkPenetrations on the NWF page, so
+src\Federator.Addin\Ui\FederatorWindow.xaml holds TWELVE named tick boxes, of which ELEVEN sit under no expander, by
+x:Name RebuildExisting on the Grouping step, MarkPenetrations, MarkByDesign, RebuildDriftedSets and MakeViewpoints on the
+Clash step, and NwfStepRefresh, NwfStepTests, NwfStepPictures, NwfStepViewpoints and NwfStepReports, each picking a step
+of the weekly run, and NwfMarkPenetrations on the NWF page. The one other is under
 Things that destroy data, ApplyFileSettings, CompactResolved having gone with F185. Two CheckBox elements carry no name,
 the Run column's and the trees', and are not counted. Read off the XAML on 2026-10-19 by its CheckBox elements with an
 x:Name and the Expander above each. probe-window-labels.ps1 was not run on this count. A box only stays if a normal weekly run genuinely has to choose, and

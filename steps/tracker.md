@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 804 rows: open 217, in progress 24, in review 0, merged 478, proven by a run 41, waiting for Bader 26, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 333, outside the waves 2, right after F133 merges 6
+- By status, of 806 rows: open 217, in progress 24, in review 3, merged 478, proven by a run 41, waiting for Bader 25, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 335, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader, 26 rows: Q182, Q184, Q185, Q186, Q187, Q188, Q189, Q190, Q191, Q192, Q194, Q195, Q196, Q197, Q198, Q199, Q200, Q201, Q212, Q213, Q214, Q215, Q216, Q217, Q218, Q219
+- Waits for Bader, 25 rows: Q182, Q184, Q185, Q186, Q188, Q189, Q190, Q191, Q192, Q194, Q196, Q197, Q198, Q199, Q200, Q201, Q212, Q213, Q214, Q215, Q216, Q217, Q218, Q219, Q220
 
 ## Wave 1
 
@@ -769,7 +769,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F202 | the rebuild of 04 PK with F201 on a copy, every file within 0 mm of a manual Append, the table before and after, clashes 10170 before and 13286 after, the report | F202 | fix | merged | 282 | none | 2026-10-15 |
 | F203 | the picture walk takes the tests at or under their cap first, so the memory stop no longer leaves every small test of C04 with no picture, F190 F182 | F203 | fix | merged | 283 | none | 2026-10-17 |
 | F204 | the clash step shows every hidden item for the run and hides it again after, so a refresh of an NWF saved with models hidden no longer marks their clashes Resolved, 10016 of 13286 on C04 | F204 | fix | merged | 284 | none | 2026-10-17 |
-| Q187 | the picture caps apply to every test since F190, Bader's memory says over 1000 clashes only, keep or change | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q187 | the picture caps apply to every test since F190, Bader's memory says over 1000 clashes only, keep or change | none | question | in review | UNKNOWN | none | 2026-10-19 |
 | Q188 | the picture size, 1024 pixels keeps 3.1 MB a picture in Navisworks and 512 keeps 0.2 MB, 512 would let every capped picture of C04 through | none | question | waiting for Bader | none | none | 2026-10-17 |
 | Q189 | Mark by design moves four service against service pairs to Reviewed, 252 clashes on C04, keep or take out | none | question | waiting for Bader | none | none | 2026-10-17 |
 | Q190 | a run that makes views deletes a folder a person made outside Clash Status and Comments, keep the round 5 rule or delete only the tool's own | none | question | waiting for Bader | none | none | 2026-10-17 |
@@ -779,7 +779,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F205 | the audit round of C02 and C04 on copies, the second run, the missing Excel pictures, the report at the top of steps_bader_next.md, Q187 to Q193 | F205 | fix | merged | 285 | none | 2026-10-17 |
 | F206 | the pictures taken after the NWF save show every item and hide again after, so a model saved hidden no longer leaves its pictures empty, 744 of 3080 on C04 | F206 | fix | merged | 286 | none | 2026-10-17 |
 | Q194 | an Approved clash gets no picture since Photo of ticks New Active and Reviewed by default, keep it or tick Approved | none | question | waiting for Bader | none | none | 2026-10-17 |
-| Q195 | the penetration and by design boxes are off by default and only on the NWC page, show them on the NWF page or not | none | question | waiting for Bader | none | none | 2026-10-17 |
+| Q195 | the penetration and by design boxes are off by default and only on the NWC page, show them on the NWF page or not | none | question | in review | UNKNOWN | none | 2026-10-19 |
 | Q196 | the Layer columns carry the grid level, read each item's own layer as the client's file does or keep it | none | question | waiting for Bader | none | none | 2026-10-17 |
 | Q197 | Item Name is empty where the solid has no name, write the element's name instead or leave it | none | question | waiting for Bader | none | none | 2026-10-17 |
 | Q198 | the client's Excel carries the logo at A1, link the install's logo there or none | none | question | waiting for Bader | none | none | 2026-10-17 |
@@ -897,6 +897,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F234-R7 | a run of the NWC page that refuses before starting with groups of one discipline still makes the package folders and writes the workbooks, with no confirm and a new dated set each press, while its line says refused, the breaker's finding 9 and the reviewer's 7 | F234 | register row | open | none | none | 2026-10-19 |
 | F234-R8 | on the NWF page the workbooks of a package cover only its ticked NWFs under the NWC page's names, and the pattern is learned off those alone, the breaker's finding 10 | F234 | register row | open | none | none | 2026-10-19 |
 | F234-R9 | ALIGNMENT's OnePlacement drops the why TranslationOf returns, MillimetresPerUnit reads a throw as a unit not in the table, and the dates of the workbook are a fixed yyyy-MM-dd, the reviewer's findings 3 and the date format | F234 | register row | open | none | none | 2026-10-19 |
+| Q220 | the penetration rule's lists hold accessories, insulation, flex pipes and ducts and structural foundations beside the categories of the answer to Q195, keep them or cut them to his words | none | question | waiting for Bader | none | none | 2026-10-19 |
+| F235 | Q187 and Q195 as Bader answered them, the picture caps only on a test of more than 750 clashes, a setting, and the penetration box ticked by default on both pages | F235 | fix | in review | UNKNOWN | none | 2026-10-19 |
 
 ## outside the waves
 
