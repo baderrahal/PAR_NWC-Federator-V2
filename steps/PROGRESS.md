@@ -35,8 +35,8 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 18 Oct 20:24, multi3, C06, C07, SKY, both pages, a Navisworks a group | e38344c7, main after 309 | no stop in any of 46 groups, 1B06PK 4330 MB at most | not run | none read | NWC page 28.2 min, NWF page 26.4 min, 46 starts about 200 s and 46 quits 93 s a page |
 | 19 Oct 05:57, final-2026-10-19, C06, C07, both pages, a Navisworks a group | 6faff297, main after 317 | no test over 750, every clash pictured, 3904 and 1549 | not run | none read | runner 1331 s NWC page, 1228 s NWF page, 32 starts about 134 s and 32 quits 62 s a page |
 ## Next
-1. F237 merged, then F238 the audit of the round, claudeudit-round-2026-10-19.md
-2. The proof steps in steps2. The comparison of the check with claude-check-2026-10-18, the logs into steps/logs as 2026-10-19-C06-C07-final3_bader_next.md, step 1 opening final-2026-10-19ReportC06
+1. F237 merged, then F238 the audit of the round, claude\audit-round-2026-10-19.md
+2. The proof steps in steps\03_bader_next.md, step 1 opening final-2026-10-19\Report\C06
 3. The QA of the repo against CLAUDE.md, the closing entry, no PR open
 
 ## Waiting for Bader
