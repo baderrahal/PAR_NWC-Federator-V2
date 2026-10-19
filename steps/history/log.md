@@ -7,7 +7,7 @@ Newest entry at the top.
 Branch fix-F239 off main a85e946 in the main clone, pull request 322, main taken in after F241 merged as 321.
 
 What was done. docs\rules.md, the one list of Bader's rules for the tool, 105 rules in eleven areas, each naming its question or
-order, the newest where two disagree, and the Core test that proves it: 83 a test, 12 a test that proves part, written Test, in
+order, the newest where two disagree, and the Core test that proves it: 82 a test, 13 a test that proves part, written Test, in
 part, and 10 NO TEST, MA2, MA6, MA9, CT15, CT22, PI10, OF7, RE6, PR7 and PR8, which are Q224. Every line of the chat notes of his
 round prompt is a rule of the file, and four lines say CONFLICT where a note and an answer disagree, VP2, VP4, SP4 and CT15, for
 the form at the end of the round, since the day each note was written is not recorded. CLAUDE.md gains one line pointing at the

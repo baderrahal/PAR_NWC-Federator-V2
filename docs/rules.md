@@ -1,7 +1,7 @@
 # Bader's rules for the tool
 
-The one list of Bader's rules for what the NWC Federator does. One line a rule, grouped by area. Each line names the question or
-order it comes from, the newest where two disagree, and the Core test that proves it as Class.Method under
+The one list of Bader's rules for what the NWC Federator does. One line a rule, grouped by area. Each line names where it comes from, a question,
+an order, the brief or the chat notes, the newest where two disagree, and the Core test that proves it as Class.Method under
 tests\Federator.Core.Tests. Test, in part, names a test that proves the Core half or one case of the rule, the rest resting on a
 run. NO TEST means no Core test reaches it, because it lives in the add-in or outside the code, and every NO TEST rule is in Q224
 of steps\02_questions.md. The rules of the repo, the loop and the rounds are in CLAUDE.md and .claude\rules, and the code rules
@@ -63,7 +63,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 ## Pictures
 
 - PI1. Only a test of more than 750 clashes is capped, at its first 150 clashes for priority A, 100 for B and 50 for C, and a test of 750 or fewer gets a picture for every clash, 750 a setting. Q187, replacing Q171, Q176 and Q180. Test: PictureLimitsTests.ATestOf750ClashesOrFewerGetsAPictureForEveryClashAndOneOf751GetsItsCap
-- PI2. A saved test the matrix does not name, and a test with no priority read, is capped as C, and the cap per test of the options keeps its job, the least of the two holding. Q171, Q175, Q180, kept by Q187. Test: PictureLimitsTests.ATestWithNoPriorityReadAtAllIsCappedAsCAndNeverAsTheMost
+- PI2. A saved test the matrix does not name, and a test with no priority read, is capped as C, and the cap per test of the options keeps its job, the least of the two holding. Q171, Q180, kept by Q187. Test: PictureLimitsTests.ATestWithNoPriorityReadAtAllIsCappedAsCAndNeverAsTheMost
 - PI3. The pictures stop at 9000 GDI objects or 12 GB of private memory, whichever fires first, both settings. Q175 C, Q179, Q210. Test: PictureLimitsTests.TheFiveLimitsAreSettingsOfTheRunWithBadersNumbersAsDefaults
 - PI4. The pictures come after the NWF is saved and the NWD published. Q175 C. Test: GroupOrderTests.ThePicturesEndedBeforeTheNwdIsNamedAsAFaultAndTheRightOrderIsNot
 - PI5. Only the models of the test are shown for its pictures, at the export's square size and style. Q150. Test: PictureModelsTests.OnlyTheModelsTheSidesLiveInStayShown
@@ -83,7 +83,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 - VP3. A test's discipline folder is the code of its first side, AR Architecture, ST Structure, ME, MEP, PL, FP and FF Mechanical, EL Electrical, another code by its team line where that is one of the four, and anything else, a saved test the pack does not name among them, Other. Q183, Q184 open. Test: DisciplineFoldersTests.ACodeTheOrderDoesNotNameGoesByThePacksTeamLine
 - VP4. The Over 150mm folder sits only inside Mechanical and Electrical of C, holding the clashes whose larger service is over 150 mm, and elsewhere those clashes stay in the test's one view, counted and named. Q183, Q182 and Q185 open. CONFLICT: the chat notes put services over 150 mm into the discipline viewpoints, read as every letter. Test: DisciplineFoldersTests.OnlyMechanicalAndElectricalHoldTheSizeFolder
 - VP5. A viewpoint holds a test's New and Active clashes framed together, shows only the models its clashing items live in, the first item red and the second green and the rest dimmed. Q114 point 13, Q119 B, Q57, Q58. Test: WhatAViewShowsTests.StructureVsElectricalShowsTheModelsItsItemsLiveInAndHidesTheRest
-- VP6. A test with no open clash gets no viewpoint, and no mirrored test gets one. Q114 points 15 and 19, Q133 D. Test: TestViewPlanTests.ATestWithNoOpenClashGetsNoView
+- VP6. A test with no open clash gets no viewpoint, and no mirrored test gets one. Q114 point 15, Q133 D. Test: TestViewPlanTests.ATestWithNoOpenClashGetsNoView
 - VP7. A service is over 150 mm only above it, exactly 150 is not, a rectangular service is sized by its larger side, and the larger of two services decides. Q51, Q80 D2, Q114 point 14. Test: SizeRuleTests.ExactlyTheThresholdIsOutBecauseOverIsWhatWasAskedFor
 - VP8. The tool's earlier viewpoints are deleted before the new ones are made, and everything outside the tool folder is deleted but a root folder named Comments in any case, kept whole, and made empty where there is none. Q174-1, Q181, Q190 open, chat notes. Test: OutsideTheToolFolderTests.AFolderNamedCommentsIsKeptWithEverythingInIt
 - VP9. A person's view named like a tool view is skipped and named, and the group stays DONE. Q158 B. Test: ViewpointBuildOutcomeTests.ASkippedViewIsNamedAndIsNeitherCreatedNorFailed
@@ -98,7 +98,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 - SP4. A structural foundation counts with walls, floors and roofs, while framing and columns stay out. Q63, Q195 silent on foundations, Q220 open. CONFLICT: the chat notes name walls, floors and roofs alone. Test: PenetrationRuleTests.APipeThroughAFoundationMoves
 - SP5. A service against a service is left alone and counted. Q44, chat notes. Test: PenetrationRuleTests.APipeAgainstAPipeDoesNotMove
 - SP6. Air Terminals, Mechanical Equipment, Plumbing Fixtures and Sprinklers are not services. Q47. Test, in part: PenetrationRuleTests.EveryCategoryAServiceSetAsksForHasBeenDecidedAbout
-- SP7. A service whose size cannot be read is left at New by the penetration rule and named, and counts as over 150 mm for the viewpoints. Q80 D2. Test: PenetrationRuleTests.ASizeThatCannotBeReadDoesNotMove
+- SP7. A service whose size cannot be read is left at New by the penetration rule and named, and in the viewpoints it stays in its test's view and is named, never under Over 150mm. Q80 D2, whose counting it as over 150 mm kept it in the viewpoints of F85, and since F114 no folder is chosen on it. Test, in part: PenetrationRuleTests.ASizeThatCannotBeReadDoesNotMove
 - SP8. The by design pairs built into the pack move their clashes to Reviewed with the box ticked, off by default, and the penetration rule owns a clash both want. Q62, Q195. Test: ByDesignRuleTests.ThePenetrationRuleOwnsAClashTheyBothWant
 - SP9. Every clash the tool moves carries a record in the NWF, and an undo puts back exactly the status the record names. Q50. Test: AutoReviewRecordTests.AnUndoMaySetOnlyTheStatusItsOwnRecordNames
 - SP10. On an NWF refresh the status, assigned to and comments of clashes still there are kept. Q174-2, chat notes. Test: RefreshTests.WhatACoordinatorWroteIsKeptWhenTheClashIsStillThere

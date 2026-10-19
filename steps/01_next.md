@@ -1858,4 +1858,4 @@ tools\loop\cut-xml.ps1 stay for it. Notes: steps\notes\clash-test-round.md. Noth
 ## F239 one rules file, docs\rules.md
 
 - The round of 19 Oct 2026 b, item 1: docs\rules.md as the only list of Bader's rules for the tool, one line a rule by area, each naming its question and the test that proves it or NO TEST, his chat notes checked line by line, the rules with no test as one question, Q224, and the copies in CLAUDE.md pointed at it
-- DONE 2026-10-19, merged in 322. 105 rules, 83 with a test, 12 with a test that proves part, 10 NO TEST in Q224, four CONFLICT lines for the form, every named test a method of its class, Core tests 3451 passed before and after, no file under src or tests changed
+- DONE 2026-10-19, merged in 322. 105 rules, 82 with a test, 13 with a test that proves part, 10 NO TEST in Q224, four CONFLICT lines for the form, every named test a method of its class, Core tests 3451 passed before and after, no file under src or tests changed
