@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Disciplines;
+using Federator.Core.Grouping;
 
 namespace Federator.Core.Communities
 {
@@ -42,7 +43,9 @@ namespace Federator.Core.Communities
 
                     if (i < 0)
                     {
-                        groups.Add(new DisciplineGroup(group.Building, group.Files, null, DidNotRun));
+                        // F234. A group of one discipline is left out by the one rule the NWC page reads, F233.
+                        DisciplineGroup left = new DisciplineGroup(group.Building, group.Files, null, DidNotRun);
+                        groups.Add(BuildingGroup.CannotClashWith(group.Disciplines.Count) ? left.NotBuilt() : left);
                         continue;
                     }
 
@@ -74,9 +77,15 @@ namespace Federator.Core.Communities
                 {
                     files.AddRange(ran.Files);
                 }
+                else if (results[i] != null)
+                {
+                    // F234 on row F233-R2. A group of one discipline its Navisworks did not build keeps its files.
+                    files.AddRange(results[i].NotBuiltFiles);
+                }
 
-                groups.Add(new DisciplineGroup(ran == null ? units[i].Name : ran.Group, files, ran == null ? null : ran.Facts,
-                    WhyNoFacts(results[i], noResultWhy[i], ran)));
+                DisciplineGroup made = new DisciplineGroup(ran == null ? units[i].Name : ran.Group, files, ran == null ? null : ran.Facts,
+                    WhyNoFacts(results[i], noResultWhy[i], ran));
+                groups.Add(ran == null && results[i] != null && OneDisciplineGroups.IsTheLine(results[i].NoGroupBecause) ? made.NotBuilt() : made);
             }
 
             return groups;

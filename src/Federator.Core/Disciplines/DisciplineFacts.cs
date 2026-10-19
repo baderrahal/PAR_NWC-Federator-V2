@@ -39,9 +39,9 @@ namespace Federator.Core.Disciplines
     }
 
     /// <summary>
-    /// What the add-in read off one model of a group for the discipline reports, F209: its file, its box in metres, the
-    /// shared site it names, and the CAD and Generic Models elements found in it. Each part that could not be read carries
-    /// why and is never read as a zero or as none found.
+    /// What the add-in read off one model of a group for the discipline reports, F209: its file, the translation of its
+    /// transform in millimetres as the ALIGNMENT block reads it, F234, the shared site it names, and the CAD and Generic Models
+    /// elements found in it. Each part that could not be read carries why and is never read as a zero or as none found.
     /// </summary>
     public sealed class ModelFacts
     {
@@ -51,7 +51,7 @@ namespace Federator.Core.Disciplines
         public ModelFacts(string file)
         {
             File = file ?? string.Empty;
-            BoxNotRead = "UNKNOWN, the box was not handed in";
+            PlacementNotRead = "UNKNOWN, the placement was not handed in";
             SiteNotRead = "UNKNOWN, the site was not handed in";
             CadNotRead = "UNKNOWN, the walk was not handed in";
             GenericNotRead = "UNKNOWN, the walk was not handed in";
@@ -60,24 +60,19 @@ namespace Federator.Core.Disciplines
         /// <summary>The model's file, the NWC, a full path or a name.</summary>
         public string File { get; private set; }
 
-        public double MinX { get; private set; }
+        /// <summary>The translation of the model's transform in X, in millimetres, ModelPlacement's numbers.</summary>
+        public double X { get; private set; }
 
-        public double MinY { get; private set; }
+        public double Y { get; private set; }
 
-        public double MinZ { get; private set; }
+        public double Z { get; private set; }
 
-        public double MaxX { get; private set; }
+        /// <summary>Why the placement was not read, or null where it was.</summary>
+        public string PlacementNotRead { get; private set; }
 
-        public double MaxY { get; private set; }
-
-        public double MaxZ { get; private set; }
-
-        /// <summary>Why the box was not read, or null where it was.</summary>
-        public string BoxNotRead { get; private set; }
-
-        public bool HasBox
+        public bool IsPlaced
         {
-            get { return BoxNotRead == null; }
+            get { return PlacementNotRead == null; }
         }
 
         /// <summary>The shared site the model names, Revit's Project Location. Null with SiteNotRead where not read.</summary>
@@ -100,22 +95,27 @@ namespace Federator.Core.Disciplines
 
         public string GenericNotRead { get; private set; }
 
-        /// <summary>The box in metres, its two corners in any order.</summary>
-        public ModelFacts WithBox(double x1, double y1, double z1, double x2, double y2, double z2)
+        /// <summary>The translation in millimetres, each a number, so a placement not read is never three noughts.</summary>
+        public ModelFacts WithPlacement(double x, double y, double z)
         {
-            MinX = Math.Min(x1, x2);
-            MinY = Math.Min(y1, y2);
-            MinZ = Math.Min(z1, z2);
-            MaxX = Math.Max(x1, x2);
-            MaxY = Math.Max(y1, y2);
-            MaxZ = Math.Max(z1, z2);
-            BoxNotRead = null;
+            if (double.IsNaN(x) || double.IsNaN(y) || double.IsNaN(z) || double.IsInfinity(x) || double.IsInfinity(y) || double.IsInfinity(z))
+            {
+                return PlacementNot("its transform gave no number");
+            }
+
+            X = x;
+            Y = y;
+            Z = z;
+            PlacementNotRead = null;
             return this;
         }
 
-        public ModelFacts BoxNot(string why)
+        public ModelFacts PlacementNot(string why)
         {
-            BoxNotRead = string.IsNullOrEmpty(why) ? "UNKNOWN why" : why;
+            X = 0.0;
+            Y = 0.0;
+            Z = 0.0;
+            PlacementNotRead = string.IsNullOrEmpty(why) ? "UNKNOWN why" : why;
             return this;
         }
 
@@ -188,6 +188,18 @@ namespace Federator.Core.Disciplines
         public ReadOnlyCollection<ModelFacts> Models { get; private set; }
 
         public string WhyNoModels { get; private set; }
+
+        /// <summary>
+        /// F234. Whether F233 left the group unbuilt for one discipline, the decision as the run made it, the plan's on the NWC
+        /// page and the NOT BUILT line of its own Navisworks on the NWF page, never judged a second time off the files.
+        /// </summary>
+        public bool NotBuiltForOneDiscipline { get; private set; }
+
+        public DisciplineGroup NotBuilt()
+        {
+            NotBuiltForOneDiscipline = true;
+            return this;
+        }
     }
 
     /// <summary>One NWC file's date as the disk gave it, or null with why where it could not be read.</summary>

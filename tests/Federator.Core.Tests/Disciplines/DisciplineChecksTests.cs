@@ -8,215 +8,237 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// F209, the discipline reports. Each check is proved on data a test builds, the coordinates on the boxes and sites
-    /// the probe read off C02 on 18 Oct 2026, scan.md 5z-zg, and each check is broken one way and asserted to name it.
+    /// F209 and F234, the checks of the discipline reports. Coordinates are proved on the translations the ALIGNMENT block of
+    /// 1B06BC read on 19 Oct 2026, in millimetres, and each check is broken one way and asserted to name it, or to name
+    /// nothing where nothing needs action.
     /// </summary>
     [TestFixture]
     public class DisciplineChecksTests
     {
-        private const double Foot = 0.3048;
         private static readonly ContainerNameSettings Names = new ContainerNameSettings();
         private static readonly DisciplineReportSettings Settings = new DisciplineReportSettings();
 
         private static string Nwc(string building, string discipline, string number = "000001")
         {
-            return TestPaths.At("Parent", "C02", "1104-PAR-" + building + "-ZZZ-" + discipline + "-MOD-" + number + ".nwc");
+            return TestPaths.At("Parent", "C06", "1104-PAR-" + building + "-ZZZ-" + discipline + "-MOD-" + number + ".nwc");
         }
 
-        /// <summary>A model with a box given in feet, as the probe read it, put in metres, and its site.</summary>
-        private static ModelFacts Model(string file, double x1, double y1, double z1, double x2, double y2, double z2, string site)
+        private static ModelFacts Model(string file, double x, double y, double z, string site)
         {
-            return new ModelFacts(file).WithBox(x1 * Foot, y1 * Foot, z1 * Foot, x2 * Foot, y2 * Foot, z2 * Foot).WithSite(site)
-                .WithCad(new List<ElementFact>()).WithGeneric(new List<ElementFact>());
+            return new ModelFacts(file).WithPlacement(x, y, z).WithSite(site).WithCad(new List<ElementFact>()).WithGeneric(new List<ElementFact>());
         }
 
-        /// <summary>1A02MM as the probe read it: AR and ME near Revit's origin, EL and ST about 2,823 km away.</summary>
-        private static DisciplineGroup C02()
+        /// <summary>1B06BC as its ALIGNMENT block read it, steps\logs\2026-10-18-C06-C07-F229-NWC-page-C06-group-run-20261018-202521.log lines 244 to 249, AR the reference on Internal.</summary>
+        private static List<DisciplineGroup> Bc()
         {
-            return new DisciplineGroup("1A02MM", new[] { Nwc("1A02MM", "AR"), Nwc("1A02MM", "EL"), Nwc("1A02MM", "ME"), Nwc("1A02MM", "ST") },
-                new[]
-                {
-                    Model(Nwc("1A02MM", "AR"), 9.757, -29.403, 0, 39.891, 0.699, 32.644, "SWLS-02-SharedCoordinate"),
-                    Model(Nwc("1A02MM", "EL"), 2158005.809, 9009231.096, 2227.227, 2158052.473, 9009286.938, 2265.433, "LTB2"),
-                    Model(Nwc("1A02MM", "ME"), 6.31, -34.838, -3.281, 35.835, 1.506, 31.824, "PW3_Shared_Location"),
-                    Model(Nwc("1A02MM", "ST"), 2158007.099, 9009239.412, 2228.129, 2158053.584, 9009286.436, 2265.039, "Internal")
-                },
-                null);
+            ModelFacts[] models =
+            {
+                Model(Nwc("1B06BC", "AR"), 0, 0, 0, "Internal"),
+                Model(Nwc("1B06BC", "EL"), 323886396.13, 2755364306.53, 11033.3, "SITEWIDE PHASE 3"),
+                Model(Nwc("1B06BC", "ME"), 0, 0, 0, "16-S01"),
+                Model(Nwc("1B06BC", "ST"), -33975.57, -1624.92, 0, "T1"),
+                Model(Nwc("1B06BC", "ST", "000002"), 34195.56, 452.06, -4331, "BCTANK")
+            };
+
+            return new List<DisciplineGroup> { new DisciplineGroup("1B06BC", models.Select(m => m.File), models, null) };
         }
 
-        // ---------- check 1, coordinates ----------
+        // ---------- coordinates ----------
 
         [Test]
-        public void OnC02ElAndStAreFarFromArBy2823KmAndMeIsNear()
+        public void OnTheTranslationsOf1B06BCBothStModelsSit34MetresFromArEachARowOfTheStWorkbook()
         {
-            IList<CheckRow> rows = CoordinatesCheck.Rows("C02", "C02", C02(), Settings, Names);
+            CheckFindings found = CoordinatesCheck.Of(Bc(), Settings, Names);
 
-            CheckRow el = rows.Single(r => r.Discipline == "EL");
-            CheckRow st = rows.Single(r => r.Discipline == "ST");
-            CheckRow me = rows.Single(r => r.Discipline == "ME");
-            CheckRow ar = rows.Single(r => r.Discipline == "AR");
-
-            Assert.That(el.Result, Is.EqualTo(CheckWords.Far));
-            Assert.That(el.Value, Does.StartWith("2823."));
-            Assert.That(el.Value, Does.Contain(" km, "));
-            Assert.That(el.Value, Does.Contain("from AR, its site LTB2, AR site SWLS-02-SharedCoordinate"));
-            Assert.That(st.Result, Is.EqualTo(CheckWords.Far));
-            Assert.That(st.Value, Does.StartWith("2823."));
-            Assert.That(st.Value, Does.Contain("its site Internal"));
-            Assert.That(me.Result, Is.EqualTo(CheckWords.Near));
-            Assert.That(me.Value, Does.StartWith("0.000 m from AR, its site PW3_Shared_Location"));
-            Assert.That(ar.Result, Is.EqualTo(CheckWords.Reference));
-            Assert.That(ar.Value, Does.Contain("far from it: EL 2823."));
-            Assert.That(ar.Value, Does.Contain(", ST 2823."));
-            Assert.That(el.File, Is.EqualTo("1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc"), "the file cell is the file's name, never its folder");
+            List<DisciplineIssue> st = found.Issues.Where(i => i.Discipline == "ST").ToList();
+            Assert.That(st.Count, Is.EqualTo(2));
+            Assert.That(st[0].Value, Is.EqualTo("34.014 m, ST on T1, AR on Internal"));
+            Assert.That(st[1].Value, Is.EqualTo("34.472 m, ST on BCTANK, AR on Internal"));
+            Assert.That(st[0].WhatIsWrong, Is.EqualTo("more than 30 m from the AR model"));
+            Assert.That(st[0].Action, Is.EqualTo("Export again on the project shared coordinates"));
+            Assert.That(st[0].Building, Is.EqualTo("1B06BC"));
+            Assert.That(st[0].File, Is.EqualTo("1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc"), "the file's name, never its folder");
+            Assert.That(st[0].Severity, Is.EqualTo(CheckWords.High));
+            Assert.That(found.Issues.Single(i => i.Discipline == "EL").Value, Does.StartWith("2774335.030 m, EL on SITEWIDE PHASE 3"));
+            Assert.That(found.Issues.Any(i => i.Discipline == "ME"), Is.False, "ME sits where AR sits and needs nothing");
+            Assert.That(found.FilesCheckedFor("ST"), Is.EqualTo(2));
+            Assert.That(found.FilesCheckedFor("AR"), Is.EqualTo(1), "the reference is read too");
         }
 
         [Test]
-        public void TheGapBetweenTwoBoxesIsNoughtWhereTheyOverlapAndTheStraightLineOfTheAxisGapsWhereNot()
+        public void AReferenceOnInternalWhileAnotherModelNamesASharedSiteIsOneRowOfTheReferencesWorkbook()
         {
-            ModelFacts a = new ModelFacts("a").WithBox(0, 0, 0, 10, 10, 10);
-            ModelFacts overlaps = new ModelFacts("b").WithBox(5, 5, 5, 20, 20, 20);
-            ModelFacts apart = new ModelFacts("c").WithBox(13, 14, 10, 20, 20, 20);
+            DisciplineIssue ar = CoordinatesCheck.Of(Bc(), Settings, Names).Issues.Single(i => i.Discipline == "AR");
 
-            Assert.That(CoordinatesCheck.Gap(a, overlaps), Is.EqualTo(0.0));
-            Assert.That(CoordinatesCheck.Gap(a, apart), Is.EqualTo(5.0).Within(1e-9), "3 on x and 4 on y make 5");
-            Assert.That(CoordinatesCheck.Gap(apart, a), Is.EqualTo(5.0).Within(1e-9));
+            Assert.That(ar.WhatIsWrong, Is.EqualTo("on Revit internal origin"));
+            Assert.That(ar.Value, Is.EqualTo("the other models on SITEWIDE PHASE 3, 16-S01, T1, BCTANK"));
+            Assert.That(ar.Action, Is.EqualTo("Export on the project shared coordinates"));
+            Assert.That(ar.File, Is.EqualTo("1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc"));
         }
 
         [Test]
-        public void AGroupWithNoArIsMeasuredFromItsFirstDisciplineAndSaysSo()
+        public void AReferenceOnASharedSiteOrWithEveryOtherModelOnInternalGetsNoInternalRow()
         {
-            DisciplineGroup group = new DisciplineGroup("1B06BS", new[] { Nwc("1B06BS", "EL"), Nwc("1B06BS", "ME") },
-                new[] { Model(Nwc("1B06BS", "EL"), 0, 0, 0, 10, 10, 10, "S"), Model(Nwc("1B06BS", "ME"), 0, 0, 0, 10, 10, 10, "S") }, null);
+            List<DisciplineGroup> shared = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "EL") },
+                    new[] { Model(Nwc("1B06PS", "AR"), 0, 0, 0, "S1"), Model(Nwc("1B06PS", "EL"), 0, 0, 0, "Internal") }, null)
+            };
+            List<DisciplineGroup> allInternal = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "EL") },
+                    new[] { Model(Nwc("1B06PS", "AR"), 0, 0, 0, "Internal"), Model(Nwc("1B06PS", "EL"), 0, 0, 0, "Internal") }, null)
+            };
 
-            IList<CheckRow> rows = CoordinatesCheck.Rows("C06", "C06", group, Settings, Names);
-
-            Assert.That(rows.Single(r => r.Discipline == "EL").Result, Is.EqualTo(CheckWords.Reference));
-            Assert.That(rows.Single(r => r.Discipline == "EL").Value, Does.Contain("since it holds no AR"));
-            Assert.That(rows.Single(r => r.Discipline == "ME").Value, Does.Contain("from EL, the first discipline of the group with a box, since it holds no AR"));
+            Assert.That(CoordinatesCheck.Of(shared, Settings, Names).Issues, Is.Empty);
+            Assert.That(CoordinatesCheck.Of(allInternal, Settings, Names).Issues, Is.Empty);
         }
 
         [Test]
-        public void AModelWhoseBoxOrSiteWasNotReadSaysSoAndIsNeverNearOrFar()
+        public void FarIsMoreThanTheSettingSoExactly30MetresIsNoRow()
         {
-            DisciplineGroup group = new DisciplineGroup("1A02MM", new[] { Nwc("1A02MM", "AR"), Nwc("1A02MM", "EL") },
-                new[]
-                {
-                    Model(Nwc("1A02MM", "AR"), 0, 0, 0, 10, 10, 10, "S"),
-                    new ModelFacts(Nwc("1A02MM", "EL")).BoxNot("its root item has no box").SiteNot("the Location tab threw")
-                },
-                null);
+            Func<double, int> rows = metres => CoordinatesCheck.Of(new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "EL") },
+                    new[] { Model(Nwc("1B06PS", "AR"), 0, 0, 0, "S"), Model(Nwc("1B06PS", "EL"), metres * 1000.0, 0, 0, "S") }, null)
+            }, Settings, Names).Issues.Count;
 
-            CheckRow el = CoordinatesCheck.Rows("C02", "C02", group, Settings, Names).Single(r => r.Discipline == "EL");
-
-            Assert.That(el.Result, Is.EqualTo(CheckWords.NotRead));
-            Assert.That(el.Value, Is.EqualTo("its box was not read, its root item has no box"));
+            Assert.That(rows(29.999), Is.EqualTo(0));
+            Assert.That(rows(30.0), Is.EqualTo(0));
+            Assert.That(rows(30.001), Is.EqualTo(1));
+            Assert.That(CoordinatesCheck.Of(new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "EL") },
+                    new[] { Model(Nwc("1B06PS", "AR"), 0, 0, 0, "S"), Model(Nwc("1B06PS", "EL"), 5000.0, 0, 0, "S") }, null)
+            }, new DisciplineReportSettings { FarMetres = 4.0 }, Names).Issues.Single().WhatIsWrong, Is.EqualTo("more than 4 m from the AR model"),
+                "the metres are a setting");
         }
 
         [Test]
-        public void AGroupWhoseModelsWereNotReadSaysNotReadForEachFile()
+        public void APlacementNotReadIsNoRowAndIsSaidInTheLogWithWhy()
         {
-            DisciplineGroup group = new DisciplineGroup("1A02MM", new[] { Nwc("1A02MM", "AR"), Nwc("1A02MM", "EL") }, null, "its NWF would not open");
+            ModelFacts el = new ModelFacts(Nwc("1B06PS", "EL")).PlacementNot("the model has no transform").WithSite("S");
+            List<DisciplineGroup> groups = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), el.File }, new[] { Model(Nwc("1B06PS", "AR"), 0, 0, 0, "S"), el }, null),
+                new DisciplineGroup("1B06BS", new[] { Nwc("1B06BS", "EL") }, null, "its Navisworks wrote no result")
+            };
 
-            IList<CheckRow> rows = CoordinatesCheck.Rows("C02", "C02", group, Settings, Names);
+            CheckFindings found = CoordinatesCheck.Of(groups, Settings, Names);
 
-            Assert.That(rows.Count, Is.EqualTo(2));
-            Assert.That(rows.All(r => r.Result == CheckWords.NotRead && r.Value.EndsWith("its NWF would not open")), Is.True);
-        }
-
-        /// <summary>The EL model of a group whose box starts this many metres east of the AR box, every other side lined up.</summary>
-        private static string ResultAtAGapOf(double metres)
-        {
-            DisciplineGroup group = new DisciplineGroup("G", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL") },
-                new[]
-                {
-                    new ModelFacts(Nwc("1B06BC", "AR")).WithBox(0, 0, 0, 10, 10, 10).WithSite("S"),
-                    new ModelFacts(Nwc("1B06BC", "EL")).WithBox(10 + metres, 0, 0, 20 + metres, 10, 10).WithSite("S")
-                },
-                null);
-
-            return CoordinatesCheck.Rows("C", "C", group, new DisciplineReportSettings(), Names).Single(r => r.Discipline == "EL").Result;
-        }
-
-        // F218, Bader's answer to Q202 of 18 Oct 2026: far is more than 30 m from the reference discipline, 30 m the default.
-        [Test]
-        public void FarIsMoreThanThirtyMetresByDefaultSoThirtyItselfIsNear()
-        {
-            Assert.That(DisciplineReportSettings.DefaultFarMetres, Is.EqualTo(30.0));
-            Assert.That(ResultAtAGapOf(29.9), Is.EqualTo(CheckWords.Near));
-            Assert.That(ResultAtAGapOf(30.0), Is.EqualTo(CheckWords.Near), "far is more than 30 m, so exactly 30 m is near");
-            Assert.That(ResultAtAGapOf(30.1), Is.EqualTo(CheckWords.Far));
+            Assert.That(found.Issues, Is.Empty);
+            Assert.That(found.FilesCheckedFor("EL"), Is.EqualTo(0));
+            Assert.That(found.Notes, Has.Some.EqualTo("Coordinates  1B06PS  1104-PAR-1B06PS-ZZZ-EL-MOD-000001.nwc not read, its placement was not read, the model has no transform"));
+            Assert.That(found.Notes, Has.Some.EqualTo("Coordinates  1B06BS not read, its models were not read, its Navisworks wrote no result"));
         }
 
         [Test]
-        public void TheFarSettingDecidesFarOrNear()
+        public void WithTheArModelNotPlacedTheRowNamesTheModelItWasMeasuredFromAndNeverABlank()
         {
-            DisciplineReportSettings close = new DisciplineReportSettings { FarMetres = 4.0 };
-            DisciplineGroup group = new DisciplineGroup("G", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL") },
-                new[] { new ModelFacts(Nwc("1B06BC", "AR")).WithBox(0, 0, 0, 10, 10, 10).WithSite("S"), new ModelFacts(Nwc("1B06BC", "EL")).WithBox(13, 14, 10, 20, 20, 20).WithSite("S") }, null);
+            ModelFacts ar = new ModelFacts(Nwc("1B06PS", "AR")).PlacementNot("the model has no transform").WithSite("S");
+            List<DisciplineGroup> st = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { ar.File, Nwc("1B06PS", "ST"), Nwc("1B06PS", "EL") },
+                    new[] { ar, Model(Nwc("1B06PS", "ST"), 0, 0, 0, "S"), Model(Nwc("1B06PS", "EL"), 40000, 0, 0, "S") }, null)
+            };
+            string odd = TestPaths.At("Parent", "C06", "plain.nwc");
+            List<DisciplineGroup> unread = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06PS", new[] { odd, Nwc("1B06PS", "EL") },
+                    new[] { Model(odd, 0, 0, 0, "S"), Model(Nwc("1B06PS", "EL"), 40000, 0, 0, "S") }, null)
+            };
 
-            Assert.That(CoordinatesCheck.Rows("C", "C", group, close, Names).Single(r => r.Discipline == "EL").Result, Is.EqualTo(CheckWords.Far));
-            Assert.That(CoordinatesCheck.Rows("C", "C", group, Settings, Names).Single(r => r.Discipline == "EL").Result, Is.EqualTo(CheckWords.Near));
-            Assert.That(() => close.FarMetres = -1.0, Throws.TypeOf<ArgumentOutOfRangeException>());
+            DisciplineIssue fromSt = CoordinatesCheck.Of(st, Settings, Names).Issues.Single();
+            DisciplineIssue fromOdd = CoordinatesCheck.Of(unread, Settings, Names).Issues.Single();
+
+            Assert.That(fromSt.WhatIsWrong, Is.EqualTo("more than 30 m from the ST model"), "ALIGNMENT's rule, the first placed model where AR is not");
+            Assert.That(fromSt.Value, Is.EqualTo("40.000 m, EL on S, ST on S"));
+            Assert.That(fromOdd.WhatIsWrong, Is.EqualTo("more than 30 m from the plain.nwc model"));
         }
 
-        // ---------- check 2, a missing discipline ----------
+        [Test]
+        public void APlacementOfNoNumberIsNeverThreeNoughts()
+        {
+            ModelFacts model = new ModelFacts("a.nwc").WithPlacement(double.NaN, 0, 0);
+
+            Assert.That(model.IsPlaced, Is.False);
+            Assert.That(model.PlacementNotRead, Is.EqualTo("its transform gave no number"));
+        }
+
+        // ---------- missing model and one discipline group ----------
 
         [Test]
-        public void ArPresentInOtherGroupsAndNotInThisOneIsMissingThere()
+        public void AGroupOfThreeDisciplinesMissingElIsOneRowOfTheElWorkbook()
         {
             List<DisciplineGroup> groups = new List<DisciplineGroup>
             {
-                new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL"), Nwc("1B06BC", "ME"), Nwc("1B06BC", "ST") }, null, "not run"),
-                new DisciplineGroup("1B06BS", new[] { Nwc("1B06BS", "EL"), Nwc("1B06BS", "ME"), Nwc("1B06BS", "ST") }, null, "not run")
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "ME"), Nwc("1B06PS", "ST") }, null, "not run")
             };
 
-            IList<CheckRow> rows = MissingDisciplineCheck.Rows("C06", "C06", groups, Settings, Names);
+            CheckFindings found = GroupDisciplinesCheck.Missing(groups, Settings, Names);
 
-            CheckRow ar = rows.Single(r => r.Discipline == "AR");
-            Assert.That(ar.Result, Is.EqualTo(CheckWords.MissingHere));
-            Assert.That(ar.Group, Is.EqualTo("1B06BS"));
-            Assert.That(ar.Value, Is.EqualTo("AR is in 1 of 2 groups of this package and not in 1B06BS, which holds EL, ME, ST"));
-            Assert.That(rows.Single(r => r.Discipline == "EL").Result, Is.EqualTo(CheckWords.NoneMissing));
+            DisciplineIssue el = found.Issues.Single();
+            Assert.That(el.Discipline, Is.EqualTo("EL"));
+            Assert.That(el.WhatIsWrong, Is.EqualTo("no EL model in this group"));
+            Assert.That(el.Value, Is.EqualTo("AR, ME, ST"));
+            Assert.That(el.Action, Is.EqualTo("Issue the EL model for this building"));
+            Assert.That(el.Building, Is.EqualTo("1B06PS"));
+            Assert.That(el.File, Is.Empty);
+            Assert.That(el.Severity, Is.EqualTo(CheckWords.High));
+            Assert.That(found.FilesCheckedFor("EL"), Is.EqualTo(3));
         }
 
         [Test]
-        public void AGroupWhoseFilesWereNotReadIsNeverSaidToMissADiscipline()
+        public void AGroupOfOneDisciplineMissesNothingAndIsOneRowOfItsOwnWorkbookWithItsFiles()
         {
             List<DisciplineGroup> groups = new List<DisciplineGroup>
             {
-                new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL") }, null, "not run"),
-                new DisciplineGroup("1B06BS", new[] { Nwc("1B06BS", "AR") }, null, "not run"),
-                new DisciplineGroup("1B06KI", new string[0], null, "its Navisworks wrote no result, the file is not there")
+                new DisciplineGroup("1B06PG", new[] { Nwc("1B06PG", "EL"), Nwc("1B06PG", "EL", "000002") }, null, "this group did not run in this run").NotBuilt(),
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "EL") }, null, "not run")
             };
 
-            IList<CheckRow> rows = MissingDisciplineCheck.Rows("C06", "C06", groups, Settings, Names);
+            Assert.That(GroupDisciplinesCheck.Missing(groups, Settings, Names).Issues.Any(i => i.Building == "1B06PG"), Is.False);
+            DisciplineIssue one = GroupDisciplinesCheck.OneDiscipline(groups, Names).Issues.Single();
+            Assert.That(one.Discipline, Is.EqualTo("EL"));
+            Assert.That(one.WhatIsWrong, Is.EqualTo("only discipline in this group, not federated"));
+            Assert.That(one.Value, Is.EqualTo("1104-PAR-1B06PG-ZZZ-EL-MOD-000001.nwc, 1104-PAR-1B06PG-ZZZ-EL-MOD-000002.nwc"));
+            Assert.That(one.Building, Is.EqualTo("1B06PG"));
+            Assert.That(one.Severity, Is.EqualTo(CheckWords.Medium));
+        }
 
-            Assert.That(rows.Where(r => r.Group == "1B06KI" && r.Result == CheckWords.MissingHere).Count(), Is.EqualTo(0),
-                "F222, a group with no file read is UNKNOWN and never missing");
-            CheckRow ki = rows.Single(r => r.Group == "1B06KI" && r.Discipline == "AR");
-            Assert.That(ki.Result, Is.EqualTo(CheckWords.NotRead));
-            Assert.That(ki.Value, Is.EqualTo("whether AR is in 1B06KI is UNKNOWN, its files were not read, its Navisworks wrote no result, the file is not there"));
-            Assert.That(rows.Single(r => r.Discipline == "AR" && r.Group == string.Empty).Result, Is.EqualTo(CheckWords.NoneMissing),
-                "AR is in every group whose files were read");
-            Assert.That(rows.Single(r => r.Discipline == "EL" && r.Group == "1B06BS").Value,
-                Is.EqualTo("EL is in 1 of 2 groups of this package whose files were read and not in 1B06BS, which holds AR"));
+        /// <summary>
+        /// The reviewer's finding on F234's first pass: an NWF that links a file not on the disk is built, F233's NOT JUDGED,
+        /// while its facts hold only the models that loaded, one discipline of them, and a model of the federated discipline or a
+        /// name that does not read make F219's rule say UNKNOWN. None of them is a One discipline group row or a Missing model row.
+        /// </summary>
+        [Test]
+        public void OnlyAGroupTheRunLeftUnbuiltIsAOneDisciplineRowAndADisciplineUnknownMissesNothing()
+        {
+            List<DisciplineGroup> groups = new List<DisciplineGroup>
+            {
+                new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR") }, null, "built, a link not on the disk"),
+                new DisciplineGroup("1B06PS", new[] { Nwc("1B06PS", "AR"), Nwc("1B06PS", "BM") }, null, "not run"),
+                new DisciplineGroup("1B06PK", new[] { Nwc("1B06PK", "AR"), TestPaths.At("P", "plain.nwc") }, null, "not run")
+            };
 
-            IList<CheckRow> none = MissingDisciplineCheck.Rows("C06", "C06", groups.GetRange(2, 1), Settings, Names);
-            Assert.That(none.All(r => r.Result == CheckWords.NotRead), Is.True, "with no group read, nothing is said in or not in the package");
+            Assert.That(GroupDisciplinesCheck.OneDiscipline(groups, Names).Issues, Is.Empty);
+            CheckFindings missing = GroupDisciplinesCheck.Missing(groups, Settings, Names);
+            Assert.That(missing.Issues, Is.Empty);
+            Assert.That(missing.Notes.Count(n => n.Contains("whether it misses a discipline is UNKNOWN")), Is.EqualTo(2));
         }
 
         [Test]
-        public void ADisciplineInNoGroupOfThePackageSaysSoOnce()
+        public void AGroupWhoseFilesWereNotReadIsNeverCountedAsMissingADiscipline()
         {
-            List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "ME") }, null, "not run") };
+            List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("x.nwf", new string[0], null, "its Navisworks wrote no result") };
 
-            CheckRow ar = MissingDisciplineCheck.Rows("C06", "C06", groups, Settings, Names).Single(r => r.Discipline == "AR");
+            CheckFindings found = GroupDisciplinesCheck.Missing(groups, Settings, Names);
 
-            Assert.That(ar.Result, Is.EqualTo(CheckWords.NotInThePackage));
+            Assert.That(found.Issues, Is.Empty);
+            Assert.That(found.Notes.Single(), Does.Contain("whether it misses a discipline is UNKNOWN"));
         }
 
-        // ---------- check 3, naming against AR ----------
+        // ---------- naming ----------
 
         [Test]
         public void TheArPatternIsLearnedAndAFileBreakingAFixedPartIsNamedWithWhatArHasThere()
@@ -226,8 +248,9 @@ namespace Federator.Core.Tests
             Assert.That(naming.Describe(), Is.EqualTo("learned from 2 AR names, 7 parts split on -: part 1 1104, part 2 PAR, part 3 shaped like 1B06BC, part 4 ZZZ, part 5 the discipline, part 6 MOD, part 7 shaped like 000001"));
             Assert.That(naming.Breaks(Nwc("1B06BC", "ME")), Is.Empty);
 
-            string wrong = TestPaths.At("Parent", "1105-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc");
-            Assert.That(naming.Breaks(wrong).Single(), Is.EqualTo("part 1 reads 1105, AR has 1104 there"));
+            NamingBreak wrong = naming.Breaks(TestPaths.At("Parent", "1105-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc")).Single();
+            Assert.That(wrong.WhatIsWrong, Is.EqualTo("part 1 reads 1105"));
+            Assert.That(wrong.ReferenceHas, Is.EqualTo("AR has 1104 there"));
         }
 
         [Test]
@@ -235,41 +258,45 @@ namespace Federator.Core.Tests
         {
             ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR"), Nwc("1B06G1", "AR", "000002") }, Settings, Names);
 
-            IList<string> six = naming.Breaks(TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-000001.nwc"));
-            Assert.That(six[0], Is.EqualTo("it has 6 parts split on -, AR names have 7"));
+            NamingBreak six = naming.Breaks(TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-000001.nwc"))[0];
+            Assert.That(six.WhatIsWrong + ", " + six.ReferenceHas, Is.EqualTo("it has 6 parts split on -, AR names have 7"));
 
-            IList<string> shape = naming.Breaks(TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-MOD-00001.nwc"));
-            Assert.That(shape.Single(), Is.EqualTo("part 7 reads 00001, AR has a part shaped like 000001 there"));
+            NamingBreak shape = naming.Breaks(TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-MOD-00001.nwc")).Single();
+            Assert.That(shape.WhatIsWrong + ", " + shape.ReferenceHas, Is.EqualTo("part 7 reads 00001, AR has a part shaped like 000001 there"));
 
-            IList<string> building = naming.Breaks(TestPaths.At("P", "1104-PAR-B06BC-ZZZ-ME-MOD-000001.nwc"));
-            Assert.That(building.Single(), Is.EqualTo("part 3 reads B06BC, AR has a part shaped like 1B06BC there"));
+            NamingBreak building = naming.Breaks(TestPaths.At("P", "1104-PAR-B06BC-ZZZ-ME-MOD-000001.nwc")).Single();
+            Assert.That(building.WhatIsWrong + ", " + building.ReferenceHas, Is.EqualTo("part 3 reads B06BC, AR has a part shaped like 1B06BC there"));
         }
 
         [Test]
-        public void TheRowsSayFollowsOrBreaksForEveryFileOfTheOtherDisciplinesAndThePatternInEachWorkbook()
+        public void OnlyTheBreakingFilesAreRowsAndTheReferencesOwnFilesAreNotJudged()
         {
             List<DisciplineGroup> groups = new List<DisciplineGroup>
             {
                 new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL"), TestPaths.At("P", "1104-PAR-1B06BC-ZZZ-ME-MOD-01.nwc") }, null, "not run")
             };
 
-            IList<CheckRow> rows = ReferenceNaming.Rows("C06", "C06", groups, Settings, Names);
+            CheckFindings found = ReferenceNaming.Of(groups, Settings, Names);
 
-            Assert.That(rows.Count(r => r.Result == CheckWords.Pattern), Is.EqualTo(4), "one line of the pattern in each of the four workbooks");
-            Assert.That(rows.Single(r => r.Discipline == "EL" && r.File.Length > 0).Result, Is.EqualTo(CheckWords.Follows));
-            Assert.That(rows.Single(r => r.Discipline == "ME" && r.File.Length > 0).Result, Is.EqualTo(CheckWords.Breaks));
-            Assert.That(rows.Any(r => r.Discipline == "AR" && r.File.Length > 0), Is.False, "the reference's own files are the pattern and are not judged");
+            DisciplineIssue me = found.Issues.Single();
+            Assert.That(me.Discipline, Is.EqualTo("ME"));
+            Assert.That(me.WhatIsWrong, Is.EqualTo("part 7 reads 01"));
+            Assert.That(me.Value, Is.EqualTo("AR has a part shaped like 000001 there"));
+            Assert.That(me.Severity, Is.EqualTo(CheckWords.Medium));
+            Assert.That(found.FilesCheckedFor("EL"), Is.EqualTo(1));
+            Assert.That(found.FilesCheckedFor("AR"), Is.EqualTo(0), "the reference's own files are the pattern");
+            Assert.That(found.Notes[0], Does.StartWith("Naming  learned from 1 AR names"));
         }
 
         [Test]
-        public void WithNoArFileNoPatternIsLearnedAndNoNameIsJudged()
+        public void WithNoArFileNoPatternIsLearnedNoNameIsJudgedAndTheLogSaysSo()
         {
             List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06BS", new[] { Nwc("1B06BS", "EL") }, null, "not run") };
 
-            IList<CheckRow> rows = ReferenceNaming.Rows("C06", "C06", groups, Settings, Names);
+            CheckFindings found = ReferenceNaming.Of(groups, Settings, Names);
 
-            Assert.That(rows.All(r => r.Result == CheckWords.NoPattern), Is.True);
-            Assert.That(rows[0].Value, Is.EqualTo("no AR file in this package, so no pattern was learned and no name was checked"));
+            Assert.That(found.Issues, Is.Empty);
+            Assert.That(found.Notes.Single(), Is.EqualTo("Naming  no AR file in this package, so no pattern was learned and no name was checked"));
         }
 
         [Test]
@@ -295,11 +322,11 @@ namespace Federator.Core.Tests
             ReferenceNaming naming = ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR") }, Settings, Names);
 
             Assert.That(naming.Breaks(Nwc("1B06BC", "ST", "000002")), Is.Empty);
-            Assert.That(naming.Breaks(Nwc("1B06BC", "ME", "00002")).Single(), Is.EqualTo("part 7 reads 00002, AR has a part shaped like 000001 there"));
+            Assert.That(naming.Breaks(Nwc("1B06BC", "ME", "00002")).Single().ReferenceHas, Is.EqualTo("AR has a part shaped like 000001 there"));
 
             DisciplineReportSettings strict = new DisciplineReportSettings { ShapeOnlyParts = new int[0] };
-            Assert.That(ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR") }, strict, Names).Breaks(Nwc("1B06BC", "ST", "000002")).Single(),
-                Is.EqualTo("part 7 reads 000002, AR has 000001 there"), "with no part judged by shape alone the number is a fixed part");
+            Assert.That(ReferenceNaming.Learn(new[] { Nwc("1B06BC", "AR") }, strict, Names).Breaks(Nwc("1B06BC", "ST", "000002")).Single().ReferenceHas,
+                Is.EqualTo("AR has 000001 there"), "with no part judged by shape alone the number is a fixed part");
             Assert.That(() => strict.ShapeOnlyParts = new[] { 0 }, Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
@@ -312,10 +339,10 @@ namespace Federator.Core.Tests
             Assert.That(naming.Describe(), Does.StartWith("learned from 1 ST names"));
         }
 
-        // ---------- check 4, file age ----------
+        // ---------- file age ----------
 
         [Test]
-        public void AFileOlderThanTheLimitIsFlaggedAndOneWithinItIsNot()
+        public void OnlyAFileOlderThanTheLimitIsARowAndADateNotReadIsSaidInTheLog()
         {
             DateTime now = new DateTime(2026, 10, 18, 1, 0, 0);
             List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06BC", new[] { Nwc("1B06BC", "AR"), Nwc("1B06BC", "EL"), Nwc("1B06BC", "ME") }, null, "not run") };
@@ -326,49 +353,65 @@ namespace Federator.Core.Tests
                 new FileDate(Nwc("1B06BC", "ME"), null, "the file is gone")
             };
 
-            IList<CheckRow> rows = FileAgeCheck.Rows("C06", "C06", groups, dates, now, Settings, Names);
+            CheckFindings found = FileAgeCheck.Of(groups, dates, now, Settings, Names);
 
-            Assert.That(rows.Single(r => r.Discipline == "AR").Result, Is.EqualTo(CheckWords.Older));
-            Assert.That(rows.Single(r => r.Discipline == "AR").Value, Is.EqualTo("written 2026-10-10 01:00, 8 days old, the limit 7 days"));
-            Assert.That(rows.Single(r => r.Discipline == "EL").Result, Is.EqualTo(CheckWords.Within), "exactly the limit is not older than it");
-            Assert.That(rows.Single(r => r.Discipline == "ME").Result, Is.EqualTo(CheckWords.NotRead));
-            Assert.That(rows.Single(r => r.Discipline == "ME").Value, Is.EqualTo("its date was not read, the file is gone"));
+            DisciplineIssue ar = found.Issues.Single();
+            Assert.That(ar.Discipline, Is.EqualTo("AR"), "exactly the limit is not older than it");
+            Assert.That(ar.WhatIsWrong, Is.EqualTo("older than 7 days"));
+            Assert.That(ar.Value, Is.EqualTo("2026-10-10, 8 days"));
+            Assert.That(found.FilesCheckedFor("EL"), Is.EqualTo(1));
+            Assert.That(found.FilesCheckedFor("ME"), Is.EqualTo(0));
+            Assert.That(found.Notes.Single(), Is.EqualTo("File age  1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc not read, its date was not read, the file is gone"));
         }
 
-        // ---------- checks 5 and 6, CAD and Generic Models ----------
+        // ---------- CAD and Generic Models ----------
 
         [Test]
-        public void EveryElementIsListedWithItsIdAndAnIdNotReadSaysNotReadable()
+        public void OneRowPerFileAndCadFileWithTheCountAndEveryIdAndOnePerFamilyAndType()
         {
-            ModelFacts me = new ModelFacts(Nwc("1B06PH", "ME", "000002")).WithBox(0, 0, 0, 1, 1, 1).WithSite("S")
-                .WithCad(new[] { new ElementFact("1819523", "Chem-Feed Pkg-R0.dwg", "MEC-MEC-Doising Pump-PAR", "Standard", "GRF"), new ElementFact(null, null, "F", "T", null) })
-                .WithGeneric(new[] { new ElementFact("2342282", "PAR-ST-600 X 600", "REC_OPENING COVER", "PAR-ST-600 X 600", "TANK ROOF") });
-            DisciplineGroup group = new DisciplineGroup("1B06PH", new[] { me.File }, new[] { me }, null);
+            ModelFacts me = new ModelFacts(Nwc("1B06PH", "ME", "000002")).WithPlacement(0, 0, 0).WithSite("S")
+                .WithCad(new[]
+                {
+                    new ElementFact("1819523", "Chem-Feed Pkg-R0.dwg", "MEC-MEC-Doising Pump-PAR", "Standard", "GRF"),
+                    new ElementFact("1819524", "Chem-Feed Pkg-R0.dwg", "MEC-MEC-Doising Pump-PAR", "Standard", "GRF"),
+                    new ElementFact(null, null, "F", "T", null)
+                })
+                .WithGeneric(new[]
+                {
+                    new ElementFact("2342282", "PAR-ST-600 X 600", "REC_OPENING COVER", "PAR-ST-600 X 600", "TANK ROOF"),
+                    new ElementFact("2342283", "PAR-ST-600 X 600", "REC_OPENING COVER", "PAR-ST-600 X 600", "TANK ROOF")
+                });
+            List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06PH", new[] { me.File }, new[] { me }, null) };
 
-            IList<CheckRow> rows = ElementChecks.Rows("C06", "C06", group, Settings, Names);
+            List<DisciplineIssue> cad = ElementChecks.Cad(groups, Settings, Names).Issues.ToList();
+            DisciplineIssue generic = ElementChecks.Generic(groups, Settings, Names).Issues.Single();
 
-            CheckRow first = rows.First(r => r.Check == CheckWords.Cad);
-            Assert.That(first.ElementId, Is.EqualTo("1819523"));
-            Assert.That(first.Value, Is.EqualTo("CAD file Chem-Feed Pkg-R0.dwg, in MEC-MEC-Doising Pump-PAR of type Standard, level GRF"));
-            CheckRow second = rows.Where(r => r.Check == CheckWords.Cad).ElementAt(1);
-            Assert.That(second.ElementId, Is.EqualTo("not readable"));
-            Assert.That(second.Value, Is.EqualTo("CAD file not readable, in F of type T, level not readable"));
-            CheckRow generic = rows.Single(r => r.Check == CheckWords.Generic);
-            Assert.That(generic.Value, Is.EqualTo("family REC_OPENING COVER, type PAR-ST-600 X 600, level TANK ROOF"));
-            Assert.That(generic.ElementId, Is.EqualTo("2342282"));
+            Assert.That(cad.Count, Is.EqualTo(2));
+            Assert.That(cad[0].WhatIsWrong, Is.EqualTo("CAD file Chem-Feed Pkg-R0.dwg"));
+            Assert.That(cad[0].Value, Is.EqualTo("2"));
+            Assert.That(cad[0].ElementIds, Is.EqualTo("1819523, 1819524"));
+            Assert.That(cad[1].WhatIsWrong, Is.EqualTo("CAD file not readable"));
+            Assert.That(cad[1].ElementIds, Is.EqualTo("not readable"));
+            Assert.That(cad[0].Severity, Is.EqualTo(CheckWords.Low));
+            Assert.That(generic.WhatIsWrong, Is.EqualTo("Generic Models family REC_OPENING COVER, type PAR-ST-600 X 600"));
+            Assert.That(generic.Value, Is.EqualTo("2"));
+            Assert.That(generic.ElementIds, Is.EqualTo("2342282, 2342283"));
         }
 
         [Test]
-        public void AModelWithNoneSaysNoneFoundAndOneNotWalkedSaysNotRead()
+        public void AModelWithNoneIsNoRowAndOneNotWalkedIsSaidInTheLog()
         {
             ModelFacts none = new ModelFacts(Nwc("1B06BC", "AR")).WithCad(new List<ElementFact>()).GenericNot("the search threw");
-            DisciplineGroup group = new DisciplineGroup("1B06BC", new[] { none.File }, new[] { none }, null);
+            List<DisciplineGroup> groups = new List<DisciplineGroup> { new DisciplineGroup("1B06BC", new[] { none.File }, new[] { none }, null) };
 
-            IList<CheckRow> rows = ElementChecks.Rows("C06", "C06", group, Settings, Names);
+            CheckFindings cad = ElementChecks.Cad(groups, Settings, Names);
+            CheckFindings generic = ElementChecks.Generic(groups, Settings, Names);
 
-            Assert.That(rows.Single(r => r.Check == CheckWords.Cad).Result, Is.EqualTo(CheckWords.NoneFound));
-            Assert.That(rows.Single(r => r.Check == CheckWords.Generic).Result, Is.EqualTo(CheckWords.NotRead));
-            Assert.That(rows.Single(r => r.Check == CheckWords.Generic).Value, Is.EqualTo("its items were not walked, the search threw"));
+            Assert.That(cad.Issues, Is.Empty);
+            Assert.That(cad.FilesCheckedFor("AR"), Is.EqualTo(1));
+            Assert.That(generic.Issues, Is.Empty);
+            Assert.That(generic.FilesCheckedFor("AR"), Is.EqualTo(0));
+            Assert.That(generic.Notes.Single(), Is.EqualTo("Generic Models  1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc not read, its items were not walked, the search threw"));
         }
 
         [Test]
@@ -387,6 +430,18 @@ namespace Federator.Core.Tests
             Assert.That(ElementChecks.CadFileName("FAB200-25RF.iam"), Is.EqualTo("FAB200-25RF.iam"));
             Assert.That(ElementChecks.CadFileName("8_127_127_127"), Is.Null, "an import named by its layer carries no file name");
             Assert.That(ElementChecks.CadFileName("Chem-Feed Pkg-R0.dwg.Chem-Feed Pkg-R0"), Is.Null);
+        }
+
+        // ---------- the severities ----------
+
+        [Test]
+        public void TheSeveritiesAreBadersAndACheckNotOfTheSevenIsRefused()
+        {
+            Assert.That(CheckWords.All.Select(CheckWords.SeverityOf).ToArray(),
+                Is.EqualTo(new[] { "High", "High", "Medium", "Medium", "Medium", "Low", "Low" }));
+            Assert.That(() => CheckWords.SeverityOf("Box gap"), Throws.ArgumentException);
+            Assert.That(CheckWords.SeverityRank("High"), Is.LessThan(CheckWords.SeverityRank("Medium")));
+            Assert.That(CheckWords.SeverityRank("Medium"), Is.LessThan(CheckWords.SeverityRank("Low")));
         }
     }
 }

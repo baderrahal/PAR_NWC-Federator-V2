@@ -2595,7 +2595,7 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   refused, `WhyNot`, since neither could find its own, and the one rule a group is found by is `PackageRunUnit.IsTheGroupOf`,
   without case. The live line and the warning count a group as ran only where its result names a group. A group whose files
   were not read, its result missing or an NWF whose models never read, is said not read by the missing discipline check and
-  never missing a discipline, `MissingDisciplineCheck`. The ceiling is one group's since F222, 30 minutes over the 139.7 s
+  never missing a discipline, `GroupDisciplinesCheck.Missing`. The ceiling is one group's since F222, 30 minutes over the 139.7 s
   of the longest group of F220. The
   runner's last line adds up the seconds of every start, from the call that makes the Navisworks to its process told, and of
   every quit, from the call that tells it to quit to its process gone, `RunnerEnded`. THE DISCIPLINE REPORTS ARE WRITTEN BY
@@ -2606,45 +2606,72 @@ because the NuGet line packages/ of .gitignore reads a folder of that name case 
   group of the run in that package, a group with no facts kept with its files and why. A facts line out of its place, of the
   wrong count or a number that is not one makes the whole result no result. Proved by `FreshNavisworksPerGroupTests`
 
-## The discipline reports, F209
+## The discipline reports, F209 and F234
 
-Bader's message of 17 Oct 2026 late evening, feature 2. Federator.Core.Disciplines. ONE WORKBOOK PER DISCIPLINE PER
-PACKAGE, AR, ST, ME and EL by default, `DisciplineReportSettings.Disciplines`, each one sheet named after the discipline,
-never one workbook of many sheets, saved in the package's report folder under `DisciplineWorkbook.NameFor`, the package's
-path in words, the discipline and the suffix, a name already there taking a dated one by `ReportPaths.FreeFilePath`.
+Bader's message of 17 Oct 2026 late evening, feature 2, rewritten by his round of 19 Oct 2026, fix 4, F234.
+Federator.Core.Disciplines. ONE WORKBOOK PER DISCIPLINE PER PACKAGE, AR, ST, ME and EL by default,
+`DisciplineReportSettings.Disciplines`, each one sheet named after the discipline, saved in the package's report folder under
+`DisciplineWorkbook.NameFor`, the package's path in words, the discipline and the suffix, the name it had before F234, a name
+already there taking a dated one by `ReportPaths.FreeFilePath`.
 
-- EVERY LINE IS MADE BY A RULE OF THE FOLDER and none is free text. Bader's columns in his order, `CheckWords.Columns`:
-  community, package, group, file, check, result, value, element id. The file cell is the file's name. The element id is
-  empty on a line about no element and the setting's words, not readable by default, where an element's id was not read,
-  and `DisciplineReport.IdsNotReadable` counts them for the log, so nothing disappears quietly
-- THE SIX CHECKS, IN BADER'S ORDER IN EVERY WORKBOOK, `CheckWords.All`. A check with nothing to find still writes a line
-  saying so, since a workbook missing a check reads as one that did not run
-- 1. COORDINATES, `CoordinatesCheck`: each model measured from the boxes of the reference discipline's models of its group,
-  `DisciplineReportSettings.Reference`, AR by default, by the GAP BETWEEN THE TWO BOXES, nought where they touch or overlap
-  and the straight line of the gaps on the three axes where they do not, never the transform, which does not show C02's
-  2,823 km, scan.md 5z-zg. Over `FarMetres`, 30 m by Bader's answer to Q202 of 18 Oct 2026, F218, where F209 chose 1000 m, a model is far, so a gap of
-  exactly 30 m is near, proved at 29.9, 30 and 30.1 m, and the line names the
-  distance, in km from a thousand metres on, and both shared sites. The reference model's line names every discipline far
-  from it. A group with no reference model is measured from its first discipline with a box, said on the line. A box or a
-  site not read is not read with why, never near or far. The C02 case is a test on the boxes the probe read
-- 2. A MISSING DISCIPLINE, `MissingDisciplineCheck`: a discipline found in other groups of the package and not in this one,
-  one line per group in its own workbook, off the file names. A discipline in every group, and one in no group, each get one
-  line saying so
-- 3. NAMING, `ReferenceNaming`, not against ISO: the reference discipline's names split on the naming separator, the part
-  count most of them have, each part all of them hold alike, and each part's MERGED SHAPE, `MergedShape`, a letter, a digit,
-  either where a letter and a digit meet, or a mark, the length kept, so C06's building codes 1B06BC and 1B06G1 share one.
-  The discipline's own part is left out. Every file of another discipline reads follows or breaks, and a break names the part,
-  what it holds and what the reference holds there, a shape said by naming a real part that has it. With no reference file no
-  pattern is learned and each workbook says so. The reference is a setting
-- 4. FILE AGE, `FileAgeCheck`: each NWC with the date the disk gives it, over `OlderThanDays`, 7, older than the limit, exactly
-  the limit within it, a date not read not read with why
-- 5 AND 6. CAD AND GENERIC MODELS, `ElementChecks`: one line per element the add-in read, the CAD file's name, the family and
-  type it sits in and its level, or the family, the type and the level, with its id. `LevelName` takes the name between the
-  quotes Navisworks gives a level, `CadFileName` an import's own name where it ends with an extension, both measured in
-  5z-zg. A model with none says none found, and one whose items were not walked says not read with why
-- A LINE NO WORKBOOK TAKES, a file of a code outside the list or whose name does not read, is in `DisciplineReport.LeftOut`
-  and counted by its code on the DISCIPLINE REPORT block. The internal names the add-in reads are `DisciplineProperties`,
-  each measured and typed once
+- EVERY CELL IS MADE BY A RULE OF THE FOLDER and none is free text, the words `CheckWords`. Rows 1 to 3 the title
+  `<community> <package> <discipline> model checks`, `CheckWords.Title` with the package's name, the run date and the reference
+  discipline. Then the summary table from row 4, `DisciplineWorkbook.SummaryHeaderRow`, Check, Files checked, Issues and Result,
+  `CheckWords.SummaryColumns`, the seven checks in Bader's order, `CheckWords.All`: Coordinates, Missing model, One discipline
+  group, Naming, File age, CAD, Generic Models. Result is OK where Issues is nought and Issues otherwise. One blank row, then the
+  issues table, `DisciplineWorkbook.IssuesHeaderRow`, its header row frozen and carrying the filter, columns No., Severity,
+  Building, File, Check, What is wrong, Value, Action, Element IDs, `CheckWords.IssueColumns`. Headers bold on grey, every
+  issue cell wrapped, the widths `DisciplineWorkbook.Widths`
+- ONLY ROWS THAT NEED ACTION, `DisciplineIssue`, and no row for a file that passed. What a check could not read is never a
+  pass and never a row: it is a line of the DISCIPLINE REPORT block in the log, `CheckFindings.Notes`, and the file is not in
+  the check's Files checked. THE SUMMARY'S ISSUES ARE THE ROWS OF THAT CHECK IN THE SAME WORKBOOK, `DisciplineReport.SummaryFor`,
+  by construction, and the workbook read back off the disk is held to it, `DisciplineWorkbookRead.SummaryMatchesTheRows`, the
+  CHECKS line saying THE SUMMARY AND THE ROWS DIFFER where it does not. Files checked is the files of the workbook's discipline the
+  check read, and for Missing model the files of the groups of two disciplines or more, the lead's reading, Q218
+- SEVERITY, `CheckWords.SeverityOf`: High for Coordinates and Missing model, a light red row, `DisciplineWorkbook.HighFill`,
+  Medium for Naming, File age and One discipline group, light amber, `MediumFill`, Low for CAD and Generic Models with no fill.
+  The rows are sorted by severity, then building, then file, Ordinal, and where all three are one in the order the checks
+  made them, a stable sort, `DisciplineReport.Sort`. Building is the code read off the file's name, and for a row about a group
+  and no one file the codes of its files, `DisciplineOf.BuildingsOf`
+- COORDINATES, `CoordinatesCheck`: ALIGNMENT'S RULE AND NUMBERS AND NEVER THE BOX GAP. Each model is placed by the translation of
+  its transform in millimetres, the one read of it, `ModelFactsReader.TranslationOf`, carried as `ModelFacts.X`, `Y` and `Z`,
+  measured from the group's reference, `AlignmentCheck.ReferenceIn` with the setting's reference discipline, by the straight line
+  of the differences, `AlignmentCheck.StraightLineMillimetres`, which the ALIGNMENT block reads too. Over `FarMetres`, 30 m,
+  Bader's answer to Q202, a model is a row in its own discipline's workbook, the value the distance in metres to three decimals
+  and both shared sites, `CheckWords.FarValue`, Action Export again on the project shared coordinates. A reference on Internal,
+  `AlignmentCheck.NamesInternal`, while another model of its group names a shared site that is not Internal is one row in the
+  reference discipline's workbook, on Revit internal origin, its value the other models' sites, Action Export on the project
+  shared coordinates. ST of 1B06BC sits 34.014 m and 34.472 m from AR, read off its ALIGNMENT block of 19 Oct 2026 and held by a test
+- MISSING MODEL, `GroupDisciplinesCheck.Missing`, off the file names by F219's one rule, `BuildingGroup.DisciplinesOf`: in a
+  group of two disciplines or more, one row in the workbook of each discipline of the setting it holds no file of, no
+  <discipline> model in this group, its value the disciplines the group holds, Action Issue the <discipline> model for this
+  building. A group whose files were not read, or whose disciplines that rule says are UNKNOWN, a name that does not read or a
+  model of the federated discipline, is a line of the log and never counted as missing one, F222. ONE DISCIPLINE GROUP,
+  `GroupDisciplinesCheck.OneDiscipline`: a group F233 did not build is a row in that discipline's workbook, only discipline in
+  this group, not federated, its value its file names. The decision is the run's, carried as
+  `DisciplineGroup.NotBuiltForOneDiscipline` by `PackageRunFacts`, the plan's `BuildingGroup.CannotClashWith` on the NWC page and
+  the NOT BUILT line, `OneDisciplineGroups.IsTheLine`, on the NWF page, and never judged a second time off the files, so an NWF
+  built with a link not on the disk is never such a row, the reviewer's finding on F234's first pass. Its files reach the report on both pages: on the NWC page off its plan, on the NWF page
+  off its result's `PackageRunResult.NotBuiltFiles`, read off its NWF's models, and a package whose every group is of one
+  discipline still gets its workbooks, rows F233-R2 and R3
+- NAMING, `ReferenceNaming`, not against ISO: the reference discipline's names split on the naming separator, the part count
+  most of them have, each part all of them hold alike, and each part's MERGED SHAPE, `MergedShape`, a letter, a digit, either
+  where a letter and a digit meet, or a mark, the length kept, so C06's building codes 1B06BC and 1B06G1 share one. The
+  discipline's own part is left out and the parts of `ShapeOnlyParts` are judged by their shape alone. Only a file of another
+  discipline that breaks the pattern is a row, one row per part broken, `NamingBreak`, What is wrong the part and what it reads,
+  Value what the reference has there, a shape said by naming a real part that has it. The pattern learned is a line of the log,
+  and with no reference file none is learned and the log says so. The reference's own files are the pattern and not judged
+- FILE AGE, `FileAgeCheck`: only a file whose date the disk gives older than `OlderThanDays`, 7, is a row, its value the date
+  and the age in whole days. Exactly the limit is within it
+- CAD AND GENERIC MODELS, `ElementChecks.Cad` and `Generic`: one row per file and CAD file name, and one per file, family and
+  type, each with its count in Value and every element id comma separated, the setting's words, not readable, for an id not read.
+  `LevelName` and `CadFileName` read what the add-in hands in, both measured in 5z-zg. A model with none is no row, and one whose
+  items were not walked is a line of the log
+- The Action cell of One discipline group, Naming, File age, CAD and Generic Models is empty, since Bader's words give it for
+  the other two checks alone, Q218
+- A ROW NO WORKBOOK TAKES, a file of a code outside the list or whose name does not read, is in `DisciplineReport.LeftOut` and
+  counted by its code on the DISCIPLINE REPORT block. The internal names the add-in reads are `DisciplineProperties`, each
+  measured and typed once
 
 ## The diagnostic log
 

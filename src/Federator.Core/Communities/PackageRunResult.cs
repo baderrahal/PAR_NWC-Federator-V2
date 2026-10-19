@@ -74,8 +74,11 @@ namespace Federator.Core.Communities
     /// </summary>
     public sealed class PackageRunResult
     {
-        /// <summary>The first line of a result file, its last word the shape, 2 since F222 carried the discipline facts.</summary>
-        public const string Header = "parsons nwc federator, the result of one group of a run of packages, 2";
+        /// <summary>
+        /// The first line of a result file, its last word the shape, 2 since F222 carried the discipline facts, 3 since F234
+        /// each model's placement in place of its box and the files of a group not built.
+        /// </summary>
+        public const string Header = "parsons nwc federator, the result of one group of a run of packages, 3";
 
         private const string ReadWord = "read";
         private const string NotReadWord = "not";
@@ -86,6 +89,7 @@ namespace Federator.Core.Communities
             Log = log;
             Groups = new List<PackageRunGroup>();
             ResultLines = new List<string>();
+            NotBuiltFiles = new List<string>();
         }
 
         public string Package { get; private set; }
@@ -99,6 +103,12 @@ namespace Federator.Core.Communities
 
         /// <summary>Why the package ran no group, or null where one ran.</summary>
         public string NoGroupBecause { get; set; }
+
+        /// <summary>
+        /// F234 on row F233-R2. The NWC files of a group its own Navisworks found to be one discipline and did not build, read
+        /// off the models of its NWF, so the discipline reports name them. None for any other group.
+        /// </summary>
+        public IList<string> NotBuiltFiles { get; private set; }
 
         /// <summary>
         /// The lines of the last RESULT block of a log, every line after the rule under its title, the title and the rule
@@ -154,6 +164,11 @@ namespace Federator.Core.Communities
                 lines.Add(PackageRunFile.Line("nogroup", NoGroupBecause));
             }
 
+            foreach (string file in NotBuiltFiles)
+            {
+                lines.Add(PackageRunFile.Line("notbuiltfile", file));
+            }
+
             foreach (PackageRunGroup group in Groups)
             {
                 lines.Add(PackageRunFile.Line(
@@ -199,14 +214,11 @@ namespace Federator.Core.Communities
                 lines.Add(PackageRunFile.Line(
                     "model",
                     model.File,
-                    model.HasBox ? ReadWord : NotReadWord,
-                    model.BoxNotRead ?? string.Empty,
-                    Number(model.MinX),
-                    Number(model.MinY),
-                    Number(model.MinZ),
-                    Number(model.MaxX),
-                    Number(model.MaxY),
-                    Number(model.MaxZ),
+                    model.IsPlaced ? ReadWord : NotReadWord,
+                    model.PlacementNotRead ?? string.Empty,
+                    Number(model.X),
+                    Number(model.Y),
+                    Number(model.Z),
                     model.SiteNotRead == null ? ReadWord : NotReadWord,
                     model.SiteNotRead ?? model.Site,
                     model.CadNotRead == null ? ReadWord : NotReadWord,
@@ -306,22 +318,22 @@ namespace Federator.Core.Communities
 
             if (key == "model")
             {
-                if (line.Length != 16)
+                if (line.Length != 13)
                 {
-                    return "a model line holds " + (line.Length - 1) + " values where it holds 15";
+                    return "a model line holds " + (line.Length - 1) + " values where it holds 12";
                 }
 
-                double[] box = new double[6];
+                double[] at = new double[3];
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < 3; i++)
                 {
-                    if (!double.TryParse(line[4 + i], NumberStyles.Float, CultureInfo.InvariantCulture, out box[i]))
+                    if (!double.TryParse(line[4 + i], NumberStyles.Float, CultureInfo.InvariantCulture, out at[i]))
                     {
-                        return "the box of " + line[1] + " holds " + line[4 + i] + ", not a number";
+                        return "the placement of " + line[1] + " holds " + line[4 + i] + ", not a number";
                     }
                 }
 
-                foreach (int flag in new[] { 2, 10, 12, 14 })
+                foreach (int flag in new[] { 2, 7, 9, 11 })
                 {
                     if (line[flag] != ReadWord && line[flag] != NotReadWord)
                     {
@@ -330,13 +342,13 @@ namespace Federator.Core.Communities
                 }
 
                 ModelFacts model = new ModelFacts(line[1]);
-                model = line[2] == ReadWord ? model.WithBox(box[0], box[1], box[2], box[3], box[4], box[5]) : model.BoxNot(line[3]);
-                model = line[10] == ReadWord ? model.WithSite(line[11]) : model.SiteNot(line[11]);
+                model = line[2] == ReadWord ? model.WithPlacement(at[0], at[1], at[2]) : model.PlacementNot(line[3]);
+                model = line[7] == ReadWord ? model.WithSite(line[8]) : model.SiteNot(line[8]);
                 read.Models.Add(new ModelRead
                 {
                     Model = model,
-                    CadWhy = line[12] == ReadWord ? null : line[13],
-                    GenericWhy = line[14] == ReadWord ? null : line[15]
+                    CadWhy = line[9] == ReadWord ? null : line[10],
+                    GenericWhy = line[11] == ReadWord ? null : line[12]
                 });
                 return null;
             }
@@ -409,6 +421,7 @@ namespace Federator.Core.Communities
             bool ended = false;
             List<PackageRunGroup> groups = new List<PackageRunGroup>();
             List<string> result = new List<string>();
+            List<string> notBuilt = new List<string>();
             Dictionary<PackageRunGroup, FactsRead> facts = new Dictionary<PackageRunGroup, FactsRead>();
 
             foreach (string[] line in lines)
@@ -458,6 +471,10 @@ namespace Federator.Core.Communities
                 {
                     noGroup = line[1];
                 }
+                else if (line[0] == "notbuiltfile")
+                {
+                    notBuilt.Add(line[1]);
+                }
                 else if (line[0] == "result")
                 {
                     result.Add(line[1]);
@@ -495,6 +512,11 @@ namespace Federator.Core.Communities
             foreach (string line in result)
             {
                 read.ResultLines.Add(line);
+            }
+
+            foreach (string file in notBuilt)
+            {
+                read.NotBuiltFiles.Add(file);
             }
 
             why = null;

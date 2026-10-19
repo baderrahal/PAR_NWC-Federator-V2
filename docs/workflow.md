@@ -152,6 +152,20 @@ that wrote no result. The window that started the run writes the four discipline
 package, and RESULT is written last. A package whose groups wrote no result is said so and never
 said as not run, because whether its groups wrote files before their Navisworks ended is UNKNOWN.
 
+### The discipline workbooks
+
+Each package gets one workbook per discipline, AR, ST, ME and EL, one sheet each, F234 (Bader's round
+of 19 Oct 2026, fix 4). Rows 1 to 3 hold the title, `<community> <package> <discipline> model checks`,
+the run date and the reference discipline, AR. Then a summary of the seven checks, Coordinates,
+Missing model, One discipline group, Naming, File age, CAD and Generic Models, each with the files it
+read, its issues and OK or Issues. After one blank row comes the issues table, its header frozen with
+a filter, which holds only what needs action, sorted High, Medium, Low, then by building and file.
+High rows are light red and Medium rows light amber. Coordinates are measured as the ALIGNMENT block
+measures them, by the translation of each model from the reference model, and a model more than 30 m
+from it is a row of its own discipline. What a check could not read is said in the log under
+DISCIPLINE REPORT, never written as a pass. Each summary count is the rows of its check, and the log
+reads that back off the file on a CHECKS line.
+
 Since F232 each page has this one route. The run of the open file on the Clash step and the hand
 buttons still run in the Navisworks the person started.
 

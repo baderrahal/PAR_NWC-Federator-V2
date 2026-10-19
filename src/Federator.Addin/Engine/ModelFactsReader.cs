@@ -114,33 +114,57 @@ namespace Federator.Addin.Engine
             return exports;
         }
 
-        private static ModelPlacement OnePlacement(Model model, double toMillimetres, ContainerNameSettings names, RunLog log)
+        /// <summary>
+        /// The translation of a model's transform in millimetres, the one read of it, the ALIGNMENT block's and since F234 the
+        /// discipline reports', or why not, each number then ModelPlacement.NotRead.
+        /// </summary>
+        internal static string TranslationOf(Model model, double toMillimetres, out double x, out double y, out double z)
         {
-            string file = NameOf(model);
-            string discipline = DisciplineOf(file, names);
-            string site;
-            double x = ModelPlacement.NotRead;
-            double y = ModelPlacement.NotRead;
-            double z = ModelPlacement.NotRead;
+            x = ModelPlacement.NotRead;
+            y = ModelPlacement.NotRead;
+            z = ModelPlacement.NotRead;
+
+            if (toMillimetres <= 0.0)
+            {
+                return "the document's units are not in the table of units";
+            }
 
             try
             {
                 Transform3D transform = model.Transform;
 
-                if (transform != null && toMillimetres > 0.0)
+                if (transform == null)
                 {
-                    Vector3D translation = transform.Translation;
-                    x = translation.X * toMillimetres;
-                    y = translation.Y * toMillimetres;
-                    z = translation.Z * toMillimetres;
+                    return "the model has no transform";
                 }
+
+                Vector3D translation = transform.Translation;
+                x = translation.X * toMillimetres;
+                y = translation.Y * toMillimetres;
+                z = translation.Z * toMillimetres;
+                return null;
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                // Left unplaced on purpose. A model that could not be placed is never
-                // called different, the same way a census that could not count is never
-                // called a move.
+                x = ModelPlacement.NotRead;
+                y = ModelPlacement.NotRead;
+                z = ModelPlacement.NotRead;
+                return error.GetType().Name + ": " + error.Message;
             }
+        }
+
+        private static ModelPlacement OnePlacement(Model model, double toMillimetres, ContainerNameSettings names, RunLog log)
+        {
+            string file = NameOf(model);
+            string discipline = DisciplineOf(file, names);
+            string site;
+            double x;
+            double y;
+            double z;
+
+            // Left unplaced on purpose where it would not read. A model that could not be placed is never called different,
+            // the same way a census that could not count is never called a move.
+            TranslationOf(model, toMillimetres, out x, out y, out z);
 
             try
             {
@@ -328,7 +352,7 @@ namespace Federator.Addin.Engine
         /// leaves every model unplaced and says nothing wrong, rather than falling back to
         /// a factor nobody chose.
         /// </summary>
-        private static double MillimetresPerUnit(Document document)
+        internal static double MillimetresPerUnit(Document document)
         {
             try
             {

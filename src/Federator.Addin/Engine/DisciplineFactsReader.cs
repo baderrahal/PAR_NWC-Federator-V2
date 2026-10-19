@@ -10,8 +10,8 @@ namespace Federator.Addin.Engine
 {
     /// <summary>
     /// What the discipline reports read off each model of the open document, F209, by the shape tools\probes\DisciplineProbe
-    /// measured on C06 and C02 on 18 Oct 2026, docs\history\scan.md 5z-zg: the box of the model's root item in metres, the
-    /// shared site its root names, every CAD file imported into one of its families, and every element of the category
+    /// measured on C06 and C02 on 18 Oct 2026, docs\history\scan.md 5z-zg: since F234 the translation of the model's transform
+    /// in millimetres, read as the ALIGNMENT block reads it, ModelFactsReader.TranslationOf, the shared site its root names, every CAD file imported into one of its families, and every element of the category
     /// Generic Models. Every rule and every word is Core's, Federator.Core.Disciplines. It reads only and never throws: a
     /// part that would not read is handed on with why, and the reports say not read and never none found.
     ///
@@ -31,7 +31,7 @@ namespace Federator.Addin.Engine
                 return all;
             }
 
-            double metresPerUnit = MetresPerUnit(document);
+            double toMillimetres = ModelFactsReader.MillimetresPerUnit(document);
 
             for (int i = 0; i < document.Models.Count; i++)
             {
@@ -39,6 +39,7 @@ namespace Federator.Addin.Engine
                 {
                     ModelFacts facts = new ModelFacts(Words(model.FileName));
                     all.Add(facts);
+                    ReadThePlacement(model, toMillimetres, facts);
                     ModelItem root = null;
 
                     try
@@ -48,13 +49,12 @@ namespace Federator.Addin.Engine
                     catch (Exception error)
                     {
                         string why = "its root item would not read, " + error.GetType().Name + ": " + error.Message;
-                        facts.BoxNot(why).SiteNot(why).CadNot(why).GenericNot(why);
+                        facts.SiteNot(why).CadNot(why).GenericNot(why);
                         continue;
                     }
 
                     using (root)
                     {
-                        ReadTheBox(root, metresPerUnit, facts);
                         ReadTheSite(root, facts);
                         WalkTheItems(root, settings, facts);
                     }
@@ -64,44 +64,21 @@ namespace Federator.Addin.Engine
             return all;
         }
 
-        private static double MetresPerUnit(Document document)
+        /// <summary>F234. The translation of the model's transform in millimetres, by the ALIGNMENT block's own read, never the box.</summary>
+        private static void ReadThePlacement(Model model, double toMillimetres, ModelFacts facts)
         {
-            try
+            double x;
+            double y;
+            double z;
+            string why = ModelFactsReader.TranslationOf(model, toMillimetres, out x, out y, out z);
+
+            if (why == null)
             {
-                UnitRow units = UnitTable.FindByEnumName(document.Units.ToString());
-                return units == null ? 0.0 : units.MillimetresPerUnit / 1000.0;
+                facts.WithPlacement(x, y, z);
             }
-            catch (Exception)
+            else
             {
-                return 0.0;
-            }
-        }
-
-        private static void ReadTheBox(ModelItem root, double metresPerUnit, ModelFacts facts)
-        {
-            try
-            {
-                if (metresPerUnit <= 0.0)
-                {
-                    facts.BoxNot("the document's units are not in the table of units");
-                    return;
-                }
-
-                BoundingBox3D box = root.BoundingBox();
-
-                if (box == null || box.IsEmpty)
-                {
-                    facts.BoxNot("its root item has no box");
-                    return;
-                }
-
-                facts.WithBox(
-                    box.Min.X * metresPerUnit, box.Min.Y * metresPerUnit, box.Min.Z * metresPerUnit,
-                    box.Max.X * metresPerUnit, box.Max.Y * metresPerUnit, box.Max.Z * metresPerUnit);
-            }
-            catch (Exception error)
-            {
-                facts.BoxNot(error.GetType().Name + ": " + error.Message);
+                facts.PlacementNot(why);
             }
         }
 

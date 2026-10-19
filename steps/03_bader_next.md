@@ -6,6 +6,26 @@ Simple words. Each fix of this round adds its steps here as it merges, and F238 
 folder of the full run. The steps of the round of 18 Oct below name step 5 and the NWF picker, which F232 took out: on this
 build step 5 is step 1. Packages and the picker is the NWF page's tree.
 
+### F234, the discipline workbooks
+
+1. After a run of the NWC page on C06, open the Report folder's C06 folder and open `C06 ST checks.xlsx`.
+   Look for: row 1 `C06 C06 itself ST model checks`, row 2 the run date, row 3 `Reference discipline AR`, then the summary of
+   seven checks from Coordinates to Generic Models, one blank row, then the issues table.
+2. Click a cell of the issues table and scroll down.
+   Look for: its header row stays in place, it carries filter arrows, and High rows are light red and Medium rows light amber.
+3. Find the rows of building 1B06BC.
+   Look for: two Coordinates rows, `34.014 m, ST on T1, AR on Internal` and `34.472 m, ST on BCTANK, AR on Internal`, each with
+   `Export again on the project shared coordinates`.
+4. Add up the Issues column of the summary.
+   Look for: the sum equals the issue rows of the table, and each check's count equals its rows when you filter Check by it.
+5. Open `C06 AR checks.xlsx`.
+   Look for: a 1B06BC row `on Revit internal origin` with `Export on the project shared coordinates`.
+6. Open `C06 EL checks.xlsx`.
+   Look for: a row `only discipline in this group, not federated` for 1B06PG with its file name, and no row of a file that passed.
+7. Open the Report folder's C07 folder and open each of its four workbooks, the names ending `checks.xlsx`, or the newest dated
+   one where a second run left one beside it.
+   Look for: in each, the Issues column of the summary adds up to the rows of the issues table.
+
 ### F233, one discipline groups are not built
 
 1. On 1. Packages read a parent folder of copies holding a building of one discipline, such as 1B06PG of C06, and tick its

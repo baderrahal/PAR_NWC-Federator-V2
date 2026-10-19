@@ -41,16 +41,16 @@ namespace Federator.Core.Tests
             get { return Path.Combine(root, "result-001.txt"); }
         }
 
-        /// <summary>One group's result holding two models: the first read whole, the second with its box and its walks not read.</summary>
+        /// <summary>One group's result holding two models: the first read whole, the second with its placement and its walks not read.</summary>
         private static PackageRunResult ResultWithFacts()
         {
             ModelFacts ar = new ModelFacts(TestPaths.At("Parent", "C06", "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc"))
-                .WithBox(-12.5, 3.0000000001, 0.84551240822557006, 40.25, 60.125, 18.75)
+                .WithPlacement(-12.5, 3.0000000001, 0.84551240822557006)
                 .WithSite(string.Empty)
                 .WithCad(new[] { new ElementFact("702888", "survey\tplan.dwg", null, "Import", "Level \"GF\"") })
                 .WithGeneric(new[] { new ElementFact(null, "Tank", "Generic Box", "Type 1", null), new ElementFact("5", "Pad", "F", "T", "L1") });
             ModelFacts el = new ModelFacts(TestPaths.At("Parent", "C06", "1104-PAR-1B06BC-ZZZ-EL-MOD-000001.nwc"))
-                .BoxNot("the box threw\r\nInvalidOperationException")
+                .PlacementNot("the transform threw\r\nInvalidOperationException")
                 .SiteNot("no Project Location")
                 .CadNot("the walk stopped")
                 .WithGeneric(new ElementFact[0]);
@@ -82,11 +82,10 @@ namespace Federator.Core.Tests
 
             ModelFacts ar = group.Facts[0];
             Assert.That(ar.File, Does.EndWith("1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc"));
-            Assert.That(ar.HasBox, Is.True);
-            Assert.That(ar.MinX, Is.EqualTo(-12.5));
-            Assert.That(ar.MinY, Is.EqualTo(3.0000000001), "the box keeps every digit through the file");
-            Assert.That(ar.MinZ, Is.EqualTo(0.84551240822557006), "a value the R format of .NET Framework fails to give back on 64 bit, which G17 gives back");
-            Assert.That(ar.MaxZ, Is.EqualTo(18.75));
+            Assert.That(ar.IsPlaced, Is.True);
+            Assert.That(ar.X, Is.EqualTo(-12.5));
+            Assert.That(ar.Y, Is.EqualTo(3.0000000001), "the placement keeps every digit through the file");
+            Assert.That(ar.Z, Is.EqualTo(0.84551240822557006), "a value the R format of .NET Framework fails to give back on 64 bit, which G17 gives back");
             Assert.That(ar.Site, Is.EqualTo(string.Empty), "a site read as empty stays a site read, never one not read");
             Assert.That(ar.SiteNotRead, Is.Null);
             Assert.That(ar.CadNotRead, Is.Null);
@@ -99,8 +98,8 @@ namespace Federator.Core.Tests
             Assert.That(ar.Generic[1].ElementId, Is.EqualTo("5"));
 
             ModelFacts el = group.Facts[1];
-            Assert.That(el.HasBox, Is.False);
-            Assert.That(el.BoxNotRead, Is.EqualTo("the box threw\r\nInvalidOperationException"));
+            Assert.That(el.IsPlaced, Is.False);
+            Assert.That(el.PlacementNotRead, Is.EqualTo("the transform threw\r\nInvalidOperationException"));
             Assert.That(el.Site, Is.Null);
             Assert.That(el.SiteNotRead, Is.EqualTo("no Project Location"));
             Assert.That(el.CadNotRead, Is.EqualTo("the walk stopped"), "a walk not read never reads back as none found");
@@ -161,7 +160,7 @@ namespace Federator.Core.Tests
                 "holds 6 values where it holds 5",
                 "where it reads read or not and why",
                 "a file line holds 2 values where it holds 1",
-                "a model line holds 16 values where it holds 15",
+                "a model line holds 13 values where it holds 12",
                 "reads maybe where it reads read or not",
                 "comes before any model line"
             };
@@ -185,7 +184,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ACadLineUnderAWalkNotReadIsRefused()
         {
-            ModelFacts model = new ModelFacts("a.nwc").BoxNot("x").SiteNot("y").CadNot("the walk stopped").GenericNot("z");
+            ModelFacts model = new ModelFacts("a.nwc").PlacementNot("x").SiteNot("y").CadNot("the walk stopped").GenericNot("z");
             PackageRunResult result = new PackageRunResult("C06", null);
             result.Groups.Add(new PackageRunGroup("1B06BC", GroupOutcome.Done, 0, null).WithFacts(new[] { model }));
             result.Write(ResultPath);
@@ -366,7 +365,7 @@ namespace Federator.Core.Tests
             PackageGroup bc = plan.Groups.First(g => g.Building == "1B06BC");
             PackageGroup bs = plan.Groups.First(g => g.Building == "1B06BS");
 
-            ModelFacts model = new ModelFacts(bc.Files[0]).WithBox(0, 0, 0, 1, 1, 1);
+            ModelFacts model = new ModelFacts(bc.Files[0]).WithPlacement(0, 0, 0);
             PackageRunResult ran = new PackageRunResult(package.RelativePath, null);
             ran.Groups.Add(new PackageRunGroup("1B06BC", GroupOutcome.Done, 3, null).WithFacts(new[] { model }));
 
@@ -392,6 +391,8 @@ namespace Federator.Core.Tests
             DisciplineGroup third = groups.First(g => g.Name == "1B06KI");
             Assert.That(third.Models, Is.Null);
             Assert.That(third.WhyNoModels, Is.EqualTo(PackageRunFacts.DidNotRun));
+            Assert.That(third.NotBuiltForOneDiscipline, Is.True, "left out by F233's rule, so its row is a One discipline group");
+            Assert.That(first.NotBuiltForOneDiscipline, Is.False, "a group that ran was built, whatever its files read");
         }
 
         [Test]
@@ -428,6 +429,35 @@ namespace Federator.Core.Tests
             Assert.That(groups[2].Name, Is.EqualTo("c"));
             Assert.That(groups[2].WhyNoModels, Is.EqualTo("its own Navisworks ran nothing, the NWF is gone"));
             Assert.Throws<ArgumentException>(() => PackageRunFacts.GroupsOf(package, null, units, new List<PackageRunResult>(), new List<string>()));
+        }
+
+        /// <summary>
+        /// F234 on row F233-R2. An NWF its own Navisworks found to be one discipline and did not build carries its files back
+        /// through its result, so its group of the discipline reports names them and its One discipline group row is written.
+        /// </summary>
+        [Test]
+        public void OnTheNwfPageAGroupNotBuiltForOneDisciplineKeepsItsFilesThroughItsResult()
+        {
+            Package package;
+            Plan(out package);
+            string pg = TestPaths.At("Parent", "C06", "1104-PAR-1B06PG-ZZZ-EL-MOD-000001.nwc");
+            PackageRunResult notBuilt = new PackageRunResult(package.RelativePath, null) { NoGroupBecause = "NOT BUILT  C06  1B06PG  EL  x  one discipline, not built" };
+            notBuilt.NotBuiltFiles.Add(pg);
+            notBuilt.Write(ResultPath);
+
+            string why;
+            PackageRunResult read = PackageRunResult.Read(ResultPath, out why);
+            Assert.That(why, Is.Null);
+            Assert.That(read.NotBuiltFiles.ToArray(), Is.EqualTo(new[] { pg }));
+
+            IList<DisciplineGroup> groups = PackageRunFacts.GroupsOf(
+                package, null, new List<PackageRunUnit> { new PackageRunUnit(package.RelativePath, "pg.nwf", "pg") },
+                new List<PackageRunResult> { read }, new List<string> { null });
+
+            Assert.That(groups.Single().Files.ToArray(), Is.EqualTo(new[] { pg }));
+            Assert.That(groups.Single().Models, Is.Null);
+            Assert.That(groups.Single().NotBuiltForOneDiscipline, Is.True);
+            Assert.That(GroupDisciplinesCheck.OneDiscipline(groups, new Federator.Core.Naming.ContainerNameSettings()).Issues.Single().Discipline, Is.EqualTo("EL"));
         }
     }
 }

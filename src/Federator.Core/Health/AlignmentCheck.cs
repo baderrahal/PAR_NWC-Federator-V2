@@ -401,7 +401,7 @@ namespace Federator.Core.Health
                 double dx = measured ? model.X - reference.X : 0.0;
                 double dy = measured ? model.Y - reference.Y : 0.0;
                 double dz = measured ? model.Z - reference.Z : 0.0;
-                double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+                double distance = measured ? StraightLineMillimetres(model, reference) : 0.0;
                 bool far = measured && distance > farModelMillimetres;
 
                 if (!onInternal && !namesNoSite && !far)
@@ -482,11 +482,28 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// Whether a model names the internal origin as its site, the one test for it, so
-        /// the block, the failure and the rule cannot drift apart. A site whose read threw
-        /// names nothing, FR-002.
+        /// How far a model sits from the reference, the straight line of the differences of their translations in X, Y and Z,
+        /// in millimetres, the one measure of the block and of the discipline reports, F234. Both must be placed.
         /// </summary>
-        private static bool NamesInternal(ModelPlacement model, string internalName)
+        public static double StraightLineMillimetres(ModelPlacement model, ModelPlacement reference)
+        {
+            if (model == null || reference == null || !model.Placed || !reference.Placed)
+            {
+                throw new ArgumentException("both models are placed before a distance is taken");
+            }
+
+            double dx = model.X - reference.X;
+            double dy = model.Y - reference.Y;
+            double dz = model.Z - reference.Z;
+            return Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+        }
+
+        /// <summary>
+        /// Whether a model names the internal origin as its site, the one test for it, so
+        /// the block, the failure, the rule and since F234 the discipline reports cannot drift
+        /// apart. A site whose read threw names nothing, FR-002.
+        /// </summary>
+        public static bool NamesInternal(ModelPlacement model, string internalName)
         {
             return model.SiteRead && string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal);
         }
@@ -521,7 +538,7 @@ namespace Federator.Core.Health
         /// discipline that could be placed, then the first that could be placed at all,
         /// or null where none could.
         /// </summary>
-        private static ModelPlacement ReferenceIn(IList<ModelPlacement> models, string discipline)
+        public static ModelPlacement ReferenceIn(IList<ModelPlacement> models, string discipline)
         {
             for (int i = 0; i < models.Count; i++)
             {
