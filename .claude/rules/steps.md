@@ -36,7 +36,13 @@ paths:
   tools\tracker\make-tracker.ps1, never typed, which the pre-commit runs in any commit
   staging steps\tracker.csv, by .claude\rules\tracker.md
 - steps\history holds loop.md and log.md, the long history, moved there whole by F139
-  and never read at the start of a session, only for a line a session needs.
+  and never read at the start of a session, only for a line a session needs. Since F242,
+  Bader's round of 19 Oct 2026 b, item 4, it also holds the closed items of steps\01_next.md,
+  steps\fix-round.md, steps\03_bader_next.md and steps\lane-b.md, each in a file of the same
+  name ending -closed, moved whole and in their order, nothing deleted, and the page as it
+  stood before a rewrite that dropped a part of it. A file of steps that passes about 100 KB
+  moves its closed items there at the end of a round, the way .claude\rules\tracker.md says
+  for an FR item, and its first lines say where they went.
   steps\history\log.md holds one entry per fix, newest at the top, in the shape of the
   F26 entry: What was done, What remains, Known bugs, What comes next. Every entry says
   what was proved here, with the Core test counts before and after, and what waits

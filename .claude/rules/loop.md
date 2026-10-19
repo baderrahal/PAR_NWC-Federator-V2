@@ -24,10 +24,10 @@ and nothing is fixed until a real run on real files shows it fixed.
   STATE, then one of OPEN, WAITING, RESTART, CLOSED or NEXT WAVE, a comma, and the date and
   time of its last update, then while OPEN a comma, last run and the set and run of the newest
   run.ps1 run that finished, as its folder under %LOCALAPPDATA%\NwcFederatorLoop\runs reads,
-  such as STATE OPEN, 2026-10-07 11:40, last run 04/item2-C02. Then, in his order, the counts
-  by wave, now, what each lane is doing, one line each, next, the next three steps in order,
-  waiting for Bader, each question with its number or none, at most five lines of blockers
-  and known bugs that matter now, and where the long history is. A new session carries on
+  such as STATE OPEN, 2026-10-07 11:40, last run 04/item2-C02. Then the counts by wave, and
+  then, in his order of 19 Oct 2026 b, item 4: what is done, the open bugs that matter now, his
+  turn, each question with its number or none, and the next three steps in order. Where the
+  long history is goes in a line of what is done. A new session carries on
   from it alone and opens steps\history only for a line it needs. A finished phase is never
   done again
 - The counts are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv and never

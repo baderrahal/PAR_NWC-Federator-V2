@@ -64,7 +64,8 @@ The three are PR7 of docs\rules.md.
                             the rule produces from the sample, so it cannot drift
     steps                   PROGRESS.md, the one page read first, START.md, plan,
                             questions, Bader's steps and the tracker
-    steps\history           loop.md and log.md, the long history, opened for a line
+    steps\history           loop.md and log.md, the long history, and the closed items of
+                            four steps files in their -closed files, opened for a line
     steps\runs              the loop's run evidence, one folder per run set
     steps\logs              logs and .tsv of runs on the local machine, files only added
     steps\notes             the designs and drafts of past fixes, read for a line
