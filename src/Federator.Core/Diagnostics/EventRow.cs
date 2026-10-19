@@ -113,6 +113,31 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
+        /// F236. A line of the file read back into its row, every value unescaped, the one reader of the shape Line writes.
+        /// Null for the header, a line of another count of fields or one whose seconds are not a number.
+        /// </summary>
+        public static EventRow Parse(string line)
+        {
+            if (line == null || line == Header())
+            {
+                return null;
+            }
+
+            string[] cells = line.Split(Separator[0]);
+            double seconds;
+
+            if (cells.Length != FieldCount
+                || !double.TryParse(cells[1], NumberStyles.Float, CultureInfo.InvariantCulture, out seconds))
+            {
+                return null;
+            }
+
+            return new EventRow(
+                Unescape(cells[0]), seconds, Unescape(cells[2]), Unescape(cells[3]),
+                Unescape(cells[4]), Unescape(cells[5]), Unescape(cells[6]), Unescape(cells[7]));
+        }
+
+        /// <summary>
         /// A tab, a newline, a carriage return or a backslash inside a value, written so
         /// it can be read back. The backslash goes FIRST, or unescaping a value that held
         /// one would turn it into whatever followed.

@@ -2688,32 +2688,52 @@ already there taking a dated one by `ReportPaths.FreeFilePath`.
 ## The clash count check, F236
 
 Bader's round of 19 Oct 2026, fix 6. Federator.Core.Communities. EVERY RUN WRITES ONE WORKBOOK A COMMUNITY,
-`ClashCountWorkbook.NameFor`, "<community> clash count check.xlsx" in the community's report folder, a name already there
-taking a dated one by `ReportPaths.FreeFilePath`, written by the window that started the run once every group has run, on both
-pages, and on a run of the NWC page whose every group is of one discipline too.
+`ClashCountWorkbook.NameFor`, "<community> clash count check.xlsx" in the community's report folder,
+`PackageOutput.CommunityFolderFor`, a name already there taking a dated one by `ReportPaths.FreeFilePath`, its one sheet named
+by `SheetNames.ForReport`, written by the window that started the run once every group has run, on both pages, and on a run of
+the NWC page whose every group is of one discipline too.
 
-- EVERY NUMBER IS READ OFF THE FILES THE GROUP WROTE. `GroupRunFiles.Read` reads the group's .tsv by the event names of
-  `RunEvents`, the one place the writers and this reader name them: each test's clashes as Clash Detective counted them, the
-  paths of the clash workbook and the HTML page written, each test's open clashes in its views off the VIEWS TREE lines,
-  `ViewsTree.ReadViewLine`, the one reader of the shape the block writes, the views of one test added up, and the tests the rule
-  of one discipline and of two set codes left out, by the words of `CoverageWords` on each coverage row. The clash workbook is
-  read test by test by `WorkbookTests`, each block's rows, its pictures by the link its Image cell carries, its rows by the
-  Status column and its letter off the Priority column. The page is read test by test by `Federator.Core.Report.PageTests`, off
-  the shape Navisworks' stylesheet gives it
+- EVERY NUMBER IS READ OFF THE FILES THE GROUP WROTE. `GroupRunFiles.Read` reads the group's .tsv a row at a time by
+  `EventRow.Parse`, the one reader of the shape `EventRow.Line` writes, and each event by its name in `RunEvents`, the one place
+  the writers and this reader name them: each test's clashes as Clash Detective counted them, nought for a test that passed, the
+  paths of the clash workbook and the HTML page written, the name the writer gave the workbook's sheet, `RunEvents.WorkbookSheet`,
+  since the file's name need not carry it, the reviewer's finding 1, each test's open clashes in its views off the VIEWS TREE
+  lines, `ViewsTree.ReadViewLine`, the one reader of the shape the block writes, the views of one test added up, the mirrors the
+  rule paired, `RunEvents.Mirror`, those the merge took and the clashes only they found, `MirrorMerged` and `AddedByMirrors`, and
+  the tests the rule of one discipline and of two set codes left out, read off each coverage row by `CoverageBlock.RowGives`, the
+  one reader of the shape `RowText` writes. The clash workbook is read test by test by `WorkbookTests`, each block's rows, its
+  pictures by the link its Image cell carries, its rows by the Status column and its letter off the Priority column. The page is
+  read test by test by `Federator.Core.Report.PageTests`, off the shape Navisworks' stylesheet gives it, proved on the client's
+  own page in samples
+- A COUNT NOT READ IS UNKNOWN AND NEVER A NOUGHT, `ClashCountRow.Unknown`, written UNKNOWN, judged against nothing and left out
+  of every total, whose Why skipped cell then says at least: the workbook or the page not written, not on the disk or that would
+  not read, a test with two blocks of one name, a block whose clash table was not read, a test the .tsv names no count of, the
+  views where no VIEWS TREE was written, the box unticked or the NWF page's step off, and a test one of whose views was not read
+  back, so a view that failed never adds its clashes as agreeing, the reviewer's findings 2 and 3. A workbook or a page read that
+  holds no block of the test is a real nought. A row with a count UNKNOWN has a COUNTS UNKNOWN line naming each, and is not red,
+  since nothing was read to judge it against. Whether such a row should be red is Q223
 - ONE ROW PER GROUP PER TEST WITH CLASHES, `ClashCountRow`, Bader's columns in his order, `ClashCountRow.Columns`: building,
   test, priority, clashes in Clash Detective, Excel rows, HTML rows, clashes in viewpoints, pictures made, pictures skipped, why
   skipped, New, Active, Reviewed, Approved, Resolved. A test is one Clash Detective found clashes in or one the workbook holds a
-  block of. Pictures skipped are the Excel rows with no picture, and why, `ClashCountCheck.WhySkipped`, splits them into those at
-  a status the pictures do not take, those past the cap of a test of more than the setting's clashes, Q187, and the rest UNKNOWN,
-  a stop or a failure the group's IMAGES lines name
-- THE FOUR COUNTS, `ClashCountRow.Differs`: a row is red and has a COUNTS DIFFER line where Clash Detective's count differs from
-  the Excel rows or the HTML rows, or the clashes in its views differ from its rows at the statuses a view shows,
-  `OpenClashes.StatusesFor(ViewpointSettings.DefaultViewStatuses)`, New and Active, since a view holds the open clashes alone and
-  a clash the penetration rule set Reviewed is in none, the lead's reading of his words, Q222
+  block of. Pictures skipped are the Excel rows with no picture, and why, `ClashCountCheck.WhySkipped`, says every one where the
+  run took no pictures, then splits them into those at a status the pictures do not take, those past the cap of a test of more
+  than the setting's clashes, Q187, read off the block's Clashes cell as the pictures read `TestReport.RawClashes`, and the rest
+  UNKNOWN, a stop, a failure or a retake showing only the sky, which the group's IMAGES and RETAKE lines name
+- THE MIRRORS, F132: a mirror the merge took into its kept test is no row, its clashes being the kept test's, and the kept test's
+  Excel and HTML rows are held to Clash Detective's count and the clashes only its mirrors found, `ClashCountRow.RowsExpected`, as
+  the kept test's ROWS line holds them, with a COUNTS MIRRORS line. A mirror the merge did not take keeps its rows and is held to
+  no view, `UnmergedMirror`, since no mirror gets a view. How the workbook should show them is Q223
+- THE FOUR COUNTS, `ClashCountRow.Differs`, over the counts read alone: a row is red and has a COUNTS DIFFER line where the rows
+  Clash Detective's count gives differ from the Excel rows or the HTML rows, the two differ from each other, or the clashes in its
+  views differ from its rows at the statuses a view shows, `ViewsExpected`, the run's view setting handed in,
+  `ViewpointSettings.ViewStatuses`, New and Active by default, since a view holds the open clashes alone and a clash the penetration rule set
+  Reviewed is in none, the lead's reading of his words, Q222. A total is never red
 - A TOTAL PER GROUP AND ONE FOR THE COMMUNITY, `ClashCountRow.Total`, then the groups not built for one discipline, off the plans
   on the NWC page and the NOT BUILT line of a result on the NWF page, then the tests a rule left out, a count a group, a group not
-  built reading every test left out. The CHECKS line reads the workbook back off the disk, its test rows and its red ones,
-  `ClashCountWorkbook.ReadBackLine`
+  built reading every test left out, then the groups whose files could not be read, each with why, `ClashCountCheck.NotRead`,
+  never dropped in silence: no result, a result naming no group for another reason, no .tsv, or a read that threw. The CHECKS line
+  reads the workbook back off the disk against the check it was written from, its test rows and its red ones, and says THE
+  WORKBOOK DIFFERS with both sides where they do not match, `ClashCountWorkbook.ReadBackLine`
 
 ## The diagnostic log
 

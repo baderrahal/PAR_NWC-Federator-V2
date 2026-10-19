@@ -26,5 +26,17 @@ namespace Federator.Core.Diagnostics
 
         /// <summary>The kind of the HTML page among the files written.</summary>
         public const string PageKind = "HTML";
+
+        /// <summary>The name of the clash workbook's one sheet, the name the writer gave it, so the reader finds it by its name.</summary>
+        public const string WorkbookSheet = "workbook sheet";
+
+        /// <summary>A mirror the mirror rule paired, its run name and the test it mirrors.</summary>
+        public const string Mirror = "mirror";
+
+        /// <summary>A mirror whose clashes the merge took into its kept test, its run name and the kept test.</summary>
+        public const string MirrorMerged = "mirror merged";
+
+        /// <summary>A kept test of a merge, its name and the clashes only its mirrors found, which the merge added to it.</summary>
+        public const string AddedByMirrors = "added by mirrors";
     }
 }

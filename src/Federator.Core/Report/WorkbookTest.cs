@@ -37,13 +37,7 @@ namespace Federator.Core.Report
         /// <summary>F236. The letter its rows carry in the Priority column, empty where none is written.</summary>
         public string Priority { get; private set; }
 
-        /// <summary>F236. How many of its clash rows read each status, the words of the Status column as written.</summary>
-        public IDictionary<string, int> Statuses
-        {
-            get { return statuses; }
-        }
-
-        /// <summary>The rows of one status, nought where none reads it.</summary>
+        /// <summary>F236. Its clash rows of one status, the words of the Status column as written, nought where none reads it.</summary>
         public int RowsAt(string status)
         {
             int count;

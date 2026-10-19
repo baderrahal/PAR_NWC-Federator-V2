@@ -303,14 +303,19 @@ namespace Federator.Core.Views
 
         private const string ViewLineMark = " open clashes, ";
 
+        /// <summary>The end of a view's line where the view was written, marked and read back, StateOf.</summary>
+        private const string ReadBackWords = "read back";
+
         /// <summary>
-        /// F236. A view's line of the block read back, its test's name and its open clashes, the one reader of the shape
-        /// ViewLineCount writes, false for a line of a folder or any other line. The name is read whole, never trimmed at its end.
+        /// F236. A view's line of the block read back, its test's name, its open clashes and whether the view was written,
+        /// marked and read back, the one reader of the shape ViewLineCount and StateOf write, false for a line of a folder or
+        /// any other line. The name is read whole, never trimmed at its end.
         /// </summary>
-        public static bool ReadViewLine(string line, out string test, out int openClashes)
+        public static bool ReadViewLine(string line, out string test, out int openClashes, out bool readBack)
         {
             test = null;
             openClashes = -1;
+            readBack = line != null && line.EndsWith(", " + ReadBackWords, StringComparison.Ordinal);
 
             if (string.IsNullOrEmpty(line))
             {
@@ -441,7 +446,7 @@ namespace Federator.Core.Views
                 return "NOT MARKED";
             }
 
-            return written.ReadBack ? "read back" : "NOT READ BACK";
+            return written.ReadBack ? ReadBackWords : "NOT READ BACK";
         }
 
         private static string LeftOutWords(ViewsTreeFacts facts)

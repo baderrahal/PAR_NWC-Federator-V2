@@ -4229,6 +4229,7 @@ namespace Federator.Addin.Engine
 
             Say("Writing the client report for " + job.Building);
             log.WriteAttempted(RunEvents.PageKind, path);
+            bool threw = false;
 
             try
             {
@@ -4241,6 +4242,7 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
+                threw = true;
                 outcome.AddError(
                     "writing the client report threw " + error.GetType().Name + ": " + error.Message);
                 log.Failure(
@@ -4249,10 +4251,15 @@ namespace Federator.Addin.Engine
                     "kept going, the workbook and the XML are unaffected");
             }
 
-            outcome.HtmlSize = log.WriteFinished(RunEvents.PageKind, path);
+            // F236 on the breaker's finding: a page whose write threw lists nothing as written, RunLog.WriteThrew, as the
+            // workbook does, since the page at the path may be an earlier run's and the clash count check reads what is written.
+            outcome.HtmlSize = threw ? log.WriteThrew(RunEvents.PageKind, path) : log.WriteFinished(RunEvents.PageKind, path);
             outcome.HtmlOnDisk = outcome.HtmlSize >= 0;
 
-            CheckThePage(job, path);
+            if (!threw)
+            {
+                CheckThePage(job, path);
+            }
         }
 
         /// <summary>
@@ -4495,6 +4502,13 @@ namespace Federator.Addin.Engine
             // and WriteFinished would list it with last week's size as this run's.
             outcome.WorkbookSize = threw ? log.WriteThrew(RunEvents.WorkbookKind, path) : log.WriteFinished(RunEvents.WorkbookKind, path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
+
+            // F236 on the reviewer's finding 1. The clash count check of the window that started the run reads the sheet by
+            // the name the writer gave it, which the file's name need not carry, so the name goes in the .tsv beside the write.
+            if (!threw)
+            {
+                log.Row(RunEvents.WorkbookSheet, RunEvents.WorkbookKind, string.Empty, SheetNames.ForReport(report.OutputName));
+            }
 
             // F127, the readers' point on the stamp. The count check reads the clash workbook
             // back only where THIS RUN wrote it whole, because a write that threw leaves last

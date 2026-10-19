@@ -99,6 +99,12 @@ namespace Federator.Core.Communities
             return Path.Combine(Trimmed(reportRoot), package.RelativePath);
         }
 
+        /// <summary>F236. A community's report folder, the Report folder and the community's name, where its clash count check goes.</summary>
+        public static string CommunityFolderFor(string reportRoot, string community)
+        {
+            return Path.Combine(Trimmed(reportRoot), community ?? string.Empty);
+        }
+
         public static string NwfFolderFor(string reportRoot, Package package)
         {
             return Path.Combine(FolderFor(reportRoot, package), DefaultNwfSubfolder);

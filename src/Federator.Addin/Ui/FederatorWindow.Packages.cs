@@ -770,23 +770,33 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// F209 and F222. The discipline workbooks of every package that ran, written by the window that started the run off
-        /// the facts each group's result carried, Core's PackageRunFacts, each package in a try of its own, so one package's
-        /// fault never stops the others' reports, and every package's DISCIPLINE REPORT block in the log.
-        /// </summary>
-        /// <summary>
         /// F236, Bader's round of 19 Oct 2026, fix 6. Every run writes one clash count check a community, written by the window
         /// that started the run once every group has run, off the files each group wrote: its .tsv beside its log, its clash
-        /// workbook and its HTML page, Core's GroupRunFiles, WorkbookTests and PageTests. The groups not built are read off the
-        /// plans on the NWC page and off the results on the NWF page. Each community in a try of its own.
+        /// workbook by the sheet the .tsv names and its HTML page, Core's GroupRunFiles, WorkbookTests and PageTests. The groups
+        /// not built are read off the plans on the NWC page and off the results on the NWF page, and a group of the run whose
+        /// files could not be read is named with why, never dropped. Each group and each community in a try of its own, and the
+        /// whole in one, since a report check never stops a run.
         /// </summary>
         private void WriteTheClashCountChecks(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results)
+        {
+            try
+            {
+                WriteTheClashCountChecksOf(run, units, results);
+            }
+            catch (Exception error)
+            {
+                log.Failure("writing the clash count checks", error, "the run's RESULT is still written");
+            }
+        }
+
+        private void WriteTheClashCountChecksOf(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results)
         {
             List<Package> reported = new List<Package>(run.Runnable);
             reported.AddRange(run.NotBuiltOnly);
             Dictionary<string, ClashCountCheck> checks = new Dictionary<string, ClashCountCheck>(StringComparer.OrdinalIgnoreCase);
             List<string> order = new List<string>();
             Dictionary<string, Package> packages = new Dictionary<string, Package>(StringComparer.OrdinalIgnoreCase);
+            OpenClashCount viewStatuses = new ViewpointSettings().ViewStatuses;
 
             foreach (Package package in reported)
             {
@@ -812,12 +822,13 @@ namespace Federator.Addin.Ui
                 }
             }
 
-            for (int i = 0; i < units.Count && i < results.Count; i++)
+            for (int i = 0; i < units.Count; i++)
             {
                 Package package;
 
                 if (!packages.TryGetValue(units[i].Package, out package))
                 {
+                    log.Line("COUNTS   " + units[i].Label + " is in no clash count check, its package " + units[i].Package + " is not among the packages the run planned");
                     continue;
                 }
 
@@ -825,10 +836,11 @@ namespace Federator.Addin.Ui
 
                 try
                 {
-                    PackageRunResult result = results[i];
+                    PackageRunResult result = i < results.Count ? results[i] : null;
 
                     if (result == null)
                     {
+                        check.AddNotRead(units[i].Name, "its Navisworks wrote no result, so whether it wrote any file is UNKNOWN");
                         continue;
                     }
 
@@ -838,6 +850,10 @@ namespace Federator.Addin.Ui
                         {
                             check.AddNotBuilt(units[i].Name);
                         }
+                        else
+                        {
+                            check.AddNotRead(units[i].Name, "its Navisworks ran no group, " + (result.NoGroupBecause ?? "why is UNKNOWN"));
+                        }
 
                         continue;
                     }
@@ -846,51 +862,90 @@ namespace Federator.Addin.Ui
 
                     if (tsv == null || !File.Exists(tsv))
                     {
-                        log.Line("COUNTS   " + units[i].Label + " is not in the check, its .tsv " + (tsv ?? "UNKNOWN") + " is not there");
+                        check.AddNotRead(result.Groups[0].Group, "its .tsv " + (tsv ?? "UNKNOWN") + " is not there");
                         continue;
                     }
 
                     GroupRunFiles files = GroupRunFiles.Read(File.ReadAllLines(tsv));
-                    string why = null;
-                    WorkbookTests workbook = files.Workbook != null && File.Exists(files.Workbook)
-                        ? WorkbookTests.ReadFile(files.Workbook, SheetNames.ForReport(Path.GetFileNameWithoutExtension(files.Workbook)), out why)
-                        : null;
-                    PageTests page = files.Page != null && File.Exists(files.Page) ? PageTests.Read(File.ReadAllText(files.Page)) : null;
+                    string whyNoWorkbook;
+                    WorkbookTests workbook = TheClashWorkbook(files, out whyNoWorkbook);
+                    string whyNoPage = files.Page == null ? "no page was written" : !File.Exists(files.Page) ? "the page written, " + files.Page + ", is not on the disk" : null;
+                    PageTests page = whyNoPage == null ? PageTests.Read(File.ReadAllText(files.Page)) : null;
 
-                    if (workbook == null || page == null)
+                    if (workbook == null)
                     {
-                        log.Line("COUNTS   " + units[i].Label + " read with no " + (workbook == null ? "workbook, " + (why ?? "none was written") : "page, none was written"));
+                        log.Line("COUNTS   " + units[i].Label + " read with no workbook, " + whyNoWorkbook + ", so its Excel rows are UNKNOWN");
                     }
 
-                    check.AddGroup(result.Groups[0].Group, files, workbook, page, run.Images);
+                    if (page == null)
+                    {
+                        log.Line("COUNTS   " + units[i].Label + " read with no page, " + whyNoPage + ", so its HTML rows are UNKNOWN");
+                    }
+
+                    check.AddGroup(result.Groups[0].Group, files, workbook, page, run.Images, viewStatuses);
                 }
                 catch (Exception error)
                 {
+                    check.AddNotRead(units[i].Name, "reading its files threw " + error.GetType().Name);
                     log.Failure("reading the files of " + units[i].Label + " for the clash count check", error, "the other groups are still counted");
                 }
             }
 
             foreach (string community in order)
             {
+                string path = null;
+
                 try
                 {
                     ClashCountCheck check = checks[community];
-                    string folder = Path.Combine(run.Report, community);
+                    string folder = PackageOutput.CommunityFolderFor(run.Report, community);
                     Directory.CreateDirectory(folder);
-                    string path = ReportPaths.FreeFilePath(folder, ClashCountWorkbook.NameFor(community), DateTime.Now, null);
+                    path = ReportPaths.FreeFilePath(folder, ClashCountWorkbook.NameFor(community), DateTime.Now, null);
                     log.Block("CLASH COUNT CHECK " + community, check.Lines());
                     log.WriteAttempted("COUNTS", path);
                     ClashCountWorkbook.Write(path, check, DateTime.Now);
                     log.WriteFinished("COUNTS", path);
-                    log.Line(ClashCountWorkbook.ReadBackLine(path, community));
+                    log.Line(ClashCountWorkbook.ReadBackLine(path, check));
                 }
                 catch (Exception error)
                 {
                     log.Failure("writing the clash count check of " + community, error, "the other communities are still written");
+
+                    // F236 on the breaker's C1. A save that threw lists nothing as written, as every workbook's does.
+                    if (path != null)
+                    {
+                        log.WriteThrew("COUNTS", path);
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// F236. The clash workbook a group's .tsv names, read by the sheet the writer gave it as the .tsv names it, or null with
+        /// why where none was written, it is not on the disk, no row names its sheet or the read gave a reason.
+        /// </summary>
+        private static WorkbookTests TheClashWorkbook(GroupRunFiles files, out string why)
+        {
+            why = files.Workbook == null ? "no clash workbook was written"
+                : !File.Exists(files.Workbook) ? "the clash workbook written, " + files.Workbook + ", is not on the disk"
+                : files.WorkbookSheet == null ? "no row of the .tsv names its sheet"
+                : null;
+
+            if (why != null)
+            {
+                return null;
+            }
+
+            WorkbookTests workbook = WorkbookTests.ReadFile(files.Workbook, files.WorkbookSheet, out why);
+            why = workbook == null ? why ?? "it would not read" : null;
+            return workbook;
+        }
+
+        /// <summary>
+        /// F209 and F222. The discipline workbooks of every package that ran, written by the window that started the run off
+        /// the facts each group's result carried, Core's PackageRunFacts, each package in a try of its own, so one package's
+        /// fault never stops the others' reports, and every package's DISCIPLINE REPORT block in the log.
+        /// </summary>
         private void WriteTheDisciplineReports(PackageRun run, IList<PackageRunUnit> units, IList<PackageRunResult> results, IList<string> whys)
         {
             List<Package> reported = new List<Package>(run.Runnable);

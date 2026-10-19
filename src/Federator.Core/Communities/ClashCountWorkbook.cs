@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ClosedXML.Excel;
+using Federator.Core.Report;
 
 namespace Federator.Core.Communities
 {
     /// <summary>
     /// The workbook of a community's clash count check, F236: one sheet, its title and the run date, the table of Bader's
     /// columns with one row per group per test with clashes, a total per group and one for the community, a row red where its
-    /// four counts differ, then the groups not built and the tests the two rules left out, a count a group. Saved in the
-    /// community's report folder as "community clash count check.xlsx", a name already there taking a dated one, and read
-    /// back off the disk.
+    /// four counts differ, then the groups not built, the tests the two rules left out, a count a group, and the groups whose
+    /// files could not be read. Saved in the community's report folder as "community clash count check.xlsx", a name already
+    /// there taking a dated one, and read back off the disk.
     /// </summary>
     public static class ClashCountWorkbook
     {
@@ -28,6 +29,8 @@ namespace Federator.Core.Communities
         public const string LeftOutHeading = "Tests left out by a rule";
         public static readonly string[] LeftOutColumns = { "Building", "Left out by one discipline", "Left out by two set codes" };
         public const string EveryTestLeftOut = "every test, the group was not built";
+        public const string NotReadHeading = "Groups whose files could not be read";
+        public static readonly string[] NotReadColumns = { "Building", "Why" };
 
         public static string NameFor(string community)
         {
@@ -43,7 +46,7 @@ namespace Federator.Core.Communities
 
             using (XLWorkbook workbook = new XLWorkbook())
             {
-                IXLWorksheet sheet = workbook.Worksheets.Add(SheetName(check.Community));
+                IXLWorksheet sheet = workbook.Worksheets.Add(SheetNames.ForReport(check.Community));
                 sheet.Cell(1, 1).SetValue(check.Community + " " + Suffix);
                 sheet.Cell(1, 1).Style.Font.Bold = true;
                 sheet.Cell(1, 1).Style.Font.FontSize = 14;
@@ -96,6 +99,22 @@ namespace Federator.Core.Communities
                     row++;
                 }
 
+                if (check.NotRead.Count > 0)
+                {
+                    row++;
+                    Header(sheet, row, new[] { NotReadHeading });
+                    row++;
+                    Header(sheet, row, NotReadColumns);
+                    row++;
+
+                    foreach (KeyValuePair<string, string> group in check.NotRead)
+                    {
+                        sheet.Cell(row, 1).SetValue(group.Key);
+                        sheet.Cell(row, 2).SetValue(group.Value);
+                        row++;
+                    }
+                }
+
                 sheet.Range(HeaderRow, 1, Math.Max(HeaderRow + 1, tableEnd), ClashCountRow.Columns.Length).SetAutoFilter();
                 sheet.SheetView.FreezeRows(HeaderRow);
 
@@ -108,6 +127,7 @@ namespace Federator.Core.Communities
             }
         }
 
+        /// <summary>A row of the table, a total bold. Only a row of a test is red, a total adding up rows already red.</summary>
         private static void Put(IXLWorksheet sheet, int row, ClashCountRow line, bool total)
         {
             IList<object> cells = line.Cells();
@@ -130,7 +150,7 @@ namespace Federator.Core.Communities
             range.Style.Alignment.WrapText = true;
             range.Style.Font.Bold = total;
 
-            if (line.Differs)
+            if (!total && line.Differs)
             {
                 range.Style.Fill.BackgroundColor = Red;
             }
@@ -148,19 +168,27 @@ namespace Federator.Core.Communities
             }
         }
 
-        /// <summary>The sheet's name, the community's, cut to the 31 characters Excel allows.</summary>
-        public static string SheetName(string community)
-        {
-            string name = string.IsNullOrEmpty(community) ? "Clash count check" : community;
-            return name.Length > 31 ? name.Substring(0, 31) : name;
-        }
-
         /// <summary>
-        /// The CHECKS line of the workbook read back off the disk: its rows of tests, those red, and the groups not built,
-        /// or why it would not read. A row of a test is any row of the table whose Test cell does not begin with the total's word.
+        /// The CHECKS line of the workbook read back off the disk against the check it was written from: its rows of tests, a
+        /// row of the table that is not bold, and those red, the same as written, or THE WORKBOOK DIFFERS with both sides, or
+        /// why it would not read.
         /// </summary>
-        public static string ReadBackLine(string path, string community)
+        public static string ReadBackLine(string path, ClashCountCheck check)
         {
+            if (check == null)
+            {
+                throw new ArgumentNullException("check");
+            }
+
+            int rowsWritten = 0;
+
+            foreach (ClashCountGroup group in check.Groups)
+            {
+                rowsWritten += group.Rows.Count;
+            }
+
+            int redWritten = check.Differing().Count;
+
             try
             {
                 using (XLWorkbook workbook = new XLWorkbook(path))
@@ -172,9 +200,7 @@ namespace Federator.Core.Communities
 
                     while (sheet.Cell(row, 2).GetString().Length > 0)
                     {
-                        string test = sheet.Cell(row, 2).GetString();
-
-                        if (!test.StartsWith(ClashCountCheck.TotalWords + " ", StringComparison.Ordinal))
+                        if (!sheet.Cell(row, 2).Style.Font.Bold)
                         {
                             tests++;
                             red += sheet.Cell(row, 1).Style.Fill.BackgroundColor == Red ? 1 : 0;
@@ -183,7 +209,12 @@ namespace Federator.Core.Communities
                         row++;
                     }
 
-                    return "COUNTS   read back " + tests + (tests == 1 ? " test row, " : " test rows, ") + red + " red, of " + community;
+                    string read = tests + (tests == 1 ? " test row, " : " test rows, ") + red + " red";
+
+                    return tests == rowsWritten && red == redWritten
+                        ? "COUNTS   read back " + read + ", as written, of " + check.Community
+                        : "COUNTS   read back THE WORKBOOK DIFFERS  " + check.Community + "  read " + read + ", written " + rowsWritten
+                            + (rowsWritten == 1 ? " test row, " : " test rows, ") + redWritten + " red";
                 }
             }
             catch (Exception error)

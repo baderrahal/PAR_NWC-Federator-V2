@@ -129,6 +129,29 @@ namespace Federator.Core.Coverage
                 + (test.Detail.Length == 0 ? string.Empty : ", " + OneLine(test.Detail));
         }
 
+        /// <summary>
+        /// F236. Whether a row's text as RowText writes it gives that reason, the reason read where RowText puts it, after
+        /// whether the test ran, so the clash count check reads the row by the shape written here and nowhere else.
+        /// </summary>
+        public static bool RowGives(string rowText, CoverageReason reason)
+        {
+            string words = ", " + CoverageWords.For(reason);
+            string text = rowText ?? string.Empty;
+
+            foreach (string ran in new[] { ", ran", ", not run" })
+            {
+                int at = text.IndexOf(ran + words, StringComparison.Ordinal);
+                int end = at + ran.Length + words.Length;
+
+                if (at >= 0 && (end == text.Length || text[end] == ','))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static IList<string> CheckLines(string group, CountCheck check, int examples)
         {
             List<string> lines = new List<string>();
