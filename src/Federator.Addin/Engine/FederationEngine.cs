@@ -338,6 +338,7 @@ namespace Federator.Addin.Engine
         {
             chosenPack = chosen;
             packLooked = false;
+            packRules = null;
         }
 
         private MatrixPack ThePack()
@@ -370,6 +371,37 @@ namespace Federator.Addin.Engine
 
             log.Line(MatrixPack.Line(pack, whyNone));
             return pack;
+        }
+
+        private PackRules packRules;
+
+        /// <summary>
+        /// The rules of the pack this run reads, F247, Bader's answer Q230, read once per run and said on one PACK line. With
+        /// no pack, or rules that would not read, there are none and every test of one set code runs, the line saying why.
+        /// </summary>
+        private PackRules ThePackRules()
+        {
+            if (packRules != null)
+            {
+                return packRules;
+            }
+
+            MatrixPack built = ThePack();
+
+            try
+            {
+                packRules = built == null
+                    ? PackRules.NoneRead("no matrix pack", "no matrix pack was read")
+                    : built.Rules();
+            }
+            catch (Exception error)
+            {
+                log.Failure("reading the rules of " + built.Describe(MatrixPack.RulesFile), error, "kept going with no rule of the pack");
+                packRules = PackRules.NoneRead(built.Describe(MatrixPack.RulesFile), "it would not read, " + RunLog.TheLogSaysWhy());
+            }
+
+            log.Line(packRules.Line());
+            return packRules;
         }
 
         /// <summary>
@@ -3670,6 +3702,9 @@ namespace Federator.Addin.Engine
                 // F224, Q209. The codes the rule of two set codes reads a side against, the map's and this group's own models'.
                 runner.SetCodes = teams == null ? job.Disciplines : teams.KnownCodes(job.Disciplines);
 
+                // F247, Q230. The codes whose tests against themselves the pack's rules leave out, AR and ST in 1104-PAR.
+                runner.SameCodeLeftOut = ThePackRules().SameCodeLeftOut;
+
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
 
                 // F182, Bader's answer B to Q175. The group's pictures wait until the NWF is saved and the NWD
@@ -3711,6 +3746,9 @@ namespace Federator.Addin.Engine
                     log.ByDesignWanted = true;
                     byDesignTally = new ByDesignTally();
                     runner.ByDesign = new ByDesign(log, ThePairs());
+
+                    // F247, Q230. The block says how many pairs the file holds and how many clashes moved from pairs of one set code.
+                    byDesignTally.ReadsThePairs(ThePairs().Count, runner.SetCodes, new ViewpointSettings().SetNameSeparator);
                     runner.ByDesignTally = byDesignTally;
                 }
 

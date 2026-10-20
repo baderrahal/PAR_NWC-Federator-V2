@@ -38,18 +38,74 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The embedded files are the samples Bader committed, byte for byte, so the copy in the pack cannot drift from
+        /// The embedded priority file is the sample Bader committed, byte for byte, so the copy in the pack cannot drift from
         /// the file read off the client's matrix. The samples are read and never written.
         /// </summary>
         [Test]
-        public void TheEmbeddedCsvsAreTheSamplesByteForByte()
+        public void TheEmbeddedPriorityFileIsTheSampleByteForByte()
         {
             MatrixPack pack = TheBuiltInPack();
 
             Assert.That(pack.ReadText(MatrixPack.PriorityFile),
                 Is.EqualTo(File.ReadAllText(Path.Combine(Samples.Folder(), "clash-priority-map.csv"))));
-            Assert.That(pack.ReadText(MatrixPack.ByDesignFile),
-                Is.EqualTo(File.ReadAllText(Path.Combine(Samples.Folder(), "by-design-pairs.csv"))));
+        }
+
+        /// <summary>
+        /// F247, Bader's answer Q230 of 20 Oct 2026: the pack's by design pairs are its own file and no longer a copy of the
+        /// sample, since he removed the 17 rows of AR against AR and ST against ST and kept the other 38. The sample stays as
+        /// the evidence it is, and this holds the pack to it: the pack's rows are the sample's rows in their order, less
+        /// exactly the rows whose two sets carry one set code the pack's rules leave out, and nothing else.
+        /// </summary>
+        [Test]
+        public void TheEmbeddedByDesignPairsAreTheSampleLessThePairsOfOneLeftOutCode()
+        {
+            MatrixPack pack = TheBuiltInPack();
+            PackRules rules = pack.Rules();
+            List<string> known = new List<string>(MatrixCorrections.ReadPack(pack).Teams.KnownCodes(null));
+            List<string> sample = new List<string>(File.ReadAllText(Path.Combine(Samples.Folder(), "by-design-pairs.csv"))
+                .Replace("\r\n", "\n").TrimEnd('\n').Split('\n'));
+            List<string> expected = new List<string>();
+            int removed = 0;
+
+            Assert.That(rules.SameCodeLeftOut, Is.EqualTo(new[] { "AR", "ST" }));
+
+            foreach (string row in sample)
+            {
+                string[] cells = row.Split(',');
+                string left = Federator.Core.Teams.CodeOf.Set(cells[0], known, '-');
+                bool leftOut = left.Length > 0 && rules.SameCodeLeftOut.Contains(left)
+                    && left == Federator.Core.Teams.CodeOf.Set(cells[1], known, '-');
+
+                if (leftOut)
+                {
+                    removed++;
+                    continue;
+                }
+
+                expected.Add(row);
+            }
+
+            List<string> embedded = new List<string>(pack.ReadText(MatrixPack.ByDesignFile).Replace("\r\n", "\n").TrimEnd('\n').Split('\n'));
+
+            Assert.That(removed, Is.EqualTo(17), "the 17 rows of AR against AR and ST against ST");
+            Assert.That(embedded.Count, Is.EqualTo(expected.Count));
+
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.That(embedded[i], Is.EqualTo(expected[i]), "row " + (i + 1));
+            }
+        }
+
+        /// <summary>F247. The pack's rules read, naming AR and ST as the codes whose tests against themselves are left out.</summary>
+        [Test]
+        public void ThePacksRulesRead()
+        {
+            PackRules rules = TheBuiltInPack().Rules();
+
+            Assert.That(rules.IsRead, Is.True, rules.Unread);
+            Assert.That(rules.SameCodeLeftOut, Is.EqualTo(new[] { "AR", "ST" }));
+            Assert.That(rules.Line(), Is.EqualTo("PACK    the pack's rules read off the built in matrix pack 1104-PAR, pack-rules.txt, a test of one"
+                + " set code is left out for AR and ST alone, and every test of one set code of another code runs, Bader's answer to Q230"));
         }
 
         /// <summary>
@@ -80,7 +136,7 @@ namespace Federator.Core.Tests
             Assert.That(names.Count, Is.EqualTo(map.RowCount), "no row names a test the matrix does not hold");
         }
 
-        /// <summary>The by design pairs of the pack read with no problem, the 55 rows of the sample.</summary>
+        /// <summary>The by design pairs of the pack read with no problem, the 38 rows Bader kept, Q230.</summary>
         [Test]
         public void TheEmbeddedByDesignPairsRead()
         {
@@ -88,7 +144,7 @@ namespace Federator.Core.Tests
 
             Assert.That(pairs.Picked, Is.True);
             Assert.That(pairs.Problems, Is.Empty);
-            Assert.That(pairs.Count, Is.EqualTo(55));
+            Assert.That(pairs.Count, Is.EqualTo(38));
         }
 
         /// <summary>
@@ -144,7 +200,7 @@ namespace Federator.Core.Tests
             MatrixPack pack = TheBuiltInPack();
             string whyNone;
 
-            Assert.That(pack.Files.Count, Is.EqualTo(6), "the two CSVs, the clash XML, its two lists and the project code");
+            Assert.That(pack.Files.Count, Is.EqualTo(7), "the two CSVs, the clash XML, its two lists, the project code and the pack's rules");
             Assert.That(pack.XmlFile(out whyNone), Is.EqualTo(Matrix + ".xml"), whyNone);
 
             foreach (string file in new[] { Matrix + ".xml", Matrix + ".teams.txt", Matrix + ".corrections.txt" })

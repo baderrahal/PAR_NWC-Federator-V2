@@ -1,21 +1,4 @@
 left_set,right_set,reason
-BLD-ST-Columns,BLD-ST-Foundation,column sits on its foundation
-BLD-ST-Framing,BLD-ST-Columns,beam frames into its column
-BLD-ST-Framing,BLD-ST-Foundation,beam bears on foundation
-BLD-ST-Walls,BLD-ST-Foundation,wall sits on foundation
-BLD-ST-Walls,BLD-ST-Framing,wall meets beam
-BLD-ST-Floors,BLD-ST-Walls,slab meets wall
-BLD-ST-Floors,BLD-ST-Columns,slab forms around column
-BLD-ST-Stair,BLD-ST-Floors,stair lands on slab
-BLD-AR-Doors,BLD-AR-Walls,door sits in wall
-BLD-AR-Windows,BLD-AR-Walls,window sits in wall
-BLD-AR-Curtain Panels,BLD-AR-Curtain Mullions,panel is held by mullion
-BLD-AR-Railings,BLD-AR-Stairs,railing sits on stair
-BLD-AR-Railings,BLD-AR-Floors,railing sits on slab
-BLD-AR-Stairs,BLD-AR-Floors,stair lands on slab
-BLD-AR-Ramps,BLD-AR-Floors,ramp meets slab
-BLD-AR-Ceilings,BLD-AR-Walls,ceiling meets wall
-BLD-AR-Walls,BLD-AR-Floors,wall sits on floor finish
 BLD-ST-Walls,BLD-AR-Floors,floor finish laps the structural wall
 BLD-ST-Walls,BLD-AR-Walls,architectural wall build-up laps the structural wall
 BLD-ST-Walls,BLD-AR-Doors,door frame sits in the structural wall

@@ -1,0 +1,13 @@
+# The rules of this project's matrix pack that shape which tests a run creates, read by the NWC
+# Federator through PackRules, F247, Bader's answer Q230 of 20 Oct 2026.
+#
+# THE FORMAT. One line a rule: a word and a colon, a space, then its parts split by a space, a
+# bar and a space. A line starting with # is a comment and a blank line is skipped. Nothing is
+# trimmed. A line the tool does not know, a rule written twice or a part named twice makes the
+# whole file unread, so the tool reads none of its rules and says so in the log, never half.
+#
+# SAME-CODE-LEFT-OUT names the set codes whose tests of one set code against itself are not
+# created or run, such as BLD-AR-Doors against BLD-AR-Walls. A test whose two sides carry one set
+# code of any other code runs, on both pages. Bader's words: skip a test whose two sides carry
+# one set code only where that code is AR or ST.
+same-code-left-out: AR | ST

@@ -59,6 +59,41 @@ namespace Federator.Core.Clash
         private readonly HashSet<string> pairsSeen = new HashSet<string>(StringComparer.Ordinal);
         private int? savedTestsRead;
         private int pairsInTheFile;
+        private int? pairsHeld;
+        private List<string> knownCodes;
+        private char codeSeparator;
+        private int movedFromOneCode;
+
+        /// <summary>
+        /// F247, Bader's answer Q230 of 20 Oct 2026. Records how many pairs the file holds and the set codes a pair's two set
+        /// names are read against, so the block says the pairs it read and how many clashes moved from a pair whose two sets
+        /// carry one set code, the services' own pairs once the pack lost its AR and ST rows. Codes null leave that count
+        /// UNKNOWN and the block says so.
+        /// </summary>
+        public void ReadsThePairs(int pairsInFile, IEnumerable<string> codes, char separator)
+        {
+            pairsHeld = pairsInFile;
+            knownCodes = codes == null ? null : new List<string>(codes);
+            codeSeparator = separator;
+        }
+
+        /// <summary>How many clashes moved to Reviewed from a pair whose two sets carry one set code.</summary>
+        public int MovedFromOneCode
+        {
+            get { return movedFromOneCode; }
+        }
+
+        /// <summary>Whether a pair's two set names read one set code, against the codes recorded.</summary>
+        private bool OfOneCode(ByDesignPair pair)
+        {
+            if (pair == null || knownCodes == null)
+            {
+                return false;
+            }
+
+            string left = Federator.Core.Teams.CodeOf.Set(pair.Left, knownCodes, codeSeparator);
+            return left.Length > 0 && string.Equals(left, Federator.Core.Teams.CodeOf.Set(pair.Right, knownCodes, codeSeparator), StringComparison.Ordinal);
+        }
 
         /// <summary>
         /// How many tests saved in the NWF this group read its sides off, on a run with no
@@ -172,6 +207,11 @@ namespace Federator.Core.Clash
                 return;
             }
 
+            if (OfOneCode(pair))
+            {
+                movedFromOneCode++;
+            }
+
             moved.Add(ReviewedLine.For(clashName, testName,
                 pair == null ? "a pair in the file" : pair.Left + " and " + pair.Right
                     + ", " + pair.Reason));
@@ -201,6 +241,15 @@ namespace Federator.Core.Clash
             lines.Add(string.Empty);
             lines.Add("clashes looked at : " + Considered);
             lines.Add("moved to Reviewed : " + MovedCount);
+
+            if (pairsHeld.HasValue)
+            {
+                lines.Add("pairs in the file : " + pairsHeld.Value);
+                lines.Add("moved from pairs of one set code : "
+                    + (knownCodes == null || knownCodes.Count == 0
+                        ? "UNKNOWN, no set code was known to read the pairs against"
+                        : movedFromOneCode + " of the " + MovedCount + " moved, from pairs whose two sets carry one set code"));
+            }
 
             foreach (ByDesignVerdict verdict in InOrder())
             {
@@ -246,6 +295,7 @@ namespace Federator.Core.Clash
             }
 
             moved.AddRange(other.moved);
+            movedFromOneCode += other.movedFromOneCode;
         }
 
         /// <summary>

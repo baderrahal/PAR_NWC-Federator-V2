@@ -470,19 +470,23 @@ namespace Federator.Core.Clash
         /// SameSetCode with the code named, by SetCodeRule, so it is neither created nor run, and how many each code lost. Made
         /// before the mirrors are paired, so no mirror is paired with a test the rule leaves out. A test saved in the NWF that
         /// the rule leaves out stays in the NWF with its results, since this changes the plan and never the document.
+        /// SINCE F247, Bader's answer Q230 of 20 Oct 2026, only where that one code is among the codes the pack's rules leave
+        /// out, PackRules.SameCodeLeftOut, AR and ST in 1104-PAR, so a test of one set code of any other code runs.
         /// </summary>
-        public ClashTestPlan AcrossTwoSetCodes(IEnumerable<string> knownCodes, char separator, out IDictionary<string, int> leftOutByCode)
+        public ClashTestPlan AcrossTwoSetCodes(IEnumerable<string> knownCodes, IEnumerable<string> leftOutCodes, char separator,
+            out IDictionary<string, int> leftOutByCode)
         {
             List<string> known = new List<string>(knownCodes ?? new string[0]);
             List<PlannedClashTest> kept = new List<PlannedClashTest>();
             List<SkippedClashTest> left = new List<SkippedClashTest>(skipped);
             Dictionary<string, int> byCode = new Dictionary<string, int>(StringComparer.Ordinal);
+            HashSet<string> leftOut = new HashSet<string>(leftOutCodes ?? new string[0], StringComparer.Ordinal);
 
             foreach (PlannedClashTest test in buildable)
             {
                 string code = SetCodeRule.SameCodeOf(test, known, separator);
 
-                if (code == null)
+                if (code == null || !leftOut.Contains(code))
                 {
                     kept.Add(test);
                     continue;

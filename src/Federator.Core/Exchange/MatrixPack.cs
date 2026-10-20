@@ -39,6 +39,12 @@ namespace Federator.Core.Exchange
         /// </summary>
         public const string ProjectCodeFile = "project-code.txt";
 
+        /// <summary>
+        /// The rules of the pack that shape which tests a run creates, F247, Bader's answer Q230 of 20 Oct 2026, read
+        /// through PackRules.Read. A pack with no such file reads none, and the PACK line says so.
+        /// </summary>
+        public const string RulesFile = "pack-rules.txt";
+
         private readonly Assembly assembly;
         private readonly Dictionary<string, string> resources = new Dictionary<string, string>(StringComparer.Ordinal);
 
@@ -315,6 +321,17 @@ namespace Federator.Core.Exchange
         public ByDesignPairs ByDesign()
         {
             return ByDesignPairs.Read(ReadText(ByDesignFile), Describe(ByDesignFile));
+        }
+
+        /// <summary>The rules of the pack, through PackRules.Read, or none with why where the pack holds no rules file.</summary>
+        public PackRules Rules()
+        {
+            if (!Holds(RulesFile))
+            {
+                return PackRules.NoneRead(Describe(RulesFile), "the pack holds no " + RulesFile);
+            }
+
+            return PackRules.Read(ReadText(RulesFile), Describe(RulesFile));
         }
     }
 }
