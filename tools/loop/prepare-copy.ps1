@@ -170,7 +170,9 @@ function Write-Manifest([string] $path, $files) {
 function Read-Manifest([string] $path) {
     $files = New-Object 'System.Collections.Generic.Dictionary[string,object]' ($ordinal)
     foreach ($line in [IO.File]::ReadAllLines($path)) {
-        $p = $line.Split([char]' ', 3)
+        # A char array, since Windows PowerShell 5.1 reads [char]' ', 3 as two separators and splits on every
+        # space, measured on 20 Oct 2026 when the copy first held a path with a space, Clash report\C02\C02 AR checks.xlsx.
+        $p = $line.Split([char[]]@(' '), 3)
         if ($p.Count -ne 3 -or $p[0] -notmatch '\A[0-9A-F]{64}\z' -or $p[1] -notmatch '\A[0-9]+\z') { throw "'$path' holds a line that is not a sha256, a size and a path: '$line'. Nothing more was done." }
         $files[$p[2]] = [pscustomobject]@{ Bytes = [long]$p[1]; Sha = $p[0] }
     }
@@ -278,12 +280,18 @@ if ($nwc -eq 0) { throw "NM Fed holds no NWC file, which is nothing to run on. T
 
 # Bader's shape for a run set. Clash Report gets one folder for each folder under NWC, read
 # off NWC and never named here, because a group can sit in two of them and the report of one
-# would be written over by the other. Read before anything is written.
+# would be written over by the other. Read before anything is written. The report folder is
+# found whatever its case, since the tool writes Clash report since F243 and Windows reads the
+# two spellings as one folder, measured on 20 Oct 2026 when NM Fed read Clash report and the
+# exact match refused set 95. Two spellings at the top of NM Fed are refused, since which one
+# Navisworks would write into is not known.
 if ($Set) {
-    foreach ($d in @("NWC", "Clash Report")) {
-        if (-not $src.Dirs.Contains($d)) { throw "NM Fed holds no folder named exactly '$d', so the copy of set $Set cannot be in Bader's shape. Nothing was written." }
-    }
-    $reports = @($src.Dirs | Where-Object { $_.StartsWith("NWC\", [StringComparison]::Ordinal) -and $_.IndexOf([char]'\', 4) -lt 0 } | ForEach-Object { "Clash Report\" + $_.Substring(4) } | Sort-Object)
+    if (-not $src.Dirs.Contains("NWC")) { throw "NM Fed holds no folder named exactly 'NWC', so the copy of set $Set cannot be in Bader's shape. Nothing was written." }
+    $reportRoots = @($src.Dirs | Where-Object { [string]::Equals($_, "Clash Report", [StringComparison]::OrdinalIgnoreCase) })
+    if ($reportRoots.Count -eq 0) { throw "NM Fed holds no folder named Clash Report in any case, so the copy of set $Set cannot be in Bader's shape. Nothing was written." }
+    if ($reportRoots.Count -gt 1) { throw "NM Fed holds the report folder in $($reportRoots.Count) spellings, $($reportRoots -join ' and '), so the copy of set $Set cannot be in Bader's shape. Nothing was written." }
+    $reportRoot = $reportRoots[0]
+    $reports = @($src.Dirs | Where-Object { $_.StartsWith("NWC\", [StringComparison]::Ordinal) -and $_.IndexOf([char]'\', 4) -lt 0 } | ForEach-Object { $reportRoot + "\" + $_.Substring(4) } | Sort-Object)
     if ($reports.Count -eq 0) { throw "NWC in NM Fed holds no folder, so there is no folder to make under Clash Report for set $Set. Nothing was written." }
 }
 

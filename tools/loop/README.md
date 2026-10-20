@@ -37,7 +37,9 @@ command that does.
   source.manifest.txt. A copy that fails its read back keeps no manifest and is left as it is
 - a run set's copy is made once and never emptied, so -Set NN refuses, writing nothing,
   when runs\NN\NMFed, NMFed.manifest.txt or NMFed.removed.txt is there already, and when
-  NM Fed has no NWC folder, no Clash Report folder or no folder under NWC
+  NM Fed has no NWC folder, no Clash Report folder or no folder under NWC. Since 20 Oct 2026,
+  F246, the report folder is found whatever its case, Clash report as the tool writes it since
+  F243, and two spellings of it at the top of the real folder are refused
 - -Set NN -Remove and -Set NN -Restore do on runs\NN\NMFed what -Remove and -Restore do on
   the source copy, with the note in runs\NN\NMFed.removed.txt. The window run of F106 is
   built to read runs\NN\NMFed, NMFed.manifest.txt and NMFed.removed.txt by those names. The

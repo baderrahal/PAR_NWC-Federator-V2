@@ -12,15 +12,24 @@ namespace Federator.Core.Views
     ///
     /// THE ONE PLACE A TEST'S DISCIPLINE FOLDER IS DECIDED, DisciplineFolderFor. Nothing else reads a code into a folder,
     /// so a later switch to the team that fixes a clash, off the pack's team map and both sides of the test, changes that
-    /// one function and nothing else. It is handed the test, whether the pack names it, and the run's team map for that.
+    /// one function and nothing else. It is handed the test, whether the pack names it, and the group's ViewTeams, which
+    /// carries the run's team map and the clash XML's set tree.
     ///
     /// THE DEFAULT RULE, the first side of the test. The first side is the test's left set, ViewClash.LeftSide, read off
     /// its set name by CodeOf.Set, the one place a set name's code is read. In the pack 1104-PAR every one of the 1830
     /// tests is named its left set, -vs-, its right set, so the left set is the first side of its name, read off the pack
     /// on 15 Oct 2026. The words of the order come first, OrderWords. A code they do not name goes by the team the pack's
     /// team line gives it, where that team is one of the four discipline folders, so HV and DR are Mechanical and EV is
-    /// Electrical by the line Bader wrote in the pack, Q184. Anything else, a side with no code such as BLD-Security
-    /// Devices, and a saved test the pack does not name, is Other.
+    /// Electrical by the line Bader wrote in the pack, Q184.
+    ///
+    /// A SIDE WITH NO CODE, F246, Bader's answer Q231 of 20 Oct 2026, takes the team ViewTeams.TeamOfSet reads off the
+    /// folder above the set in the clash XML's set tree, the one reader the TEAMS lines use, so BLD-Security Devices,
+    /// under Electrical in the pack's set tree, is Electrical. Where that team is not one of the four, and for a saved
+    /// test the pack does not name, the folder is Other.
+    ///
+    /// ARCHITECTURE AGAINST STRUCTURE, F246, Bader's answer Q229 of 20 Oct 2026: a test whose two sides go in
+    /// Architecture and Structure, in either order, is Architecture. Every other test keeps its first side's folder, so
+    /// a test of AR against a service stays with the service team where the service is its first side.
     /// </summary>
     public static class DisciplineFolders
     {
@@ -61,16 +70,34 @@ namespace Federator.Core.Views
         };
 
         /// <summary>
-        /// The discipline folder of a test: Other where the pack does not name it, else the folder of the code of its
-        /// first side, by the order's words and then the pack's team line, else Other. The ONE place this is decided.
+        /// The discipline folder of a test: Other where the pack does not name it, Architecture where its two sides go in
+        /// Architecture and Structure in either order, else the folder of its first side. The ONE place this is decided.
         /// </summary>
-        public static string DisciplineFolderFor(ViewClash test, bool inThePack, TeamMap map, char setNameSeparator)
+        public static string DisciplineFolderFor(ViewClash test, bool inThePack, ViewTeams teams, char setNameSeparator)
         {
             if (test == null || !inThePack)
             {
                 return Other;
             }
 
+            string first = SideFolder(test.LeftSide, teams, setNameSeparator);
+            string second = SideFolder(test.RightSide, teams, setNameSeparator);
+
+            if (string.Equals(first, Structure, StringComparison.Ordinal) && string.Equals(second, Architecture, StringComparison.Ordinal))
+            {
+                return Architecture;
+            }
+
+            return first;
+        }
+
+        /// <summary>
+        /// The folder of one side: its code by the order's words and then the pack's team line, and for a side with no code
+        /// the team the folder above its set names, ViewTeams.TeamOfSet, where that team is one of the four, else Other.
+        /// </summary>
+        private static string SideFolder(string side, ViewTeams teams, char setNameSeparator)
+        {
+            TeamMap map = teams == null ? null : teams.Map;
             List<string> known = new List<string>();
 
             foreach (string[] word in OrderWords)
@@ -83,22 +110,22 @@ namespace Federator.Core.Views
                 known.AddRange(map.Codes);
             }
 
-            string code = CodeOf.Set(ByDesignRule.SetNameIn(test.LeftSide), known, setNameSeparator);
-
-            if (code.Length == 0)
-            {
-                return Other;
-            }
+            string code = CodeOf.Set(ByDesignRule.SetNameIn(side), known, setNameSeparator);
 
             foreach (string[] word in OrderWords)
             {
-                if (string.Equals(word[0], code, StringComparison.Ordinal))
+                if (code.Length > 0 && string.Equals(word[0], code, StringComparison.Ordinal))
                 {
                     return word[1];
                 }
             }
 
-            string team = map != null && map.IsRead ? map.TeamOf(code) : null;
+            string team = null;
+
+            if (map != null && map.IsRead)
+            {
+                team = code.Length > 0 ? map.TeamOf(code) : teams.TeamOfSet(side);
+            }
 
             foreach (string folder in Names)
             {

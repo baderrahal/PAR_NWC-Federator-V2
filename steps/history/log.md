@@ -2,6 +2,44 @@
 
 Newest entry at the top.
 
+## 2026-10-20 F246, the viewpoint folders, the round of 20 Oct evening
+
+Branch fix-F246 off main 7e4e011, worktree wt\F246 in the session's scratchpad, pull request 328. Bader's round of 20 Oct
+evening, the first of three fixes, F246 to F248, carrying his answers Q229 and Q231. Q229 to Q232 are written into
+steps\02_questions.md in his words by this fix's records.
+
+What was done. The run of 20 Oct, run-20261020-122626 on C02 1A02MM at build 7e4e011, showed no Architecture folder and the
+8 views of BLD-Security Devices in Other. A test's discipline folder was read off its left set alone, and in the 1104-PAR pack
+AR is on the left only in the 120 tests of AR against AR, which the rule of two set codes leaves out. Now a test whose two sides
+go in Architecture and Structure, in either order, is Architecture, Q229, and a side whose set name carries no code takes the
+team the folder above its set in the clash XML's set tree names, Q231, read through ViewTeams.TeamOfSet, the one reader the TEAMS
+lines use through TeamMap.TeamOfSet, so no second copy. Every other test keeps its first side, so AR against a service stays
+with the service team. On the pack every test's folder now reads Architecture 216, Structure 15, Mechanical 850, Electrical 749
+and Other 0, where it read 120, 111, 850, 692 and 57. A test of C whose first side is Security Devices now puts its clashes over
+the threshold in C/Electrical/Over 150mm, where in Other it kept them in its one view under Q185. VP3 of docs\rules.md and the
+discipline folders paragraph of core.md say the new rule.
+
+The readings. The reviewer found the no matrix line of the plan made untrue, the test names saying the first side always
+decides, and no plan test of the Security Devices size case. All three were changed before the merge.
+
+The proof's copy script. Two faults of tools\loop\prepare-copy.ps1 stopped the proof run of set 95 before anything was written.
+Its guard matched the report folder Clash Report exactly, where Bader's folder now reads Clash report, as the tool writes it
+since F243. And its manifest reader split a line with [char]' ', 3, which Windows PowerShell 5.1 reads as two separators, so a
+path with a space failed, reproduced as 4 parts for a b c d against 3. Both were fixed on this branch. The run then stopped at
+run.ps1's Check, which refuses a first run whose output folders hold files: Bader's folder now holds his own outputs, 12295 files
+under Clash report and NWF, NWD and Log beside them, and the copy carries them. Bader chose on 20 Oct that the proofs wait for
+him. No Navisworks was started for this fix. Written outside the repo: the installed add-in at 4eb85c6, 8e87777 and 0e2a21f with
++edits, two copies of the bundle as it was installed, bundle-backup-F246-20261020-190638 and bundle-backup-20261020-191144 under
+the loop folder, the loop's source copy made again from Bader's folder at 19:13 and the copy of set 95, runs\95\NMFed, 12536
+files, read only from his folder. Nothing of his was deleted or overwritten.
+
+What was proved here. Core tests 3487 passed before and 3498 after, 0 failed, 0 skipped. The solution builds in Release with
+0 errors and 0 warnings, the add-in included. Nothing in the add-in changed.
+
+What remains. Bader's proof run at the top of steps\03_bader_next.md: under each letter with an open clash of a test of AR
+against ST an Architecture folder, no test of AR against a service in Architecture, the views of Security Devices under
+Electrical, and Other empty unless a test the pack does not name.
+
 ## 2026-10-20 F245, the wrong data of 19 Oct, and the end of the round of 20 Oct
 
 Branch fix-F245 off main b3f9f6f, worktree agent-a316c577ee95a7939, pull request 327. Bader's order of 19 Oct 2026 20:58, the

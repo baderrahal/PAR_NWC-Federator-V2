@@ -42,7 +42,7 @@ namespace Federator.Core.Views
         /// The plan for one group, the clashes in the order they were read, the mirror rule's
         /// tests left out, or null where no mirror rule ran. notInThePack is the saved tests the
         /// picked matrix does not name, which go in Other, F199, or null where no matrix was read,
-        /// so which tests the pack names is UNKNOWN and every test goes by its first side.
+        /// so which tests the pack names is UNKNOWN and every test goes by DisciplineFolders.DisciplineFolderFor as a test the pack names.
         /// </summary>
         public static TestViewPlanOutcome For(
             IEnumerable<ViewClash> clashes, ViewTeams teams, ICollection<string> mirrors, ICollection<string> notInThePack,
@@ -177,7 +177,7 @@ namespace Federator.Core.Views
                 // one view and the ones the earlier rule would have split off are counted and named.
                 string letter = ToolViewFolder.LetterOf(first.Priority);
                 bool inThePack = notInThePack == null || !notInThePack.Contains(test);
-                string discipline = DisciplineFolders.DisciplineFolderFor(first, inThePack, teams.Map, settings.SetNameSeparator);
+                string discipline = DisciplineFolders.DisciplineFolderFor(first, inThePack, teams, settings.SetNameSeparator);
 
                 if (!inThePack)
                 {

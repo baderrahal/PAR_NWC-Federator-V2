@@ -1816,12 +1816,18 @@ and 6 does not read as broken.
   top level names, 50 at most. This replaced the one time clean up of the root folders A, B and C of F186.
 - THE DISCIPLINE FOLDERS, F199, Bader's order of round 6, Q183, `DisciplineFolders`. Under each letter the test's
   discipline folder, Architecture, Structure, Mechanical, Electrical or Other, then its views. It is decided in ONE
-  place, `DisciplineFolders.DisciplineFolderFor(test, inThePack, map, separator)`, and nothing else reads a code into
+  place, `DisciplineFolders.DisciplineFolderFor(test, inThePack, teams, separator)`, and nothing else reads a code into
   a folder, so a later switch to the team that fixes a clash changes that function alone. The default rule is the code
   of the test's first side, its left set, read by `CodeOf.Set`: the order's words first, AR and Architecture,
   ST and Structure, ME, MEP, Mechanical, PL, FP and FF, EL and Electrical, then for a code they do not name the team the
   pack's team line gives it where that is one of the four folders, HV and DR Mechanical and EV Electrical, Q184, else
-  Other. A saved test the picked matrix does not name, `ClashRunOutcome.SavedTestsRunToo`, is Other. With no matrix
+  Other. SINCE F246, Bader's answers of 20 Oct 2026: a side whose set name carries no code takes the team the folder above
+  its set in the clash XML's set tree names, read by `ViewTeams.TeamOfSet`, the one reader the TEAMS lines use through
+  `TeamMap.TeamOfSet`, never a second copy, so BLD-Security Devices is Electrical, Q231, and a test whose two sides go in
+  Architecture and Structure, in either order, is Architecture, Q229, so the 96 tests of ST against AR of 1104-PAR leave
+  Structure, which keeps the 15 of ST against ST alone. AR against a service keeps its first side. So a test of C whose
+  first side is BLD-Security Devices now splits its clashes over the threshold into C/Electrical/Over 150mm, where in Other
+  it kept them in its one view under Q185. With no matrix read the no pack line says every test goes by this rule. A saved test the picked matrix does not name, `ClashRunOutcome.SavedTestsRunToo`, is Other. With no matrix
   picked the plan is handed null and says that list is UNKNOWN. A folder is made only where a view is written into it.
   Over 150mm stands inside Mechanical and Electrical of C only, `HoldsTheSizeFolder`. A test of C in Architecture,
   Structure or Other keeps its clashes over the threshold in its one view and they are counted and named, Q185, as

@@ -302,14 +302,14 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void WithNoPackReadEveryTestGoesByItsFirstSideAndTheLinesSaySo()
+        public void WithNoPackReadEveryTestGoesByTheFolderRuleAndTheLinesSaySo()
         {
             TestViewPlanOutcome plan = Plan(Clash("Rami ducts check", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns"));
 
             Assert.That(plan.PackHandedIn, Is.False);
             Assert.That(plan.Views[0].Folders, Is.EqualTo(new[] { Top, "A", "Mechanical" }));
             Assert.That(plan.Lines(), Does.Contain(
-                "saved tests the pack does not name : UNKNOWN, no matrix was read, so every test goes by the code of its first side"));
+                "saved tests the pack does not name : UNKNOWN, no matrix was read, so every test goes by its discipline folder rule, the code of its first side and AR with ST in Architecture"));
         }
 
         /// <summary>A discipline folder is planned only where a test is in it, and the line names only those.</summary>
@@ -342,7 +342,7 @@ namespace Federator.Core.Tests
                 {
                     Clash("Saved", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C),
                     Clash("Lights", "Clash1", "BLD-EL-Lighting", "BLD-ST-Floors", ClashStatus.New, ClashPriority.None),
-                    Clash("Columns", "Clash1", "BLD-ST-Columns", "BLD-AR-Walls", ClashStatus.New, ClashPriority.C),
+                    Clash("Columns", "Clash1", "BLD-ST-Columns", "BLD-ME-Ducts", ClashStatus.New, ClashPriority.C),
                     Clash("Pipes", "Clash1", "BLD-PL-Pipes", "BLD-ST-Floors", ClashStatus.New, ClashPriority.C),
                     Clash("Walls", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.None)
                 },
@@ -633,8 +633,38 @@ namespace Federator.Core.Tests
             Assert.That(teams.TeamOfSet("BLD-Security Devices"), Is.EqualTo("Electrical"));
             Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs Electrical"));
             Assert.That(plan.Views[0].Pair.CarriesSizeFolder, Is.True);
+            Assert.That(plan.Views[0].DisciplineFolder, Is.EqualTo("Electrical"), "F246, Q231, its folder by the same team");
             Assert.That(plan.UnknownSets, Is.Empty);
             Assert.That(plan.Lines(), Has.Member(UnknownSetsLine + "0" + UnknownSetsTail));
+        }
+
+        /// <summary>
+        /// F246, Q231. A test of priority C whose first side is BLD-Security Devices is in Electrical now, so its clashes over
+        /// the threshold go in C/Electrical/Over 150mm as any Electrical test's do, where before it sat in Other and kept them
+        /// in its one view under Q185. The size rule is unchanged, only the folder the test is read into.
+        /// </summary>
+        [Test]
+        public void SecurityDevicesOfCSplitsItsLargeClashesIntoOver150mmOfElectrical()
+        {
+            ExchangeDocument corrected = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
+            ViewTeams teams = new ViewTeams(corrected.Teams, corrected.Sets, GroupCodes, new ViewpointSettings());
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[]
+                {
+                    Clash("T", "Clash1", "BLD-Security Devices", "BLD-ST-Floors", ClashStatus.New, ClashPriority.C, SizeVerdict.Large),
+                    Clash("T", "Clash2", "BLD-Security Devices", "BLD-ST-Floors", ClashStatus.New, ClashPriority.C, SizeVerdict.Small)
+                },
+                teams, null, null, new ViewpointSettings());
+            List<string> paths = new List<string>();
+
+            foreach (PlannedTestView view in plan.Views)
+            {
+                paths.Add(string.Join("/", view.Folders));
+            }
+
+            Assert.That(paths, Is.EquivalentTo(new[] { Top + "/C/Electrical", Top + "/C/Electrical/Over 150mm" }));
+            Assert.That(plan.OverSizeKeptTestsC, Is.EqualTo(0), "no longer kept whole in Other under Q185");
         }
 
         /// <summary>
