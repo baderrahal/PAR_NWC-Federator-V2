@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-10-20 F247, the same code rule, the round of 20 Oct evening
+
+Branch fix-F247 off main 7e4e011, worked side by side with F246 in its own worktree, rebased on main 8256562 after F246 merged,
+pull request 329. Bader's round of 20 Oct evening, the second of three fixes, carrying his answer Q230.
+
+What was done. Since F224 every test whose two sides carry one set code was left out, which left 42 of the 55 rows of the pack's
+by design pairs with nothing to act on, by Bader's count in his round message. Now a test of one set code is left out only where
+the code is one the pack's rules name. The rules are a new file of the pack, pack-rules.txt, read by PackRules in the team map's
+format, same-code-left-out: AR | ST for 1104-PAR, so which codes is the pack's and never a constant in code, PR6, and the next
+project's pack carries its own. A pack with no rules file, or one that would not read, leaves out none and its PACK line says
+why. The built in matrix loses 135 tests, AR 120 and ST 15, and the 149 tests of one set code of EL 78, ME 36, FF 15, PL 10 and
+DR 10 run again on both pages. The CLASH line names the codes left out and counts the tests of one set code that run. The pack's
+by-design-pairs.csv keeps 38 rows, the 17 of AR against AR and ST against ST removed. The BY DESIGN block says the pairs in the
+file and how many clashes moved from pairs of one set code, a nought said. The NWF page's confirm names the codes, read off the
+pack. CT3 and SP8 of docs\rules.md, core.md, addin.md and docs\workflow.md say the new rule.
+
+The test of the pack's by design file. MatrixPackTests held the pack's by-design-pairs.csv byte for byte to
+samples\by-design-pairs.csv. The pack's file is no longer a copy, by Bader's answer, so the test now reads the pack's own file and
+holds it to the sample's rows in their order less exactly the rows whose two sets carry one code the pack's rules leave out, 17.
+The sample is untouched and stays as the evidence it is, and ByDesignRuleTests still reads its 55 rows.
+
+The readings. The reviewer found seven points: the NWF page's confirm still saying every test of one set code is not run, the
+skip block's words, lists compared with Is.EqualTo where tests.md asks element by element, a member with no caller and its dead
+roll-up, a second reading of one set code in the tally, a code holding a space read as a code, and smaller gaps. All were changed.
+
+What was proved here. Core tests 3498 passed before, on main after F246, and 3522 after, 0 failed, 0 skipped. The solution builds
+in Release with 0 errors and 0 warnings, the add-in included. No Navisworks was started for this fix.
+
+What remains. Bader's proof run at the top of steps\03_bader_next.md: the CLASH line naming only AR and ST as left out, the ME,
+EL, PL, DR and FF tests of one set code created and run, and the BY DESIGN block reading 38 pairs and naming the clashes it moved
+from pairs of one set code, the by design box ticked.
+
 ## 2026-10-20 F246, the viewpoint folders, the round of 20 Oct evening
 
 Branch fix-F246 off main 7e4e011, worktree wt\F246 in the session's scratchpad, pull request 328. Bader's round of 20 Oct
