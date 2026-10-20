@@ -160,6 +160,58 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// F248, Bader's answer Q232. This map with those tests given that priority, the self tests of the matrix at the letter
+        /// the pack's rules give them, each counted as a row. A test the file names already keeps the file's letter, and the
+        /// problem line names it, so a letter the file gave is never overwritten in silence. A map nothing was picked for, or a
+        /// priority of None, is handed back as it is.
+        /// </summary>
+        public PriorityMap With(IEnumerable<string> testNames, ClashPriority priority)
+        {
+            if (!Picked || priority == ClashPriority.None || testNames == null)
+            {
+                return this;
+            }
+
+            PriorityMap with = new PriorityMap();
+            with.Picked = Picked;
+            with.Path = Path;
+            with.rows = rows;
+            with.problems.AddRange(problems);
+
+            foreach (KeyValuePair<string, ClashPriority> row in byTestName)
+            {
+                with.byTestName[row.Key] = row.Value;
+            }
+
+            foreach (KeyValuePair<string, int> row in lineOfTestName)
+            {
+                with.lineOfTestName[row.Key] = row.Value;
+            }
+
+            foreach (string name in testNames)
+            {
+                ClashPriority earlier;
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    continue;
+                }
+
+                if (with.byTestName.TryGetValue(name, out earlier))
+                {
+                    with.problems.Add("\"" + name + "\", a test of a set against itself, is named by the file at " + earlier
+                        + ", so the file's letter is kept and the rules' " + priority + " is not used");
+                    continue;
+                }
+
+                with.byTestName[name] = priority;
+                with.rows++;
+            }
+
+            return with;
+        }
+
+        /// <summary>
         /// That test's priority, or None. Matched Ordinal and never trimmed, because a
         /// test name is built out of two set names and two of those end in a space.
         /// </summary>

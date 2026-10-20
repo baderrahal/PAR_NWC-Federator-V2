@@ -20,22 +20,47 @@ namespace Federator.Core.Exchange
     /// whose two sides carry one set code of any other code runs. The rule with no part leaves out none. A file that is
     /// not there or would not read leaves out none either, and the PACK line says which, so every test of one set code runs
     /// and nothing is hidden on a guess.
+    ///
+    ///   self-test-teams: Mechanical | Electrical
+    ///   self-test-priority: A
+    ///
+    /// SELF-TEST-TEAMS, F248, Bader's answer Q232 of 20 Oct 2026, names the teams of the pack's team map whose every set gets
+    /// a test of that set against itself, SelfTests. SELF-TEST-PRIORITY is the one letter, A, B or C, those tests carry. A
+    /// file naming teams and no letter, or a letter and no teams, is unread, since a self test with no letter would read C
+    /// in silence. With neither rule no self test is made.
     /// </summary>
     public sealed class PackRules
     {
         /// <summary>The word of the rule naming the set codes whose tests of one set code are left out.</summary>
-        public const string SameCodeLeftOutRule = "same-code-left-out";
+        private const string SameCodeLeftOutRule = "same-code-left-out";
+
+        /// <summary>The word of the rule naming the teams whose sets each get a test against themselves, F248.</summary>
+        private const string SelfTestTeamsRule = "self-test-teams";
+
+        /// <summary>The word of the rule giving the self tests their priority, F248.</summary>
+        private const string SelfTestPriorityRule = "self-test-priority";
 
         private const string Colon = ": ";
 
         private const string Bar = " | ";
 
-        private PackRules(string source, string unread, IList<string> sameCodeLeftOut)
+        private static readonly string[] KnownRules = { SameCodeLeftOutRule, SelfTestTeamsRule, SelfTestPriorityRule };
+
+        private PackRules(string source, string unread, IList<string> sameCodeLeftOut, IList<string> selfTestTeams,
+            Federator.Core.Clash.ClashPriority selfTestPriority)
         {
             Source = source;
             Unread = unread;
             SameCodeLeftOut = new ReadOnlyCollection<string>(new List<string>(sameCodeLeftOut ?? new string[0]));
+            SelfTestTeams = new ReadOnlyCollection<string>(new List<string>(selfTestTeams ?? new string[0]));
+            SelfTestPriority = selfTestPriority;
         }
+
+        /// <summary>The teams whose every set gets a test against itself, F248, empty where none is or nothing read.</summary>
+        public ReadOnlyCollection<string> SelfTestTeams { get; private set; }
+
+        /// <summary>The priority the self tests carry, F248, None where no self test is made.</summary>
+        public Federator.Core.Clash.ClashPriority SelfTestPriority { get; private set; }
 
         /// <summary>Where the rules were read from, as the PACK line names it.</summary>
         public string Source { get; private set; }
@@ -55,7 +80,7 @@ namespace Federator.Core.Exchange
         /// <summary>No rules, with why, such as a pack that holds no pack-rules.txt.</summary>
         public static PackRules NoneRead(string source, string why)
         {
-            return new PackRules(source, why ?? "UNKNOWN", null);
+            return new PackRules(source, why ?? "UNKNOWN", null, null, Federator.Core.Clash.ClashPriority.None);
         }
 
         /// <summary>The rules of that text, or none with the first fault named.</summary>
@@ -88,7 +113,7 @@ namespace Federator.Core.Exchange
 
                 string word = line.Substring(0, colon);
 
-                if (!string.Equals(word, SameCodeLeftOutRule, StringComparison.Ordinal))
+                if (Array.IndexOf(KnownRules, word) < 0)
                 {
                     return NoneRead(source, where + ", names a rule this tool does not know, " + word);
                 }
@@ -116,8 +141,9 @@ namespace Federator.Core.Exchange
                         }
 
                         // A code read off a file name holds no space and no character a person cannot see, so a part that
-                        // does would never equal one, the team map's rule, read through its one check.
-                        int unseen = Federator.Core.Teams.TeamMap.Unseen(part, true);
+                        // does would never equal one, the team map's rule, read through its one check. A team's name may
+                        // hold an ordinary space, as the team map allows, and nothing else unseen.
+                        int unseen = Federator.Core.Teams.TeamMap.Unseen(part, !string.Equals(word, SelfTestTeamsRule, StringComparison.Ordinal));
 
                         if (unseen >= 0)
                         {
@@ -138,9 +164,35 @@ namespace Federator.Core.Exchange
             }
 
             List<string> leftOut;
+            List<string> teams;
+            List<string> letter;
             rules.TryGetValue(SameCodeLeftOutRule, out leftOut);
+            rules.TryGetValue(SelfTestTeamsRule, out teams);
+            rules.TryGetValue(SelfTestPriorityRule, out letter);
 
-            return new PackRules(source, null, leftOut);
+            Federator.Core.Clash.ClashPriority priority = Federator.Core.Clash.ClashPriority.None;
+
+            if (letter != null)
+            {
+                priority = letter.Count == 1 ? Federator.Core.Clash.Priorities.From(letter[0]) : Federator.Core.Clash.ClashPriority.None;
+
+                if (priority == Federator.Core.Clash.ClashPriority.None || letter[0].Length != 1)
+                {
+                    return NoneRead(source, "the rule " + SelfTestPriorityRule + " gives " + (letter.Count == 0 ? "no letter" : string.Join(" | ", letter.ToArray()))
+                        + ", where it takes one letter, A, B or C");
+                }
+            }
+
+            bool teamsNamed = teams != null && teams.Count > 0;
+
+            if (teamsNamed != (letter != null))
+            {
+                return NoneRead(source, teamsNamed
+                    ? "the rule " + SelfTestTeamsRule + " names teams and no rule " + SelfTestPriorityRule + " gives their tests a letter"
+                    : "the rule " + SelfTestPriorityRule + " gives a letter and no rule " + SelfTestTeamsRule + " names a team");
+            }
+
+            return new PackRules(source, null, leftOut, teams, priority);
         }
 
         /// <summary>

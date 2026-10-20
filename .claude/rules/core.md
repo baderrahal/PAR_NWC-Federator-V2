@@ -1071,6 +1071,25 @@ and 6 does not read as broken.
   not read, a line unknown, a rule twice or a part twice, leaves out none and its PACK line says
   why, `PackRules.Line`. The CLASH line names the codes left out and counts the tests of one set code
   that run by code, `SetCodeRule.OfOneCode`
+- THE SELF TESTS, F248, BADER'S ANSWER Q232 OF 20 OCT 2026, `SelfTests`. Every set of the teams the
+  pack's rules name, self-test-teams in pack-rules.txt, Mechanical and Electrical for 1104-PAR, gets a
+  test of that set against itself at the letter self-test-priority gives, A. A set's team is the team
+  map's one reading, `TeamMap.TeamOfSet` over the code `CodeOf.Set` reads off its name and its set tree
+  folders, so BLD-Security Devices is Electrical, 25 Mechanical and 14 Electrical in 1104-PAR, 39. Each
+  is named as the pack names its tests, set -vs- set, `SelfTests.NameFor`, both sides at the set's path,
+  with the type, status, merge, linkage and rules of the first test of the matrix naming the set and the
+  self intersect and primitive types of that side. A set no test names, and a name the matrix holds, are
+  not made and are said on a SELF line. They are added after the matrix's own tests,
+  `ExchangeDocument.WithSelfTests`, a new document, which carries their names and letter,
+  `SelfTestNames` and `SelfTestPriority`, and the priorities give them that letter, `PriorityMap.With`,
+  a letter the file gives a test kept and named. The plan, the rule of two set codes, which leaves out
+  none of them since no Mechanical or Electrical code is AR or ST, the mirror rule, whose key is null for
+  one set on both sides, the coverage, the workbooks and the views read them as any test, their folder
+  their team's under A. Teams named with no letter, a letter with no teams, or a letter that is not one
+  of A, B and C make the rules file unread, so no self test is made and the PACK line says why.
+  MEASURED 2026-10-20, docs\history\scan.md 5z-zo, on C02 1A02MM: a test with one set on both sides is
+  created and runs to Complete, reports each pair of two different items once and never an item against
+  itself, and the self intersect flag changes nothing, so the add-in makes them as any other test
 - The reports never go inside the folder being scanned, whether it was picked or
   defaulted to. A run put the workbooks in the NWC folder it was reading, and the
   Clash step picks an XML at run time, so a report written there is a file a later run

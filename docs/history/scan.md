@@ -9146,3 +9146,58 @@ masked.
 
 **UNKNOWN.** Whether a manual Append with a model order other than the tool's places the models the same, since only the tool's
 order was appended. Whether the other groups of C06 and C07 read the same, since three were measured.
+
+## 5z-zo. WHAT CLASH DETECTIVE DOES WITH A CLASH TEST WHOSE TWO SIDES ARE THE SAME SELECTION SET, MEASURED 2026-10-20
+
+F248, 2026-10-20. The question: when a clash test has the same selection set on its left and its right side, is it created and run without an error,
+what does it find, does it report a pair once or twice, does the self intersect flag change the count, and how many of the results are a run against a
+fitting. What the answer changes in the code: whether the tool has to refuse, skip or deduplicate a test whose two sides are one set.
+
+**HOW IT WAS MEASURED.** Navisworks Manage 2025, the plain install, started through the Automation API by
+`tools\probes\SameSetProbe\probe-sameset.ps1`, which is ClashPickProbe's driver with its guards of tools\loop\nw-guard.ps1 unchanged. No Roamer was running before it
+started. The plugin `tools\probes\SameSetProbe\SameSetProbePlugin.cs` appended the four files of group C02 1A02MM (AR, EL, ME, ST, each `*-1A02MM-ZZZ-*-MOD-000001.nwc`)
+from the loop's own copy `%LOCALAPPDATA%\NwcFederatorLoop\runs\95\NMFed\NWC\C02` with TryAppendFile into the empty document the host holds. Each file read with the same
+SHA-256 after as before, and nothing was saved. The document was in Feet, 25 mm read as 0.082020997375328086 through UnitConversion.ScaleFactor(Millimeters, Feet).
+Four sets were read out of the pack `src\Federator.Core\Packs\1104-PAR\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`, the selectionset elements of those names with every
+condition and flag as written, and built the way SetBuilder builds them, a Search with the same SearchCondition list in a new SelectionSet, put in with AddCopy. For each set two
+tests were made the way ClashRunner.Create makes one: ClashTestType.HardConservative, tolerance 25 mm, MergeComposites on, each side's PrimitiveTypes 1, each side pointed at the saved
+set by CreateSelectionSource, SelfIntersect on both sides false as the pack has it in all 3660 of its sides, and on both sides true. Each was added by TestsAddCopy, read back, run by
+TestsRunTest, and its results walked. An item is told from another by ModelItem.Equals bucketed on InstanceHashCode, and a category, family and Revit Id are read off the
+first ancestor or self holding Element.Category, the Revit element node.
+
+**THE COMMAND.** From the F248 worktree, in Windows PowerShell 5.1, 64 bit, STA, with PSModulePath set to the Windows PowerShell default for the child:
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\SameSetProbe\probe-sameset.ps1 -Out tools\probes\SameSetProbe\sameset-result-20261020.txt
+      -Files "<the four 1A02MM NWCs of the loop copy, joined by |>" -Pack src\Federator.Core\Packs\1104-PAR\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+      -Sets "BLD-ME-Ducts&Duct Fittings|BLD-ME-Pipes&Pipe Fittings|BLD-EL-Cable Tray&Cable Tray Fittings|BLD-EL-Conduits & Conduit Fittings"
+
+The raw output is `tools\probes\SameSetProbe\sameset-result-20261020.txt`, the machine's name masked by tools\loop\mask-evidence.ps1 (the unmasked copy is kept in the loop's probes folder, outside the repo), and the per result rows are in
+`tools\probes\SameSetProbe\rows-20261020`, one tab separated file a test. The Navisworks it started was pid 12364, started 19:54:06, adopted, quit by Dispose and gone 1.6 s later,
+not forced. Bader's registry values and two files it moved were put back and read back by the probe's own compare.
+
+**WHAT IT GAVE.** A test with the same set on both sides is created without an error, reads back with both sides at the same item count, runs in 0.01 to 0.03 s, and ends in the
+test status Complete, all eight. Items on each side, and results, by set and by the self intersect flag:
+
+    set                                        items on a side            self intersect off   self intersect on
+    BLD-ME-Ducts&Duct Fittings                 59 (22 Ducts, 37 Duct Fittings)       0                   0
+    BLD-ME-Pipes&Pipe Fittings                 88 (47 Pipes, 41 Pipe Fittings)       0                   0
+    BLD-EL-Cable Tray&Cable Tray Fittings      171 (98 Cable Trays, 73 Cable Tray Fittings)   2        2
+    BLD-EL-Conduits & Conduit Fittings         222 (146 Conduits, 76 Conduit Fittings)       13          13
+
+1. Created and run with no error, status Complete, in every one of the eight.
+2. It reports clashes between two different items of the set, 2 and 13 in the two electrical sets and 0 in the two mechanical sets at 25 mm in this group. In none of the 15
+   results is Item1 the same item as Item2, by ModelItem.Equals, by InstanceHashCode bucket or by the same Revit Id in the same model.
+3. Each pair once. The ordered pairs are all distinct, no result repeats a pair, and no result has its swapped pair (B,A) as another result, in all four tests that had results. The
+   unordered pair count equals the result count, 2 and 13. All results are New, none is in a group, and the distances are all negative, from -0.1337 to -0.3281 ft.
+4. The self intersect flag, on both sides, changed nothing here. The counts are the same, and the rows of the off test and the on test are byte for byte the same file, for the tray
+   set and for the conduit set. For the two mechanical sets both are 0.
+5. By the categories of the two items. Cable Tray set, 2 results: 1 Cable Trays against Cable Tray Fittings, 1 Cable Trays against Cable Trays. Conduit set, 13 results: 8 Conduits
+   against Conduits, 4 Conduit Fittings against Conduit Fittings, 1 Conduit Fittings against Conduits. Duct and pipe sets: none. So a run against a fitting of the same family of
+   categories is 1 of 2 and 1 of 13, and a fitting against a fitting is 4 of 13. The family names of the pairs: the 4 fitting pairs are PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR against itself, the
+   1 run against fitting pair is PAR-EL-CNF-JUNCTIONBOXTEEPVC-PAR against Conduit without Fittings, the 8 run pairs are Conduit without Fittings against itself, and in the tray set the
+   fitting pair is PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR against Cable Tray with Fittings.
+
+**UNKNOWN.** Whether a fitting in a result belongs to the run it clashes with, because the category pair is all that was read and no connector or system name was. Whether the result is the
+same in the other groups, since one group was measured, and in particular whether a mechanical set clashes with itself at 25 mm anywhere, since both are 0 here. Whether one side with the flag
+on and the other off differs, since only both sides alike were run. Whether a test imported from a clash XML behaves as one made with the API, since these were made with the API calls the tool
+uses and none was imported. Whether a pair is ever reported twice at other tolerances or other test types, since only hard conservative at 25 mm was run.

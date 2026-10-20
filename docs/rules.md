@@ -53,6 +53,7 @@ answer disagree, the line says CONFLICT and the form at the end of the round ask
 - CT20. With the by design box ticked the pass also reaches the tests saved in the NWF, and its block says so. Q144 B. Test: ByDesignRuleTests.TheBlockSaysWhenTheSidesWereReadOffTheTestsSavedInTheNwf
 - CT21. A test a rule now leaves out that an NWF still holds keeps its results, is not compared and is never FAILED. Q209, Q212 open. Test: LeftOutByARuleTests.ATestOfOneSetCodeAnNwfStillHoldsIsNotComparedAndNeverFailed
 - CT22. Compact resolved stays removed, and the tool calls no compact and no reset of results. Q178. NO TEST
+- CT23. Every set of the teams the pack's rules name, Mechanical and Electrical for 1104-PAR by its team map, 25 and 14 with Security Devices, gets a test of that set against itself, named left set -vs- right set, made by a rule from the pack's sets and team map, at the priority the rules give, A, at the tolerance of the drop down, on both pages, read by the mirror rule and the folders as any test. Q232. Test: SelfTestsTests.ThePackGets25MechanicalAnd14ElectricalSelfTestsWithSecurityDevices
 
 ## Tolerance
 

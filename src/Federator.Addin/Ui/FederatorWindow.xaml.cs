@@ -468,13 +468,29 @@ namespace Federator.Addin.Ui
         /// The built in clash matrix, read through MatrixCorrections.ReadPack with the corrections and the team map
         /// the pack holds beside it, or null with no pack, where the tests saved in each NWF run as they did with
         /// no clash matrix read. A pack that will not read throws, so the caller says why as it did for a clash matrix.
+        /// Since F248, Bader's answer Q232, the matrix carries the self tests its pack's rules ask for, a set of the
+        /// teams they name against itself, added by Core's SelfTests after the matrix's own tests, and their SELF lines are
+        /// said with the TEAMS lines, SayTheTeamsAndCorrections. Measured on 20 Oct 2026, docs\history\scan.md 5z-zo: a test
+        /// with one set on both sides runs and reports each pair of its items once and never an item against itself.
         /// </summary>
         private ExchangeDocument ReadTheMatrix()
         {
             string whyNone;
             MatrixPack pack = chosenPack ?? MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
-            return pack == null ? null : MatrixCorrections.ReadPack(pack);
+
+            if (pack == null)
+            {
+                selfTestLines = new List<string>();
+                return null;
+            }
+
+            SelfTestOutcome self = SelfTests.For(MatrixCorrections.ReadPack(pack), pack.Rules(), new ViewpointSettings().SetNameSeparator);
+            selfTestLines = new List<string>(self.Lines);
+            return self.Matrix;
         }
+
+        /// <summary>The SELF lines of the matrix last read, F248, said with the TEAMS lines.</summary>
+        private List<string> selfTestLines = new List<string>();
 
         /// <summary>
         /// The set codes the pack's rules leave out against themselves, F247, Bader's answer Q230, read off the pack the run
@@ -1374,6 +1390,7 @@ namespace Federator.Addin.Ui
             SayLines(exchange.Teams.Lines());
             SayLines(exchange.Teams.SetLines(exchange.Sets, new ViewpointSettings().SetNameSeparator));
             SayLines(exchange.Corrections);
+            SayLines(selfTestLines);
         }
 
         private void SayLines(IEnumerable<string> lines)

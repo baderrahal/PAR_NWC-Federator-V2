@@ -440,6 +440,39 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
+        /// The names of the tests SelfTests added to this matrix, F248, Bader's answer Q232, each a set against itself, empty
+        /// where none was added, so the priorities and the log read them off the matrix the run builds from and nowhere else.
+        /// </summary>
+        public ReadOnlyCollection<string> SelfTestNames { get; private set; } = new ReadOnlyCollection<string>(new List<string>());
+
+        /// <summary>The priority the pack's rules give the self tests, None where none was added.</summary>
+        public Federator.Core.Clash.ClashPriority SelfTestPriority { get; private set; }
+
+        /// <summary>
+        /// This matrix with those tests added after its own, everything else carried over as it is: the sets, the units, the
+        /// corrections, the worksets and the team map. A new document, so the one read off the pack is never changed.
+        /// </summary>
+        internal ExchangeDocument WithSelfTests(IList<ClashTestDefinition> added, Federator.Core.Clash.ClashPriority priority)
+        {
+            List<ClashTestDefinition> tests = new List<ClashTestDefinition>(Tests);
+            List<string> names = new List<string>();
+
+            foreach (ClashTestDefinition test in added)
+            {
+                tests.Add(test);
+                names.Add(test.Name);
+            }
+
+            ExchangeDocument with = new ExchangeDocument(SourcePath, Units, BatchTests, tests, Sets);
+            with.Corrections = Corrections;
+            with.Worksets = Worksets;
+            with.Teams = Teams;
+            with.SelfTestNames = new ReadOnlyCollection<string>(names);
+            with.SelfTestPriority = names.Count == 0 ? Federator.Core.Clash.ClashPriority.None : priority;
+            return with;
+        }
+
+        /// <summary>
         /// The matrix pack the document was read from, F155, MatrixCorrections.ReadPack, and its clash XML's
         /// name in it. Null for a document read from a file. SourcePath then names the pack and the file in
         /// words and is no path on the disk, so its fingerprint is the pack's, Sha256.
