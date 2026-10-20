@@ -67,7 +67,7 @@ namespace Federator.Core.Tests
             List<string> expected = new List<string>();
             int removed = 0;
 
-            Assert.That(rules.SameCodeLeftOut, Is.EqualTo(new[] { "AR", "ST" }));
+            PackRulesTests.AreTheCodes(rules.SameCodeLeftOut, "AR", "ST");
 
             foreach (string row in sample)
             {
@@ -103,7 +103,7 @@ namespace Federator.Core.Tests
             PackRules rules = TheBuiltInPack().Rules();
 
             Assert.That(rules.IsRead, Is.True, rules.Unread);
-            Assert.That(rules.SameCodeLeftOut, Is.EqualTo(new[] { "AR", "ST" }));
+            PackRulesTests.AreTheCodes(rules.SameCodeLeftOut, "AR", "ST");
             Assert.That(rules.Line(), Is.EqualTo("PACK    the pack's rules read off the built in matrix pack 1104-PAR, pack-rules.txt, a test of one"
                 + " set code is left out for AR and ST alone, and every test of one set code of another code runs, Bader's answer to Q230"));
         }

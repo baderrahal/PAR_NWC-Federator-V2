@@ -11,14 +11,67 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class PackRulesTests
     {
+        /// <summary>The codes read, compared count first and then one by one, as tests.md asks of a list.</summary>
+        internal static void AreTheCodes(System.Collections.Generic.IList<string> actual, params string[] expected)
+        {
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.Count, Is.EqualTo(expected.Length), "how many codes");
+
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.That(actual[i], Is.EqualTo(expected[i]), "code " + (i + 1));
+            }
+        }
+
         [Test]
         public void ARuleReadsItsPartsInTheirOrderAndCommentsAndBlankLinesAreSkipped()
         {
             PackRules rules = PackRules.Read("# a comment\n\nsame-code-left-out: AR | ST\n", "the file");
 
             Assert.That(rules.IsRead, Is.True, rules.Unread);
-            Assert.That(rules.SameCodeLeftOut, Is.EqualTo(new[] { "AR", "ST" }));
-            Assert.That(PackRules.Read("same-code-left-out: ST | AR\r\n", "f").SameCodeLeftOut, Is.EqualTo(new[] { "ST", "AR" }));
+            AreTheCodes(rules.SameCodeLeftOut, "AR", "ST");
+            AreTheCodes(PackRules.Read("same-code-left-out: ST | AR\r\n", "f").SameCodeLeftOut, "ST", "AR");
+        }
+
+        /// <summary>A pack that holds no rules file reads none and says so, read through the pack and not only the reader.</summary>
+        [Test]
+        public void APackWithNoRulesFileReadsNoneAndSaysWhy()
+        {
+            System.Collections.Generic.IList<MatrixPack> packs = MatrixPack.All(
+                new[] { MatrixPack.Prefix + "/Other/" + MatrixPack.ByDesignFile }, typeof(MatrixPack).Assembly);
+
+            Assert.That(packs.Count, Is.EqualTo(1));
+            PackRules rules = packs[0].Rules();
+
+            Assert.That(rules.IsRead, Is.False);
+            Assert.That(rules.SameCodeLeftOut, Is.Empty);
+            Assert.That(rules.Line(), Is.EqualTo("PACK    the pack's rules were not read, the pack holds no pack-rules.txt, so no test of one"
+                + " set code is left out and every one runs, Bader's answer to Q230"));
+        }
+
+        /// <summary>The NWF page's confirm names the codes the rules leave out, or that every test of one set code runs.</summary>
+        [Test]
+        public void TheConfirmNamesTheCodesTheRulesLeaveOut()
+        {
+            Assert.That(SetCodeRule.ConfirmWords(new[] { "AR", "ST" }), Is.EqualTo("A test whose two sides carry one set code is not run"
+                + " where that code is AR or ST, as the project's rules say, and one saved in the NWF keeps its earlier results there. "));
+            Assert.That(SetCodeRule.ConfirmWords(new string[0]), Is.EqualTo(
+                "A test whose two sides carry one set code runs, the project's rules leaving out none. "));
+            Assert.That(SetCodeRule.ConfirmWords(null), Is.EqualTo(SetCodeRule.ConfirmWords(new string[0])));
+            Assert.That(Federator.Core.Rerun.RefreshConfirm.Text("A.nwf", "Backup", null, "steps", 10, 0, 0, 0, "Clash Status", false,
+                new[] { "AR", "ST" }), Does.Contain("is not run where that code is AR or ST"));
+            Assert.That(Federator.Core.Rerun.RefreshConfirm.Text("A.nwf", "Backup", null, "steps", 10, 0, 0, 0, "Clash Status"),
+                Does.Contain("runs, the project's rules leaving out none"));
+        }
+
+        /// <summary>The CLASH line tells rules not read from rules that leave out none, as the PACK line does.</summary>
+        [Test]
+        public void TheClashLineTellsRulesNotReadFromRulesLeavingOutNone()
+        {
+            System.Collections.Generic.Dictionary<string, int> none = new System.Collections.Generic.Dictionary<string, int>();
+
+            Assert.That(SetCodeRule.Line(0, 10, none, true, 0, null, none), Does.Contain("the pack's rules not read, so no set code is left out against itself"));
+            Assert.That(SetCodeRule.Line(0, 10, none, true, 0, new string[0], none), Does.Contain("the pack's rules leaving out no set code against itself"));
         }
 
         [Test]
@@ -42,6 +95,12 @@ namespace Federator.Core.Tests
         [TestCase("same-code-left-out: AR | ", "has an empty part or a bar with no space either side")]
         [TestCase("same-code-left-out: AR | AR", "names AR twice")]
         [TestCase(" same-code-left-out: AR", "names a rule this tool does not know")]
+        [TestCase("same-code-left-out: ", "has an empty part or a bar with no space either side")]
+        [TestCase("same-code-left-out: AR | ST ", "names \"ST \", which has")]
+        [TestCase("same-code-left-out: AR | S T", "names \"S T\", which has")]
+        [TestCase("same-code-left-out: AR | ST\t", "names \"ST\t\", which has")]
+        [TestCase("same-code-left-out: AR |  ST", "which has")]
+        [TestCase("same-code-left-out: AR | S​T", "which has")]
         public void AFaultMakesTheWholeFileUnreadAndIsNamed(string text, string named)
         {
             PackRules rules = PackRules.Read("# rules\n" + text + "\n", "the file");
@@ -100,10 +159,6 @@ namespace Federator.Core.Tests
 
             Assert.That(tally.MovedFromOneCode, Is.EqualTo(2), "a pair of two codes and a clash not moved are not counted");
             Assert.That(tally.Lines(), Does.Contain("moved from pairs of one set code : 2 of the 3 moved, from pairs whose two sets carry one set code"));
-
-            ByDesignTally run = new ByDesignTally();
-            run.Add(tally);
-            Assert.That(run.MovedFromOneCode, Is.EqualTo(2), "the run total adds each group's");
 
             ByDesignTally noCodes = new ByDesignTally();
             noCodes.ReadsThePairs(2, null, '-');

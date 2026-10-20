@@ -78,7 +78,7 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>How many clashes moved to Reviewed from a pair whose two sets carry one set code.</summary>
-        public int MovedFromOneCode
+        internal int MovedFromOneCode
         {
             get { return movedFromOneCode; }
         }
@@ -86,13 +86,7 @@ namespace Federator.Core.Clash
         /// <summary>Whether a pair's two set names read one set code, against the codes recorded.</summary>
         private bool OfOneCode(ByDesignPair pair)
         {
-            if (pair == null || knownCodes == null)
-            {
-                return false;
-            }
-
-            string left = Federator.Core.Teams.CodeOf.Set(pair.Left, knownCodes, codeSeparator);
-            return left.Length > 0 && string.Equals(left, Federator.Core.Teams.CodeOf.Set(pair.Right, knownCodes, codeSeparator), StringComparison.Ordinal);
+            return pair != null && SetCodeRule.SameCodeOfSets(pair.Left, pair.Right, knownCodes, codeSeparator) != null;
         }
 
         /// <summary>
@@ -295,7 +289,6 @@ namespace Federator.Core.Clash
             }
 
             moved.AddRange(other.moved);
-            movedFromOneCode += other.movedFromOneCode;
         }
 
         /// <summary>

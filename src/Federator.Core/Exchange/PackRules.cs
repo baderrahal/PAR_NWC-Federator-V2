@@ -103,7 +103,7 @@ namespace Federator.Core.Exchange
 
                 if (rest.Length > 0)
                 {
-                    if (!rest.StartsWith(Colon.Substring(1), StringComparison.Ordinal) || rest.Length == 1)
+                    if (!rest.StartsWith(Colon.Substring(1), StringComparison.Ordinal))
                     {
                         return NoneRead(source, where + ", has no space after its colon");
                     }
@@ -113,6 +113,16 @@ namespace Federator.Core.Exchange
                         if (part.Length == 0 || part.Contains("|"))
                         {
                             return NoneRead(source, where + ", has an empty part or a bar with no space either side");
+                        }
+
+                        // A code read off a file name holds no space and no character a person cannot see, so a part that
+                        // does would never equal one, the team map's rule, read through its one check.
+                        int unseen = Federator.Core.Teams.TeamMap.Unseen(part, true);
+
+                        if (unseen >= 0)
+                        {
+                            return NoneRead(source, where + ", names \"" + part + "\", which has "
+                                + Federator.Core.Health.InvisibleDifference.Describe(part[unseen]) + " in it");
                         }
 
                         if (parts.Contains(part))

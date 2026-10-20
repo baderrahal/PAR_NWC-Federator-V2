@@ -3703,7 +3703,7 @@ namespace Federator.Addin.Engine
                 runner.SetCodes = teams == null ? job.Disciplines : teams.KnownCodes(job.Disciplines);
 
                 // F247, Q230. The codes whose tests against themselves the pack's rules leave out, AR and ST in 1104-PAR.
-                runner.SameCodeLeftOut = ThePackRules().SameCodeLeftOut;
+                runner.SameCodeLeftOut = ThePackRules().IsRead ? ThePackRules().SameCodeLeftOut : null;
 
                 runner.ApplyFileSettings = reports.ApplyFileSettings;
 

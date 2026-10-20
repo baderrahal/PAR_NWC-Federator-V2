@@ -318,7 +318,7 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// F247, Bader's answer Q230. The set codes whose tests against themselves are left out, the pack's rules, AR and ST in
-        /// 1104-PAR. Null or empty leaves out none, and the CLASH line says so.
+        /// 1104-PAR, null where the rules were not read and empty where they leave out none, either leaving out none, which the CLASH line tells apart.
         /// </summary>
         public IList<string> SameCodeLeftOut { get; set; }
 
@@ -581,9 +581,9 @@ namespace Federator.Addin.Engine
                     resolved = resolved.WithTheSavedTestsTheMatrixDoesNotName(inTheDocument, out savedToo);
                 }
 
-                // F224, Bader's answer to Q209. Only tests across two set codes run, on both pages, a test whose two sides carry
-                // one set code left out of the plan before the mirrors are paired, created and run by nothing, and said with its
-                // count on one CLASH line. One saved in the NWF keeps its earlier results there. In a group of one discipline
+                // F224, Bader's answer to Q209, and F247, his answer Q230. A test whose two sides carry one set code the pack's
+                // rules leave out, AR or ST for 1104-PAR, is left out of the plan before the mirrors are paired, on both pages,
+                // created and run by nothing, and said with its count on one CLASH line. One saved in the NWF keeps its earlier results there. In a group of one discipline
                 // Q203 runs none of its tests, so the rule is not read and every test keeps Q203's one reason.
                 int planned = resolved.Buildable.Count;
 

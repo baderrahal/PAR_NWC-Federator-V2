@@ -571,7 +571,7 @@ namespace Federator.Core.Clash
                 case ClashSkipReason.SingleDiscipline:
                     return "the group holds one discipline, so nothing in it can clash";
                 case ClashSkipReason.SameSetCode:
-                    return "both sides carry one set code, and only tests across two set codes run";
+                    return "both sides carry one set code, a code whose tests against itself the project's rules leave out";
 
                 case ClashSkipReason.Failed:
                     return "creating or running it threw";

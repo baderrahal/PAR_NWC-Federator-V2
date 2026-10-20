@@ -476,6 +476,25 @@ namespace Federator.Addin.Ui
             return pack == null ? null : MatrixCorrections.ReadPack(pack);
         }
 
+        /// <summary>
+        /// The set codes the pack's rules leave out against themselves, F247, Bader's answer Q230, read off the pack the run
+        /// reads, for the NWF page's confirm, or null where no pack or no rules were read, which the confirm says as none.
+        /// </summary>
+        private IList<string> SameCodeLeftOutOfThePack()
+        {
+            try
+            {
+                string whyNone;
+                MatrixPack pack = chosenPack ?? MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
+                PackRules rules = pack == null ? null : pack.Rules();
+                return rules == null || !rules.IsRead ? null : rules.SameCodeLeftOut;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         /// <summary>The label each group ended with, read off what the engine did.</summary>
         private void ShowRunPathsAfterTheRun(IList<JobOutcome> outcomes, bool xmlPicked)
         {

@@ -24,10 +24,24 @@ namespace Federator.Core.Clash
         /// <summary>The one code both sides of the test read, or null where the two differ or a side reads none.</summary>
         public static string SameCodeOf(PlannedClashTest test, IEnumerable<string> knownCodes, char separator)
         {
+            if (test == null || test.Left == null || test.Right == null)
+            {
+                return null;
+            }
+
+            return SameCodeOfSets(ByDesignRule.SetNameIn(test.Left.Locator), ByDesignRule.SetNameIn(test.Right.Locator), knownCodes, separator);
+        }
+
+        /// <summary>
+        /// The one code two set names read, or null where the two differ or a name reads none, the one reading of one set code
+        /// for a test and for a by design pair alike, F247.
+        /// </summary>
+        public static string SameCodeOfSets(string leftSetName, string rightSetName, IEnumerable<string> knownCodes, char separator)
+        {
             string left;
             string right;
 
-            if (!SidesRead(test, knownCodes, separator, out left, out right))
+            if (!NamesRead(leftSetName, rightSetName, knownCodes, separator, out left, out right))
             {
                 return null;
             }
@@ -115,7 +129,9 @@ namespace Federator.Core.Clash
                     + planned + " tests planned" + Answers;
             }
 
-            string leaves = leftOutCodes == null || leftOutCodes.Count == 0
+            string leaves = leftOutCodes == null
+                ? "the pack's rules not read, so no set code is left out against itself"
+                : leftOutCodes.Count == 0
                 ? "the pack's rules leaving out no set code against itself"
                 : "the pack's rules leaving out " + Federator.Core.Exchange.PackRules.Joined(leftOutCodes) + " against "
                     + (leftOutCodes.Count == 1 ? "itself" : "themselves") + " alone";
@@ -179,15 +195,44 @@ namespace Federator.Core.Clash
             left = string.Empty;
             right = string.Empty;
 
-            if (test == null || knownCodes == null || test.Left == null || test.Right == null)
+            if (test == null || test.Left == null || test.Right == null)
             {
                 return false;
             }
 
-            left = CodeOf.Set(ByDesignRule.SetNameIn(test.Left.Locator), knownCodes, separator);
-            right = CodeOf.Set(ByDesignRule.SetNameIn(test.Right.Locator), knownCodes, separator);
+            return NamesRead(ByDesignRule.SetNameIn(test.Left.Locator), ByDesignRule.SetNameIn(test.Right.Locator), knownCodes, separator,
+                out left, out right);
+        }
+
+        /// <summary>Both set names' codes, true only where each name reads one.</summary>
+        private static bool NamesRead(string leftSetName, string rightSetName, IEnumerable<string> knownCodes, char separator,
+            out string left, out string right)
+        {
+            left = string.Empty;
+            right = string.Empty;
+
+            if (knownCodes == null)
+            {
+                return false;
+            }
+
+            left = CodeOf.Set(leftSetName, knownCodes, separator);
+            right = CodeOf.Set(rightSetName, knownCodes, separator);
 
             return left.Length > 0 && right.Length > 0;
+        }
+
+        /// <summary>
+        /// The words of the NWF page's confirm on the tests of one set code, F247, Bader's answer Q230: which codes the
+        /// project's rules leave out, read off the pack, or that every one runs where they leave out none or were not read.
+        /// </summary>
+        public static string ConfirmWords(IList<string> leftOutCodes)
+        {
+            return leftOutCodes == null || leftOutCodes.Count == 0
+                ? "A test whose two sides carry one set code runs, the project's rules leaving out none. "
+                : "A test whose two sides carry one set code is not run where that code is "
+                    + Federator.Core.Exchange.PackRules.Joined(leftOutCodes).Replace(" and ", " or ")
+                    + ", as the project's rules say, and one saved in the NWF keeps its earlier results there. ";
         }
     }
 }

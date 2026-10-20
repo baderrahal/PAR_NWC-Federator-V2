@@ -50,7 +50,7 @@ namespace Federator.Core.Tests
             IDictionary<string, int> byCode;
 
             Assert.That(rules.IsRead, Is.True, rules.Unread);
-            Assert.That(rules.SameCodeLeftOut, Is.EqualTo(new[] { "AR", "ST" }));
+            PackRulesTests.AreTheCodes(rules.SameCodeLeftOut, "AR", "ST");
 
             ClashTestPlan across = plan.AcrossTwoSetCodes(known, rules.SameCodeLeftOut, '-', out byCode);
             IDictionary<string, int> run = SetCodeRule.OfOneCode(across.Buildable, known, '-');
@@ -135,7 +135,7 @@ namespace Federator.Core.Tests
             Assert.That(SetCodeRule.Line(0, 10, none, true, 0, arSt, none), Is.EqualTo("CLASH    the rule of two set codes left out no test of the 10"
                 + " planned, the pack's rules leaving out AR and ST against themselves alone, and no test of one set code runs, Bader's"
                 + " answers to Q209 and Q230"));
-            Assert.That(SetCodeRule.Line(0, 10, none, true, 0, null, new Dictionary<string, int> { { "AR", 1 } }), Does.Contain(
+            Assert.That(SetCodeRule.Line(0, 10, none, true, 0, new string[0], new Dictionary<string, int> { { "AR", 1 } }), Does.Contain(
                 "the pack's rules leaving out no set code against itself, and 1 test of one set code runs, AR 1"));
             Assert.That(SetCodeRule.Line(0, 10, none, true, 0, new[] { "AR" }, none), Does.Contain("leaving out AR against itself alone"));
             Assert.That(SetCodeRule.Line(0, 10, none, false, 0, arSt, none), Does.Contain("read no set code"));
