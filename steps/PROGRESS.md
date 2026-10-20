@@ -1,4 +1,4 @@
-STATE WAITING, 2026-10-20, the round of 20 Oct done, F243 to F245 merged in 325 to 327, waiting for Bader's proof run in proof-2026-10-20 and the form Q228, last run 94/item1-C02
+STATE WAITING, 2026-10-20, the round of 20 Oct evening, F246 merging in 328, F247 and F248 to come, the proofs wait for Bader by his choice, last run 94/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,10 +15,11 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 328 | 16 | 0 | 33 | 154 | 7 | 538 |
-| total | 532 | 24 | 0 | 33 | 254 | 18 | 861 |
+| outside the waves | 329 | 16 | 0 | 33 | 154 | 7 | 539 |
+| total | 533 | 24 | 0 | 33 | 254 | 18 | 862 |
 <!-- the end of the counts -->
 ## Done
+- 20 Oct evening, F246 AR against ST in Architecture and Security Devices in Electrical, 328, Q229 to Q232 in his words, the copy script's two faults
 - 20 Oct, F245 the wrong data of 19 Oct, the CAD words, the ST models read, items 3 to 7 carried by F244, 327, the form Q228 with Q226 and Q227 and the proof steps
 - 20 Oct, F244 the discipline workbook copied from the mock, four sheets, 326, three attempts and a guard pass by his decision, the With issue format corrected by his decision, rows F244-R1 to R9
 - 20 Oct, Bader's order of 19 Oct 20:58, F243 one name per output, overwritten, the clash Excel in Clash report, no dated and no Internal files, 325, three attempts and a guard pass by his decision, rows F243-R1 to R9
@@ -51,6 +52,6 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
 - The agents' new models and the ai-max copy load from the next session he starts
 ## Next
-1. Bader's proof run, then Code's after.txt, its checks against F243 point 1 and the two workbooks, and the report to him
-2. The proof steps at the top of steps\03_bader_next.md, the full run's 13 first
-3. The next round, three or four fixes from his answers, the code ones of claude\audit-round-2026-10-19b.md first
+1. F247 the same code rule, then F248 the self tests after it merges, the round of 20 Oct evening
+2. Bader's proof runs of F246 to F248 and the full C02 run, at the top of steps\03_bader_next.md once F248 writes them
+3. Bader's proof run of 20 Oct, then Code's after.txt, its checks against F243 point 1 and the two workbooks

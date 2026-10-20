@@ -1286,3 +1286,19 @@ wc-nwf-design.md.
     Still waiting from before, each answered under its own number: Q182, Q184, Q185, Q186, Q188 to Q192, Q194, Q196 to Q201, Q212 to Q225.
 
     Answer:
+
+229. From the loop, 2026-10-20, the run of 20 Oct, run-20261020-122626, C02 1A02MM, build 7e4e011. NO ARCHITECTURE VIEWPOINT FOLDER EVER APPEARS. A test's discipline folder is read off its left set, and in the 1104-PAR pack AR is on the left only in the tests of AR against AR, which the rule of two set codes leaves out, all 120 of them. The 96 tests of ST against AR go in Structure. Which folder should a test of AR against ST take?
+
+    Answer: Bader, 2026-10-20, his round of that evening, in his words: "A test whose two sides are AR and ST, in either order, goes in the Architecture folder. Every other test keeps today's rule, so AR against a service stays with the service team." Carried by F246.
+
+230. From the loop, 2026-10-20, the run of 20 Oct and the logs of steps\logs. THE SAME CODE RULE LEAVES OUT THE SERVICES' OWN TESTS. 42 of the 55 rows of the pack's by design pairs set two sets of one code against each other, so since F224 they never fire. Before F224 the tests of one set code of the services found 1180 clashes across 43 buildings in the logs of steps\logs. 1034 of them sit in by design pairs and 146 do not, 51 of those priority A, most of them EL against EL. Which tests of one set code should run?
+
+    Answer: Bader, 2026-10-20, his round of that evening, in his words: "Skip a test whose two sides carry one set code only where that code is AR or ST. Same-code tests of ME, PL, DR, FF and EL run again, on both pages. Remove the 17 AR vs AR and ST vs ST rows from the pack's by-design-pairs.csv and keep the other 38." Carried by F247.
+
+231. From the loop, 2026-10-20, the run of 20 Oct. THE VIEWS OF BLD-SECURITY DEVICES LAND IN OTHER, 8 views in that run, while the TEAMS lines name the set Electrical. The discipline folder is read off the code in the set name alone and never uses the team the set tree folder gives a set name with no code. Where should they go?
+
+    Answer: Bader, 2026-10-20, his round of that evening, in his words: "BLD-Security Devices views go in Electrical, by the same team reading the TEAMS lines use, the set tree folder for a set name with no code. One reader, never a second copy of it." Carried by F246.
+
+232. From the loop, 2026-10-20, the run of 20 Oct. THE PACK HAS NO TEST WHERE A SET MEETS ITSELF, so a duct against a duct of one set, or a tray against a tray, is never tested. Should it be?
+
+    Answer: Bader, 2026-10-20, his round of that evening, in his words: "Add a test where a set meets itself, for every set of the Mechanical and Electrical teams by the pack's team map, 25 Mechanical and 14 Electrical in 1104-PAR with Security Devices. Each is priority A, so its view sits under A of its team. Same tolerance as every test, from the drop down. On both pages." Carried by F248.
