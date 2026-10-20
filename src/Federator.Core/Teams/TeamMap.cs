@@ -411,7 +411,7 @@ namespace Federator.Core.Teams
         /// ordinary space too where asked, or -1. A code read off a file name holds none of
         /// them, and one that did would never equal it and would make a team of its own.
         /// </summary>
-        private static int Unseen(string name, bool ordinarySpaceToo)
+        internal static int Unseen(string name, bool ordinarySpaceToo)
         {
             for (int i = 0; i < name.Length; i++)
             {

@@ -317,6 +317,12 @@ namespace Federator.Addin.Engine
         public IList<string> SetCodes { get; set; }
 
         /// <summary>
+        /// F247, Bader's answer Q230. The set codes whose tests against themselves are left out, the pack's rules, AR and ST in
+        /// 1104-PAR, null where the rules were not read and empty where they leave out none, either leaving out none, which the CLASH line tells apart.
+        /// </summary>
+        public IList<string> SameCodeLeftOut { get; set; }
+
+        /// <summary>
         /// Apply the file settings to tests already in the document. Off by default,
         /// because it changes WHICH CLASHES the test finds when it next runs, and a clash
         /// somebody marked Reviewed may then not come back, which is the only record of
@@ -575,9 +581,9 @@ namespace Federator.Addin.Engine
                     resolved = resolved.WithTheSavedTestsTheMatrixDoesNotName(inTheDocument, out savedToo);
                 }
 
-                // F224, Bader's answer to Q209. Only tests across two set codes run, on both pages, a test whose two sides carry
-                // one set code left out of the plan before the mirrors are paired, created and run by nothing, and said with its
-                // count on one CLASH line. One saved in the NWF keeps its earlier results there. In a group of one discipline
+                // F224, Bader's answer to Q209, and F247, his answer Q230. A test whose two sides carry one set code the pack's
+                // rules leave out, AR or ST for 1104-PAR, is left out of the plan before the mirrors are paired, on both pages,
+                // created and run by nothing, and said with its count on one CLASH line. One saved in the NWF keeps its earlier results there. In a group of one discipline
                 // Q203 runs none of its tests, so the rule is not read and every test keeps Q203's one reason.
                 int planned = resolved.Buildable.Count;
 
@@ -589,9 +595,10 @@ namespace Federator.Addin.Engine
                 {
                     IDictionary<string, int> leftOutByCode;
                     char separator = new Federator.Core.Views.ViewpointSettings().SetNameSeparator;
-                    resolved = resolved.AcrossTwoSetCodes(SetCodes, separator, out leftOutByCode);
+                    resolved = resolved.AcrossTwoSetCodes(SetCodes, SameCodeLeftOut, separator, out leftOutByCode);
                     log.Line(SetCodeRule.Line(planned - resolved.Buildable.Count, planned, leftOutByCode, SetCodes != null && SetCodes.Count > 0,
-                        SetCodeRule.WithASideOfNoCode(resolved.Buildable, SetCodes, separator)));
+                        SetCodeRule.WithASideOfNoCode(resolved.Buildable, SetCodes, separator), SameCodeLeftOut,
+                        SetCodeRule.OfOneCode(resolved.Buildable, SetCodes, separator)));
                 }
 
                 if (savedToo.Count > 0)

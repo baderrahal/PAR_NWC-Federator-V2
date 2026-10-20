@@ -418,6 +418,9 @@ well as to pass.
   hands as the team map's codes and the group's own models', `TeamMap.KnownCodes`, and the
   group's disciplines where no map was read, so a test whose two sides carry one set code is
   neither created nor run on either page, its count said on the CLASH line of `SetCodeRule.Line`.
+  Since F247, Bader's answer Q230, only where that code is in `ClashRunner.SameCodeLeftOut`, which
+  the engine hands from the pack's rules read once per run, `FederationEngine.ThePackRules`, with
+  its PACK line, AR and ST for 1104-PAR.
   One already saved in a picked NWF stays there with its earlier results, never deleted, row
   F219-R1. A test saved in the NWF that the matrix does not name, F168, passes the rule like any
   other, so its line and `AddSavedRunToo` come after the rule and name only the ones still run,

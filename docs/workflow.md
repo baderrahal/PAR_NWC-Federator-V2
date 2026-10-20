@@ -97,8 +97,8 @@ last used and no panel on the right since F232.
 Pressing Run opens a confirm with Cancel as the default, and nothing is opened or changed before OK.
 It names how many NWFs of how many packages run, the steps that will run and the Backup folder of each
 package where a copy of each NWF is made first. It states the tests that run again where they sit,
-that a test whose two sides carry one set code is not run and one saved in the NWF keeps its earlier
-results there, that the viewpoint folder is deleted and made again, with how many viewpoints it holds
+that a test whose two sides carry one set code the project's rules leave out, AR or ST for 1104-PAR,
+is not run and one saved in the NWF keeps its earlier results there, that the viewpoint folder is deleted and made again, with how many viewpoints it holds
 and that one moved into it by hand goes with it, that everything else at the top of the viewpoint
 panel is deleted except the folder Comments, and how many old jpg files in the Clash report folder
 are written again or removed. A number it cannot read it says UNKNOWN (`RefreshConfirm.Text`). The

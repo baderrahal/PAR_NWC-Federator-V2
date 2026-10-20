@@ -1491,7 +1491,8 @@ namespace Federator.Addin.Ui
                 -1,
                 OldPicturesIn(pictureFolders),
                 ToolViewFolder.Name,
-                options.MarkPenetrations && options.RunTests);
+                options.MarkPenetrations && options.RunTests,
+                SameCodeLeftOutOfThePack());
 
             log.Block("CONFIRM packages", new List<string>(text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)));
 

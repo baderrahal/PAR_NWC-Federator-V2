@@ -38,8 +38,9 @@ namespace Federator.Core.Clash
         SingleDiscipline,
 
         /// <summary>
-        /// F224, Bader's answer to Q209: both sides carry one set code, BLD-AR against BLD-AR, and only tests across two set
-        /// codes run, so it is neither created nor run, and a test saved in the NWF keeps its earlier results there.
+        /// F224, Bader's answer to Q209: both sides carry one set code, BLD-AR against BLD-AR, so it is neither created nor
+        /// run, and a test saved in the NWF keeps its earlier results there. Since F247, Q230, only where that code is one the
+        /// pack's rules leave out, AR and ST for 1104-PAR.
         /// </summary>
         SameSetCode,
 

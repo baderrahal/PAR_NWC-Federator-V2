@@ -150,7 +150,8 @@ namespace Federator.Core.Rerun
             int outsideAtTheLastRun,
             int oldPictures,
             string viewpointFolderName,
-            bool penetrations = false)
+            bool penetrations = false,
+            IList<string> sameCodeLeftOut = null)
         {
             StringBuilder text = new StringBuilder();
             text.AppendLine("This run refreshes " + nwfName + ".");
@@ -186,7 +187,7 @@ namespace Federator.Core.Rerun
             text.AppendLine("Tests: " + (testsInMatrix > 0
                 ? "the " + testsInMatrix.ToString(CultureInfo.InvariantCulture) + " of the built in matrix, and the tests saved in the NWF, run again where they sit. "
                 : "the tests saved in the NWF run again where they sit. ")
-                + "A test whose two sides carry one set code is not run, and one saved in the NWF keeps its earlier results there. "
+                + Federator.Core.Clash.SetCodeRule.ConfirmWords(sameCodeLeftOut)
                 + "Statuses, assigned to and comments of clashes still there are kept"
                 + (penetrations ? ", " + Federator.Core.Clash.PenetrationSettings.ConfirmWords(new Federator.Core.Views.SizeSettings()) : string.Empty) + ".");
             text.AppendLine("Viewpoints: the folder " + viewpointFolderName + " with "

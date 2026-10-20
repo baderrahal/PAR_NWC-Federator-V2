@@ -1063,7 +1063,14 @@ and 6 does not read as broken.
   create a test the rule left out, so the count check reads it held by neither side where the
   document does not hold it. The built in matrix loses exactly the 284 tests Q209 counted, AR 120,
   EL 78, ME 36, ST 15, FF 15, PL 10, DR 10. The words of the workbook and the window carry no
-  question number
+  question number. SINCE F247, BADER'S ANSWER Q230 OF 20 OCT 2026, A TEST OF ONE SET CODE IS LEFT
+  OUT ONLY WHERE THAT CODE IS ONE THE PACK'S RULES NAME, `PackRules.SameCodeLeftOut`, read off the
+  pack's pack-rules.txt, `MatrixPack.RulesFile`, in the team map's format, AR and ST for 1104-PAR,
+  never a constant in code, PR6. So the built in matrix loses AR 120 and ST 15, 135 tests, and the
+  149 of EL, ME, FF, PL and DR run again on both pages. A pack with no rules file, or one that would
+  not read, a line unknown, a rule twice or a part twice, leaves out none and its PACK line says
+  why, `PackRules.Line`. The CLASH line names the codes left out and counts the tests of one set code
+  that run by code, `SetCodeRule.OfOneCode`
 - The reports never go inside the folder being scanned, whether it was picked or
   defaulted to. A run put the workbooks in the NWC folder it was reading, and the
   Clash step picks an XML at run time, so a report written there is a file a later run
@@ -1389,7 +1396,13 @@ and 6 does not read as broken.
   the built in pairs apply. The Priority CSV and By design CSV rows of the Clash step, their
   pickers and their remembered folders are gone, and so are `ReportOptions.PriorityPath` and
   `ByDesignPath`. MatrixPackTests holds each copy to its sample and the priority file to one
-  row per test of the built in matrix
+  row per test of the built in matrix. SINCE F247, Bader's answer Q230 of 20 Oct 2026, the pack's
+  by design file is its own and no longer a copy of the sample: the 17 rows of AR against AR and
+  ST against ST went and the 38 others stay, and MatrixPackTests holds it to the sample's rows in
+  their order less exactly the rows whose two sets carry one code the pack's rules leave out. The
+  sample stays whole as evidence. The BY DESIGN block of a group says the pairs in the file and how
+  many of the clashes moved came from a pair of one set code, a nought said and UNKNOWN where no
+  code was known, `ByDesignTally.ReadsThePairs`
 - THE CLASH MATRIX IS BUILT IN TOO, F155, Bader's decision of 2026-10-13, Q162-5. EACH PROJECT
   HAS A BUILT IN MATRIX PACK THAT BADER SUPPLIES, and it replaced the clash XML picked each run.
   The pack holds the corrected clash XML with its team map and its list of corrections beside
