@@ -2,6 +2,68 @@
 
 The closed items of this file moved to steps\history\03_bader_next-closed.md on 19 Oct 2026, whole and in their order, F242, Bader's round of 19 Oct b.
 
+## The proof runs of the round of 20 Oct evening, F246 to F248, C02
+
+Simple words. All three fixes are on main, so one build and one install prove them. Run 1 is one group, 1A02MM of C02, on the
+NWC page, in a fresh folder whose outputs start empty. Run 2 is the whole C02 package in the same folder, the round's one full
+run. You chose on 20 Oct that the proofs wait for you, since your project folder now holds your own outputs and every copy the
+loop makes carries them. Plain Navisworks Manage 2025 from the Start menu, never the BIM360 one. Nothing here writes into your
+project folder.
+
+1. Install the build of main as the Build and install section below says.
+   Look for: `Build succeeded.` with `0 Error(s)` and `0 Warning(s)`, the install's last line saying it finished, and the stamp
+   of main after pull request 330.
+2. In File Explorer make C:\NWC-PC-Test\work\proof-2026-10-20b and in it four folders, NWC, NWF, NWD and Clash report, each
+   holding an empty folder C02.
+   Look for: the four folders, each with C02 and nothing in it.
+3. Copy every NWC file of your project's NWC\C02 folder into proof-2026-10-20b\NWC\C02.
+   Look for: the four 1A02MM files, AR, EL, ME and ST, among them, and NWF, NWD and Clash report still empty.
+4. Start Navisworks Manage 2025 from the Start menu, open the tool, type C:\NWC-PC-Test\work\proof-2026-10-20b\NWC\C02 as the
+   source folder of the NWC page and press Scan.
+   Look for: the groups of C02 on the Grouping step, 1A02MM among them.
+5. On the Grouping step untick every group but 1A02MM.
+   Look for: one group ticked.
+6. Point the NWF, NWD and Excel boxes of the Outputs step at proof-2026-10-20b\NWF\C02, NWD\C02 and Clash report\C02.
+   Look for: the three boxes reading those folders.
+7. On the Clash step tick `Mark by design connections as Reviewed`, leave the tolerance at 25 mm and every other box as it
+   opens, viewpoints ticked.
+   Look for: the by design box ticked and the tolerance reading 25 mm.
+8. Press Run, then OK on the confirm, and click nothing more.
+   Look for: the confirm counting 1869 tests from the built in matrix, one Navisworks opening and closing, and the run ending
+   with no box.
+9. Open the run's log and search for `PACK    the pack's rules`.
+   Look for: `a test of one set code is left out for AR and ST alone`.
+10. Search the log for `SELF    `.
+   Look for: `SELF    39 tests of a set against itself added to the 1830 of the matrix, one for every set of Mechanical and
+   Electrical, Mechanical 25, Electrical 14, each at priority A, 0 not made`, and the line naming BLD-EL-Telecom Fixtures and
+   BLD-EL-Telephone Devices as one question.
+11. Search the log for `the rule of two set codes`.
+   Look for: left out codes AR and ST only, `the pack's rules leaving out AR and ST against themselves alone`, and the tests of
+   one set code that run counted by code, EL and ME among them where this group holds those models.
+12. Search the log for `BY DESIGN 1A02MM`.
+   Look for: `pairs in the file : 38` and `moved from pairs of one set code :` with a number, a nought written as 0.
+13. Search the log for `of the 39 tests of a set against itself given priority A`.
+   Look for: `39 of the 39`.
+14. Open proof-2026-10-20b\NWF\C02\ the 1A02MM NWF in Navisworks and open Clash Detective.
+   Look for: the self tests by name, such as `BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Conduits & Conduit Fittings`, each
+   run with its count, tests of ME against ME and EL against EL run, and no test of AR against AR or ST against ST.
+15. Open Saved Viewpoints, the folder Clash Status.
+   Look for: an Architecture folder under the letter of each test of ST against AR with an open clash, no test of a service
+   against AR in Architecture, the views of BLD-Security Devices under Electrical, Other empty, and the self tests' views under
+   A, in Mechanical or Electrical.
+16. Open the clash Excel in Clash report\C02 and the HTML report beside it.
+   Look for: each self test with Priority A in the Excel, and the same clash count per self test in the Excel, the HTML and
+   Clash Detective.
+17. Tell Code run 1 has ended. Code reads the log, the NWF, the Excel, the HTML and the viewpoints, reconciles the counts,
+   checks five random clashes by element ID, counts how many self test clashes are a pipe, duct, tray or conduit against a
+   fitting it connects to, and reports.
+   Look for: Code's report naming what passed, what failed and what was skipped with why, and no check it did not run.
+18. Run 2. On the Grouping step tick every group of C02, then press Run and OK, and click nothing more.
+   Look for: one Navisworks opening and closing per group, and the run ending with no box and a RESULT block.
+19. Tell Code run 2 has ended. Code closes the round on the outputs: the NWFs, the Excel, the HTML and the viewpoint tree judged
+   against Q229 to Q232, the counts reconciled, five random clashes checked by element ID, and what was skipped named with why.
+   Look for: Code's close of the round, and its answers in the form Q233.
+
 ## The proof run of the round of 20 Oct, F243 to F245, C06 1B06PS and 1B06WL
 
 Simple words. One run, two groups of C06, on the NWF page, in a copy of the whole 19 Oct run Code made, so the old dated and

@@ -1302,3 +1302,27 @@ wc-nwf-design.md.
 232. From the loop, 2026-10-20, the run of 20 Oct. THE PACK HAS NO TEST WHERE A SET MEETS ITSELF, so a duct against a duct of one set, or a tray against a tray, is never tested. Should it be?
 
     Answer: Bader, 2026-10-20, his round of that evening, in his words: "Add a test where a set meets itself, for every set of the Mechanical and Electrical teams by the pack's team map, 25 Mechanical and 14 Electrical in 1104-PAR with Security Devices. Each is priority A, so its view sits under A of its team. Same tolerance as every test, from the drop down. On both pages." Carried by F248.
+
+233. From the loop, 2026-10-20, F248, the end of your round of 20 Oct evening, F246 to F248. THE FORM OF THE ROUND, every question it raised in one place, each with the recommended answer first. Answer by its number and letter, such as 1 A, 2 B. The older questions still waiting are listed at the end by number.
+
+    1. THE PROOF COPIES. Your project folder now holds your own outputs, 12295 files under Clash report and NWF, NWD and Log beside them. The loop's copy script copies the whole folder, so every run set starts with them, and the loop's first run refuses a copy whose outputs are not empty. Two faults of the copy script stopped set 95 first, the report folder's case and a path with a space, both fixed in F246. You chose on 20 Oct that the proofs of this round wait for you. Recommended: A, the copy script copies the NWC folder whole and makes empty NWF, NWD and Clash report folders, so every set is a clean first run and the loop can prove each fix on its own again. Or: B, the proofs stay yours from now on.
+
+    2. A PACK WITH NO RULES FILE. A pack that holds no pack-rules.txt, or one that will not read, leaves out no test of one set code and makes no test of a set against itself, and its PACK and SELF lines say why. Recommended: A, keep that. Or: B, a run whose pack's rules do not read stops before anything is opened, as a run with no pack does.
+
+    3. TWO ELECTRICAL SETS ASK ONE QUESTION. BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices both search Category equals Telephone Devices, read off the pack. So their two tests against themselves, and the matrix's test between them, find the same clashes, each counted in its own test, and the mirror rule pairs no test whose two sides are one set. A SELF line says so on every run. Recommended: A, correct BLD-EL-Telecom Fixtures in the pack to the category it was meant to find, which you name. Or: B, leave it, the line says it. Or: C, the mirror rule counts them once.
+
+    4. A GROUP OF ONE DISCIPLINE. Q203 runs none of the tests of a group of one discipline, the self tests among them, so an EL only group shows no conduit against conduit. Recommended: A, in a group of one discipline the self tests of its team run, and nothing else. Or: B, keep Q203 as it is.
+
+    5. SELF TESTS ALREADY IN AN NWF. If the pack's rules ever fail to read, the 39 tests already saved in an NWF run as saved tests the matrix does not name, at C, and only the PACK and SELF lines say the rules were not read. Recommended: A, the answer to part 2 decides it, B there stops the run. Or: B, a line names the saved tests of a set against itself that read C.
+
+    6. THE NWF PAGE'S CONFIRM. It counts the 1869 tests of the matrix and does not say that the 39 tests of a set against itself are created in an NWF built before F248. Recommended: A, it says so in one sentence. Or: B, leave it, the run's CLASH lines say how many were created.
+
+    7. THE NAME OF A SELF TEST. The tool names each set -vs- set, the shape read off the pack's 1830 names by eye, and that -vs- is held in code with no report showing it. Recommended: A, a rule of the pack, self-test-name, holds the shape, so a pack named another way says its own. Or: B, leave it in code.
+
+    8. THE WINDOW'S MATRIX LINE. The window says the built in matrix holds 61 sets and 1869 tests, with the SELF line beside it saying 39 were added to the 1830. The CLASH lines, the clash block and the PRIORITY line say the two apart. Recommended: A, the window's line says them apart too. Or: B, leave it.
+
+    9. FOR YOUR READING, no answer needed. The measurement of 20 Oct, docs\history\scan.md 5z-zo, on C02 1A02MM, four of the 39 sets: a test with one set on both sides runs, reports each pair once and never an item against itself, and self intersect changes nothing. Ducts and pipes found 0 at 25 mm, trays 2 and conduits 13. A run against a fitting of its own family was 1 of 2 and 1 of 13, so not most, and the count over all 39 comes from your run 1. Since F247 no test sets AR on its left, so Architecture holds the tests of ST against AR alone.
+
+    Still waiting from before, each answered under its own number: Q182, Q184, Q185, Q186, Q188 to Q192, Q194, Q196 to Q201, Q212 to Q228.
+
+    Answer:

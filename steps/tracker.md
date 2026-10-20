@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 863 rows: open 254, in progress 24, in review 0, merged 493, proven by a run 41, waiting for Bader 33, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 392, outside the waves 2, right after F133 merges 6
+- By status, of 870 rows: open 259, in progress 24, in review 0, merged 494, proven by a run 41, waiting for Bader 34, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 399, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader, 33 rows: Q182, Q184, Q185, Q186, Q188, Q189, Q190, Q191, Q192, Q194, Q196, Q197, Q198, Q199, Q200, Q201, Q212, Q213, Q214, Q215, Q216, Q217, Q218, Q219, Q220, Q221, Q222, Q223, Q224, Q225, Q226, Q227, Q228
+- Waits for Bader, 34 rows: Q182, Q184, Q185, Q186, Q188, Q189, Q190, Q191, Q192, Q194, Q196, Q197, Q198, Q199, Q200, Q201, Q212, Q213, Q214, Q215, Q216, Q217, Q218, Q219, Q220, Q221, Q222, Q223, Q224, Q225, Q226, Q227, Q228, Q233
 
 ## Wave 1
 
@@ -956,6 +956,13 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q228 | the form of the round of 20 Oct, twenty four parts, the readings of F243, F244 and F245 and the older questions still waiting | none | question | waiting for Bader | none | none | 2026-10-20 |
 | F246 | the viewpoint folders, a test of AR against ST in either order in Architecture and a side with no code by its set tree folder, Security Devices in Electrical, and the proof copy script's two faults | F246 | fix | merged | 328 | none | 2026-10-20 |
 | F247 | the same code rule, a test of one set code left out only for the codes the pack's rules name, AR and ST for 1104-PAR, the services' own tests run again, the pack's 38 by design pairs and the BY DESIGN lines | F247 | fix | merged | 329 | none | 2026-10-20 |
+| F248 | the self tests, a set of the Mechanical and Electrical teams against itself at priority A from the pack's rules, 39 for 1104-PAR, measured first in Clash Detective, scan.md 5z-zo | F248 | fix | merged | 330 | none | 2026-10-20 |
+| F248-R1 | a group of one discipline runs none of its tests under Q203, the self tests among them, so an EL only group shows no conduit against conduit, form Q233 part 4 | F248 | register row | open | none | none | 2026-10-20 |
+| F248-R2 | self tests already in an NWF run at C as saved tests the matrix does not name if the pack's rules ever fail to read, said only on the PACK and SELF lines, form Q233 part 5 | F248 | register row | open | none | none | 2026-10-20 |
+| F248-R3 | the NWF page's confirm counts 1869 tests and does not say the 39 self tests are created in an NWF built before F248, form Q233 part 6 | F248 | register row | open | none | none | 2026-10-20 |
+| F248-R4 | BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices ask one whole question, so their self tests and the test between them find the same clashes, each counted, form Q233 part 3 | F248 | register row | open | none | none | 2026-10-20 |
+| F246-R1 | the loop's first run refuses every new run set, since the project folder now holds Bader's outputs and the copy script copies them, so the loop proves no fix on its own, form Q233 part 1 | F246 | register row | open | none | none | 2026-10-20 |
+| Q233 | the form of the round of 20 Oct evening, nine parts, the proof copies, a pack with no rules, one question in two sets, one discipline groups, the self tests' name and the older questions still waiting | none | question | waiting for Bader | none | none | 2026-10-20 |
 
 ## outside the waves
 

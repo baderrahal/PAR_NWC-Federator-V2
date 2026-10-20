@@ -26,6 +26,17 @@ namespace Federator.Core.Clash
         /// <summary>How many clashtest elements the clash matrix held.</summary>
         public int TestsInFile { get; set; }
 
+        /// <summary>How many of TestsInFile the pack's rules added, each a set against itself, F248, said apart from the file's own.</summary>
+        public int SelfTestsInMatrix { get; set; }
+
+        /// <summary>The file's own tests, and the self tests the pack's rules add said apart, so a count of the file reads the file.</summary>
+        private string FileWords()
+        {
+            return SelfTestsInMatrix > 0
+                ? (TestsInFile - SelfTestsInMatrix) + ", and " + SelfTestsInMatrix + " tests of a set against itself the pack's rules add"
+                : TestsInFile.ToString(CultureInfo.InvariantCulture);
+        }
+
         /// <summary>
         /// The names of the tests saved in the NWF that the matrix does not name, run too where they sit,
         /// after the tests of the matrix, F168, Bader's answer A to Q168. Their viewpoints go under
@@ -430,7 +441,7 @@ namespace Federator.Core.Clash
                 lines.Add(string.Empty);
                 lines.Add("ran against       : "
                     + (string.IsNullOrEmpty(OpenDocument) ? "UNKNOWN" : OpenDocument));
-                lines.Add("tests in the file : " + TestsInFile);
+                lines.Add("tests in the file : " + FileWords());
                 lines.Add("tests created     : 0");
                 lines.Add("tests run         : 0");
                 lines.Add("clash step took   : "
@@ -444,7 +455,7 @@ namespace Federator.Core.Clash
             lines.Add(string.Empty);
             lines.Add("ran against       : "
                 + (string.IsNullOrEmpty(OpenDocument) ? "UNKNOWN" : OpenDocument));
-            lines.Add("tests in the file : " + TestsInFile);
+            lines.Add("tests in the file : " + FileWords());
             lines.Add("tests created     : " + CreatedCount);
 
             if (AlreadyPresentCount > 0)

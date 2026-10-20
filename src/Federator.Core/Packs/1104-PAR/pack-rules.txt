@@ -11,3 +11,11 @@
 # code of any other code runs, on both pages. Bader's words: skip a test whose two sides carry
 # one set code only where that code is AR or ST.
 same-code-left-out: AR | ST
+#
+# SELF-TEST-TEAMS names the teams of the team map whose every set gets a test of that set against
+# itself, named left set -vs- right set as the matrix names its tests, made from the pack's sets and
+# team map so a new pack gets them with no hand edit. SELF-TEST-PRIORITY is the one letter those
+# tests carry. F248, Bader's words of 20 Oct 2026: add a test where a set meets itself, for every
+# set of the Mechanical and Electrical teams by the pack's team map, each priority A.
+self-test-teams: Mechanical | Electrical
+self-test-priority: A

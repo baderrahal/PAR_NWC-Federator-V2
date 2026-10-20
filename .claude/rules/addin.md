@@ -420,7 +420,11 @@ well as to pass.
   neither created nor run on either page, its count said on the CLASH line of `SetCodeRule.Line`.
   Since F247, Bader's answer Q230, only where that code is in `ClashRunner.SameCodeLeftOut`, which
   the engine hands from the pack's rules read once per run, `FederationEngine.ThePackRules`, with
-  its PACK line, AR and ST for 1104-PAR.
+  its PACK line, AR and ST for 1104-PAR. THE SELF TESTS, F248, Bader's answer Q232: the window's
+  `ReadTheMatrix`, the one place a run reads the pack's matrix, hands it through `SelfTests.For` with the
+  pack's rules, so the matrix the engine builds from carries them, and their SELF lines are said with
+  the TEAMS lines, `SayTheTeamsAndCorrections`. The engine's `ThePriorities` gives them their letter
+  through `PriorityMap.With` and says so on a PRIORITY line. Nothing else in the add-in knows them.
   One already saved in a picked NWF stays there with its earlier results, never deleted, row
   F219-R1. A test saved in the NWF that the matrix does not name, F168, passes the rule like any
   other, so its line and `AddSavedRunToo` come after the rule and name only the ones still run,

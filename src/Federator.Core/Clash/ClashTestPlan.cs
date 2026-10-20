@@ -114,7 +114,9 @@ namespace Federator.Core.Clash
                     + buildable.Count + " to run, " + skipped.Count + " skipped before the model";
             }
 
-            return "CLASH    " + name + ", " + TestsInFile + " in the file, " + skipped.Count
+            return "CLASH    " + name + ", " + (TestsInFile - SelfTestsInMatrix) + " in the file, "
+                + (SelfTestsInMatrix > 0 ? "and " + SelfTestsInMatrix + " tests of a set against itself the pack's rules add, " : string.Empty)
+                + skipped.Count
                 + " skipped before the model, " + buildable.Count
                 + " left, how many of them are created is said once the sets are counted";
         }
@@ -144,8 +146,23 @@ namespace Federator.Core.Clash
                 Plan(exchange.Tests[i], i, documentUnits, buildable, skipped, unknown, seenUnknown);
             }
 
-            return new ClashTestPlan(
+            ClashTestPlan plan = new ClashTestPlan(
                 exchange.Tests.Count, documentUnits, buildable, skipped, unknown);
+            plan.SelfTestsInMatrix = exchange.SelfTestNames.Count;
+            return plan;
+        }
+
+        /// <summary>
+        /// How many of the tests counted in TestsInFile the pack's rules added, each a set against itself, F248, so the first
+        /// CLASH line says the file's count apart from them. Set on the plan From makes and 0 on every other.
+        /// </summary>
+        public int SelfTestsInMatrix { get; private set; }
+
+        /// <summary>A plan made from this one, carrying its count of self tests, so every plan of a run says the file apart.</summary>
+        private ClashTestPlan Carry(ClashTestPlan derived)
+        {
+            derived.SelfTestsInMatrix = SelfTestsInMatrix;
+            return derived;
         }
 
         /// <summary>
@@ -379,7 +396,7 @@ namespace Federator.Core.Clash
             }
 
             added = addedNames;
-            return new ClashTestPlan(Source, TestsInFile, DocumentUnits, allBuildable, allSkipped, allUnknown);
+            return Carry(new ClashTestPlan(Source, TestsInFile, DocumentUnits, allBuildable, allSkipped, allUnknown));
         }
 
         public ClashTestPlan ResolveAgainst(IEnumerable<string> setPaths)
@@ -412,8 +429,8 @@ namespace Federator.Core.Clash
                     test.FileIndex));
             }
 
-            return new ClashTestPlan(
-                Source, TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes);
+            return Carry(new ClashTestPlan(
+                Source, TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes));
         }
 
         /// <summary>
@@ -461,8 +478,8 @@ namespace Federator.Core.Clash
                     : test);
             }
 
-            return new ClashTestPlan(
-                Source, TestsInFile, DocumentUnits, named, new List<SkippedClashTest>(skipped), unknownTestTypes);
+            return Carry(new ClashTestPlan(
+                Source, TestsInFile, DocumentUnits, named, new List<SkippedClashTest>(skipped), unknownTestTypes));
         }
 
         /// <summary>
@@ -498,7 +515,7 @@ namespace Federator.Core.Clash
             }
 
             leftOutByCode = byCode;
-            return new ClashTestPlan(Source, TestsInFile, DocumentUnits, kept, left, unknownTestTypes);
+            return Carry(new ClashTestPlan(Source, TestsInFile, DocumentUnits, kept, left, unknownTestTypes));
         }
 
         private static string Unresolved(bool leftKnown, bool rightKnown, PlannedClashTest test)

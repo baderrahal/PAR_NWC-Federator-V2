@@ -437,6 +437,17 @@ namespace Federator.Addin.Engine
                 log.Line(PriorityMap.Prefix + " read " + built.Describe(MatrixPack.PriorityFile) + ", "
                     + priorities.RowCount + (priorities.RowCount == 1 ? " row" : " rows"));
 
+                // F248, Bader's answer Q232. The self tests the matrix carries take the letter the pack's rules give them.
+                if (exchange != null && exchange.SelfTestNames.Count > 0)
+                {
+                    PriorityMap fileOnly = priorities;
+                    priorities = priorities.With(exchange.SelfTestNames, exchange.SelfTestPriority);
+                    int given = priorities.RowCount - fileOnly.RowCount;
+                    log.Line(PriorityMap.Prefix + " " + given + " of the " + exchange.SelfTestNames.Count + " tests of a set against itself given priority "
+                        + Priorities.Words(exchange.SelfTestPriority) + " by the pack's rules, the rest keeping the file's letter, "
+                        + priorities.RowCount + " rows in all");
+                }
+
                 foreach (string problem in priorities.Problems)
                 {
                     log.Line(PriorityMap.Prefix + " " + problem);

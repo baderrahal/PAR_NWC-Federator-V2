@@ -1,0 +1,417 @@
+MACHINE   [machine]   2026-10-20 19:54:05
+HOST      powershell 5.1.26100.9711, 64 bit process True, apartment STA, pid 22816
+SCRIPT    <a path outside the loop folder, file probe-sameset.ps1, sha1 4E621C0A4367>, sha256 CAF16B4A098B0E446E8671243DD2C95C7F561A7801D38433689A6C45A59FCD60
+GUARD     tools\loop\nw-guard.ps1, sha256 349551F8A3784C002A48192CB6321D6443027529BC65844B710A4E836C966888
+PROCESS   powershell.exe pid 22816, started to run -File C:\Users\bader\AppData\Local\Temp\claude\c--Users-bader-Documents-GitHub-PAR-NWC-Federator-V2\b99a8402-1384-49e7-924c-b3e883722be6\scratchpad\wt\F248\tools\probes\SameSetProbe\probe-sameset.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 327
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 110172 bytes
+  read key by key: 279 keys, 1149 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 8 files copied to the work folder and read back with their source's sha256, 0 not backed up, 63 AutoSave files listed and not copied
+  the tool's own logs folder listed: 166 files
+
+==== THE FILES, read where they are and never copied, each with its sha256 before the start ====
+  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, 1857077 bytes, written 2026-10-20 09:15:29 UTC, sha256 7E1C12F7D1780CB80FDF9D45BE1D8C4911EEA0AA9CAD91D3DFEE5B780FA0DA3F
+  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 2071345 bytes, written 2026-10-20 09:15:29 UTC, sha256 EB5B4E493B914CB826FE3FCAD778596FEDDA1E8CA1F8043CDF4000E8811F23EE
+  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, 2046722 bytes, written 2026-10-20 09:15:29 UTC, sha256 7ED0F2D9E23E64065E924076D129F2365D16A4187351385E42DA326EFA0B1D31
+  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, 52887 bytes, written 2026-10-20 09:15:29 UTC, sha256 49612B15A7B0AA99591DB95C2B887F5649FC799A4BB4897AFD2CACA5E3E4E5A8
+  the probe <a path outside the loop folder, file SameSetProbe.dll, sha1 BE0E241B96A2>, 25600 bytes, written 2026-10-20 19:52:20, sha256 96C71F0BF1B539576434F94A56B6D2A7AFC6E619DC39D67B2E876E4285C44C27, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  19:54:06.257  t+1.2s  calling new NavisworksApplication()
+  19:54:15.449  t+10.4s  the constructor RETURNED after 9.19 s
+  Roamer processes new since step 2: 1
+    pid 12364, started 19:54:06.270, parent 1784 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 12364, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 12364, started 2026-10-20 19:54:06.270, start ticks UTC 639281120462707557
+  19:54:18.456  t+13.4s  Visible set True, read back True
+  visible top level windows of 12364: 1, hidden: 72, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  19:54:18.614  t+13.5s  AddPluginAssembly RETURNED after 0.030 s
+
+==== STEP 5. ExecuteAddInPlugin once, the mode read on every file, which it opens and does not save ====
+  19:54:18.615  t+13.5s  calling ExecuteAddInPlugin(SameSetProbe.PARS, read, the plugin's output file, 4 files)
+  19:54:19.853  t+14.8s  ExecuteAddInPlugin RETURNED 0 after 1.24 s
+  visible top level windows of 12364: 1, hidden: 72, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | probe started, mode run
+  | document at the start: models 0, file name '', units Meters
+  | TryAppendFile 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc returned True, models 1
+  | TryAppendFile 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc returned True, models 2
+  | TryAppendFile 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc returned True, models 3
+  | TryAppendFile 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc returned True, models 4
+  | models in the document: 4, units Feet
+  |   model 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt, units Feet
+  |   model 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt, units Feet
+  |   model 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt, units Feet
+  |   model 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.rvt, units Feet
+  | ScaleFactor(Millimeters, Feet) = 0.0032808398950131233, 25 mm = 0.082020997375328086 Feet
+  | 
+  | ==== SET BLD-ME-Ducts&Duct Fittings, 8 conditions read from the pack ====
+  |   the set resolves to 59 items, 0 with geometry of their own
+  |   by category: Duct Fittings 37; Ducts 22
+  |   by model file: 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt 59
+  | 
+  | ==== SET BLD-ME-Pipes&Pipe Fittings, 8 conditions read from the pack ====
+  |   the set resolves to 88 items, 0 with geometry of their own
+  |   by category: Pipe Fittings 41; Pipes 47
+  |   by model file: 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt 88
+  | 
+  | ==== SET BLD-EL-Cable Tray&Cable Tray Fittings, 1 conditions read from the pack ====
+  |   the set resolves to 171 items, 0 with geometry of their own
+  |   by category: Cable Tray Fittings 73; Cable Trays 98
+  |   by model file: 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt 171
+  | 
+  | ==== SET BLD-EL-Conduits & Conduit Fittings, 1 conditions read from the pack ====
+  |   the set resolves to 222 items, 0 with geometry of their own
+  |   by category: Conduit Fittings 76; Conduits 146
+  |   by model file: 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt 222
+  | 
+  | ==== TEST SAME BLD-ME-Ducts&Duct Fittings self off ====
+  | tests went from 0 to 1, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect False, primitive types Triangles, side B self intersect False, primitive types Triangles
+  |   items on side A 59, on side B 59
+  | TestsRunTest returned after 0.03 s
+  | test status after the run: Complete, last run set
+  | results walked: 0 clash results, 0 groups
+  | 
+  | ==== TEST SAME BLD-ME-Ducts&Duct Fittings self on ====
+  | tests went from 1 to 2, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect True, primitive types Triangles, side B self intersect True, primitive types Triangles
+  |   items on side A 59, on side B 59
+  | TestsRunTest returned after 0.01 s
+  | test status after the run: Complete, last run set
+  | results walked: 0 clash results, 0 groups
+  | 
+  | ==== TEST SAME BLD-ME-Pipes&Pipe Fittings self off ====
+  | tests went from 2 to 3, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect False, primitive types Triangles, side B self intersect False, primitive types Triangles
+  |   items on side A 88, on side B 88
+  | TestsRunTest returned after 0.02 s
+  | test status after the run: Complete, last run set
+  | results walked: 0 clash results, 0 groups
+  | 
+  | ==== TEST SAME BLD-ME-Pipes&Pipe Fittings self on ====
+  | tests went from 3 to 4, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect True, primitive types Triangles, side B self intersect True, primitive types Triangles
+  |   items on side A 88, on side B 88
+  | TestsRunTest returned after 0.01 s
+  | test status after the run: Complete, last run set
+  | results walked: 0 clash results, 0 groups
+  | 
+  | ==== TEST SAME BLD-EL-Cable Tray&Cable Tray Fittings self off ====
+  | tests went from 4 to 5, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect False, primitive types Triangles, side B self intersect False, primitive types Triangles
+  |   items on side A 171, on side B 171
+  | TestsRunTest returned after 0.02 s
+  | test status after the run: Complete, last run set
+  | results walked: 2 clash results, 0 groups
+  | Q2 result with the same item on both sides: by distinct item number 0, by ModelItem.Equals 0, by the same Revit element id in the same model 0
+  | Q3 distinct ordered pairs 2, distinct unordered pairs 2, results repeating an ordered pair 0, results whose swapped pair (B,A) is also a result 0, results repeating an unordered pair 0
+  | Q5 by category pair, unordered: Cable Tray Fittings | Cable Trays 1; Cable Trays | Cable Trays 1
+  | Q5 by kind: run vs a fitting of its own run 1; run vs run of the same category 1
+  | result statuses: New 2
+  | family pairs (side 1 | side 2): Cable Tray with Fittings | Cable Tray with Fittings 1; PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR | Cable Tray with Fittings 1
+  | rows file: %LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405\rows\SAME_BLD_EL_Cable_Tray_Cable_Tray_Fittings_self_off.tsv
+  | first 12 results:
+  |   Clash1 [New, -0.3281] item 0 Cable Tray Fittings / PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR / ELE-CBF-Radius_12" id 4473509  VS  item 1 Cable Trays / Cable Tray with Fittings / ELE-CBT-ABLETRAYWITHFIITINGS id 4346704
+  |   Clash2 [New, -0.3281] item 2 Cable Trays / Cable Tray with Fittings / ELE-CBT-ABLETRAYWITHFIITINGS id 4437287  VS  item 3 Cable Trays / Cable Tray with Fittings / ELE-CBT-ABLETRAYWITHFIITINGS id 4299963
+  | properties of the element node of item 1 of the first result, node 'PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR', class Cable Tray Fittings: PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR: ELE-CBF-Radius_12":
+  |     Name (LcRevitPropertyElementName) = ELE-CBF-Radius_12"
+  |     Type (LcRevitPropertyElementType) = ELE-CBF-Radius_12"
+  |     Family (LcRevitPropertyElementFamily) = PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR
+  |     Category (LcRevitPropertyElementCategory) = Cable Tray Fittings
+  |     Category Id (LcRevitPropertyElementCategoryId) = -2008126
+  |     Id (LcRevitPropertyElementId) = 4473509
+  |     Elevation from Level (lcldrevit_parameter_-1001360) = 1.20160761154844
+  |     Export to IFC (lcldrevit_parameter_-1019012) = By Type
+  |     IfcGUID (lcldrevit_parameter_-1019000) = 1cgKZJXLz4jOhw0vl89Rvs
+  |     Level (lcldrevit_parameter_-1001352) = LcRevitElement(Level "RO1", #4271584)
+  |     Phase Created (lcldrevit_parameter_-1012100) = LcRevitElement(Phase "New Construction", #3)
+  |     Radius Label (lcldrevit_parameter_Radius Label) = 0.0820209973753281
+  |     Radius Label 1 (lcldrevit_parameter_Radius Label 1) = 0.0903543306753281
+  |     Size (lcldrevit_parameter_-1114240) = 200 mmx100 mm-200 mmx100 mm-200 mmx100 mm
+  |     Thickness (lcldrevit_parameter_-1140111) = 0.0083333333
+  |     Tray Height (lcldrevit_parameter_Tray Height_PG_DIMENSIONS) = 0.328083989501312
+  |     Tray Length (lcldrevit_parameter_Tray Length_PG_DIMENSIONS) = 0.25
+  |     Tray Width 1 (lcldrevit_parameter_Tray Width 1_PG_DIMENSIONS) = 0.656167979002625
+  |     Tray Width 3 (lcldrevit_parameter_Tray Width 3_PG_DIMENSIONS) = 0.656167979002625
+  |     Use Annotation Scale (lcldrevit_parameter_-1114242) = False
+  |     Workset (lcldrevit_parameter_-1002053) = EL-Containment
+  | 
+  | ==== TEST SAME BLD-EL-Cable Tray&Cable Tray Fittings self on ====
+  | tests went from 5 to 6, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect True, primitive types Triangles, side B self intersect True, primitive types Triangles
+  |   items on side A 171, on side B 171
+  | TestsRunTest returned after 0.01 s
+  | test status after the run: Complete, last run set
+  | results walked: 2 clash results, 0 groups
+  | Q2 result with the same item on both sides: by distinct item number 0, by ModelItem.Equals 0, by the same Revit element id in the same model 0
+  | Q3 distinct ordered pairs 2, distinct unordered pairs 2, results repeating an ordered pair 0, results whose swapped pair (B,A) is also a result 0, results repeating an unordered pair 0
+  | Q5 by category pair, unordered: Cable Tray Fittings | Cable Trays 1; Cable Trays | Cable Trays 1
+  | Q5 by kind: run vs a fitting of its own run 1; run vs run of the same category 1
+  | result statuses: New 2
+  | family pairs (side 1 | side 2): Cable Tray with Fittings | Cable Tray with Fittings 1; PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR | Cable Tray with Fittings 1
+  | rows file: %LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405\rows\SAME_BLD_EL_Cable_Tray_Cable_Tray_Fittings_self_on.tsv
+  | first 12 results:
+  |   Clash1 [New, -0.3281] item 0 Cable Tray Fittings / PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR / ELE-CBF-Radius_12" id 4473509  VS  item 1 Cable Trays / Cable Tray with Fittings / ELE-CBT-ABLETRAYWITHFIITINGS id 4346704
+  |   Clash2 [New, -0.3281] item 2 Cable Trays / Cable Tray with Fittings / ELE-CBT-ABLETRAYWITHFIITINGS id 4437287  VS  item 3 Cable Trays / Cable Tray with Fittings / ELE-CBT-ABLETRAYWITHFIITINGS id 4299963
+  | properties of the element node of item 1 of the first result, node 'PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR', class Cable Tray Fittings: PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR: ELE-CBF-Radius_12":
+  |     Name (LcRevitPropertyElementName) = ELE-CBF-Radius_12"
+  |     Type (LcRevitPropertyElementType) = ELE-CBF-Radius_12"
+  |     Family (LcRevitPropertyElementFamily) = PAR-EL-CBF-HORIZONTALTEERADUIS12"-PAR
+  |     Category (LcRevitPropertyElementCategory) = Cable Tray Fittings
+  |     Category Id (LcRevitPropertyElementCategoryId) = -2008126
+  |     Id (LcRevitPropertyElementId) = 4473509
+  |     Elevation from Level (lcldrevit_parameter_-1001360) = 1.20160761154844
+  |     Export to IFC (lcldrevit_parameter_-1019012) = By Type
+  |     IfcGUID (lcldrevit_parameter_-1019000) = 1cgKZJXLz4jOhw0vl89Rvs
+  |     Level (lcldrevit_parameter_-1001352) = LcRevitElement(Level "RO1", #4271584)
+  |     Phase Created (lcldrevit_parameter_-1012100) = LcRevitElement(Phase "New Construction", #3)
+  |     Radius Label (lcldrevit_parameter_Radius Label) = 0.0820209973753281
+  |     Radius Label 1 (lcldrevit_parameter_Radius Label 1) = 0.0903543306753281
+  |     Size (lcldrevit_parameter_-1114240) = 200 mmx100 mm-200 mmx100 mm-200 mmx100 mm
+  |     Thickness (lcldrevit_parameter_-1140111) = 0.0083333333
+  |     Tray Height (lcldrevit_parameter_Tray Height_PG_DIMENSIONS) = 0.328083989501312
+  |     Tray Length (lcldrevit_parameter_Tray Length_PG_DIMENSIONS) = 0.25
+  |     Tray Width 1 (lcldrevit_parameter_Tray Width 1_PG_DIMENSIONS) = 0.656167979002625
+  |     Tray Width 3 (lcldrevit_parameter_Tray Width 3_PG_DIMENSIONS) = 0.656167979002625
+  |     Use Annotation Scale (lcldrevit_parameter_-1114242) = False
+  |     Workset (lcldrevit_parameter_-1002053) = EL-Containment
+  | 
+  | ==== TEST SAME BLD-EL-Conduits & Conduit Fittings self off ====
+  | tests went from 6 to 7, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect False, primitive types Triangles, side B self intersect False, primitive types Triangles
+  |   items on side A 222, on side B 222
+  | TestsRunTest returned after 0.03 s
+  | test status after the run: Complete, last run set
+  | results walked: 13 clash results, 0 groups
+  | Q2 result with the same item on both sides: by distinct item number 0, by ModelItem.Equals 0, by the same Revit element id in the same model 0
+  | Q3 distinct ordered pairs 13, distinct unordered pairs 13, results repeating an ordered pair 0, results whose swapped pair (B,A) is also a result 0, results repeating an unordered pair 0
+  | Q5 by category pair, unordered: Conduit Fittings | Conduit Fittings 4; Conduit Fittings | Conduits 1; Conduits | Conduits 8
+  | Q5 by kind: fitting vs fitting of the same category 4; run vs a fitting of its own run 1; run vs run of the same category 8
+  | result statuses: New 13
+  | family pairs (side 1 | side 2): Conduit without Fittings | Conduit without Fittings 8; PAR-EL-CNF-JUNCTIONBOXTEEPVC-PAR | Conduit without Fittings 1; PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR | PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR 4
+  | rows file: %LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405\rows\SAME_BLD_EL_Conduits___Conduit_Fittings_self_off.tsv
+  | first 12 results:
+  |   Clash1 [New, -0.2084] item 0 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479517  VS  item 1 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479481
+  |   Clash2 [New, -0.2084] item 2 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479520  VS  item 3 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479511
+  |   Clash3 [New, -0.2084] item 4 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4438505  VS  item 5 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4438502
+  |   Clash4 [New, -0.2084] item 6 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4437546  VS  item 7 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4437543
+  |   Clash5 [New, -0.1833] item 8 Conduit Fittings / PAR-EL-CNF-JUNCTIONBOXTEEPVC-PAR / ELE-CNF-Standard id 4486430  VS  item 9 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4486440
+  |   Clash6 [New, -0.1338] item 10 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327405  VS  item 11 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327402
+  |   Clash7 [New, -0.1338] item 12 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327378  VS  item 13 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327381
+  |   Clash8 [New, -0.1338] item 14 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327424  VS  item 15 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327427
+  |   Clash9 [New, -0.1338] item 16 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4326564  VS  item 17 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4326406
+  |   Clash10 [New, -0.1337] item 18 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327376  VS  item 19 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327383
+  |   Clash11 [New, -0.1337] item 20 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327422  VS  item 21 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327429
+  |   Clash12 [New, -0.1337] item 22 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327400  VS  item 23 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327407
+  | properties of the element node of item 1 of the first result, node 'PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR', class Conduit Fittings: PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR: ELE-CNF-Standard 300 mm:
+  |     Name (LcRevitPropertyElementName) = ELE-CNF-Standard 300 mm
+  |     Type (LcRevitPropertyElementType) = ELE-CNF-Standard 300 mm
+  |     Family (LcRevitPropertyElementFamily) = PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR
+  |     Category (LcRevitPropertyElementCategory) = Conduit Fittings
+  |     Category Id (LcRevitPropertyElementCategoryId) = -2008128
+  |     Id (LcRevitPropertyElementId) = 4479517
+  |     Angle (lcldrevit_parameter_Angle_PG_DIMENSIONS) = 0.785398163397563
+  |     Bend or Fitting (lcldrevit_parameter_-1140129) = Bend
+  |     Bend Radius (lcldrevit_parameter_-1140116) = 0.890616797900262
+  |     Bend Radius Label (lcldrevit_parameter_Bend Radius Label) = 0.890616797900262
+  |     Center to End (lcldrevit_parameter_Center to End_PG_DIMENSIONS) = 0.5664054540414
+  |     Conduit Length (lcldrevit_parameter_Conduit Length_PG_DIMENSIONS) = 0.197499897473753
+  |     Elevation from Level (lcldrevit_parameter_-1001360) = -3.39640586970012
+  |     Export to IFC (lcldrevit_parameter_-1019012) = By Type
+  |     Fitting Outside Diameter (lcldrevit_parameter_Fitting Outside Diameter_PG_DIMENSIONS) = 0.208406126968504
+  |     Fitting Outside Radius (lcldrevit_parameter_Fitting Outside Radius) = 0.104203063484252
+  |     IfcGUID (lcldrevit_parameter_-1019000) = 3EHklMOg9CARRf66cz$0BJ
+  |     Level (lcldrevit_parameter_-1001352) = LcRevitElement(Level "GRF", #2641566)
+  |     Nominal Diameter (lcldrevit_parameter_Nominal Diameter_PG_DIMENSIONS) = 0.173884514435696
+  |     Nominal Radius (lcldrevit_parameter_Nominal Radius_PG_DIMENSIONS) = 0.0869422572178478
+  |     Phase Created (lcldrevit_parameter_-1012100) = LcRevitElement(Phase "New Construction", #3)
+  |     Service Type (lcldrevit_parameter_-1140128) = EARTHING CONDUCTOR
+  |     Size (lcldrevit_parameter_-1114240) = 53 mmø-53 mmø
+  |     Use Annotation Scale (lcldrevit_parameter_-1114242) = False
+  |     Workset (lcldrevit_parameter_-1002053) = EL-Lightining Protection
+  | 
+  | ==== TEST SAME BLD-EL-Conduits & Conduit Fittings self on ====
+  | tests went from 7 to 8, created without an error: True
+  | saved test reads: type HardConservative, tolerance 0.082020997375328086, merge composites True, status New
+  |   side A self intersect True, primitive types Triangles, side B self intersect True, primitive types Triangles
+  |   items on side A 222, on side B 222
+  | TestsRunTest returned after 0.01 s
+  | test status after the run: Complete, last run set
+  | results walked: 13 clash results, 0 groups
+  | Q2 result with the same item on both sides: by distinct item number 0, by ModelItem.Equals 0, by the same Revit element id in the same model 0
+  | Q3 distinct ordered pairs 13, distinct unordered pairs 13, results repeating an ordered pair 0, results whose swapped pair (B,A) is also a result 0, results repeating an unordered pair 0
+  | Q5 by category pair, unordered: Conduit Fittings | Conduit Fittings 4; Conduit Fittings | Conduits 1; Conduits | Conduits 8
+  | Q5 by kind: fitting vs fitting of the same category 4; run vs a fitting of its own run 1; run vs run of the same category 8
+  | result statuses: New 13
+  | family pairs (side 1 | side 2): Conduit without Fittings | Conduit without Fittings 8; PAR-EL-CNF-JUNCTIONBOXTEEPVC-PAR | Conduit without Fittings 1; PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR | PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR 4
+  | rows file: %LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405\rows\SAME_BLD_EL_Conduits___Conduit_Fittings_self_on.tsv
+  | first 12 results:
+  |   Clash1 [New, -0.2084] item 0 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479517  VS  item 1 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479481
+  |   Clash2 [New, -0.2084] item 2 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479520  VS  item 3 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard 300 mm id 4479511
+  |   Clash3 [New, -0.2084] item 4 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4438505  VS  item 5 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4438502
+  |   Clash4 [New, -0.2084] item 6 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4437546  VS  item 7 Conduit Fittings / PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR / ELE-CNF-Standard id 4437543
+  |   Clash5 [New, -0.1833] item 8 Conduit Fittings / PAR-EL-CNF-JUNCTIONBOXTEEPVC-PAR / ELE-CNF-Standard id 4486430  VS  item 9 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4486440
+  |   Clash6 [New, -0.1338] item 10 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327405  VS  item 11 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327402
+  |   Clash7 [New, -0.1338] item 12 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327378  VS  item 13 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327381
+  |   Clash8 [New, -0.1338] item 14 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327424  VS  item 15 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327427
+  |   Clash9 [New, -0.1338] item 16 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4326564  VS  item 17 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4326406
+  |   Clash10 [New, -0.1337] item 18 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327376  VS  item 19 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327383
+  |   Clash11 [New, -0.1337] item 20 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327422  VS  item 21 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327429
+  |   Clash12 [New, -0.1337] item 22 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327400  VS  item 23 Conduits / Conduit without Fittings / ELE-CNF-70mm² BARE COPPER CABLE id 4327407
+  | properties of the element node of item 1 of the first result, node 'PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR', class Conduit Fittings: PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR: ELE-CNF-Standard 300 mm:
+  |     Name (LcRevitPropertyElementName) = ELE-CNF-Standard 300 mm
+  |     Type (LcRevitPropertyElementType) = ELE-CNF-Standard 300 mm
+  |     Family (LcRevitPropertyElementFamily) = PAR-EL-CNF-WITHOUTFITTINGSRNC-PAR
+  |     Category (LcRevitPropertyElementCategory) = Conduit Fittings
+  |     Category Id (LcRevitPropertyElementCategoryId) = -2008128
+  |     Id (LcRevitPropertyElementId) = 4479517
+  |     Angle (lcldrevit_parameter_Angle_PG_DIMENSIONS) = 0.785398163397563
+  |     Bend or Fitting (lcldrevit_parameter_-1140129) = Bend
+  |     Bend Radius (lcldrevit_parameter_-1140116) = 0.890616797900262
+  |     Bend Radius Label (lcldrevit_parameter_Bend Radius Label) = 0.890616797900262
+  |     Center to End (lcldrevit_parameter_Center to End_PG_DIMENSIONS) = 0.5664054540414
+  |     Conduit Length (lcldrevit_parameter_Conduit Length_PG_DIMENSIONS) = 0.197499897473753
+  |     Elevation from Level (lcldrevit_parameter_-1001360) = -3.39640586970012
+  |     Export to IFC (lcldrevit_parameter_-1019012) = By Type
+  |     Fitting Outside Diameter (lcldrevit_parameter_Fitting Outside Diameter_PG_DIMENSIONS) = 0.208406126968504
+  |     Fitting Outside Radius (lcldrevit_parameter_Fitting Outside Radius) = 0.104203063484252
+  |     IfcGUID (lcldrevit_parameter_-1019000) = 3EHklMOg9CARRf66cz$0BJ
+  |     Level (lcldrevit_parameter_-1001352) = LcRevitElement(Level "GRF", #2641566)
+  |     Nominal Diameter (lcldrevit_parameter_Nominal Diameter_PG_DIMENSIONS) = 0.173884514435696
+  |     Nominal Radius (lcldrevit_parameter_Nominal Radius_PG_DIMENSIONS) = 0.0869422572178478
+  |     Phase Created (lcldrevit_parameter_-1012100) = LcRevitElement(Phase "New Construction", #3)
+  |     Service Type (lcldrevit_parameter_-1140128) = EARTHING CONDUCTOR
+  |     Size (lcldrevit_parameter_-1114240) = 53 mmø-53 mmø
+  |     Use Annotation Scale (lcldrevit_parameter_-1114242) = False
+  |     Workset (lcldrevit_parameter_-1002053) = EL-Lightining Protection
+  | 
+  | document.Clear() called at the end, models 0. Nothing was saved
+  the plugin's output "%LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405\plugin-output.txt", 23119 bytes, sha256 FD6FB3C2A360D2DD5397988555FF63D607CB74D01B2F4A7ACDC93A09A96C01A0
+
+==== STEP 6. Quit through the API ====
+  19:54:20.385  t+15.3s  Dispose RETURNED after 0.34 s
+  19:54:21.986  t+16.9s  pid 12364 state gone, 1.6 s after Dispose returned, not forced
+
+==== FINALLY ====
+  19:54:21.986  t+16.9s  pid 12364 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 29, longest pass 565 ms, longest gap between the starts of two passes 1075 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  19:54:05.527  t+0.4s  watchdog started
+  19:54:07.032  t+1.9s  new process Roamer pid 12364, parent 1784 svchost.exe, started 19:54:06.270, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  19:54:07.105  t+2.0s  Roamer 12364 visible top level windows: none
+  19:54:08.342  t+3.3s  new process AdskLicensingAgent pid 23968, parent 12364 Roamer.exe, started 19:54:07.798, command line holds the word embedding or automation: no
+  19:54:08.509  t+3.4s  new process AdskLicensingAgent pid 24544, parent 12364 Roamer.exe, started 19:54:07.777, command line holds the word embedding or automation: no
+  19:54:08.704  t+3.6s  new process AdskLicensingAgent pid 35012, parent 12364 Roamer.exe, started 19:54:07.995, command line holds the word embedding or automation: no
+  19:54:13.507  t+8.4s  Roamer 12364 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] ""
+  19:54:15.096  t+10.0s  Roamer 12364 visible top level windows: none
+  19:54:16.169  t+11.1s  Roamer 12364 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  19:54:17.237  t+12.2s  Roamer 12364 visible top level windows: none
+  19:54:18.316  t+13.2s  Roamer 12364 visible top level windows: [WindowsForms10.Window.8.app.0.143da96_r6_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  19:54:20.462  t+15.4s  Roamer 12364 visible top level windows: none
+  19:54:22.034  t+17.0s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 12364, parent 1784 svchost.exe: exited
+  AdskLicensingAgent pid 23968, parent 12364 Roamer.exe: exited
+  AdskLicensingAgent pid 24544, parent 12364 Roamer.exe: STILL RUNNING
+  AdskLicensingAgent pid 35012, parent 12364 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 2836719535289  new QWord 2836868197732
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 451  new DWord 452
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 472  new DWord 473
+  22.0\CER\22.5.1433.58  uptime  old QWord 817079218750  new QWord 817149843750
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "lcodpnwf"  new String "LcOpNwcPlugin"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\1  LastOpened  old QWord 134369788918368428  new QWord 134369888588275441
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf, sha1 94D71F7DBDED>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1D07PP-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1D07PT-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  LastOpened  old QWord 134368210428922780  new QWord 134368210644137042
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1D07PP-ZZZ-BM-MOD-000001.nwf, sha1 922542D5FFFB>  new String <a path outside the loop folder, file 1104-PAR-1D07PT-ZZZ-BM-MOD-000001.nwf, sha1 2D207C414D58>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134368314347526172  new QWord 134369788918368428
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf, sha1 B48F28FF0C0D>  new String <a path outside the loop folder, file 1104-PAR-1B06K1-ZZZ-BM-MOD-000001.nwf, sha1 94D71F7DBDED>
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134368313720806470  new QWord 134368314347526172
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf, sha1 51B511CB2E0C>  new String <a path outside the loop folder, file 1104-PAR-1B06PS-ZZZ-BM-MOD-000001.nwf, sha1 B48F28FF0C0D>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\4  LastOpened  old QWord 134368311968000586  new QWord 134368313720806470
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc, sha1 51CEF0AD2FDD>  new String <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf, sha1 51B511CB2E0C>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134368311417699672  new QWord 134368311968000586
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc, sha1 B4E744194443>  new String <a path outside the loop folder, file 1104-PAR-1B06K1-ZZZ-AR-MOD-000001.nwc, sha1 51CEF0AD2FDD>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134368310250238691  new QWord 134368311417699672
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc, sha1 4E189F294B0F>  new String <a path outside the loop folder, file 1104-PAR-1B06PS-ZZZ-AR-MOD-000001.nwc, sha1 B4E744194443>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134368211633099326  new QWord 134368310250238691
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf, sha1 87293FB3F179>  new String <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc, sha1 4E189F294B0F>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\8  LastOpened  old QWord 134368211174287492  new QWord 134368211633099326
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf, sha1 64D91724DF56>  new String <a path outside the loop folder, file 1104-PAR-1B06P1-ZZZ-BM-MOD-000001.nwf, sha1 87293FB3F179>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1D07PT-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\9  LastOpened  old QWord 134368210644137042  new QWord 134368211174287492
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1D07PT-ZZZ-BM-MOD-000001.nwf, sha1 2D207C414D58>  new String <a path outside the loop folder, file 1104-PAR-1B06BC-ZZZ-BM-MOD-000001.nwf, sha1 64D91724DF56>
+  registry: 37 values or keys differ from the backup
+  registry: 37 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 22604 bytes, sha256 CEF1A0F9F4CD, written 2026-10-20 12:17:55  new 23859 bytes, sha256 C6C950241BD8, written 2026-10-20 19:54:20
+  file CHANGED LastSession.xml  old 39290 bytes, sha256 549F6507C78D, written 2026-10-20 18:56:48  new 39289 bytes, sha256 C7C6EECAEB27, written 2026-10-20 19:54:20
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the files read, at the end ----
+  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  sha256 7E1C12F7D1780CB80FDF9D45BE1D8C4911EEA0AA9CAD91D3DFEE5B780FA0DA3F, the same as before the start
+  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  sha256 EB5B4E493B914CB826FE3FCAD778596FEDDA1E8CA1F8043CDF4000E8811F23EE, the same as before the start
+  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  sha256 7ED0F2D9E23E64065E924076D129F2365D16A4187351385E42DA326EFA0B1D31, the same as before the start
+  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  C:\Users\bader\AppData\Local\NwcFederatorLoop\runs\95\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  sha256 49612B15A7B0AA99591DB95C2B887F5649FC799A4BB4897AFD2CACA5E3E4E5A8, the same as before the start
+---- the work folder at the end, sorted by name ----
+  hkcu-navisworks-manage-22.0-before.reg  110172 bytes
+  mypid.txt  36 bytes
+  plugin-output.txt  23119 bytes
+  SameSetProbe.dll  25600 bytes
+  watch.txt  1532 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-20 19:54:23, 18 s in all

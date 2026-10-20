@@ -41,6 +41,9 @@ namespace Federator.Core.Clash
         private readonly List<string> problems;
         private int rows;
 
+        /// <summary>The rows With added, the self tests, F248, counted apart from the file's own.</summary>
+        private int added;
+
         private PriorityMap()
         {
             byTestName = new Dictionary<string, ClashPriority>(StringComparer.Ordinal);
@@ -160,6 +163,60 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// F248, Bader's answer Q232. This map with those tests given that priority, the self tests of the matrix at the letter
+        /// the pack's rules give them, each counted as a row. A test the file names already keeps the file's letter, and the
+        /// problem line names it, so a letter the file gave is never overwritten in silence. A map nothing was picked for, or a
+        /// priority of None, is handed back as it is.
+        /// </summary>
+        public PriorityMap With(IEnumerable<string> testNames, ClashPriority priority)
+        {
+            if (!Picked || priority == ClashPriority.None || testNames == null)
+            {
+                return this;
+            }
+
+            PriorityMap with = new PriorityMap();
+            with.Picked = Picked;
+            with.Path = Path;
+            with.rows = rows;
+            with.added = added;
+            with.problems.AddRange(problems);
+
+            foreach (KeyValuePair<string, ClashPriority> row in byTestName)
+            {
+                with.byTestName[row.Key] = row.Value;
+            }
+
+            foreach (KeyValuePair<string, int> row in lineOfTestName)
+            {
+                with.lineOfTestName[row.Key] = row.Value;
+            }
+
+            foreach (string name in testNames)
+            {
+                ClashPriority earlier;
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    continue;
+                }
+
+                if (with.byTestName.TryGetValue(name, out earlier))
+                {
+                    with.problems.Add("\"" + name + "\", a test of a set against itself, is named by the file at " + earlier
+                        + ", so the file's letter is kept and the rules' " + priority + " is not used");
+                    continue;
+                }
+
+                with.byTestName[name] = priority;
+                with.rows++;
+                with.added++;
+            }
+
+            return with;
+        }
+
+        /// <summary>
         /// That test's priority, or None. Matched Ordinal and never trimmed, because a
         /// test name is built out of two set names and two of those end in a space.
         /// </summary>
@@ -226,7 +283,7 @@ namespace Federator.Core.Clash
                 }
             }
 
-            lines.Add(Prefix + " " + RowCount + " in the file, " + tests + " tests in this run, "
+            lines.Add(Prefix + " " + (RowCount - added) + " in the file, " + (added > 0 ? "and " + added + " tests of a set against itself given a letter by the pack's rules, " : string.Empty) + tests + " tests in this run, "
                 + matched + " matched, " + unmatched.Count + " not named by the file");
 
             int shown = 0;
