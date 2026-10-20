@@ -170,7 +170,9 @@ function Write-Manifest([string] $path, $files) {
 function Read-Manifest([string] $path) {
     $files = New-Object 'System.Collections.Generic.Dictionary[string,object]' ($ordinal)
     foreach ($line in [IO.File]::ReadAllLines($path)) {
-        $p = $line.Split([char]' ', 3)
+        # A char array, since Windows PowerShell 5.1 reads [char]' ', 3 as two separators and splits on every
+        # space, measured on 20 Oct 2026 when the copy first held a path with a space, Clash report\C02\C02 AR checks.xlsx.
+        $p = $line.Split([char[]]@(' '), 3)
         if ($p.Count -ne 3 -or $p[0] -notmatch '\A[0-9A-F]{64}\z' -or $p[1] -notmatch '\A[0-9]+\z') { throw "'$path' holds a line that is not a sha256, a size and a path: '$line'. Nothing more was done." }
         $files[$p[2]] = [pscustomobject]@{ Bytes = [long]$p[1]; Sha = $p[0] }
     }
