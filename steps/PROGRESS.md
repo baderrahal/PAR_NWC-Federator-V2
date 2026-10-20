@@ -1,4 +1,4 @@
-STATE WAITING, 2026-10-20, the round of 20 Oct evening, F246 merged in 328, F247 merging in 329, F248 to come, the proofs wait for Bader by his choice, last run 94/item1-C02
+STATE WAITING, 2026-10-20, the round of 20 Oct evening done, F246 to F248 merged in 328 to 330, waiting for Bader's runs 1 and 2 on C02 and the form Q233, last run 94/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,10 +15,11 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 26 | 4 | 0 | 0 | 44 | 0 | 74 |
-| outside the waves | 330 | 16 | 0 | 33 | 154 | 7 | 540 |
-| total | 534 | 24 | 0 | 33 | 254 | 18 | 863 |
+| outside the waves | 331 | 16 | 0 | 34 | 159 | 7 | 547 |
+| total | 535 | 24 | 0 | 34 | 259 | 18 | 870 |
 <!-- the end of the counts -->
 ## Done
+- 20 Oct evening, F248 the self tests, 39 at A from the pack's rules, measured first, scan.md 5z-zo, 330, the form Q233, rows F248-R1 to R4
 - 20 Oct evening, F247 the same code rule, AR and ST alone left out by the pack's rules, 38 by design pairs, 329
 - 20 Oct evening, F246 AR against ST in Architecture and Security Devices in Electrical, 328, Q229 to Q232 in his words, the copy script's two faults
 - 20 Oct, F245 the wrong data of 19 Oct, the CAD words, the ST models read, items 3 to 7 carried by F244, 327, the form Q228 with Q226 and Q227 and the proof steps
@@ -41,9 +42,10 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - The QA's contradictions 57 to 73 and those of 19 Oct that stand, in claude\audit-round-2026-10-19b.md
 - One DIALOG finding at the close of set 94 UNKNOWN. T6-R-WPFBOX and F149-R1. The 0 byte NWD in NWD\C04\run 2026-10-14 1615, yours to delete
 ## Bader's turn
-- The proof run of the round at the top of steps\03_bader_next.md, C06 1B06PS and 1B06WL in proof-2026-10-20, seven steps
-- The form of the round, Q228 at the end of steps\02_questions.md, twenty four parts, with Q226 and Q227 above it
-- The proof steps at the top of steps\03_bader_next.md, the full run's 13 first, step 1 opening final-2026-10-19\Report\C06
+- The proof runs of the round of 20 Oct evening at the top of steps\03_bader_next.md, run 1 C02 1A02MM and run 2 the whole of C02
+- The form of the round, Q233 at the end of steps\02_questions.md, nine parts, and Q228 of the round before, twenty four parts
+- The proof run of the round of 20 Oct below it in steps\03_bader_next.md, C06 1B06PS and 1B06WL in proof-2026-10-20, seven steps
+- The proof steps below those in steps\03_bader_next.md, the full run's 13 first, step 1 opening final-2026-10-19\Report\C06
 - The form, Q225 at the end of steps\02_questions.md, eleven parts, recommended answers first
 - Q213 a parent and a folder of its name, Q214 the changed list and the table of the NWF page, Q215 where Run sits
 - Q216 the groupings, Q217 the Backup, Q218, Q219 the workbooks, Q220 the lists, Q221 the picture order, Q222, Q223 the count check
@@ -53,6 +55,6 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Q182 Over 150mm in A and B, Q184 the discipline codes, Q185 Over 150mm of C outside M and E, Q186 which NWFs to rebuild
 - The agents' new models and the ai-max copy load from the next session he starts
 ## Next
-1. F248 the self tests, measured first in Clash Detective, after F247 merges, the round of 20 Oct evening
-2. Bader's proof runs of F246 to F248 and the full C02 run, at the top of steps\03_bader_next.md once F248 writes them
+1. Bader's runs 1 and 2 on C02, then Code's reading of both and the close of the round on the outputs
+2. His answers to Q233 and Q228, then the next round of three or four fixes from them
 3. Bader's proof run of 20 Oct, then Code's after.txt, its checks against F243 point 1 and the two workbooks

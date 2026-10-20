@@ -2,6 +2,51 @@
 
 Newest entry at the top.
 
+## 2026-10-20 F248, the self tests, and the end of the round of 20 Oct evening
+
+Branch fix-F248 off main ccaa9a7, after F247 merged, worktree wt\F248 in the session's scratchpad, pull request 330. Bader's
+round of 20 Oct evening, the third of three fixes, carrying his answer Q232, and the round's last entry.
+
+What was done. The pack had no test where a set meets itself. The pack's rules gain self-test-teams: Mechanical | Electrical and
+self-test-priority: A, and a Core rule, SelfTests, adds a test of a set against itself for every set of those teams by the team
+map's one reading, TeamMap.TeamOfSet, made from the pack's sets and team map so the next project's pack gets them with no hand
+edit. 1104-PAR gets 39, Mechanical 25 and Electrical 14 with BLD-Security Devices, each named set -vs- set, after the matrix's 1830,
+each taking the type, status, merge, linkage and rules of the first test of the matrix naming its set and that side's self
+intersect and primitive types. The window adds them where it reads the pack's matrix and says the SELF lines with the TEAMS lines,
+and the engine's priorities give them A. The plan, the rule of two set codes, the mirror rule, the coverage, the workbooks and
+the views read them as any test, their views under A of Mechanical or Electrical. CT23 of docs\rules.md, core.md and addin.md
+say the rule.
+
+The measurement. Before the add-in half, the prober measured on C02 1A02MM in the loop's own copy of set 95, never Bader's folder,
+with the automation host, docs\history\scan.md 5z-zo and tools\probes\SameSetProbe: a test with one set on both sides is created,
+runs to Complete, reports each pair of two different items once and never an item against itself, and the self intersect flag
+changes nothing. Of four sets, ducts and pipes found 0 at 25 mm, cable trays 2 and conduits 13, and a run against a fitting of
+its own family was 1 of 2 and 1 of 13, not most. The count over all 39 sets waits for Bader's run 1. Roamer pid 12364 was started
+and quit by Dispose, Bader's settings it moved were put back and read back, and its work folder is
+%LOCALAPPDATA%\NwcFederatorLoop\probes\sameset-20261020-195405.
+
+The readings. The reviewer and the breaker both found that the matrix with self tests lost its pack, which would have thrown at
+every window open, failed the HEALTH block and lost every run's fingerprint, with no test catching it. It keeps its pack now and a
+test holds its pack, its file and its sha256 to the matrix read. They also found the file's counts including the 39, the
+PRIORITY count where the file keeps its letter, a team the map does not name, a duplicate set name read as one the matrix held,
+two Electrical sets asking one whole question, missing settings of the other side carried over, no cap on the not made lines and
+an unguarded read of the rules in the window. All were changed. Their rule questions are rows F248-R1 to R4 and the form Q233.
+
+The round. F246, pull request 328, and F247, pull request 329, merged before this one, side by side in their own worktrees. No
+proof run ran in Navisworks. The F246 run of set 95 stopped three times before any Navisworks started: twice on the copy script,
+fixed in F246, and then at run.ps1's Check, which refuses a first run whose output folders hold files, since Bader's project
+folder now holds his own outputs and every copy carries them, row F246-R1. Bader chose on 20 Oct that the proofs wait for him.
+The full C02 run, the close on the outputs, the reconciled counts and the five random clashes by element ID are his run 2 and
+Code's reading of it, at the top of steps\03_bader_next.md, and none of them is reported here as done. The main checkout was
+detached at main's commit for the round, since the branch wall reads that checkout's branch and not a worktree's, and put back
+on main at the end.
+
+What was proved here. Core tests 3522 passed before and 3541 after, 0 failed, 0 skipped. The solution builds in Release with 0
+errors and 0 warnings, the add-in included. The measurement above.
+
+What remains. Bader's run 1 on C02 1A02MM and run 2 on the whole C02 package, then Code's reading of both, the counts per self
+test, the self clashes that are a run against a fitting of its own, and the round's close. His answers to the form Q233.
+
 ## 2026-10-20 F247, the same code rule, the round of 20 Oct evening
 
 Branch fix-F247 off main 7e4e011, worked side by side with F246 in its own worktree, rebased on main 8256562 after F246 merged,
