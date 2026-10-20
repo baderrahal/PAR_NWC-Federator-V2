@@ -342,7 +342,7 @@ namespace Federator.Core.Tests
                 {
                     Clash("Saved", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.C),
                     Clash("Lights", "Clash1", "BLD-EL-Lighting", "BLD-ST-Floors", ClashStatus.New, ClashPriority.None),
-                    Clash("Columns", "Clash1", "BLD-ST-Columns", "BLD-AR-Walls", ClashStatus.New, ClashPriority.C),
+                    Clash("Columns", "Clash1", "BLD-ST-Columns", "BLD-ME-Ducts", ClashStatus.New, ClashPriority.C),
                     Clash("Pipes", "Clash1", "BLD-PL-Pipes", "BLD-ST-Floors", ClashStatus.New, ClashPriority.C),
                     Clash("Walls", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.None)
                 },

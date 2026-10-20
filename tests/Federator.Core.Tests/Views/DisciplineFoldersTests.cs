@@ -21,6 +21,17 @@ namespace Federator.Core.Tests
             return TeamMapTests.MapOf(TeamMapTests.BadersMap);
         }
 
+        private static ViewTeams Teams(TeamMap map, params SelectionSetDefinition[] sets)
+        {
+            return new ViewTeams(map, sets.Length == 0 ? null : sets, null, new ViewpointSettings());
+        }
+
+        private static SelectionSetDefinition Set(string name, params string[] folders)
+        {
+            return new SelectionSetDefinition(
+                name, folders, "lcop_selection_set_tree/" + string.Join("/", folders) + "/" + name, "all", false, null, null);
+        }
+
         private static ViewClash Test(string left, string right)
         {
             return new ViewClash(left + "-vs-" + right, "Clash1", "lcop_selection_set_tree/Folder/" + left, right,
@@ -29,7 +40,7 @@ namespace Federator.Core.Tests
 
         private static string FolderOf(string left, string right = "BLD-ST-Columns")
         {
-            return DisciplineFolders.DisciplineFolderFor(Test(left, right), true, Map(), '-');
+            return DisciplineFolders.DisciplineFolderFor(Test(left, right), true, Teams(Map()), '-');
         }
 
         [TestCase("BLD-AR-Walls", "Architecture")]
@@ -56,7 +67,7 @@ namespace Federator.Core.Tests
         public void ACodeTheOrderDoesNotNameGoesByThePacksTeamLine(string left, string folder)
         {
             Assert.That(FolderOf(left), Is.EqualTo(folder));
-            Assert.That(DisciplineFolders.DisciplineFolderFor(Test(left, "BLD-ST-Columns"), true, TeamMap.NoXml(new TeamMapSettings()), '-'),
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test(left, "BLD-ST-Columns"), true, Teams(TeamMap.NoXml(new TeamMapSettings())), '-'),
                 Is.EqualTo("Other"), "with no team map read there is no line to read it off");
         }
 
@@ -74,8 +85,8 @@ namespace Federator.Core.Tests
         [Test]
         public void ASavedTestThePackDoesNotNameIsOtherWhateverItsFirstSide()
         {
-            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-ME-Ducts", "BLD-ST-Columns"), false, Map(), '-'), Is.EqualTo("Other"));
-            Assert.That(DisciplineFolders.DisciplineFolderFor(null, true, Map(), '-'), Is.EqualTo("Other"));
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-ME-Ducts", "BLD-ST-Columns"), false, Teams(Map()), '-'), Is.EqualTo("Other"));
+            Assert.That(DisciplineFolders.DisciplineFolderFor(null, true, Teams(Map()), '-'), Is.EqualTo("Other"));
         }
 
         [Test]
@@ -84,7 +95,51 @@ namespace Federator.Core.Tests
             Assert.That(FolderOf("BLD-ST-Columns", "BLD-ME-Ducts"), Is.EqualTo("Structure"));
             Assert.That(FolderOf("BLD-ME-Ducts", "BLD-ST-Columns"), Is.EqualTo("Mechanical"));
             Assert.That(FolderOf("BLD-Security Devices", "BLD-EL-Cable Trays"), Is.EqualTo("Other"),
-                "a first side with no code is Other even where the second carries one");
+                "a first side with no code and no set tree read is Other even where the second carries one");
+        }
+
+        /// <summary>
+        /// F246, Bader's answer Q229 of 20 Oct 2026. AR and ST in either order are Architecture, and every other test keeps
+        /// its first side, so AR against a service stays with the service where the service is first.
+        /// </summary>
+        [TestCase("BLD-ST-Walls", "BLD-AR-Walls", "Architecture")]
+        [TestCase("BLD-AR-Walls", "BLD-ST-Walls", "Architecture")]
+        [TestCase("BLD-Structure-Walls", "BLD-Architecture-Walls", "Architecture")]
+        [TestCase("BLD-ST-Walls", "BLD-ST-Columns", "Structure")]
+        [TestCase("BLD-ST-Walls", "BLD-ME-Ducts", "Structure")]
+        [TestCase("BLD-ME-Ducts", "BLD-AR-Walls", "Mechanical")]
+        [TestCase("BLD-EL-Cable Trays", "BLD-AR-Ceilings", "Electrical")]
+        [TestCase("BLD-HV-Ducts", "BLD-AR-Ceilings", "Mechanical")]
+        [TestCase("BLD-AR-Walls", "BLD-ME-Ducts", "Architecture")]
+        public void ArchitectureAgainstStructureIsArchitectureInEitherOrder(string left, string right, string folder)
+        {
+            Assert.That(FolderOf(left, right), Is.EqualTo(folder));
+        }
+
+        /// <summary>
+        /// F246, Bader's answer Q231 of 20 Oct 2026. A side whose set name carries no code takes the team the folder above it
+        /// in the clash XML's set tree names, the reader the TEAMS lines use, and a folder naming no team, or two sets of
+        /// that name giving two teams, leaves it Other.
+        /// </summary>
+        [Test]
+        public void ASideWithNoCodeTakesTheTeamItsSetTreeFolderNames()
+        {
+            ViewTeams teams = Teams(Map(), Set("BLD-Security Devices", "Electrical"), Set("BLD-Signs", "Security"),
+                Set("BLD-Devices", "Electrical"), Set("BLD-Devices", "Mechanical"), Set("BLD-Pumps", "Mechanical", "Mechanical-Water"));
+
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-Security Devices", "BLD-ST-Columns"), true, teams, '-'),
+                Is.EqualTo("Electrical"));
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-Pumps", "BLD-ST-Columns"), true, teams, '-'),
+                Is.EqualTo("Mechanical"), "the folder nearest the set naming a team is read");
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-Signs", "BLD-ST-Columns"), true, teams, '-'),
+                Is.EqualTo("Other"), "a folder naming no team gives no folder");
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-Devices", "BLD-ST-Columns"), true, teams, '-'),
+                Is.EqualTo("Other"), "two sets of one name in two teams read UNKNOWN, never one of them guessed");
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-Security Devices", "BLD-ST-Columns"), true,
+                Teams(TeamMap.NoXml(new TeamMapSettings()), Set("BLD-Security Devices", "Electrical")), '-'),
+                Is.EqualTo("Other"), "with no team map read no folder names a team");
+            Assert.That(DisciplineFolders.DisciplineFolderFor(Test("BLD-Security Devices", "BLD-ST-Columns"), false, teams, '-'),
+                Is.EqualTo("Other"), "a saved test the pack does not name is Other whatever its side");
         }
 
         [Test]
@@ -134,7 +189,7 @@ namespace Federator.Core.Tests
 
             foreach (string code in map.Codes)
             {
-                found[code] = DisciplineFolders.DisciplineFolderFor(Test("BLD-" + code + "-Thing", "BLD-ST-Columns"), true, map, '-');
+                found[code] = DisciplineFolders.DisciplineFolderFor(Test("BLD-" + code + "-Thing", "BLD-ME-Ducts"), true, Teams(map), '-');
             }
 
             Assert.That(found, Is.EqualTo(new Dictionary<string, string>
@@ -154,7 +209,9 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// Every test of the pack: its name is its left set, -vs-, its right set, so the left set is the first side of its
-        /// name, and the folders it goes in, counted. 57 tests whose first side is BLD-Security Devices carry no code.
+        /// name, and the folders it goes in, counted, F246. The 57 tests whose first side is BLD-Security Devices carry no
+        /// code and go in Electrical by the set tree folder above it, Q231, and the 96 of ST against AR go in Architecture,
+        /// Q229, so Structure keeps the 15 of ST against ST alone and Other holds none, read off the pack on 20 Oct 2026.
         /// </summary>
         [Test]
         public void EveryTestOfThePackGoesInTheFolderOfItsFirstSide()
@@ -162,9 +219,11 @@ namespace Federator.Core.Tests
             string xml = PackFile("1104-PAR_CLASH_AllInOne_25mm_FIXED.xml");
             TeamMap map = TeamMap.Beside(xml, new TeamMapSettings());
             ExchangeDocument document = new ExchangeReader().ReadFile(xml);
+            ViewTeams teams = new ViewTeams(map, document.Sets, null, new ViewpointSettings());
             Dictionary<string, int> folders = new Dictionary<string, int>();
             Dictionary<string, int> codes = new Dictionary<string, int>();
             List<string> known = new List<string>(map.Codes);
+            int structureAgainstArchitecture = 0;
 
             foreach (ClashTestDefinition test in document.Tests)
             {
@@ -173,12 +232,20 @@ namespace Federator.Core.Tests
 
                 ViewClash clash = new ViewClash(test.Name, "Clash1", test.Left.Locator, test.Right.Locator,
                     ClashStatus.New, ClashPriority.C, null, null, null, null, null, null);
-                string folder = DisciplineFolders.DisciplineFolderFor(clash, true, map, '-');
+                string folder = DisciplineFolders.DisciplineFolderFor(clash, true, teams, '-');
                 string code = CodeOf.Set(left, known, '-');
 
                 folders[folder] = (folders.ContainsKey(folder) ? folders[folder] : 0) + 1;
                 codes[code] = (codes.ContainsKey(code) ? codes[code] : 0) + 1;
+
+                if (code == "ST" && CodeOf.Set(ByDesignRule.SetNameIn(test.Right.Locator), known, '-') == "AR")
+                {
+                    structureAgainstArchitecture++;
+                    Assert.That(folder, Is.EqualTo("Architecture"), test.Name);
+                }
             }
+
+            Assert.That(structureAgainstArchitecture, Is.EqualTo(96));
 
             Assert.That(document.Tests.Count, Is.EqualTo(1830));
             Assert.That(codes, Is.EqualTo(new Dictionary<string, int>
@@ -187,7 +254,7 @@ namespace Federator.Core.Tests
             }));
             Assert.That(folders, Is.EqualTo(new Dictionary<string, int>
             {
-                { "Architecture", 120 }, { "Structure", 111 }, { "Mechanical", 850 }, { "Electrical", 692 }, { "Other", 57 }
+                { "Architecture", 216 }, { "Structure", 15 }, { "Mechanical", 850 }, { "Electrical", 749 }
             }));
         }
     }

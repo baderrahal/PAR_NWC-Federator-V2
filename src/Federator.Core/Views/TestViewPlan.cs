@@ -177,7 +177,7 @@ namespace Federator.Core.Views
                 // one view and the ones the earlier rule would have split off are counted and named.
                 string letter = ToolViewFolder.LetterOf(first.Priority);
                 bool inThePack = notInThePack == null || !notInThePack.Contains(test);
-                string discipline = DisciplineFolders.DisciplineFolderFor(first, inThePack, teams.Map, settings.SetNameSeparator);
+                string discipline = DisciplineFolders.DisciplineFolderFor(first, inThePack, teams, settings.SetNameSeparator);
 
                 if (!inThePack)
                 {
