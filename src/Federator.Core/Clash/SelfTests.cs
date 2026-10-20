@@ -53,7 +53,8 @@ namespace Federator.Core.Clash
             if (rules == null || !rules.IsRead || rules.SelfTestTeams.Count == 0)
             {
                 lines.Add(Prefix + "no test of a set against itself is made, "
-                    + (rules == null || !rules.IsRead ? "the pack's rules not read" : "the pack's rules naming no team for them")
+                    + (rules == null ? "no rules of a pack were handed" : !rules.IsRead ? "the pack's rules not read, " + rules.Unread
+                        : "the pack's rules naming no team for them")
                     + ", Bader's answer to Q232");
                 return new SelfTestOutcome(matrix, lines);
             }
@@ -77,6 +78,7 @@ namespace Federator.Core.Clash
             List<ClashTestDefinition> added = new List<ClashTestDefinition>();
             Dictionary<string, int> byTeam = new Dictionary<string, int>(StringComparer.Ordinal);
             List<string> notMade = new List<string>();
+            List<SelectionSetDefinition> madeFor = new List<SelectionSetDefinition>();
 
             foreach (SelectionSetDefinition set in matrix.Sets)
             {
@@ -96,12 +98,16 @@ namespace Federator.Core.Clash
 
                 if (names.Contains(name))
                 {
-                    notMade.Add(name + ", a test of that name is in the matrix already");
+                    notMade.Add(name + (madeFor.Exists(s => string.Equals(s.Name, set.Name, StringComparison.Ordinal))
+                        ? ", another set of that name in the set tree has it, at " + madeFor.Find(s => string.Equals(s.Name, set.Name, StringComparison.Ordinal)).Path
+                            + ", so this one at " + set.Path + " has none"
+                        : ", a test of that name is in the matrix already"));
                     continue;
                 }
 
                 ClashTestDefinition template;
-                ClashSideDefinition side = SideOf(matrix, set.Path, out template);
+                string sideName;
+                ClashSideDefinition side = SideOf(matrix, set.Path, out template, out sideName);
 
                 if (side == null)
                 {
@@ -118,8 +124,9 @@ namespace Federator.Core.Clash
                     new List<string>(template.Rules),
                     new ClashSideDefinition(side.SelfIntersect, side.PrimitiveTypes, set.Path),
                     new ClashSideDefinition(side.SelfIntersect, side.PrimitiveTypes, set.Path),
-                    new List<string>(template.MissingSettings)));
+                    MissingOf(template, sideName)));
                 names.Add(name);
+                madeFor.Add(set);
 
                 int seen;
                 byTeam[team] = byTeam.TryGetValue(team, out seen) ? seen + 1 : 1;
@@ -138,22 +145,107 @@ namespace Federator.Core.Clash
                 + string.Join(", ", counts.ToArray()) + ", each at priority " + Priorities.Words(rules.SelfTestPriority)
                 + ", " + notMade.Count + " not made, Bader's answer to Q232");
 
-            foreach (string why in notMade)
+            foreach (string team in rules.SelfTestTeams)
             {
-                lines.Add(Prefix + "not made: " + why);
+                if (!map.Teams.Contains(team))
+                {
+                    lines.Add(Prefix + "the team map names no team " + team + ", so no set of it gets a test against itself");
+                }
             }
+
+            for (int i = 0; i < notMade.Count && i < Federator.Core.Diagnostics.RunLog.KeptOfARepeat; i++)
+            {
+                lines.Add(Prefix + "not made: " + notMade[i]);
+            }
+
+            if (notMade.Count > Federator.Core.Diagnostics.RunLog.KeptOfARepeat)
+            {
+                lines.Add(Prefix + "not made: and " + (notMade.Count - Federator.Core.Diagnostics.RunLog.KeptOfARepeat) + " more");
+            }
+
+            lines.AddRange(OneQuestion(madeFor));
 
             return new SelfTestOutcome(matrix.WithSelfTests(added, rules.SelfTestPriority), lines);
         }
 
+        /// <summary>
+        /// The sets given a self test that ask the same whole question as another of them, SelectionSetDefinition.WholeQuestion,
+        /// the mirror rule's reading by rule list, Q121 B. Their self tests find the same clashes, and so does any test of the
+        /// matrix between two of them, each keeping its own, since the mirror rule pairs no test whose two sides are one set.
+        /// Said, never acted on, for Bader's decision.
+        /// </summary>
+        private static IList<string> OneQuestion(IList<SelectionSetDefinition> sets)
+        {
+            List<string> lines = new List<string>();
+            Dictionary<string, List<string>> byQuestion = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+            List<string> order = new List<string>();
+
+            foreach (SelectionSetDefinition set in sets)
+            {
+                string question = set.WholeQuestion;
+                List<string> named;
+
+                if (!byQuestion.TryGetValue(question, out named))
+                {
+                    named = new List<string>();
+                    byQuestion[question] = named;
+                    order.Add(question);
+                }
+
+                named.Add(set.Name);
+            }
+
+            foreach (string question in order)
+            {
+                List<string> named = byQuestion[question];
+
+                if (named.Count > 1)
+                {
+                    lines.Add(Prefix + PackRules.Joined(named) + " ask the same whole question, so their tests against themselves find the"
+                        + " same clashes, and so does a test of the matrix between them, each keeping its own, for Bader's decision");
+                }
+            }
+
+            return lines;
+        }
+
+        /// <summary>
+        /// The settings the template left out that the self test carries: those of the test itself, and those of the side it
+        /// was built from, named for both of its sides, so a setting the template's other side left out is not carried over.
+        /// </summary>
+        private static List<string> MissingOf(ClashTestDefinition template, string sideName)
+        {
+            List<string> missing = new List<string>();
+
+            foreach (string setting in template.MissingSettings)
+            {
+                if (setting.StartsWith("left ", StringComparison.Ordinal) || setting.StartsWith("right ", StringComparison.Ordinal))
+                {
+                    if (setting.StartsWith(sideName + " ", StringComparison.Ordinal))
+                    {
+                        string what = setting.Substring(sideName.Length + 1);
+                        missing.Add("left " + what);
+                        missing.Add("right " + what);
+                    }
+
+                    continue;
+                }
+
+                missing.Add(setting);
+            }
+
+            return missing;
+        }
+
         /// <summary>The side of the first test of the matrix that names the set, a left side before a right side, and its test.</summary>
-        private static ClashSideDefinition SideOf(ExchangeDocument matrix, string path, out ClashTestDefinition template)
+        private static ClashSideDefinition SideOf(ExchangeDocument matrix, string path, out ClashTestDefinition template, out string sideName)
         {
             foreach (ClashTestDefinition test in matrix.Tests)
             {
                 if (test.Left != null && string.Equals(test.Left.Locator, path, StringComparison.Ordinal))
                 {
                     template = test;
+                    sideName = "left";
                     return test.Left;
                 }
             }
@@ -163,11 +255,13 @@ namespace Federator.Core.Clash
                 if (test.Right != null && string.Equals(test.Right.Locator, path, StringComparison.Ordinal))
                 {
                     template = test;
+                    sideName = "right";
                     return test.Right;
                 }
             }
 
             template = null;
+            sideName = null;
             return null;
         }
     }

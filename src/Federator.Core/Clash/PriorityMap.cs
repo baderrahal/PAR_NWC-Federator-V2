@@ -41,6 +41,9 @@ namespace Federator.Core.Clash
         private readonly List<string> problems;
         private int rows;
 
+        /// <summary>The rows With added, the self tests, F248, counted apart from the file's own.</summary>
+        private int added;
+
         private PriorityMap()
         {
             byTestName = new Dictionary<string, ClashPriority>(StringComparer.Ordinal);
@@ -176,6 +179,7 @@ namespace Federator.Core.Clash
             with.Picked = Picked;
             with.Path = Path;
             with.rows = rows;
+            with.added = added;
             with.problems.AddRange(problems);
 
             foreach (KeyValuePair<string, ClashPriority> row in byTestName)
@@ -206,6 +210,7 @@ namespace Federator.Core.Clash
 
                 with.byTestName[name] = priority;
                 with.rows++;
+                with.added++;
             }
 
             return with;
@@ -278,7 +283,7 @@ namespace Federator.Core.Clash
                 }
             }
 
-            lines.Add(Prefix + " " + RowCount + " in the file, " + tests + " tests in this run, "
+            lines.Add(Prefix + " " + (RowCount - added) + " in the file, " + (added > 0 ? "and " + added + " tests of a set against itself given a letter by the pack's rules, " : string.Empty) + tests + " tests in this run, "
                 + matched + " matched, " + unmatched.Count + " not named by the file");
 
             int shown = 0;

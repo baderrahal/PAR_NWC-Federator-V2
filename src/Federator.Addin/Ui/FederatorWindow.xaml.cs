@@ -484,7 +484,19 @@ namespace Federator.Addin.Ui
                 return null;
             }
 
-            SelfTestOutcome self = SelfTests.For(MatrixCorrections.ReadPack(pack), pack.Rules(), new ViewpointSettings().SetNameSeparator);
+            ExchangeDocument read = MatrixCorrections.ReadPack(pack);
+            PackRules rules;
+
+            try
+            {
+                rules = pack.Rules();
+            }
+            catch (Exception error)
+            {
+                rules = PackRules.NoneRead(pack.Describe(MatrixPack.RulesFile), "it would not read, " + error.Message);
+            }
+
+            SelfTestOutcome self = SelfTests.For(read, rules, new ViewpointSettings().SetNameSeparator);
             selfTestLines = new List<string>(self.Lines);
             return self.Matrix;
         }

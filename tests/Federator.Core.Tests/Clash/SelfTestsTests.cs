@@ -62,6 +62,17 @@ namespace Federator.Core.Tests
             Assert.That(matrix.Sets.Count, Is.EqualTo(read.Sets.Count));
             Assert.That(matrix.Teams, Is.SameAs(read.Teams));
             Assert.That(matrix.Corrections.Count, Is.EqualTo(read.Corrections.Count));
+            Assert.That(matrix.Pack, Is.SameAs(read.Pack), "the reviewer's finding 1, the window's open reads the pack's name");
+            Assert.That(matrix.PackFile, Is.EqualTo(read.PackFile));
+            Assert.That(matrix.Sha256(), Is.EqualTo(read.Sha256()), "the run's fingerprint is the pack's file, as before");
+            Assert.That(matrix.SourcePath, Is.EqualTo(read.SourcePath));
+            Assert.That(ClashTestPlan.From(matrix, "ft").PlanLine("1A02MM"), Does.StartWith(
+                "CLASH    1A02MM, 1830 in the file, and 39 tests of a set against itself the pack's rules add, "));
+            Assert.That(ClashTestPlan.From(read, "ft").PlanLine("1A02MM"), Does.StartWith("CLASH    1A02MM, 1830 in the file, 0 skipped"));
+            Assert.That(outcome.Lines, Has.Member("SELF    BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices ask the same whole question,"
+                + " so their tests against themselves find the same clashes, and so does a test of the matrix between them, each keeping"
+                + " its own, for Bader's decision"), "the reviewer's finding 2, said and never acted on");
+            Assert.That(outcome.Lines.Count, Is.EqualTo(2), "no other line on the pack");
         }
 
         /// <summary>Each self test points both sides at its set and takes the settings of the first test of the matrix naming it.</summary>
@@ -161,7 +172,7 @@ namespace Federator.Core.Tests
 
             SelfTestOutcome unread = SelfTests.For(read, PackRules.NoneRead("f", "why"), '-');
             Assert.That(unread.Matrix, Is.SameAs(read));
-            Assert.That(unread.Lines[0], Does.Contain("no test of a set against itself is made, the pack's rules not read"));
+            Assert.That(unread.Lines[0], Does.Contain("no test of a set against itself is made, the pack's rules not read, why"));
 
             SelfTestOutcome noTeam = SelfTests.For(read, PackRules.Read("same-code-left-out: AR | ST\n", "f"), '-');
             Assert.That(noTeam.Matrix, Is.SameAs(read));
@@ -171,6 +182,8 @@ namespace Federator.Core.Tests
             Assert.That(nobody.Matrix.SelfTestNames, Is.Empty, "a team the map does not name has no set");
             Assert.That(nobody.Matrix.SelfTestPriority, Is.EqualTo(ClashPriority.None));
             Assert.That(nobody.Lines[0], Does.StartWith("SELF    0 tests of a set against itself"));
+            Assert.That(nobody.Lines, Has.Member("SELF    the team map names no team Plumbing, so no set of it gets a test against itself"),
+                "the reviewer's finding 5, a team spelled wrong is said");
 
             SelfTestOutcome electrical = SelfTests.For(read, PackRules.Read("self-test-teams: Electrical\nself-test-priority: B\n", "f"), '-');
             Assert.That(electrical.Matrix.SelfTestNames.Count, Is.EqualTo(14));
@@ -192,7 +205,7 @@ namespace Federator.Core.Tests
 
             SelfTestOutcome outcome = SelfTests.For(matrix, PackRules.Read("self-test-teams: Mechanical | Electrical\nself-test-priority: A\n", "f"), '-');
 
-            Assert.That(outcome.Matrix.SelfTestNames, Is.EqualTo(new List<string> { "BLD-ME-Ducts-vs-BLD-ME-Ducts" }));
+            PackRulesTests.AreTheCodes(outcome.Matrix.SelfTestNames, "BLD-ME-Ducts-vs-BLD-ME-Ducts");
             Assert.That(outcome.Lines[0], Does.Contain("1 test of a set against itself added to the 2 of the matrix").And.Contain("2 not made"));
             Assert.That(outcome.Lines, Has.Member("SELF    not made: BLD-ME-Pipes-vs-BLD-ME-Pipes, a test of that name is in the matrix already"));
             Assert.That(outcome.Lines, Has.Member("SELF    not made: BLD-EL-Trays, no test of the matrix names the set, so the settings of its sides are UNKNOWN"));
@@ -202,6 +215,89 @@ namespace Federator.Core.Tests
             SelfTestOutcome unmapped = SelfTests.For(noMap, PackRules.Read("self-test-teams: Mechanical\nself-test-priority: A\n", "f"), '-');
             Assert.That(unmapped.Matrix, Is.SameAs(noMap));
             Assert.That(unmapped.Lines[0], Does.Contain("no team map was read"));
+        }
+
+        /// <summary>
+        /// The reviewer's finding 6. A self test carries the settings left out by the test itself and by the side it was built
+        /// from, named for both its sides, and never one the template's other side left out.
+        /// </summary>
+        [Test]
+        public void ASelfTestCarriesOnlyTheMissingSettingsOfItsOwnSide()
+        {
+            SelectionSetDefinition ducts = Set("BLD-ME-Ducts", "Mechanical");
+            SelectionSetDefinition pipes = Set("BLD-ME-Pipes", "Mechanical");
+            ClashTestDefinition across = new ClashTestDefinition("BLD-ME-Ducts-vs-BLD-ME-Pipes", "hard_conservative", "new", false, "none", null,
+                new ClashSideDefinition(false, 1, ducts.Path), new ClashSideDefinition(false, 1, pipes.Path),
+                new List<string> { "merge_composites", "right primtypes", "left selfintersect" });
+            ExchangeDocument matrix = new ExchangeDocument(null, "ft", new List<BatchTestDefinition>(),
+                new List<ClashTestDefinition> { across }, new List<SelectionSetDefinition> { ducts, pipes });
+            matrix.TeamsBeside(TeamMapTests.MapOf(TeamMapTests.BadersMap));
+
+            ExchangeDocument with = SelfTests.For(matrix, PackRules.Read("self-test-teams: Mechanical\nself-test-priority: A\n", "f"), '-').Matrix;
+            ClashTestDefinition ductsSelf = with.Tests.First(t => t.Name == "BLD-ME-Ducts-vs-BLD-ME-Ducts");
+            ClashTestDefinition pipesSelf = with.Tests.First(t => t.Name == "BLD-ME-Pipes-vs-BLD-ME-Pipes");
+
+            PackRulesTests.AreTheCodes(ductsSelf.MissingSettings, "merge_composites", "left selfintersect", "right selfintersect");
+            PackRulesTests.AreTheCodes(pipesSelf.MissingSettings, "merge_composites", "left primtypes", "right primtypes");
+        }
+
+        /// <summary>
+        /// The breaker's findings. Two sets of one name in two folders: the second is said as such, never as a test the matrix
+        /// held. More than five not made: five are named and the rest counted. A plan made from the plan keeps the count of
+        /// self tests, so the clash block says the file's count apart on every plan of the run.
+        /// </summary>
+        [Test]
+        public void ADuplicateSetNameIsSaidAsOneAndNotMadeLinesStopAtFive()
+        {
+            List<SelectionSetDefinition> sets = new List<SelectionSetDefinition>
+            {
+                Set("BLD-ME-Ducts", "Mechanical"), Set("BLD-ME-Ducts", "Mechanical", "Other")
+            };
+            List<ClashTestDefinition> tests = new List<ClashTestDefinition> { Test("T", sets[0].Path, sets[1].Path) };
+
+            for (int i = 0; i < 7; i++)
+            {
+                sets.Add(Set("BLD-EL-Lonely " + i, "Electrical"));
+            }
+
+            ExchangeDocument matrix = new ExchangeDocument(null, "ft", new List<BatchTestDefinition>(), tests, sets);
+            matrix.TeamsBeside(TeamMapTests.MapOf(TeamMapTests.BadersMap));
+            SelfTestOutcome outcome = SelfTests.For(matrix, PackRules.Read("self-test-teams: Mechanical | Electrical\nself-test-priority: A\n", "f"), '-');
+            List<string> notMade = outcome.Lines.Where(l => l.StartsWith("SELF    not made: ")).ToList();
+
+            Assert.That(outcome.Matrix.SelfTestNames.Count, Is.EqualTo(1));
+            Assert.That(notMade[0], Is.EqualTo("SELF    not made: BLD-ME-Ducts-vs-BLD-ME-Ducts, another set of that name in the set tree has it, at "
+                + sets[0].Path + ", so this one at " + sets[1].Path + " has none"));
+            Assert.That(notMade.Count, Is.EqualTo(6), "five named and one line counting the rest");
+            Assert.That(notMade[5], Is.EqualTo("SELF    not made: and 3 more"));
+        }
+
+        [Test]
+        public void EveryPlanOfTheRunSaysTheFilesCountApart()
+        {
+            MatrixPack pack = ThePack();
+            ExchangeDocument matrix = OnThePack().Matrix;
+            IDictionary<string, int> byCode;
+            ClashTestPlan across = ClashTestPlan.From(matrix, "ft").AcrossTwoSetCodes(matrix.Teams.KnownCodes(null), pack.Rules().SameCodeLeftOut, '-', out byCode);
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.TestsInFile = across.TestsInFile;
+            outcome.SelfTestsInMatrix = across.SelfTestsInMatrix;
+
+            Assert.That(across.SelfTestsInMatrix, Is.EqualTo(39));
+            Assert.That(across.TestsInFile, Is.EqualTo(1869));
+            Assert.That(outcome.Lines(), Has.Member("tests in the file : 1830, and 39 tests of a set against itself the pack's rules add"));
+        }
+
+        /// <summary>The PRIORITY line says the file's rows apart from the self tests the rules gave a letter.</summary>
+        [Test]
+        public void ThePriorityLineSaysTheFilesRowsApart()
+        {
+            PriorityMap file = PriorityMap.Read("test_name,left_set,right_set,priority\nA-vs-B,A,B,B\n", "f");
+            PriorityMap with = file.With(new[] { "X-vs-X", "Y-vs-Y" }, ClashPriority.A);
+
+            Assert.That(with.MatchLines(new[] { "A-vs-B", "X-vs-X", "Y-vs-Y" })[0], Does.StartWith(
+                "PRIORITY 1 in the file, and 2 tests of a set against itself given a letter by the pack's rules, 3 tests in this run"));
+            Assert.That(file.MatchLines(new[] { "A-vs-B" })[0], Does.StartWith("PRIORITY 1 in the file, 1 tests in this run"));
         }
 
         [TestCase("self-test-teams: Mechanical\n", "names teams and no rule self-test-priority gives their tests a letter")]

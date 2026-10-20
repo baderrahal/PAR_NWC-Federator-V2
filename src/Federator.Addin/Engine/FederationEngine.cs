@@ -440,9 +440,12 @@ namespace Federator.Addin.Engine
                 // F248, Bader's answer Q232. The self tests the matrix carries take the letter the pack's rules give them.
                 if (exchange != null && exchange.SelfTestNames.Count > 0)
                 {
+                    PriorityMap fileOnly = priorities;
                     priorities = priorities.With(exchange.SelfTestNames, exchange.SelfTestPriority);
-                    log.Line(PriorityMap.Prefix + " " + exchange.SelfTestNames.Count + " tests of a set against itself given priority "
-                        + Priorities.Words(exchange.SelfTestPriority) + " by the pack's rules, " + priorities.RowCount + " rows in all");
+                    int given = priorities.RowCount - fileOnly.RowCount;
+                    log.Line(PriorityMap.Prefix + " " + given + " of the " + exchange.SelfTestNames.Count + " tests of a set against itself given priority "
+                        + Priorities.Words(exchange.SelfTestPriority) + " by the pack's rules, the rest keeping the file's letter, "
+                        + priorities.RowCount + " rows in all");
                 }
 
                 foreach (string problem in priorities.Problems)

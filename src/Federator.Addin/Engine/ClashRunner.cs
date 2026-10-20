@@ -461,6 +461,7 @@ namespace Federator.Addin.Engine
 
             ClashRunOutcome outcome = new ClashRunOutcome();
             outcome.TestsInFile = plan.TestsInFile;
+            outcome.SelfTestsInMatrix = plan.SelfTestsInMatrix;
             skipsLogged.Clear();
             reports = null;
             drift.Clear();

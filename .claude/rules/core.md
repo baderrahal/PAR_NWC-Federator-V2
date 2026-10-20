@@ -1089,7 +1089,15 @@ and 6 does not read as broken.
   of A, B and C make the rules file unread, so no self test is made and the PACK line says why.
   MEASURED 2026-10-20, docs\history\scan.md 5z-zo, on C02 1A02MM: a test with one set on both sides is
   created and runs to Complete, reports each pair of two different items once and never an item against
-  itself, and the self intersect flag changes nothing, so the add-in makes them as any other test
+  itself, and the self intersect flag changes nothing, so the add-in makes them as any other test.
+  THE COUNTS OF THE FILE SAY THEM APART, the readers' findings on F248: the first CLASH line, the clash
+  block's tests in the file and the PRIORITY line give the file's 1830 and the 39 the rules add apart,
+  `ClashTestPlan.SelfTestsInMatrix`, carried on every plan made from the first, and the matrix keeps
+  its pack, so its open and its fingerprint read the pack's file. A team the rules name and the map
+  does not is said, two sets of one name are said as such, sets whose whole question is one are said
+  for Bader's decision and never paired, and the not made lines stop at five. Not changed, put to
+  Bader: a group of one discipline runs none of its tests, the self tests among them, Q203, and self
+  tests already in an NWF read C if the pack's rules ever fail to read
 - The reports never go inside the folder being scanned, whether it was picked or
   defaulted to. A run put the workbooks in the NWC folder it was reading, and the
   Clash step picks an XML at run time, so a report written there is a file a later run

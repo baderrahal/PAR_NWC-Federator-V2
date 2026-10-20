@@ -467,6 +467,13 @@ namespace Federator.Core.Exchange
             with.Corrections = Corrections;
             with.Worksets = Worksets;
             with.Teams = Teams;
+
+            // The pack it was read from, so its open, its fingerprint and its PACK words read the pack's file as before.
+            if (Pack != null)
+            {
+                with.ReadFrom(Pack, PackFile);
+            }
+
             with.SelfTestNames = new ReadOnlyCollection<string>(names);
             with.SelfTestPriority = names.Count == 0 ? Federator.Core.Clash.ClashPriority.None : priority;
             return with;
