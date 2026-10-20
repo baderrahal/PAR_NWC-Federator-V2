@@ -10,8 +10,9 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// F199, Bader's order of round 6, Q183 and Q184. A test's discipline folder is the code of its first side: the words
-    /// of the order first, then the pack's team line for a code they do not name, else Other, and a saved test the pack
-    /// does not name is Other. The set names are sample data, and the last tests read the pack itself.
+    /// of the order first, then the pack's team line for a code they do not name, and since F246 a side with no code by
+    /// the team its set tree folder names, Q231, else Other, a test of AR and ST in either order is Architecture, Q229,
+    /// and a saved test the pack does not name is Other. The set names are sample data, and the last tests read the pack.
     /// </summary>
     [TestFixture]
     public class DisciplineFoldersTests
@@ -90,7 +91,7 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheFirstSideDecidesAndNeverTheSecond()
+        public void TheFirstSideDecidesOutsideArchitectureAgainstStructure()
         {
             Assert.That(FolderOf("BLD-ST-Columns", "BLD-ME-Ducts"), Is.EqualTo("Structure"));
             Assert.That(FolderOf("BLD-ME-Ducts", "BLD-ST-Columns"), Is.EqualTo("Mechanical"));
@@ -214,7 +215,7 @@ namespace Federator.Core.Tests
         /// Q229, so Structure keeps the 15 of ST against ST alone and Other holds none, read off the pack on 20 Oct 2026.
         /// </summary>
         [Test]
-        public void EveryTestOfThePackGoesInTheFolderOfItsFirstSide()
+        public void EveryTestOfThePackGoesInTheFolderTheRuleGives()
         {
             string xml = PackFile("1104-PAR_CLASH_AllInOne_25mm_FIXED.xml");
             TeamMap map = TeamMap.Beside(xml, new TeamMapSettings());

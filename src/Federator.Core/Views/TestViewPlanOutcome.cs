@@ -370,7 +370,7 @@ namespace Federator.Core.Views
             lines.Add("discipline folders, views planned in each : " + DisciplineWords());
             lines.Add(PackHandedIn
                 ? "saved tests the pack does not name, in Other : " + NotInThePack.Count
-                : "saved tests the pack does not name : UNKNOWN, no matrix was read, so every test goes by the code of its first side");
+                : "saved tests the pack does not name : UNKNOWN, no matrix was read, so every test goes by its discipline folder rule, the code of its first side and AR with ST in Architecture");
             Named(lines, NotInThePack);
             lines.Add("Over 150mm folder, inside Mechanical and Electrical of C only : " + OverSizeViews
                 + " views of tests of priority C in a pair that carries the size folder");
